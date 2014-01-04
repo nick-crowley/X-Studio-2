@@ -22,7 +22,7 @@ namespace Library
 
          default:
             // "'%s' is not a valid language ID"
-            throw InvalidValueException(ERR_LANGUAGE_ID_INVALID, id.c_str());
+            throw InvalidValueException(HERE, ERR_LANGUAGE_ID_INVALID, id.c_str());
          }
       }
 

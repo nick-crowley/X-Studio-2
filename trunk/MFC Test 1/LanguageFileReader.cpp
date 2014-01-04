@@ -15,7 +15,7 @@ namespace Library
 
       // Ensure present : "Missing '%s' attribute on '<%s>' element"
       if (attr == NULL)
-         throw FileFormatException::Build(FullPath, ERR_XML_MISSING_ATTRIBUTE, name, (WCHAR*)node->nodeName);
+         throw FileFormatException(HERE, ERR_XML_MISSING_ATTRIBUTE, name, (WCHAR*)node->nodeName);
 
       // Return text
       return (WCHAR*)attr->text;
@@ -30,11 +30,11 @@ namespace Library
    {
       // Ensure present : "Missing '<%s>' element"
       if (node == NULL)
-         throw FileFormatException::Build(FullPath, ERR_XML_MISSING_NODE, name);
+         throw FileFormatException(HERE, ERR_XML_MISSING_NODE, name);
 
       // Ensure name correct : "Unexpected '<%s>' element while searching for '<%s>' element"
       if (node == NULL || node->nodeName != _bstr_t(name))
-         throw FileFormatException::Build(FullPath, ERR_XML_UNEXPECTED_NODE, (WCHAR*)node->nodeName, name);
+         throw FileFormatException(HERE, ERR_XML_UNEXPECTED_NODE, (WCHAR*)node->nodeName, name);
    }
 
    /// <summary>Reads the language tag and parses the ID</summary>
@@ -123,7 +123,7 @@ namespace Library
 
          // Ensure file exists: "file could not be found"
          if (!FullPath.Exists())
-            throw IOException::Build(FullPath, ERR_FILE_NOT_FOUND);
+            throw IOException(HERE, ERR_FILE_NOT_FOUND);
 
          // Create DOM parser
          XML::IXMLDOMDocument2Ptr pDoc(CLSID_DOMDocument60);
@@ -131,7 +131,7 @@ namespace Library
 
          // Load/Parse file : "%s (line %d, char %d)"
          if (pDoc->load(FullPath.c_str()) == VARIANT_FALSE)    
-            throw FileFormatException::Build(FullPath, ERR_XML_PARSE_FAILED, (WCHAR*)pDoc->parseError->reason, pDoc->parseError->line, pDoc->parseError->linepos);
+            throw FileFormatException(HERE, ERR_XML_PARSE_FAILED, (WCHAR*)pDoc->parseError->reason, pDoc->parseError->line, pDoc->parseError->linepos);
 
          // Read language tag
          XML::IXMLDOMNodePtr languageNode(pDoc->documentElement);
@@ -147,7 +147,7 @@ namespace Library
       } 
       catch (_com_error& ex)
       {
-         throw ComException(ex);
+         throw ComException(HERE, ex);
       }
    }
 
