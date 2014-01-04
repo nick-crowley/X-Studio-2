@@ -1,28 +1,59 @@
 #pragma once
 #include "stl.h"
 #include "Utils.h"
+#include <Windows.h>
 
 namespace Library
 {
+   #define  HERE   L"TODO"
 
    class ExceptionBase : public std::exception
    {
-   public:
-      ExceptionBase(UINT  err, wstring msg) : ErrorID(err), Message(msg) 
+   protected:
+      /// <summary>Create a exception without a message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
+      ExceptionBase(wstring  src, UINT  err) : ErrorID(err), Source(src)
+      {
+      }
+
+      /// <summary>Create a exception with a custom error</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
+      /// <param name="msg">Error message</param>
+      ExceptionBase(wstring  src, UINT  err, wstring msg) : ErrorID(err), Message(msg), Source(src)
       {}
 
+   public:
+      virtual ~ExceptionBase()  {}
+
+   protected:
+      /// <summary>Lookup the message from the system</summary>
+      void  LookupMessage()
+      {
+         WCHAR* szBuffer;
+         if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, NULL, ErrorID, NULL, (WCHAR*)&szBuffer, 512, NULL))
+         {
+            Message = szBuffer;
+            LocalFree(szBuffer);
+         }
+      }
+
+   public:
       UINT     ErrorID;
-      wstring  Message;
+      wstring  Message,
+               Source;
    };
    
 
    class ComException : public ExceptionBase
    {
    public:
-      ComException(_com_error&  err) : ExceptionBase(err.Error(), err.ErrorMessage())
+      /// <summary>Create a ComException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">COM error</param>
+      ComException(wstring  src, _com_error&  err) : ExceptionBase(src, err.Error(), err.ErrorMessage())
       {}
-
-      HRESULT  ErrorID;
    };
 
 
@@ -31,25 +62,16 @@ namespace Library
    {
    public:
 
-      /// <summary>Initializes a new instance of the <see cref="FileFormatException"/> class.</summary>
-      /// <param name="path">Full file path</param>
-      /// <param name="msg">Error id</param>
+      /// <summary>Create a FileFormatException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
       /// <param name="msg">Error message</param>
-      FileFormatException(Path path, UINT err, wstring msg) : ExceptionBase(err, msg), FullPath(path)
-      {}
-
-      /// <summary>Creates an exception with a localised message</summary>
-      /// <param name="path">Full file path</param>
-      /// <param name="msg">error message id</param>
-      /// <param name="">Arguments</param>
-      /// <returns></returns>
-      static FileFormatException  Build(Path path, UINT msg, ...)
+      FileFormatException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         return FileFormatException(path, msg, StringResource::LoadV(msg, va_start(pArgs, msg)) );
+         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
       }
 
-      Path FullPath;
    };
 
 
@@ -58,22 +80,15 @@ namespace Library
    {
    public:
 
-      /// <summary>Initializes a new instance of the <see cref="InvalidValueException"/> class.</summary>
-      /// <param name="msg">Error id</param>
+      /// <summary>Create an InvalidValueException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
       /// <param name="msg">Error message</param>
-      InvalidValueException(UINT err, wstring msg) : ExceptionBase(err, msg)
-      {}
-
-      /// <summary>Creates an exception with a localised message</summary>
-      /// <param name="msg">error message id</param>
-      /// <param name="">Arguments</param>
-      /// <returns></returns>
-      static InvalidValueException  Build(UINT msg, ...)
+      InvalidValueException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         return InvalidValueException(msg, StringResource::LoadV(msg, va_start(pArgs, msg)) );
+         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
       }
-
    };
 
    /// <summary>Occurs when there an error accessing a file</summary>
@@ -81,25 +96,23 @@ namespace Library
    {
    public:
 
-      /// <summary>Initializes a new instance of the <see cref="IOException"/> class.</summary>
-      /// <param name="path">Full file path</param>
-      /// <param name="msg">Error id</param>
+      /// <summary>Create an IOException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
       /// <param name="msg">Error message</param>
-      IOException(Path path, UINT err, wstring msg) : ExceptionBase(err, msg), FullPath(path)
-      {}
-
-      /// <summary>Creates an exception with a localised message</summary>
-      /// <param name="path">Full file path</param>
-      /// <param name="msg">error message id</param>
-      /// <param name="">Arguments</param>
-      /// <returns></returns>
-      static IOException  Build(Path path, UINT msg, ...)
+      IOException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         return IOException(path, msg, StringResource::LoadV(msg, va_start(pArgs, msg)) );
+         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
       }
 
-      Path FullPath;
+      /// <summary>Create an IOException from a system error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">System error id</param>
+      IOException(wstring  src, UINT err) : ExceptionBase(src, err)
+      {
+         LookupMessage();
+      }
    };
    
 

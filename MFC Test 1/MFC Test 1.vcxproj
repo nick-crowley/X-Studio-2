@@ -120,6 +120,7 @@
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="FileStream.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="LanguageFileReader.h" />
     <ClInclude Include="LanguagePage.h" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="FileStream.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="LanguageFileReader.cpp" />
     <ClCompile Include="LanguagePage.cpp" />

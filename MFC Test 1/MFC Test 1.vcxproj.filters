@@ -96,6 +96,9 @@
     <ClInclude Include="Stream.h">
       <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
+    <ClInclude Include="FileStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFC Test 1.cpp">
@@ -145,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="LanguageFileReader.cpp">
       <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="FileStream.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
