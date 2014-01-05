@@ -5,10 +5,13 @@ namespace Library
 {
    namespace IO
    {
-
+      CatalogStream::CatalogStream(Stream*  ps) 
+         : StreamFacade(ps)
+      {
+      }
 
       CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share) 
-         : FileStream(path, mode, access, share)
+         : StreamFacade(new FileStream(path, mode, access, share))
       {
       }
 
@@ -21,7 +24,7 @@ namespace Library
       {
          // Preserve origin, fill buffer
          DWORD startPos = GetPosition(),
-               bytesRead = FileStream::Read(buffer, length);
+               bytesRead = StreamFacade::Read(buffer, length);
 
          // Encode buffer + return
          Encode(buffer, bytesRead, startPos);
@@ -36,7 +39,7 @@ namespace Library
 
          // Encode + Write
          Encode(copy.get(), length, GetPosition());
-         return FileStream::Write(copy.get(), length);
+         return StreamFacade::Write(copy.get(), length);
       }
 
       /// <summary>Calculates the encoding key for a given position in the stream</summary>

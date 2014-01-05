@@ -119,6 +119,7 @@
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="DataStream.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FileStream.h" />
     <ClInclude Include="FileView.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="FileStream.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="LanguageFileReader.cpp" />
