@@ -8,11 +8,12 @@ namespace Library
    namespace IO
    {
 
-      class CatalogStream : public FileStream
+      class CatalogStream : public StreamFacade
       {
       const byte  CATALOGUE_DECRYPT_KEY = 0xDB;
 
       public:
+         CatalogStream(Stream*  ps);
          CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share);
          ~CatalogStream();
 
