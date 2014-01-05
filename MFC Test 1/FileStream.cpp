@@ -11,48 +11,109 @@ namespace Library
          Handle = CreateFile(path.c_str(), (DWORD)access, (DWORD)share, NULL, (DWORD)mode, FILE_ATTRIBUTE_NORMAL, NULL);
 
          if (Handle == INVALID_HANDLE_VALUE)
-            throw IOException(HERE, GetLastError());
+            throw Win32Exception(HERE, GetLastError());
       }
+
       FileStream::~FileStream() 
       {
          Close();
       }
 
-      __int64  FileStream::GetLength() { return 0; }
-      __int64  FileStream::GetPosition() { return 0; }
+      DWORD  FileStream::GetLength() 
+      { 
+         LARGE_INTEGER  size = {0LL};
+
+         // Lookup file size
+         if (!GetFileSizeEx(Handle, &size))
+            throw Win32Exception(HERE, GetLastError());
+
+         return (DWORD)size.QuadPart;
+      }
+      
+      DWORD  FileStream::GetPosition()
+      {
+         DWORD  position = 0;
+         
+         // Get position from null move
+         if (SetFilePointer(Handle, 0, (LONG*)&position, (DWORD)SeekOrigin::Current) == INVALID_SET_FILE_POINTER)
+            throw Win32Exception(HERE, GetLastError());
+
+         return position;
+      }
 
       void  FileStream::Close()
       {
-         if (Handle != NULL) {
-            CloseHandle(Handle);
+         if (Handle != NULL) 
+         {
+            if (!CloseHandle(Handle))
+               throw Win32Exception(HERE, GetLastError());
+
             Handle = NULL;
          }
       }
+
       void  FileStream::Flush()
       {
-         FlushFileBuffers(Handle);
-      }
-      void  FileStream::Seek(__int64  offset, SeekOrigin  mode)
-      {
-      }
-      void  FileStream::SetLength(__int64  length)
-      {
+         if (!FlushFileBuffers(Handle))
+            throw Win32Exception(HERE, GetLastError());
       }
 
-      void  FileStream::Read(BYTE* buffer, __int64 length)
+      void  FileStream::Seek(DWORD  offset, SeekOrigin  mode)
       {
-      }
-      BYTE  FileStream::ReadByte()
-      {
-         return 0;
+         // Set position 
+         if (!SetFilePointer(Handle, offset, NULL, (DWORD)mode))
+            throw Win32Exception(HERE, GetLastError());
       }
 
-      void  FileStream::Write(BYTE* buffer, __int64 length)
+      void  FileStream::SetLength(DWORD  length)
       {
+         DWORD  position = GetPosition();
+
+         // Seek to desired position and set EOF
+         Seek(length, SeekOrigin::Begin);
+         if (!SetEndOfFile(Handle))
+            throw Win32Exception(HERE, GetLastError());
+
+         // Restore original position
+         Seek(position, SeekOrigin::Begin);
       }
-      void  FileStream::WriteByte(BYTE byte) 
+
+
+      DWORD  FileStream::Read(BYTE* buffer, DWORD length)
       {
+         REQUIRED(buffer);
+         
+         // Check access
+         if (!CanRead())
+            throw InvalidOperationException(HERE, ERR_NO_READ_ACCESS);
+
+         // Read bytes
+         DWORD count = 0;
+         if (!ReadFile(Handle, buffer, length, &count, NULL))
+            throw Win32Exception(HERE, GetLastError());
+
+         // Return bytes read
+         return count;
       }
+
+
+      DWORD  FileStream::Write(BYTE* buffer, DWORD length)
+      {
+         REQUIRED(buffer);
+         
+         // Check access
+         if (!CanWrite())
+            throw InvalidOperationException(HERE, ERR_NO_WRITE_ACCESS);
+
+         // Write bytes
+         DWORD count = 0;
+         if (!WriteFile(Handle, buffer, length, &count, NULL))
+            throw Win32Exception(HERE, GetLastError());
+
+         // Return bytes written
+         return count;
+      }
+
 
    }
 }

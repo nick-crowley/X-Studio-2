@@ -1,8 +1,6 @@
 #pragma once
-#include "stl.h"
+#include "Common.h"
 #include "LanguagePage.h"
-#include "Exceptions.h"
-#include "Resource.h"
 
 namespace Library
 {

@@ -2,12 +2,13 @@
 #include "stdafx.h"
 #include "mainfrm.h"
 #include "FileView.h"
-#include "Resource.h"
 #include "MFC Test 1.h"
-#include <string>
-//#include <functional>
-//#include <numeric>
+
+#include "Utils.h"
 #include "LanguageFileReader.h"
+#include "FileStream.h"
+
+using namespace Library::IO;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -20,16 +21,21 @@ static char THIS_FILE[]=__FILE__;
 
 CFileView::CFileView()
 {
+   auto path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";
+
    try
    {
-      Library::LanguageFileReader  rd(_T("D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"));
+      Library::LanguageFileReader  rd;
       //Library::LanguageFileReader  rd(L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml");
       
-      auto file = rd.ReadFile();
+      FileStream s(path, FileMode::OpenExisting, FileAccess::ReadWrite, FileShare::None);
+      auto file = rd.ReadFile(s);
    }
    catch (Library::ExceptionBase&  e)
    {
-      AfxMessageBox(e.Message.c_str());
+      CString sz;
+      sz.Format(L"Unable to load '%s' : %s\n\nDebug: %s", path, e.Message.c_str(), e.Source.c_str());
+      AfxMessageBox(sz);
    }
 }
 

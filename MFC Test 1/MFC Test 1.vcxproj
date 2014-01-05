@@ -71,12 +71,10 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"D:\My Projects\clearTempFolder.bat"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Clearing temp folder</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>"D:\My Projects\clearTempFolder.bat"</Command>
@@ -119,6 +117,7 @@
   <ItemGroup>
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FileStream.h" />
     <ClInclude Include="FileView.h" />
@@ -127,6 +126,7 @@
     <ClInclude Include="LanguageString.h" />
     <ClInclude Include="LanguageFile.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="MFC Test 1.h" />
     <ClInclude Include="MFC Test 1Doc.h" />
     <ClInclude Include="MFC Test 1View.h" />
@@ -135,7 +135,6 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="stl.h" />
     <ClInclude Include="Stream.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils.h" />
@@ -151,6 +150,7 @@
     <ClCompile Include="LanguageString.cpp" />
     <ClCompile Include="LanguageFile.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="MFC Test 1.cpp" />
     <ClCompile Include="MFC Test 1Doc.cpp" />
     <ClCompile Include="MFC Test 1View.cpp" />

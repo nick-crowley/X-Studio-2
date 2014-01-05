@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Library\IO">
       <UniqueIdentifier>{213f0cc3-9270-4b1c-9a9b-07cce23c0c1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Library\IO">
+      <UniqueIdentifier>{ab3399c2-5092-4e44-b09c-e085f1490d4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -78,13 +81,7 @@
     <ClInclude Include="LanguagePage.h">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
-    <ClInclude Include="stl.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
     <ClInclude Include="msxml.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="Exceptions.h">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
     <ClInclude Include="LanguageFileReader.h">
@@ -97,7 +94,16 @@
       <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
     <ClInclude Include="FileStream.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptions.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryStream.h">
+      <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +156,10 @@
       <Filter>Source Files\Library</Filter>
     </ClCompile>
     <ClCompile Include="FileStream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Library\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryStream.cpp">
+      <Filter>Source Files\Library\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

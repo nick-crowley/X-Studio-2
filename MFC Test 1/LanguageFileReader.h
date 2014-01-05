@@ -1,8 +1,8 @@
 #pragma once
-#include "stl.h"
+#include "Common.h"
 #include "LanguageFile.h"
 #include "msxml.h"
-#include "Exceptions.h"
+#include "Stream.h"
 
 namespace Library
 {
@@ -22,10 +22,10 @@ namespace Library
    class LanguageFileReader
    {
    public:
-      LanguageFileReader(Path szFullPath) : FullPath(szFullPath) {};
+      LanguageFileReader() {};
       ~LanguageFileReader() {};
 
-      LanguageFile ReadFile();
+      LanguageFile   ReadFile(IO::Stream&  s);
 
    private:
       
@@ -36,8 +36,6 @@ namespace Library
 
       LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
       LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
-      
-      Path  FullPath;
    };
 
 }
