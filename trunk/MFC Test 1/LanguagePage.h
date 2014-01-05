@@ -1,5 +1,5 @@
 #pragma once
-#include "stl.h"
+#include "Common.h"
 #include "LanguageString.h"
 
 namespace Library

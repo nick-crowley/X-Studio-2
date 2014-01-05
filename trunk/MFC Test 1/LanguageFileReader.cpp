@@ -11,6 +11,8 @@ namespace Library
    /// <exception cref="_com_error">COM error</exception>
    wstring  LanguageFileReader::ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
    {
+      REQUIRED(node);
+
       auto attr = node->attributes->getNamedItem(name);
 
       // Ensure present : "Missing '%s' attribute on '<%s>' element"
@@ -28,13 +30,11 @@ namespace Library
    /// <exception cref="_com_error">COM error</exception>
    void  LanguageFileReader::ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
    {
-      // Ensure present : "Missing '<%s>' element"
-      if (node == NULL)
-         throw FileFormatException(HERE, ERR_XML_MISSING_NODE, name);
+      REQUIRED(node);
 
       // Ensure name correct : "Unexpected '<%s>' element while searching for '<%s>' element"
-      if (node == NULL || node->nodeName != _bstr_t(name))
-         throw FileFormatException(HERE, ERR_XML_UNEXPECTED_NODE, (WCHAR*)node->nodeName, name);
+      if (node->nodeName != _bstr_t(name))
+         throw FileFormatException(HERE, ERR_XML_UNEXPECTED_ELEMENT, (WCHAR*)node->nodeName, name);
    }
 
    /// <summary>Reads the language tag and parses the ID</summary>
@@ -45,6 +45,10 @@ namespace Library
    /// <exception cref="_com_error">COM error</exception>
    GameLanguage  LanguageFileReader::ReadLanguageTag(XML::IXMLDOMNodePtr&  element)
    {
+      // Ensure present: "Missing '%s' element"
+      if (element == NULL)
+         throw FileFormatException(HERE, ERR_XML_MISSING_ELEMENT, L"language");
+
       // Verify tag
       ReadElement(element, L"language");
       
@@ -115,26 +119,26 @@ namespace Library
    /// <exception cref="Library.FileFormatException">Missing elements or attributes</exception>
    /// <exception cref="Library.ComException">COM Error</exception>
    /// <exception cref="Library.InvalidDataException">Invalid language ID</exception>
-   LanguageFile LanguageFileReader::ReadFile()
+   LanguageFile LanguageFileReader::ReadFile(IO::Stream&  s)
    {
       try
       {
-         LanguageFile file;
-
-         // Ensure file exists: "file could not be found"
-         if (!FullPath.Exists())
-            throw IOException(HERE, ERR_FILE_NOT_FOUND);
-
+         // Extract stream
+         ByteArray buffer(s.ReadAllBytes());
+         
          // Create DOM parser
          XML::IXMLDOMDocument2Ptr pDoc(CLSID_DOMDocument60);
          pDoc->async = VARIANT_FALSE;
 
          // Load/Parse file : "%s (line %d, char %d)"
-         if (pDoc->load(FullPath.c_str()) == VARIANT_FALSE)    
+         if (pDoc->loadXML((char*)buffer.get()) == VARIANT_FALSE)    
             throw FileFormatException(HERE, ERR_XML_PARSE_FAILED, (WCHAR*)pDoc->parseError->reason, pDoc->parseError->line, pDoc->parseError->linepos);
 
-         // Read language tag
+         // Get root (as node)
          XML::IXMLDOMNodePtr languageNode(pDoc->documentElement);
+
+         // Read language tag
+         LanguageFile file;
          file.Language = ReadLanguageTag(languageNode);
          
          // Read pages

@@ -86,13 +86,17 @@
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
 
-#define ERR_XML_MISSING_NODE            1000
-#define ERR_XML_UNEXPECTED_NODE         1001
+#define ERR_XML_MISSING_ELEMENT         1000
+#define ERR_XML_UNEXPECTED_ELEMENT      1001
 #define ERR_XML_MISSING_ATTRIBUTE       1002
 #define ERR_XML_PARSE_FAILED            1003
 
 #define ERR_LANGUAGE_ID_INVALID         1004
-#define ERR_FILE_NOT_FOUND              1005
+
+#define ERR_ARGUMENT_NULL               1005
+
+#define ERR_NO_READ_ACCESS                      1006
+#define ERR_NO_WRITE_ACCESS                     1007
 
 // Next default values for new objects
 // 

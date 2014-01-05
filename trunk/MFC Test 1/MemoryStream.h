@@ -1,15 +1,17 @@
 #pragma once
+#include "Common.h"
 #include "Stream.h"
 
 namespace Library
 {
    namespace IO
    {
-      class FileStream : public Stream
+      class MemoryStream : public Stream
       {
       public:
-         FileStream(Path path, FileMode mode, FileAccess access, FileShare share);
-         ~FileStream();
+         MemoryStream(BYTE* buffer, DWORD length, FileAccess access);
+         MemoryStream(DWORD length, FileAccess access);
+         ~MemoryStream();
          
          bool  CanRead()   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
          bool  CanSeek()   { return true; }
@@ -27,11 +29,13 @@ namespace Library
          DWORD Write(BYTE* buffer, DWORD length);
       
       private:
-         Path       FullPath;
-         FileMode   Mode;
+         BYTE* Alloc(DWORD len);
+
          FileAccess Access;
-         FileShare  Share;
-         HANDLE     Handle;
+         DWORD      Length,
+                    Position;
+         BYTE*      Buffer;
+         bool       DestroyOnClose;
       };
 
    }

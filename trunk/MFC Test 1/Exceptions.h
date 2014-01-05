@@ -1,11 +1,10 @@
 #pragma once
-#include "stl.h"
 #include "Utils.h"
-#include <Windows.h>
 
 namespace Library
 {
-   #define  HERE   L"TODO"
+
+   #define  HERE   __WFUNCTION__
 
    class ExceptionBase : public std::exception
    {
@@ -14,6 +13,13 @@ namespace Library
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       ExceptionBase(wstring  src, UINT  err) : ErrorID(err), Source(src)
+      {
+      }
+
+      /// <summary>Create a exception without a message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Error message</param>
+      ExceptionBase(wstring  src, wstring msg) : ErrorID(0), Message(msg), Source(src)
       {
       }
 
@@ -27,25 +33,45 @@ namespace Library
    public:
       virtual ~ExceptionBase()  {}
 
-   protected:
-      /// <summary>Lookup the message from the system</summary>
-      void  LookupMessage()
-      {
-         WCHAR* szBuffer;
-         if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, NULL, ErrorID, NULL, (WCHAR*)&szBuffer, 512, NULL))
-         {
-            Message = szBuffer;
-            LocalFree(szBuffer);
-         }
-      }
-
-   public:
       UINT     ErrorID;
       wstring  Message,
                Source;
    };
    
 
+   #define REQUIRED(arg)  { if ((arg) == NULL) throw ArgumentNullException(HERE, WIDEN(#arg)); }
+
+   /// <summary>Occurs when a missing argument is detected</summary>
+   class ArgumentNullException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create an ArgumentNullException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="arg">Name of argument</param>
+      ArgumentNullException(wstring  src, const WCHAR* arg) : ExceptionBase(src, (UINT)0)
+      {
+         // "Missing '%s' argument"
+         Message = StringResource::Load(ERR_ARGUMENT_NULL, arg); 
+      }
+   };
+
+   /// <summary>Occurs when an argument is invalid</summary>
+   class ArgumentException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create an ArgumentException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="arg">Name of argument</param>
+      ArgumentException(wstring  src, wstring  arg) : ExceptionBase(src, (UINT)0)
+      {
+         // "Missing '%s' argument"
+         Message = StringResource::Load(ERR_ARGUMENT_NULL, arg); 
+      }
+   };
+   
+   /// <summary>Occurs when a COM object is used incorrectly</summary>
    class ComException : public ExceptionBase
    {
    public:
@@ -65,15 +91,36 @@ namespace Library
       /// <summary>Create a FileFormatException with a custom error.</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
-      /// <param name="msg">Error message</param>
-      FileFormatException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
+      FileFormatException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
+         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
       }
 
    };
 
+
+   /// <summary>Occurs when an invalid operation is attempted</summary>
+   class InvalidOperationException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create an InvalidOperationException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
+      InvalidOperationException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
+      {
+         va_list pArgs;
+         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
+      }
+
+      /// <summary>Create an InvalidOperationException with a custom error.</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      InvalidOperationException(wstring  src, wstring  debug, ...) : ExceptionBase(src, debug)
+      {
+      }
+   };
 
    /// <summary>Occurs when an invalid value is detected within game data</summary>
    class InvalidValueException : public ExceptionBase
@@ -83,37 +130,24 @@ namespace Library
       /// <summary>Create an InvalidValueException with a custom error.</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
-      /// <param name="msg">Error message</param>
-      InvalidValueException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
+      InvalidValueException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
+         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
       }
    };
 
+
    /// <summary>Occurs when there an error accessing a file</summary>
-   class IOException : public ExceptionBase
+   class Win32Exception : public ExceptionBase
    {
    public:
-
-      /// <summary>Create an IOException with a custom error.</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="err">Error id</param>
-      /// <param name="msg">Error message</param>
-      IOException(wstring  src, UINT err, wstring msg, ...) : ExceptionBase(src, err)
-      {
-         va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, msg)); 
-      }
-
       /// <summary>Create an IOException from a system error.</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">System error id</param>
-      IOException(wstring  src, UINT err) : ExceptionBase(src, err)
+      Win32Exception(wstring  src, UINT err) : ExceptionBase(src, err)
       {
-         LookupMessage();
+         Message = StringResource::FormatMessage(err);
       }
    };
-   
-
 }

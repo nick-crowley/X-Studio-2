@@ -6,7 +6,10 @@
 
 namespace Library
 {
-   
+   /*wstring  StringResource::Format(UINT  format, ...)
+   {
+   }*/
+
    wstring  StringResource::Load(UINT  id, ...)
    {
       va_list  pArgs;
@@ -26,6 +29,20 @@ namespace Library
 
       // Return
       return szBuffer;
+   }
+
+   wstring  StringResource::FormatMessage(UINT  id)
+   {
+      WCHAR* szBuffer;
+      wstring msg;
+
+      if (FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, id, NULL, (WCHAR*)&szBuffer, 512, NULL))
+      {
+         msg = szBuffer;
+         LocalFree(szBuffer);
+      }
+
+      return msg;
    }
    
 }
