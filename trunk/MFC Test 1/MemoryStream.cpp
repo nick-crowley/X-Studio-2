@@ -20,12 +20,12 @@ namespace Library
          Close();
       }
 
-      DWORD  MemoryStream::GetLength() 
+      DWORD  MemoryStream::GetLength() const
       { 
          return Length;
       }
       
-      DWORD  MemoryStream::GetPosition()
+      DWORD  MemoryStream::GetPosition() const
       {
          return Position;
       }

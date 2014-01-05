@@ -9,21 +9,21 @@ namespace Library
    class ExceptionBase : public std::exception
    {
    protected:
-      /// <summary>Create a exception without a message</summary>
+      /// <summary>Create a exception with an error code but no message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       ExceptionBase(wstring  src, UINT  err) : ErrorID(err), Source(src)
       {
       }
 
-      /// <summary>Create a exception without a message</summary>
+      /// <summary>Create a exception without an error code but with a message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="msg">Error message</param>
       ExceptionBase(wstring  src, wstring msg) : ErrorID(0), Message(msg), Source(src)
       {
       }
 
-      /// <summary>Create a exception with a custom error</summary>
+      /// <summary>Create a exception with an error code and message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       /// <param name="msg">Error message</param>
@@ -46,7 +46,7 @@ namespace Library
    {
    public:
 
-      /// <summary>Create an ArgumentNullException with a custom error.</summary>
+      /// <summary>Create an ArgumentNullException from a debugging message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="arg">Name of argument</param>
       ArgumentNullException(wstring  src, const WCHAR* arg) : ExceptionBase(src, (UINT)0)
@@ -61,13 +61,27 @@ namespace Library
    {
    public:
 
-      /// <summary>Create an ArgumentException with a custom error.</summary>
+      /// <summary>Create an ArgumentException from a debugging message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="arg">Name of argument</param>
-      ArgumentException(wstring  src, wstring  arg) : ExceptionBase(src, (UINT)0)
+      /// <param name="msg">Debugging message</param>
+      ArgumentException(wstring  src, wstring  arg, wstring  msg) : ExceptionBase(src, (UINT)0)
       {
-         // "Missing '%s' argument"
-         Message = StringResource::Load(ERR_ARGUMENT_NULL, arg); 
+         // "The '%s' argument is invalid : %s"
+         Message = StringResource::Format(L"The '%s' argument is invalid : %s", arg.c_str(), msg.c_str()); 
+      }
+
+      /// <summary>Create an ArgumentException from a resource ID</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="arg">Name of argument</param>
+      /// <param name="err">Error ID</param>
+      ArgumentException(wstring  src, wstring  arg, UINT  err, ...) : ExceptionBase(src, err)
+      {
+         va_list pArgs;
+         
+         // "The '%s' argument is invalid : %s"
+         wstring msg = StringResource::LoadV(err, va_start(pArgs, err));
+         Message = StringResource::Format(L"The '%s' argument is invalid : %s", arg.c_str(), msg.c_str()); 
       }
    };
    
@@ -75,7 +89,7 @@ namespace Library
    class ComException : public ExceptionBase
    {
    public:
-      /// <summary>Create a ComException with a custom error.</summary>
+      /// <summary>Create a ComException from a _com_error</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">COM error</param>
       ComException(wstring  src, _com_error&  err) : ExceptionBase(src, err.Error(), err.ErrorMessage())
@@ -88,7 +102,7 @@ namespace Library
    {
    public:
 
-      /// <summary>Create a FileFormatException with a custom error.</summary>
+      /// <summary>Create a FileFormatException from a resource ID</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       FileFormatException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
@@ -105,7 +119,7 @@ namespace Library
    {
    public:
 
-      /// <summary>Create an InvalidOperationException with a custom error.</summary>
+      /// <summary>Create an InvalidOperationException from a resource ID</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       InvalidOperationException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
@@ -114,7 +128,7 @@ namespace Library
          Message = StringResource::LoadV(err, va_start(pArgs, err)); 
       }
 
-      /// <summary>Create an InvalidOperationException with a custom error.</summary>
+      /// <summary>Create an InvalidOperationException from a debugging message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="debug">Debug message</param>
       InvalidOperationException(wstring  src, wstring  debug, ...) : ExceptionBase(src, debug)
@@ -127,7 +141,7 @@ namespace Library
    {
    public:
 
-      /// <summary>Create an InvalidValueException with a custom error.</summary>
+      /// <summary>Create an InvalidValueException from a resource ID</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">Error id</param>
       InvalidValueException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
@@ -138,11 +152,11 @@ namespace Library
    };
 
 
-   /// <summary>Occurs when there an error accessing a file</summary>
+   /// <summary>Occurs when a win32 API call fails</summary>
    class Win32Exception : public ExceptionBase
    {
    public:
-      /// <summary>Create an IOException from a system error.</summary>
+      /// <summary>Create an Win32Exception from a system error.</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">System error id</param>
       Win32Exception(wstring  src, UINT err) : ExceptionBase(src, err)

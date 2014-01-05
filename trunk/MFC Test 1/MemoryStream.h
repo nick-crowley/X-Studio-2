@@ -13,12 +13,12 @@ namespace Library
          MemoryStream(DWORD length, FileAccess access);
          ~MemoryStream();
          
-         bool  CanRead()   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
-         bool  CanSeek()   { return true; }
-         bool  CanWrite()  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
+         bool  CanRead() const   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
+         bool  CanSeek() const   { return true; }
+         bool  CanWrite() const  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
 
-         DWORD GetLength();
-         DWORD GetPosition();
+         DWORD GetLength() const;
+         DWORD GetPosition() const;
 
          void  Close();
          void  Flush();

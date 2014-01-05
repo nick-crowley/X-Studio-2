@@ -7,6 +7,8 @@
 #include "Utils.h"
 #include "LanguageFileReader.h"
 #include "FileStream.h"
+#include "CatalogStream.h"
+#include "StringReader.h"
 
 using namespace Library::IO;
 
@@ -21,15 +23,32 @@ static char THIS_FILE[]=__FILE__;
 
 CFileView::CFileView()
 {
-   auto path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";
+   // "D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml"
+   const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
 
+   // Test LanguageFileReader
    try
    {
-      Library::LanguageFileReader  rd;
-      //Library::LanguageFileReader  rd(L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml");
-      
       FileStream s(path, FileMode::OpenExisting, FileAccess::ReadWrite, FileShare::None);
-      auto file = rd.ReadFile(s);
+      auto file = Library::LanguageFileReader().ReadFile(s);
+   }
+   catch (Library::ExceptionBase&  e)
+   {
+      CString sz;
+      sz.Format(L"Unable to load '%s' : %s\n\nDebug: %s", path, e.Message.c_str(), e.Source.c_str());
+      AfxMessageBox(sz);
+   }
+
+   // Test catalogue reader
+   path = L"D:\\X3 Albion Prelude\\11.cat";
+   try
+   {
+      CatalogStream s(path, FileMode::OpenExisting, FileAccess::Read, FileShare::Write);
+      StringReader rd(s);
+      string line;
+
+      while (rd.ReadLine(line))
+         OutputDebugStringA((line+'\n').c_str());
    }
    catch (Library::ExceptionBase&  e)
    {

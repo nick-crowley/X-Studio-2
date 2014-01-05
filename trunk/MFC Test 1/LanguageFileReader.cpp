@@ -13,7 +13,7 @@ namespace Library
    {
       REQUIRED(node);
 
-      auto attr = node->attributes->getNamedItem(name);
+      XML::IXMLDOMNodePtr attr = node->attributes->getNamedItem(name);
 
       // Ensure present : "Missing '%s' attribute on '<%s>' element"
       if (attr == NULL)
@@ -64,12 +64,8 @@ namespace Library
    wstring  LanguageFileReader::TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
    {
       // Read attribute text or return empty string
-      auto attr = node->attributes->getNamedItem(name);
-      if (attr == NULL)
-         return L"";
-      
-      auto text = attr->text;
-      return (WCHAR*)attr->text;
+      XML::IXMLDOMNodePtr attr = node->attributes->getNamedItem(name);
+      return attr == NULL ? L"" : (WCHAR*)attr->text;
    }
 
    /// <summary>Reads a page tag and all it's string tags</summary>
@@ -83,10 +79,10 @@ namespace Library
       ReadElement(element, L"page");
 
       // Read properties
-      auto id = ReadAttribute(element, L"id");
-      auto title = TryReadAttribute(element, L"title");
-      auto desc = TryReadAttribute(element, L"desc");
-      auto voice = TryReadAttribute(element, L"voice") == L"yes";
+      wstring id( ReadAttribute(element, L"id") ),
+              title( TryReadAttribute(element, L"title") ),
+              desc( TryReadAttribute(element, L"desc") );
+      bool    voice = TryReadAttribute(element, L"voice") == L"yes";
 
       // Create page
       LanguagePage page(_wtoi(id.c_str()), title, desc, voice);
@@ -110,8 +106,7 @@ namespace Library
       ReadElement(element, L"t");
 
       // Read ID+text
-      auto id = ReadAttribute(element, L"id");
-      return LanguageString(_wtoi(id.c_str()), (WCHAR*)element->text);
+      return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), (WCHAR*)element->text);
    }
 
    /// <summary>Reads the entire language file</summary>

@@ -9,14 +9,15 @@ namespace Library
       {
       public:
          FileStream(Path path, FileMode mode, FileAccess access, FileShare share);
+         FileStream(const FileStream& s);
          ~FileStream();
          
-         bool  CanRead()   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
-         bool  CanSeek()   { return true; }
-         bool  CanWrite()  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
+         bool  CanRead() const   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
+         bool  CanSeek() const   { return true; }
+         bool  CanWrite() const  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
 
-         DWORD GetLength();
-         DWORD GetPosition();
+         DWORD GetLength() const;
+         DWORD GetPosition() const;
 
          void  Close();
          void  Flush();
@@ -24,13 +25,15 @@ namespace Library
          void  SetLength(DWORD  length);
 
          DWORD Read(BYTE* buffer, DWORD length);
-         DWORD Write(BYTE* buffer, DWORD length);
+         DWORD Write(const BYTE* buffer, DWORD length);
       
-      private:
+      protected:
          Path       FullPath;
          FileMode   Mode;
          FileAccess Access;
          FileShare  Share;
+
+      private:
          HANDLE     Handle;
       };
 

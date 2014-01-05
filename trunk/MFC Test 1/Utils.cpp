@@ -6,9 +6,15 @@
 
 namespace Library
 {
-   /*wstring  StringResource::Format(UINT  format, ...)
+   wstring  StringResource::Format(const WCHAR*  format, ...)
    {
-   }*/
+      TCHAR    szBuffer[512];
+      va_list  pArgs;
+
+      // Format + Return
+      StringCchVPrintf(szBuffer, 512, format, va_start(pArgs, format));
+      return szBuffer;
+   }
 
    wstring  StringResource::Load(UINT  id, ...)
    {
