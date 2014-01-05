@@ -114,6 +114,15 @@
     <ClInclude Include="DataStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="GZipStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFC Test 1.cpp">
@@ -177,6 +186,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GZipStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include "LanguageFileReader.h"
 #include "FileStream.h"
 #include "CatalogStream.h"
+#include "GZipStream.h"
 #include "StringReader.h"
 
 using namespace Library::IO;
@@ -23,31 +24,35 @@ static char THIS_FILE[]=__FILE__;
 
 CFileView::CFileView()
 {
-   // "D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml"
-   const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
-
-   // Test LanguageFileReader
+   const WCHAR* path = nullptr;
+   
    try
    {
-      FileStream s(path, FileMode::OpenExisting, FileAccess::ReadWrite, FileShare::None);
-      auto file = Library::LanguageFileReader().ReadFile(s);
-   }
-   catch (Library::ExceptionBase&  e)
-   {
-      CString sz;
-      sz.Format(L"Unable to load '%s' : %s\n\nDebug: %s", path, e.Message.c_str(), e.Source.c_str());
-      AfxMessageBox(sz);
-   }
+      //path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
 
-   // Test catalogue reader
-   path = L"D:\\X3 Albion Prelude\\11.cat";
-   try
-   {
-      CatalogStream s(path, FileMode::OpenExisting, FileAccess::Read, FileShare::Write);
-      StringReader rd(s);
+      //// Test LanguageFileReader
+      //FileStream s(path, FileMode::OpenExisting, FileAccess::ReadWrite, FileShare::None);
+      //auto file = Library::LanguageFileReader().ReadFile(s);
+   
+      //
+      //path = L"D:\\X3 Albion Prelude\\11.cat";
+
+      //// Test catalogue reader
+      //CatalogStream cat_s(path, FileMode::OpenExisting, FileAccess::Read, FileShare::Write);
+      //StringReader rd(cat_s);
       string line;
 
-      while (rd.ReadLine(line))
+      //while (rd.ReadLine(line))
+      //   OutputDebugStringA((line+'\n').c_str());
+
+
+      path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
+      
+      // Test GZipStream
+      GZipStream g_s(new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::None));
+      StringReader g_rd(g_s);
+
+      while (g_rd.ReadLine(line))
          OutputDebugStringA((line+'\n').c_str());
    }
    catch (Library::ExceptionBase&  e)

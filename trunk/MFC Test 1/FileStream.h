@@ -16,12 +16,12 @@ namespace Library
          bool  CanSeek() const   { return true; }
          bool  CanWrite() const  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
 
-         DWORD GetLength() const;
+         DWORD GetLength() ;
          DWORD GetPosition() const;
 
          void  Close();
          void  Flush();
-         void  Seek(DWORD  offset, SeekOrigin  mode);
+         void  Seek(LONG  offset, SeekOrigin  mode);
          void  SetLength(DWORD  length);
 
          DWORD Read(BYTE* buffer, DWORD length);

@@ -58,7 +58,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>msxml6.lib;Shlwapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>msxml6.lib;Shlwapi.lib;zdll.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -123,6 +123,7 @@
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FileStream.h" />
     <ClInclude Include="FileView.h" />
+    <ClInclude Include="GZipStream.h" />
     <ClInclude Include="LanguageFileReader.h" />
     <ClInclude Include="LanguagePage.h" />
     <ClInclude Include="LanguageString.h" />
@@ -142,6 +143,8 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="zconf.h" />
+    <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CatalogStream.cpp" />
@@ -150,6 +153,7 @@
     <ClCompile Include="DataStream.cpp" />
     <ClCompile Include="FileStream.cpp" />
     <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="GZipStream.cpp" />
     <ClCompile Include="LanguageFileReader.cpp" />
     <ClCompile Include="LanguagePage.cpp" />
     <ClCompile Include="LanguageString.cpp" />
