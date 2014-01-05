@@ -26,7 +26,7 @@ namespace Library
          Close();
       }
 
-      DWORD  FileStream::GetLength() const
+      DWORD  FileStream::GetLength() 
       { 
          LARGE_INTEGER  size = {0LL};
 
@@ -65,10 +65,10 @@ namespace Library
             throw Win32Exception(HERE, GetLastError());
       }
 
-      void  FileStream::Seek(DWORD  offset, SeekOrigin  mode)
+      void  FileStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          // Set position 
-         if (!SetFilePointer(Handle, offset, NULL, (DWORD)mode))
+         if (SetFilePointer(Handle, offset, NULL, (DWORD)mode) == INVALID_SET_FILE_POINTER)
             throw Win32Exception(HERE, GetLastError());
       }
 
@@ -93,6 +93,8 @@ namespace Library
          // Check access
          if (!CanRead())
             throw InvalidOperationException(HERE, ERR_NO_READ_ACCESS);
+
+         DWORD debugPos = GetPosition();
 
          // Read bytes
          DWORD count = 0;

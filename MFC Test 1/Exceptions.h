@@ -96,6 +96,23 @@ namespace Library
       {}
    };
 
+   /// <summary>Occurs when zlib encounters an error</summary>
+   class GZipException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create a GZipException from a zlib message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">ZLib message</param>
+      GZipException(wstring  src, const char*  msg) : ExceptionBase(src, (UINT)0)
+      {
+         if (msg)
+         {
+            string sz(msg);
+            Message = wstring(sz.begin(), sz.end());
+         }
+      }
+   };
+
 
    /// <summary>Occurs when a game data file is not in the expected format</summary>
    class FileFormatException : public ExceptionBase
