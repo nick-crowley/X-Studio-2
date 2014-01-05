@@ -32,7 +32,7 @@ namespace Library
    class StringResource
    {
    public:
-      //static wstring  Format(UINT  format, ...);
+      static wstring  Format(const WCHAR*  format, ...);
       static wstring  Load(UINT  id, ...);
       static wstring  LoadV(UINT  id, va_list  pArgs);
 

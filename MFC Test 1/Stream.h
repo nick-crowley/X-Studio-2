@@ -18,12 +18,12 @@ namespace Library
       public:
          virtual ~Stream() {}
 
-         virtual bool  CanRead() PURE;
-         virtual bool  CanSeek() PURE;
-         virtual bool  CanWrite() PURE;
+         virtual bool  CanRead() const PURE;
+         virtual bool  CanSeek() const PURE;
+         virtual bool  CanWrite() const PURE;
 
-         virtual DWORD GetLength() PURE;
-         virtual DWORD GetPosition() PURE;
+         virtual DWORD GetLength() const PURE;
+         virtual DWORD GetPosition() const PURE;
 
          virtual void  Close() PURE;
          virtual void  Flush() PURE;
@@ -31,7 +31,7 @@ namespace Library
          virtual void  SetLength(DWORD  length) PURE;
 
          virtual DWORD Read(BYTE* buffer, DWORD length) PURE;
-         virtual DWORD Write(BYTE* buffer, DWORD length) PURE;
+         virtual DWORD Write(const BYTE* buffer, DWORD length) PURE;
       
          virtual BYTE* ReadAllBytes()
          {
@@ -53,6 +53,31 @@ namespace Library
          }
       };
 
+      class StreamFacade : public Stream
+      {
+      protected:
+         StreamFacade(Stream&  s) : Source(s) {}
+      public:
+         virtual ~StreamFacade() {}
+
+         bool  CanRead() const                         { return Source.CanRead();  }
+         bool  CanSeek() const                         { return Source.CanSeek();  }
+         bool  CanWrite() const                        { return Source.CanWrite(); }
+
+         DWORD GetLength() const                       { return Source.GetLength(); }
+         DWORD GetPosition() const                     { return Source.GetPosition(); }
+
+         void  Close()                                 { return Source.Close(); }
+         void  Flush()                                 { return Source.Flush(); }
+         void  Seek(DWORD  offset, SeekOrigin  mode)   { return Source.Seek(offset, mode); }
+         void  SetLength(DWORD  length)                { return Source.SetLength(length);  }
+
+         DWORD Read(BYTE* buffer, DWORD length)        { return Source.Read(buffer, length); }
+         DWORD Write(const BYTE* buffer, DWORD length) { return Source.Write(buffer, length); }
+
+      private:
+         Stream&  Source;
+      };
       
    }
 

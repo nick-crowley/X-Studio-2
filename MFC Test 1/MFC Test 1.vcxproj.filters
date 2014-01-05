@@ -105,6 +105,12 @@
     <ClInclude Include="MemoryStream.h">
       <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
+    <ClInclude Include="StringReader.h">
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="CatalogStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFC Test 1.cpp">
@@ -160,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="MemoryStream.cpp">
       <Filter>Source Files\Library\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="StringReader.cpp">
+      <Filter>Source Files\Library\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CatalogStream.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

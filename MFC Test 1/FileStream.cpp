@@ -14,12 +14,19 @@ namespace Library
             throw Win32Exception(HERE, GetLastError());
       }
 
+      FileStream::FileStream(const FileStream& s) : FullPath(s.FullPath), Mode(s.Mode), Access(s.Access), Share(s.Share) 
+      {
+         // Duplicate handle
+         if (!DuplicateHandle(GetCurrentProcess(), s.Handle, GetCurrentProcess(), &Handle, NULL, TRUE, DUPLICATE_SAME_ACCESS))
+            throw Win32Exception(HERE, GetLastError());
+      }
+
       FileStream::~FileStream() 
       {
          Close();
       }
 
-      DWORD  FileStream::GetLength() 
+      DWORD  FileStream::GetLength() const
       { 
          LARGE_INTEGER  size = {0LL};
 
@@ -30,7 +37,7 @@ namespace Library
          return (DWORD)size.QuadPart;
       }
       
-      DWORD  FileStream::GetPosition()
+      DWORD  FileStream::GetPosition() const
       {
          DWORD  position = 0;
          
@@ -97,7 +104,7 @@ namespace Library
       }
 
 
-      DWORD  FileStream::Write(BYTE* buffer, DWORD length)
+      DWORD  FileStream::Write(const BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
          
