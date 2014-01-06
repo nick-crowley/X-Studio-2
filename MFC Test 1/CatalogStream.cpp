@@ -5,13 +5,13 @@ namespace Library
 {
    namespace IO
    {
-      CatalogStream::CatalogStream(Stream*  ps) 
-         : StreamFacade(ps)
+      CatalogStream::CatalogStream(Stream*  ps, bool  owner) 
+         : StreamFacade(ps, owner)
       {
       }
 
       CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share) 
-         : StreamFacade(new FileStream(path, mode, access, share))
+         : StreamFacade(new FileStream(path, mode, access, share), true)
       {
       }
 

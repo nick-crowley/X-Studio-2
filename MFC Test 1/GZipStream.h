@@ -10,8 +10,14 @@ namespace Library
 
       class GZipStream : public StreamFacade
       {
+      private:
+         const int  WINDOW_SIZE = 15,
+                    DETECT_HEADER = 16;
+
       public:
-         GZipStream(Stream*  ps);
+         enum class Operation   { Compression, Decompression };
+      
+         GZipStream(Stream*  ps, bool owner, Operation  op);
          ~GZipStream();
 
          bool  CanSeek() const   { return false; }
@@ -30,6 +36,8 @@ namespace Library
          z_stream  ZStream;
          gz_header ZHeader;
          ByteArray Input;
+         Operation Mode;
+         bool      Closed;
       };
 
    }

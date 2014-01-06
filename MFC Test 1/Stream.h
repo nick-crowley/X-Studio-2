@@ -56,26 +56,34 @@ namespace Library
       class StreamFacade : public Stream
       {
       protected:
-         StreamFacade(Stream* ps) : Source(ps) { REQUIRED(ps); }
+         StreamFacade(Stream* ps, bool owner) : Source(ps), DeleteStream(owner) 
+         { 
+            REQUIRED(ps); 
+         }
       public:
-         virtual ~StreamFacade() { delete Source; }
+         virtual ~StreamFacade() 
+         { 
+            if (DeleteStream) 
+               delete Source; 
+         }
 
          bool  CanRead() const                         { return Source->CanRead();  }
          bool  CanSeek() const                         { return Source->CanSeek();  }
          bool  CanWrite() const                        { return Source->CanWrite(); }
 
-         DWORD GetLength()                        { return Source->GetLength(); }
+         DWORD GetLength()                             { return Source->GetLength(); }
          DWORD GetPosition() const                     { return Source->GetPosition(); }
 
          void  Close()                                 { return Source->Close(); }
          void  Flush()                                 { return Source->Flush(); }
-         void  Seek(LONG  offset, SeekOrigin  mode)   { return Source->Seek(offset, mode); }
+         void  Seek(LONG  offset, SeekOrigin  mode)    { return Source->Seek(offset, mode); }
          void  SetLength(DWORD  length)                { return Source->SetLength(length);  }
 
          DWORD Read(BYTE* buffer, DWORD length)        { return Source->Read(buffer, length); }
          DWORD Write(const BYTE* buffer, DWORD length) { return Source->Write(buffer, length); }
 
       private:
+         bool     DeleteStream;
          Stream*  Source;
       };
       
