@@ -138,11 +138,13 @@
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="STL.h" />
     <ClInclude Include="Stream.h" />
     <ClInclude Include="StringReader.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="XFileSystem.h" />
     <ClInclude Include="zconf.h" />
     <ClInclude Include="zlib.h" />
   </ItemGroup>
@@ -172,6 +174,7 @@
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="XFileSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MFC Test 1.rc" />

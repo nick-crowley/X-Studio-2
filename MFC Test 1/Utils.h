@@ -1,14 +1,6 @@
 #pragma once
-#include "Shlwapi.h"
 #include "Resource.h"
-
-#include <string>
-#include <vector>
-#include <deque>
-#include <set>
-#include <memory>
-using namespace std;
-
+#include "STL.h"
 
 #ifdef FormatMessage
 #undef FormatMessage
@@ -29,6 +21,9 @@ using namespace std;
 
 namespace Library
 {
+   typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArray;
+
+
    class StringResource
    {
    public:
@@ -45,11 +40,12 @@ namespace Library
       Path(const WCHAR* path) : wstring(path) {}
       Path(wstring path) : wstring(path) {}
 
-      bool  Exists() { return PathFileExists(c_str()) != FALSE; }
+      bool  Exists();
+      bool  IsDirectory();
 
    };
 
-   typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArray;
+   
 
 
 }
