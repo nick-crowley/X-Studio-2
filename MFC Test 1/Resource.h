@@ -95,8 +95,9 @@
 
 #define ERR_ARGUMENT_NULL               1005
 
-#define ERR_NO_READ_ACCESS                      1006
-#define ERR_NO_WRITE_ACCESS                     1007
+#define ERR_NO_READ_ACCESS              1006
+#define ERR_NO_WRITE_ACCESS             1007
+#define ERR_NO_SEEK_ACCESS              1008
 
 // Next default values for new objects
 // 

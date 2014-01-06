@@ -58,7 +58,7 @@ CFileView::CFileView()
    catch (Library::ExceptionBase&  e)
    {
       CString sz;
-      sz.Format(L"Unable to load '%s' : %s\n\nDebug: %s", path, e.Message.c_str(), e.Source.c_str());
+      sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
       AfxMessageBox(sz);
    }
 }
