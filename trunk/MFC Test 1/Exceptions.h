@@ -114,6 +114,23 @@ namespace Library
       }
    };
 
+   
+
+   /// <summary>Occurs when a file is not found</summary>
+   class DirectoryNotFoundException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create a DirectoryNotFoundException for a file path</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="file">Folder path</param>
+      DirectoryNotFoundException(wstring  src, Path  folder) : ExceptionBase(src, (UINT)0)
+      {
+         Message = StringResource::Format(L"The folder '%s' does not exist", folder.c_str()); 
+      }
+
+   };
+
 
    /// <summary>Occurs when a game data file is not in the expected format</summary>
    class FileFormatException : public ExceptionBase
@@ -131,6 +148,21 @@ namespace Library
 
    };
 
+
+   /// <summary>Occurs when a file is not found</summary>
+   class FileNotFoundException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create a FileNotFoundException for a file path</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="file">File path</param>
+      FileNotFoundException(wstring  src, Path  file) : ExceptionBase(src, (UINT)0)
+      {
+         Message = StringResource::Format(L"The file '%s' does not exist", file.c_str()); 
+      }
+
+   };
 
    /// <summary>Occurs when an invalid operation is attempted</summary>
    class InvalidOperationException : public ExceptionBase
@@ -228,6 +260,13 @@ namespace Library
       Win32Exception(wstring  src, UINT err) : ExceptionBase(src, err)
       {
          Message = StringResource::FormatMessage(err);
+      }
+
+      /// <summary>Create an Win32Exception from the last system error</summary>
+      /// <param name="src">Location of throw</param>
+      Win32Exception(wstring  src) : ExceptionBase(src, GetLastError())
+      {
+         Message = StringResource::FormatMessage(ErrorID);
       }
    };
 }
