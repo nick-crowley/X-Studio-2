@@ -5,15 +5,16 @@ namespace Library
 {
    namespace IO
    {
-
-      GZipStream::GZipStream(Stream* ps) : StreamFacade(ps)
+      GZipStream::GZipStream(Stream* ps, bool owner, Operation  op) : StreamFacade(ps, owner), Mode(op), Closed(false)
       {
+         REQUIRED(ps);
+
          // Clear structs
          ZeroMemory(&ZStream, sizeof(ZStream));
          ZeroMemory(&ZHeader, sizeof(ZHeader));
 
          // Init stream + extract header
-         if (inflateInit(&ZStream) != Z_OK) // || inflateGetHeader(&ZStream, &ZHeader) != Z_OK)
+         if (inflateInit2(&ZStream, WINDOW_SIZE+DETECT_HEADER) != Z_OK) 
             throw GZipException(HERE, ZStream.msg);
 
          // Allocate + set input buffer
@@ -28,8 +29,12 @@ namespace Library
 
       void  GZipStream::Close()
       {
-         inflateEnd(&ZStream);
-         StreamFacade::Close();
+         if (!Closed)
+         {
+            inflateEnd(&ZStream);
+            StreamFacade::Close();
+            Closed = true;
+         }
       }
 
       DWORD  GZipStream::GetLength() 
@@ -51,19 +56,21 @@ namespace Library
 
       void  GZipStream::Seek(DWORD  offset, SeekOrigin  mode)
       {
-         throw InvalidOperationException(HERE, L"Seeking not allowed");
+         throw NotSupportedException(HERE, L"Seeking not allowed");
       }
 
       void  GZipStream::SetLength(DWORD  length)
       {
-         throw InvalidOperationException(HERE, L"Resizing not allowed");
+         throw NotSupportedException(HERE, L"Resizing not allowed");
       }
 
       DWORD  GZipStream::Read(BYTE* output, DWORD length)
       {
+         REQUIRED(output);
+
          // Ensure we can read
          if (!StreamFacade::CanRead())
-            throw InvalidOperationException(HERE, L"No read access");
+            throw NotSupportedException(HERE, ERR_NO_READ_ACCESS);
 
          // Supply output buffer
          ZStream.next_out = output;
@@ -90,7 +97,9 @@ namespace Library
 
       DWORD  GZipStream::Write(const BYTE* buffer, DWORD length)
       {
-         throw InvalidOperationException(HERE, L"Not implemented");
+         REQUIRED(buffer);
+
+         throw NotImplementedException(HERE, L"GZip compression");
       }
    }
 }

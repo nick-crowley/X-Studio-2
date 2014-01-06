@@ -92,7 +92,8 @@ namespace Library
       /// <summary>Create a ComException from a _com_error</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">COM error</param>
-      ComException(wstring  src, _com_error&  err) : ExceptionBase(src, err.Error(), err.ErrorMessage())
+      ComException(wstring  src, _com_error&  err) 
+         : ExceptionBase(src, err.Error(), wstring(L"COM object error: ") + err.ErrorMessage())
       {}
    };
 
@@ -108,7 +109,7 @@ namespace Library
          if (msg)
          {
             string sz(msg);
-            Message = wstring(sz.begin(), sz.end());
+            Message = wstring(L"Error in zlib library: ") + wstring(sz.begin(), sz.end());
          }
       }
    };
@@ -125,7 +126,7 @@ namespace Library
       FileFormatException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
+         Message = wstring(L"The file format is invalid: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
       }
 
    };
@@ -142,13 +143,14 @@ namespace Library
       InvalidOperationException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
+         Message = wstring(L"The operation is invalid: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
       }
 
       /// <summary>Create an InvalidOperationException from a debugging message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="debug">Debug message</param>
-      InvalidOperationException(wstring  src, wstring  debug, ...) : ExceptionBase(src, debug)
+      InvalidOperationException(wstring  src, wstring  debug, ...) 
+         : ExceptionBase(src, wstring(L"The operation is invalid: ") + debug)
       {
       }
    };
@@ -164,7 +166,54 @@ namespace Library
       InvalidValueException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
       {
          va_list pArgs;
-         Message = StringResource::LoadV(err, va_start(pArgs, err)); 
+         Message = wstring(L"Invalid game data value: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
+      }
+   };
+
+
+   /// <summary>Occurs when an operation that has not been implemented is attempted</summary>
+   class NotImplementedException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create an NotImplementedException from a resource ID</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
+      NotImplementedException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
+      {
+         va_list pArgs;
+         Message = wstring(L"The operation has not been implemented: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
+      }
+
+      /// <summary>Create an NotImplementedException from a debugging message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      NotImplementedException(wstring  src, wstring  debug, ...) 
+         : ExceptionBase(src, wstring(L"The operation has not been implemented: ") + debug)
+      {
+      }
+   };
+
+   /// <summary>Occurs when an unsupported operation is attempted</summary>
+   class NotSupportedException : public ExceptionBase
+   {
+   public:
+
+      /// <summary>Create an NotSupportedException from a resource ID</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">Error id</param>
+      NotSupportedException(wstring  src, UINT err, ...) : ExceptionBase(src, err)
+      {
+         va_list pArgs;
+         Message = wstring(L"The operation is not supported: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
+      }
+
+      /// <summary>Create an NotSupportedException from a debugging message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      NotSupportedException(wstring  src, wstring  debug, ...) 
+         : ExceptionBase(src, wstring(L"The operation is invalid: ") + debug)
+      {
       }
    };
 
