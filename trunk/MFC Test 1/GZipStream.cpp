@@ -56,7 +56,7 @@ namespace Library
 
       void  GZipStream::Seek(DWORD  offset, SeekOrigin  mode)
       {
-         throw NotSupportedException(HERE, L"Seeking not allowed");
+         throw NotSupportedException(HERE, ERR_NO_SEEK_ACCESS);
       }
 
       void  GZipStream::SetLength(DWORD  length)
