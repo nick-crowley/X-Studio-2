@@ -8,7 +8,7 @@ namespace Library
    {
 
       XCatalog::XCatalog(XFileSystem& vfs, Path path) 
-         : FullPath(path), FileSystem(vfs), FileLock(new FileStream(FullPath.c_str(), FileMode::OpenExisting, FileAccess::Read, FileShare::AllowRead)) 
+         : FullPath(path), FileSystem(vfs), FileLock(new FileStream(FullPath.c_str(), FileMode::OpenExisting, FileAccess::Read)) 
       { 
       }
 

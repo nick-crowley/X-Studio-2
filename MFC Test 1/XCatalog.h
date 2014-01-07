@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "FileStream.h"
-#include "StringReader.h"
+#include "CatalogReader.h"
 
 //using namespace Library::FileSystem;
 
@@ -9,7 +9,6 @@ namespace Library
 {
    namespace FileSystem
    {
-      class CatalogReader;
       class XFileSystem;
       
 
@@ -29,24 +28,6 @@ namespace Library
          FileStreamPtr  FileLock;
          XFileSystem&   FileSystem;
       };
-
-      
-
-      class CatalogReader : protected IO::StringReader
-      {
-      public:
-         CatalogReader(StreamPtr src);
-         CatalogReader(CatalogReader&& r) : StringReader(std::move(r)) {}
-         ~CatalogReader();
-
-         // Prevent copying & assignment
-         CatalogReader(const CatalogReader&) = delete;
-         CatalogReader& operator=(const CatalogReader& r) = delete;
-         CatalogReader& operator=(CatalogReader&& r) = delete;
-
-         bool  ReadDeclaration(wstring&  path, DWORD&  size);
-      };
-
 
    }
 }
