@@ -52,7 +52,7 @@ namespace Library
       {
       public:
          XFileInfo(Path p);
-         XFileInfo(XFileSystem* vfs, XCatalog* cat, Path subPath, DWORD pos);
+         XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos);
          virtual ~XFileInfo();
 
          XFileSystem* FileSystem;

@@ -40,7 +40,7 @@ namespace Library
          wstring path(line.begin(), line.begin()+gap);
 
          // Set info
-         return new FileSystem::XFileInfo(&FileSystem, &Catalog, path, atoi(size.c_str()));
+         return new FileSystem::XFileInfo(FileSystem, Catalog, path, atoi(size.c_str()));
       }
 
    }
