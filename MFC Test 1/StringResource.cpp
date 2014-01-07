@@ -52,12 +52,12 @@ namespace Library
    /// <summary>Formats a system error message</summary>
    /// <param name="id">The error code</param>
    /// <returns></returns>
-   wstring  StringResource::FormatMessage(UINT  id)
+   wstring  StringResource::FromSystem(UINT  id)
    {
       WCHAR* szBuffer;
       wstring msg;
 
-      if (FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, id, NULL, (WCHAR*)&szBuffer, 512, NULL))
+      if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, id, NULL, (WCHAR*)&szBuffer, 512, NULL))
       {
          msg = szBuffer;
          LocalFree(szBuffer);
