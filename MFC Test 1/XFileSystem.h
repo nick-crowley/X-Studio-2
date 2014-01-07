@@ -22,11 +22,11 @@ namespace Library
          XCatalog(XFileSystem& vfs, Path path);
          virtual ~XCatalog();
 
-         CatalogReader*  CreateReader();
-
-         Path           FullPath;
-      private:
+         CatalogReader  GetReader();
+         Path           GetFullPath()  { return FullPath; }
          
+      private:
+         Path           FullPath;
          FileStreamPtr  FileLock;
          XFileSystem&   FileSystem;
       };
@@ -37,7 +37,13 @@ namespace Library
       {
       public:
          CatalogReader(StreamPtr src);
+         CatalogReader(CatalogReader&& r) : StringReader(std::move(r)) {}
          ~CatalogReader();
+
+         // Prevent copying & assignment
+         CatalogReader(const CatalogReader&) = delete;
+         CatalogReader& operator=(const CatalogReader& r) = delete;
+         CatalogReader& operator=(CatalogReader&& r) = delete;
 
          bool  ReadDeclaration(wstring&  path, DWORD&  size);
       };

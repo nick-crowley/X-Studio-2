@@ -16,10 +16,22 @@ namespace Library
          Length = Input->GetLength();
       }
 
+      StringReader::StringReader(StringReader&& r) 
+         : Length(r.Length), Position(r.Position), Buffer(std::move(r.Buffer)), Input(std::move(r.Input))
+      {
+      }
+
 
       StringReader::~StringReader()
       {
-         Input->Close();
+         Close();
+      }
+
+
+      void  StringReader::Close()
+      {
+         if (Input != nullptr)
+            Input->Close();
       }
 
 
@@ -28,6 +40,10 @@ namespace Library
          DWORD start = Position,    // Start of line
                end   = Length;      // End of characters on line
          BYTE  ch;
+
+         // Ensure stream has not been closed
+         if (Input == nullptr)
+            throw InvalidOperationException(HERE, L"Underlying stream has been closed");
 
          // Read entire file on first call
          if (Buffer == nullptr)
