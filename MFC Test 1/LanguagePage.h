@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "LanguageString.h"
 
+using namespace Library::Language;
+
 namespace Library
 {
    namespace Language

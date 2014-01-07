@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "FileStream.h"
 
+using namespace Library::IO;
 
 namespace Library
 {

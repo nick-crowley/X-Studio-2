@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "LanguagePage.h"
 
+using namespace Library::Language;
+
 namespace Library
 {
    namespace Language

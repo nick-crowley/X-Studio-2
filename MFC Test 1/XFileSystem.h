@@ -3,7 +3,7 @@
 #include "XCatalog.h"
 #include "XFileInfo.h"
 
-//using namespace Library::FileSystem;
+using namespace Library::FileSystem;
 
 namespace Library
 {

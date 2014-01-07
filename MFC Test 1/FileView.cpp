@@ -10,12 +10,7 @@
 #include "CatalogStream.h"
 #include "GZipStream.h"
 #include "StringReader.h"
-
 #include "XFileSystem.h"
-
-using namespace Library;
-using namespace Library::IO;
-using namespace Library::FileSystem;
 
 #ifdef _DEBUG
 #undef THIS_FILE
