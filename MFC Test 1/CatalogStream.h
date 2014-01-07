@@ -17,6 +17,10 @@ namespace Library
          CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
          ~CatalogStream();
 
+         // Prevent copying/moving
+         NO_MOVE(CatalogStream);
+         NO_COPY(CatalogStream);
+
          DWORD  Read(BYTE* buffer, DWORD length);
          DWORD  Write(const BYTE* buffer, DWORD length);
 

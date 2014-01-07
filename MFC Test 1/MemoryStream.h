@@ -12,6 +12,10 @@ namespace Library
          MemoryStream(BYTE* buffer, DWORD length, FileAccess access);
          MemoryStream(DWORD length, FileAccess access);
          ~MemoryStream();
+
+         // Prevent copying/moving
+         NO_MOVE(MemoryStream);
+         NO_COPY(MemoryStream);
          
          bool  CanRead() const   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
          bool  CanSeek() const   { return true; }

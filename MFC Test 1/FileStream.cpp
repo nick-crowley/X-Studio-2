@@ -19,12 +19,12 @@ namespace Library
             throw Win32Exception(HERE);
       }
 
-      FileStream::FileStream(const FileStream& s) : FullPath(s.FullPath), Mode(s.Mode), Access(s.Access), Share(s.Share) 
-      {
-         // Duplicate handle
-         if (!DuplicateHandle(GetCurrentProcess(), s.Handle, GetCurrentProcess(), &Handle, NULL, TRUE, DUPLICATE_SAME_ACCESS))
-            throw Win32Exception(HERE);
-      }
+      //FileStream::FileStream(const FileStream& s) : FullPath(s.FullPath), Mode(s.Mode), Access(s.Access), Share(s.Share) 
+      //{
+      //   // Duplicate handle
+      //   if (!DuplicateHandle(GetCurrentProcess(), s.Handle, GetCurrentProcess(), &Handle, NULL, TRUE, DUPLICATE_SAME_ACCESS))
+      //      throw Win32Exception(HERE);
+      //}
 
       FileStream::~FileStream() 
       {
@@ -55,12 +55,12 @@ namespace Library
 
       void  FileStream::Close()
       {
-         if (Handle != NULL) 
+         if (Handle != INVALID_HANDLE_VALUE) 
          {
             if (!CloseHandle(Handle))
                throw Win32Exception(HERE);
 
-            Handle = NULL;
+            Handle = INVALID_HANDLE_VALUE;
          }
       }
 

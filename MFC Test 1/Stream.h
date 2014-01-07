@@ -18,6 +18,10 @@ namespace Library
       public:
          virtual ~Stream() {}
 
+         // Prevent copying/moving
+         NO_MOVE(Stream);
+         NO_COPY(Stream);
+
          virtual bool  CanRead() const PURE;
          virtual bool  CanSeek() const PURE;
          virtual bool  CanWrite() const PURE;
@@ -67,6 +71,10 @@ namespace Library
          { 
             Source->Close();
          }
+
+         // Prevent copying/moving
+         NO_MOVE(StreamFacade);
+         NO_COPY(StreamFacade);
 
          bool  CanRead() const                         { return Source->CanRead();  }
          bool  CanSeek() const                         { return Source->CanSeek();  }

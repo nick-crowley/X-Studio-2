@@ -16,6 +16,10 @@ namespace Library
          DataStream(Path path, FileMode mode, FileAccess access, FileShare share);
          ~DataStream();
 
+         // Prevent copying/moving
+         NO_MOVE(DataStream);
+         NO_COPY(DataStream);
+
          DWORD  Read(BYTE* buffer, DWORD length);
          DWORD  Write(const BYTE* buffer, DWORD length);
 
