@@ -21,7 +21,7 @@ namespace Library
 
          // Prevent copying.  Move assign not impl
          NO_COPY(CatalogReader);
-         CatalogReader& operator=(CatalogReader&& r) = delete;
+         NO_MOVE_ASSIGN(CatalogReader);
 
          // --------------------- PROPERTIES ------------------------
 			

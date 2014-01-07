@@ -21,7 +21,7 @@ namespace Library
 
          // Prevent copying.  Move assign not impl
          NO_COPY(StringReader);
-         StringReader& operator=(StringReader&& r) = delete;
+         NO_MOVE_ASSIGN(StringReader);
 
          // --------------------- PROPERTIES ------------------------
 			

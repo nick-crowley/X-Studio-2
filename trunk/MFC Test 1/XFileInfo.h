@@ -24,6 +24,10 @@ namespace Library
          XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos);
          virtual ~XFileInfo();
 
+         // Default copy/move semantics
+         DEFAULT_COPY(XFileInfo);
+         DEFAULT_MOVE(XFileInfo);
+
 			// --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
