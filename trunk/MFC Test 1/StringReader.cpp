@@ -24,14 +24,8 @@ namespace Library
 
       StringReader::~StringReader()
       {
-         Close();
-      }
-
-
-      void  StringReader::Close()
-      {
          if (Input != nullptr)
-            Input->Close();
+            Input->SafeClose();
       }
 
 
@@ -41,7 +35,7 @@ namespace Library
                end   = Length;      // End of characters on line
          BYTE  ch;
 
-         // Ensure stream has not been closed
+         // Ensure stream has not been moved
          if (Input == nullptr)
             throw InvalidOperationException(HERE, L"Underlying stream has been closed");
 

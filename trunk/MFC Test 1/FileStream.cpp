@@ -28,7 +28,7 @@ namespace Library
 
       FileStream::~FileStream() 
       {
-         Close();
+         SafeClose();
       }
 
       DWORD  FileStream::GetLength() 
@@ -68,6 +68,15 @@ namespace Library
       {
          if (!FlushFileBuffers(Handle))
             throw Win32Exception(HERE);
+      }
+
+      void  FileStream::SafeClose()
+      {
+         if (Handle != INVALID_HANDLE_VALUE) 
+         {
+            CloseHandle(Handle);
+            Handle = INVALID_HANDLE_VALUE;
+         }
       }
 
       void  FileStream::Seek(LONG  offset, SeekOrigin  mode)

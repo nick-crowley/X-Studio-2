@@ -19,6 +19,7 @@ namespace Library
 
       DataStream::~DataStream()
       {
+         StreamFacade::SafeClose();
       }
 
       DWORD  DataStream::Read(BYTE* buffer, DWORD length)

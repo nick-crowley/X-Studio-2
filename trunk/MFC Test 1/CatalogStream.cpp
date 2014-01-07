@@ -17,6 +17,7 @@ namespace Library
 
       CatalogStream::~CatalogStream()
       {
+         StreamFacade::SafeClose();
       }
 
       DWORD  CatalogStream::Read(BYTE* buffer, DWORD length)

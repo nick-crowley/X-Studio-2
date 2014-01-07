@@ -26,6 +26,7 @@ namespace Library
 
          void  Close();
          void  Flush();
+         void  SafeClose()  { };
          void  Seek(DWORD  offset, SeekOrigin  mode);
          void  SetLength(DWORD  length);
 
