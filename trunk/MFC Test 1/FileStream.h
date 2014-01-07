@@ -11,8 +11,10 @@ namespace Library
       {
       public:
          FileStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
-         FileStream(const FileStream& s);
          ~FileStream();
+
+         NO_MOVE(FileStream);
+         NO_COPY(FileStream);
          
          bool  CanRead() const   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
          bool  CanSeek() const   { return true; }

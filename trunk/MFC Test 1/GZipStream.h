@@ -20,6 +20,10 @@ namespace Library
          GZipStream(StreamPtr  src, Operation  op);
          ~GZipStream();
 
+         // Prevent copying/moving
+         NO_MOVE(GZipStream);
+         NO_COPY(GZipStream);
+
          bool   CanSeek() const   { return false; }
 
          void   Close();
