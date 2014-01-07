@@ -12,12 +12,17 @@ namespace Library
       /// <summary>Initializes a new instance of the <see cref="XFileSystem"/> class.</summary>
       /// <param name="folder">The folder.</param>
       /// <param name="version">The version.</param>
+      /// <exception cref="Library.DirectoryNotFoundException">Folder does not exist</exception>
+      /// <exception cref="Library.NotSupportedException">Version is X2 or X-Rebirth</exception>
       XFileSystem::XFileSystem(Path folder, GameVersion version) : Folder(folder), Version(version)
       {
+         // Ensure folder exists
          if (!folder.Exists())
-            throw ArgumentException(HERE, L"folder", L"path does not exist");
-         if (version == GameVersion::Rebirth)
-            throw NotSupportedException(HERE, L"Rebirth is not supported");
+            throw DirectoryNotFoundException(HERE, folder);
+
+         // Ensure not X2/X4
+         if (Version == GameVersion::Threat || version == GameVersion::Rebirth)
+            throw NotSupportedException(HERE, L"X2 and Rebirth are not supported");
 
          // Ensure trailing backslash
          Folder.AppendBackslash();
@@ -34,6 +39,8 @@ namespace Library
       
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
       /// <returns></returns>
+      /// <exception cref="Library.FileNotFoundException">Catalog not found</exception>
+      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::Enumerate()
       {
          // Clear previous
@@ -51,6 +58,7 @@ namespace Library
       
       /// <summary>Enumerates and locks the catalogs</summary>
       /// <returns></returns>
+      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateCatalogs()
       {
          const WCHAR *formats[2] = { L"%s%02i.cat", L"%saddon\\%02i.cat" },
@@ -83,6 +91,8 @@ namespace Library
 
       /// <summary>Enumerates the files within the catalogs</summary>
       /// <returns></returns>
+      /// <exception cref="Library.FileNotFoundException">Catalog not found</exception>
+      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateFiles()
       {
          // Iterate thru catalogs (Highest priority -> Lowest)

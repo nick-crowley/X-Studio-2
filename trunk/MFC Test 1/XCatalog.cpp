@@ -16,14 +16,18 @@ namespace Library
       { 
       }
 
-      XCatalog::~XCatalog() 
+      /// <summary>Releases the lock on the catalog</summary>
+      XCatalog::~XCatalog()
       { 
+         // File lock safely released (nothrow)
       }
 
 		// ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Opens the catalog and provides a reader</summary>
       /// <returns></returns>
+      /// <exception cref="Library.FileNotFoundException">File not found</exception>
+      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
       CatalogReader  XCatalog::GetReader()
       {
          return CatalogReader( StreamPtr(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) );
