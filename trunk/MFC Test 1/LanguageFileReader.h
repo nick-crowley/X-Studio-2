@@ -1,8 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "LanguageFile.h"
-#include "msxml.h"
-#include "Stream.h"
+#include "XmlReader.h"
 
 using namespace Library::IO;
 using namespace Library::Language;
@@ -12,13 +11,13 @@ namespace Library
    namespace IO
    {
       /// <summary>Reads strings and pages of an X3 language xml file</summary>
-      class LanguageFileReader
+      class LanguageFileReader : XmlReader
       {
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguageFileReader() {};
-         ~LanguageFileReader() {};
+         LanguageFileReader(StreamPtr in);
+         ~LanguageFileReader();
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -26,14 +25,10 @@ namespace Library
 
 			// ----------------------- MUTATORS ------------------------
 
-         LanguageFile   ReadFile(IO::Stream&  s);
+         LanguageFile   ReadFile();
 
       private:
-         void           ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-         wstring        ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
          GameLanguage   ReadLanguageTag(XML::IXMLDOMNodePtr&  element);
-         wstring        TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-
          LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
          LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
 

@@ -21,6 +21,10 @@ namespace Library
          // ------------------------ STATIC -------------------------
 
       public:
+         /// <summary>Parses the language ID of a language file</summary>
+         /// <param name="id">The language identifier</param>
+         /// <returns>Game language</returns>
+         /// <exception cref="Library::InvalidValueException">Invalid language ID</exception>
          static GameLanguage  Parse(wstring id)
          {
             switch (_wtoi(id.c_str()))

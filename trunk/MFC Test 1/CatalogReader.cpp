@@ -10,7 +10,7 @@ namespace Library
 
       /// <summary>Initializes a new instance of the <see cref="CatalogReader"/> class.</summary>
       /// <param name="src">The stream to read from</param>
-      /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Library::ArgumentException">Stream is not readable</exception>
       CatalogReader::CatalogReader(StreamPtr src) : StringReader(src)
       {
          // Consume header on first line
@@ -29,8 +29,8 @@ namespace Library
       /// <param name="path">The file sub-path</param>
       /// <param name="size">The file offset</param>
       /// <returns>true if found, false if EOF</returns>
-      /// <exception cref="Library.FileFormatException">Declaration is corrupt</exception>
-      /// <exception cref="Library.InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
+      /// <exception cref="Library::FileFormatException">Declaration is corrupt</exception>
+      /// <exception cref="Library::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
       bool  CatalogReader::ReadDeclaration(wstring&  path, DWORD&  size)
       {
          string  line;
