@@ -8,8 +8,7 @@ namespace Library
    namespace FileSystem
    {
 
-      CatalogReader::CatalogReader(XFileSystem&  vfs, XCatalog&  cat, Stream*  ps, bool  owner) 
-         : IO::StringReader(ps, owner), FileSystem(vfs), Catalog(cat)
+      CatalogReader::CatalogReader(Stream*  ps, bool  owner) : StringReader(ps, owner)
       {
          // Ignore header
          string line;
@@ -22,13 +21,13 @@ namespace Library
       }
 
 
-      XFileInfo*  CatalogReader::ReadDeclaration()
+      bool  CatalogReader::ReadDeclaration(wstring&  path, DWORD&  size)
       {
          string  line;
 
          // Check for EOF
          if (!StringReader::ReadLine(line))
-            return nullptr;
+            return false;
 
          // Parse declaration
          string::size_type gap = line.find_last_of(' ');
@@ -36,11 +35,9 @@ namespace Library
             throw FileFormatException(HERE, L"Invalid file declaration");
          
          // Parse declaration
-         string  size(line.begin()+gap+1, line.end());
-         wstring path(line.begin(), line.begin()+gap);
-
-         // Set info
-         return new FileSystem::XFileInfo(FileSystem, Catalog, path, atoi(size.c_str()));
+         path = wstring(line.begin(), line.begin()+gap);
+         size = atoi( string(line.begin()+gap+1, line.end()).c_str() );
+         return true;
       }
 
    }

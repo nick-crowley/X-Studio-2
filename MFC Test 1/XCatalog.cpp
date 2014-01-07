@@ -19,7 +19,7 @@ namespace Library
 
       CatalogReader*  XCatalog::CreateReader()
       {
-         return new CatalogReader(FileSystem, *this, new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read), true);
+         return new CatalogReader(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read), true);
       }
    }
 }

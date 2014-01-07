@@ -24,8 +24,9 @@ namespace Library
 
          CatalogReader*  CreateReader();
 
-      private:
          Path           FullPath;
+      private:
+         
          FileStreamPtr  FileLock;
          XFileSystem&   FileSystem;
       };
@@ -35,14 +36,10 @@ namespace Library
       class CatalogReader : protected IO::StringReader
       {
       public:
-         CatalogReader(XFileSystem&  vfs, XCatalog&  cat, Stream*  ps, bool  owner);
+         CatalogReader(Stream*  ps, bool  owner);
          ~CatalogReader();
 
-         XFileInfo*  ReadDeclaration();
-
-      private:
-         XCatalog&     Catalog;
-         XFileSystem&  FileSystem;
+         bool  ReadDeclaration(wstring&  path, DWORD&  size);
       };
 
 
@@ -83,27 +80,27 @@ namespace Library
             iterator  End()              { return Base::end();             }
          };
 
-         typedef shared_ptr<XFileInfo>  XFileInfoPtr;
+         
 
-         class UniquePath : public binary_function<XFileInfoPtr, XFileInfoPtr, bool>
+         class UniquePath : public binary_function<XFileInfo, XFileInfo, bool>
          {
          public:
-            bool operator()(XFileInfoPtr a, XFileInfoPtr b)
+            bool operator()(XFileInfo a, XFileInfo b)
             {
-               return a.get()->FullPath < b.get()->FullPath;
+               return a.FullPath < b.FullPath;
             }
          };
          
-         class FileCollection : private set<XFileInfoPtr, UniquePath>
+         class FileCollection : private set<XFileInfo, UniquePath>
          {
-            typedef set<XFileInfoPtr, UniquePath> Base;
+            typedef set<XFileInfo, UniquePath> Base;
 
          public:
             __declspec(property(get=GetCount)) DWORD Count;
 
-            bool      Add(XFileInfoPtr f)  { return Base::insert(f).second; }
-            void      Clear()              { Base::clear();                 }
-            DWORD     GetCount()           { return Base::size();           }
+            bool      Add(XFileInfo&& f)  { return Base::insert(std::move(f)).second;  }
+            void      Clear()             { Base::clear();                             }
+            DWORD     GetCount()          { return Base::size();                       }
          };
 
       public:
