@@ -25,8 +25,8 @@ namespace Library
          virtual ~XCatalog();
 
          // Move/copy assign not impl
-         XCatalog& operator=(const XCatalog&) = delete;
-         XCatalog& operator=(XCatalog&&) = delete;
+         NO_COPY_ASSIGN(XCatalog);
+         NO_MOVE_ASSIGN(XCatalog);
 
 			// --------------------- PROPERTIES ------------------------
 			
