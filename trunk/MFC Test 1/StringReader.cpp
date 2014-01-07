@@ -6,24 +6,20 @@ namespace Library
    namespace IO
    {
 
-      StringReader::StringReader(Stream* s, bool owner) : Input(s), Position(0), Buffer(nullptr), DestroyOnClose(owner)
+      StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr)
       {
-         REQUIRED(s);
+         REQUIRED(src);
 
-         if (!s->CanRead())
+         if (!Input->CanRead())
             throw ArgumentException(HERE, L"s", ERR_NO_READ_ACCESS);
 
-         Length = s->GetLength();
+         Length = Input->GetLength();
       }
 
 
       StringReader::~StringReader()
       {
-         if (DestroyOnClose)
-         {
-            delete Input;
-            Input = nullptr;
-         }
+         Input->Close();
       }
 
 

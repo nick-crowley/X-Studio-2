@@ -7,12 +7,12 @@ namespace Library
    namespace IO
    {
 
-      DataStream::DataStream(Stream*  ps, bool  owner) : StreamFacade(ps, owner)
+      DataStream::DataStream(StreamPtr  src) : StreamFacade(src)
       {
       }
 
       DataStream::DataStream(Path path, FileMode mode, FileAccess access, FileShare share) 
-         : StreamFacade(new FileStream(path, mode, access, share), true)
+         : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
 

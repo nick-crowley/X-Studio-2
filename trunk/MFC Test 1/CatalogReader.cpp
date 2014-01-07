@@ -8,7 +8,7 @@ namespace Library
    namespace FileSystem
    {
 
-      CatalogReader::CatalogReader(Stream*  ps, bool  owner) : StringReader(ps, owner)
+      CatalogReader::CatalogReader(StreamPtr src) : StringReader(src)
       {
          // Ignore header
          string line;

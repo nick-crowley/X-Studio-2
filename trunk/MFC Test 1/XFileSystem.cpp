@@ -75,7 +75,7 @@ namespace Library
          // Iterate thru catalogs (Highest priority -> Lowest)
          for (auto it = Catalogs.Begin(); it != Catalogs.End(); ++it)
          {
-            CatalogReader  reader(new CatalogStream(it->FullPath, FileMode::OpenExisting, FileAccess::Read), true);
+            CatalogReader  reader(StreamPtr(new CatalogStream(it->FullPath, FileMode::OpenExisting, FileAccess::Read)));
             wstring        path;
             DWORD          size;
 

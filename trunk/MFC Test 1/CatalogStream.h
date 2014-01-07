@@ -13,7 +13,7 @@ namespace Library
       const byte  CATALOGUE_DECRYPT_KEY = 0xDB;
 
       public:
-         CatalogStream(Stream*  ps, bool  owner);
+         CatalogStream(StreamPtr  src);
          CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
          ~CatalogStream();
 

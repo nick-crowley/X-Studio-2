@@ -39,7 +39,7 @@ namespace Library
    };
    
 
-   #define REQUIRED(arg)  { if ((arg) == NULL) throw ArgumentNullException(HERE, WIDEN(#arg)); }
+   #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
 
    /// <summary>Occurs when a missing argument is detected</summary>
    class ArgumentNullException : public ExceptionBase
