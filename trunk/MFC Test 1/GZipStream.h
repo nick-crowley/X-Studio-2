@@ -3,6 +3,8 @@
 #include "Stream.h"
 #include "zlib.h"
 
+using namespace Library::IO;
+
 namespace Library
 {
    namespace IO

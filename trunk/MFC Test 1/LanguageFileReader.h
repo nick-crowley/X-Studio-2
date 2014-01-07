@@ -4,6 +4,7 @@
 #include "msxml.h"
 #include "Stream.h"
 
+using namespace Library::IO;
 using namespace Library::Language;
 
 namespace Library

@@ -3,7 +3,7 @@
 #include "Stream.h"
 #include "StringReader.h"
 
-//using namespace Library::FileSystem;
+using namespace Library::IO;
 
 namespace Library
 {

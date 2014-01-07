@@ -4,6 +4,8 @@
 #include "Exceptions.h"
 #include "Resource.h"
 
+using namespace Library;
+
 namespace Library
 {
    

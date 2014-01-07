@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "Stream.h"
 
+using namespace Library::IO;
+
 namespace Library
 {
    namespace IO
