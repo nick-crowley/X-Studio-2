@@ -24,7 +24,7 @@ namespace Library
       protected:
          Stream() {}
       public:
-         virtual ~Stream() {}
+         virtual ~Stream() {  }
 
          // Prevent copying/moving
          NO_MOVE(Stream);
@@ -39,6 +39,7 @@ namespace Library
 
          virtual void  Close() PURE;
          virtual void  Flush() PURE;
+         virtual void  SafeClose() PURE;
          virtual void  Seek(LONG  offset, SeekOrigin  mode) PURE;
          virtual void  SetLength(DWORD  length) PURE;
 
@@ -81,7 +82,7 @@ namespace Library
       public:
          virtual ~StreamFacade() 
          { 
-            Source->Close();
+            SafeClose();
          }
 
          // Prevent copying/moving
@@ -102,6 +103,7 @@ namespace Library
 
          void  Close()                                 { return Source->Close(); }
          void  Flush()                                 { return Source->Flush(); }
+         void  SafeClose()                             { Source->SafeClose();    }
          void  Seek(LONG  offset, SeekOrigin  mode)    { return Source->Seek(offset, mode); }
          void  SetLength(DWORD  length)                { return Source->SetLength(length);  }
 

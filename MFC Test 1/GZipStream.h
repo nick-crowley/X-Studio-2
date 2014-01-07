@@ -30,6 +30,7 @@ namespace Library
          DWORD  GetLength() ;
          DWORD  GetPosition() const;
 
+         void   SafeClose();
          void   Seek(DWORD  offset, SeekOrigin  mode);
          void   SetLength(DWORD  length);
 

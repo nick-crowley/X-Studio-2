@@ -22,7 +22,7 @@ namespace Library
 
       GZipStream::~GZipStream()
       {
-         Close();
+         SafeClose();
       }
 
 
@@ -51,6 +51,17 @@ namespace Library
       {
          return ZStream.total_out;
       }
+
+      
+      void  GZipStream::SafeClose()
+      {
+         if (!IsClosed())
+         {
+            inflateEnd(&ZStream);
+            StreamFacade::SafeClose();
+         }
+      }
+
 
       void  GZipStream::Seek(DWORD  offset, SeekOrigin  mode)
       {

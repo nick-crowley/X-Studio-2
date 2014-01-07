@@ -18,7 +18,6 @@ namespace Library
          NO_COPY(StringReader);
          StringReader& operator=(StringReader&& r) = delete;
 
-         void           Close();
          virtual bool   ReadLine(string&  line);
 
       private:
