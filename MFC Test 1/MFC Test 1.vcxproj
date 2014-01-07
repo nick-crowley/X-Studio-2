@@ -152,6 +152,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="XCatalog.h" />
     <ClInclude Include="XFileSystem.h" />
     <ClInclude Include="zconf.h" />
     <ClInclude Include="zlib.h" />
