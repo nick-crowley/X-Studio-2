@@ -1,6 +1,8 @@
 #pragma once
 #include "Stream.h"
 
+using namespace Library::IO;
+
 namespace Library
 {
    namespace IO
@@ -8,7 +10,7 @@ namespace Library
       class FileStream : public Stream
       {
       public:
-         FileStream(Path path, FileMode mode, FileAccess access, FileShare share);
+         FileStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
          FileStream(const FileStream& s);
          ~FileStream();
          

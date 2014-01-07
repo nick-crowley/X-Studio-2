@@ -6,17 +6,24 @@ namespace Library
    namespace IO
    {
 
-      StringReader::StringReader(Stream&  s) : Input(s), Position(0), Buffer(nullptr)
+      StringReader::StringReader(Stream* s, bool owner) : Input(s), Position(0), Buffer(nullptr), DestroyOnClose(owner)
       {
-         if (!s.CanRead())
+         REQUIRED(s);
+
+         if (!s->CanRead())
             throw ArgumentException(HERE, L"s", ERR_NO_READ_ACCESS);
 
-         Length = s.GetLength();
+         Length = s->GetLength();
       }
 
 
       StringReader::~StringReader()
       {
+         if (DestroyOnClose)
+         {
+            delete Input;
+            Input = nullptr;
+         }
       }
 
 
@@ -28,7 +35,7 @@ namespace Library
 
          // Read entire file on first call
          if (Buffer == nullptr)
-            Buffer.reset(Input.ReadAllBytes());
+            Buffer.reset(Input->ReadAllBytes());
 
          // EOF: Return false
          if (Position >= Length)

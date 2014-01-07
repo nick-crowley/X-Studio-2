@@ -14,7 +14,7 @@ namespace Library
 
       public:
          CatalogStream(Stream*  ps, bool  owner);
-         CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share);
+         CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
          ~CatalogStream();
 
          DWORD  Read(BYTE* buffer, DWORD length);

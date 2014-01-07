@@ -8,7 +8,7 @@ namespace Library
    {
       enum class FileMode { CreateNew = CREATE_NEW, CreateAlways = CREATE_ALWAYS, OpenAlways = OPEN_ALWAYS, OpenExisting = OPEN_EXISTING, TruncateExisting = TRUNCATE_EXISTING };
       enum class FileAccess : UINT { Read = GENERIC_READ, Write = GENERIC_WRITE, ReadWrite = GENERIC_READ|GENERIC_WRITE };
-      enum class FileShare : UINT { Read = FILE_SHARE_READ, Write = FILE_SHARE_WRITE, Delete = FILE_SHARE_DELETE, None = 0 };
+      enum class FileShare : UINT { AllowRead = FILE_SHARE_READ, AllowWrite = FILE_SHARE_WRITE, AllowDelete = FILE_SHARE_DELETE, AllowNone = 0 };
       enum class SeekOrigin { Begin = FILE_BEGIN, Current = FILE_CURRENT, End = FILE_END };
 
       class Stream

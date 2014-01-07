@@ -149,6 +149,7 @@
     <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CatalogReader.cpp" />
     <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
@@ -174,6 +175,8 @@
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="XCatalog.cpp" />
+    <ClCompile Include="XFileInfo.cpp" />
     <ClCompile Include="XFileSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
