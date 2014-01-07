@@ -53,18 +53,19 @@ namespace Library
          }
       };
 
+      typedef shared_ptr<Stream>  StreamPtr;
+
       class StreamFacade : public Stream
       {
       protected:
-         StreamFacade(Stream* ps, bool owner) : Source(ps), DeleteStream(owner) 
+         StreamFacade(StreamPtr src) : Source(src)
          { 
-            REQUIRED(ps); 
+            REQUIRED(src); 
          }
       public:
          virtual ~StreamFacade() 
          { 
-            if (DeleteStream) 
-               delete Source; 
+            Source->Close();
          }
 
          bool  CanRead() const                         { return Source->CanRead();  }
@@ -83,8 +84,7 @@ namespace Library
          DWORD Write(const BYTE* buffer, DWORD length) { return Source->Write(buffer, length); }
 
       private:
-         bool     DeleteStream;
-         Stream*  Source;
+         StreamPtr  Source;
       };
       
    }

@@ -17,27 +17,28 @@ namespace Library
       public:
          enum class Operation   { Compression, Decompression };
       
-         GZipStream(Stream*  ps, bool owner, Operation  op);
+         GZipStream(StreamPtr  src, Operation  op);
          ~GZipStream();
 
-         bool  CanSeek() const   { return false; }
+         bool   CanSeek() const   { return false; }
 
-         void  Close();
+         void   Close();
          DWORD  GetLength() ;
          DWORD  GetPosition() const;
 
-         void  Seek(DWORD  offset, SeekOrigin  mode);
-         void  SetLength(DWORD  length);
+         void   Seek(DWORD  offset, SeekOrigin  mode);
+         void   SetLength(DWORD  length);
 
          DWORD  Read(BYTE* buffer, DWORD length);
          DWORD  Write(const BYTE* buffer, DWORD length);
 
       private:
+         bool   IsClosed() const;
+
          z_stream  ZStream;
          gz_header ZHeader;
          ByteArray Input;
          Operation Mode;
-         bool      Closed;
       };
 
    }

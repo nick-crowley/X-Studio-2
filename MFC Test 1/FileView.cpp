@@ -53,11 +53,11 @@ CFileView::CFileView()
       path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
       
       // Test GZipStream
-      FileStream* fs = new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::AllowRead);
-      GZipStream* ps = new GZipStream(fs, true, GZipStream::Operation::Decompression);
-      StringReader g_rd(ps, true);
+      StreamPtr file = StreamPtr( new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::AllowRead) );
+      StreamPtr zip = StreamPtr( new GZipStream(file, GZipStream::Operation::Decompression) );
+      StringReader reader(zip);
 
-      while (g_rd.ReadLine(line))
+      while (reader.ReadLine(line))
          OutputDebugStringA((line+'\n').c_str());
    }
    catch (ExceptionBase&  e)

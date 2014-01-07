@@ -36,7 +36,7 @@ namespace Library
       class CatalogReader : protected IO::StringReader
       {
       public:
-         CatalogReader(Stream*  ps, bool  owner);
+         CatalogReader(StreamPtr src);
          ~CatalogReader();
 
          bool  ReadDeclaration(wstring&  path, DWORD&  size);

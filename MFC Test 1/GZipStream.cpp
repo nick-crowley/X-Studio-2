@@ -5,10 +5,8 @@ namespace Library
 {
    namespace IO
    {
-      GZipStream::GZipStream(Stream* ps, bool owner, Operation  op) : StreamFacade(ps, owner), Mode(op), Closed(false)
+      GZipStream::GZipStream(StreamPtr  src, Operation  op) : StreamFacade(src), Mode(op)
       {
-         REQUIRED(ps);
-
          // Clear structs
          ZeroMemory(&ZStream, sizeof(ZStream));
          ZeroMemory(&ZHeader, sizeof(ZHeader));
@@ -18,7 +16,7 @@ namespace Library
             throw GZipException(HERE, ZStream.msg);
 
          // Allocate + set input buffer
-         Input.reset(new byte[ps->GetLength()]);
+         Input.reset(new byte[src->GetLength()]);
          ZStream.next_in = Input.get();
       }
 
@@ -27,13 +25,13 @@ namespace Library
          Close();
       }
 
+
       void  GZipStream::Close()
       {
-         if (!Closed)
+         if (!IsClosed())
          {
             inflateEnd(&ZStream);
             StreamFacade::Close();
-            Closed = true;
          }
       }
 
@@ -100,6 +98,13 @@ namespace Library
          REQUIRED(buffer);
 
          throw NotImplementedException(HERE, L"GZip compression");
+      }
+
+
+      
+      bool   GZipStream::IsClosed() const
+      {
+         return ZStream.zalloc == Z_NULL;
       }
    }
 }

@@ -12,7 +12,7 @@ namespace Library
       const byte  DATAFILE_ENCRYPT_KEY = 0x33;
 
       public:
-         DataStream(Stream*  ps, bool  owner);
+         DataStream(StreamPtr  src);
          DataStream(Path path, FileMode mode, FileAccess access, FileShare share);
          ~DataStream();
 

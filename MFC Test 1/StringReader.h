@@ -10,7 +10,7 @@ namespace Library
       class StringReader
       {
       public:
-         StringReader(Stream*  s, bool owner = true);
+         StringReader(StreamPtr src);
          virtual ~StringReader();
 
          virtual bool   ReadLine(string&  line);
@@ -19,8 +19,7 @@ namespace Library
          bool  PeekByte(BYTE&  b);
          bool  ReadByte(BYTE&  b);
 
-         bool      DestroyOnClose;
-         Stream*   Input;
+         StreamPtr Input;
          ByteArray Buffer;
          DWORD     Length,
                    Position;
