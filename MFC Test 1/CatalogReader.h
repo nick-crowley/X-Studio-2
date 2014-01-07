@@ -18,9 +18,8 @@ namespace Library
          CatalogReader(CatalogReader&& r) : StringReader(std::move(r)) {}
          ~CatalogReader();
 
-         // Prevent copying & assignment
-         CatalogReader(const CatalogReader&) = delete;
-         CatalogReader& operator=(const CatalogReader& r) = delete;
+         // Prevent copying.  Move assign not impl
+         NO_COPY(CatalogReader);
          CatalogReader& operator=(CatalogReader&& r) = delete;
 
          bool  ReadDeclaration(wstring&  path, DWORD&  size);

@@ -57,10 +57,16 @@ namespace Library
          XFileSystem(Path folder, GameVersion version);
          virtual ~XFileSystem();
 
-         DWORD  Enumerate();
+         // Prevent moving/copying
+         NO_MOVE(XFileSystem);
+         NO_COPY(XFileSystem);
 
          Path         GetFolder()   { return Folder;  }
          GameVersion  GetVersion()  { return Version; }
+
+         DWORD        Enumerate();
+
+         
 
       private:
          DWORD  EnumerateCatalogs();

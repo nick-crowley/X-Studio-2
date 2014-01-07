@@ -20,6 +20,10 @@ namespace Library
          XCatalog(XFileSystem& vfs, Path path);
          virtual ~XCatalog();
 
+         // Move/copy assign not impl
+         XCatalog& operator=(const XCatalog&) = delete;
+         XCatalog& operator=(XCatalog&&) = delete;
+
          CatalogReader  GetReader();
          Path           GetFullPath()  { return FullPath; }
          
