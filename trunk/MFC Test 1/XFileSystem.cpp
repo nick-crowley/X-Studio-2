@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XFileSystem.h"
+#include "CatalogStream.h"
 
 using namespace Library::IO;
 
@@ -71,17 +72,16 @@ namespace Library
 
       DWORD  XFileSystem::EnumerateFiles()
       {
-         XFileInfo*  f;
-
          // Iterate thru catalogs (Highest priority -> Lowest)
          for (auto it = Catalogs.Begin(); it != Catalogs.End(); ++it)
          {
-            // Open catalog
-            auto_ptr<CatalogReader> reader( it->CreateReader() );
+            CatalogReader  reader(new CatalogStream(it->FullPath, FileMode::OpenExisting, FileAccess::Read), true);
+            wstring        path;
+            DWORD          size;
 
-            // Read declarations as files (Ignore duplicates)
-            while ((f=reader->ReadDeclaration()) != nullptr)
-               Files.Add(XFileInfoPtr(f));
+            // Add files, ignore duplicates from lower priority catalogs
+            while (reader.ReadDeclaration(path, size))
+               Files.Add( XFileInfo(*this, *it, path, size) );
          }
 
          // Return count
