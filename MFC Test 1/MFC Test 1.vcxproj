@@ -137,6 +137,7 @@
     <ClInclude Include="LanguagePage.h" />
     <ClInclude Include="LanguageString.h" />
     <ClInclude Include="LanguageFile.h" />
+    <ClInclude Include="Macros.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="MFC Test 1.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="DataStream.cpp" />
+    <ClCompile Include="FileSearch.cpp" />
     <ClCompile Include="FileStream.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="GZipStream.cpp" />
@@ -178,13 +180,14 @@
     <ClCompile Include="MFC Test 1Doc.cpp" />
     <ClCompile Include="MFC Test 1View.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="Path.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringReader.cpp" />
-    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="StringResource.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="XCatalog.cpp" />
     <ClCompile Include="XFileInfo.cpp" />
