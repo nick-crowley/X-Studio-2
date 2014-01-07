@@ -11,12 +11,9 @@ namespace Library
       {
       }
 
-      XFileInfo::XFileInfo(XFileSystem* vfs, XCatalog* cat, Path subPath, DWORD pos) 
-         : Source(FileSource::Catalog), FileSystem(vfs), Catalog(cat), Offset(pos) 
+      XFileInfo::XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos) 
+         : Source(FileSource::Catalog), FullPath(vfs.GetFolder()+subPath), FileSystem(&vfs), Catalog(&cat), Offset(pos) 
       {
-         REQUIRED(cat);
-         REQUIRED(vfs);
-         FullPath = vfs->GetFolder() + subPath;
       }
 
       XFileInfo::~XFileInfo() 
