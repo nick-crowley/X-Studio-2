@@ -123,6 +123,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CatalogReader.h" />
     <ClInclude Include="CatalogStream.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="XCatalog.h" />
+    <ClInclude Include="XFileInfo.h" />
     <ClInclude Include="XFileSystem.h" />
     <ClInclude Include="zconf.h" />
     <ClInclude Include="zlib.h" />

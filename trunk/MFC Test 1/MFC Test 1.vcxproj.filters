@@ -144,6 +144,12 @@
     <ClInclude Include="XCatalog.h">
       <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="CatalogReader.h">
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="XFileInfo.h">
+      <Filter>Header Files\Library\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

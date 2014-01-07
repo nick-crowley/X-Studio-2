@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "XCatalog.h"
+#include "CatalogReader.h"
 
 //using namespace Library::FileSystem;
 
 namespace Library
 {
-   namespace FileSystem
+   namespace IO
    {
 
       CatalogReader::CatalogReader(StreamPtr src) : StringReader(src)
