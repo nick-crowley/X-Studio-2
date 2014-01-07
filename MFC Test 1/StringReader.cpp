@@ -33,7 +33,7 @@ namespace Library
       /// <summary>Closes the input stream</summary>
       StringReader::~StringReader()
       {
-         if (Input != nullptr)
+         if (Input != nullptr)      // Ensure we haven't been moved
             Input->SafeClose();
       }
 

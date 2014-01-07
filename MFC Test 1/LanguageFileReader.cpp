@@ -20,6 +20,26 @@ namespace Library
       {
       }
 
+      // ------------------------------- STATIC METHODS -------------------------------
+
+      /// <summary>Parses the language ID of a language file</summary>
+      /// <param name="id">The language identifier</param>
+      /// <returns>Game language</returns>
+      /// <exception cref="Library::InvalidValueException">Invalid language ID</exception>
+      GameLanguage  LanguageFileReader::ParseLanguageID(wstring id)
+      {
+         switch (_wtoi(id.c_str()))
+         {
+         case 44:
+         case 48:  
+            return (GameLanguage)_wtoi(id.c_str()); 
+
+         default:
+            // "'%s' is not a valid language ID"
+            throw InvalidValueException(HERE, ERR_LANGUAGE_ID_INVALID, id.c_str());
+         }
+      }
+
 		// ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire language file</summary>
@@ -75,7 +95,7 @@ namespace Library
          ReadElement(element, L"language");
 
          // Convert language ID
-         return GameLanguageReader::Parse(ReadAttribute(element, L"id"));
+         return ParseLanguageID(ReadAttribute(element, L"id"));
       }
 
       /// <summary>Reads a page tag and all it's string tags</summary>

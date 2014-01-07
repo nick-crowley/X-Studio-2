@@ -10,6 +10,8 @@ namespace Library
 {
    namespace IO
    {
+     
+
       /// <summary>Reads strings and pages of an X3 language xml file</summary>
       class LanguageFileReader : XmlReader
       {
@@ -19,12 +21,18 @@ namespace Library
          LanguageFileReader(StreamPtr in);
          ~LanguageFileReader();
 
+         // ------------------------ STATIC -------------------------
+
+      private:
+         static GameLanguage  ParseLanguageID(wstring id);
+
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
 
 			// ----------------------- MUTATORS ------------------------
 
+      public:
          LanguageFile   ReadFile();
 
       private:
@@ -34,5 +42,6 @@ namespace Library
 
          // -------------------- REPRESENTATION ---------------------
       };
+
    }
 }

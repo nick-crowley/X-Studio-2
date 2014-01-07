@@ -32,10 +32,17 @@ namespace Library
          }
       }
 
+      /// <summary>Move from an existing string reader</summary>
+      /// <param name="r">The existing reader</param>
+      XmlReader::XmlReader(XmlReader&& r) : Document(r.Document), Buffer(std::move(r.Buffer)), Input(std::move(r.Input))
+      {
+      }
+
       /// <summary>Closes the input stream</summary>
       XmlReader::~XmlReader()
       {
-         Input->SafeClose();
+         if (Input != nullptr)      // Ensure we haven't been moved
+            Input->SafeClose();
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
