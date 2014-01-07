@@ -10,13 +10,14 @@ namespace Library
       /// <summary>Creates a string reader from an input stream</summary>
       /// <param name="src">The input stream</param>
       /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Library.ArgumentNullException">Stream is null</exception>
       StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr)
       {
          REQUIRED(src);
 
          // Ensure stream has read access
          if (!Input->CanRead())
-            throw ArgumentException(HERE, L"s", ERR_NO_READ_ACCESS);
+            throw ArgumentException(HERE, L"src", ERR_NO_READ_ACCESS);
 
          // Lookup stream length
          Length = Input->GetLength();

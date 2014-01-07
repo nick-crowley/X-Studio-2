@@ -159,6 +159,9 @@
     <ClInclude Include="Macros.h">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
+    <ClInclude Include="XmlReader.h">
+      <Filter>Header Files\Library\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -244,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="FileSearch.cpp">
       <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlReader.cpp">
+      <Filter>Source Files\Library\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

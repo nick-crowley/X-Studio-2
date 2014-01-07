@@ -157,6 +157,7 @@
     <ClInclude Include="XCatalog.h" />
     <ClInclude Include="XFileInfo.h" />
     <ClInclude Include="XFileSystem.h" />
+    <ClInclude Include="XmlReader.h" />
     <ClInclude Include="zconf.h" />
     <ClInclude Include="zlib.h" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClCompile Include="XCatalog.cpp" />
     <ClCompile Include="XFileInfo.cpp" />
     <ClCompile Include="XFileSystem.cpp" />
+    <ClCompile Include="XmlReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MFC Test 1.rc" />
