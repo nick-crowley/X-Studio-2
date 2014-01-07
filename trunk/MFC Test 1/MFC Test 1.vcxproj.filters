@@ -156,13 +156,13 @@
     <ClInclude Include="LanguageString.h">
       <Filter>Header Files\Library\Language</Filter>
     </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\Library</Filter>
     </ClCompile>
     <ClCompile Include="FileStream.cpp">
       <Filter>Source Files\Library\IO</Filter>
@@ -235,6 +235,15 @@
     </ClCompile>
     <ClCompile Include="LanguageString.cpp">
       <Filter>Source Files\Library\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="StringResource.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSearch.cpp">
+      <Filter>Source Files\Library</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
