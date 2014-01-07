@@ -17,10 +17,9 @@ namespace Library
       }
 
 
-      CatalogReader*  XCatalog::CreateReader()
+      CatalogReader  XCatalog::GetReader()
       {
-         //return new CatalogReader(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read));
-         return nullptr;
+         return CatalogReader( StreamPtr(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) );
       }
    }
 }
