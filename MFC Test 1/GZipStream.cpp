@@ -10,11 +10,17 @@ namespace Library
       /// <summary>Creates a GZip stream using another stream as input</summary>
       /// <param name="src">The input stream</param>
       /// <param name="op">Whether to compress or decompress</param>
+      /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Library.GZipException">Unable to inititalise stream</exception>
       GZipStream::GZipStream(StreamPtr  src, Operation  op) : StreamFacade(src), Mode(op)
       {
          // Clear structs
          ZeroMemory(&ZStream, sizeof(ZStream));
          ZeroMemory(&ZHeader, sizeof(ZHeader));
+
+         // Ensure stream has read access
+         if (!src->CanRead())
+            throw ArgumentException(HERE, L"src", ERR_NO_READ_ACCESS);
 
          // Init stream + extract header
          if (inflateInit2(&ZStream, WINDOW_SIZE+DETECT_HEADER) != Z_OK) 
@@ -34,11 +40,14 @@ namespace Library
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the stream.</summary>
+      /// <exception cref="Library.GZipException">Unable to close stream</exception>
       void  GZipStream::Close()
       {
          if (!IsClosed())
          {
-            inflateEnd(&ZStream);
+            if (inflateEnd(&ZStream) != Z_OK)
+               throw GZipException(HERE, ZStream.msg);
+
             StreamFacade::Close();
          }
       }
@@ -78,6 +87,7 @@ namespace Library
       /// <summary>Not supported</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The mode.</param>
+      /// <exception cref="Library.NotSupportedException">Always</exception>
       void  GZipStream::Seek(DWORD  offset, SeekOrigin  mode)
       {
          throw NotSupportedException(HERE, ERR_NO_SEEK_ACCESS);
@@ -86,6 +96,7 @@ namespace Library
       /// <summary>Not supported</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The mode.</param>
+      /// <exception cref="Library.NotSupportedException">Always</exception>
       void  GZipStream::SetLength(DWORD  length)
       {
          throw NotSupportedException(HERE, L"Resizing not allowed");
@@ -95,6 +106,8 @@ namespace Library
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
+      /// <exception cref="Library.NotSupportedException">Input stream is not readable</exception>
+      /// <exception cref="Library.GZipException">Unable to decompress data</exception>
       DWORD  GZipStream::Read(BYTE* output, DWORD length)
       {
          REQUIRED(output);
@@ -130,6 +143,7 @@ namespace Library
       /// <param name="buffer">The buffer.</param>
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
+      /// <exception cref="Library.NotImplementedException">Always</exception>
       DWORD  GZipStream::Write(const BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
