@@ -274,14 +274,14 @@ namespace Library
       /// <param name="err">System error id</param>
       Win32Exception(wstring  src, UINT err) : ExceptionBase(src, err)
       {
-         Message = StringResource::FormatMessage(err);
+         Message = StringResource::FromSystem(err);
       }
 
       /// <summary>Create an Win32Exception from the last system error</summary>
       /// <param name="src">Location of throw</param>
       Win32Exception(wstring  src) : ExceptionBase(src, GetLastError())
       {
-         Message = StringResource::FormatMessage(ErrorID);
+         Message = StringResource::FromSystem(ErrorID);
       }
    };
 }

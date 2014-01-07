@@ -3,11 +3,6 @@
 #include "STL.h"
 #include "Macros.h"
 
-#ifdef FormatMessage
-#undef FormatMessage
-#endif
-
-
 namespace Library
 {
    /// <summary>A unique pointer to a byte array</summary>
@@ -29,7 +24,7 @@ namespace Library
       static wstring  Load(UINT  id, ...);
       static wstring  LoadV(UINT  id, va_list  pArgs);
 
-      static wstring  FormatMessage(UINT  id);
+      static wstring  FromSystem(UINT  id);
 
       // ----------------------- MUTATORS ------------------------
 
