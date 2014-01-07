@@ -40,6 +40,7 @@ namespace Library
    /// <summary>Renames the file extension, if none is present then it is appended</summary>
    /// <param name="ext">The file extension, preceeded by a dot</param>
    /// <returns></returns>
+   /// <exception cref="Library.Win32Exception">Path exceeds character limit</exception>
    Path&  Path::RenameExtension(wstring  ext)
    {
       auto_ptr<WCHAR>  path(new WCHAR[MAX_PATH]);
@@ -61,7 +62,7 @@ namespace Library
 
    /// <summary>Determines whether path is directory</summary>
    /// <returns></returns>
-   /// <exception cref="Library::Win32Exception"></exception>
+   /// <exception cref="Library::Win32Exception">Path does not exist</exception>
    bool  Path::IsDirectory()
    {
       int attr = GetFileAttributes(c_str());

@@ -4,7 +4,7 @@
 namespace Library
 {
 
-   FileSearch::FileSearch(wstring  term)
+   FileSearch::FileSearch(wstring  term) : Handle(NULL)
    {
       ZeroMemory(&Data, sizeof(WIN32_FIND_DATA));
       Handle = FindFirstFileEx(term.c_str(), FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);

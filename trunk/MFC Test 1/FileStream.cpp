@@ -12,17 +12,19 @@ namespace Library
       /// <param name="mode">The creation mode.</param>
       /// <param name="access">The file access.</param>
       /// <param name="share">The sharing permitted.</param>
+      /// <exception cref="Library.FileNotFoundException">File not found</exception>
+      /// <exception cref="Library.Win32Exception">Unable to create/open file</exception>
       FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileShare share) : FullPath(path), Mode(mode), Access(access), Share(share) 
       {
-         // Ensure exists
-         if (!path.Exists())
-            throw FileNotFoundException(HERE, path);
-
          // Open file
          Handle = CreateFile(path.c_str(), (DWORD)access, (DWORD)share, NULL, (DWORD)mode, FILE_ATTRIBUTE_NORMAL, NULL);
 
-         if (Handle == INVALID_HANDLE_VALUE)
-            throw Win32Exception(HERE);
+         if (Handle == INVALID_HANDLE_VALUE) {
+            if (GetLastError() == ERROR_FILE_NOT_FOUND)
+               throw FileNotFoundException(HERE, path);
+            else
+               throw Win32Exception(HERE);
+         }
       }
 
       //FileStream::FileStream(const FileStream& s) : FullPath(s.FullPath), Mode(s.Mode), Access(s.Access), Share(s.Share) 
@@ -41,6 +43,7 @@ namespace Library
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the stream.</summary>
+      /// <exception cref="Library.Win32Exception">Unable to close stream</exception>
       void  FileStream::Close()
       {
          if (Handle != INVALID_HANDLE_VALUE) 
@@ -53,6 +56,7 @@ namespace Library
       }
 
       /// <summary>Flushes any data to the stream.</summary>
+      /// <exception cref="Library.Win32Exception">Unable to flush stream</exception>
       void  FileStream::Flush()
       {
          if (!FlushFileBuffers(Handle))
@@ -62,6 +66,7 @@ namespace Library
       
       /// <summary>Gets the file length</summary>
       /// <returns></returns>
+      /// <exception cref="Library.Win32Exception">Unable to get length</exception>
       DWORD  FileStream::GetLength()
       { 
          LARGE_INTEGER  size = {0LL};
@@ -75,6 +80,7 @@ namespace Library
       
       /// <summary>Gets the current seek position.</summary>
       /// <returns></returns>
+      /// <exception cref="Library.Win32Exception">Unable to get position</exception>
       DWORD  FileStream::GetPosition() const
       {
          DWORD  position = 0;
@@ -99,6 +105,7 @@ namespace Library
       /// <summary>Seeks to the specified offset.</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The seek origin</param>
+      /// <exception cref="Library.Win32Exception">Unable to seek</exception>
       void  FileStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          // Set position 
@@ -108,6 +115,7 @@ namespace Library
 
       /// <summary>Sets the length of the file</summary>
       /// <param name="length">The length.</param>
+      /// <exception cref="Library.Win32Exception">Unable to set length</exception>
       void  FileStream::SetLength(DWORD  length)
       {
          DWORD  position = GetPosition();
@@ -125,6 +133,8 @@ namespace Library
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
+      /// <exception cref="Library.InvalidOperationException">Stream is not readable</exception>
+      /// <exception cref="Library.Win32Exception">An I/O error occurred</exception>
       DWORD  FileStream::Read(BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
@@ -132,8 +142,6 @@ namespace Library
          // Check access
          if (!CanRead())
             throw InvalidOperationException(HERE, ERR_NO_READ_ACCESS);
-
-         DWORD debugPos = GetPosition();
 
          // Read bytes
          DWORD count = 0;
@@ -148,6 +156,8 @@ namespace Library
       /// <param name="buffer">The buffer.</param>
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
+      /// <exception cref="Library.InvalidOperationException">Stream is not writeable</exception>
+      /// <exception cref="Library.Win32Exception">An I/O error occurred</exception>
       DWORD  FileStream::Write(const BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);

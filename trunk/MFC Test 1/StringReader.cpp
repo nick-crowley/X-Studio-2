@@ -8,7 +8,8 @@ namespace Library
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates a string reader from an input stream</summary>
-      /// <param name="src">The source.</param>
+      /// <param name="src">The input stream</param>
+      /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
       StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr)
       {
          REQUIRED(src);
@@ -21,8 +22,8 @@ namespace Library
          Length = Input->GetLength();
       }
 
-      /// <summary>Moves an existing string reader</summary>
-      /// <param name="r">The r.</param>
+      /// <summary>Move-copy from an existing string reader</summary>
+      /// <param name="r">The existing reader</param>
       StringReader::StringReader(StringReader&& r)
          : Length(r.Length), Position(r.Position), Buffer(std::move(r.Buffer)), Input(std::move(r.Input))
       {
@@ -40,6 +41,7 @@ namespace Library
       /// <summary>Reads the next line, if any</summary>
       /// <param name="line">The line.</param>
       /// <returns>True if read, false if EOF</returns>
+      /// <exception cref="Library.InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
       bool  StringReader::ReadLine(string&  line)
       {
          DWORD start = Position,    // Start of line
