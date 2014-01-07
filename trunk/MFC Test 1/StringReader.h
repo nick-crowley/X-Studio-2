@@ -25,7 +25,7 @@ namespace Library
          bool  ReadByte(BYTE&  b);
 
          StreamPtr Input;
-         ByteArray Buffer;
+         ByteArrayPtr Buffer;
          DWORD     Length,
                    Position;
       };

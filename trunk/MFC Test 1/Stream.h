@@ -48,18 +48,18 @@ namespace Library
       
          /// <summary>Reads all remaining bytes from a stream into a buffer</summary>
          /// <returns></returns>
-         virtual BYTE* ReadAllBytes()
+         virtual ByteArrayPtr ReadAllBytes()
          {
-            DWORD count = 0,
-                  length = GetLength() - GetPosition();
-            BYTE* buffer = new BYTE[length+1];
+            DWORD        count = 0,
+                         length = GetLength() - GetPosition();
+            ByteArrayPtr buffer( new BYTE[length+1] );
             
-            // Ensure null term
-            buffer[length] = NULL;
+            // Ensure null terminated
+            buffer.get()[length] = NULL;
 
             do
             {  // Read all bytes until EOF
-               count += Read(&buffer[count], length - count);
+               count += Read(buffer.get()+count, length - count);
             } 
             while (count < length);
 

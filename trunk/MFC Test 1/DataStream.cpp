@@ -33,7 +33,7 @@ namespace Library
       DWORD  DataStream::Write(const BYTE* buffer, DWORD length)
       {
          // Copy buffer so we can encode it
-         ByteArray copy(new BYTE[length]);
+         ByteArrayPtr copy(new BYTE[length]);
          memcpy(copy.get(), buffer, length);
 
          // Encode + Write

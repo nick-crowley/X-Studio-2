@@ -27,9 +27,10 @@
 
 namespace Library
 {
-   typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArray;
+   /// <summary>A unique pointer to a byte array</summary>
+   typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArrayPtr;
 
-
+   /// <summary>Provides helper functions for loading/formatting strings from resources</summary>
    class StringResource
    {
    public:
@@ -40,6 +41,7 @@ namespace Library
       static wstring  FormatMessage(UINT  id);
    };
 
+   /// <summary>Represents a file or folder path</summary>
    class Path : public wstring
    {
    public:
@@ -56,6 +58,7 @@ namespace Library
 
    };
 
+   /// <summary>Provides the ability to search for files</summary>
    class FileSearch
    {
    public:
