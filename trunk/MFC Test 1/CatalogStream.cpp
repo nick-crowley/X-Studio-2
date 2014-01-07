@@ -5,11 +5,20 @@ namespace Library
 {
    namespace IO
    {
+      // -------------------------------- CONSTRUCTION --------------------------------
+
+      /// <summary>Creates a catalog stream using another stream as input</summary>
+      /// <param name="src">The input stream.</param>
       CatalogStream::CatalogStream(StreamPtr  src) : StreamFacade(src)
       {
       }
 
-      CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share) 
+      /// <summary>Creates a catalog stream using a file as input</summary>
+      /// <param name="path">The full path.</param>
+      /// <param name="mode">The creation mode.</param>
+      /// <param name="access">The file access.</param>
+      /// <param name="share">The sharing permitted.</param>
+      CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share)
          : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
@@ -20,6 +29,12 @@ namespace Library
          StreamFacade::SafeClose();
       }
 
+      // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Reads/decodes from the stream into the specified buffer.</summary>
+      /// <param name="buffer">The destination buffer</param>
+      /// <param name="length">The length of the buffer</param>
+      /// <returns>Number of bytes read</returns>
       DWORD  CatalogStream::Read(BYTE* buffer, DWORD length)
       {
          // Preserve origin, fill buffer
@@ -31,6 +46,10 @@ namespace Library
          return bytesRead;
       }
 
+      /// <summary>Writes/encodes the specified buffer to the stream</summary>
+      /// <param name="buffer">The buffer.</param>
+      /// <param name="length">The length of the buffer.</param>
+      /// <returns>Number of bytes written</returns>
       DWORD  CatalogStream::Write(const BYTE* buffer, DWORD length)
       {
          // Copy buffer so we can encode it
@@ -41,6 +60,10 @@ namespace Library
          Encode(copy.get(), length, GetPosition());
          return StreamFacade::Write(copy.get(), length);
       }
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
 
       /// <summary>Calculates the encoding key for a given position in the stream</summary>
       /// <param name="streamPos">Position in stream</param>

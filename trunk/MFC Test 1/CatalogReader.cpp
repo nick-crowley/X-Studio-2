@@ -7,7 +7,10 @@ namespace Library
 {
    namespace IO
    {
+      // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Initializes a new instance of the <see cref="CatalogReader"/> class.</summary>
+      /// <param name="src">The stream to read from</param>
       CatalogReader::CatalogReader(StreamPtr src) : StringReader(src)
       {
          // Ignore header
@@ -20,7 +23,12 @@ namespace Library
       {
       }
 
+      // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Reads the next declaration, if any</summary>
+      /// <param name="path">The file sub-path</param>
+      /// <param name="size">The file offset</param>
+      /// <returns>true if found, false if EOF</returns>
       bool  CatalogReader::ReadDeclaration(wstring&  path, DWORD&  size)
       {
          string  line;
@@ -40,5 +48,10 @@ namespace Library
          return true;
       }
 
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+
+		// -------------------------------- NESTED CLASSES ------------------------------
    }
 }

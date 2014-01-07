@@ -8,17 +8,24 @@ namespace Library
 {
    namespace IO
    {
-
+      /// <summary>Reads strings and pages of an X3 language xml file</summary>
       class LanguageFileReader
       {
+         // --------------------- CONSTRUCTION ----------------------
+
       public:
          LanguageFileReader() {};
          ~LanguageFileReader() {};
 
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
+			// ----------------------- MUTATORS ------------------------
+
          LanguageFile   ReadFile(IO::Stream&  s);
 
       private:
-      
          void           ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
          wstring        ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
          GameLanguage   ReadLanguageTag(XML::IXMLDOMNodePtr&  element);
@@ -26,6 +33,8 @@ namespace Library
 
          LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
          LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
+
+         // -------------------- REPRESENTATION ---------------------
       };
    }
 }

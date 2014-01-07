@@ -8,6 +8,8 @@ namespace Library
    {
       class MemoryStream : public Stream
       {
+         // --------------------- CONSTRUCTION ----------------------
+
       public:
          MemoryStream(BYTE* buffer, DWORD length, FileAccess access);
          MemoryStream(DWORD length, FileAccess access);
@@ -16,13 +18,19 @@ namespace Library
          // Prevent copying/moving
          NO_MOVE(MemoryStream);
          NO_COPY(MemoryStream);
-         
+
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
          bool  CanRead() const   { return Access == FileAccess::Read || Access == FileAccess::ReadWrite; }
          bool  CanSeek() const   { return true; }
          bool  CanWrite() const  { return Access == FileAccess::Write || Access == FileAccess::ReadWrite; }
 
          DWORD GetLength() const;
          DWORD GetPosition() const;
+
+         // ----------------------- MUTATORS ------------------------
 
          void  Close();
          void  Flush();
@@ -35,6 +43,8 @@ namespace Library
       
       private:
          BYTE* Alloc(DWORD len);
+
+         // -------------------- REPRESENTATION ---------------------
 
          FileAccess Access;
          DWORD      Length,

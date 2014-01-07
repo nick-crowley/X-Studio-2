@@ -5,30 +5,41 @@ namespace Library
 {
    namespace IO
    {
+      // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Creates a string reader from an input stream</summary>
+      /// <param name="src">The source.</param>
       StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr)
       {
          REQUIRED(src);
 
+         // Ensure stream has read access
          if (!Input->CanRead())
             throw ArgumentException(HERE, L"s", ERR_NO_READ_ACCESS);
 
+         // Lookup stream length
          Length = Input->GetLength();
       }
 
-      StringReader::StringReader(StringReader&& r) 
+      /// <summary>Moves an existing string reader</summary>
+      /// <param name="r">The r.</param>
+      StringReader::StringReader(StringReader&& r)
          : Length(r.Length), Position(r.Position), Buffer(std::move(r.Buffer)), Input(std::move(r.Input))
       {
       }
 
-
+      /// <summary>Closes the input stream</summary>
       StringReader::~StringReader()
       {
          if (Input != nullptr)
             Input->SafeClose();
       }
 
+      // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Reads the next line, if any</summary>
+      /// <param name="line">The line.</param>
+      /// <returns>True if read, false if EOF</returns>
       bool  StringReader::ReadLine(string&  line)
       {
          DWORD start = Position,    // Start of line
@@ -73,8 +84,13 @@ namespace Library
          return true;
       }
 
+      // ------------------------------ PROTECTED METHODS -----------------------------
 
+		// ------------------------------- PRIVATE METHODS ------------------------------
       
+      /// <summary>Reads the next byte.</summary>
+      /// <param name="b">Next byte</param>
+      /// <returns>True if read, false if EOF</returns>
       bool  StringReader::ReadByte(BYTE&  b)
       {
          // EOF: Return false
@@ -89,6 +105,9 @@ namespace Library
          return true;
       }
 
+      /// <summary>Peeks the next byte.</summary>
+      /// <param name="b">Next byte</param>
+      /// <returns>True if read, false if EOF</returns>
       bool  StringReader::PeekByte(BYTE&  b)
       {
          // EOF: Return false

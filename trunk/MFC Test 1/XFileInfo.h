@@ -18,13 +18,19 @@ namespace Library
       class XFileInfo
       {
       public:
-         // Construction
+         // --------------------- CONSTRUCTION ----------------------
 
          XFileInfo(Path p);
          XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos);
          virtual ~XFileInfo();
 
-         // Representation
+			// --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
+			// ----------------------- MUTATORS ------------------------
+
+			// -------------------- REPRESENTATION ---------------------
 
          XFileSystem* FileSystem;
          XCatalog*    Catalog;

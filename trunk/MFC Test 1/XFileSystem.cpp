@@ -7,6 +7,7 @@ namespace Library
 {
    namespace FileSystem
    {
+      // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Initializes a new instance of the <see cref="XFileSystem"/> class.</summary>
       /// <param name="folder">The folder.</param>
@@ -22,12 +23,17 @@ namespace Library
          Folder.AppendBackslash();
       }
 
-
+      /// <summary>Releases the locks on the catalogs</summary>
       XFileSystem::~XFileSystem()
       {
          Catalogs.Clear();
+         Files.Clear();
       }
-
+      
+		// ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
+      /// <returns></returns>
       DWORD  XFileSystem::Enumerate()
       {
          // Clear previous
@@ -39,6 +45,12 @@ namespace Library
          return EnumerateFiles();
       }
 
+		// ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+      
+      /// <summary>Enumerates and locks the catalogs</summary>
+      /// <returns></returns>
       DWORD  XFileSystem::EnumerateCatalogs()
       {
          const WCHAR *formats[2] = { L"%s%02i.cat", L"%saddon\\%02i.cat" },
@@ -69,6 +81,8 @@ namespace Library
          return Catalogs.Count;
       }
 
+      /// <summary>Enumerates the files within the catalogs</summary>
+      /// <returns></returns>
       DWORD  XFileSystem::EnumerateFiles()
       {
          // Iterate thru catalogs (Highest priority -> Lowest)
@@ -86,5 +100,8 @@ namespace Library
          // Return count
          return Files.Count;
       }
+		// -------------------------------- NESTED CLASSES ------------------------------
+
+
    }
 }

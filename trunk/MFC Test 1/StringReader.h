@@ -7,8 +7,11 @@ namespace Library
    namespace IO
    {
 
+      /// <summary>Reads strings from a stream in lines</summary>
       class StringReader
       {
+         // --------------------- CONSTRUCTION ----------------------
+
       public:
          StringReader(StreamPtr src);
          StringReader(StringReader&& r);
@@ -18,16 +21,24 @@ namespace Library
          NO_COPY(StringReader);
          StringReader& operator=(StringReader&& r) = delete;
 
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
+			// ----------------------- MUTATORS ------------------------
+
          virtual bool   ReadLine(string&  line);
 
       private:
          bool  PeekByte(BYTE&  b);
          bool  ReadByte(BYTE&  b);
 
-         StreamPtr Input;
+         // -------------------- REPRESENTATION ---------------------
+
+         StreamPtr    Input;
          ByteArrayPtr Buffer;
-         DWORD     Length,
-                   Position;
+         DWORD        Length,
+                      Position;
       };
 
    }

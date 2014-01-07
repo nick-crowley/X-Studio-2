@@ -10,50 +10,74 @@ namespace Library
    namespace FileSystem
    {
       
+      /// <summary>Contains enumerated catalogs and catalog-based files. Provides access to physical/catalog files</summary>
       class XFileSystem
       {
       private:
+         /// <summary>Collection of catalogs, sorted by precedence (highest->lowest)</summary>
          class CatalogCollection : private list<XCatalog>
          {
             typedef list<XCatalog> Base;
 
          public:
+            // --------------------- CONSTRUCTION ----------------------
+
             CatalogCollection() {};
             ~CatalogCollection() { Clear(); };  // Unlock all catalogs
 
-            __declspec(property(get=GetCount)) DWORD Count;
+            // ---------------------- PROPERTIES -----------------------
+
+            PROPERTY_GET(DWORD,Count,GetCount);
+
+            // ---------------------- ACCESSORS ------------------------
+
+            iterator  Begin()            { return Base::begin();           }
+            iterator  End()              { return Base::end();             }
+            DWORD     GetCount()         { return Base::size();            }
+
+            // ----------------------- MUTATORS ------------------------
 
             void      Add(XCatalog&& c)  { Base::push_front(std::move(c)); }
             void      Clear()            { Base::clear();                  }
-            DWORD     GetCount()         { return Base::size();            }
-            iterator  Begin()            { return Base::begin();           }
-            iterator  End()              { return Base::end();             }
          };
 
          
-
+         /// <summary>Sorts file descriptors by their path</summary>
          class UniquePath : public binary_function<XFileInfo, XFileInfo, bool>
          {
          public:
+            // ---------------------- ACCESSORS ------------------------
+
             bool operator()(XFileInfo a, XFileInfo b)
             {
                return a.FullPath < b.FullPath;
             }
          };
          
+
+         /// <summary>Collection of file descriptors, sorted by path (no duplicates)</summary>
          class FileCollection : private set<XFileInfo, UniquePath>
          {
             typedef set<XFileInfo, UniquePath> Base;
 
          public:
-            __declspec(property(get=GetCount)) DWORD Count;
+            // ---------------------- PROPERTIES -----------------------
+
+            PROPERTY_GET(DWORD,Count,GetCount);
+
+            // ---------------------- ACCESSORS ------------------------
+
+            DWORD     GetCount()          { return Base::size();                       }
+
+            // ----------------------- MUTATORS ------------------------
 
             bool      Add(XFileInfo&& f)  { return Base::insert(std::move(f)).second;  }
             void      Clear()             { Base::clear();                             }
-            DWORD     GetCount()          { return Base::size();                       }
          };
 
       public:
+         // --------------------- CONSTRUCTION ----------------------
+
          XFileSystem(Path folder, GameVersion version);
          virtual ~XFileSystem();
 
@@ -61,16 +85,22 @@ namespace Library
          NO_MOVE(XFileSystem);
          NO_COPY(XFileSystem);
 
+         // --------------------- PROPERTIES ------------------------
+
+         // ---------------------- ACCESSORS ------------------------
+
          Path         GetFolder()   { return Folder;  }
          GameVersion  GetVersion()  { return Version; }
 
+			// ----------------------- MUTATORS ------------------------
+
          DWORD        Enumerate();
 
-         
-
       private:
-         DWORD  EnumerateCatalogs();
-         DWORD  EnumerateFiles();
+         DWORD        EnumerateCatalogs();
+         DWORD        EnumerateFiles();
+
+         // -------------------- REPRESENTATION ---------------------
 
          CatalogCollection  Catalogs;
          FileCollection     Files;

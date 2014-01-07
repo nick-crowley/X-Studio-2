@@ -68,6 +68,9 @@ namespace Library
       return msg;
    }
 
+   /// <summary>Appends another path, handling trailing backslashes as necessary</summary>
+   /// <param name="path">The path to append</param>
+   /// <returns></returns>
    Path&  Path::AppendPath(wstring  path)
    {
       AppendBackslash();
@@ -76,6 +79,8 @@ namespace Library
       return *this;
    }
 
+   /// <summary>Appends a trailing backslash if necessary</summary>
+   /// <returns></returns>
    Path&  Path::AppendBackslash()
    {
       if (length() > 0 && back() != '\\')
@@ -84,6 +89,8 @@ namespace Library
       return *this;
    }
 
+   /// <summary>Removes the trailing backslash, if any</summary>
+   /// <returns></returns>
    Path&  Path::RemoveBackslash()
    {
       if (length() > 0 && back() == '\\')
@@ -92,6 +99,9 @@ namespace Library
       return *this;
    }
 
+   /// <summary>Renames the file extension, if none is present then it is appended</summary>
+   /// <param name="ext">The file extension, preceeded by a dot</param>
+   /// <returns></returns>
    Path&  Path::RenameExtension(wstring  ext)
    {
       auto_ptr<WCHAR>  path(new WCHAR[MAX_PATH]);

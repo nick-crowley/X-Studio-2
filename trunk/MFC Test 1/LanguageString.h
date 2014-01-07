@@ -4,15 +4,25 @@
 namespace Library
 {
 
-class LanguageString
-{
-public:
-   LanguageString() : ID(0) {};
-   LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
-   ~LanguageString() {};
+   class LanguageString
+   {
+      // --------------------- CONSTRUCTION ----------------------
 
-   UINT     ID;
-   wstring  Text;
-};
+   public:
+      LanguageString() : ID(0) {};
+      LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
+      ~LanguageString() {};
+
+      // --------------------- PROPERTIES ------------------------
+			
+		// ---------------------- ACCESSORS ------------------------
+
+		// ----------------------- MUTATORS ------------------------
+
+		// -------------------- REPRESENTATION ---------------------
+
+      UINT     ID;
+      wstring  Text;
+   };
 
 }

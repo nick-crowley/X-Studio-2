@@ -19,7 +19,7 @@ namespace Library
          typedef shared_ptr<FileStream>  FileStreamPtr;
 
       public:
-         // Construction/Destruction
+         // --------------------- CONSTRUCTION ----------------------
 
          XCatalog(XFileSystem& vfs, Path path);
          virtual ~XCatalog();
@@ -28,17 +28,22 @@ namespace Library
          XCatalog& operator=(const XCatalog&) = delete;
          XCatalog& operator=(XCatalog&&) = delete;
 
-         // Accessors
+			// --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
 
          CatalogReader  GetReader();
          Path           GetFullPath()  { return FullPath; }
-         
-      private:
-         // Representation
 
+			// ----------------------- MUTATORS ------------------------
+
+			// -------------------- REPRESENTATION ---------------------
+
+      private:
          Path           FullPath;
          FileStreamPtr  FileLock;
          XFileSystem&   FileSystem;
+
       };
 
    }
