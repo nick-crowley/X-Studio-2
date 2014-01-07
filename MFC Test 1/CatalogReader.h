@@ -9,11 +9,12 @@ namespace Library
 {
    namespace IO
    {
-      
-
+      /// <summary>Reads the file declarations from catalogs</summary>
       class CatalogReader : protected IO::StringReader
       {
       public:
+         // --------------------- CONSTRUCTION ----------------------
+
          CatalogReader(StreamPtr src);
          CatalogReader(CatalogReader&& r) : StringReader(std::move(r)) {}
          ~CatalogReader();
@@ -22,7 +23,15 @@ namespace Library
          NO_COPY(CatalogReader);
          CatalogReader& operator=(CatalogReader&& r) = delete;
 
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
+			// ----------------------- MUTATORS ------------------------
+
          bool  ReadDeclaration(wstring&  path, DWORD&  size);
+
+         // -------------------- REPRESENTATION ---------------------
       };
 
 

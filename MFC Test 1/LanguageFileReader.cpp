@@ -5,6 +5,55 @@ namespace Library
 {
    namespace IO
    {
+      // -------------------------------- CONSTRUCTION --------------------------------
+
+		// ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Reads the entire language file</summary>
+      /// <returns>New language file</returns>
+      /// <exception cref="Library.FileFormatException">Missing elements or attributes</exception>
+      /// <exception cref="Library.ComException">COM Error</exception>
+      /// <exception cref="Library.InvalidDataException">Invalid language ID</exception>
+      LanguageFile LanguageFileReader::ReadFile(IO::Stream&  s)
+      {
+         try
+         {
+            // Extract stream
+            ByteArrayPtr buffer(s.ReadAllBytes());
+
+            // Create DOM parser
+            XML::IXMLDOMDocument2Ptr pDoc(CLSID_DOMDocument60);
+            pDoc->async = VARIANT_FALSE;
+
+            // Load/Parse file : "%s (line %d, char %d)"
+            if (pDoc->loadXML((char*)buffer.get()) == VARIANT_FALSE)
+               throw FileFormatException(HERE, ERR_XML_PARSE_FAILED, (WCHAR*)pDoc->parseError->reason, pDoc->parseError->line, pDoc->parseError->linepos);
+
+            // Get root (as node)
+            XML::IXMLDOMNodePtr languageNode(pDoc->documentElement);
+
+            // Read language tag
+            LanguageFile file;
+            file.Language = ReadLanguageTag(languageNode);
+
+            // Read pages
+            for (int i = 0; i < languageNode->childNodes->length; i++)
+            {
+               file.Pages.push_back(ReadPage(languageNode->childNodes->item[i]));
+            }
+
+            return file;
+         }
+         catch (_com_error& ex)
+         {
+            throw ComException(HERE, ex);
+         }
+      }
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+
       /// <summary>Reads the value of an attribute</summary>
       /// <param name="node">The element containing the attribute</param>
       /// <param name="name">The attribute name</param>
@@ -109,47 +158,6 @@ namespace Library
 
          // Read ID+text
          return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), (WCHAR*)element->text);
-      }
-
-      /// <summary>Reads the entire language file</summary>
-      /// <returns>New language file</returns>
-      /// <exception cref="Library.FileFormatException">Missing elements or attributes</exception>
-      /// <exception cref="Library.ComException">COM Error</exception>
-      /// <exception cref="Library.InvalidDataException">Invalid language ID</exception>
-      LanguageFile LanguageFileReader::ReadFile(IO::Stream&  s)
-      {
-         try
-         {
-            // Extract stream
-            ByteArrayPtr buffer(s.ReadAllBytes());
-
-            // Create DOM parser
-            XML::IXMLDOMDocument2Ptr pDoc(CLSID_DOMDocument60);
-            pDoc->async = VARIANT_FALSE;
-
-            // Load/Parse file : "%s (line %d, char %d)"
-            if (pDoc->loadXML((char*)buffer.get()) == VARIANT_FALSE)
-               throw FileFormatException(HERE, ERR_XML_PARSE_FAILED, (WCHAR*)pDoc->parseError->reason, pDoc->parseError->line, pDoc->parseError->linepos);
-
-            // Get root (as node)
-            XML::IXMLDOMNodePtr languageNode(pDoc->documentElement);
-
-            // Read language tag
-            LanguageFile file;
-            file.Language = ReadLanguageTag(languageNode);
-
-            // Read pages
-            for (int i = 0; i < languageNode->childNodes->length; i++)
-            {
-               file.Pages.push_back(ReadPage(languageNode->childNodes->item[i]));
-            }
-
-            return file;
-         }
-         catch (_com_error& ex)
-         {
-            throw ComException(HERE, ex);
-         }
       }
    }
 }

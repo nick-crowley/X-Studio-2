@@ -8,9 +8,12 @@ namespace Library
    namespace IO
    {
 
+      /// <summary>Provides stream access to the contents of catalogs</summary>
       class CatalogStream : public StreamFacade
       {
       const byte  CATALOGUE_DECRYPT_KEY = 0xDB;
+
+         // --------------------- CONSTRUCTION ----------------------
 
       public:
          CatalogStream(StreamPtr  src);
@@ -21,12 +24,20 @@ namespace Library
          NO_MOVE(CatalogStream);
          NO_COPY(CatalogStream);
 
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
+			// ----------------------- MUTATORS ------------------------
+
          DWORD  Read(BYTE* buffer, DWORD length);
          DWORD  Write(const BYTE* buffer, DWORD length);
 
       private:
          byte  CalculateKey(DWORD  streamPos);
          void  Encode(byte* buffer, DWORD length, DWORD  streamPos);
+
+         // -------------------- REPRESENTATION ---------------------
 
          DWORD  Position;
       };

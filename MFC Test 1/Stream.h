@@ -21,6 +21,8 @@ namespace Library
       /// <summary>Represents any stream</summary>
       class Stream
       {
+         // --------------------- CONSTRUCTION ----------------------
+
       protected:
          Stream() {}
       public:
@@ -30,12 +32,18 @@ namespace Library
          NO_MOVE(Stream);
          NO_COPY(Stream);
 
+         // --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
+
          virtual bool  CanRead() const PURE;
          virtual bool  CanSeek() const PURE;
          virtual bool  CanWrite() const PURE;
 
          virtual DWORD GetLength()  PURE;
          virtual DWORD GetPosition() const PURE;
+
+         // ----------------------- MUTATORS ------------------------
 
          virtual void  Close() PURE;
          virtual void  Flush() PURE;
@@ -66,6 +74,8 @@ namespace Library
             // return buffer
             return buffer;
          }
+
+         // -------------------- REPRESENTATION ---------------------
       };
 
       /// <summary>A shared pointer to any stream</summary>
@@ -74,6 +84,8 @@ namespace Library
       /// <summary>Allows for subclassing a stream using the Facade pattern</summary>
       class StreamFacade : public Stream
       {
+         // --------------------- CONSTRUCTION ----------------------
+
       protected:
          StreamFacade(StreamPtr src) : Source(src)
          { 
@@ -89,7 +101,9 @@ namespace Library
          NO_MOVE(StreamFacade);
          NO_COPY(StreamFacade);
 
-         // Accessors
+			// --------------------- PROPERTIES ------------------------
+			
+			// ---------------------- ACCESSORS ------------------------
 
          bool  CanRead() const                         { return Source->CanRead();  }
          bool  CanSeek() const                         { return Source->CanSeek();  }
@@ -98,8 +112,7 @@ namespace Library
          DWORD GetLength()                             { return Source->GetLength(); }
          DWORD GetPosition() const                     { return Source->GetPosition(); }
 
-
-         // Mutators
+         // ----------------------- MUTATORS ------------------------
 
          void  Close()                                 { return Source->Close(); }
          void  Flush()                                 { return Source->Flush(); }
@@ -111,7 +124,7 @@ namespace Library
          DWORD Write(const BYTE* buffer, DWORD length) { return Source->Write(buffer, length); }
 
       private:
-         // Representation
+         // -------------------- REPRESENTATION ---------------------
 
          StreamPtr  Source;
       };

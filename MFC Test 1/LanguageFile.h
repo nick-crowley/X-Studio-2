@@ -6,10 +6,18 @@ namespace Library
 {
    
 
+   /// <summary>Reads and verifies the language id of a language file</summary>
    class GameLanguageReader
    {
-   public:
+      // --------------------- CONSTRUCTION ----------------------
 
+		// --------------------- PROPERTIES ------------------------
+			
+		// ---------------------- ACCESSORS ------------------------
+
+      // ------------------------ STATIC -------------------------
+
+   public:
       static GameLanguage  Parse(wstring id)
       {
          switch (_wtoi(id.c_str()))
@@ -24,15 +32,29 @@ namespace Library
          }
       }
 
+      // ----------------------- MUTATORS ------------------------
+
+		// -------------------- REPRESENTATION ---------------------
+
    };
 
 
-   
+   /// <summary>Represents an X3 language file, provides a collection of language pages</summary>
    class LanguageFile
    {
+      // --------------------- CONSTRUCTION ----------------------
+
    public:
       LanguageFile() {};
       ~LanguageFile() {};
+
+      // --------------------- PROPERTIES ------------------------
+			
+		// ---------------------- ACCESSORS ------------------------
+
+		// ----------------------- MUTATORS ------------------------
+
+		// -------------------- REPRESENTATION ---------------------
 
       std::vector<LanguagePage> Pages;
       GameLanguage   Language;
