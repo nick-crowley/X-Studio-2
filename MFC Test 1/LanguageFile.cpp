@@ -4,13 +4,10 @@
 namespace Library
 {
 
-   /*LanguageFile::LanguageFile()
+   namespace Language
    {
+
+
    }
-
-
-   LanguageFile::~LanguageFile()
-   {
-   }*/
 
 }

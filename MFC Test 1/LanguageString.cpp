@@ -3,14 +3,10 @@
 
 namespace Library
 {
-
-   /*LanguageString::LanguageString()
+   namespace Language
    {
+
+
    }
-
-
-   LanguageString::~LanguageString()
-   {
-   }*/
 
 }

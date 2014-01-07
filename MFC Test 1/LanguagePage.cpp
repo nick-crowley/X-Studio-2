@@ -3,13 +3,10 @@
 
 namespace Library
 {
-   /*LanguagePage::LanguagePage()
+   namespace Language
    {
-   }*/
 
 
-   /*LanguagePage::~LanguagePage()
-   {
-   }*/
+   }
 
 }

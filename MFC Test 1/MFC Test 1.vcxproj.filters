@@ -40,6 +40,12 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{3453940a-3a7c-4b31-84c2-c6e5bd235ccd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Library\Language">
+      <UniqueIdentifier>{9df3ab4d-530c-41d3-b80c-b8dc305a5ed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Library\Language">
+      <UniqueIdentifier>{f02b0430-6b80-4fe1-a448-4065f503c276}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -47,15 +53,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageFile.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageString.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguagePage.h">
-      <Filter>Header Files\Library</Filter>
     </ClInclude>
     <ClInclude Include="msxml.h">
       <Filter>Header Files\Library</Filter>
@@ -150,19 +147,19 @@
     <ClInclude Include="XFileInfo.h">
       <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="LanguageFile.h">
+      <Filter>Header Files\Library\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguagePage.h">
+      <Filter>Header Files\Library\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageString.h">
+      <Filter>Header Files\Library\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageFile.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageString.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguagePage.cpp">
-      <Filter>Source Files\Library</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\Library</Filter>
@@ -229,6 +226,15 @@
     </ClCompile>
     <ClCompile Include="XFileInfo.cpp">
       <Filter>Source Files\Library\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageFile.cpp">
+      <Filter>Source Files\Library\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguagePage.cpp">
+      <Filter>Source Files\Library\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageString.cpp">
+      <Filter>Source Files\Library\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,26 +3,30 @@
 
 namespace Library
 {
-
-   class LanguageString
+   namespace Language
    {
-      // --------------------- CONSTRUCTION ----------------------
 
-   public:
-      LanguageString() : ID(0) {};
-      LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
-      ~LanguageString() {};
 
-      // --------------------- PROPERTIES ------------------------
+      class LanguageString
+      {
+         // --------------------- CONSTRUCTION ----------------------
+
+      public:
+         LanguageString() : ID(0) {};
+         LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
+         ~LanguageString() {};
+
+         // --------------------- PROPERTIES ------------------------
 			
-		// ---------------------- ACCESSORS ------------------------
+		   // ---------------------- ACCESSORS ------------------------
 
-		// ----------------------- MUTATORS ------------------------
+		   // ----------------------- MUTATORS ------------------------
 
-		// -------------------- REPRESENTATION ---------------------
+		   // -------------------- REPRESENTATION ---------------------
 
-      UINT     ID;
-      wstring  Text;
-   };
-
+         UINT     ID;
+         wstring  Text;
+      };
+   
+   }
 }
