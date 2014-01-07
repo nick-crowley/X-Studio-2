@@ -27,28 +27,28 @@ CFileView::CFileView()
    
    try
    {
-      //path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
+      path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
 
-      //// Test LanguageFileReader
-      //FileStream s(path, FileMode::OpenExisting, FileAccess::ReadWrite, FileShare::None);
-      //auto file = Library::LanguageFileReader().ReadFile(s);
+      // Test LanguageFileReader
+      StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+      auto langFile = LanguageFileReader(fs).ReadFile();
    
-      //
-      //path = L"D:\\X3 Albion Prelude\\11.cat";
+      
+      path = L"D:\\X3 Albion Prelude\\11.cat";
 
-      //// Test catalogue reader
-      //CatalogStream cat_s(path, FileMode::OpenExisting, FileAccess::Read, FileShare::Write);
-      //StringReader rd(cat_s);
+      // Test catalogue reader
+      StreamPtr cs( new CatalogStream(path, FileMode::OpenExisting, FileAccess::Read) );
+      StringReader rd(cs);
+      
       string line;
-
-      //while (rd.ReadLine(line))
-      //   OutputDebugStringA((line+'\n').c_str());
+      while (rd.ReadLine(line))
+         OutputDebugStringA((line+'\n').c_str());
 
 
       path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
       
       // Test GZipStream
-      StreamPtr file = StreamPtr( new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::AllowRead) );
+      StreamPtr file = StreamPtr( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
       StreamPtr zip = StreamPtr( new GZipStream(file, GZipStream::Operation::Decompression) );
       StringReader reader(zip);
 

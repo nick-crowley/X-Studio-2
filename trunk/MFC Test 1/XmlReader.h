@@ -15,7 +15,9 @@ namespace Library
 
       protected:
          XmlReader(StreamPtr in);
+
       public:
+         XmlReader::XmlReader(XmlReader&& r);
          virtual ~XmlReader();
 
          // Prevent copying.  Move assign not impl
