@@ -14,12 +14,14 @@ namespace Library
          StringReader(StringReader&& r);
          virtual ~StringReader();
 
-         void  Close();
+         // Prevent copying.  Move assign not impl
+         NO_COPY(StringReader);
+         StringReader& operator=(StringReader&& r) = delete;
+
+         void           Close();
          virtual bool   ReadLine(string&  line);
 
       private:
-         StringReader(const StringReader& r) {}
-
          bool  PeekByte(BYTE&  b);
          bool  ReadByte(BYTE&  b);
 
