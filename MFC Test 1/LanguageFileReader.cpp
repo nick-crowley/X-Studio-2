@@ -121,7 +121,7 @@ namespace Library
          try
          {
             // Extract stream
-            ByteArray buffer(s.ReadAllBytes());
+            ByteArrayPtr buffer(s.ReadAllBytes());
 
             // Create DOM parser
             XML::IXMLDOMDocument2Ptr pDoc(CLSID_DOMDocument60);

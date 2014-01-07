@@ -42,7 +42,7 @@ namespace Library
 
          z_stream  ZStream;
          gz_header ZHeader;
-         ByteArray Input;
+         ByteArrayPtr Input;
          Operation Mode;
       };
 

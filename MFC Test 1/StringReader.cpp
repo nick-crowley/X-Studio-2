@@ -41,7 +41,7 @@ namespace Library
 
          // Read entire file on first call
          if (Buffer == nullptr)
-            Buffer.reset(Input->ReadAllBytes());
+            Buffer = Input->ReadAllBytes();
 
          // EOF: Return false
          if (Position >= Length)
