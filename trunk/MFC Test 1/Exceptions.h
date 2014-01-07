@@ -146,6 +146,13 @@ namespace Library
          Message = wstring(L"The file format is invalid: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
       }
 
+      /// <summary>Create an FileFormatException from a debugging message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      FileFormatException(wstring  src, wstring  debug) 
+         : ExceptionBase(src, wstring(L"The file format is invalid: ") + debug)
+      {
+      }
    };
 
 
@@ -254,6 +261,14 @@ namespace Library
    class Win32Exception : public ExceptionBase
    {
    public:
+      /// <summary>Create an Win32Exception from a debugging message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      Win32Exception(wstring  src, wstring  debug) 
+         : ExceptionBase(src, wstring(L"Win32API method failed: ") + debug)
+      {
+      }
+
       /// <summary>Create an Win32Exception from a system error.</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">System error id</param>

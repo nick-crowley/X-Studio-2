@@ -4,7 +4,7 @@
 
 namespace Library
 {
-   enum class GameLanguage : int { English, French, German, Russian };
+   
 
    class GameLanguageReader
    {

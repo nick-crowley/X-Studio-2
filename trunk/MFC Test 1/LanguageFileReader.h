@@ -6,36 +6,26 @@
 
 namespace Library
 {
-
-   /*enum class GameVersion : int { Threat, Reunion, TerranConflict, AlbionPrelude, Rebirth };
-   
-   class GameVersionReader
+   namespace IO
    {
-   public:
-      GameVersionReader(const WCHAR*  id);
 
-      GameVersion  Version;
-      UINT         ID;
-   };*/
+      class LanguageFileReader
+      {
+      public:
+         LanguageFileReader() {};
+         ~LanguageFileReader() {};
 
+         LanguageFile   ReadFile(IO::Stream&  s);
 
-   class LanguageFileReader
-   {
-   public:
-      LanguageFileReader() {};
-      ~LanguageFileReader() {};
-
-      LanguageFile   ReadFile(IO::Stream&  s);
-
-   private:
+      private:
       
-      void           ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-      wstring        ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-      GameLanguage   ReadLanguageTag(XML::IXMLDOMNodePtr&  element);
-      wstring        TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
+         void           ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
+         wstring        ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
+         GameLanguage   ReadLanguageTag(XML::IXMLDOMNodePtr&  element);
+         wstring        TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
 
-      LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
-      LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
-   };
-
+         LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
+         LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
+      };
+   }
 }

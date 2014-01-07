@@ -67,6 +67,42 @@ namespace Library
 
       return msg;
    }
+
+   Path&  Path::AppendPath(wstring  path)
+   {
+      AppendBackslash();
+      append(path);
+      
+      return *this;
+   }
+
+   Path&  Path::AppendBackslash()
+   {
+      if (length() > 0 && back() != '\\')
+         append(L"\\");
+
+      return *this;
+   }
+
+   Path&  Path::RemoveBackslash()
+   {
+      if (length() > 0 && back() == '\\')
+         pop_back();
+
+      return *this;
+   }
+
+   Path&  Path::RenameExtension(wstring  ext)
+   {
+      auto_ptr<WCHAR>  path(new WCHAR[MAX_PATH]);
+      StringCchCopy(path.get(), MAX_PATH, c_str());
+
+      if (!PathRenameExtension(path.get(), ext.c_str()))
+         throw Win32Exception(HERE, L"path exceeds character limit");
+
+      assign(path.get());
+      return *this;
+   }
    
    /// <summary>Determines whether a file or folder exists</summary>
    /// <returns>true/false</returns>
@@ -87,4 +123,40 @@ namespace Library
 
       return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
    }
+
+
+   FileSearch::FileSearch(wstring  term)
+   {
+      ZeroMemory(&Data, sizeof(WIN32_FIND_DATA));
+      Handle = FindFirstFileEx(term.c_str(), FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);
+   }
+
+   FileSearch::~FileSearch()
+   {
+      Close();
+   }
+
+   bool  FileSearch::Exists()
+   {
+      return Handle != INVALID_HANDLE_VALUE;
+   }
+
+   void  FileSearch::Close()
+   {
+      if (Handle != INVALID_HANDLE_VALUE)
+      {
+         CloseHandle(Handle);
+         Handle = INVALID_HANDLE_VALUE;
+      }
+   }
+
+   bool  FileSearch::Next()
+   {
+      // Find next result
+      if (Exists() && !FindNextFile(Handle, &Data))
+         Close();
+
+      return Exists();
+   }
+
 }

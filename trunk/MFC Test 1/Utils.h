@@ -37,15 +37,33 @@ namespace Library
    class Path : public wstring
    {
    public:
+      Path() {}
       Path(const WCHAR* path) : wstring(path) {}
       Path(wstring path) : wstring(path) {}
 
+      Path&  AppendPath(wstring  path);
+      Path&  RenameExtension(wstring  ext);
+      Path&  AppendBackslash();
+      Path&  RemoveBackslash();
       bool  Exists();
       bool  IsDirectory();
 
    };
 
-   
+   class FileSearch
+   {
+   public:
+      FileSearch(wstring  term);
+      ~FileSearch();
+
+      void  Close();
+      bool  Exists();
+      bool  Next();
+
+   private:
+      WIN32_FIND_DATA Data;
+      HANDLE          Handle;
+   };
 
 
 }

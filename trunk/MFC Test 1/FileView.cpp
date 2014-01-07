@@ -11,7 +11,11 @@
 #include "GZipStream.h"
 #include "StringReader.h"
 
+#include "XFileSystem.h"
+
+using namespace Library;
 using namespace Library::IO;
+using namespace Library::FileSystem;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -49,18 +53,33 @@ CFileView::CFileView()
       path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
       
       // Test GZipStream
-      GZipStream g_s(new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::None), true, GZipStream::Operation::Decompression);
-      StringReader g_rd(g_s);
+      FileStream* fs = new FileStream(path, FileMode::OpenExisting, FileAccess::Read, FileShare::AllowRead);
+      GZipStream* ps = new GZipStream(fs, true, GZipStream::Operation::Decompression);
+      StringReader g_rd(ps, true);
 
       while (g_rd.ReadLine(line))
          OutputDebugStringA((line+'\n').c_str());
    }
-   catch (Library::ExceptionBase&  e)
+   catch (ExceptionBase&  e)
    {
       CString sz;
       sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
       AfxMessageBox(sz);
    }
+
+   try
+   {
+      // Test XFileSystem
+      XFileSystem vfs(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      vfs.Enumerate();
+   }
+   catch (ExceptionBase&  e)
+   {
+      CString sz;
+      sz.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
+      AfxMessageBox(sz);
+   }
+
 }
 
 CFileView::~CFileView()
