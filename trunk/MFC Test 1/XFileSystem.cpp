@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "XFileSystem.h"
-#include "CatalogStream.h"
 
 using namespace Library::IO;
 
