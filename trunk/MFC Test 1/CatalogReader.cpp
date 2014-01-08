@@ -5,7 +5,7 @@
 
 namespace Library
 {
-   namespace IO
+   namespace FileSystem
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 

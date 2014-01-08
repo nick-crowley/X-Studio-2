@@ -46,6 +46,12 @@
     <Filter Include="Header Files\Library\Language">
       <UniqueIdentifier>{f02b0430-6b80-4fe1-a448-4065f503c276}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Library\Scripts">
+      <UniqueIdentifier>{7fdace64-24dd-44b2-a55c-ba8125f20042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Library\Scripts">
+      <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -87,20 +93,11 @@
     <ClInclude Include="GZipStream.h">
       <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
-    <ClInclude Include="CatalogStream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="DataStream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
     <ClInclude Include="STL.h">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
     <ClInclude Include="XFileSystem.h">
       <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageFileReader.h">
-      <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
     <ClInclude Include="ChildFrm.h">
       <Filter>Header Files\GUI</Filter>
@@ -141,9 +138,6 @@
     <ClInclude Include="XCatalog.h">
       <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="CatalogReader.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
     <ClInclude Include="XFileInfo.h">
       <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
@@ -162,6 +156,21 @@
     <ClInclude Include="XmlReader.h">
       <Filter>Header Files\Library\IO</Filter>
     </ClInclude>
+    <ClInclude Include="CatalogReader.h">
+      <Filter>Header Files\Library\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="CatalogStream.h">
+      <Filter>Header Files\Library\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStream.h">
+      <Filter>Header Files\Library\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="LegacySyntaxReader.h">
+      <Filter>Header Files\Library\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageFileReader.h">
+      <Filter>Header Files\Library\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -176,26 +185,14 @@
     <ClCompile Include="StringReader.cpp">
       <Filter>Source Files\Library\IO</Filter>
     </ClCompile>
-    <ClCompile Include="DataStream.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="CatalogStream.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
     <ClCompile Include="GZipStream.cpp">
       <Filter>Source Files\Library\IO</Filter>
     </ClCompile>
     <ClCompile Include="XFileSystem.cpp">
       <Filter>Source Files\Library\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="LanguageFileReader.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
     <ClCompile Include="XCatalog.cpp">
       <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="CatalogReader.cpp">
-      <Filter>Source Files\Library\IO</Filter>
     </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -250,6 +247,21 @@
     </ClCompile>
     <ClCompile Include="XmlReader.cpp">
       <Filter>Source Files\Library\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CatalogReader.cpp">
+      <Filter>Source Files\Library\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="CatalogStream.cpp">
+      <Filter>Source Files\Library\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStream.cpp">
+      <Filter>Source Files\Library\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="LegacySyntaxReader.cpp">
+      <Filter>Source Files\Library\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageFileReader.cpp">
+      <Filter>Source Files\Library\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

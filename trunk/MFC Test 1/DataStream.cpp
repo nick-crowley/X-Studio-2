@@ -8,7 +8,7 @@
 
 namespace Library
 {
-   namespace IO
+   namespace FileSystem
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -16,7 +16,7 @@ namespace Library
       /// <param name="f">The file to open</param>
       /// <exception cref="Library.FileNotFoundException">Data file not found</exception>
       /// <exception cref="Library.Win32Exception">An I/O error occurred</exception>
-      DataStream::DataStream(const FileSystem::XFileInfo&  f)
+      DataStream::DataStream(const XFileInfo&  f)
          : StreamFacade( StreamPtr(new FileStream(f.DataFile, FileMode::OpenExisting, FileAccess::Read)) ),
            File(f)
       {

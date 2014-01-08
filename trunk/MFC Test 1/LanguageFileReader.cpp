@@ -3,7 +3,7 @@
 
 namespace Library
 {
-   namespace IO
+   namespace Language
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 

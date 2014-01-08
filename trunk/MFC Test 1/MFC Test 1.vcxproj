@@ -137,6 +137,7 @@
     <ClInclude Include="LanguagePage.h" />
     <ClInclude Include="LanguageString.h" />
     <ClInclude Include="LanguageFile.h" />
+    <ClInclude Include="LegacySyntaxReader.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MemoryStream.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="LanguagePage.cpp" />
     <ClCompile Include="LanguageString.cpp" />
     <ClCompile Include="LanguageFile.cpp" />
+    <ClCompile Include="LegacySyntaxReader.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="MFC Test 1.cpp" />

@@ -2,11 +2,9 @@
 #include "Common.h"
 #include "FileStream.h"
 
-using namespace Library::IO;
-
 namespace Library
 {
-   namespace IO
+   namespace FileSystem
    {
 
       /// <summary>Provides stream access to the contents of catalogs</summary>
@@ -46,3 +44,5 @@ namespace Library
 
    }
 }
+
+using namespace Library::FileSystem;

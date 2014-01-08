@@ -3,11 +3,9 @@
 #include "Stream.h"
 #include "XFileInfo.h"
 
-using namespace Library::IO;
-
 namespace Library
 {
-   namespace IO
+   namespace FileSystem
    {
 
       /// <summary>Provides stream access to the contents of catalog data files</summary>
@@ -49,3 +47,5 @@ namespace Library
 
    }
 }
+
+using namespace Library::FileSystem;

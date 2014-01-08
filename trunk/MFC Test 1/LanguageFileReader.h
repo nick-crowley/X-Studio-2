@@ -3,12 +3,10 @@
 #include "LanguageFile.h"
 #include "XmlReader.h"
 
-using namespace Library::IO;
-using namespace Library::Language;
 
 namespace Library
 {
-   namespace IO
+   namespace Language
    {
      
 
@@ -45,3 +43,5 @@ namespace Library
 
    }
 }
+
+using namespace Library::Language;
