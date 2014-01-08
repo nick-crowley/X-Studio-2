@@ -131,9 +131,9 @@ namespace Library
             wstring        path;
             DWORD          size;
 
-            // Add files, ignore duplicates from lower priority catalogs
-            while (reader.ReadDeclaration(path, size))
-               Files.Add( XFileInfo(*this, *it, path, size) );
+            // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
+            for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
+               Files.Add( XFileInfo(*this, *it, path, size, offset) );
          }
 
          // Return count

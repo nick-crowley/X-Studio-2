@@ -88,7 +88,7 @@ namespace Library
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The mode.</param>
       /// <exception cref="Library.NotSupportedException">Always</exception>
-      void  GZipStream::Seek(DWORD  offset, SeekOrigin  mode)
+      void  GZipStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          throw NotSupportedException(HERE, ERR_NO_SEEK_ACCESS);
       }
