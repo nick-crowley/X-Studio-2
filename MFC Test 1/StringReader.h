@@ -19,13 +19,18 @@ namespace Library
          StringReader(StringReader&& r);
          virtual ~StringReader();
 
-         // Prevent copying.  Move assign not impl
+         // Class cannot be copied 
          NO_COPY(StringReader);
+         // Move assign not implemented
          NO_MOVE_ASSIGN(StringReader);
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(DWORD,LineNumber,GetLineNumber);
+
 			// ---------------------- ACCESSORS ------------------------
+
+         DWORD    GetLineNumber() const     { return LineNum; }
 
 			// ----------------------- MUTATORS ------------------------
 
@@ -39,7 +44,8 @@ namespace Library
 
          StreamPtr    Input;
          ByteArrayPtr Buffer;
-         DWORD        Length,
+         DWORD        LineNum,
+                      Length,
                       Position;
       };
 
