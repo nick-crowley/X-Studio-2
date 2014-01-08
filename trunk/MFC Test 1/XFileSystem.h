@@ -56,7 +56,7 @@ namespace Library
          
 
          /// <summary>Collection of file descriptors, sorted by path (no duplicates)</summary>
-         class FileCollection : private set<XFileInfo, UniquePath>
+         class FileCollection : public set<XFileInfo, UniquePath>
          {
             typedef set<XFileInfo, UniquePath> Base;
 
@@ -94,7 +94,9 @@ namespace Library
 
 			// ----------------------- MUTATORS ------------------------
 
+         bool         Contains(Path p);
          DWORD        Enumerate();
+         XFileInfo    Find(Path p);
 
       private:
          DWORD        EnumerateCatalogs();

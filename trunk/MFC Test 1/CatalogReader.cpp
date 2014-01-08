@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CatalogReader.h"
+#include <algorithm>
 
 
 namespace Library
@@ -44,8 +45,11 @@ namespace Library
          if (gap == string::npos)
             throw FileFormatException(HERE, L"Invalid file declaration");
          
-         // Parse declaration
-         path = wstring(line.begin(), line.begin()+gap);
+         // Parse path: Convert char->wchar and '/'->'\'
+         path.clear();
+         transform(line.begin(), line.begin()+gap, back_inserter(path), [](char ch) { return (WCHAR)(ch == '/' ? '\\' : ch); } );
+
+         // Parse size
          size = atoi( string(line.begin()+gap+1, line.end()).c_str() );
          return true;
       }

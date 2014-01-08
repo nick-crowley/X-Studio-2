@@ -67,6 +67,13 @@ CFileView::CFileView()
       // Test XFileSystem
       XFileSystem vfs(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
       vfs.Enumerate();
+
+      // Test VFS search
+      path = L"D:\\X3 Albion Prelude\\t\\0001-L044.pck";
+      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path) ? L"true" : L"false").c_str() );
+
+      path = L"D:\\X3 Albion Prelude\\t\\0999-L044.pck";
+      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path) ? L"true" : L"false").c_str() );
    }
    catch (ExceptionBase&  e)
    {
