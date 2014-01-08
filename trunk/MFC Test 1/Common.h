@@ -14,5 +14,5 @@ namespace Library
 
 
    /// <summary>Defines the available game versions</summary>
-   enum class GameVersion : int { Threat, Reunion, TerranConflict, AlbionPrelude, Rebirth };
+   enum class GameVersion : int { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
 }

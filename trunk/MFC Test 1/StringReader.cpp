@@ -11,7 +11,7 @@ namespace Library
       /// <param name="src">The input stream</param>
       /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
       /// <exception cref="Library.ArgumentNullException">Stream is null</exception>
-      StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr)
+      StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr), LineNum(0)
       {
          REQUIRED(src);
 
@@ -26,7 +26,7 @@ namespace Library
       /// <summary>Move-copy from an existing string reader</summary>
       /// <param name="r">The existing reader</param>
       StringReader::StringReader(StringReader&& r)
-         : Length(r.Length), Position(r.Position), Buffer(std::move(r.Buffer)), Input(std::move(r.Input))
+         : Length(r.Length), Position(r.Position), Buffer(std::move(r.Buffer)), Input(std::move(r.Input)), LineNum(r.LineNum)
       {
       }
 
@@ -48,6 +48,9 @@ namespace Library
          DWORD start = Position,    // Start of line
                end   = Length;      // End of characters on line
          BYTE  ch;
+
+         // Increment line number before start (ensures 1-based)
+         LineNum++;
 
          // Ensure stream has not been moved
          if (Input == nullptr)
