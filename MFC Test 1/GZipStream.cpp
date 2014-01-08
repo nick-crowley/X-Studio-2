@@ -131,7 +131,7 @@ namespace Library
          case Z_STREAM_END:
          case Z_BUF_ERROR:
          case Z_OK:
-            return ZStream.avail_out;
+            return length - ZStream.avail_out;
 
          // Error: throw
          default:
