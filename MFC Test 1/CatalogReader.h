@@ -3,11 +3,10 @@
 #include "Stream.h"
 #include "StringReader.h"
 
-using namespace Library::IO;
 
 namespace Library
 {
-   namespace IO
+   namespace FileSystem
    {
       /// <summary>Reads the file declarations from catalogs</summary>
       class CatalogReader : protected IO::StringReader
@@ -37,3 +36,5 @@ namespace Library
 
    }
 }
+
+using namespace Library::FileSystem;
