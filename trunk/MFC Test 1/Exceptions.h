@@ -126,7 +126,7 @@ namespace Library
       /// <param name="file">Folder path</param>
       DirectoryNotFoundException(wstring  src, Path  folder) : ExceptionBase(src, (UINT)0)
       {
-         Message = StringResource::Format(L"The folder '%s' does not exist", folder.c_str()); 
+         Message = StringResource::Format(L"The folder '%s' does not exist", (WCHAR*)folder); 
       }
 
    };
@@ -166,7 +166,7 @@ namespace Library
       /// <param name="file">File path</param>
       FileNotFoundException(wstring  src, Path  file) : ExceptionBase(src, (UINT)0)
       {
-         Message = StringResource::Format(L"The file '%s' does not exist", file.c_str()); 
+         Message = StringResource::Format(L"The file '%s' does not exist", (WCHAR*)file); 
       }
 
    };

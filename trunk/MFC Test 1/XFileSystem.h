@@ -54,11 +54,23 @@ namespace Library
             }
          };
          
-
-         /// <summary>Collection of file descriptors, sorted by path (no duplicates)</summary>
-         class FileCollection : public set<XFileInfo, UniquePath>
+         /// <summary>Sorts file descriptors by their precedence in descending order</summary>
+         class DescendingPrecedence : public binary_function<XFileInfo, XFileInfo, bool>
          {
-            typedef set<XFileInfo, UniquePath> Base;
+         public:
+            // ---------------------- ACCESSORS ------------------------
+
+            bool operator()(XFileInfo a, XFileInfo b)
+            {
+               return a.Precedence > b.Precedence;
+            }
+         };
+
+         /// <summary>Collection of file descriptors with custom sort rules</summary>
+         template<typename T>
+         class XFileInfoCollection : public set<XFileInfo, T>
+         {
+            typedef set<XFileInfo, T> Base;
 
          public:
             // ---------------------- PROPERTIES -----------------------
@@ -75,6 +87,12 @@ namespace Library
             void      Clear()             { Base::clear();                             }
          };
 
+         /// <summary>Collection used by file system</summary>
+         typedef XFileInfoCollection<UniquePath>            FileCollection;
+
+         /// <summary>Collection used to hold results of a search</summary>
+         typedef XFileInfoCollection<DescendingPrecedence>  ResultCollection;
+
       public:
          // --------------------- CONSTRUCTION ----------------------
 
@@ -89,19 +107,24 @@ namespace Library
 
          // ---------------------- ACCESSORS ------------------------
 
-         Path         GetFolder()   { return Folder;  }
-         GameVersion  GetVersion()  { return Version; }
+         bool         Contains(Path  path, bool  matchExt) const;
+         XFileInfo    Find(Path  path, bool  matchExt) const;
+
+         Path         GetFolder() const   { return Folder;  }
+         GameVersion  GetVersion() const  { return Version; }
+
+      private:
+         ResultCollection  Query(Path  path, bool  matchExt) const;
 
 			// ----------------------- MUTATORS ------------------------
 
-         bool         Contains(Path p);
+      public:
          DWORD        Enumerate();
-         XFileInfo    Find(Path p);
-
+         
       private:
          DWORD        EnumerateCatalogs();
          DWORD        EnumerateFiles();
-
+         
          // -------------------- REPRESENTATION ---------------------
 
          CatalogCollection  Catalogs;

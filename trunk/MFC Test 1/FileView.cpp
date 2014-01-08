@@ -70,10 +70,10 @@ CFileView::CFileView()
 
       // Test VFS search
       path = L"D:\\X3 Albion Prelude\\t\\0001-L044.pck";
-      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path) ? L"true" : L"false").c_str() );
+      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,true) ? L"true" : L"false").c_str() );
 
-      path = L"D:\\X3 Albion Prelude\\t\\0999-L044.pck";
-      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path) ? L"true" : L"false").c_str() );
+      path = L"D:\\X3 Albion Prelude\\t\\9999-L044.pck";
+      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,false) ? L"true" : L"false").c_str() );
    }
    catch (ExceptionBase&  e)
    {

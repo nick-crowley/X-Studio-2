@@ -32,14 +32,21 @@ namespace Library
 			
 			// ---------------------- ACCESSORS ------------------------
 
+         bool  Matches(Path path, bool checkExtension) const;
+
 			// ----------------------- MUTATORS ------------------------
+
+      private:
+         void  CalculatePrecendence();
 
 			// -------------------- REPRESENTATION ---------------------
 
+      public:
          XFileSystem* FileSystem;
          XCatalog*    Catalog;
          Path         FullPath;
-         DWORD        Offset;
+         DWORD        Offset,
+                      Precedence;
          FileSource   Source;
       };
 
