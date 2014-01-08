@@ -39,8 +39,9 @@ namespace Library
 
 			// -------------------- REPRESENTATION ---------------------
 
-      private:
          Path           FullPath;
+
+      private:
          FileStreamPtr  FileLock;
          XFileSystem&   FileSystem;
 

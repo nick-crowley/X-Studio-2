@@ -46,7 +46,7 @@ namespace Library
       public:
          void   Close();
          void   SafeClose();
-         void   Seek(DWORD  offset, SeekOrigin  mode);
+         void   Seek(LONG  offset, SeekOrigin  mode);
          void   SetLength(DWORD  length);
 
          DWORD  Read(BYTE* buffer, DWORD length);

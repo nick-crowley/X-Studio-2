@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
+#include "Stream.h"
 
-//using namespace Library::FileSystem;
 
 namespace Library
 {
@@ -21,7 +21,7 @@ namespace Library
          // --------------------- CONSTRUCTION ----------------------
 
          XFileInfo(Path p);
-         XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos);
+         XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD size, DWORD position);
          virtual ~XFileInfo();
 
          // Default copy/move semantics
@@ -30,9 +30,14 @@ namespace Library
 
 			// --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(Path,DataFile,GetDataFile);
+
 			// ---------------------- ACCESSORS ------------------------
 
-         bool  Matches(Path path, bool checkExtension) const;
+         Path       GetDataFile() const; 
+
+         bool       Matches(Path path, bool checkExtension) const;
+         StreamPtr  Open() const;
 
 			// ----------------------- MUTATORS ------------------------
 
@@ -46,11 +51,12 @@ namespace Library
          XCatalog*    Catalog;
          Path         FullPath;
          DWORD        Offset,
+                      Length,
                       Precedence;
          FileSource   Source;
       };
 
-
-      
    }
 }
+
+using namespace Library::FileSystem;

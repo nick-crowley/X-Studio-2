@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Stream.h"
+#include "XFileInfo.h"
 
 using namespace Library::IO;
 
@@ -17,27 +18,33 @@ namespace Library
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         DataStream(StreamPtr  src);
-         DataStream(Path path, FileMode mode, FileAccess access, FileShare share);
+         DataStream(const XFileInfo& f);
          ~DataStream();
 
-         // Prevent copying/moving
+         // This class cannot be moved
          NO_MOVE(DataStream);
+         // This class cannot be copied
          NO_COPY(DataStream);
 
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
 
+         DWORD  GetLength();
+         DWORD  GetPosition() const;
+
 			// ----------------------- MUTATORS ------------------------
 
          DWORD  Read(BYTE* buffer, DWORD length);
+         void   Seek(LONG  offset, SeekOrigin  mode);
          DWORD  Write(const BYTE* buffer, DWORD length);
 
       private:
          void   Encode(byte* buffer, DWORD length);
 
          // -------------------- REPRESENTATION ---------------------
+
+         const XFileInfo&  File;
       };
 
    }

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "XFileSystem.h"
+#include "GZipStream.h"
+#include "DataStream.h"
 
 namespace Library
 {
@@ -11,7 +13,7 @@ namespace Library
       /// <summary>Creates a file descriptor for a physical file</summary>
       /// <param name="p">Full path of file</param>
       XFileInfo::XFileInfo(Path p) 
-         : Source(FileSource::Physical), FullPath(p), FileSystem(nullptr), Catalog(nullptr), Offset(0)
+         : Source(FileSource::Physical), FullPath(p), FileSystem(nullptr), Catalog(nullptr), Offset(0), Length(0)
       {
          CalculatePrecendence();
       }
@@ -20,9 +22,10 @@ namespace Library
       /// <param name="vfs">The file system</param>
       /// <param name="cat">The catalog containing the file</param>
       /// <param name="subPath">The sub path of the file</param>
-      /// <param name="pos">The position within the data-file, in bytes</param>
-      XFileInfo::XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD pos)
-         : Source(FileSource::Catalog), FullPath(vfs.GetFolder()+subPath), FileSystem(&vfs), Catalog(&cat), Offset(pos) 
+      /// <param name="size">The size of the file, in bytes</param>
+      /// <param name="position">The position within the data-file, in bytes</param>
+      XFileInfo::XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD size, DWORD position)
+         : Source(FileSource::Catalog), FullPath(vfs.GetFolder()+subPath), FileSystem(&vfs), Catalog(&cat), Length(size), Offset(position) 
       {
          CalculatePrecendence();
       }
@@ -33,6 +36,17 @@ namespace Library
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Get full path of the data file</summary>
+      /// <returns></returns>
+      Path  XFileInfo::GetDataFile() const
+      { 
+         if (Source == FileSource::Physical)
+            throw InvalidOperationException(HERE, L"Physical files have no data file");
+
+         // Generate path
+         return Catalog->FullPath.RenameExtension(L".dat"); 
+      }
+
       /// <summary>Compares descriptor against the specified path.</summary>
       /// <param name="path">The path to compare against</param>
       /// <param name="checkExtension">Whether the file extension must also match</param>
@@ -40,6 +54,31 @@ namespace Library
       bool  XFileInfo::Matches(Path path, bool checkExtension) const
       {
          return checkExtension ? FullPath == path : FullPath.RemoveExtension() == path.RemoveExtension(); 
+      }
+
+      /// <summary>Opens a stream for reading</summary>
+      /// <returns></returns>
+      StreamPtr  XFileInfo::Open() const
+      {
+         Stream*  s;
+
+         // PHYSICAL: Open file directly
+         if (Source == FileSource::Physical)
+         {
+            s = new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read);
+
+            // TODO: Examine first 3 bytes, wrap in encrypted stream
+         }
+         else
+            // CATALOG: Read from .dat file
+            s = new DataStream(*this);
+
+         // PCK: Wrap in GZip decompression stream
+         if (FullPath.HasExtension(L".pck"))
+            s = new GZipStream(StreamPtr(s), GZipStream::Operation::Decompression);
+
+         // Return stream
+         return StreamPtr(s);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
