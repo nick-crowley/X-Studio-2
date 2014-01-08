@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XFileSystem.h"
+#include <algorithm>
 
 using namespace Library::IO;
 
@@ -50,6 +51,12 @@ namespace Library
          // Enumerate
          EnumerateCatalogs();
          return EnumerateFiles();
+      }
+
+      bool  XFileSystem::Contains(Path  p)
+      {
+         return find_if(Files.begin(), Files.end(), [&](XFileInfo f)->bool { return f.FullPath == p; } ) != Files.end();
+         //return true;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
