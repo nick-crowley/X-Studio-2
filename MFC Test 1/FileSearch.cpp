@@ -1,41 +1,55 @@
 #include "stdafx.h"
 #include "Common.h"
+#include <Shlwapi.h>
 
 namespace Library
 {
+   // -------------------------------- CONSTRUCTION --------------------------------
 
-   FileSearch::FileSearch(wstring  term) : Handle(NULL)
+   /// <summary>Create a file search from a search term</summary>
+   /// <param name="query">Pattern to search for</param>
+   FileSearch::FileSearch(Path query) : Handle(NULL), Folder(query.Folder)
    {
       ZeroMemory(&Data, sizeof(WIN32_FIND_DATA));
-      Handle = FindFirstFileEx(term.c_str(), FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);
+
+
+      Handle = FindFirstFileEx((WCHAR*)query, FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);
    }
 
+   /// <summary>Closes the file search</summary>
    FileSearch::~FileSearch()
    {
       Close();
    }
 
-   bool  FileSearch::Exists()
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Determines whether current result is valid</summary>
+   /// <returns></returns>
+   bool  FileSearch::HasResult()
    {
       return Handle != INVALID_HANDLE_VALUE;
    }
 
+   /// <summary>Closes the query</summary>
    void  FileSearch::Close()
    {
       if (Handle != INVALID_HANDLE_VALUE)
       {
-         CloseHandle(Handle);
+         FindClose(Handle);
          Handle = INVALID_HANDLE_VALUE;
       }
    }
 
-   bool  FileSearch::Next()
+   /// <summary>Get next result</summary>
+   void  FileSearch::Next()
    {
       // Find next result
-      if (Exists() && !FindNextFile(Handle, &Data))
+      if (HasResult() && !FindNextFile(Handle, &Data))
          Close();
-
-      return Exists();
    }
 
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
+	// ------------------------------- PRIVATE METHODS ------------------------------
 }

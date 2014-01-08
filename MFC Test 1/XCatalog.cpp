@@ -12,7 +12,7 @@ namespace Library
       /// <param name="vfs">File system</param>
       /// <param name="path">Full path of catalog file</param>
       XCatalog::XCatalog(XFileSystem& vfs, Path path)
-         : FullPath(path), FileSystem(vfs), FileLock(new FileStream(FullPath.c_str(), FileMode::OpenExisting, FileAccess::Read)) 
+         : FullPath(path), FileSystem(vfs), FileLock(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) 
       { 
       }
 
