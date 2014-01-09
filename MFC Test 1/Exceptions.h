@@ -188,7 +188,7 @@ namespace Library
       /// <summary>Create an InvalidOperationException from a debugging message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="debug">Debug message</param>
-      InvalidOperationException(wstring  src, wstring  debug, ...) 
+      InvalidOperationException(wstring  src, wstring  debug) 
          : ExceptionBase(src, wstring(L"The operation is invalid: ") + debug)
       {
       }
@@ -206,6 +206,14 @@ namespace Library
       {
          va_list pArgs;
          Message = wstring(L"Invalid game data value: ") + StringResource::LoadV(err, va_start(pArgs, err)); 
+      }
+
+      /// <summary>Create an InvalidValueException from a debugging message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="debug">Debug message</param>
+      InvalidValueException(wstring  src, wstring  debug) 
+         : ExceptionBase(src, wstring(L"Invalid game data value: ") + debug)
+      {
       }
    };
 
