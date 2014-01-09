@@ -37,9 +37,6 @@
     <Filter Include="Header Files\Logic\Scripts">
       <UniqueIdentifier>{7fdace64-24dd-44b2-a55c-ba8125f20042}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Logic\Scripts\IO">
-      <UniqueIdentifier>{2afd5640-46bd-488e-9827-6231f91801ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Logic">
       <UniqueIdentifier>{9a39e521-0fad-4678-8c65-533dc9195ae9}</UniqueIdentifier>
     </Filter>
@@ -54,9 +51,6 @@
     </Filter>
     <Filter Include="Source Files\Logic\Scripts">
       <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Scripts\IO">
-      <UniqueIdentifier>{38ba10d9-8a8e-4cb4-93d6-9a7839b018f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,9 +114,6 @@
     <ClInclude Include="Logic\LanguageFile.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\LanguageFileReader.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\LanguagePage.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
@@ -137,18 +128,6 @@
     </ClInclude>
     <ClInclude Include="Logic\SyntaxFile.h">
       <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\LegacySyntaxReader.h">
-      <Filter>Header Files\Logic\Scripts\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\CatalogReader.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\CatalogStream.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\DataStream.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="Logic\XCatalog.h">
       <Filter>Header Files\Logic\FileSystem</Filter>
@@ -184,6 +163,21 @@
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="Logic\zlib.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\CatalogReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\CatalogStream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\DataStream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\LanguageFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\LegacySyntaxReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,15 +224,6 @@
     <ClCompile Include="Logic\StringResource.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\CatalogReader.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\CatalogStream.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\DataStream.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\XCatalog.cpp">
       <Filter>Source Files\Logic\FileSystem</Filter>
     </ClCompile>
@@ -247,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="Logic\XFileSystem.cpp">
       <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\LegacySyntaxReader.cpp">
-      <Filter>Source Files\Logic\Scripts\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\CommandSyntax.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
@@ -261,9 +243,6 @@
       <Filter>Source Files\Logic\Scripts</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LanguageFile.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\LanguageFileReader.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LanguagePage.cpp">
@@ -285,6 +264,21 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\XmlReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\CatalogReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\CatalogStream.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\DataStream.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LanguageFileReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LegacySyntaxReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>

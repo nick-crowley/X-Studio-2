@@ -5,11 +5,9 @@
 
 namespace Logic
 {
-   namespace Scripts
+   namespace IO
    {
-      namespace IO
-      {
-
+      
       /// <summary>Reads the XStudio syntax file</summary>
       class LegacySyntaxReader : protected StringReader
       {
@@ -59,11 +57,10 @@ namespace Logic
 
       };
 
-      }
    }
 }
 
-using namespace Logic::Scripts::IO;
+using namespace Logic::IO;
 
 
 

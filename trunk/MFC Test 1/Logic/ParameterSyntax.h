@@ -161,3 +161,5 @@ namespace Logic
       #define      PARAMETER_SYNTAX_COUNT            72
    }
 }
+
+using namespace Logic::Scripts;
