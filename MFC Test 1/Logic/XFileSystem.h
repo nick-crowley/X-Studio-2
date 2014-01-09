@@ -3,9 +3,9 @@
 #include "XCatalog.h"
 #include "XFileInfo.h"
 
-using namespace Library::FileSystem;
+using namespace Logic::FileSystem;
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {

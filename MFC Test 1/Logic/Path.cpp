@@ -3,7 +3,7 @@
 #include <Strsafe.h>       // C String handling
 #include "Shlwapi.h"       // PathFileExists
 
-namespace Library
+namespace Logic
 {
    // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -14,7 +14,7 @@ namespace Library
 
    /// <summary>Create path from a char array</summary>
    /// <param name="path">The path.</param>
-   /// <exception cref="Library::ArgumentNullException">Path is null</exception>
+   /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
    Path::Path(const WCHAR* path) : Buffer(Init(path))
    {
    }
@@ -42,7 +42,7 @@ namespace Library
    /// <summary>Creates a MAX_PATH char array buffer containing a path</summary>
    /// <param name="path">The initial path</param>
    /// <returns></returns>
-   /// <exception cref="Library::ArgumentNullException">Path is null</exception>
+   /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
    Path::CharPtr  Path::Init(const WCHAR*  path)
    {
       REQUIRED(path);
@@ -124,7 +124,7 @@ namespace Library
    /// <summary>Determines whether path has a given extension (case insensitive)</summary>
    /// <param name="ext">The extention preceeded by a dot</param>
    /// <returns></returns>
-   /// <exception cref="Library::ArgumentNullException">Path is null</exception>
+   /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
    bool  Path::HasExtension(const WCHAR* ext) const
    {
       REQUIRED(ext);
@@ -143,7 +143,7 @@ namespace Library
 
    /// <summary>Determines whether path is directory</summary>
    /// <returns></returns>
-   /// <exception cref="Library::Win32Exception">Path does not exist</exception>
+   /// <exception cref="Logic::Win32Exception">Path does not exist</exception>
    bool  Path::IsDirectory() const
    {
       int attr = GetFileAttributes(Buffer.get());
@@ -181,7 +181,7 @@ namespace Library
 
    /// <summary>Removes the file extension, if present</summary>
    /// <returns>New path without the extension</returns>
-   /// <exception cref="Library.Win32Exception">Path exceeds character limit</exception>
+   /// <exception cref="Logic::Win32Exception">Path exceeds character limit</exception>
    Path  Path::RemoveExtension() const
    {
       CharPtr buf( Copy() );
@@ -194,7 +194,7 @@ namespace Library
    /// <summary>Renames the file extension, if none is present then it is appended</summary>
    /// <param name="ext">The file extension, preceeded by a dot</param>
    /// <returns>New path with renamed extension</returns>
-   /// <exception cref="Library.Win32Exception">Path exceeds character limit</exception>
+   /// <exception cref="Logic::Win32Exception">Path exceeds character limit</exception>
    Path  Path::RenameExtension(wstring  ext) const
    {
       CharPtr buf( Copy() );
@@ -213,7 +213,7 @@ namespace Library
    /// <summary>Assigns the specified path</summary>
    /// <param name="path">The path</param>
    /// <returns>this</returns>
-   /// <exception cref="Library::ArgumentNullException">Path is null</exception>
+   /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
    Path&   Path::Assign(const WCHAR*  path)
    {
       REQUIRED(path);
@@ -228,7 +228,7 @@ namespace Library
    /// <summary>Compares the path with another</summary>
    /// <param name="path">The path to compare against</param>
    /// <returns></returns>
-   /// <exception cref="Library::ArgumentNullException">Path is null</exception>
+   /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
    int   Path::Compare(const WCHAR* path) const
    {
       REQUIRED(path);

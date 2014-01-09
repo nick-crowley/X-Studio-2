@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MemoryStream.h"
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {

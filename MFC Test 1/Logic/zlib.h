@@ -32,7 +32,7 @@
 
 #include "zconf.h"
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -1618,4 +1618,4 @@ namespace Library
 
 
    } // namespace IO
-} // namespace Library
+} // namespace Logic

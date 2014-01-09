@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <Shlwapi.h>
 
-namespace Library
+namespace Logic
 {
    // -------------------------------- CONSTRUCTION --------------------------------
 

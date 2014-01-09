@@ -1,7 +1,7 @@
 #pragma once
 #include "Utils.h"
 
-namespace Library
+namespace Logic
 {
 
    #define  HERE   __WFUNCTION__

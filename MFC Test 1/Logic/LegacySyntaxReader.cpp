@@ -3,7 +3,7 @@
 #include "LegacySyntaxReader.h"
 
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {
@@ -51,7 +51,7 @@ namespace Library
       /// <summary>Resolve a command group from the name</summary>
       /// <param name="name">The group name</param>
       /// <returns></returns>
-      /// <exception cref="Library::InvalidValueException">Unknown group</exception>
+      /// <exception cref="Logic::InvalidValueException">Unknown group</exception>
       CommandGroup  LegacySyntaxReader::LookupCommandGroup(const WCHAR* name)
       {
          for (int i = 0; i < COMMAND_GROUP_COUNT; i++) {
@@ -66,7 +66,7 @@ namespace Library
       /// <summary>Resolve a parameter type from the name</summary>
       /// <param name="name">The parameter type name</param>
       /// <returns></returns>
-      /// <exception cref="Library::InvalidValueException">Unknown parameter type</exception>
+      /// <exception cref="Logic::InvalidValueException">Unknown parameter type</exception>
       ParameterType  LegacySyntaxReader::LookupParameterType(const WCHAR* name)
       {
          for (int i = 0; i < PARAMETER_SYNTAX_COUNT; i++) {
@@ -81,8 +81,8 @@ namespace Library
       /// <summary>Reads the next syntax block</summary>
       /// <param name="dec">Command declaration</param>
       /// <returns>true if successful, false on EOF</returns>
-      /// <exception cref="Library::FileFormatException">Missing syntax component</exception>
-      /// <exception cref="Library::InvalidValueException">Unknown command group / parameter type</exception>
+      /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
+      /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
       bool  LegacySyntaxReader::ReadSyntax(CommandSyntax::Declaration& dec)
       {
          wstring line;
@@ -128,7 +128,7 @@ namespace Library
       /// <param name="line">The line text</param>
       /// <param name="content">Meaning of line</param>
       /// <returns>true</returns>
-      /// <exception cref="Library::FileFormatException">Line Missing</exception>
+      /// <exception cref="Logic::FileFormatException">Line Missing</exception>
       bool  LegacySyntaxReader::RequireLine(wstring& line, const WCHAR* content)
       {
          string ansi;

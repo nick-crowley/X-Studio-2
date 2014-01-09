@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "XmlReader.h"
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -9,9 +9,9 @@ namespace Library
 
       /// <summary>Creates an xml reader from an input stream</summary>
       /// <param name="src">The input stream</param>
-      /// <exception cref="Library::ArgumentException">Stream is not readable</exception>
-      /// <exception cref="Library::ArgumentNullException">Stream is null</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       XmlReader::XmlReader(StreamPtr src) : Input(src)
       {
          REQUIRED(src);
@@ -49,9 +49,9 @@ namespace Library
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
       /// <summary>Parses the entire contents of the input stream</summary>
-      /// <exception cref="Library::ComException">COM Error</exception>
-      /// <exception cref="Library::FileFormatException">Error in the XML</exception>
-      /// <exception cref="Library::InvalidOperationException">Document already loaded</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Error in the XML</exception>
+      /// <exception cref="Logic::InvalidOperationException">Document already loaded</exception>
       void  XmlReader::LoadDocument()
       {
          try
@@ -76,9 +76,9 @@ namespace Library
       /// <param name="node">The element containing the attribute</param>
       /// <param name="name">The attribute name</param>
       /// <returns>Attribute value</returns>
-      /// <exception cref="Library::ArgumentNullException">Node is null</exception>
-      /// <exception cref="Library::FileFormatException">Attribute is missing</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Attribute is missing</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       wstring  XmlReader::ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);
@@ -103,9 +103,9 @@ namespace Library
       /// <summary>Verifies the name of an element</summary>
       /// <param name="node">The element</param>
       /// <param name="name">Name of the element</param>
-      /// <exception cref="Library::ArgumentNullException">Node is null</exception>
-      /// <exception cref="Library::FileFormatException">Missing element</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Missing element</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       void  XmlReader::ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);
@@ -126,8 +126,8 @@ namespace Library
       /// <param name="node">The element containing the attribute</param>
       /// <param name="name">Name of attribute</param>
       /// <returns>attribute value, or empty string</returns>
-      /// <exception cref="Library::ArgumentNullException">Node is null</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       wstring  XmlReader::TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);

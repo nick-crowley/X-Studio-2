@@ -7,7 +7,7 @@
 
 #pragma once
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -430,5 +430,5 @@ namespace Library
 #endif
 
    } // namespace IO
-} // namespace Library
+} // namespace Logic
 

@@ -3,7 +3,7 @@
 #include <Strsafe.h>       // C String handling
 #include "../MFC Test 1.h"    // the app
 
-namespace Library
+namespace Logic
 {
 
    /// <summary>Assembles a formatted string</summary>

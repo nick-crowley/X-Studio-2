@@ -2,9 +2,9 @@
 #include "Common.h"
 #include "LanguagePage.h"
 
-using namespace Library::Language;
+using namespace Logic::Language;
 
-namespace Library
+namespace Logic
 {
    namespace Language
    {

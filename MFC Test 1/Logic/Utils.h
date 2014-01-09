@@ -3,7 +3,7 @@
 #include "STL.h"
 #include "Macros.h"
 
-namespace Library
+namespace Logic
 {
    /// <summary>A unique pointer to a byte array</summary>
    typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArrayPtr;

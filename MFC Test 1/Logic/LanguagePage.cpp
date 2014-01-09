@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
 
-namespace Library
+namespace Logic
 {
    namespace Language
    {

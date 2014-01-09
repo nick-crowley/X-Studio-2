@@ -1,9 +1,9 @@
 #pragma once
 #include "Stream.h"
 
-using namespace Library::IO;
+using namespace Logic::IO;
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {

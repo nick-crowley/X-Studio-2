@@ -3,9 +3,9 @@
 #include "Stream.h"
 #include "zlib.h"
 
-using namespace Library::IO;
+using namespace Logic::IO;
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {

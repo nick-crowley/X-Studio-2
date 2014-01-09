@@ -3,7 +3,7 @@
 #include "GZipStream.h"
 #include "DataStream.h"
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {
