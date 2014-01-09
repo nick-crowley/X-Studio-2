@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
-#include "StringReader.h"
-#include "SyntaxFile.h"
+#include "../../Common.h"
+#include "../../IO/StringReader.h"
+#include "../SyntaxFile.h"
 
 namespace Library
 {

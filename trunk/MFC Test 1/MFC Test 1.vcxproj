@@ -137,6 +137,7 @@
     <ClInclude Include="Logic\IO\FileStream.h" />
     <ClInclude Include="Logic\IO\GZipStream.h" />
     <ClInclude Include="Logic\IO\MemoryStream.h" />
+    <ClInclude Include="Logic\IO\msxml.h" />
     <ClInclude Include="Logic\IO\Stream.h" />
     <ClInclude Include="Logic\IO\StringReader.h" />
     <ClInclude Include="Logic\IO\XmlReader.h" />
@@ -147,7 +148,6 @@
     <ClInclude Include="Logic\Language\LanguagePage.h" />
     <ClInclude Include="Logic\Language\LanguageString.h" />
     <ClInclude Include="Logic\Macros.h" />
-    <ClInclude Include="Logic\msxml.h" />
     <ClInclude Include="Logic\Scripts\CommandSyntax.h" />
     <ClInclude Include="Logic\Scripts\IO\LegacySyntaxReader.h" />
     <ClInclude Include="Logic\Scripts\ParameterSyntax.h" />

@@ -177,14 +177,14 @@
     <ClInclude Include="Logic\Macros.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\msxml.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\STL.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="Logic\Utils.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\msxml.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

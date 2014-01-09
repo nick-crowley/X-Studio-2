@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 #include "Exceptions.h"
-#include "Resource.h"
+#include "../Resource.h"
 
 using namespace Library;
 
