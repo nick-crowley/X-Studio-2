@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CatalogStream.h"
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {
@@ -18,8 +18,8 @@ namespace Library
       /// <param name="mode">The creation mode.</param>
       /// <param name="access">The file access.</param>
       /// <param name="share">The sharing permitted.</param>
-      /// <exception cref="Library.FileNotFoundException">File not found</exception>
-      /// <exception cref="Library.Win32Exception">Unable to create/open file</exception>
+      /// <exception cref="Logic::FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::Win32Exception">Unable to create/open file</exception>
       CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share)
          : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
       {

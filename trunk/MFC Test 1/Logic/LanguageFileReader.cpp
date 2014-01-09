@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LanguageFileReader.h"
 
-namespace Library
+namespace Logic
 {
    namespace Language
    {
@@ -9,9 +9,9 @@ namespace Library
 
       /// <summary>Creates an xml reader from an input stream</summary>
       /// <param name="src">The input stream</param>
-      /// <exception cref="Library::ArgumentException">Stream is not readable</exception>
-      /// <exception cref="Library::ArgumentNullException">Stream is null</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       LanguageFileReader::LanguageFileReader(StreamPtr in) : XmlReader(in)
       {
       }
@@ -25,7 +25,7 @@ namespace Library
       /// <summary>Parses the language ID of a language file</summary>
       /// <param name="id">The language identifier</param>
       /// <returns>Game language</returns>
-      /// <exception cref="Library::InvalidValueException">Invalid language ID</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid language ID</exception>
       GameLanguage  LanguageFileReader::ParseLanguageID(wstring id)
       {
          switch (_wtoi(id.c_str()))
@@ -44,9 +44,9 @@ namespace Library
 
       /// <summary>Reads the entire language file</summary>
       /// <returns>New language file</returns>
-      /// <exception cref="Library::ComException">COM Error</exception>
-      /// <exception cref="Library::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
-      /// <exception cref="Library::InvalidDataException">Invalid language ID</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
+      /// <exception cref="Logic::InvalidDataException">Invalid language ID</exception>
       LanguageFile LanguageFileReader::ReadFile()
       {
          LanguageFile file;
@@ -82,9 +82,9 @@ namespace Library
       /// <summary>Reads the language tag and parses the ID</summary>
       /// <param name="element">The language element</param>
       /// <returns>Language ID</returns>
-      /// <exception cref="Library::FileFormatException">Missing language element</exception>
-      /// <exception cref="Library::InvalidValueException">Invalid language ID</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Missing language element</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid language ID</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       GameLanguage  LanguageFileReader::ReadLanguageTag(XML::IXMLDOMNodePtr&  element)
       {
          // Ensure present: "Missing '%s' element"
@@ -101,8 +101,8 @@ namespace Library
       /// <summary>Reads a page tag and all it's string tags</summary>
       /// <param name="element">Page element</param>
       /// <returns>New language page</returns>
-      /// <exception cref="Library::FileFormatException">Missing element or attributes</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       LanguagePage  LanguageFileReader::ReadPage(XML::IXMLDOMNodePtr&  element)
       {
          // Verify page tag
@@ -128,8 +128,8 @@ namespace Library
       /// <summary>Reads a string tag</summary>
       /// <param name="element">String 't' element</param>
       /// <returns>New language string</returns>
-      /// <exception cref="Library::FileFormatException">Missing element or attributes</exception>
-      /// <exception cref="Library::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       LanguageString  LanguageFileReader::ReadString(XML::IXMLDOMNodePtr&  element)
       {
          // Verify string tag

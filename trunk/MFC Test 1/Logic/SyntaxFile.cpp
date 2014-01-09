@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SyntaxFile.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {

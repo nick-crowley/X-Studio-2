@@ -3,9 +3,9 @@
 #include "FileStream.h"
 #include "CatalogReader.h"
 
-//using namespace Library::FileSystem;
+//using namespace Logic::FileSystem;
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {

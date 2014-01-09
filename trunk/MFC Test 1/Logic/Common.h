@@ -4,9 +4,9 @@
 #include "Exceptions.h"
 #include "../Resource.h"
 
-using namespace Library;
+using namespace Logic;
 
-namespace Library
+namespace Logic
 {
    
    /// <summary>Defines the available game data languages</summary>

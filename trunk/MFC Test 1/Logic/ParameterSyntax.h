@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {

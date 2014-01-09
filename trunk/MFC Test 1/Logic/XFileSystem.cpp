@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <functional>
 
-using namespace Library::IO;
+using namespace Logic::IO;
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {
@@ -14,8 +14,8 @@ namespace Library
       /// <summary>Initializes a new instance of the <see cref="XFileSystem"/> class.</summary>
       /// <param name="folder">The folder.</param>
       /// <param name="version">The version.</param>
-      /// <exception cref="Library.DirectoryNotFoundException">Folder does not exist</exception>
-      /// <exception cref="Library.NotSupportedException">Version is X2 or X-Rebirth</exception>
+      /// <exception cref="Logic::DirectoryNotFoundException">Folder does not exist</exception>
+      /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
       XFileSystem::XFileSystem(Path folder, GameVersion version) : Folder(folder), Version(version)
       {
          // Ensure folder exists
@@ -51,8 +51,8 @@ namespace Library
 
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
       /// <returns></returns>
-      /// <exception cref="Library.FileNotFoundException">Catalog not found</exception>
-      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
+      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::Enumerate()
       {
          // Clear previous
@@ -68,7 +68,7 @@ namespace Library
       /// <param name="path">Full path including extension</param>
       /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
       /// <returns>File descriptor</returns>
-      /// <exception cref="Library.FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       XFileInfo XFileSystem::Find(Path  path, bool  matchExt) const
       {
          ResultCollection results( Query(path, matchExt) );
@@ -87,7 +87,7 @@ namespace Library
       
       /// <summary>Enumerates and locks the catalogs</summary>
       /// <returns></returns>
-      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateCatalogs()
       {
          const WCHAR *formats[2] = { L"%s%02i.cat", L"%saddon\\%02i.cat" },
@@ -120,8 +120,8 @@ namespace Library
 
       /// <summary>Enumerates the files within the catalogs</summary>
       /// <returns></returns>
-      /// <exception cref="Library.FileNotFoundException">Catalog not found</exception>
-      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
+      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateFiles()
       {
          // Iterate thru catalogs (Highest priority -> Lowest)

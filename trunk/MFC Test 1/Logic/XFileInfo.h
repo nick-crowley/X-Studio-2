@@ -3,7 +3,7 @@
 #include "Stream.h"
 
 
-namespace Library
+namespace Logic
 {
    
    namespace FileSystem
@@ -59,4 +59,4 @@ namespace Library
    }
 }
 
-using namespace Library::FileSystem;
+using namespace Logic::FileSystem;

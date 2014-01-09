@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ParameterSyntax.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {

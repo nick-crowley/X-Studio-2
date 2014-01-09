@@ -5,7 +5,7 @@
 
 using namespace XML;
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -51,4 +51,4 @@ namespace Library
    }
 }
 
-using namespace Library::IO;
+using namespace Logic::IO;

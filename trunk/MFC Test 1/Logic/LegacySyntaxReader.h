@@ -3,7 +3,7 @@
 #include "StringReader.h"
 #include "SyntaxFile.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {
@@ -63,7 +63,7 @@ namespace Library
    }
 }
 
-using namespace Library::Scripts::IO;
+using namespace Logic::Scripts::IO;
 
 
 

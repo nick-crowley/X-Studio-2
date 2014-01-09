@@ -2,7 +2,7 @@
 #include "XCatalog.h"
 #include "CatalogStream.h"
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {
@@ -26,8 +26,8 @@ namespace Library
 
       /// <summary>Opens the catalog and provides a reader</summary>
       /// <returns></returns>
-      /// <exception cref="Library.FileNotFoundException">File not found</exception>
-      /// <exception cref="Library.Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
       CatalogReader  XCatalog::GetReader()
       {
          return CatalogReader( StreamPtr(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) );

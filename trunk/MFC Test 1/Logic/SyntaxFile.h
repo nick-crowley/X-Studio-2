@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "CommandSyntax.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {

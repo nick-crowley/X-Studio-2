@@ -4,9 +4,9 @@
 #include "XCatalog.h"
 #include <cassert>
 
-//using namespace Library::FileSystem;
+//using namespace Logic::FileSystem;
 
-namespace Library
+namespace Logic
 {
    namespace FileSystem
    {
@@ -14,8 +14,8 @@ namespace Library
 
       /// <summary>Creates a data stream from a file descriptor</summary>
       /// <param name="f">The file to open</param>
-      /// <exception cref="Library.FileNotFoundException">Data file not found</exception>
-      /// <exception cref="Library.Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::FileNotFoundException">Data file not found</exception>
+      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
       DataStream::DataStream(const XFileInfo&  f)
          : StreamFacade( StreamPtr(new FileStream(f.DataFile, FileMode::OpenExisting, FileAccess::Read)) ),
            File(f)
@@ -51,7 +51,7 @@ namespace Library
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
-      /// <exception cref="Library::Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
       DWORD  DataStream::Read(BYTE* buffer, DWORD length)
       {
          // Ensure we don't exceed logical EOF
@@ -67,7 +67,7 @@ namespace Library
       /// <summary>Not supported</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The mode.</param>
-      /// <exception cref="Library.NotSupportedException">Always</exception>
+      /// <exception cref="Logic::NotSupportedException">Always</exception>
       void  DataStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          switch (mode)
@@ -90,7 +90,7 @@ namespace Library
       /// <param name="buffer">The buffer.</param>
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
-      /// <exception cref="Library::NotImplementedException">Always</exception>
+      /// <exception cref="Logic::NotImplementedException">Always</exception>
       DWORD  DataStream::Write(const BYTE* buffer, DWORD length)
       {
          throw NotImplementedException(HERE, L"writing .dat files");

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StringReader.h"
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -9,8 +9,8 @@ namespace Library
 
       /// <summary>Creates a string reader from an input stream</summary>
       /// <param name="src">The input stream</param>
-      /// <exception cref="Library.ArgumentException">Stream is not readable</exception>
-      /// <exception cref="Library.ArgumentNullException">Stream is null</exception>
+      /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr), LineNum(0)
       {
          REQUIRED(src);
@@ -42,7 +42,7 @@ namespace Library
       /// <summary>Reads the next line, if any</summary>
       /// <param name="line">The line.</param>
       /// <returns>True if read, false if EOF</returns>
-      /// <exception cref="Library.InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
+      /// <exception cref="Logic::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
       bool  StringReader::ReadLine(string&  line)
       {
          DWORD start = Position,    // Start of line
