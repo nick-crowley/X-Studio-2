@@ -13,26 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Library">
-      <UniqueIdentifier>{8897b3fb-cea9-4df9-8dab-b738da72b12f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Library">
-      <UniqueIdentifier>{9a39e521-0fad-4678-8c65-533dc9195ae9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Files">
       <UniqueIdentifier>{2589df15-25b6-47e3-9d4c-91aa9b903774}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Library\IO">
-      <UniqueIdentifier>{213f0cc3-9270-4b1c-9a9b-07cce23c0c1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Library\IO">
-      <UniqueIdentifier>{ab3399c2-5092-4e44-b09c-e085f1490d4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Library\FileSystem">
-      <UniqueIdentifier>{81e0b6a1-8f75-4769-8df5-01903726ffcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Library\FileSystem">
-      <UniqueIdentifier>{995c1ab8-08ed-4eb4-b0de-bd3461ffcbb2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{22fe12e2-bdf5-4580-a125-dd7fb22e1ab8}</UniqueIdentifier>
@@ -40,23 +22,41 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{3453940a-3a7c-4b31-84c2-c6e5bd235ccd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Library\Language">
-      <UniqueIdentifier>{9df3ab4d-530c-41d3-b80c-b8dc305a5ed7}</UniqueIdentifier>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{8897b3fb-cea9-4df9-8dab-b738da72b12f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Library\Language">
+    <Filter Include="Header Files\Logic\IO">
+      <UniqueIdentifier>{213f0cc3-9270-4b1c-9a9b-07cce23c0c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\FileSystem">
+      <UniqueIdentifier>{995c1ab8-08ed-4eb4-b0de-bd3461ffcbb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\Language">
       <UniqueIdentifier>{f02b0430-6b80-4fe1-a448-4065f503c276}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Library\Scripts">
+    <Filter Include="Header Files\Logic\Scripts">
       <UniqueIdentifier>{7fdace64-24dd-44b2-a55c-ba8125f20042}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Library\Scripts">
+    <Filter Include="Header Files\Logic\Scripts\IO">
+      <UniqueIdentifier>{2afd5640-46bd-488e-9827-6231f91801ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic">
+      <UniqueIdentifier>{9a39e521-0fad-4678-8c65-533dc9195ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\IO">
+      <UniqueIdentifier>{ab3399c2-5092-4e44-b09c-e085f1490d4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\FileSystem">
+      <UniqueIdentifier>{81e0b6a1-8f75-4769-8df5-01903726ffcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\Language">
+      <UniqueIdentifier>{9df3ab4d-530c-41d3-b80c-b8dc305a5ed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\Scripts">
       <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Library\Scripts\IO">
+    <Filter Include="Source Files\Logic\Scripts\IO">
       <UniqueIdentifier>{38ba10d9-8a8e-4cb4-93d6-9a7839b018f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Library\Scripts\IO">
-      <UniqueIdentifier>{2afd5640-46bd-488e-9827-6231f91801ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,45 +65,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="msxml.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="Stream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="FileStream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Exceptions.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryStream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="StringReader.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="zconf.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="GZipStream.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="STL.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="XFileSystem.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="ChildFrm.h">
       <Filter>Header Files\GUI</Filter>
@@ -141,73 +102,10 @@
     <ClInclude Include="ViewTree.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="XCatalog.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="XFileInfo.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageFile.h">
-      <Filter>Header Files\Library\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguagePage.h">
-      <Filter>Header Files\Library\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageString.h">
-      <Filter>Header Files\Library\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="Macros.h">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="XmlReader.h">
-      <Filter>Header Files\Library\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="CatalogReader.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="CatalogStream.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="DataStream.h">
-      <Filter>Header Files\Library\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageFileReader.h">
-      <Filter>Header Files\Library\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandSyntax.h">
-      <Filter>Header Files\Library\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="ParameterSyntax.h">
-      <Filter>Header Files\Library\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="SyntaxFile.h">
-      <Filter>Header Files\Library\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="LegacySyntaxReader.h">
-      <Filter>Header Files\Library\Scripts\IO</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileStream.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="MemoryStream.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="StringReader.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="GZipStream.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="XFileSystem.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="XCatalog.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -238,54 +136,6 @@
     </ClCompile>
     <ClCompile Include="ViewTree.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="XFileInfo.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageFile.cpp">
-      <Filter>Source Files\Library\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguagePage.cpp">
-      <Filter>Source Files\Library\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageString.cpp">
-      <Filter>Source Files\Library\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="Path.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="StringResource.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="FileSearch.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="XmlReader.cpp">
-      <Filter>Source Files\Library\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="CatalogReader.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="CatalogStream.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="DataStream.cpp">
-      <Filter>Source Files\Library\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageFileReader.cpp">
-      <Filter>Source Files\Library\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandSyntax.cpp">
-      <Filter>Source Files\Library\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="ParameterSyntax.cpp">
-      <Filter>Source Files\Library\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="SyntaxFile.cpp">
-      <Filter>Source Files\Library\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="LegacySyntaxReader.cpp">
-      <Filter>Source Files\Library\Scripts\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

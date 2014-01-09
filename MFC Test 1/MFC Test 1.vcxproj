@@ -123,85 +123,35 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CatalogReader.h" />
-    <ClInclude Include="CatalogStream.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
-    <ClInclude Include="CommandSyntax.h" />
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="DataStream.h" />
-    <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="FileStream.h" />
     <ClInclude Include="FileView.h" />
-    <ClInclude Include="GZipStream.h" />
-    <ClInclude Include="LanguageFileReader.h" />
-    <ClInclude Include="LanguagePage.h" />
-    <ClInclude Include="LanguageString.h" />
-    <ClInclude Include="LanguageFile.h" />
-    <ClInclude Include="LegacySyntaxReader.h" />
-    <ClInclude Include="Macros.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="MFC Test 1.h" />
     <ClInclude Include="MFC Test 1Doc.h" />
     <ClInclude Include="MFC Test 1View.h" />
-    <ClInclude Include="msxml.h" />
     <ClInclude Include="OutputWnd.h" />
-    <ClInclude Include="ParameterSyntax.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="STL.h" />
-    <ClInclude Include="Stream.h" />
-    <ClInclude Include="StringReader.h" />
-    <ClInclude Include="SyntaxFile.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Utils.h" />
     <ClInclude Include="ViewTree.h" />
-    <ClInclude Include="XCatalog.h" />
-    <ClInclude Include="XFileInfo.h" />
-    <ClInclude Include="XFileSystem.h" />
-    <ClInclude Include="XmlReader.h" />
-    <ClInclude Include="zconf.h" />
-    <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CatalogReader.cpp" />
-    <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
-    <ClCompile Include="CommandSyntax.cpp" />
-    <ClCompile Include="DataStream.cpp" />
-    <ClCompile Include="FileSearch.cpp" />
-    <ClCompile Include="FileStream.cpp" />
     <ClCompile Include="FileView.cpp" />
-    <ClCompile Include="GZipStream.cpp" />
-    <ClCompile Include="LanguageFileReader.cpp" />
-    <ClCompile Include="LanguagePage.cpp" />
-    <ClCompile Include="LanguageString.cpp" />
-    <ClCompile Include="LanguageFile.cpp" />
-    <ClCompile Include="LegacySyntaxReader.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="MFC Test 1.cpp" />
     <ClCompile Include="MFC Test 1Doc.cpp" />
     <ClCompile Include="MFC Test 1View.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
-    <ClCompile Include="ParameterSyntax.cpp" />
-    <ClCompile Include="Path.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringReader.cpp" />
-    <ClCompile Include="StringResource.cpp" />
-    <ClCompile Include="SyntaxFile.cpp" />
     <ClCompile Include="ViewTree.cpp" />
-    <ClCompile Include="XCatalog.cpp" />
-    <ClCompile Include="XFileInfo.cpp" />
-    <ClCompile Include="XFileSystem.cpp" />
-    <ClCompile Include="XmlReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MFC Test 1.rc" />
