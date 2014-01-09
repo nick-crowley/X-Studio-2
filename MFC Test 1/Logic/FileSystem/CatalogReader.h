@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
-#include "Stream.h"
-#include "StringReader.h"
+#include "../Common.h"
+#include "../IO/Stream.h"
+#include "../IO/StringReader.h"
 
 
 namespace Library

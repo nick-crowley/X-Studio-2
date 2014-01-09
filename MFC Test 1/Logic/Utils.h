@@ -1,5 +1,5 @@
 #pragma once
-#include "Resource.h"
+#include "../Resource.h"
 #include "STL.h"
 #include "Macros.h"
 

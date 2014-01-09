@@ -4,13 +4,13 @@
 #include "FileView.h"
 #include "MFC Test 1.h"
 
-#include "Utils.h"
-#include "LanguageFileReader.h"
-#include "FileStream.h"
-#include "CatalogStream.h"
-#include "GZipStream.h"
-#include "StringReader.h"
-#include "XFileSystem.h"
+#include "Logic/Utils.h"
+#include "Logic/Language/LanguageFileReader.h"
+#include "Logic/IO/FileStream.h"
+#include "Logic/FileSystem/CatalogStream.h"
+#include "Logic/IO/GZipStream.h"
+#include "Logic/IO/StringReader.h"
+#include "Logic/FileSystem/XFileSystem.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

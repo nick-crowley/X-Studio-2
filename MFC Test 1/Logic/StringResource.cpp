@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include <Strsafe.h>       // C String handling
-#include "MFC Test 1.h"    // the app
+#include "../MFC Test 1.h"    // the app
 
 namespace Library
 {

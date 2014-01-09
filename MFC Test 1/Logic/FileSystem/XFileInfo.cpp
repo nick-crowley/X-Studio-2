@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "XFileSystem.h"
-#include "GZipStream.h"
+#include "../IO/GZipStream.h"
 #include "DataStream.h"
 
 namespace Library

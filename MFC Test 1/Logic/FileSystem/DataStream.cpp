@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DataStream.h"
-#include "FileStream.h"
+#include "../IO/FileStream.h"
 #include "XCatalog.h"
 #include <cassert>
 
