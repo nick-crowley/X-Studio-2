@@ -1,5 +1,7 @@
 #pragma once
+#include "Common.h"
 #include "StringReader.h"
+#include "SyntaxFile.h"
 
 namespace Library
 {
@@ -7,9 +9,9 @@ namespace Library
    {
          
       /// <summary>Reads the XStudio syntax file</summary>
-      class LegacySyntaxReader : StringReader
+      class LegacySyntaxReader : protected StringReader
       {
-         const wstring END_BLOCK = L"-------------- END DEFINITION ---------------";
+         typedef list<ParameterType>  ParamList;
 
          // --------------------- CONSTRUCTION ----------------------
 
@@ -34,13 +36,25 @@ namespace Library
          SyntaxFile   ReadFile();
 
       private:
+         CommandGroup   LookupCommandGroup(const WCHAR* name);
+         ParameterType  LookupParameterType(const WCHAR* name);
+
+         bool  ReadSyntax(CommandSyntax::Declaration& dec);
          bool  RequireLine(wstring& line, const WCHAR* content);
-         bool  ReadSyntax(wstring& group, UINT& versions, UINT& id, wstring& url, wstring& syntax, list<wstring>& params);
          bool  TryReadLine(wstring& line);
 
 		   // -------------------- REPRESENTATION ---------------------
 
       private:
+         // End block marker
+         const wstring END_BLOCK = L"-------------- END DEFINITION ---------------";
+         
+         // Hard-coded Command group names
+         static const WCHAR*  szCommandGroups[COMMAND_GROUP_COUNT];
+
+         // Hard-coded parameter syntax
+         static const WCHAR*  szParameterSyntax[PARAMETER_SYNTAX_COUNT];
+
       };
 
    }

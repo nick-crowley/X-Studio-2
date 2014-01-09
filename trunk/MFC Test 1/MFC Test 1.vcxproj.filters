@@ -171,6 +171,15 @@
     <ClInclude Include="LanguageFileReader.h">
       <Filter>Header Files\Library\Language</Filter>
     </ClInclude>
+    <ClInclude Include="CommandSyntax.h">
+      <Filter>Header Files\Library\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterSyntax.h">
+      <Filter>Header Files\Library\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="SyntaxFile.h">
+      <Filter>Header Files\Library\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -262,6 +271,15 @@
     </ClCompile>
     <ClCompile Include="LanguageFileReader.cpp">
       <Filter>Source Files\Library\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandSyntax.cpp">
+      <Filter>Source Files\Library\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterSyntax.cpp">
+      <Filter>Source Files\Library\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="SyntaxFile.cpp">
+      <Filter>Source Files\Library\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
