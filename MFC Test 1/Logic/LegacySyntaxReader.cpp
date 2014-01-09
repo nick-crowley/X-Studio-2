@@ -60,7 +60,7 @@ namespace Logic
          }
 
          // Unrecognised group
-         throw InvalidValueException(HERE, StringResource::Format(L"Unrecognised command group '%s' on line %d", name, LineNumber) );
+         throw InvalidValueException(HERE, GuiString(L"Unrecognised command group '%s' on line %d", name, LineNumber));
       }
 
       /// <summary>Resolve a parameter type from the name</summary>
@@ -75,7 +75,7 @@ namespace Logic
          }
 
          // Unrecognised group
-         throw InvalidValueException(HERE, StringResource::Format(L"Unrecognised parameter type '%s' on line %d", name, LineNumber) );
+         throw InvalidValueException(HERE, GuiString(L"Unrecognised parameter type '%s' on line %d", name, LineNumber) );
       }
 
       /// <summary>Reads the next syntax block</summary>
@@ -135,7 +135,7 @@ namespace Logic
 
          // Ensure line exists
          if (!ReadLine(ansi))
-            throw FileFormatException(HERE, StringResource::Format(L"Missing %s on line %d", content, LineNumber));
+            throw FileFormatException(HERE, GuiString(L"Missing %s on line %d", content, LineNumber));
 
          // Convert ansi->wide
          line = wstring(ansi.begin(), ansi.end());

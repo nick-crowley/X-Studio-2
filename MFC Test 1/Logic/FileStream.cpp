@@ -141,7 +141,7 @@ namespace Logic
          
          // Check access
          if (!CanRead())
-            throw InvalidOperationException(HERE, ERR_NO_READ_ACCESS);
+            throw InvalidOperationException(HERE, GuiString(ERR_NO_READ_ACCESS));
 
          // Read bytes
          DWORD count = 0;
@@ -164,7 +164,7 @@ namespace Logic
          
          // Check access
          if (!CanWrite())
-            throw InvalidOperationException(HERE, ERR_NO_WRITE_ACCESS);
+            throw InvalidOperationException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
 
          // Write bytes
          DWORD count = 0;

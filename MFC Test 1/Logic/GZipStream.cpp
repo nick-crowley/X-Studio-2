@@ -20,7 +20,7 @@ namespace Logic
 
          // Ensure stream has read access
          if (!src->CanRead())
-            throw ArgumentException(HERE, L"src", ERR_NO_READ_ACCESS);
+            throw ArgumentException(HERE, L"src", GuiString(ERR_NO_READ_ACCESS));
 
          // Init stream + extract header
          if (inflateInit2(&ZStream, WINDOW_SIZE+DETECT_HEADER) != Z_OK) 
@@ -90,7 +90,7 @@ namespace Logic
       /// <exception cref="Logic::NotSupportedException">Always</exception>
       void  GZipStream::Seek(LONG  offset, SeekOrigin  mode)
       {
-         throw NotSupportedException(HERE, ERR_NO_SEEK_ACCESS);
+         throw NotSupportedException(HERE, GuiString(ERR_NO_SEEK_ACCESS));
       }
 
       /// <summary>Not supported</summary>
@@ -114,7 +114,7 @@ namespace Logic
 
          // Ensure we can read
          if (!StreamFacade::CanRead())
-            throw NotSupportedException(HERE, ERR_NO_READ_ACCESS);
+            throw NotSupportedException(HERE, GuiString(ERR_NO_READ_ACCESS));
 
          // Supply output buffer
          ZStream.next_out = output;

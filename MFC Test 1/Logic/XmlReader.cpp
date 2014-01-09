@@ -18,7 +18,7 @@ namespace Logic
 
          // Ensure stream has read access
          if (!Input->CanRead())
-            throw ArgumentException(HERE, L"src", ERR_NO_READ_ACCESS);
+            throw ArgumentException(HERE, L"src", GuiString(ERR_NO_READ_ACCESS));
 
          try
          {
@@ -65,7 +65,7 @@ namespace Logic
 
             // Load/Parse file : "%s (line %d, char %d)"
             if (Document->loadXML((char*)Buffer.get()) == VARIANT_FALSE)
-               throw FileFormatException(HERE, ERR_XML_PARSE_FAILED, (WCHAR*)Document->parseError->reason, Document->parseError->line, Document->parseError->linepos);
+               throw FileFormatException(HERE, GuiString(ERR_XML_PARSE_FAILED, (WCHAR*)Document->parseError->reason, Document->parseError->line, Document->parseError->linepos));
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
@@ -90,7 +90,7 @@ namespace Logic
 
             // Ensure present : "Missing '%s' attribute on '<%s>' element"
             if (attr == nullptr)
-               throw FileFormatException(HERE, ERR_XML_MISSING_ATTRIBUTE, name, (WCHAR*)node->nodeName);
+               throw FileFormatException(HERE, GuiString(ERR_XML_MISSING_ATTRIBUTE, name, (WCHAR*)node->nodeName));
 
             // Return text
             return (WCHAR*)attr->text;
@@ -114,7 +114,7 @@ namespace Logic
          {
             // Ensure name correct : "Unexpected '<%s>' element while searching for '<%s>' element"
             if (node->nodeName != _bstr_t(name))
-               throw FileFormatException(HERE, ERR_XML_UNEXPECTED_ELEMENT, (WCHAR*)node->nodeName, name);
+               throw FileFormatException(HERE, GuiString(ERR_XML_UNEXPECTED_ELEMENT, (WCHAR*)node->nodeName, name));
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

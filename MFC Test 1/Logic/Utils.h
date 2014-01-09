@@ -31,6 +31,20 @@ namespace Logic
 		// -------------------- REPRESENTATION ---------------------
    };
 
+   class GuiString : public wstring
+   {
+   public:
+      GuiString(UINT id, ...) {}
+      GuiString(const WCHAR* format, ...) {}
+   };
+
+   class SysErrorString : public wstring
+   {
+   public:
+      SysErrorString() {}
+      SysErrorString(UINT id) {}
+   };
+
    /// <summary>Represents a file or folder path</summary>
    class Path 
    {
