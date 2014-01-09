@@ -7,7 +7,8 @@ namespace Library
 {
    namespace Scripts
    {
-      
+      namespace IO
+      {
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -272,5 +273,7 @@ namespace Library
          TEXT("Var/Fleet Commander"),
          TEXT("Var/Global Parameter")
       };      
+
+      }
    }
 }

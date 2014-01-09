@@ -7,7 +7,9 @@ namespace Library
 {
    namespace Scripts
    {
-         
+      namespace IO
+      {
+
       /// <summary>Reads the XStudio syntax file</summary>
       class LegacySyntaxReader : protected StringReader
       {
@@ -57,8 +59,12 @@ namespace Library
 
       };
 
+      }
    }
 }
+
+using namespace Library::Scripts::IO;
+
 
 
 
