@@ -1,20 +1,22 @@
 #pragma once
-#include "../Common.h"
+#include "Common.h"
+#include "LanguagePage.h"
+
+using namespace Library::Language;
 
 namespace Library
 {
    namespace Language
    {
 
-
-      class LanguageString
+      /// <summary>Represents an X3 language file, provides a collection of language pages</summary>
+      class LanguageFile
       {
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguageString() : ID(0) {};
-         LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
-         ~LanguageString() {};
+         LanguageFile() {};
+         ~LanguageFile() {};
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -24,9 +26,10 @@ namespace Library
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         UINT     ID;
-         wstring  Text;
+         std::vector<LanguagePage> Pages;
+         GameLanguage   Language;
       };
-   
+
    }
+
 }

@@ -5,12 +5,12 @@
 #include "MFC Test 1.h"
 
 #include "Logic/Utils.h"
-#include "Logic/Language/LanguageFileReader.h"
-#include "Logic/IO/FileStream.h"
-#include "Logic/FileSystem/CatalogStream.h"
-#include "Logic/IO/GZipStream.h"
-#include "Logic/IO/StringReader.h"
-#include "Logic/FileSystem/XFileSystem.h"
+#include "Logic/LanguageFileReader.h"
+#include "Logic/FileStream.h"
+#include "Logic/CatalogStream.h"
+#include "Logic/GZipStream.h"
+#include "Logic/StringReader.h"
+#include "Logic/XFileSystem.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -1,7 +1,7 @@
 #pragma once
-#include "../Common.h"
+#include "Common.h"
 #include "LanguageFile.h"
-#include "../IO/XmlReader.h"
+#include "XmlReader.h"
 
 
 namespace Library
