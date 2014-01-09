@@ -102,6 +102,90 @@
     <ClInclude Include="ViewTree.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\FileSystem\CatalogReader.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSystem\CatalogStream.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSystem\DataStream.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSystem\XCatalog.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSystem\XFileInfo.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSystem\XFileSystem.h">
+      <Filter>Header Files\Logic\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\FileStream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\GZipStream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\MemoryStream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\Stream.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\StringReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\XmlReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\zconf.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\IO\zlib.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Language\LanguageFile.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Language\LanguageFileReader.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Language\LanguagePage.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Language\LanguageString.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Scripts\CommandSyntax.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Scripts\ParameterSyntax.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Scripts\SyntaxFile.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Scripts\IO\LegacySyntaxReader.h">
+      <Filter>Header Files\Logic\Scripts\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Common.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Exceptions.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Macros.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\msxml.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\STL.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Utils.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -136,6 +220,72 @@
     </ClCompile>
     <ClCompile Include="ViewTree.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSearch.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Path.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\StringResource.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\CatalogReader.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\CatalogStream.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\DataStream.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\XCatalog.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\XFileInfo.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSystem\XFileSystem.cpp">
+      <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Scripts\IO\LegacySyntaxReader.cpp">
+      <Filter>Source Files\Logic\Scripts\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Scripts\CommandSyntax.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Scripts\ParameterSyntax.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Scripts\SyntaxFile.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Language\LanguageFile.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Language\LanguageFileReader.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Language\LanguagePage.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Language\LanguageString.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\IO\FileStream.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\IO\GZipStream.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\IO\MemoryStream.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\IO\StringReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\IO\XmlReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
