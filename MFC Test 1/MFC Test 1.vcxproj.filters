@@ -52,6 +52,12 @@
     <Filter Include="Source Files\Library\Scripts">
       <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Library\Scripts\IO">
+      <UniqueIdentifier>{38ba10d9-8a8e-4cb4-93d6-9a7839b018f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Library\Scripts\IO">
+      <UniqueIdentifier>{2afd5640-46bd-488e-9827-6231f91801ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -165,9 +171,6 @@
     <ClInclude Include="DataStream.h">
       <Filter>Header Files\Library\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="LegacySyntaxReader.h">
-      <Filter>Header Files\Library\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="LanguageFileReader.h">
       <Filter>Header Files\Library\Language</Filter>
     </ClInclude>
@@ -179,6 +182,9 @@
     </ClInclude>
     <ClInclude Include="SyntaxFile.h">
       <Filter>Header Files\Library\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="LegacySyntaxReader.h">
+      <Filter>Header Files\Library\Scripts\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -266,9 +272,6 @@
     <ClCompile Include="DataStream.cpp">
       <Filter>Source Files\Library\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="LegacySyntaxReader.cpp">
-      <Filter>Source Files\Library\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="LanguageFileReader.cpp">
       <Filter>Source Files\Library\Language</Filter>
     </ClCompile>
@@ -280,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="SyntaxFile.cpp">
       <Filter>Source Files\Library\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="LegacySyntaxReader.cpp">
+      <Filter>Source Files\Library\Scripts\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
