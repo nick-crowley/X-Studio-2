@@ -5,11 +5,9 @@
 
 namespace Logic
 {
-   namespace Scripts
+   namespace IO
    {
-      namespace IO
-      {
-
+      
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create reader using an input stream</summary>
@@ -274,6 +272,5 @@ namespace Logic
          TEXT("Var/Global Parameter")
       };      
 
-      }
    }
 }

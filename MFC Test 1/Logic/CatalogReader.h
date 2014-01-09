@@ -6,7 +6,7 @@
 
 namespace Logic
 {
-   namespace FileSystem
+   namespace IO
    {
       /// <summary>Reads the file declarations from catalogs</summary>
       class CatalogReader : protected IO::StringReader
@@ -37,4 +37,4 @@ namespace Logic
    }
 }
 
-using namespace Logic::FileSystem;
+using namespace Logic::IO;

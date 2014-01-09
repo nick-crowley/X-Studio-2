@@ -3,7 +3,7 @@
 
 namespace Logic
 {
-   namespace Language
+   namespace IO
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 

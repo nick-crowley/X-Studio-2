@@ -4,7 +4,7 @@
 
 namespace Logic
 {
-   namespace FileSystem
+   namespace IO
    {
 
       /// <summary>Provides stream access to the contents of catalogs</summary>
@@ -45,4 +45,4 @@ namespace Logic
    }
 }
 
-using namespace Logic::FileSystem;
+using namespace Logic::IO;

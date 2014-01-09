@@ -2,8 +2,6 @@
 #include "Common.h"
 #include "LanguagePage.h"
 
-using namespace Logic::Language;
-
 namespace Logic
 {
    namespace Language
@@ -33,3 +31,5 @@ namespace Logic
    }
 
 }
+
+using namespace Logic::Language;
