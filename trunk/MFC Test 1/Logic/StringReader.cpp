@@ -17,7 +17,7 @@ namespace Logic
 
          // Ensure stream has read access
          if (!Input->CanRead())
-            throw ArgumentException(HERE, L"src", ERR_NO_READ_ACCESS);
+            throw ArgumentException(HERE, L"src", GuiString(ERR_NO_READ_ACCESS));
 
          // Lookup stream length
          Length = Input->GetLength();

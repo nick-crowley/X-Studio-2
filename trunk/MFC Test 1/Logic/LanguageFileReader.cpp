@@ -36,7 +36,7 @@ namespace Logic
 
          default:
             // "'%s' is not a valid language ID"
-            throw InvalidValueException(HERE, ERR_LANGUAGE_ID_INVALID, id.c_str());
+            throw InvalidValueException(HERE, GuiString(ERR_LANGUAGE_ID_INVALID, id.c_str()));
          }
       }
 
@@ -89,7 +89,7 @@ namespace Logic
       {
          // Ensure present: "Missing '%s' element"
          if (element == nullptr)
-            throw FileFormatException(HERE, ERR_XML_MISSING_ELEMENT, L"language");
+            throw FileFormatException(HERE, GuiString(ERR_XML_MISSING_ELEMENT, L"language"));
 
          // Verify tag
          ReadElement(element, L"language");
