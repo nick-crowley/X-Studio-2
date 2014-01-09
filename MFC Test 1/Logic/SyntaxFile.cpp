@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../Common.h"
 #include "SyntaxFile.h"
 
 namespace Library

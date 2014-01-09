@@ -1,6 +1,6 @@
 #pragma once
-#include "../Common.h"
-#include "../IO/Stream.h"
+#include "Common.h"
+#include "Stream.h"
 #include "XFileInfo.h"
 
 namespace Library

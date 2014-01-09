@@ -1,5 +1,5 @@
 #pragma once
-#include "../Common.h"
+#include "Common.h"
 #include "XCatalog.h"
 #include "XFileInfo.h"
 

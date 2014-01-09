@@ -1,6 +1,6 @@
 #pragma once
-#include "../Common.h"
-#include "../IO/FileStream.h"
+#include "Common.h"
+#include "FileStream.h"
 
 namespace Library
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Common.h"
+#include "Common.h"
 #include "CommandSyntax.h"
 
 namespace Library
