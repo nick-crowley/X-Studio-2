@@ -27,7 +27,7 @@ namespace Logic
       /// <summary>Opens the catalog and provides a reader</summary>
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
-      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       CatalogReader  XCatalog::GetReader()
       {
          return CatalogReader( StreamPtr(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) );

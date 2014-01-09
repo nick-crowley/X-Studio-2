@@ -11,6 +11,7 @@ namespace Logic
       /// <param name="src">The input stream</param>
       /// <param name="op">Whether to compress or decompress</param>
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
+      /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
       GZipStream::GZipStream(StreamPtr  src, Operation  op) : StreamFacade(src), Mode(op)
       {
@@ -31,7 +32,7 @@ namespace Logic
          ZStream.next_in = Input.get();
       }
 
-      /// <summary>Closes the stream</summary>
+      /// <summary>Closes the stream without throwing</summary>
       GZipStream::~GZipStream()
       {
          SafeClose();
@@ -41,6 +42,7 @@ namespace Logic
 
       /// <summary>Closes the stream.</summary>
       /// <exception cref="Logic::GZipException">Unable to close stream</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  GZipStream::Close()
       {
          if (!IsClosed())
@@ -54,6 +56,7 @@ namespace Logic
 
       /// <summary>Gets the uncompressed stream length.</summary>
       /// <returns></returns>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  GZipStream::GetLength()
       {
          DWORD pos = StreamFacade::GetPosition(),
@@ -106,8 +109,10 @@ namespace Logic
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
       /// <exception cref="Logic::NotSupportedException">Input stream is not readable</exception>
       /// <exception cref="Logic::GZipException">Unable to decompress data</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  GZipStream::Read(BYTE* output, DWORD length)
       {
          REQUIRED(output);

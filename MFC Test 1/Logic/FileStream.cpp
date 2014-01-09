@@ -13,7 +13,7 @@ namespace Logic
       /// <param name="access">The file access.</param>
       /// <param name="share">The sharing permitted.</param>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
-      /// <exception cref="Logic::Win32Exception">Unable to create/open file</exception>
+      /// <exception cref="Logic::IOException">Unable to create/open file</exception>
       FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileShare share) : FullPath(path), Mode(mode), Access(access), Share(share) 
       {
          // Open file
@@ -23,7 +23,7 @@ namespace Logic
             if (GetLastError() == ERROR_FILE_NOT_FOUND)
                throw FileNotFoundException(HERE, path);
             else
-               throw Win32Exception(HERE);
+               throw IOException(HERE, SysErrorString());
          }
       }
 
@@ -31,10 +31,10 @@ namespace Logic
       //{
       //   // Duplicate handle
       //   if (!DuplicateHandle(GetCurrentProcess(), s.Handle, GetCurrentProcess(), &Handle, NULL, TRUE, DUPLICATE_SAME_ACCESS))
-      //      throw Win32Exception(HERE);
+      //      throw IOException(HERE, SysErrorString());
       //}
 
-      /// <summary>Closes the stream</summary>
+      /// <summary>Closes the stream without throwing</summary>
       FileStream::~FileStream() 
       {
          SafeClose();
@@ -43,51 +43,51 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the stream.</summary>
-      /// <exception cref="Logic::Win32Exception">Unable to close stream</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  FileStream::Close()
       {
          if (Handle != INVALID_HANDLE_VALUE) 
          {
             if (!CloseHandle(Handle))
-               throw Win32Exception(HERE);
+               throw IOException(HERE, SysErrorString());
 
             Handle = INVALID_HANDLE_VALUE;
          }
       }
 
       /// <summary>Flushes any data to the stream.</summary>
-      /// <exception cref="Logic::Win32Exception">Unable to flush stream</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  FileStream::Flush()
       {
          if (!FlushFileBuffers(Handle))
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
       }
 
       
       /// <summary>Gets the file length</summary>
       /// <returns></returns>
-      /// <exception cref="Logic::Win32Exception">Unable to get length</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  FileStream::GetLength()
       { 
          LARGE_INTEGER  size = {0LL};
 
          // Lookup file size
          if (!GetFileSizeEx(Handle, &size))
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
 
          return (DWORD)size.QuadPart;
       }
       
       /// <summary>Gets the current seek position.</summary>
       /// <returns></returns>
-      /// <exception cref="Logic::Win32Exception">Unable to get position</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  FileStream::GetPosition() const
       {
          DWORD  position = 0;
          
          // Get position from null move
          if ((position=SetFilePointer(Handle, 0, NULL, (DWORD)SeekOrigin::Current)) == INVALID_SET_FILE_POINTER)
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
 
          return position;
       }
@@ -105,17 +105,22 @@ namespace Logic
       /// <summary>Seeks to the specified offset.</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The seek origin</param>
-      /// <exception cref="Logic::Win32Exception">Unable to seek</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not seekable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  FileStream::Seek(LONG  offset, SeekOrigin  mode)
       {
+         // Check access
+         if (!CanSeek())
+            throw NotSupportedException(HERE, GuiString(ERR_NO_SEEK_ACCESS));
+
          // Set position 
          if (SetFilePointer(Handle, offset, NULL, (DWORD)mode) == INVALID_SET_FILE_POINTER)
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
       }
 
       /// <summary>Sets the length of the file</summary>
       /// <param name="length">The length.</param>
-      /// <exception cref="Logic::Win32Exception">Unable to set length</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  FileStream::SetLength(DWORD  length)
       {
          DWORD  position = GetPosition();
@@ -123,7 +128,7 @@ namespace Logic
          // Seek to desired position and set EOF
          Seek(length, SeekOrigin::Begin);
          if (!SetEndOfFile(Handle))
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
 
          // Restore original position
          Seek(position, SeekOrigin::Begin);
@@ -133,20 +138,21 @@ namespace Logic
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
-      /// <exception cref="Logic::InvalidOperationException">Stream is not readable</exception>
-      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not readable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  FileStream::Read(BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
          
          // Check access
          if (!CanRead())
-            throw InvalidOperationException(HERE, GuiString(ERR_NO_READ_ACCESS));
+            throw NotSupportedException(HERE, GuiString(ERR_NO_READ_ACCESS));
 
          // Read bytes
          DWORD count = 0;
          if (!ReadFile(Handle, buffer, length, &count, NULL))
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
 
          // Return bytes read
          return count;
@@ -156,20 +162,21 @@ namespace Logic
       /// <param name="buffer">The buffer.</param>
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
-      /// <exception cref="Logic::InvalidOperationException">Stream is not writeable</exception>
-      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not writeable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  FileStream::Write(const BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
          
          // Check access
          if (!CanWrite())
-            throw InvalidOperationException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
+            throw NotSupportedException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
 
          // Write bytes
          DWORD count = 0;
          if (!WriteFile(Handle, buffer, length, &count, NULL))
-            throw Win32Exception(HERE);
+            throw IOException(HERE, SysErrorString());
 
          // Return bytes written
          return count;

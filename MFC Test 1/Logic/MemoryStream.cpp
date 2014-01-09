@@ -78,7 +78,7 @@ namespace Logic
          
          // Check access
          if (!CanRead())
-            throw InvalidOperationException(HERE, GuiString(ERR_NO_READ_ACCESS));
+            throw NotSupportedException(HERE, GuiString(ERR_NO_READ_ACCESS));
 
          // Copy contents from stream
          memcpy(buf, Buffer, length);
@@ -92,7 +92,7 @@ namespace Logic
          
          // Check access
          if (!CanWrite())
-            throw InvalidOperationException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
+            throw NotSupportedException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
 
          // Copy contents to stream
          memcpy(Buffer, buf, length);

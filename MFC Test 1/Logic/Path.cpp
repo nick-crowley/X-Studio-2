@@ -57,13 +57,14 @@ namespace Logic
    /// <summary>Appends another path, handling trailing backslashes as necessary</summary>
    /// <param name="path">The path to append</param>
    /// <returns>New path containing combination of both paths</returns>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    Path  Path::Append(wstring  path) const
    {
       CharPtr buf( Copy() );
 
       // Supply copy of buffer
       if (!PathAppend(buf.get(), path.c_str()))
-         throw Win32Exception(HERE, L"Unable to append path");
+         throw IOException(HERE, L"Unable to append path");
       return buf.get();
    }
 
@@ -143,13 +144,13 @@ namespace Logic
 
    /// <summary>Determines whether path is directory</summary>
    /// <returns></returns>
-   /// <exception cref="Logic::Win32Exception">Path does not exist</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    bool  Path::IsDirectory() const
    {
       int attr = GetFileAttributes(Buffer.get());
       
       if (attr == INVALID_FILE_ATTRIBUTES)
-         throw Win32Exception(HERE);
+         throw IOException(HERE, SysErrorString());
 
       return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
    }
@@ -194,14 +195,14 @@ namespace Logic
    /// <summary>Renames the file extension, if none is present then it is appended</summary>
    /// <param name="ext">The file extension, preceeded by a dot</param>
    /// <returns>New path with renamed extension</returns>
-   /// <exception cref="Logic::Win32Exception">Path exceeds character limit</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    Path  Path::RenameExtension(wstring  ext) const
    {
       CharPtr buf( Copy() );
 
       // Supply copy of buffer
       if (!PathRenameExtension(buf.get(), ext.c_str()))
-         throw Win32Exception(HERE, L"Unable to rename extension");
+         throw IOException(HERE, L"Unable to rename extension");
       
       return buf.get();
    }

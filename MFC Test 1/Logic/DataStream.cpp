@@ -15,7 +15,7 @@ namespace Logic
       /// <summary>Creates a data stream from a file descriptor</summary>
       /// <param name="f">The file to open</param>
       /// <exception cref="Logic::FileNotFoundException">Data file not found</exception>
-      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DataStream::DataStream(const XFileInfo&  f)
          : StreamFacade( StreamPtr(new FileStream(f.DataFile, FileMode::OpenExisting, FileAccess::Read)) ),
            File(f)
@@ -25,7 +25,7 @@ namespace Logic
          assert(StreamFacade::GetPosition() == File.Offset);
       }
 
-      /// <summary>Closes the input stream</summary>
+      /// <summary>Closes the stream without throwing</summary>
       DataStream::~DataStream()
       {
          StreamFacade::SafeClose();
@@ -42,6 +42,7 @@ namespace Logic
 
       /// <summary>Gets the current position within the logical file</summary>
       /// <returns></returns>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD DataStream::GetPosition() const
       {
          return StreamFacade::GetPosition() - File.Offset;
@@ -51,9 +52,13 @@ namespace Logic
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
-      /// <exception cref="Logic::Win32Exception">An I/O error occurred</exception>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not readable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  DataStream::Read(BYTE* buffer, DWORD length)
       {
+         REQUIRED(buffer);
+
          // Ensure we don't exceed logical EOF
          if (GetPosition() + length > GetLength())
             length = GetLength() - GetPosition();
@@ -67,7 +72,8 @@ namespace Logic
       /// <summary>Not supported</summary>
       /// <param name="offset">The offset.</param>
       /// <param name="mode">The mode.</param>
-      /// <exception cref="Logic::NotSupportedException">Always</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not seekable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  DataStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          switch (mode)
@@ -111,8 +117,11 @@ namespace Logic
       /// <summary>Encodes a byte buffer</summary>
       /// <param name="buffer">Buffer to encode</param>
       /// <param name="length">Length of buffer</param>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
       void  DataStream::Encode(byte* buffer, DWORD length)
       {
+         REQUIRED(buffer);
+
          // Encode buffer
          for (DWORD i = 0; i < length; i++)
             buffer[i] ^= DATAFILE_ENCRYPT_KEY;
