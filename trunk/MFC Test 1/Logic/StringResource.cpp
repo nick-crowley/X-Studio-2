@@ -12,11 +12,20 @@ namespace Logic
    /// <returns></returns>
    wstring  StringResource::Format(const WCHAR*  format, ...)
    {
-      TCHAR    szBuffer[512];
-      va_list  pArgs;
+      va_list  args;
+      return FormatV(format, va_start(args, format));
+   }
+
+   /// <summary>Assembles a formatted string</summary>
+   /// <param name="format">Formatting string</param>
+   /// <param name="args">Formatting arguments</param>
+   /// <returns></returns>
+   wstring  StringResource::FormatV(const WCHAR*  format, va_list  args)
+   {
+      WCHAR  szBuffer[512];
 
       // Format + Return
-      StringCchVPrintf(szBuffer, 512, format, va_start(pArgs, format));
+      StringCchVPrintf(szBuffer, 512, format, args);
       return szBuffer;
    }
 
@@ -36,7 +45,7 @@ namespace Logic
    /// <returns></returns>
    wstring  StringResource::LoadV(UINT  id, va_list  pArgs)
    {
-      TCHAR    szBuffer[512],
+      WCHAR    szBuffer[512],
                szFormat[512];
       
       // Load string + format
