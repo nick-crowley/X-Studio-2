@@ -52,7 +52,7 @@ namespace Logic
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
-      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       DWORD  XFileSystem::Enumerate()
       {
          // Clear previous
@@ -69,6 +69,7 @@ namespace Logic
       /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
       /// <returns>File descriptor</returns>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       XFileInfo XFileSystem::Find(Path  path, bool  matchExt) const
       {
          ResultCollection results( Query(path, matchExt) );
@@ -87,7 +88,7 @@ namespace Logic
       
       /// <summary>Enumerates and locks the catalogs</summary>
       /// <returns></returns>
-      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateCatalogs()
       {
          const WCHAR *formats[2] = { L"%s%02i.cat", L"%saddon\\%02i.cat" },
@@ -121,7 +122,7 @@ namespace Logic
       /// <summary>Enumerates the files within the catalogs</summary>
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
-      /// <exception cref="Logic::Win32Exception">I/O error occurred</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       DWORD  XFileSystem::EnumerateFiles()
       {
          // Iterate thru catalogs (Highest priority -> Lowest)
@@ -144,6 +145,7 @@ namespace Logic
       /// <param name="path">Full path including extension</param>
       /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
       /// <returns>Results collection</returns>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       XFileSystem::ResultCollection  XFileSystem::Query(Path  path, bool  matchExt) const
       {
          ResultCollection  results;

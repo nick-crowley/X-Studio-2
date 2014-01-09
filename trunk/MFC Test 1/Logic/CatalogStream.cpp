@@ -9,6 +9,7 @@ namespace Logic
 
       /// <summary>Creates a catalog stream using another stream as input</summary>
       /// <param name="src">The input stream.</param>
+      /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       CatalogStream::CatalogStream(StreamPtr  src) : StreamFacade(src)
       {
       }
@@ -19,13 +20,13 @@ namespace Logic
       /// <param name="access">The file access.</param>
       /// <param name="share">The sharing permitted.</param>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
-      /// <exception cref="Logic::Win32Exception">Unable to create/open file</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share)
          : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
 
-
+      /// <summary>Closes the stream without throwing</summary>
       CatalogStream::~CatalogStream()
       {
          StreamFacade::SafeClose();
@@ -37,8 +38,13 @@ namespace Logic
       /// <param name="buffer">The destination buffer</param>
       /// <param name="length">The length of the buffer</param>
       /// <returns>Number of bytes read</returns>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not readable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  CatalogStream::Read(BYTE* buffer, DWORD length)
       {
+         REQUIRED(buffer);
+
          // Preserve origin, fill buffer
          DWORD startPos = GetPosition(),
                bytesRead = StreamFacade::Read(buffer, length);
@@ -52,8 +58,13 @@ namespace Logic
       /// <param name="buffer">The buffer.</param>
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
+      /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Stream is not writeable</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD  CatalogStream::Write(const BYTE* buffer, DWORD length)
       {
+         REQUIRED(buffer);
+
          // Copy buffer so we can encode it
          ByteArrayPtr copy(new BYTE[length]);
          memcpy(copy.get(), buffer, length);

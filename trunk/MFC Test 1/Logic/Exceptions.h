@@ -156,6 +156,17 @@ namespace Logic
       {}
    };
 
+   /// <summary>Occurs when an I/O operator fails</summary>
+   class IOException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an IOException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Message</param>
+      IOException(wstring  src, wstring  msg) 
+         : ExceptionBase(src, wstring(L"The I/O operation failed: ") + msg)
+      {}
+   };
 
    /// <summary>Occurs when an operation that has not been implemented is attempted</summary>
    class NotImplementedException : public ExceptionBase
