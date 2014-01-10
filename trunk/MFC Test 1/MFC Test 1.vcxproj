@@ -131,6 +131,7 @@
     <ClInclude Include="Logic\CommandSyntax.h" />
     <ClInclude Include="Logic\Common.h" />
     <ClInclude Include="Logic\DataStream.h" />
+    <ClInclude Include="Logic\DebugTests.h" />
     <ClInclude Include="Logic\Exceptions.h" />
     <ClInclude Include="Logic\FileStream.h" />
     <ClInclude Include="Logic\GZipStream.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Logic\CatalogStream.cpp" />
     <ClCompile Include="Logic\CommandSyntax.cpp" />
     <ClCompile Include="Logic\DataStream.cpp" />
+    <ClCompile Include="Logic\DebugTests.cpp" />
     <ClCompile Include="Logic\FileSearch.cpp" />
     <ClCompile Include="Logic\FileStream.cpp" />
     <ClCompile Include="Logic\GZipStream.cpp" />

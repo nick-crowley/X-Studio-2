@@ -195,6 +195,9 @@
     <ClInclude Include="Logic\ScriptCommand.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\DebugTests.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ScriptCommandReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\DebugTests.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
