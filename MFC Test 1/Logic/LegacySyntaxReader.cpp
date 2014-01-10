@@ -89,7 +89,7 @@ namespace Logic
          dec = CommandSyntax::Declaration();
 
          // Group
-         if (!TryReadLine(line))
+         if (!ReadLine(line))
             return false;  // EOF Reached
          dec.Group = LookupCommandGroup(line.c_str());
 
@@ -124,35 +124,15 @@ namespace Logic
 
       /// <summary>Reads the next line</summary>
       /// <param name="line">The line text</param>
-      /// <param name="content">Meaning of line</param>
+      /// <param name="help">Meaning of line</param>
       /// <returns>true</returns>
       /// <exception cref="Logic::FileFormatException">Line Missing</exception>
-      bool  LegacySyntaxReader::RequireLine(wstring& line, const WCHAR* content)
+      bool  LegacySyntaxReader::RequireLine(wstring& line, const WCHAR* help)
       {
-         string ansi;
-
          // Ensure line exists
-         if (!ReadLine(ansi))
-            throw FileFormatException(HERE, GuiString(L"Missing %s on line %d", content, LineNumber));
+         if (!ReadLine(line))
+            throw FileFormatException(HERE, GuiString(L"Missing %s on line %d", help, LineNumber));
 
-         // Convert ansi->wide
-         line = wstring(ansi.begin(), ansi.end());
-         return true;
-      }
-
-      /// <summary>Tries to read the next line</summary>
-      /// <param name="line">The line text</param>
-      /// <returns>true if found, false otherwise</returns>
-      bool  LegacySyntaxReader::TryReadLine(wstring& line)
-      {
-         string ansi;
-
-         // Ensure line exists
-         if (!ReadLine(ansi))
-            return false;
-
-         // Convert ansi->wide
-         line = wstring(ansi.begin(), ansi.end());
          return true;
       }
 

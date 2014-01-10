@@ -15,7 +15,7 @@ namespace Logic
       CatalogReader::CatalogReader(StreamPtr src) : StringReader(src)
       {
          // Consume header on first line
-         string line;
+         wstring line;
          StringReader::ReadLine(line);
       }
 
@@ -34,20 +34,20 @@ namespace Logic
       /// <exception cref="Logic::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
       bool  CatalogReader::ReadDeclaration(wstring&  path, DWORD&  size)
       {
-         string  line;
+         wstring  line;
 
          // Check for EOF
          if (!StringReader::ReadLine(line))
             return false;
 
          // Parse declaration
-         string::size_type gap = line.find_last_of(' ');
-         if (gap == string::npos)
+         wstring::size_type gap = line.find_last_of(' ');
+         if (gap == wstring::npos)
             throw FileFormatException(HERE, L"Invalid file declaration");
          
-         // Parse path: Convert char->wchar and '/'->'\'
+         // Parse path: Convert '/'->'\'
          path.clear();
-         transform(line.begin(), line.begin()+gap, back_inserter(path), [](char ch) { return (WCHAR)(ch == '/' ? '\\' : ch); } );
+         transform(line.begin(), line.begin()+gap, back_inserter(path), [](WCHAR ch)->WCHAR { return (ch == '/' ? '\\' : ch); } );
 
          // Parse size
          size = atoi( string(line.begin()+gap+1, line.end()).c_str() );

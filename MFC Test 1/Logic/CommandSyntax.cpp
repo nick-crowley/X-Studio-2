@@ -55,7 +55,7 @@ namespace Logic
                        physicalIndex = 0;
          
          // Iterate thru '$n' syntax parameter markers
-         for (auto it = find(syntax.begin(), syntax.end(), L'$'); it != syntax.end(); it = find(it, syntax.end(), L'$'))
+         for (auto it = find(syntax.begin(), syntax.end(), L'$'); it != syntax.end(); it = find(++it, syntax.end(), L'$'))
          {
             physicalIndex = *(it+1) - 48;             // Convert number character following '$' into a number
             markers[physicalIndex] = displayIndex++;  // Map physical index to display index

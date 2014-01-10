@@ -40,8 +40,7 @@ namespace Logic
          ParameterType  LookupParameterType(const WCHAR* name);
 
          bool  ReadSyntax(CommandSyntax::Declaration& dec);
-         bool  RequireLine(wstring& line, const WCHAR* content);
-         bool  TryReadLine(wstring& line);
+         bool  RequireLine(wstring& line, const WCHAR* help);
 
 		   // -------------------- REPRESENTATION ---------------------
 

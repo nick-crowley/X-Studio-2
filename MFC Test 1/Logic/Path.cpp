@@ -43,11 +43,11 @@ namespace Logic
    /// <param name="path">The initial path</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentNullException">Path is null</exception>
-   Path::CharPtr  Path::Init(const WCHAR*  path)
+   CharArrayPtr  Path::Init(const WCHAR*  path)
    {
       REQUIRED(path);
 
-      CharPtr  ptr(new WCHAR[MAX_PATH]);
+      CharArrayPtr  ptr(new WCHAR[MAX_PATH]);
       StringCchCopy(ptr.get(), MAX_PATH, path);
       return ptr;
    }
@@ -60,7 +60,7 @@ namespace Logic
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    Path  Path::Append(wstring  path) const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       if (!PathAppend(buf.get(), path.c_str()))
@@ -72,7 +72,7 @@ namespace Logic
    /// <returns>New path with the trailing backslash</returns>
    Path  Path::AppendBackslash() const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       PathAddBackslash(buf.get());
@@ -106,7 +106,7 @@ namespace Logic
    /// <returns>Folder including a trailing backslash</returns>
    wstring  Path::GetFolder() const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       PathRemoveFileSpec(buf.get());
@@ -173,7 +173,7 @@ namespace Logic
    /// <returns>New path without the trailing backslash</returns>
    Path  Path::RemoveBackslash() const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       PathRemoveBackslash(buf.get());
@@ -185,7 +185,7 @@ namespace Logic
    /// <exception cref="Logic::Win32Exception">Path exceeds character limit</exception>
    Path  Path::RemoveExtension() const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       PathRemoveExtension(buf.get());
@@ -198,7 +198,7 @@ namespace Logic
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    Path  Path::RenameExtension(wstring  ext) const
    {
-      CharPtr buf( Copy() );
+      CharArrayPtr buf( Copy() );
 
       // Supply copy of buffer
       if (!PathRenameExtension(buf.get(), ext.c_str()))
@@ -239,9 +239,9 @@ namespace Logic
 
    /// <summary>Duplicate the buffer into a MAX_PATH chara array<summary>
    /// <returns></returns>
-   Path::CharPtr  Path::Copy() const
+   CharArrayPtr  Path::Copy() const
    {
-      CharPtr  ptr(new WCHAR[MAX_PATH]);
+      CharArrayPtr  ptr(new WCHAR[MAX_PATH]);
       StringCchCopy(ptr.get(), MAX_PATH, Buffer.get());
       return ptr;
    }
