@@ -142,7 +142,7 @@ namespace Library
             aux.push_back( GetCommandReader(script, CommandType::Auxiliary, auxBranch->childNodes->item[i])->ReadCommand() );
 
          // Interlace in correct order
-         for (int i = 0; i < std.size(); i++)
+         for (UINT i = 0; i < std.size(); i++)
          {
             // Insert any/all auxiliary commands preceeding next standard command
             while (!aux.empty() && aux.front().RefIndex <= i)

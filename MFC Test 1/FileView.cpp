@@ -11,6 +11,7 @@
 #include "Logic/GZipStream.h"
 #include "Logic/StringReader.h"
 #include "Logic/XFileSystem.h"
+#include "Logic/DebugTests.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -23,73 +24,7 @@ static char THIS_FILE[]=__FILE__;
 
 CFileView::CFileView()
 {
-   const WCHAR* path = nullptr;
-   
-   //try
-   //{
-   //   path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml";   
-
-   //   // Test LanguageFileReader
-   //   StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-   //   auto langFile = LanguageFileReader(fs).ReadFile();
-   //
-   //   
-   //   path = L"D:\\X3 Albion Prelude\\11.cat";
-
-   //   // Test catalogue reader
-   //   StreamPtr cs( new CatalogStream(path, FileMode::OpenExisting, FileAccess::Read) );
-   //   StringReader rd(cs);
-   //   
-   //   string line;
-   //   while (rd.ReadLine(line))
-   //      OutputDebugStringA((line+'\n').c_str());
-
-
-   //   path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
-   //   
-   //   // Test GZipStream
-   //   StreamPtr file = StreamPtr( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-   //   StreamPtr zip = StreamPtr( new GZipStream(file, GZipStream::Operation::Decompression) );
-   //   StringReader reader(zip);
-
-   //   while (reader.ReadLine(line))
-   //      OutputDebugStringA((line+'\n').c_str());
-   //}
-   //catch (ExceptionBase&  e)
-   //{
-   //   CString sz;
-   //   sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
-   //   AfxMessageBox(sz);
-   //}
-
-   try
-   {
-      // Test XFileSystem
-      XFileSystem vfs(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-      vfs.Enumerate();
-
-      // Test VFS search
-      path = L"D:\\X3 Albion Prelude\\types\\TLaser.pck";
-      XFileInfo f = vfs.Find(path, true);
-
-      // Print result
-      StringReader reader(f.Open());
-      string line;
-
-      while (reader.ReadLine(line))
-         OutputDebugStringA((line+'\n').c_str());
-
-      /*AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,true) ? L"true" : L"false").c_str() );
-
-      path = L"D:\\X3 Albion Prelude\\t\\9999-L044.pck";
-      AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,false) ? L"true" : L"false").c_str() );*/
-   }
-   catch (ExceptionBase&  e)
-   {
-      CString sz;
-      sz.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
-      AfxMessageBox(sz);
-   }
+   DebugTests::RunAll();
 
 }
 
