@@ -6,6 +6,7 @@
 #include "StringReader.h"
 #include "LanguageFileReader.h"
 #include "XFileSystem.h"
+#include "LegacySyntaxReader.h"
 
 namespace Library
 {
@@ -15,11 +16,30 @@ namespace Library
 
    void  DebugTests::RunAll()
    {
-      Test_LanguageFileReader();
+      /*Test_LanguageFileReader();
       Test_CatalogReader();
       Test_GZip();
-      Test_FileSystem();
-      Test_FileSystem();
+      Test_FileSystem();*/
+
+      Test_CommandSyntax();
+   }
+
+   void  DebugTests::Test_CommandSyntax()
+   {
+      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt"; 
+   
+      try
+      {
+         // Test LegacySyntaxReader
+         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto syntaxFile = LegacySyntaxReader(fs).ReadFile();
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
    }
 
    void  DebugTests::Test_LanguageFileReader()
@@ -50,9 +70,9 @@ namespace Library
          StreamPtr cs( new CatalogStream(path, FileMode::OpenExisting, FileAccess::Read) );
          StringReader rd(cs);
       
-         string line;
+         wstring line;
          while (rd.ReadLine(line))
-            OutputDebugStringA((line+'\n').c_str());
+            OutputDebugString((line+L'\n').c_str());
       }
       catch (ExceptionBase&  e)
       {
@@ -73,10 +93,10 @@ namespace Library
          StreamPtr zip = StreamPtr( new GZipStream(file, GZipStream::Operation::Decompression) );
 
          StringReader reader(zip);
-         string line;
+         wstring line;
 
          while (reader.ReadLine(line))
-            OutputDebugStringA((line+'\n').c_str());
+            OutputDebugString((line+L'\n').c_str());
       }
       catch (ExceptionBase&  e)
       {
@@ -101,10 +121,10 @@ namespace Library
 
          // Print result
          StringReader reader(f.Open());
-         string line;
+         wstring line;
 
          while (reader.ReadLine(line))
-            OutputDebugStringA((line+'\n').c_str());
+            OutputDebugString((line+L'\n').c_str());
 
          /*AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,true) ? L"true" : L"false").c_str() );
 

@@ -8,6 +8,9 @@ namespace Logic
    /// <summary>A unique pointer to a byte array</summary>
    typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArrayPtr;
 
+   /// <summary>A unique pointer to a wide char array</summary>
+   typedef unique_ptr<WCHAR, default_delete<WCHAR[]>>  CharArrayPtr;
+
    /// <summary>Provides helper functions for loading/formatting strings from resources</summary>
    class StringResource
    {
@@ -69,10 +72,7 @@ namespace Logic
    /// <summary>Represents a file or folder path</summary>
    class Path 
    {
-      typedef unique_ptr<WCHAR, default_delete<WCHAR[]>>  CharPtr;
-
       // --------------------- CONSTRUCTION ----------------------
-
    public:
       Path();
       Path(const WCHAR* path);
@@ -83,7 +83,7 @@ namespace Logic
       // ------------------------ STATIC -------------------------
 
    private:
-      CharPtr  Init(const WCHAR*  path);
+      CharArrayPtr  Init(const WCHAR*  path);
 
       // --------------------- PROPERTIES ------------------------
 		
@@ -134,7 +134,7 @@ namespace Logic
       //operator wstring()                           { return Buffer.get(); }
 
    private:
-      CharPtr  Copy() const;
+      CharArrayPtr  Copy() const;
       int      Compare(const WCHAR* path) const;
       
 		// ----------------------- MUTATORS ------------------------
@@ -145,7 +145,7 @@ namespace Logic
 		// -------------------- REPRESENTATION ---------------------
 
    private:
-      CharPtr  Buffer;
+      CharArrayPtr  Buffer;
    };
 
    /// <summary>Provides the ability to search for files</summary>

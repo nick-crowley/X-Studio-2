@@ -19,6 +19,7 @@ namespace Library
       static void  RunAll();
 
    private:
+      static void  Test_CommandSyntax();
       static void  Test_LanguageFileReader();
       static void  Test_CatalogReader();
       static void  Test_FileSystem();

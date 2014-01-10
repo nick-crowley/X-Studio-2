@@ -8,6 +8,7 @@ namespace Logic
 {
    namespace IO
    {
+      enum class TextEncoding { UTF8, UTF16 };
 
       /// <summary>Reads strings from a stream in lines</summary>
       class StringReader
@@ -34,16 +35,17 @@ namespace Logic
 
 			// ----------------------- MUTATORS ------------------------
 
-         virtual bool   ReadLine(string&  line);
+         virtual bool   ReadLine(wstring&  line);
 
       private:
-         bool  PeekByte(BYTE&  b);
-         bool  ReadByte(BYTE&  b);
+         void  InitBuffer();
+         bool  PeekChar(WCHAR&  c);
+         bool  ReadChar(WCHAR&  c);
 
          // -------------------- REPRESENTATION ---------------------
 
          StreamPtr    Input;
-         ByteArrayPtr Buffer;
+         CharArrayPtr Buffer;
          DWORD        LineNum,
                       Length,
                       Position;
