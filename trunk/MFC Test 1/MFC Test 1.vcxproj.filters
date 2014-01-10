@@ -180,6 +180,21 @@
     <ClInclude Include="Logic\LegacySyntaxReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ScriptFile.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptParameter.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\SyntaxLibrary.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptCommand.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -279,6 +294,24 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LegacySyntaxReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptFile.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\SyntaxLibrary.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptParameter.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptCommand.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptCommandReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>

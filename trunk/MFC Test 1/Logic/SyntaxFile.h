@@ -6,32 +6,25 @@ namespace Logic
 {
    namespace Scripts
    {
-         
+
+      /// <summary>Command syntax collection, organised by ID</summary>
+      class SyntaxCollection : private multimap<UINT, CommandSyntax>
+      {
+      public:
+         bool  Add(CommandSyntax&& s) { insert(SyntaxCollection::value_type(s.ID, s)); return true; }
+      };
+
+      
       /// <summary></summary>
       class SyntaxFile
       {
       public:
-         class SyntaxCollection : multimap<UINT, CommandSyntax>
+         /// <summary></summary>
+         class TypeCollection : private map<wstring,ParameterType>
          {
-            friend SyntaxFile;
-
-         private:
-            SyntaxCollection() {}
-
-         public:
-            bool  Add(CommandSyntax&& s) { insert(SyntaxCollection::value_type(s.ID, s)); return true; }
-         };
-
-         class TypeCollection : map<wstring,ParameterType>
-         {
-            friend SyntaxFile;
-
-         private:
-            TypeCollection() {}
-
          public:
             bool  Add(wstring& name, ParameterType type) { return insert(TypeCollection::value_type(name, type)).second; }
-         };
+         }; 
 
          // --------------------- CONSTRUCTION ----------------------
 

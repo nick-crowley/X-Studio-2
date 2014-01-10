@@ -9,6 +9,8 @@ namespace Logic
 {
    namespace IO
    {
+      
+
       /// <summary>Base class for DOM based XML readers</summary>
       class XmlReader
       {

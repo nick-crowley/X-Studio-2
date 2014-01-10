@@ -47,6 +47,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidDataException">Invalid language ID</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       LanguageFile LanguageFileReader::ReadFile()
       {
          LanguageFile file;

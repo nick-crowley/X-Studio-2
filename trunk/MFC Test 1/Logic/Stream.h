@@ -55,7 +55,9 @@ namespace Logic
          virtual DWORD Write(const BYTE* buffer, DWORD length) PURE;
       
          /// <summary>Reads all remaining bytes from a stream into a buffer</summary>
-         /// <returns></returns>
+         /// <returns>New byte array</returns>
+         /// <exception cref="Logic::NotSupportedException">Stream is not readable</exception>
+         /// <exception cref="Logic::IOException">An I/O error occurred</exception>
          virtual ByteArrayPtr ReadAllBytes()
          {
             DWORD        count = 0,

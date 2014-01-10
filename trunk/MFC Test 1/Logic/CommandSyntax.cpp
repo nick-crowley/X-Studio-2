@@ -48,9 +48,8 @@ namespace Logic
       /// <param name="syntax">The command syntax string</param>
       /// <param name="params">Parameter types in physical index order</param>
       /// <returns>Parameter list</returns>
-      CommandSyntax::ParameterList  CommandSyntax::ParseParams(const wstring& syntax, const list<ParameterType>& params)
+      CommandSyntax::SyntaxArray  CommandSyntax::ParseParams(const wstring& syntax, const list<ParameterType>& params)
       {
-         ParameterList list;
          map<int,int>  markers;
          UINT          displayIndex = 0,
                        physicalIndex = 0;
@@ -63,16 +62,15 @@ namespace Logic
          }
 
          // Generate parameters
+         SyntaxArray   array; //list(params.size());
          physicalIndex = 0;
          for (auto type : params)
          {
-            ParameterSyntax::Declaration  d(type, physicalIndex, markers[physicalIndex]);
-
-            list.push_back(ParameterSyntax(d));
+            array.push_back( ParameterSyntax(ParameterSyntax::Declaration(type, physicalIndex, markers[physicalIndex])) );
             physicalIndex++;
          }
 
-         return list;
+         return array;
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
