@@ -110,7 +110,7 @@ void CMFCTest1View::OnBnClickedMfcbutton1()
    wstring txt;
 
    for (ScriptCommand s : f.Commands)
-      txt += s.Syntax.Text + L'\n';
+      txt += s.Text + L'\n';
 
    m_RichEdit.SetWindowTextW(txt.c_str());
 }

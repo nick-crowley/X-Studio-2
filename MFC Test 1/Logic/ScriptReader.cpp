@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ScriptReader.h"
-
+#include <algorithm>
 
 namespace Library
 {
@@ -158,6 +158,10 @@ namespace Library
             // Insert standard command
             script.Commands.push_back( std[i] );
          }
+
+         // Translate parameters
+         for (ScriptCommand& cmd : script.Commands)
+            cmd.Translate(script);
       }
 
 
