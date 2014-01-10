@@ -52,6 +52,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Error in the XML</exception>
       /// <exception cref="Logic::InvalidOperationException">Document already loaded</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       void  XmlReader::LoadDocument()
       {
          try

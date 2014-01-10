@@ -15,7 +15,7 @@ namespace Logic
       class CommandSyntax
       {
       public:
-         typedef list<ParameterSyntax>  ParameterList;
+         typedef vector<ParameterSyntax>  SyntaxArray;
 
          /// <summary>Declares command syntax within an external file</summary>
          class Declaration
@@ -40,8 +40,8 @@ namespace Logic
          // ------------------------ STATIC -------------------------
 
       private:
-         static ParameterList  ParseParams(const wstring& syntax, const list<ParameterType>& params);
-         static CommandType    IdentifyType(const UINT id);
+         static SyntaxArray  ParseParams(const wstring& syntax, const list<ParameterType>& params);
+         static CommandType  IdentifyType(const UINT id);
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -54,7 +54,7 @@ namespace Logic
       public:
          const CommandGroup   Group;
          const CommandType    Type;
-         const ParameterList  Parameters;
+         const SyntaxArray    Parameters;
          const UINT           Versions,
                               ID;
          const wstring        Text,
