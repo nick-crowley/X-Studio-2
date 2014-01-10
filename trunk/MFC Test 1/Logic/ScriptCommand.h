@@ -8,15 +8,16 @@ namespace Library
 {
    namespace Scripts
    {
-         
+      class ScriptFile;
+
       /// <summary></summary>
       class ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         ScriptCommand(CommandSyntax& syntax, ParameterArray& params) : Syntax(syntax), RefIndex(0), Parameters(params) {}
-         ScriptCommand(CommandSyntax& syntax, UINT  ref, ParameterArray& params) : Syntax(syntax), RefIndex(ref), Parameters(params) {}
+         ScriptCommand(CommandSyntax& syntax, ParameterArray& params);
+         ScriptCommand(CommandSyntax& syntax, UINT  ref, ParameterArray& params);
          virtual ~ScriptCommand();
 
          // ------------------------ STATIC -------------------------
@@ -26,15 +27,16 @@ namespace Library
 		   // ---------------------- ACCESSORS ------------------------			
 
 		   // ----------------------- MUTATORS ------------------------
+      public:
+         void  Translate(ScriptFile& f);
+         void  Generate() {}
 
 		   // -------------------- REPRESENTATION ---------------------
-
+      public:
          CommandSyntax  Syntax;
          ParameterArray Parameters;
          wstring        Text;
          UINT           RefIndex;
-
-      private:
       };
 
       typedef list<ScriptCommand>     CommandList;

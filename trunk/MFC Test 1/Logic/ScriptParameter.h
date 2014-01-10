@@ -7,6 +7,8 @@ namespace Library
 {
    namespace Scripts
    {
+      class ScriptFile;
+
       // DATA_TYPE_FLAGS -- Modifiers added to various types or values
       //
       #define   DTF_ENCODED           0x20000
@@ -45,12 +47,12 @@ namespace Library
       class ParameterValue
       {
       public:
-         ParameterValue(wstring sz) {};
-         ParameterValue(int val) {};
+         ParameterValue(wstring sz) : Type(ValueType::String) { String = sz; }
+         ParameterValue(int val) : Type(ValueType::Int) { Int = val; }
 
          ValueType Type;
-         wstring   StringVal;
-         int       IntVal;
+         wstring   String;
+         int       Int;
       };
 
 
@@ -59,10 +61,10 @@ namespace Library
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val) {}
-         ScriptParameter(ParameterSyntax s, DataType t, const wstring& val) : Syntax(s), Type(t), Value(val) {}
-         ScriptParameter(ParameterSyntax s, DataType t, UINT val) : Syntax(s), Type(t), Value(val) {}
-         virtual ~ScriptParameter() {}
+         ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val);
+         ScriptParameter(ParameterSyntax s, DataType t, const wstring& val);
+         ScriptParameter(ParameterSyntax s, DataType t, UINT val);
+         virtual ~ScriptParameter();
 
          // ------------------------ STATIC -------------------------
 
@@ -72,13 +74,17 @@ namespace Library
 
 		   // ----------------------- MUTATORS ------------------------
 
+      public:
+         void  Translate(ScriptFile& f);
+         void  Generate() {}
+
 		   // -------------------- REPRESENTATION ---------------------
 
-         DataType       Type;
-         ParameterValue Value;
+      public:
+         DataType        Type;
+         ParameterValue  Value;
          ParameterSyntax Syntax;
-         wstring        Text;
-      private:
+         wstring         Text;
       };
 
 
