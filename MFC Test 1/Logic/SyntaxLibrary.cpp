@@ -5,6 +5,8 @@ namespace Library
 {
    namespace Scripts
    {
+      SyntaxCollection  SyntaxLibrary::Commands;
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       SyntaxLibrary::SyntaxLibrary()

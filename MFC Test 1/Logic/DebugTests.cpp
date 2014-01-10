@@ -7,6 +7,8 @@
 #include "LanguageFileReader.h"
 #include "XFileSystem.h"
 #include "LegacySyntaxReader.h"
+#include "SyntaxLibrary.h"
+#include "ScriptReader.h"
 
 namespace Library
 {
@@ -32,7 +34,15 @@ namespace Library
       {
          // Test LegacySyntaxReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto syntaxFile = LegacySyntaxReader(fs).ReadFile();
+         SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+
+         // Test Lookup
+         SyntaxLibrary::Find(CMD_EXPRESSION, GameVersion::TerranConflict);
+
+         // Test script reader
+         path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
+         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto script = ScriptReader(fs2).ReadFile();
       }
       catch (ExceptionBase&  e)
       {

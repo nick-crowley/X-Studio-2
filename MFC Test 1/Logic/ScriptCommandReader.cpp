@@ -59,14 +59,14 @@ namespace Library
          //ParameterArray postfix(count = ReadIntNode());
          count = ReadIntNode();
          for (int i = 0; i < count; i++)
-            postfix.push_back( ScriptParameter(expr, ReadTypeNode(), ReadValueNode()) );
+            postfix.push_back( ReadParameter(expr) );
 
          // Generate parameters
          count = ReadIntNode();
          for (int i = 0; i < count; i++)
          {
-            int value = ReadIntNode();    // Minus value indicates operator, position is index into postfix array
-            params.push_back( value >= 0 ? postfix[value] : ScriptParameter(expr, DataType::DT_OPERATOR, -value) );
+            int value = ReadIntNode();    // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
+            params.push_back( value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::DT_OPERATOR, value) );
          }
 
          // Return command
@@ -85,12 +85,12 @@ namespace Library
          // Read scriptname / RetVar / refObj
          params.push_back( ScriptParameter(syntax.Parameters[0], DataType::DT_STRING, ReadStringNode()) );
          params.push_back( ScriptParameter(syntax.Parameters[1], DataType::DT_VARIABLE, ReadIntNode()) );
-         params.push_back( ScriptParameter(syntax.Parameters[2], ReadTypeNode(), ReadValueNode()) );
+         params.push_back( ReadParameter(syntax.Parameters[2]) );
 
          // Read arguments
          int count = ReadIntNode();
          for (int i = 0; i < count; i++)
-            params.push_back( ScriptParameter(syntax.Parameters[3], ReadTypeNode(), ReadValueNode()) );
+            params.push_back( ReadParameter(syntax.Parameters[3]) );
 
          // Return command
          return ScriptCommand(syntax, params);
@@ -135,7 +135,7 @@ namespace Library
 
             // Parameter as {Type,Value} pair
             default:
-               params.push_back( ScriptParameter(p, ReadTypeNode(), ReadValueNode()) );
+               params.push_back( ReadParameter(p) );
                break;
             }
          }
