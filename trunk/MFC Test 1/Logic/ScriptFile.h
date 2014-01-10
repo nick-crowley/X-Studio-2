@@ -12,7 +12,7 @@ namespace Library
       class ScriptVariable
       {
       public:
-         ScriptVariable(const wstring& name, UINT index) : Name(name), ID(index)
+         ScriptVariable(const wstring& name, UINT index) : Name(name), ID(index), Type(ParameterType::PS_UNDETERMINED)
          {}
 
          wstring        Name,

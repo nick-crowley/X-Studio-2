@@ -25,10 +25,15 @@ namespace Library
             virtual ScriptCommand  ReadCommand() PURE;
 
          protected:
-            wstring        ReadStringNode() { return Reader.ReadString(ReadNode());   }
-            int            ReadIntNode()    { return Reader.ReadInt(ReadNode());      }
-            ParameterValue ReadValueNode()  { return Reader.ReadValue(ReadNode());    }
-            DataType       ReadTypeNode()   { return (DataType)LOWORD(ReadIntNode()); }
+            wstring         ReadStringNode() { return Reader.ReadString(ReadNode());   }
+            int             ReadIntNode()    { return Reader.ReadInt(ReadNode());      }
+            ParameterValue  ReadValueNode()  { return Reader.ReadValue(ReadNode());    }
+            DataType        ReadTypeNode()   { return (DataType)LOWORD(ReadIntNode()); }
+
+            ScriptParameter ReadParameter(ParameterSyntax s) { 
+               DataType dt = ReadTypeNode();
+               return ScriptParameter(s, dt, ReadValueNode()); 
+            }
 
          private:
             XmlNodePtr     ReadNode()       { return Command->childNodes->item[NodeIndex++]; }

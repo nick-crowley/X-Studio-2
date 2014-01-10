@@ -45,6 +45,10 @@ namespace Library
             XML::IXMLDOMNodePtr codeArray(Document->documentElement->selectSingleNode(L"codearray"));
             if (codeArray == nullptr)
                throw FileFormatException(HERE, L"Missing codearray node");
+
+            // Get codearray data array
+            else if (ReadArray(codeArray = codeArray->childNodes->item[0]) != 10)
+               throw FileFormatException(HERE, L"Invalid codearray node");
             
             // Read properties
             file.Name        = ReadString(codeArray->childNodes->item[0]);
