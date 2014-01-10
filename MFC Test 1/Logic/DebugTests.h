@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "ScriptFile.h"
 
 namespace Library
 {
@@ -17,6 +18,8 @@ namespace Library
 
    public:
       static void  RunAll();
+
+      static ScriptFile  LoadScript(const WCHAR* path);
 
    private:
       static void  Test_CommandSyntax();
