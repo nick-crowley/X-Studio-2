@@ -26,7 +26,28 @@ namespace Library
       Test_CommandSyntax();
    }
 
-   void  DebugTests::Test_CommandSyntax()
+   ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
+   {
+      try
+      {
+         // Load legacy syntax file
+         StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
+         SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+
+         // Parse script
+         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         return ScriptReader(fs2).ReadFile();
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+         throw e;
+      }
+   }
+
+   void DebugTests::Test_CommandSyntax()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt"; 
    

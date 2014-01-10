@@ -4,15 +4,6 @@
 #include "FileView.h"
 #include "MFC Test 1.h"
 
-#include "Logic/Utils.h"
-#include "Logic/LanguageFileReader.h"
-#include "Logic/FileStream.h"
-#include "Logic/CatalogStream.h"
-#include "Logic/GZipStream.h"
-#include "Logic/StringReader.h"
-#include "Logic/XFileSystem.h"
-#include "Logic/DebugTests.h"
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -24,8 +15,6 @@ static char THIS_FILE[]=__FILE__;
 
 CFileView::CFileView()
 {
-   DebugTests::RunAll();
-
 }
 
 CFileView::~CFileView()
