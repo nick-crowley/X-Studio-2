@@ -94,6 +94,7 @@ namespace Logic
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
       
+      /// <summary>Initializes the input buffer by appropriately decoding the input stream</summary>
       void  StringReader::InitBuffer()
       {
          BYTE utf8[3] = { 0xEF, 0xBB, 0xBF },    // UTF-8 byte ordering header
