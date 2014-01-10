@@ -134,7 +134,7 @@ namespace Logic
          }
 
          // Failed: Throw
-         if ((Length=newLength) == 0)
+         if (Length > 0 && (Length=newLength) == 0)
             throw IOException(HERE, SysErrorString());
 
          // Null terminate
