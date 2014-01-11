@@ -12,9 +12,52 @@ namespace Logic
       {
       public:
          /// <summary>Collection of language pages, sorted by ID</summary>
-         class PageCollection : private map<UINT, LanguagePage>
+         class PageCollection : public map<UINT, LanguagePage>
          {
          public:
+            /// <summary>Query whether a page is present</summary>
+            /// <param name="page">The page id</param>
+            /// <returns></returns>
+            bool  Contains(UINT page) const
+            {
+               return find(page) != end();
+            }
+
+            /// <summary>Queries whether a string is present</summary>
+            /// <param name="page">The page id</param>
+            /// <param name="id">The string id.</param>
+            /// <returns></returns>
+            bool  Contains(UINT page, UINT id) const
+            {
+               const_iterator it = find(page);
+               return it != end() && it->second.Strings.Contains(id);
+            }
+
+            /// <summary>Finds the specified page.</summary>
+            /// <param name="page">The page id</param>
+            /// <returns></returns>
+            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+            const LanguagePage&  Find(UINT page) const
+            {
+               const_iterator it;
+
+               if ((it=find(page)) == end())
+                  throw PageNotFoundException(HERE, page);
+
+               return it->second;
+            }
+
+            /// <summary>Finds the specified string</summary>
+            /// <param name="page">The page id</param>
+            /// <param name="id">The string id</param>
+            /// <returns></returns>
+            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            const LanguageString&  Find(UINT page, UINT id) const
+            {
+               return Find(page).Strings[id]; 
+            }
+
             /// <summary>Merges a page into the collection</summary>
             /// <param name="p">The page</param>
             void  Merge(LanguagePage& p)
@@ -29,17 +72,40 @@ namespace Logic
                      existing.Strings.Add(s.second);
                }
             }
+
+            /// <summary>Finds the specified page.</summary>
+            /// <param name="page">The page id</param>
+            /// <returns></returns>
+            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+            const LanguagePage&  operator[](UINT  page) const
+            {
+               return Find(page);
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguageFile() {};
-         ~LanguageFile() {};
+         LanguageFile();
+         ~LanguageFile();
 
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
+
+         /// <summary>Queries whether a string is present</summary>
+         /// <param name="page">The page id</param>
+         /// <param name="id">The string id.</param>
+         /// <returns></returns>
+         bool  Contains(UINT page, UINT id) const    { return Pages.Contains(page,id); }
+
+         /// <summary>Finds the specified string</summary>
+         /// <param name="page">The page id</param>
+         /// <param name="id">The string id</param>
+         /// <returns></returns>
+         /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         LanguageString  Find(UINT page, UINT id) const        { return Pages.Find(page,id);     }
 
 		   // ----------------------- MUTATORS ------------------------
 

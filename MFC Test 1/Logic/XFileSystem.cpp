@@ -25,8 +25,17 @@ namespace Logic
       
 		// ------------------------------- PUBLIC METHODS -------------------------------
       
+      /// <summary>Searches for all files within a known folder</summary>
+      /// <param name="folder">Known folder</param>
+      /// <returns>Results collection</returns>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
+      XFileSystem::ResultCollection  XFileSystem::Browse(XFolder folder) const
+      {
+         return Browse(GetFolder(folder));
+      }
+
       /// <summary>Searches for all files within a folder</summary>
-      /// <param name="path">Full path of folder</param>
+      /// <param name="folder">Full path of folder</param>
       /// <returns>Results collection</returns>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
       XFileSystem::ResultCollection  XFileSystem::Browse(Path  folder) const
@@ -94,6 +103,27 @@ namespace Logic
 
          // Return result 
          return it->second;
+      }
+
+      /// <summary>Gets the full path of a known subfolder</summary>
+      /// <param name="f">The folder</param>
+      /// <returns>Full path with trailing backslash</returns>
+      Path   XFileSystem::GetFolder(XFolder f) const
+      {
+         Path base = Folder;
+
+         // X3AP: Append addon folder
+         if (Version == GameVersion::AlbionPrelude)
+            base = base + L"addon\\";
+
+         switch (f)
+         {
+         case XFolder::Director:  return base + L"director\\";
+         case XFolder::Language:  return base + L"t\\";
+         case XFolder::Scripts:   return base + L"scripts\\";
+         }
+
+         throw ArgumentException(HERE, L"f", L"Unknown XFolder constant");
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

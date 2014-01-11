@@ -199,7 +199,7 @@
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="Logic\StringLibrary.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -324,7 +324,7 @@
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="Logic\StringLibrary.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@
 #include "LegacySyntaxReader.h"
 #include "SyntaxLibrary.h"
 #include "ScriptReader.h"
+#include "StringLibrary.h"
 
 namespace Library
 {
@@ -21,8 +22,9 @@ namespace Library
       //Test_LanguageFileReader();
       //Test_CatalogReader();
       //Test_GZip();
-      Test_FileSystem();
+      //Test_FileSystem();
       //Test_CommandSyntax();
+      Test_StringLibrary();
    }
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
@@ -159,6 +161,40 @@ namespace Library
          wstring line;
          while (reader.ReadLine(line))
             OutputDebugString((line+L'\n').c_str());
+      } 
+      catch (ExceptionBase&  e) {
+         err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(err);
+         return;
+      }
+   }
+
+   void  DebugTests::Test_StringLibrary()
+   {
+      StringLibrary lib;
+      XFileSystem vfs;
+      CString err;
+   
+      try 
+      {
+         // Test enumerate
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+         lib.Enumerate(vfs, GameLanguage::English);
+
+         // Test search
+         list<LanguageString>  res;
+
+         res.push_back( lib.Find(7, 1020112) );
+         res.push_back( lib.Find(7, 1020114) );
+         res.push_back( lib.Find(7, 1020117) );
+         res.push_back( lib.Find(6022, 8) );
+
+         // Print results
+         for (LanguageString& s : res)
+         {
+            OutputDebugString(s.Text.c_str());
+            OutputDebugString(L"\n");
+         }
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
