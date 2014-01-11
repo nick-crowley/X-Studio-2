@@ -66,6 +66,9 @@ namespace Logic
             }
          }
 
+         // Insert special cases
+         Files.insert(GetSpecialCases(lang));
+
          return Files.size();
       }
 
@@ -111,5 +114,24 @@ namespace Logic
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
 
+      /// <summary>Get a language file containing special case tweaks</summary>
+      /// <param name="lang">Desired language</param>
+      /// <returns>Language file with a very high ID</returns>
+      LanguageFile  StringLibrary::GetSpecialCases(GameLanguage lang)
+      {
+         LanguageFile  f(10000, lang);
+         
+         // Add 'Player' race
+         LanguagePage p(KnownPage::RACES, L"", L"", true);
+         p.Strings.Add(LanguageString(10, L"Player", GameVersion::AlbionPrelude));
+         f.Pages.Merge(p);
+
+         // Add older '[THIS]' used by X2 scripts
+         p = LanguagePage(KnownPage::CONSTANTS, L"", L"", true);
+         p.Strings.Add(LanguageString(0, L"THIS", GameVersion::AlbionPrelude));
+         f.Pages.Merge(p);
+
+         return f;
+      }
    }
 }

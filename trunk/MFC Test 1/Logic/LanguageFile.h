@@ -87,6 +87,7 @@ namespace Logic
 
       public:
          LanguageFile();
+         LanguageFile(UINT id, GameLanguage l) : ID(id), Language(l) {}
          ~LanguageFile();
 
          // --------------------- PROPERTIES ------------------------
