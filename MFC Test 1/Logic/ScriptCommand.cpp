@@ -39,12 +39,12 @@ namespace Library
          {
             switch (ch)
             {
-            // Marker: Switch mode to marker
+            // Param Marker: Switch mode to marker
             case '$':
                Marker = true;
                break;
 
-            // ParamID/Literal: Insert appropriate parameter (or literal number)
+            // ParamID/Literal: Insert appropriate parameter 
             case '0': case '1': case '2': case '3': case '4': 
             case '5': case '6': case '7': case '8': case '9': 
                if (Marker)
@@ -53,15 +53,20 @@ namespace Library
                   Command.Text.push_back(ch);
                break;
                
-            // Space: These delimit all parameters, so switch out of marker mode
-            case ' ': 
-               Marker = false;
-               // Fall thru
+            // Superscript marker: Ignore
+            case L'º': case L'¹': case L'²': case L'³': case L'ª':
+               break;
 
-            // Text/Subscript: Insert/Skip
-            default:
+            // Possible Superscript marker: Ignore iff superscript marker
+            case 'o': case 'x': case 'y': case 'z': case 'a':
                if (!Marker)
                   Command.Text.push_back(ch);
+               break;
+            
+            // Text: Insert verbatim
+            default:
+               Marker = false;
+               Command.Text.push_back(ch);
                break;
             }
          }
