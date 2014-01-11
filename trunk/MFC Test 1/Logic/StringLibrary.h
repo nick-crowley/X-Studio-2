@@ -27,8 +27,9 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
 
-      public:
+      private:
          StringLibrary();
+      public:
          virtual ~StringLibrary();
 
          // ------------------------ STATIC -------------------------
@@ -38,20 +39,26 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------			
 
       public:
-         bool  Contains(UINT page, UINT id) const;
+         bool            Contains(UINT page, UINT id) const;
          LanguageString  Find(UINT page, UINT id) const;
 
 		   // ----------------------- MUTATORS ------------------------
 
       public:
+         void  Clear();
          UINT  Enumerate(XFileSystem& vfs, GameLanguage lang);
 
 		   // -------------------- REPRESENTATION ---------------------
+
+      public:
+         static StringLibrary  Instance;
 
       private:
          FileCollection  Files;
       };
 
+      // The string library singleton
+      #define StringLib  StringLibrary::Instance
    }
 }
 
