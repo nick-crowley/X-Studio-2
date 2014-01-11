@@ -16,6 +16,8 @@ namespace Logic
          class StringCollection : public map<UINT, LanguageString>
          {
          public:
+            StringCollection(UINT page) : PageID(page) {}
+
             /// <summary>Adds a string to the collection, overwriting any with a lower version</summary>
             /// <param name="s">The string</param>
             /// <returns>True if successful, false otherwise</returns>
@@ -35,18 +37,68 @@ namespace Logic
 
                return false;
             }
+
+            /// <summary>Query whether a string is present</summary>
+            /// <param name="id">The string id</param>
+            /// <returns></returns>
+            bool  Contains(UINT  id) const
+            {
+               return find(id) != end();
+            }
+
+            /// <summary>Finds the specified string.</summary>
+            /// <param name="id">The string id</param>
+            /// <returns></returns>
+            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            const LanguageString&  Find(UINT  id) const
+            {
+               const_iterator it;
+
+               if ((it=find(id)) == end())
+                  throw StringNotFoundException(HERE, PageID, id);
+
+               return it->second;
+            }
+
+            /// <summary>Finds the specified string.</summary>
+            /// <param name="id">The string id</param>
+            /// <returns></returns>
+            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            const LanguageString&  operator[](UINT  id) const
+            {
+               return Find(id);
+            }
+
+         private:
+            UINT  PageID;
          };
 
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguagePage() : ID(0) {};
-         LanguagePage(UINT id, wstring title, wstring desc, bool voice) : ID(id), Title(title), Description(desc) {};
+         LanguagePage(UINT id, wstring title, wstring desc, bool voice);
          ~LanguagePage() {};
 
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
+
+         /// <summary>Query whether a string is present</summary>
+         /// <param name="id">The string id</param>
+         /// <returns></returns>
+         bool Contains(UINT  id) const                      { return Strings.Contains(id); }
+
+         /// <summary>Finds the specified string.</summary>
+         /// <param name="id">The string id</param>
+         /// <returns></returns>
+         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         const LanguageString&  Find(UINT  id) const        { return Strings.Find(id);     }
+
+         /// <summary>Finds the specified string.</summary>
+         /// <param name="id">The string id</param>
+         /// <returns></returns>
+         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         const LanguageString&  operator[](UINT  id) const  { return Strings.Find(id);     }
 
 		   // ----------------------- MUTATORS ------------------------
 

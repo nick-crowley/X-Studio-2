@@ -210,4 +210,30 @@ namespace Logic
          : ExceptionBase(src, wstring(L"Win32API method failed: ") + msg)
       {}
    };
+
+
+   /// <summary>Occurs when a language string is missing</summary>
+   class StringNotFoundException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an StringNotFoundException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="page">page id</param>
+      /// <param name="id">string id</param>
+      StringNotFoundException(wstring  src, UINT page, UINT id) 
+         : ExceptionBase(src, GuiString(L"Cannot find string %d in page %d", id, page))
+      {}
+   };
+
+   /// <summary>Occurs when a language string is missing</summary>
+   class PageNotFoundException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an PageNotFoundException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="page">page id</param>
+      PageNotFoundException(wstring  src, UINT page) 
+         : ExceptionBase(src, GuiString(L"Cannot find page %d", page))
+      {}
+   };
 }

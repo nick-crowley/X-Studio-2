@@ -9,7 +9,9 @@ namespace Logic
 {
    namespace FileSystem
    {
-      
+      /// <summary>Defines common subfolders</summary>
+      enum class XFolder { Language, Scripts, Director };
+
       /// <summary>Contains enumerated catalogs and catalog-based files. Provides access to physical/catalog files</summary>
       class XFileSystem
       {
@@ -75,12 +77,14 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------
 
+         ResultCollection Browse(XFolder  folder) const;
          ResultCollection Browse(Path  folder) const;
          bool             Contains(Path  path) const;
          XFileInfo        Find(Path  path) const;
 
-         Path         GetFolder() const   { return Folder;  }
-         GameVersion  GetVersion() const  { return Version; }
+         Path         GetFolder(XFolder f) const;
+         Path         GetFolder() const            { return Folder;  }
+         GameVersion  GetVersion() const           { return Version; }
 
 			// ----------------------- MUTATORS ------------------------
 

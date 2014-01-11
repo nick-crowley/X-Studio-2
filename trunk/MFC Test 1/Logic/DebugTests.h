@@ -27,6 +27,7 @@ namespace Library
       static void  Test_CatalogReader();
       static void  Test_FileSystem();
       static void  Test_GZip();
+      static void  Test_StringLibrary();
 
       // --------------------- PROPERTIES ------------------------
 			

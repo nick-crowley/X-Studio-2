@@ -20,19 +20,57 @@ namespace Logic
       {
       }
 
+      /// <summary>Parses the file ID of a language file</summary>
+      /// <param name="fn">The filename including extension</param>
+      LanguageFilenameReader::LanguageFilenameReader(const wstring& fn) : HasLanguage(false), FileID(0), Valid(false)
+      {
+         try
+         {
+            // Ensure extension is XML/PCK
+            if (Path(fn).HasExtension(L".xml") || Path(fn).HasExtension(L".pck"))
+            {
+               // No language ID: nnnn.pck
+               if (fn.length() == 4+4)
+                  FileID = ParseFileID(fn.substr(0,4));
+
+               // X3R: LLnnnn.pck
+               else if (fn.length() == 6+4)
+               {
+                  FileID = ParseFileID(fn.substr(2,4));
+                  Language = ParseLanguageID(fn.substr(0,2));
+                  HasLanguage = true;
+               }
+               // X3TC: nnnn-L0nn.pck
+               else if (fn.length() == 9+4)
+               {
+                  FileID = ParseFileID(fn.substr(0,4));
+                  Language = ParseLanguageID(fn.substr(7,2));
+                  HasLanguage = true;
+               }
+            
+               // Validate
+               Valid = FileID > 0;
+            }
+         }
+         catch (...)
+         {
+            Valid = false;
+         }
+      }
+
       // ------------------------------- STATIC METHODS -------------------------------
 
       /// <summary>Parses the language ID of a language file</summary>
       /// <param name="id">The language identifier</param>
       /// <returns>Game language</returns>
       /// <exception cref="Logic::InvalidValueException">Invalid language ID</exception>
-      GameLanguage  LanguageFileReader::ParseLanguageID(wstring id)
+      GameLanguage  LanguageFilenameReader::ParseLanguageID(const wstring& id)
       {
-         switch (_wtoi(id.c_str()))
+         switch (int val = _wtoi(id.c_str()))
          {
          case 44:
          case 48:  
-            return (GameLanguage)_wtoi(id.c_str()); 
+            return (GameLanguage)val; 
 
          default:
             // "'%s' is not a valid language ID"
@@ -41,24 +79,11 @@ namespace Logic
       }
 
       /// <summary>Parses the file ID of a language file</summary>
-      /// <param name="filename">The filename including extension</param>
-      /// <returns>File ID if successful, otherwise 0</returns>
-      UINT  LanguageFileReader::ParseFileID(wstring& filename)
+      /// <param name="id">The file identifier</param>
+      /// <returns>File ID</returns>
+      UINT  LanguageFilenameReader::ParseFileID(const wstring& id)
       {
-         // Missing: nnnn.pck
-         if (filename.length() == 4+4)
-            return _wtoi(filename.substr(0,4).c_str());
-
-         // X3R: LLnnnn.pck
-         else if (filename.length() == 6+4)
-            return _wtoi(filename.substr(2,4).c_str());
-
-         // X3TC: nnnn-L0nn.pck
-         else if (filename.length() == 9+4)
-            return _wtoi(filename.substr(0,4).c_str());
-         
-         // Undetermined
-         return 0;
+         return _wtoi(id.c_str());
       }
 
       /// <summary>Parses the page identifier</summary>
@@ -114,7 +139,7 @@ namespace Logic
             XML::IXMLDOMNodePtr languageNode(Document->documentElement);
 
             // Read fileID + language tag
-            file.ID = ParseFileID(filename);
+            file.ID = LanguageFilenameReader(filename).FileID;
             file.Language = ReadLanguageTag(languageNode);
 
             // Read pages
@@ -148,7 +173,7 @@ namespace Logic
          ReadElement(element, L"language");
 
          // Convert language ID
-         return ParseLanguageID(ReadAttribute(element, L"id"));
+         return LanguageFilenameReader::ParseLanguageID(ReadAttribute(element, L"id"));
       }
 
       
