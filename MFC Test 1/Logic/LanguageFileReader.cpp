@@ -40,15 +40,68 @@ namespace Logic
          }
       }
 
+      /// <summary>Parses the file ID of a language file</summary>
+      /// <param name="filename">The filename including extension</param>
+      /// <returns>File ID if successful, otherwise 0</returns>
+      UINT  LanguageFileReader::ParseFileID(wstring& filename)
+      {
+         // Missing: nnnn.pck
+         if (filename.length() == 4+4)
+            return _wtoi(filename.substr(0,4).c_str());
+
+         // X3R: LLnnnn.pck
+         else if (filename.length() == 6+4)
+            return _wtoi(filename.substr(2,4).c_str());
+
+         // X3TC: nnnn-L0nn.pck
+         else if (filename.length() == 9+4)
+            return _wtoi(filename.substr(0,4).c_str());
+         
+         // Undetermined
+         return 0;
+      }
+
+      /// <summary>Parses the page identifier</summary>
+      /// <param name="pageid">The pageid</param>
+      /// <param name="v">The associated game version</param>
+      /// <returns>Normalised page ID</returns>
+      /// <exception cref="Logic::InvalidValueException">Invalid pageID</exception>
+      UINT  LanguageFileReader::ParsePageID(const wstring&  pageid, GameVersion&  v)
+      {
+         if (pageid.length() <= 4)
+         {
+            v = GameVersion::Threat;
+            return _wtoi(pageid.c_str());
+         }
+         else if (pageid.length() != 6)
+            throw InvalidValueException(HERE, GuiString(L"Invalid page ID '%s'", pageid.c_str()) );
+
+         else if (pageid.compare(0, 2, L"30") == 0)
+            v = GameVersion::Reunion;
+         
+         else if (pageid.compare(0, 2, L"35") == 0)
+            v = GameVersion::TerranConflict;
+
+         else if (pageid.compare(0, 2, L"38") == 0)
+            v = GameVersion::AlbionPrelude;
+
+         else
+            throw InvalidValueException(HERE, GuiString(L"Invalid page ID '%s'", pageid.c_str()) );
+
+         // Convert last four digits of page ID
+         return _wtoi(pageid.substr(2).c_str());
+      }
+
 		// ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire language file</summary>
+      /// <param name="filename">The filename</param>
       /// <returns>New language file</returns>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
-      /// <exception cref="Logic::InvalidDataException">Invalid language ID</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid languageID or pageID</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      LanguageFile LanguageFileReader::ReadFile()
+      LanguageFile LanguageFileReader::ReadFile(wstring filename)
       {
          LanguageFile file;
 
@@ -60,14 +113,13 @@ namespace Logic
             // Get root (as node)
             XML::IXMLDOMNodePtr languageNode(Document->documentElement);
 
-            // Read language tag
+            // Read fileID + language tag
+            file.ID = ParseFileID(filename);
             file.Language = ReadLanguageTag(languageNode);
 
             // Read pages
             for (int i = 0; i < languageNode->childNodes->length; i++)
-            {
-               file.Pages.push_back( ReadPage(languageNode->childNodes->item[i]) );
-            }
+               file.Pages.Merge( ReadPage(languageNode->childNodes->item[i]) );
 
             return file;
          }
@@ -99,13 +151,17 @@ namespace Logic
          return ParseLanguageID(ReadAttribute(element, L"id"));
       }
 
+      
       /// <summary>Reads a page tag and all it's string tags</summary>
       /// <param name="element">Page element</param>
       /// <returns>New language page</returns>
       /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid page ID</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       LanguagePage  LanguageFileReader::ReadPage(XML::IXMLDOMNodePtr&  element)
       {
+         GameVersion ver;
+
          // Verify page tag
          ReadElement(element, L"page");
 
@@ -113,14 +169,14 @@ namespace Logic
          wstring id(ReadAttribute(element, L"id")),
                  title(TryReadAttribute(element, L"title")),
                  desc(TryReadAttribute(element, L"desc"));
-         bool    voice = TryReadAttribute(element, L"voice") == L"yes";
+         bool    voice = (TryReadAttribute(element, L"voice") == L"yes");
 
-         // Create page
-         LanguagePage page(_wtoi(id.c_str()), title, desc, voice);
+         // Create page (also normalise PageID)
+         LanguagePage page(ParsePageID(id, ver), title, desc, voice);
 
          // Read strings
          for (int i = 0; i < element->childNodes->length; i++)
-            page.Strings.insert(ReadString(element->childNodes->item[i]));
+            page.Strings.Add( ReadString(element->childNodes->item[i], ver) );
 
          // Return page
          return page;
@@ -128,16 +184,17 @@ namespace Logic
 
       /// <summary>Reads a string tag</summary>
       /// <param name="element">String 't' element</param>
+      /// <param name="v">Version of page</param>
       /// <returns>New language string</returns>
       /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      LanguageString  LanguageFileReader::ReadString(XML::IXMLDOMNodePtr&  element)
+      LanguageString  LanguageFileReader::ReadString(XML::IXMLDOMNodePtr&  element, GameVersion v)
       {
          // Verify string tag
          ReadElement(element, L"t");
 
          // Read ID+text
-         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), (WCHAR*)element->text);
+         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), (WCHAR*)element->text, v);
       }
    }
 }

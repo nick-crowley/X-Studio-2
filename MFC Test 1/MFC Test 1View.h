@@ -48,9 +48,10 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
-   afx_msg void OnBnClickedMfcbutton1();
+   afx_msg void OnBnClickedLoadScript();
    CRichEditCtrl m_RichEdit;
    afx_msg void OnSize(UINT nType, int cx, int cy);
+   afx_msg void OnBnClickedRuntests();
 };
 
 #ifndef _DEBUG  // debug version in MFC Test 1View.cpp

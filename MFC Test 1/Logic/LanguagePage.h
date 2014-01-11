@@ -11,21 +11,30 @@ namespace Logic
       /// <summary>Represents a collection of language strings</summary>
       class LanguagePage
       {
-      private:
-         /// <summary>Sorts language strings by ID (no duplicates)</summary>
-         struct UniqueID : public binary_function<LanguageString, LanguageString, bool>
-	      {	
-            // Sort by ID (ascending)
-	         bool operator()(const LanguageString& a, const LanguageString& b) const
-		      {	
-		         return a.ID < b.ID;
-		      }
-	      };
-
       public:
-         /// <summary>Collection of language strings, sorted by ID (lowest to highest, no duplicates)</summary>
-         class StringCollection : public set<LanguageString, UniqueID>
+         /// <summary>Collection of language strings, sorted by ID</summary>
+         class StringCollection : public map<UINT, LanguageString>
          {
+         public:
+            /// <summary>Adds a string to the collection, overwriting any with a lower version</summary>
+            /// <param name="s">The string</param>
+            /// <returns>True if successful, false otherwise</returns>
+            bool  Add(LanguageString& s)
+            {
+               auto res = insert(value_type(s.ID, s));
+
+               if (res.second)
+                  return true;
+
+               // Overwrite if version is greater
+               if (!res.second && (UINT)s.Version > (UINT)(res.first->second).Version)
+               {
+                  res.first->second = s;
+                  return true;
+               }
+
+               return false;
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -43,10 +52,11 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         UINT     ID;
-         wstring  Title,
-                  Description;
-
+         UINT             ID;
+         wstring          Title,
+                          Description;
+         bool             Voiced;
+         
          StringCollection Strings;
 
       };

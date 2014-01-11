@@ -26,8 +26,9 @@ IMPLEMENT_DYNCREATE(CMFCTest1View, CFormView)
 BEGIN_MESSAGE_MAP(CMFCTest1View, CFormView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
-   ON_BN_CLICKED(IDC_MFCBUTTON1, &CMFCTest1View::OnBnClickedMfcbutton1)
+   ON_BN_CLICKED(IDC_LOADSCRIPT, &CMFCTest1View::OnBnClickedLoadScript)
    ON_WM_SIZE()
+   ON_BN_CLICKED(IDC_RUNTESTS, &CMFCTest1View::OnBnClickedRuntests)
 END_MESSAGE_MAP()
 
 // CMFCTest1View construction/destruction
@@ -101,11 +102,8 @@ CMFCTest1Doc* CMFCTest1View::GetDocument() const // non-debug version is inline
 // CMFCTest1View message handlers
 
 
-void CMFCTest1View::OnBnClickedMfcbutton1()
+void CMFCTest1View::OnBnClickedLoadScript()
 {
-   // TODO: Add your control notification handler code here
-   //DebugTests::RunAll();
-
    ScriptFile f( DebugTests::LoadScript(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml") );
    wstring txt;
 
@@ -129,4 +127,11 @@ void CMFCTest1View::OnSize(UINT nType, int cx, int cy)
 
       m_RichEdit.SetWindowPos(nullptr, NULL, NULL, wnd.Width() -(edit.left-wnd.left)-10, wnd.Height() -(edit.top-wnd.top)-10, SWP_NOMOVE | SWP_NOZORDER);
    }
+}
+
+
+void CMFCTest1View::OnBnClickedRuntests()
+{
+   DebugTests::RunAll();
+   AfxMessageBox(L"Tests complete");
 }

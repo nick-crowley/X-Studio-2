@@ -151,6 +151,7 @@
     <ClInclude Include="Logic\ScriptReader.h" />
     <ClInclude Include="Logic\STL.h" />
     <ClInclude Include="Logic\Stream.h" />
+    <ClInclude Include="Logic\StringLibrary.h" />
     <ClInclude Include="Logic\StringReader.h" />
     <ClInclude Include="Logic\SyntaxFile.h" />
     <ClInclude Include="Logic\SyntaxLibrary.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Logic\ScriptFile.cpp" />
     <ClCompile Include="Logic\ScriptParameter.cpp" />
     <ClCompile Include="Logic\ScriptReader.cpp" />
+    <ClCompile Include="Logic\StringLibrary.cpp" />
     <ClCompile Include="Logic\StringReader.cpp" />
     <ClCompile Include="Logic\StringResource.cpp" />
     <ClCompile Include="Logic\SyntaxFile.cpp" />
