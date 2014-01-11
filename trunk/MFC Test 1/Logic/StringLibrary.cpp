@@ -42,14 +42,26 @@ namespace Logic
                results.push_back(f);
          }
 
+         // DEBUG: print results
+         for (XFileInfo& f : results)
+            Console::WriteLn(L"Found language file: %s", f.FullPath.c_str());
+
          // Read/Store each file
          for (XFileInfo& f : results)
          {
-            LanguageFile file = LanguageFileReader(f.Open()).ReadFile(f.FullPath.FileName);
+            try
+            {
+               Console::WriteLn(L"Reading language file: %s", f.FullPath.c_str());
+               LanguageFile file = LanguageFileReader(f.Open()).ReadFile(f.FullPath.FileName);
 
-            // Skip files that turn out to be foreign
-            if (file.Language == lang)
-               Files.insert(file);
+               // Skip files that turn out to be foreign
+               if (file.Language == lang)
+                  Files.insert(file);
+            }
+            catch (ExceptionBase& e)
+            {
+               Console::WriteLn(L"Skipping language file: %s - %s", f.FullPath.c_str(), e.Message.c_str());
+            }
          }
 
          return Files.size();

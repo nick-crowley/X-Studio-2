@@ -66,11 +66,17 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Invalid language ID</exception>
       GameLanguage  LanguageFilenameReader::ParseLanguageID(const wstring& id)
       {
-         switch (int val = _wtoi(id.c_str()))
+         switch (GameLanguage val = (GameLanguage)_wtoi(id.c_str()))
          {
-         case 44:
-         case 48:  
-            return (GameLanguage)val; 
+         case GameLanguage::English:
+         case GameLanguage::French:
+         case GameLanguage::Italian:
+         case GameLanguage::Spanish:
+         case GameLanguage::Russian:
+         case GameLanguage::Polish:
+         case GameLanguage::German:
+         case GameLanguage::Czech:
+            return val; 
 
          default:
             // "'%s' is not a valid language ID"
