@@ -10,9 +10,9 @@ namespace Logic
 {
    
    /// <summary>Defines the available game data languages</summary>
-   enum class GameLanguage : int { English, French, German, Russian };
+   enum class GameLanguage : UINT { Russian = 7, French = 33, Spanish = 34, Italian = 39, Czech = 42, English = 44, Polish = 48, German = 49 };
 
 
    /// <summary>Defines the available game versions</summary>
-   enum class GameVersion : int { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
+   enum class GameVersion : UINT { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
 }

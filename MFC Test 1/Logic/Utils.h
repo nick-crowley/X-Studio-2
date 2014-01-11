@@ -191,6 +191,7 @@ namespace Logic
 
       operator WCHAR*()                            { return Buffer.get(); }
       operator const WCHAR*() const                { return Buffer.get(); }
+      const WCHAR* c_str() const                   { return Buffer.get(); }
       //operator wstring()                           { return Buffer.get(); }
 
    private:

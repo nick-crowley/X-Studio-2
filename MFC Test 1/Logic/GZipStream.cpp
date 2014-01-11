@@ -127,7 +127,7 @@ namespace Logic
 
          // Re-Fill input buffer if necessary
          if (ZStream.avail_in == 0)
-            ZStream.avail_in += StreamFacade::Read(ZStream.next_in, length);
+            ZStream.avail_in += StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());
          
          // Decompress
          switch (int res = inflate(&ZStream, Z_FINISH))
