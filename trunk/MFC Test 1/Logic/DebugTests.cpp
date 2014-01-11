@@ -139,39 +139,31 @@ namespace Library
 
    void  DebugTests::Test_FileSystem()
    {
-      const WCHAR* path = L"D:\\X3 Albion Prelude\\types\\TLaser.pck";
+      XFileSystem vfs;
+      CString err;
    
-      try
+      try 
       {
          // Test XFileSystem
-         XFileSystem vfs;
          vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
 
-         auto files = vfs.Browse(L"D:\\X3 Albion Prelude\\t");
+         // Test browse
+         for (auto f : vfs.Browse(L"D:\\X3 Albion Prelude\\t"))
+            OutputDebugString(GuiString(L"Found file: '%s'\n", (const WCHAR*)f.FullPath).c_str());
 
-         for (auto pair : files)
-            OutputDebugString(GuiString(L"Found file: '%s'\n", (const WCHAR*)(pair.second.FullPath)).c_str());
+         // Test search
+         XFileInfo f = vfs.Find(L"D:\\X3 Albion Prelude\\types\\TLaser");
+         StringReader reader(f.Open());
 
-         // Test VFS search
-         //XFileInfo f = vfs.Find(path, true);
-
-         //// Print result
-         //StringReader reader(f.Open());
-         //wstring line;
-
-         //while (reader.ReadLine(line))
-         //   OutputDebugString((line+L'\n').c_str());
-
-         /*AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,true) ? L"true" : L"false").c_str() );
-
-         path = L"D:\\X3 Albion Prelude\\t\\9999-L044.pck";
-         AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,false) ? L"true" : L"false").c_str() );*/
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to access VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
+         // Print file
+         wstring line;
+         while (reader.ReadLine(line))
+            OutputDebugString((line+L'\n').c_str());
+      } 
+      catch (ExceptionBase&  e) {
+         err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(err);
+         return;
       }
    }
 

@@ -29,9 +29,9 @@ namespace Logic
       /// <param name="path">Full path of folder</param>
       /// <returns>Results collection</returns>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      XFileSystem::FileCollection  XFileSystem::Browse(Path  folder) const
+      XFileSystem::ResultCollection  XFileSystem::Browse(Path  folder) const
       {
-         FileCollection results;
+         ResultCollection results;
 
          // Ensure trailing backslash
          folder = folder.AppendBackslash();
@@ -39,7 +39,7 @@ namespace Logic
          // Copy all files with exactly the same folder
          for (auto pair : Files)
             if (folder == pair.first.Folder)
-               results.Add(pair.second);
+               results.push_back(pair.second);
 
          return results;
       }
