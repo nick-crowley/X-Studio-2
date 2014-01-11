@@ -163,14 +163,14 @@ namespace Logic
 			
       PROPERTY_GET(DWORD,Attributes,GetAttributes);
       PROPERTY_GET(DWORD,FileSize,GetFileSize);
-      PROPERTY_GET(wstring,FullPath,GetFullPath);
+      PROPERTY_GET(Path,FullPath,GetFullPath);
 
 		// ---------------------- ACCESSORS ------------------------
 
       DWORD   GetAttributes()  { return Data.dwFileAttributes; }
       DWORD   GetFileSize()    { return Data.nFileSizeLow;     }
       wstring GetFileName()    { return Data.cFileName;        }
-      wstring GetFullPath()    { return (Folder+Data.cFileName).Text; }
+      Path    GetFullPath()    { return (Folder+Data.cFileName).Text; }
 
       bool  HasResult();
 

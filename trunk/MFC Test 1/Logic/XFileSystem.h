@@ -50,7 +50,7 @@ namespace Logic
 
             bool operator()(XFileInfo a, XFileInfo b)
             {
-               return a.FullPath < b.FullPath;
+               return a.Key < b.Key;
             }
          };
          
@@ -83,7 +83,18 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
 
-            bool      Add(XFileInfo&& f)  { return Base::insert(std::move(f)).second;  }
+            void      Add(XFileInfo&& f)  
+            {
+               _Pairib res = Base::insert(std::move(f));
+
+               // Exists: Overwrite if higher precendence
+               if (!res.second && f.Precedence > res.first->Precedence)
+               {
+                  Base::erase(res.first);
+                  Base::insert(std::move(f));
+               }
+            }
+
             void      Clear()             { Base::clear();                             }
          };
 

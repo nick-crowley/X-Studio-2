@@ -146,15 +146,36 @@ namespace Logic
       /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
       /// <returns>Results collection</returns>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
+      //XFileSystem::ResultCollection  XFileSystem::Browse(Path  folder) const
+      //{
+      //   ResultCollection  results;
+      //   
+      //   // Enumerate matching catalog files
+      //   for (const XFileInfo& f : Files)
+      //      if (f.Matches(path, matchExt))
+      //         results.insert(f); 
+      //   
+      //   // Enumerate matching files on disc
+      //   for (FileSearch fs(matchExt ? path : path.RenameExtension(L".*")); fs.HasResult(); fs.Next())
+      //      results.insert(XFileInfo(fs.FullPath));
+
+      //   // Return results
+      //   return results;
+      //}
+
+      /// <summary>Queries whether file system contains a file</summary>
+      /// <param name="path">Full path including extension</param>
+      /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
+      /// <returns>Results collection</returns>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       XFileSystem::ResultCollection  XFileSystem::Query(Path  path, bool  matchExt) const
       {
          ResultCollection  results;
          
          // Enumerate matching catalog files
-         for_each(Files.begin(), Files.end(), [&](const XFileInfo& f)->void { 
+         for (const XFileInfo& f : Files)
             if (f.Matches(path, matchExt))
                results.insert(f); 
-         } );
          
          // Enumerate matching files on disc
          for (FileSearch fs(matchExt ? path : path.RenameExtension(L".*")); fs.HasResult(); fs.Next())
