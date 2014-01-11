@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XmlReader.h"
+#include "StringReader.h"
 
 namespace Logic
 {
@@ -62,10 +63,11 @@ namespace Logic
                throw InvalidOperationException(HERE, L"Document has already been loaded");
 
             // Extract stream
-            Buffer = ByteArrayPtr(Input->ReadAllBytes());
+            DWORD length = Input->GetLength();
+            Buffer = StringReader::ConvertFileBuffer(Input, length);
 
             // Load/Parse file : "%s (line %d, char %d)"
-            if (Document->loadXML((char*)Buffer.get()) == VARIANT_FALSE)
+            if (Document->loadXML(Buffer.get()) == VARIANT_FALSE)
                throw FileFormatException(HERE, GuiString(ERR_XML_PARSE_FAILED, (WCHAR*)Document->parseError->reason, Document->parseError->line, Document->parseError->linepos));
          }
          catch (_com_error& ex) {
@@ -80,14 +82,14 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Attribute is missing</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      wstring  XmlReader::ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
+      wstring  XmlReader::ReadAttribute(XmlNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);
 
          try
          {
             // Lookup attribute
-            XML::IXMLDOMNodePtr attr = node->attributes->getNamedItem(name);
+            XmlNodePtr attr = node->attributes->getNamedItem(name);
 
             // Ensure present : "Missing '%s' attribute on '<%s>' element"
             if (attr == nullptr)
@@ -107,7 +109,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Missing element</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  XmlReader::ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
+      void  XmlReader::ReadElement(XmlNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);
 
@@ -129,14 +131,14 @@ namespace Logic
       /// <returns>attribute value, or empty string</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      wstring  XmlReader::TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name)
+      wstring  XmlReader::TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name)
       {
          REQUIRED(node);
 
          try
          {
             // Read attribute text or return empty string
-            XML::IXMLDOMNodePtr attr = node->attributes->getNamedItem(name);
+            XmlNodePtr attr = node->attributes->getNamedItem(name);
             return attr == NULL ? L"" : (WCHAR*)attr->text;
          }
          catch (_com_error& ex) {

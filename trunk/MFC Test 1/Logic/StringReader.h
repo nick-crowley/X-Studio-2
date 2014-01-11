@@ -25,6 +25,11 @@ namespace Logic
          // Move assign not implemented
          NO_MOVE_ASSIGN(StringReader);
 
+         // ------------------------ STATIC -------------------------
+
+      public:
+         static CharArrayPtr  ConvertFileBuffer(StreamPtr  s, DWORD&  Length);
+
          // --------------------- PROPERTIES ------------------------
 			
          PROPERTY_GET(DWORD,LineNumber,GetLineNumber);
@@ -38,7 +43,6 @@ namespace Logic
          virtual bool   ReadLine(wstring&  line);
 
       private:
-         void  InitBuffer();
          bool  PeekChar(WCHAR&  c);
          bool  ReadChar(WCHAR&  c);
 

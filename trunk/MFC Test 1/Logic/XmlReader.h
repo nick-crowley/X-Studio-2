@@ -37,16 +37,16 @@ namespace Logic
 
       protected:
          void     LoadDocument();
-         wstring  ReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-         void     ReadElement(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
-         wstring  TryReadAttribute(XML::IXMLDOMNodePtr&  node, const WCHAR*  name);
+         wstring  ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
+         void     ReadElement(XmlNodePtr&  node, const WCHAR*  name);
+         wstring  TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
 
 		   // -------------------- REPRESENTATION ---------------------
 
          IXMLDOMDocument2Ptr  Document;
 
       private:
-         ByteArrayPtr         Buffer;
+         CharArrayPtr         Buffer;
          StreamPtr            Input;
       };
 
