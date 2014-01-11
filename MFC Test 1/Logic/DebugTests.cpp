@@ -171,7 +171,6 @@ namespace Logic
 
    void  DebugTests::Test_StringLibrary()
    {
-      StringLibrary lib;
       XFileSystem vfs;
       CString err;
    
@@ -179,15 +178,15 @@ namespace Logic
       {
          // Test enumerate
          vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-         lib.Enumerate(vfs, GameLanguage::English);
+         StringLib.Enumerate(vfs, GameLanguage::English);
 
          // Test search
          list<LanguageString>  res;
 
-         res.push_back( lib.Find(7, 1020112) );
-         res.push_back( lib.Find(7, 1020114) );
-         res.push_back( lib.Find(7, 1020117) );
-         res.push_back( lib.Find(6022, 8) );
+         res.push_back( StringLib.Find(7, 1020112) );
+         res.push_back( StringLib.Find(7, 1020114) );
+         res.push_back( StringLib.Find(7, 1020117) );
+         res.push_back( StringLib.Find(6022, 8) );
 
          // Print results
          for (LanguageString& s : res)

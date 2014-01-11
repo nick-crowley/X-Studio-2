@@ -6,6 +6,8 @@ namespace Logic
 {
    namespace Language
    {
+      StringLibrary  StringLibrary::Instance;
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       StringLibrary::StringLibrary()
@@ -30,7 +32,7 @@ namespace Logic
          list<XFileInfo> results;
 
          // Clear previous contents
-         Files.clear();
+         Clear();
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))
@@ -65,6 +67,12 @@ namespace Logic
          }
 
          return Files.size();
+      }
+
+      /// <summary>Clears the library of all files/strings</summary>
+      void  StringLibrary::Clear()
+      {
+         Files.clear();
       }
 
       /// <summary>Queries whether a string is present</summary>
