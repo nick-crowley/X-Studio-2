@@ -32,7 +32,7 @@ namespace Logic
 			
 			// ---------------------- ACCESSORS ------------------------
 
-         CatalogReader  GetReader();
+         CatalogReader  GetReader() const;
          Path           GetFullPath()  { return FullPath; }
 
 			// ----------------------- MUTATORS ------------------------

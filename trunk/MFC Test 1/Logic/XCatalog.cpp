@@ -28,7 +28,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      CatalogReader  XCatalog::GetReader()
+      CatalogReader  XCatalog::GetReader() const
       {
          return CatalogReader( StreamPtr(new CatalogStream(FullPath, FileMode::OpenExisting, FileAccess::Read)) );
       }

@@ -33,8 +33,8 @@ namespace Logic
       /// <summary>Releases the locks on the catalogs</summary>
       XFileSystem::~XFileSystem()
       {
-         Catalogs.Clear();
-         Files.Clear();
+         Catalogs.clear();
+         Files.clear();
       }
       
 		// ------------------------------- PUBLIC METHODS -------------------------------
@@ -56,8 +56,8 @@ namespace Logic
       DWORD  XFileSystem::Enumerate()
       {
          // Clear previous
-         Catalogs.Clear();
-         Files.Clear();
+         Catalogs.clear();
+         Files.clear();
 
          // Enumerate
          EnumerateCatalogs();
@@ -75,7 +75,7 @@ namespace Logic
          ResultCollection results( Query(path, matchExt) );
 
          // Check for results
-         if (results.Count == 0)
+         if (results.size() == 0)
             throw FileNotFoundException(HERE, path);
 
          // Return result with highest precedence
@@ -126,19 +126,19 @@ namespace Logic
       DWORD  XFileSystem::EnumerateFiles()
       {
          // Iterate thru catalogs (Highest priority -> Lowest)
-         for (auto it = Catalogs.Begin(); it != Catalogs.End(); ++it)
+         for (const XCatalog& cat : Catalogs)
          {
-            CatalogReader  reader(it->GetReader());
+            CatalogReader  reader(cat.GetReader());
             wstring        path;
             DWORD          size;
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
-               Files.Add( XFileInfo(*this, *it, path, size, offset) );
+               Files.Add( XFileInfo(*this, cat, path, size, offset) );
          }
 
          // Return count
-         return Files.Count;
+         return Files.size();
       }
 
       /// <summary>Queries whether file system contains a file</summary>
