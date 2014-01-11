@@ -30,37 +30,10 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
 
             void  Add(XCatalog&& c)  { push_front(std::move(c)); }
-            
          };
 
-         
-         /// <summary>Sorts file descriptors by their key</summary>
-         class UniquePath : public binary_function<XFileInfo, XFileInfo, bool>
-         {
-         public:
-            // ---------------------- ACCESSORS ------------------------
-
-            bool operator()(XFileInfo a, XFileInfo b)
-            {
-               return a.Key < b.Key;
-            }
-         };
-         
-         /// <summary>Sorts file descriptors by their precedence</summary>
-         class DescendingPrecedence : public binary_function<XFileInfo, XFileInfo, bool>
-         {
-         public:
-            // ---------------------- ACCESSORS ------------------------
-
-            bool operator()(XFileInfo a, XFileInfo b)
-            {
-               return a.Precedence > b.Precedence;
-            }
-         };
-
-         /// <summary>Collection of file descriptors with custom sort rules</summary>
-         template<typename T>
-         class XFileInfoCollection : public set<XFileInfo, T>
+         /// <summary>Collection of file descriptors</summary>
+         class FileCollection : public map<Path, XFileInfo>
          {
          public:
             // ---------------------- PROPERTIES -----------------------
@@ -71,29 +44,24 @@ namespace Logic
          
             /// <summary>Attempts to add a file to the collection, overwriting any of lower precedence</summary>
             /// <param name="f">The file to add</param>
-            void  Add(XFileInfo&& f)
+            void  Add(const XFileInfo& f)
             {
-               _Pairib res = insert(std::move(f));
+               _Pairib res = insert(value_type(f.Key, f));
 
                // Exists: Overwrite if higher precendence
-               if (!res.second && f.Precedence > res.first->Precedence)
+               if (!res.second && f.Precedence > res.first->second.Precedence)
                {
+                  //res.first->second = f;
                   erase(res.first);
-                  insert(std::move(f));
+                  insert(value_type(f.Key, f));
                }
             }
          };
 
-         /// <summary>Collection used by file system</summary>
-         typedef XFileInfoCollection<UniquePath>            FileCollection;
-
-         /// <summary>Collection used to hold results of a search</summary>
-         typedef XFileInfoCollection<DescendingPrecedence>  ResultCollection;
-
       public:
          // --------------------- CONSTRUCTION ----------------------
 
-         XFileSystem(Path folder, GameVersion version);
+         XFileSystem();
          virtual ~XFileSystem();
 
          // Prevent moving/copying
@@ -104,26 +72,26 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------
 
-         bool         Contains(Path  path, bool  matchExt) const;
-         XFileInfo    Find(Path  path, bool  matchExt) const;
+         FileCollection Browse(Path  folder) const;
+         bool           Contains(Path  path) const;
+         XFileInfo      Find(Path  path) const;
 
          Path         GetFolder() const   { return Folder;  }
          GameVersion  GetVersion() const  { return Version; }
 
-      private:
-         ResultCollection  Query(Path  path, bool  matchExt) const;
-
 			// ----------------------- MUTATORS ------------------------
 
       public:
-         DWORD        Enumerate();
+         DWORD   Enumerate(Path folder, GameVersion version);
          
       private:
-         DWORD        EnumerateCatalogs();
-         DWORD        EnumerateFiles();
+         DWORD   EnumerateCatalogs();
+         DWORD   EnumerateFiles();
+         void    EnumerateFolder(Path  folder);
          
          // -------------------- REPRESENTATION ---------------------
 
+      private:
          CatalogCollection  Catalogs;
          FileCollection     Files;
          Path               Folder;
