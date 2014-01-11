@@ -28,8 +28,13 @@ namespace Logic
          DEFAULT_COPY(XFileInfo);
          DEFAULT_MOVE(XFileInfo);
 
+         // ----------------------- STATIC --------------------------
+
+      private:
+         static DWORD CalculatePrecendence(FileSource s, const Path& path);
+
 			// --------------------- PROPERTIES ------------------------
-			
+      public:
          PROPERTY_GET(Path,DataFile,GetDataFile);
 
 			// ---------------------- ACCESSORS ------------------------
@@ -41,19 +46,19 @@ namespace Logic
 
 			// ----------------------- MUTATORS ------------------------
 
-      private:
-         void  CalculatePrecendence();
+      
 
 			// -------------------- REPRESENTATION ---------------------
 
       public:
-         XFileSystem* FileSystem;
-         XCatalog*    Catalog;
-         Path         FullPath;
-         DWORD        Offset,
-                      Length,
-                      Precedence;
-         FileSource   Source;
+         const XFileSystem* FileSystem;
+         const XCatalog*    Catalog;
+         const Path         FullPath,
+                            Key;
+         const DWORD        Offset,
+                            Length,
+                            Precedence;
+         const FileSource   Source;
       };
 
    }
