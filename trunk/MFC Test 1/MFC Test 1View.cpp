@@ -104,13 +104,23 @@ CMFCTest1Doc* CMFCTest1View::GetDocument() const // non-debug version is inline
 
 void CMFCTest1View::OnBnClickedLoadScript()
 {
-   ScriptFile f( DebugTests::LoadScript(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml") );
-   wstring txt;
+   const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml";
+   try
+   {
+      ScriptFile f( DebugTests::LoadScript(path) );
+      
+      wstring txt;
+      for (ScriptCommand s : f.Commands)
+         txt += s.Text + L'\n';
 
-   for (ScriptCommand s : f.Commands)
-      txt += s.Text + L'\n';
-
-   m_RichEdit.SetWindowTextW(txt.c_str());
+      m_RichEdit.SetWindowTextW(txt.c_str());
+   }
+   catch (ExceptionBase&  e)
+   {
+      CString sz;
+      sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+      AfxMessageBox(sz);
+   }
 }
 
 

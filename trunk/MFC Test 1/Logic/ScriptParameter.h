@@ -9,15 +9,12 @@ namespace Logic
    {
       class ScriptFile;
 
-      // DATA_TYPE_FLAGS -- Modifiers added to various types or values
-      //
+      /// <summary>Modifiers added to various types or values</summary>
       #define   DTF_ENCODED           0x20000
       #define   DTF_OBJECT_DATA       0x10000
       #define   DTF_UNARY_OPERATOR    0x10000
 
-      //
-      // DATA_TYPE -- Defines the type element of a X3 script {type,value} pair
-      //
+      /// <summary>Defines the type element of a X3 script {type,value} pair</summary>
       enum class DataType : UINT
       {    
          DT_NULL            = 0,   DT_UNKNOWN        = 1,   DT_VARIABLE      = 2,
@@ -42,8 +39,32 @@ namespace Logic
          DT_UNARY_OPERATOR = DT_OPERATOR | DTF_UNARY_OPERATOR    
       };
 
+   
+      /// <summary>Defines the game pages containing the definitions for the various game constants</summary>
+      enum KnownPage : UINT
+      {  
+         SECTORS              = 7,
+         STATION_SERIALS      = 12,
+         SHIPS_STATIONS_WARES = 17,
+         RELATIONS            = 35,
+         RACES                = 1266,
+         TRANSPORT_CLASSES    = 1999,
+         PARAMETER_TYPES      = 2000,
+         OPERATORS            = 2001,
+         CONSTANTS            = 2002,
+         COMMAND_SYNTAX       = 2003,
+         OBJECT_CLASSES       = 2006,
+         CONDITIONALS         = 2007,
+         OBJECT_COMMANDS      = 2008,
+         FLIGHT_RETURNS       = 2009,
+         DATA_TYPES           = 2013,
+         WING_COMMANDS        = 2028 
+      };
+
+      /// <summary>Defines current type of parameter value union</summary>
       enum class ValueType { String, Int };
 
+      /// <summary>Holds a union value of String/integer</summary>
       class ParameterValue
       {
       public:
@@ -56,7 +77,7 @@ namespace Logic
       };
 
 
-      /// <summary></summary>
+      /// <summary>Represents a script command parameter</summary>
       class ScriptParameter
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -87,7 +108,7 @@ namespace Logic
          wstring         Text;
       };
 
-
+      /// <summary>Vector of script parameters</summary>
       typedef vector<ScriptParameter> ParameterArray;
    }
 }

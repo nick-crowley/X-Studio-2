@@ -29,23 +29,19 @@ namespace Logic
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
    {
-      try
-      {
-         // Load legacy syntax file
-         StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
-         SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+      XFileSystem vfs;
 
-         // Parse script
-         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         return ScriptReader(fs2).ReadFile();
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
-         throw e;
-      }
+      // Build VFS. Enumerate language files
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      StringLib.Enumerate(vfs, GameLanguage::English);
+
+      // Load legacy syntax file
+      StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
+      SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+
+      // Parse script
+      StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+      return ScriptReader(fs2).ReadFile();
    }
 
    void DebugTests::Test_CommandSyntax()
