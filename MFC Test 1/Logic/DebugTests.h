@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "ScriptFile.h"
 
-namespace Library
+namespace Logic
 {
    /// <summary></summary>
    class DebugTests
@@ -41,4 +41,4 @@ namespace Library
    };
 }
 
-using namespace Library;
+using namespace Logic;

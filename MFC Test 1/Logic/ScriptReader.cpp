@@ -2,7 +2,7 @@
 #include "ScriptReader.h"
 #include <algorithm>
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {

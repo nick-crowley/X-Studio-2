@@ -4,7 +4,7 @@
 #include "XFileSystem.h"
 #include <algorithm>
 
-namespace Library
+namespace Logic
 {
    namespace Language
    {
@@ -55,4 +55,4 @@ namespace Library
    }
 }
 
-using namespace Library::Language;
+using namespace Logic::Language;

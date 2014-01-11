@@ -4,7 +4,7 @@
 #include "CommandSyntax.h"
 #include "ScriptParameter.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {
@@ -43,4 +43,4 @@ namespace Library
    }
 }
 
-using namespace Library::Scripts;
+using namespace Logic::Scripts;
