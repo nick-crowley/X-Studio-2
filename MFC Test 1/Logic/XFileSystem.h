@@ -15,34 +15,26 @@ namespace Logic
       {
       private:
          /// <summary>Collection of catalogs, sorted by precedence (highest->lowest)</summary>
-         class CatalogCollection : private list<XCatalog>
+         class CatalogCollection : public list<XCatalog>
          {
-            typedef list<XCatalog> Base;
-
          public:
             // --------------------- CONSTRUCTION ----------------------
 
             CatalogCollection() {};
-            ~CatalogCollection() { Clear(); };  // Unlock all catalogs
+            ~CatalogCollection() { clear(); };  // Unlock all catalogs
 
             // ---------------------- PROPERTIES -----------------------
 
-            PROPERTY_GET(DWORD,Count,GetCount);
-
-            // ---------------------- ACCESSORS ------------------------
-
-            iterator  Begin()            { return Base::begin();           }
-            iterator  End()              { return Base::end();             }
-            DWORD     GetCount()         { return Base::size();            }
+            PROPERTY_GET(size_type,Count,size);
 
             // ----------------------- MUTATORS ------------------------
 
-            void      Add(XCatalog&& c)  { Base::push_front(std::move(c)); }
-            void      Clear()            { Base::clear();                  }
+            void  Add(XCatalog&& c)  { push_front(std::move(c)); }
+            
          };
 
          
-         /// <summary>Sorts file descriptors by their path</summary>
+         /// <summary>Sorts file descriptors by their key</summary>
          class UniquePath : public binary_function<XFileInfo, XFileInfo, bool>
          {
          public:
@@ -54,7 +46,7 @@ namespace Logic
             }
          };
          
-         /// <summary>Sorts file descriptors by their precedence in descending order</summary>
+         /// <summary>Sorts file descriptors by their precedence</summary>
          class DescendingPrecedence : public binary_function<XFileInfo, XFileInfo, bool>
          {
          public:
@@ -70,32 +62,26 @@ namespace Logic
          template<typename T>
          class XFileInfoCollection : public set<XFileInfo, T>
          {
-            typedef set<XFileInfo, T> Base;
-
          public:
             // ---------------------- PROPERTIES -----------------------
-
-            PROPERTY_GET(DWORD,Count,GetCount);
-
-            // ---------------------- ACCESSORS ------------------------
-
-            DWORD     GetCount()          { return Base::size();                       }
+         
+            PROPERTY_GET(size_type,Count,size);
 
             // ----------------------- MUTATORS ------------------------
-
-            void      Add(XFileInfo&& f)  
+         
+            /// <summary>Attempts to add a file to the collection, overwriting any of lower precedence</summary>
+            /// <param name="f">The file to add</param>
+            void  Add(XFileInfo&& f)
             {
-               _Pairib res = Base::insert(std::move(f));
+               _Pairib res = insert(std::move(f));
 
                // Exists: Overwrite if higher precendence
                if (!res.second && f.Precedence > res.first->Precedence)
                {
-                  Base::erase(res.first);
-                  Base::insert(std::move(f));
+                  erase(res.first);
+                  insert(std::move(f));
                }
             }
-
-            void      Clear()             { Base::clear();                             }
          };
 
          /// <summary>Collection used by file system</summary>

@@ -26,7 +26,7 @@ namespace Logic
       /// <param name="subPath">The sub path of the file</param>
       /// <param name="size">The size of the file, in bytes</param>
       /// <param name="position">The position within the data-file, in bytes</param>
-      XFileInfo::XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD size, DWORD position)
+      XFileInfo::XFileInfo(const XFileSystem& vfs, const XCatalog& cat, Path subPath, DWORD size, DWORD position)
          : Source(FileSource::Catalog), 
            FullPath(vfs.GetFolder()+subPath), FileSystem(&vfs), Catalog(&cat), Length(size), Offset(position),
            Precedence(CalculatePrecendence(Source, FullPath)), 
@@ -79,7 +79,7 @@ namespace Logic
       /// <returns></returns>
       bool  XFileInfo::Matches(Path path, bool checkExtension) const
       {
-         return checkExtension ? FullPath == path : FullPath.RemoveExtension() == path.RemoveExtension(); 
+         return checkExtension ? FullPath == path : Key == path.RemoveExtension(); 
       }
 
       /// <summary>Opens a stream for reading</summary>

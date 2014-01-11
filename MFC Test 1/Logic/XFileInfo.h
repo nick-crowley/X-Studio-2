@@ -21,7 +21,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
          XFileInfo(Path p);
-         XFileInfo(XFileSystem& vfs, XCatalog& cat, Path subPath, DWORD size, DWORD position);
+         XFileInfo(const XFileSystem& vfs, const XCatalog& cat, Path subPath, DWORD size, DWORD position);
          virtual ~XFileInfo();
 
          // Default copy/move semantics
