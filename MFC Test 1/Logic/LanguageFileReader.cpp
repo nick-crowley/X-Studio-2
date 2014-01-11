@@ -142,7 +142,7 @@ namespace Logic
             LoadDocument();
 
             // Get root (as node)
-            XML::IXMLDOMNodePtr languageNode(Document->documentElement);
+            XmlNodePtr languageNode(Document->documentElement);
 
             // Read fileID + language tag
             file.ID = LanguageFilenameReader(filename).FileID;
@@ -150,7 +150,12 @@ namespace Logic
 
             // Read pages
             for (int i = 0; i < languageNode->childNodes->length; i++)
-               file.Pages.Merge( ReadPage(languageNode->childNodes->item[i]) );
+            {
+               XmlNodePtr n = languageNode->childNodes->item[i];
+
+               if (n->nodeType == XML::NODE_ELEMENT)
+                  file.Pages.Merge( ReadPage(n) );
+            }
 
             return file;
          }
@@ -169,7 +174,7 @@ namespace Logic
       /// <exception cref="Logic::FileFormatException">Missing language element</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid language ID</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      GameLanguage  LanguageFileReader::ReadLanguageTag(XML::IXMLDOMNodePtr&  element)
+      GameLanguage  LanguageFileReader::ReadLanguageTag(XmlNodePtr&  element)
       {
          // Ensure present: "Missing '%s' element"
          if (element == nullptr)
@@ -189,7 +194,7 @@ namespace Logic
       /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid page ID</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      LanguagePage  LanguageFileReader::ReadPage(XML::IXMLDOMNodePtr&  element)
+      LanguagePage  LanguageFileReader::ReadPage(XmlNodePtr&  element)
       {
          GameVersion ver;
 
@@ -207,7 +212,12 @@ namespace Logic
 
          // Read strings
          for (int i = 0; i < element->childNodes->length; i++)
-            page.Strings.Add( ReadString(element->childNodes->item[i], ver) );
+         {
+            XmlNodePtr node = element->childNodes->item[i];
+
+            if (node->nodeType == XML::NODE_ELEMENT)
+               page.Strings.Add( ReadString(node, ver) );
+         }
 
          // Return page
          return page;
@@ -219,7 +229,7 @@ namespace Logic
       /// <returns>New language string</returns>
       /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      LanguageString  LanguageFileReader::ReadString(XML::IXMLDOMNodePtr&  element, GameVersion v)
+      LanguageString  LanguageFileReader::ReadString(XmlNodePtr&  element, GameVersion v)
       {
          // Verify string tag
          ReadElement(element, L"t");
