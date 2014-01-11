@@ -49,7 +49,7 @@ namespace Logic
             /// <summary>Finds the specified string.</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>
-            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
             const LanguageString&  Find(UINT  id) const
             {
                const_iterator it;
@@ -63,7 +63,7 @@ namespace Logic
             /// <summary>Finds the specified string.</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>
-            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
             const LanguageString&  operator[](UINT  id) const
             {
                return Find(id);
@@ -91,13 +91,13 @@ namespace Logic
          /// <summary>Finds the specified string.</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
-         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          const LanguageString&  Find(UINT  id) const        { return Strings.Find(id);     }
 
          /// <summary>Finds the specified string.</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
-         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          const LanguageString&  operator[](UINT  id) const  { return Strings.Find(id);     }
 
 		   // ----------------------- MUTATORS ------------------------

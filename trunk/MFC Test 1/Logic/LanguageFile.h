@@ -36,7 +36,7 @@ namespace Logic
             /// <summary>Finds the specified page.</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
-            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
             const LanguagePage&  Find(UINT page) const
             {
                const_iterator it;
@@ -51,8 +51,8 @@ namespace Logic
             /// <param name="page">The page id</param>
             /// <param name="id">The string id</param>
             /// <returns></returns>
-            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
-            /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
             const LanguageString&  Find(UINT page, UINT id) const
             {
                return Find(page).Strings[id]; 
@@ -76,7 +76,7 @@ namespace Logic
             /// <summary>Finds the specified page.</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
-            /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
+            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
             const LanguagePage&  operator[](UINT  page) const
             {
                return Find(page);
@@ -103,8 +103,8 @@ namespace Logic
          /// <param name="page">The page id</param>
          /// <param name="id">The string id</param>
          /// <returns></returns>
-         /// <exception cref="Library::PageNotFoundException">Page does not exist</exception>
-         /// <exception cref="Library::StringNotFoundException">String does not exist</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          LanguageString  Find(UINT page, UINT id) const        { return Pages.Find(page,id);     }
 
 		   // ----------------------- MUTATORS ------------------------

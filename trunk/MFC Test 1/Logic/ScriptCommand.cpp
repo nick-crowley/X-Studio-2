@@ -3,7 +3,7 @@
 #include "ScriptFile.h"
 #include <algorithm>
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {

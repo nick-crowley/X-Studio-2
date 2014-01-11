@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "SyntaxFile.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {
@@ -50,4 +50,4 @@ namespace Library
    }
 }
 
-using namespace Library::Scripts;
+using namespace Logic::Scripts;

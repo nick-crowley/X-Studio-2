@@ -11,7 +11,7 @@
 #include "ScriptReader.h"
 #include "StringLibrary.h"
 
-namespace Library
+namespace Logic
 {
    // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -129,7 +129,7 @@ namespace Library
          wstring line;
 
          while (reader.ReadLine(line))
-            OutputDebugString((line+L'\n').c_str());
+            Console::WriteLn(line);
       }
       catch (ExceptionBase&  e)
       {
@@ -160,7 +160,7 @@ namespace Library
          // Print file
          wstring line;
          while (reader.ReadLine(line))
-            OutputDebugString((line+L'\n').c_str());
+            Console::WriteLn(line);
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
@@ -191,10 +191,7 @@ namespace Library
 
          // Print results
          for (LanguageString& s : res)
-         {
-            OutputDebugString(s.Text.c_str());
-            OutputDebugString(L"\n");
-         }
+            Console::WriteLn(s.Text);
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());

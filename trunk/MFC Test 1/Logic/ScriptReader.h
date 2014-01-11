@@ -3,7 +3,7 @@
 #include "XmlReader.h"
 #include "ScriptFile.h"
 
-namespace Library
+namespace Logic
 {
    namespace IO
    {
@@ -157,4 +157,4 @@ namespace Library
    }
 }
 
-using namespace Library::IO;
+using namespace Logic::IO;

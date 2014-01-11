@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "ParameterSyntax.h"
 
-namespace Library
+namespace Logic
 {
    namespace Scripts
    {
@@ -92,4 +92,4 @@ namespace Library
    }
 }
 
-using namespace Library::Scripts;
+using namespace Logic::Scripts;

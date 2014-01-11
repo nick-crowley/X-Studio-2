@@ -35,6 +35,66 @@ namespace Logic
 		// -------------------- REPRESENTATION ---------------------
    };
 
+   /// <summary></summary>
+   class Console
+   {
+      // --------------------- CONSTRUCTION ----------------------
+
+   public:
+      Console();
+      virtual ~Console();
+
+      // ------------------------ STATIC -------------------------
+
+      // --------------------- PROPERTIES ------------------------
+			
+		// ---------------------- ACCESSORS ------------------------			
+
+      /// <summary>Writes the formatted text to the console</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="...">Arguments</param>
+      static void  Write(const WCHAR* format, ...)
+      {
+         va_list args;
+         OutputDebugString(StringResource::FormatV(format, va_start(args, format)).c_str());
+      }
+
+      /// <summary>Writes the formatted text to the console</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="...">Arguments</param>
+      static void  Write(const wstring& format, ...)
+      {
+         va_list args;
+         OutputDebugString(StringResource::FormatV(format.c_str(), va_start(args, format)).c_str());
+      }
+
+      /// <summary>Writes the formatted text to the console</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="...">Arguments</param>
+      static void  WriteLn(const WCHAR* format, ...)
+      {
+         va_list args;
+         OutputDebugString(StringResource::FormatV(format, va_start(args, format)).c_str());
+         OutputDebugString(L"\n");
+      }
+
+      /// <summary>Writes the formatted text to the console</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="...">Arguments</param>
+      static void  WriteLn(const wstring& format, ...)
+      {
+         va_list args;
+         OutputDebugString(StringResource::FormatV(format.c_str(), va_start(args, format)).c_str());
+         OutputDebugString(L"\n");
+      }
+
+		// ----------------------- MUTATORS ------------------------
+
+		// -------------------- REPRESENTATION ---------------------
+
+   private:
+   };
+
    /// <summary>A formattable GUI string</summary>
    class GuiString : public wstring
    {
