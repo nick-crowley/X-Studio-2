@@ -18,12 +18,11 @@ namespace Library
 
    void  DebugTests::RunAll()
    {
-      /*Test_LanguageFileReader();
-      Test_CatalogReader();
-      Test_GZip();
-      Test_FileSystem();*/
-
-      Test_CommandSyntax();
+      Test_LanguageFileReader();
+      //Test_CatalogReader();
+      //Test_GZip();
+      //Test_FileSystem();
+      //Test_CommandSyntax();
    }
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
@@ -75,13 +74,14 @@ namespace Library
 
    void  DebugTests::Test_LanguageFileReader()
    {
-      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"; 
+      //const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"; 
+      const WCHAR* path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml";
    
       try
       {
          // Test LanguageFileReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto langFile = LanguageFileReader(fs).ReadFile();
+         auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
       }
       catch (ExceptionBase&  e)
       {

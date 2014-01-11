@@ -12,8 +12,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguageString() : ID(0) {};
-         LanguageString(UINT  id, wstring  txt) : ID(id), Text(txt) {};
+         LanguageString(UINT  id, wstring  txt, GameVersion v) : ID(id), Text(txt), Version(v) {};
          ~LanguageString() {};
 
          // --------------------- PROPERTIES ------------------------
@@ -24,8 +23,9 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         UINT     ID;
-         wstring  Text;
+         UINT        ID;
+         wstring     Text;
+         GameVersion Version;
       };
    
    }

@@ -89,11 +89,11 @@
 #define ERR_XML_UNEXPECTED_ELEMENT      1001
 #define ERR_XML_MISSING_ATTRIBUTE       1002
 #define ERR_XML_PARSE_FAILED            1003
-#define IDC_MFCBUTTON1                  1003
+#define IDC_LOADSCRIPT                  1003
 #define ERR_LANGUAGE_ID_INVALID         1004
-#define IDC_RICHEDIT21                  1004
 #define IDC_RICHEDIT                    1004
 #define ERR_ARGUMENT_NULL               1005
+#define IDC_RUNTESTS                    1005
 #define ERR_NO_READ_ACCESS              1006
 #define ERR_NO_WRITE_ACCESS             1007
 #define ERR_NO_SEEK_ACCESS              1008
@@ -104,7 +104,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

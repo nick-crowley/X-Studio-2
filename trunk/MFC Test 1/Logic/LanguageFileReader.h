@@ -22,7 +22,9 @@ namespace Logic
          // ------------------------ STATIC -------------------------
 
       private:
+         static UINT          ParseFileID(wstring& filename);
          static GameLanguage  ParseLanguageID(wstring id);
+         static UINT          ParsePageID(const wstring&  pageid, GameVersion&  v);
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -31,12 +33,12 @@ namespace Logic
 			// ----------------------- MUTATORS ------------------------
 
       public:
-         LanguageFile   ReadFile();
+         LanguageFile   ReadFile(wstring filename);
 
       private:
          GameLanguage   ReadLanguageTag(XML::IXMLDOMNodePtr&  element);
          LanguagePage   ReadPage(XML::IXMLDOMNodePtr&  element);
-         LanguageString ReadString(XML::IXMLDOMNodePtr&  element);
+         LanguageString ReadString(XML::IXMLDOMNodePtr&  element, GameVersion v);
 
          // -------------------- REPRESENTATION ---------------------
       };
