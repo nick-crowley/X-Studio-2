@@ -20,7 +20,7 @@ namespace Logic
       public:
          // --------------------- CONSTRUCTION ----------------------
 
-         XFileInfo(Path p);
+         XFileInfo(const Path& p);
          XFileInfo(const XFileSystem& vfs, const XCatalog& cat, Path subPath, DWORD size, DWORD position);
          virtual ~XFileInfo();
 

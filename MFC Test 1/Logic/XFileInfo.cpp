@@ -12,7 +12,7 @@ namespace Logic
 
       /// <summary>Creates a file descriptor for a physical file</summary>
       /// <param name="p">Full path of file</param>
-      XFileInfo::XFileInfo(Path p) 
+      XFileInfo::XFileInfo(const Path& p) 
          : Source(FileSource::Physical), 
            FullPath(p), FileSystem(nullptr), Catalog(nullptr), Offset(0), Length(0),
            Precedence(CalculatePrecendence(Source, FullPath)), 

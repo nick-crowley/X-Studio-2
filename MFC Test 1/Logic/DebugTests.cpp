@@ -18,10 +18,10 @@ namespace Library
 
    void  DebugTests::RunAll()
    {
-      Test_LanguageFileReader();
+      //Test_LanguageFileReader();
       //Test_CatalogReader();
       //Test_GZip();
-      //Test_FileSystem();
+      Test_FileSystem();
       //Test_CommandSyntax();
    }
 
@@ -144,18 +144,23 @@ namespace Library
       try
       {
          // Test XFileSystem
-         XFileSystem vfs(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-         vfs.Enumerate();
+         XFileSystem vfs;
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+
+         auto files = vfs.Browse(L"D:\\X3 Albion Prelude\\t");
+
+         for (auto pair : files)
+            OutputDebugString(GuiString(L"Found file: '%s'\n", (const WCHAR*)(pair.second.FullPath)).c_str());
 
          // Test VFS search
-         XFileInfo f = vfs.Find(path, true);
+         //XFileInfo f = vfs.Find(path, true);
 
-         // Print result
-         StringReader reader(f.Open());
-         wstring line;
+         //// Print result
+         //StringReader reader(f.Open());
+         //wstring line;
 
-         while (reader.ReadLine(line))
-            OutputDebugString((line+L'\n').c_str());
+         //while (reader.ReadLine(line))
+         //   OutputDebugString((line+L'\n').c_str());
 
          /*AfxMessageBox( StringResource::Format(L"VFS contains '%s': %s\n", path, vfs.Contains(path,true) ? L"true" : L"false").c_str() );
 

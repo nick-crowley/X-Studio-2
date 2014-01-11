@@ -162,6 +162,7 @@ namespace Logic
       // --------------------- PROPERTIES ------------------------
 			
       PROPERTY_GET(DWORD,Attributes,GetAttributes);
+      PROPERTY_GET(wstring,FileName,GetFileName);
       PROPERTY_GET(DWORD,FileSize,GetFileSize);
       PROPERTY_GET(Path,FullPath,GetFullPath);
 
@@ -171,6 +172,7 @@ namespace Logic
       DWORD   GetFileSize()    { return Data.nFileSizeLow;     }
       wstring GetFileName()    { return Data.cFileName;        }
       Path    GetFullPath()    { return (Folder+Data.cFileName).Text; }
+      bool    IsDirectory()    { return (GetAttributes() & FILE_ATTRIBUTE_DIRECTORY) != 0; }
 
       bool  HasResult();
 

@@ -12,22 +12,8 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Initializes a new instance of the <see cref="XFileSystem"/> class.</summary>
-      /// <param name="folder">The folder.</param>
-      /// <param name="version">The version.</param>
-      /// <exception cref="Logic::DirectoryNotFoundException">Folder does not exist</exception>
-      /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
-      XFileSystem::XFileSystem(Path folder, GameVersion version) : Folder(folder), Version(version)
+      XFileSystem::XFileSystem() 
       {
-         // Ensure folder exists
-         if (!folder.Exists())
-            throw DirectoryNotFoundException(HERE, folder);
-
-         // Ensure not X2/X4
-         if (Version == GameVersion::Threat || version == GameVersion::Rebirth)
-            throw NotSupportedException(HERE, L"X2 and Rebirth are not supported");
-
-         // Ensure trailing backslash
-         Folder = Folder.AppendBackslash();
       }
 
       /// <summary>Releases the locks on the catalogs</summary>
@@ -39,47 +25,75 @@ namespace Logic
       
 		// ------------------------------- PUBLIC METHODS -------------------------------
       
-      /// <summary>Queries whether file system contains a file</summary>
-      /// <param name="path">Full path including extension</param>
-      /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
-      /// <returns></returns>
-      bool  XFileSystem::Contains(Path  path, bool  matchExt) const
+      /// <summary>Searches for all files within a folder</summary>
+      /// <param name="path">Full path of folder</param>
+      /// <returns>Results collection</returns>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
+      XFileSystem::FileCollection  XFileSystem::Browse(Path  folder) const
       {
-         // Check for results
-         return Query(path, matchExt).Count > 0;
+         FileCollection results;
+
+         // Ensure trailing backslash
+         folder = folder.AppendBackslash();
+
+         // Copy all files with exactly the same folder
+         for (auto pair : Files)
+            if (folder == pair.first.Folder)
+               results.Add(pair.second);
+
+         return results;
+      }
+
+      /// <summary>Queries whether file system contains a file</summary>
+      /// <param name="path">Full path EXCLUDING extension</param>
+      /// <returns></returns>
+      bool  XFileSystem::Contains(Path  path) const
+      {
+         return Files.find(path) != Files.end();
       }
 
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
-      /// <returns></returns>
+      /// <returns>Number of files found</returns>
+      /// <exception cref="Logic::DirectoryNotFoundException">Folder does not exist</exception>
+      /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::Enumerate()
+      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version)
       {
          // Clear previous
          Catalogs.clear();
          Files.clear();
 
-         // Enumerate
+         // Ensure folder exists
+         if (!folder.Exists())
+            throw DirectoryNotFoundException(HERE, folder);
+
+         // Ensure not X2/X4
+         if (Version == GameVersion::Threat || version == GameVersion::Rebirth)
+            throw NotSupportedException(HERE, L"X2 and Rebirth are not supported");
+
+         // Ensure trailing backslash
+         Folder = folder.AppendBackslash();
+
+         // Enumerate catalogs/files
          EnumerateCatalogs();
          return EnumerateFiles();
       }
 
       /// <summary>Queries whether file system contains a file</summary>
-      /// <param name="path">Full path including extension</param>
-      /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
+      /// <param name="path">Full path EXCLUDING extension</param>
       /// <returns>File descriptor</returns>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
-      /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      XFileInfo XFileSystem::Find(Path  path, bool  matchExt) const
+      XFileInfo XFileSystem::Find(Path  path) const
       {
-         ResultCollection results( Query(path, matchExt) );
+         auto it = Files.find(path);
 
-         // Check for results
-         if (results.size() == 0)
+         // Error: file not found
+         if (it == Files.end())
             throw FileNotFoundException(HERE, path);
 
-         // Return result with highest precedence
-         return *results.begin();
+         // Return result 
+         return it->second;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
@@ -137,52 +151,33 @@ namespace Logic
                Files.Add( XFileInfo(*this, cat, path, size, offset) );
          }
 
+         // Enumerate physical files
+         EnumerateFolder(Folder);
+
          // Return count
          return Files.size();
       }
 
-      /// <summary>Queries whether file system contains a file</summary>
-      /// <param name="path">Full path including extension</param>
-      /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
-      /// <returns>Results collection</returns>
-      /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      //XFileSystem::ResultCollection  XFileSystem::Browse(Path  folder) const
-      //{
-      //   ResultCollection  results;
-      //   
-      //   // Enumerate matching catalog files
-      //   for (const XFileInfo& f : Files)
-      //      if (f.Matches(path, matchExt))
-      //         results.insert(f); 
-      //   
-      //   // Enumerate matching files on disc
-      //   for (FileSearch fs(matchExt ? path : path.RenameExtension(L".*")); fs.HasResult(); fs.Next())
-      //      results.insert(XFileInfo(fs.FullPath));
-
-      //   // Return results
-      //   return results;
-      //}
-
-      /// <summary>Queries whether file system contains a file</summary>
-      /// <param name="path">Full path including extension</param>
-      /// <param name="matchExt">True to match exact extension, false to use precedence rules</param>
-      /// <returns>Results collection</returns>
-      /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      XFileSystem::ResultCollection  XFileSystem::Query(Path  path, bool  matchExt) const
+      /// <summary>Enumerates physical files within the folder</summary>
+      /// <param name="folder">The folder path</param>
+      void  XFileSystem::EnumerateFolder(Path  folder)
       {
-         ResultCollection  results;
-         
-         // Enumerate matching catalog files
-         for (const XFileInfo& f : Files)
-            if (f.Matches(path, matchExt))
-               results.insert(f); 
-         
-         // Enumerate matching files on disc
-         for (FileSearch fs(matchExt ? path : path.RenameExtension(L".*")); fs.HasResult(); fs.Next())
-            results.insert(XFileInfo(fs.FullPath));
+         folder = folder.AppendBackslash();
 
-         // Return results
-         return results;
+         // Enumerate matching files on disc
+         for (FileSearch fs(folder + L"*.*"); fs.HasResult(); fs.Next())
+         {
+            // Skip catalogs/datafiles
+            if (fs.FileName == L"." || fs.FileName == L".." || fs.FullPath.HasExtension(L".cat") || fs.FullPath.HasExtension(L".dat"))
+               continue;
+
+            // Add files, recurse into folders
+            if (!fs.IsDirectory())
+               Files.Add(XFileInfo(fs.FullPath));
+            else
+               EnumerateFolder(fs.FullPath);
+         }
+         
       }
 
 		// -------------------------------- NESTED CLASSES ------------------------------
