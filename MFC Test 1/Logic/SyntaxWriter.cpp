@@ -1,20 +1,17 @@
 #include "stdafx.h"
-#include "SyntaxLibrary.h"
+#include "SyntaxWriter.h"
 
 namespace Logic
 {
-   namespace Scripts
+   namespace IO
    {
-      SyntaxLibrary  SyntaxLibrary::Instance;
-
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      SyntaxLibrary::SyntaxLibrary()
+      SyntaxWriter::SyntaxWriter(StreamPtr out) : XmlWriter(out)
       {
       }
 
-
-      SyntaxLibrary::~SyntaxLibrary()
+      SyntaxWriter::~SyntaxWriter()
       {
       }
 
@@ -28,4 +25,3 @@ namespace Logic
 
    }
 }
-

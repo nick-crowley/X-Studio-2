@@ -182,7 +182,6 @@ namespace Logic
 
    /// <summary>Removes the file extension, if present</summary>
    /// <returns>New path without the extension</returns>
-   /// <exception cref="Logic::Win32Exception">Path exceeds character limit</exception>
    Path  Path::RemoveExtension() const
    {
       CharArrayPtr buf( Copy() );
