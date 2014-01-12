@@ -75,6 +75,24 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Determines whether command is a keyword.</summary>
+      /// <returns></returns>
+      bool  CommandSyntax::IsKeyword() const
+      {
+         switch (ID)
+         {
+         case CMD_END:
+         case CMD_ELSE:
+         case CMD_BREAK:
+         case CMD_END_SUB:
+         case CMD_RETURN:
+         case CMD_CONTINUE:
+         case CMD_GOTO_SUB:
+         case CMD_GOTO_LABEL:  return true;
+         default:              return false;
+         }
+      }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------

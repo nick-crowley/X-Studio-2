@@ -203,7 +203,7 @@
     <ClCompile Include="Logic\ScriptFile.cpp" />
     <ClCompile Include="Logic\ScriptParameter.cpp" />
     <ClCompile Include="Logic\ScriptReader.cpp" />
-    <ClCompile Include="Logic\ScriptWriter.cpp" />
+    <ClCompile Include="Logic\RtfScriptWriter.cpp" />
     <ClCompile Include="Logic\StringLibrary.cpp" />
     <ClCompile Include="Logic\StringReader.cpp" />
     <ClCompile Include="Logic\StringResource.cpp" />

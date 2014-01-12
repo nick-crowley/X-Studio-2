@@ -10,7 +10,7 @@ namespace Logic
 
       /// <summary>Creates an RTF Writer</summary>
       /// <param name="font">Font name</param>
-      /// <param name="size">Font size</param>
+      /// <param name="size">Font size in points</param>
       /// <param name="cols">List of colours</param>
       RtfWriter::RtfWriter(const wstring& font, UINT size, list<COLORREF> cols) : Font(font), Closed(false)
       {
@@ -20,6 +20,7 @@ namespace Logic
 
          // Write header
          WriteHeader();
+         SetSize(size);
       }
 
       RtfWriter::~RtfWriter()
@@ -60,13 +61,29 @@ namespace Logic
          for (UINT id = 0; id < Colours.size(); id++)
             if (Colours[id] == c)
             {  // Write colour change
-               StringCchPrintfA(buf, 10, "\\cf%d ", id);
+               StringCchPrintfA(buf, 10, "\\cf%d ", id+1);
                Write(buf);
                return;
             }
 
          // Unknown colour
          throw ArgumentException(HERE, L"c", L"Unknown colour");
+      }
+
+      /// <summary>Sets the font size</summary>
+      /// <param name="points">The size in points</param>
+      /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      void   RtfWriter::SetSize(int points)
+      {
+         CHAR buf[10];
+
+         // Check stream is open
+         if (Closed)
+            throw InvalidOperationException(HERE, L"Writer is closed");
+
+         // Set size
+         StringCchPrintfA(buf, 10, "\\fs%d ", points*2);
+         Write(buf);
       }
 
       /// <summary>Get ANSI contents of stream</summary>
@@ -88,7 +105,12 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Writer is closed");
 
          // ANSI char:
-         if (ch <= 0x7f)
+         if (ch == L'{' || ch == L'}')
+         {
+            Output.push_back('\\');
+            Output.push_back((CHAR)ch);
+         }
+         else if (ch <= 0x7f)
             Output.push_back((CHAR)ch);
          else
          {  // UNICODE char:
@@ -156,7 +178,7 @@ namespace Logic
          Write("}\n");
 
          // Unknown
-         Write("\\viewkind4\\uc1\\pard\\sa200\\sl276\\slmult1\\cf1\\lang9\\fs22 ");
+         Write("\\viewkind4\\uc1\\pard\\sa200\\sl276\\slmult1\\lang9\\cb1 ");
       }
 
       /// <summary>Writes RTF footer</summary>

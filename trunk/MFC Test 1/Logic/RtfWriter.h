@@ -34,6 +34,7 @@ namespace Logic
          void  Write(const wstring& str);
          void  WriteLn(const wstring& str);
          void  SetColour(COLORREF c);
+         void  SetSize(int points);
 
       private:
          void  Write(const CHAR* str);
