@@ -39,7 +39,7 @@ namespace Logic
 
       // Load legacy syntax file
       StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
-      SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+      SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
 
       // Parse script
       StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
@@ -54,10 +54,10 @@ namespace Logic
       {
          // Test LegacySyntaxReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         SyntaxLibrary::Merge( LegacySyntaxReader(fs).ReadFile() );
+         SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
 
          // Test Lookup
-         SyntaxLibrary::Find(CMD_EXPRESSION, GameVersion::TerranConflict);
+         SyntaxLib.Find(CMD_EXPRESSION, GameVersion::TerranConflict);
 
          // Test script reader
          path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 

@@ -120,6 +120,8 @@ namespace Logic
       }
    };
 
+
+   
    /// <summary>String containing a system error message</summary>
    class SysErrorString : public wstring
    {

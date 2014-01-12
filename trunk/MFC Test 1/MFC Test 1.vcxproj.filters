@@ -211,6 +211,9 @@
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="Logic\XmlWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\SyntaxWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -348,6 +351,9 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\XmlWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\SyntaxWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,22 +11,30 @@ namespace Logic
       class SyntaxLibrary
       {
          // ------------------------ TYPES --------------------------
-      private:
-         
 
          // --------------------- CONSTRUCTION ----------------------
 
-      public:
+      private:
          SyntaxLibrary();
+      public:
          virtual ~SyntaxLibrary();
 
          // ------------------------ STATIC -------------------------
+
+      public:
+         static SyntaxLibrary  Instance;
 
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			
 
-         static CommandSyntax  Find(UINT id, GameVersion ver) 
+      public:
+         /// <summary>Finds syntax by ID</summary>
+         /// <param name="id">command ID</param>
+         /// <param name="ver">Game version</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
+         CommandSyntax  Find(UINT id, GameVersion ver)
          { 
             // Search all syntax with matching ID for a compatible version
             for (auto it = Commands.find(id); it != Commands.end() && it->first == id; ++it)
@@ -34,20 +42,31 @@ namespace Logic
                   return it->second;
 
             // Not found
-            throw Win32Exception(HERE, L"Syntax not found");
+            throw SyntaxNotFoundException(HERE, id, ver);
          }
 
-         static void           Merge(SyntaxFile&& f)          { Commands.Merge(std::move(f)); }
+         /// <summary>Merges a syntax file into the library</summary>
+         /// <param name="f">The file</param>
+         void  Merge(SyntaxFile&& f)
+         { 
+            Commands.Merge(std::move(f)); 
+         }
 
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
 
       private:
-         static SyntaxCollection  Commands;
+         SyntaxCollection  Commands;
       };
 
    }
 }
 
+// Syntax library singleton
+#define SyntaxLib SyntaxLibrary::Instance
+
 using namespace Logic::Scripts;
+
+
+

@@ -24,7 +24,7 @@ namespace Logic
              id = ReadIntNode();
 
          // Lookup syntax
-         CommandSyntax syntax = SyntaxLibrary::Find(id, Script.Game);
+         CommandSyntax syntax = SyntaxLib.Find(id, Script.Game);
 
          // Comment: Read string
          if (id == CMD_COMMENT)
@@ -49,7 +49,7 @@ namespace Logic
          int count;
          
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLibrary::Find(ReadIntNode(), Script.Game);
+         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(), Script.Game);
          ParameterSyntax expr = syntax.Parameters[1];
 
          // Return value
@@ -80,7 +80,7 @@ namespace Logic
          ParameterArray params;
 
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLibrary::Find(ReadIntNode(), Script.Game);
+         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(), Script.Game);
 
          // Read scriptname / RetVar / refObj
          params.push_back( ScriptParameter(syntax.Parameters[0], DataType::DT_STRING, ReadStringNode()) );
@@ -103,7 +103,7 @@ namespace Logic
          ParameterArray params;
 
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLibrary::Find(ReadIntNode(), Script.Game);
+         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(), Script.Game);
 
          // Iterate thru syntax
          for (ParameterSyntax p : syntax.Parameters)
