@@ -44,9 +44,15 @@ namespace Logic
          static CommandType  IdentifyType(const UINT id);
 
          // --------------------- PROPERTIES ------------------------
-			
+		
+      public:
+         PROPERTY_GET(bool,Keyword,IsKeyword);
+
 		   // ---------------------- ACCESSORS ------------------------
 			
+      public:
+         bool  IsKeyword() const;
+
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------

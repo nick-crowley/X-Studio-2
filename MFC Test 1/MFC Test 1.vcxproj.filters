@@ -338,11 +338,11 @@
     <ClCompile Include="Logic\RtfWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ReturnValue.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RtfScriptWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -59,7 +59,8 @@ namespace Logic
             break;
 
          case DataType::DT_STRING:
-            Text = (Syntax.Type == ParameterType::COMMENT ? Value.String : StringResource::Format(L"'%s'", Value.String.c_str()));
+            Text = (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME ? Value.String 
+                    : StringResource::Format(L"'%s'", Value.String.c_str()));
             break;
 
          case DataType::DT_INTEGER:

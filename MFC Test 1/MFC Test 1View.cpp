@@ -127,6 +127,7 @@ void CMFCTest1View::OnBnClickedLoadScript()
       m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)utf8.get());*/
 
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+      m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
       m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
    }
    catch (ExceptionBase&  e)
