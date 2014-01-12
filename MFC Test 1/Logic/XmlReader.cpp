@@ -24,7 +24,7 @@ namespace Logic
          try
          {
             // Create document / Disable async access
-            Document = IXMLDOMDocument2Ptr(__uuidof(XML::DOMDocument60));
+            Document = XmlDocumentPtr(__uuidof(XML::DOMDocument60));
             Document->async = VARIANT_FALSE;
          }
          catch (_com_error& ex) {

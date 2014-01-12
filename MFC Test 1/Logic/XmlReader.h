@@ -43,11 +43,11 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         IXMLDOMDocument2Ptr  Document;
+         XmlDocumentPtr  Document;
 
       private:
-         CharArrayPtr         Buffer;
-         StreamPtr            Input;
+         CharArrayPtr    Buffer;
+         StreamPtr       Input;
       };
 
    }
