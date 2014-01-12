@@ -201,6 +201,15 @@
     <ClInclude Include="Logic\StringLibrary.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ReturnValue.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RtfWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -325,6 +334,15 @@
     </ClCompile>
     <ClCompile Include="Logic\StringLibrary.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RtfWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ReturnValue.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

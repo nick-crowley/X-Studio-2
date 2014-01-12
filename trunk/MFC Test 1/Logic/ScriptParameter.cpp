@@ -3,6 +3,7 @@
 #include "ScriptFile.h"
 #include "StringLibrary.h"
 
+
 namespace Logic
 {
    namespace Scripts
@@ -34,22 +35,31 @@ namespace Logic
 
       void   ScriptParameter::Translate(ScriptFile& f)
       {
+         const WCHAR* format;
 
          switch (Type)
          {
          case DataType::DT_VARIABLE:
+            format = (Syntax.IsRetVar() ? L"$%s =" : L"$%s");
+
+            // Commented: name
             if (Value.Type == ValueType::String)
-               Text = StringResource::Format(L"$%s", Value.String.c_str());
+               Text = StringResource::Format(format, Value.String.c_str());
 
-            else if (Value.Int >= 0)
-               Text = StringResource::Format(L"$%s", f.Variables[Value.Int].Name.c_str());
+            // Default: conditional/variable
+            else switch (ReturnValue(Value.Int).ReturnType)
+            {
+            case ReturnType::ASSIGNMENT:     Text = StringResource::Format(format, f.Variables[Value.Int].Name.c_str());   break;
+            case ReturnType::DISCARD:        Text = L"";   break;
+            case ReturnType::JUMP_IF_TRUE:
+            case ReturnType::JUMP_IF_FALSE:  Text = StringLib.Find(KnownPage::CONDITIONALS, (UINT)ReturnValue(Value.Int).Conditional).Text;  break;
 
-            else
-               Text = StringLib.Find(KnownPage::CONDITIONALS, LOBYTE(Value.Int)).Text;
+            default:  throw InvalidValueException(HERE, GuiString(L"Unrecognised return type 0x%x", Value.Int));
+            }
             break;
 
          case DataType::DT_STRING:
-            Text = (Syntax.Type == ParameterType::PS_COMMENT ? Value.String : StringResource::Format(L"'%s'", Value.String.c_str()));
+            Text = (Syntax.Type == ParameterType::COMMENT ? Value.String : StringResource::Format(L"'%s'", Value.String.c_str()));
             break;
 
          case DataType::DT_INTEGER:
@@ -80,6 +90,10 @@ namespace Logic
             Text = StringResource::Format(L"{%d:%d}", HIWORD(Value.Int), LOWORD(Value.Int));
             break;
          }
+
+         // RefObj: Append indirection operator
+         if (Syntax.IsRefObj())
+            Text += L" ->";
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

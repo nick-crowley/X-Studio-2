@@ -13,6 +13,8 @@
 #include "MFC Test 1View.h"
 
 #include "Logic/DebugTests.h"
+#include <Richedit.h>
+#include "Logic/ScriptWriter.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,12 +33,14 @@ BEGIN_MESSAGE_MAP(CMFCTest1View, CFormView)
    ON_BN_CLICKED(IDC_RUNTESTS, &CMFCTest1View::OnBnClickedRuntests)
 END_MESSAGE_MAP()
 
+
 // CMFCTest1View construction/destruction
 
 CMFCTest1View::CMFCTest1View()
 	: CFormView(CMFCTest1View::IDD)
 {
 	// TODO: add construction code here
+   //MSFTEDIT_CLASS
 }
 
 CMFCTest1View::~CMFCTest1View()
@@ -101,6 +105,7 @@ CMFCTest1Doc* CMFCTest1View::GetDocument() const // non-debug version is inline
 
 // CMFCTest1View message handlers
 
+#define ST_UNICODE (DWORD)8
 
 void CMFCTest1View::OnBnClickedLoadScript()
 {
@@ -109,11 +114,20 @@ void CMFCTest1View::OnBnClickedLoadScript()
    {
       ScriptFile f( DebugTests::LoadScript(path) );
       
-      wstring txt;
-      for (ScriptCommand s : f.Commands)
-         txt += s.Text + L'\n';
+      
 
-      m_RichEdit.SetWindowTextW(txt.c_str());
+      string txt;
+      RtfScriptWriter w(txt);
+      w.Write(f);
+
+      /*SETTEXTEX opt = {ST_DEFAULT, CP_UTF8};
+      unique_ptr<CHAR> utf8(new CHAR[txt.length()*2]);
+      utf8.get()[WideCharToMultiByte(CP_UTF8, NULL, txt.c_str(), txt.length(), utf8.get(), txt.length()*2, NULL, NULL)] = NULL;
+      
+      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)utf8.get());*/
+
+      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
    }
    catch (ExceptionBase&  e)
    {

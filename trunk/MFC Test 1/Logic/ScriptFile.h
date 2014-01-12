@@ -4,15 +4,16 @@
 #include "ParameterSyntax.h"
 #include "ScriptCommand.h"
 
+
 namespace Logic
 {
    namespace Scripts
    {
-
+      /// <summary>An argument or variable used within a script</summary>
       class ScriptVariable
       {
       public:
-         ScriptVariable(const wstring& name, UINT index) : Name(name), ID(index), Type(ParameterType::PS_UNDETERMINED)
+         ScriptVariable(const wstring& name, UINT index) : Name(name), ID(index), Type(ParameterType::UNDETERMINED)
          {}
 
          wstring        Name,
@@ -21,16 +22,13 @@ namespace Logic
          UINT           ID;
       };
 
+      /// <summary>Vector of ScriptVariables</summary>
       typedef vector<ScriptVariable>  VariableArray;
 
       /// <summary></summary>
       class ScriptFile
       {
-      public:
-         
-
          // --------------------- CONSTRUCTION ----------------------
-
       public:
          ScriptFile();
          virtual ~ScriptFile();
@@ -41,6 +39,9 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 			
+         //string   TranslateRtf(UINT indent);
+         //ScriptWriter  GetWriter();
+
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------

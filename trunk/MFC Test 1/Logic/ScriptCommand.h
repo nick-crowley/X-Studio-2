@@ -3,12 +3,16 @@
 #include "Common.h"
 #include "CommandSyntax.h"
 #include "ScriptParameter.h"
+#include "RtfWriter.h"
 
 namespace Logic
 {
    namespace Scripts
    {
       class ScriptFile;
+
+      /// <summary></summary>
+      enum BranchLogic   { None, If, SkipIf, Else, End, Break, Continue };
 
       /// <summary></summary>
       class ScriptCommand
@@ -26,10 +30,12 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------			
 
+         BranchLogic  GetConditional() const;
+
 		   // ----------------------- MUTATORS ------------------------
       public:
-         void  Translate(ScriptFile& f);
-         void  Generate() {}
+         /*void  TranslateRtf(ScriptFile& f, RtfWriter& w);
+         void  Generate() {}*/
 
 		   // -------------------- REPRESENTATION ---------------------
       public:

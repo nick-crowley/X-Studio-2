@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "ScriptFile.h"
-#include "RtfWriter.h"
+#include "ReturnValue.h"
 
 namespace Logic
 {
@@ -8,19 +7,18 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptFile::ScriptFile()
+      /*ReturnValue::ReturnValue(int v)
       {
       }
 
 
-      ScriptFile::~ScriptFile()
+      ReturnValue::~ReturnValue()
       {
-      }
+      }*/
 
       // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
-      
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -28,3 +26,4 @@ namespace Logic
 
    }
 }
+

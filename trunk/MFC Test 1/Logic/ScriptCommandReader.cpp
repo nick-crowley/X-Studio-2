@@ -113,23 +113,23 @@ namespace Logic
             // Read parameter
             switch (p.Type)
             {
-            case ParameterType::PS_LABEL_NUMBER:   
+            case ParameterType::LABEL_NUMBER:   
                params.push_back( ScriptParameter(p, DataType::DT_INTEGER, ReadIntNode()) ); 
                break;
 
             // Decode RetVar as DT_VARIABLE
-            case ParameterType::PS_VARIABLE:       
-            case ParameterType::PS_RETURN_OBJECT:
-            case ParameterType::PS_RETURN_OBJECT_IF:
-            case ParameterType::PS_RETURN_OBJECT_IF_START:
-            case ParameterType::PS_INTERRUPT_RETURN_OBJECT_IF: 
+            case ParameterType::VARIABLE:       
+            case ParameterType::RETURN_VALUE:
+            case ParameterType::RETURN_VALUE_IF:
+            case ParameterType::RETURN_VALUE_IF_START:
+            case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
                params.push_back( ScriptParameter(p, DataType::DT_VARIABLE, ReadIntNode()) ); 
                break;
             
             // Single string node
-            case ParameterType::PS_COMMENT:        
-            case ParameterType::PS_SCRIPT_NAME:    
-            case ParameterType::PS_LABEL_NAME:     
+            case ParameterType::COMMENT:        
+            case ParameterType::SCRIPT_NAME:    
+            case ParameterType::LABEL_NAME:     
                params.push_back( ScriptParameter(p, DataType::DT_STRING, ReadStringNode()) );
                break;
 
