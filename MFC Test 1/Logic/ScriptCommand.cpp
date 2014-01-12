@@ -29,62 +29,47 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      class SyntaxInserter
+      /// <summary>Identify the type of branching conditional used (if any)</summary>
+      /// <returns></returns>
+      BranchLogic  ScriptCommand::GetConditional() const
       {
-      public:
-         SyntaxInserter(ScriptCommand& c) : Command(c), Marker(false)
-         {}
-
-         void  operator()(const WCHAR& ch)
+         switch (Syntax.ID)
          {
-            switch (ch)
-            {
-            // Param Marker: Switch mode to marker
-            case '$':
-               Marker = true;
-               break;
-
-            // ParamID/Literal: Insert appropriate parameter 
-            case '0': case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
-               if (Marker)
-                  Command.Text.append(Command.Parameters[ch-48].Text);
-               else
-                  Command.Text.push_back(ch);
-               break;
-               
-            // Superscript marker: Ignore
-            case L'º': case L'¹': case L'²': case L'³': case L'ª':
-               break;
-
-            // Possible Superscript marker: Ignore iff superscript marker
-            case 'o': case 'x': case 'y': case 'z': case 'a':
-               if (!Marker)
-                  Command.Text.push_back(ch);
-               break;
+         case CMD_END:      return BranchLogic::End;
+         case CMD_ELSE:     return BranchLogic::Else;
+         case CMD_BREAK:    return BranchLogic::Break;
+         case CMD_CONTINUE: return BranchLogic::Continue;
+         default:
+            // Find RetVar parameter, if any
+            auto it = find_if(Parameters.begin(), Parameters.end(), [](const ScriptParameter& p) { return p.Syntax.IsRetVar(); });
             
-            // Text: Insert verbatim
+            // None / variable
+            if (it == Parameters.end() || it->Value.Type == ValueType::String)
+               return BranchLogic::None;
+
+            // Ensure conditional exists
+            ReturnValue retVar(it->Value.Int);
+            if (retVar.ReturnType == ReturnType::ASSIGNMENT || retVar.ReturnType == ReturnType::DISCARD)
+               return BranchLogic::None;
+               
+            // Examine conditional
+            switch (retVar.Conditional)
+            {
+            case Conditional::IF:      
+            case Conditional::IF_NOT:
+            case Conditional::WHILE:   
+            case Conditional::WHILE_NOT:     return BranchLogic::If;
+
+            case Conditional::ELSE_IF:  
+            case Conditional::ELSE_IF_NOT:   return BranchLogic::Else;
+
+            case Conditional::SKIP_IF:  
+            case Conditional::SKIP_IF_NOT:   return BranchLogic::SkipIf;
+
             default:
-               Marker = false;
-               Command.Text.push_back(ch);
-               break;
+               return BranchLogic::None;
             }
          }
-
-      private:
-         ScriptCommand&  Command;
-         bool  Marker;
-      };
-
-      void   ScriptCommand::Translate(ScriptFile& f)
-      {
-         // Translate parameters
-         for (ScriptParameter& p : Parameters)
-            p.Translate(f);
-
-         // Populate command text
-         SyntaxInserter inserter(*this);
-         for_each(Syntax.Text.begin(), Syntax.Text.end(), inserter);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

@@ -159,9 +159,10 @@ namespace Logic
             script.Commands.push_back( std[i] );
          }
 
-         // Translate parameters
+         // Translate all parameters
          for (ScriptCommand& cmd : script.Commands)
-            cmd.Translate(script);
+            for (ScriptParameter& p : cmd.Parameters)
+               p.Translate(script);
       }
 
 

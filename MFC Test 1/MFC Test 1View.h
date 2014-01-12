@@ -6,6 +6,7 @@
 
 #include "resource.h"
 #include "afxcmn.h"
+#include "Logic/Common.h"
 
 
 class CMFCTest1View : public CFormView
