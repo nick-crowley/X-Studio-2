@@ -163,6 +163,7 @@
     <ClInclude Include="Logic\XFileInfo.h" />
     <ClInclude Include="Logic\XFileSystem.h" />
     <ClInclude Include="Logic\XmlReader.h" />
+    <ClInclude Include="Logic\XmlWriter.h" />
     <ClInclude Include="Logic\zconf.h" />
     <ClInclude Include="Logic\zlib.h" />
     <ClInclude Include="MainFrm.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="Logic\XFileInfo.cpp" />
     <ClCompile Include="Logic\XFileSystem.cpp" />
     <ClCompile Include="Logic\XmlReader.cpp" />
+    <ClCompile Include="Logic\XmlWriter.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MFC Test 1.cpp" />
     <ClCompile Include="MFC Test 1Doc.cpp" />

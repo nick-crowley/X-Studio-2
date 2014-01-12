@@ -5,6 +5,29 @@
 
 namespace Logic
 {
+   /// <summary>Converts a narrow byte string to wide char</summary>
+   /// <param name="str">The string</param>
+   /// <param name="codepage">The codepage used for conversion</param>
+   /// <returns>Wide char equivilent</returns>
+   wstring  StringResource::Convert(const string& str, UINT codepage)
+   {
+      unique_ptr<WCHAR> wide(new WCHAR[str.length()]);
+      // Convert and null terminate buffer
+      wide.get()[ MultiByteToWideChar(codepage, NULL, str.c_str(), str.length(), wide.get(), str.length()) ] = NULL;
+      return wide.get();
+   }
+
+   /// <summary>Converts a wide char string to narrow char</summary>
+   /// <param name="str">The string</param>
+   /// <param name="codepage">The codepage used for conversion</param>
+   /// <returns>Narrow char equivilent</returns>
+   string  StringResource::Convert(const wstring& str, UINT codepage)
+   {
+      unique_ptr<CHAR> ansi(new CHAR[4*str.length()]);
+      // Convert and null terminate buffer
+      ansi.get()[ WideCharToMultiByte(codepage, NULL, str.c_str(), str.length(), ansi.get(), 4*str.length(), NULL, NULL) ] = NULL;
+      return ansi.get();
+   }
 
    /// <summary>Assembles a formatted string</summary>
    /// <param name="format">Formatting string</param>

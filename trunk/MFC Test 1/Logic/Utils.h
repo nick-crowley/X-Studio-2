@@ -23,6 +23,8 @@ namespace Logic
 		// ------------------------ STATIC -------------------------
 
    public:
+      static wstring  Convert(const string& str, UINT codepage);
+      static string   Convert(const wstring& str, UINT codepage);
       static wstring  Format(const WCHAR*  format, ...);
       static wstring  FormatV(const WCHAR*  format, va_list  args);
       static wstring  Load(UINT  id, ...);

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "DebugTests.h"
 #include "FileStream.h"
 #include "CatalogStream.h"
@@ -10,6 +10,7 @@
 #include "SyntaxLibrary.h"
 #include "ScriptReader.h"
 #include "StringLibrary.h"
+#include "XmlWriter.h"
 
 namespace Logic
 {
@@ -24,7 +25,8 @@ namespace Logic
       //Test_GZip();
       //Test_FileSystem();
       //Test_CommandSyntax();
-      Test_StringLibrary();
+      //Test_StringLibrary();
+      Test_XmlWriter();
    }
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
@@ -66,6 +68,54 @@ namespace Logic
       {
          CString sz;
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
+   }
+
+   void  DebugTests::Test_XmlWriter()
+   {
+      const WCHAR* path = L"c:\\temp\\XML_TEST.xml"; 
+   
+      try
+      {
+         // Test LegacySyntaxReader
+         StreamPtr fs( new FileStream(path, FileMode::CreateAlways, FileAccess::Write) );
+         XmlWriter w(fs);
+
+         w.WriteInstruction(L"version='1.0' encoding='utf-8'");
+         w.WriteComment(L"Written by XStudio 2");
+
+         auto root = w.WriteRoot(L"language");
+         w.WriteAttribute(root, L"id", 44);
+
+         auto page = w.WriteElement(root, L"page");
+         w.WriteAttribute(page, L"id", 1000);
+         w.WriteAttribute(page, L"title", L"la la title");
+
+         auto str = w.WriteElement(page, L"t");
+         w.WriteAttribute(str, L"id", 1);
+         w.WriteText(str, L"I am the text of the string");
+
+         str = w.WriteElement(page, L"t");
+         w.WriteAttribute(str, L"id", 2);
+         w.WriteText(str, L"АБВГДЖКМПС");
+
+         w.Close();
+         fs->Close();
+
+         // Test by reading
+         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto langFile = LanguageFileReader(fs2).ReadFile(Path(path).GetFileName());
+
+         // Test fails because debug window doesn't conv to ANSI Correctly, but the strings are read+stored correctly
+         for (const auto& pair : langFile.Pages)
+            for (const auto& pair2 : pair.second.Strings)
+               Console::WriteLn(L"Read language string %d : '%s'", pair2.second.ID, pair2.second.Text.c_str());
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to write XML test file '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
       }
    }
