@@ -52,6 +52,12 @@
     <Filter Include="Source Files\Logic\Scripts">
       <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\Scripts\Compiler">
+      <UniqueIdentifier>{20923a62-b4f6-43d9-8c01-2bac0fbbd608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\Scripts\Compiler">
+      <UniqueIdentifier>{a1dd8a1f-5a45-4196-97f2-8470382b0056}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -210,11 +216,20 @@
     <ClInclude Include="Logic\XmlWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\SyntaxWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\ScriptFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptLexer.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\SyntaxWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptToken.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptParser.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +370,15 @@
     </ClCompile>
     <ClCompile Include="Logic\ScriptFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptLexer.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptToken.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptParser.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
