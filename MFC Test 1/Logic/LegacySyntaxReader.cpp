@@ -101,7 +101,7 @@ namespace Logic
          return output;
       }
 
-      /// <summary>Identifies the parameter usage (hard-coded)</summary>
+      /// <summary>Manually Identifies the parameter usage (hard-coded)</summary>
       /// <param name="id">The command ID</param>
       /// <param name="index">The physical parameter index</param>
       /// <returns>Usage</returns>
@@ -110,60 +110,16 @@ namespace Logic
          // Examine command ID
          switch (id)
          {
-         /// [SINGLE ENTRY] {Page,String} = {0, 1}
-         case CMD_SET_NEWS_ARTICLE_STATE:             // "set state of news article page=$0 id=$1 to $2"
-         case CMD_WRITE_LOGBOOK:                      // "write to player logbook: printf: pageid=$0 textid=$1, $2, $3, $4, $5, $6"
-         case CMD_WRITE_LOG:                          // "write to log file $0  append=$1  printf: pageid=$2 textid=$3, $4, $5, $6, $7, $8"
-         /// [SINGLE ENTRY] {Page,String} = {1, 2}
-         case CMD_READ_TEXT:                          // "$0 read text: page=$1 id=$2"
-         case CMD_READ_TEXT_EXISTS:                   // "$0 read text: page id=$1, id=$2 exists"
-         case CMD_SPEAK_TEXT:                         // "$0 speak text: page=$1 id=$2 priority=$3"
-         case CMD_STRING_PRINTF:                      // "$0 sprintf: pageid=$1 textid=$2, $3, $4, $5, $6, $7"
-         case CMD_DISPLAY_NEWS_ARTICLE:               // "$0 display news article: page=$1 newsid=$2 occurrences=$3 maxoffertime=$4 maxtime=$5 placeholder:race1=$6 race2=$7 customarray=$8"
-         case CMD_GET_NEWS_ARTICLE_STATE:             // "$0 state of news article: page=$1 id=$2"
-         case CMD_ADD_SCRIPT_OPTIONS:                 // "add script options: script=$0 pageid=$1 textid=$2"
-         case CMD_REMOVE_PLAYER_GRAPH:                // "remove player graph: script=$0 group pageid=$1 group textid=$2"
-         case CMD_REGISTER_HOTKEY_1_BYREF:            // "$0 register hotkey: page=$1 id=$2, to call script $3"
-         case CMD_REGISTER_HOTKEY_2_BYREF:            // "$0 register hotkey: page=$1 id=$2, to call script name $3"
-         case CMD_ADD_MENU_ITEM_BYREF:                // "add custom menu item to array $0: page=$1x id=$2y returnvalue=$3"
-         case CMD_ADD_MENU_INFO_BYREF:                // "add custom menu info line to array $0: page=$1x id=$2y"
-         case CMD_ADD_MENU_HEADING_BYREF:             // "add custom menu heading to array $0: page=$1x id=$2y"
-         /// [SINGLE ENTRY] {Page,String} = {2, 3}
-         case CMD_REMOVE_CLASS_GRAPH:                 // "remove class graph: class=$0 script=$1 group pageid=$2 group textid=$3"
-         case CMD_REMOVE_OBJECT_GRAPH:                // "$0 remove object graph: script=$1 group pageid=$2 group textid=$3"
-         /// [SINGLE ENTRY] {Page,String} = {3, 4} 
-         case CMD_ADD_WING_SCRIPT:                    // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4"
-         case CMD_ADD_WING_SCRIPT_CHECK:              // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4 checkscript=$5"
-         /// [DUAL ENTRIES] {Page,String} = {1, 2} and {3, 4}
-         case CMD_ADD_NEWS_ARTICLE:                   // "add encyclopedia custom article: News, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
-         case CMD_ADD_INFO_ARTICLE:                   // "add encyclopedia custom article: Information, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
-         case CMD_ADD_HISTORY_ARTICLE:                // "add encyclopedia custom article: History, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
-         case CMD_ADD_STORIES_ARTICLE:                // "add encyclopedia custom article: Stories, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
-         case CMD_ADD_PLAYER_GRAPH:                   // "add player graph: script=$0 pageid=$1 textid=$2 group pageid=$3 group textid=$4 subgroup=$5"
-         /// [DUAL ENTRIES] {Page,String} = {2, 3} and {4, 5}
-         case CMD_ADD_CLASS_GRAPH:                    // "add class graph: class=$0 script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
-         case CMD_ADD_OBJECT_GRAPH:                   // "$0 add object graph: script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
-         /// [VARIABLE ENTRIES] {Page,String} = {1,2} -> {1,3}
-         case CMD_READ_TEXT_ARRAY:                    // "$0 read text: page id=$1, from $2 to $3 to array, include empty=$4"
-            // Return TRUE
-            return TRUE;
-         
-         /// [SCRIPTNAME IS PARAMETER ZERO]
+         // {ScriptName} @ {0}
          case CMD_CALL_SCRIPT_VAR_ARGS:               // "$1 $2 call script $0 :"
-
          case CMD_REGISTER_AL_SCRIPT:                 // "al engine: register script=$0"
          case CMD_REGISTER_QUEST_SCRIPT:              // "register quest script $0 instance multiple=$1"
          case CMD_REGISTER_GOD_EVENT:                 // "register god event: script=$0 mask=$1"
          case CMD_UNREGISTER_AL_SCRIPT:               // "al engine: unregister script $0"
-
-         case CMD_ADD_SCRIPT_OPTIONS:                 // "add script options: script=$0 pageid=$1 textid=$2"  
-         case CMD_ADD_PLAYER_GRAPH:                   // "add player graph: script=$0 pageid=$1 textid=$2 group pageid=$3 group textid=$4 subgroup=$5"
-         case CMD_REMOVE_PLAYER_GRAPH:                // "remove player graph: script=$0 group pageid=$1 group textid=$2"
          case CMD_REMOVE_SCRIPT_OPTIONS:              // "remove script options: script=$0"  
-            findParameterInCommandByIndex(pCommand, PT_DEFAULT, 0, pOutput);
-            break;
+            return index == 0 ? ParameterUsage::ScriptName : ParameterUsage::None;
 
-         /// [SCRIPTNAME IS PARAMETER ONE]
+         // {ScriptName} @ {1}
          case CMD_BEGIN_TASK_ARGS:                    // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
          case CMD_INTERRUPT_SCRIPT:                   // "$0 interrupt with script $1 and prio $2"
          case CMD_INTERRUPT_SCRIPT_ARGS:              // "$0 interrupt with script $1 and prio $2: arg1=$3 arg2=$4 arg3=$5 arg4=$6"
@@ -173,11 +129,6 @@ namespace Logic
          case CMD_SET_SHIP_PRELOAD_SCRIPT:            // "set ship command preload script: command=$0 script=$1"
          case CMD_SET_WING_PRELOAD_SCRIPT:            // "set wing command preload script: wing command=$0 script=$1"
 
-         case CMD_ADD_CLASS_GRAPH:                    // "add class graph: class=$0 script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
-         case CMD_ADD_OBJECT_GRAPH:                   // "$0 add object graph: script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
-         case CMD_REMOVE_CLASS_GRAPH:                 // "remove class graph: class=$0 script=$1 group pageid=$2 group textid=$3"
-         case CMD_REMOVE_OBJECT_GRAPH:                // "$0 remove object graph: script=$1 group pageid=$2 group textid=$3"
-
          case CMD_GET_HOTKEY_INDEX_1:                 // "$0 get hotkey index, script: $1"
          case CMD_GET_HOTKEY_INDEX_2:                 // "$0 get hotkey index, script name: $1"
          case CMD_CHECK_SCRIPT_EXISTS_1:              // "$0 does script exist: $1"
@@ -185,45 +136,133 @@ namespace Logic
 
          case CMD_SEND_INCOMING_QUESTION:             // "send incoming question $0 to player: callback=$1"
          case CMD_SEND_INCOMING_QUESTION_EX:          // "send incoming question $0 to player: callback=$1 flags=$2"
-            findParameterInCommandByIndex(pCommand, PT_DEFAULT, 1, pOutput);  
-            break;
+            return index == 1 ? ParameterUsage::ScriptName : ParameterUsage::None;
 
-         /// [SCRIPTNAME IS PARAMETER TWO]
+         // {ScriptName} @ {2}
          case CMD_CALL_SCRIPT_ARGS:                   // "$1 $0 call named script: script=$2, $3, $4, $5, $6, $7"
          case CMD_LAUNCH_SCRIPT_ARGS:                 // "$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8"
          case CMD_IS_SCRIPT_ON_STACK:                 // "$1 $0 is script $2 on stack of task=$3"
 
          case CMD_CONNECT_SHIP_SCRIPT:                // "$0 connect ship command/signal $1 to script $2 with prio $3"
          case CMD_CONNECT_WING_SCRIPT:                // "$0 connect wing command/signal $1 to script $2 with prio $3"
+         case CMD_ADD_SECONDARY_SIGNAL:               // "$0 add secondary signal: signal=$1, script=$2, prio=$3, name=$4"
 
          case CMD_SET_SHIP_UPGRADE_SCRIPT:            // "set script command upgrade: command=$0  upgrade=$1  script=$2"
          case CMD_SET_WING_UPGRADE_SCRIPT:            // "set script command upgrade: wing command=$0 upgrade=$1 script=$2"
          case CMD_SET_GLOBAL_WING_SCRIPT_MAP:         // "global script map for wings: key=$0 race=$1 script=$2 prio=$3"
 
-         case CMD_ADD_SECONDARY_SIGNAL:               // "$0 add secondary signal: signal=$1, script=$2, prio=$3, name=$4"
-         case CMD_ADD_WING_SCRIPT:                    // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4"
-         case CMD_ADD_WING_SCRIPT_CHECK:              // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4 checkscript=$5"
-
          case CMD_REGISTER_HOTKEY_1:                  // "$0 register hotkey $1 to call script $2"
          case CMD_REGISTER_HOTKEY_2:                  // "$0 register hotkey $1 to call script name $2" 
-            findParameterInCommandByIndex(pCommand, PT_DEFAULT, 2, pOutput);  
-            break;
+            return index == 2 ? ParameterUsage::ScriptName : ParameterUsage::None;
 
-         /// [SCRIPTNAME IS PARAMETER THREE]
+         // {ScriptName} @ {3}
          case CMD_ADD_EVENT_LISTENER:                 // "$0 add event listener: quest/event=$1 objevent=$2 script=$3"
          case CMD_SET_GLOBAL_SECONDARY_MAP:           // "global secondary signal map: add signal=$0 race=$1 class=$2 script=$3 prio=$4 name=$5"
+            return index == 2 ? ParameterUsage::ScriptName : ParameterUsage::None;
 
+
+         // {Page,String} @ {0, 1}
+         case CMD_SET_NEWS_ARTICLE_STATE:             // "set state of news article page=$0 id=$1 to $2"
+         case CMD_WRITE_LOGBOOK:                      // "write to player logbook: printf: pageid=$0 textid=$1, $2, $3, $4, $5, $6"
+         case CMD_WRITE_LOG:                          // "write to log file $0  append=$1  printf: pageid=$2 textid=$3, $4, $5, $6, $7, $8"
+            return index == 0 ? ParameterUsage::PageID
+                 : index == 1 ? ParameterUsage::StringID : ParameterUsage::None;
+
+         // {Page,String} @ {1, 2}
+         case CMD_READ_TEXT:                          // "$0 read text: page=$1 id=$2"
+         case CMD_READ_TEXT_EXISTS:                   // "$0 read text: page id=$1, id=$2 exists"
+         case CMD_SPEAK_TEXT:                         // "$0 speak text: page=$1 id=$2 priority=$3"
+         case CMD_STRING_PRINTF:                      // "$0 sprintf: pageid=$1 textid=$2, $3, $4, $5, $6, $7"
+         case CMD_DISPLAY_NEWS_ARTICLE:               // "$0 display news article: page=$1 newsid=$2 occurrences=$3 maxoffertime=$4 maxtime=$5 placeholder:race1=$6 race2=$7 customarray=$8"
+         case CMD_GET_NEWS_ARTICLE_STATE:             // "$0 state of news article: page=$1 id=$2"
+         case CMD_ADD_MENU_ITEM_BYREF:                // "add custom menu item to array $0: page=$1x id=$2y returnvalue=$3"
+         case CMD_ADD_MENU_INFO_BYREF:                // "add custom menu info line to array $0: page=$1x id=$2y"
+         case CMD_ADD_MENU_HEADING_BYREF:             // "add custom menu heading to array $0: page=$1x id=$2y"
+            return index == 1 ? ParameterUsage::PageID
+                 : index == 2 ? ParameterUsage::StringID : ParameterUsage::None;
+
+         // {Script,Page,String} @ {0, 1, 2}
+         case CMD_ADD_SCRIPT_OPTIONS:                 // "add script options: script=$0 pageid=$1 textid=$2"
+         case CMD_REMOVE_PLAYER_GRAPH:                // "remove player graph: script=$0 group pageid=$1 group textid=$2"
+            return index == 0 ? ParameterUsage::ScriptName
+                 : index == 1 ? ParameterUsage::PageID
+                 : index == 2 ? ParameterUsage::StringID : ParameterUsage::None;
+
+         // {Page,String,Script} @ {1, 2, 3}
          case CMD_REGISTER_HOTKEY_1_BYREF:            // "$0 register hotkey: page=$1 id=$2, to call script $3"
          case CMD_REGISTER_HOTKEY_2_BYREF:            // "$0 register hotkey: page=$1 id=$2, to call script name $3"
-            findParameterInCommandByIndex(pCommand, PT_DEFAULT, 3, pOutput);
-            break;
+            return index == 1 ? ParameterUsage::PageID 
+                 : index == 2 ? ParameterUsage::StringID 
+                 : index == 3 ? ParameterUsage::ScriptName : ParameterUsage::None;
+
+         
+         // {Script,Page,String} @ {1, 2, 3}
+         case CMD_REMOVE_CLASS_GRAPH:                 // "remove class graph: class=$0 script=$1 group pageid=$2 group textid=$3"
+         case CMD_REMOVE_OBJECT_GRAPH:                // "$0 remove object graph: script=$1 group pageid=$2 group textid=$3"
+            return index == 1 ? ParameterUsage::ScriptName
+                 : index == 2 ? ParameterUsage::PageID
+                 : index == 3 ? ParameterUsage::StringID : ParameterUsage::None;
+
+
+         // {Page,String} @ {1+3, 2+4}
+         case CMD_ADD_NEWS_ARTICLE:                   // "add encyclopedia custom article: News, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
+         case CMD_ADD_INFO_ARTICLE:                   // "add encyclopedia custom article: Information, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
+         case CMD_ADD_HISTORY_ARTICLE:                // "add encyclopedia custom article: History, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
+         case CMD_ADD_STORIES_ARTICLE:                // "add encyclopedia custom article: Stories, id=$0, title page=$1, title id=$2, text page=$3, text id=$4, timeout=$5"
+            switch (index) {
+            case 1: case 3:   return ParameterUsage::PageID;
+            case 2: case 4:   return ParameterUsage::StringID;
+            default:          return ParameterUsage::None; }
+
+         // {Script,Page,String} @ {0, 1+3, 2+4}
+         case CMD_ADD_PLAYER_GRAPH:                   // "add player graph: script=$0 pageid=$1 textid=$2 group pageid=$3 group textid=$4 subgroup=$5"
+            switch (index) {
+            case 0:           return ParameterUsage::ScriptName;
+            case 1: case 3:   return ParameterUsage::PageID;
+            case 2: case 4:   return ParameterUsage::StringID;
+            default:          return ParameterUsage::None; }
+
+         // {Script,Page,String} @ {2,3,4}
+         case CMD_ADD_WING_SCRIPT:                    // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4"
+            return index == 2 ? ParameterUsage::ScriptName
+                 : index == 3 ? ParameterUsage::PageID 
+                 : index == 4 ? ParameterUsage::StringID  : ParameterUsage::None;
+
+         // {Script,Page,String} @ {2+5,3,4}
+         case CMD_ADD_WING_SCRIPT_CHECK:              // "$0 add wing additional ship command: id=$1 script=$2 pageid=$3 textid=$4 checkscript=$5"
+            return index == 2 || index == 5 ? ParameterUsage::ScriptName
+                 : index == 3               ? ParameterUsage::PageID 
+                 : index == 4               ? ParameterUsage::StringID  : ParameterUsage::None;
+
+         // {Script,Page,String} @ {1,2+4,3+5}
+         case CMD_ADD_CLASS_GRAPH:                    // "add class graph: class=$0 script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
+         case CMD_ADD_OBJECT_GRAPH:                   // "$0 add object graph: script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
+            switch (index) {
+            case 1:           return ParameterUsage::ScriptName;
+            case 2: case 4:   return ParameterUsage::PageID;
+            case 3: case 5:   return ParameterUsage::StringID;
+            default:          return ParameterUsage::None; }
+
+         // {Page,String} @ {1,2+3}
+         case CMD_READ_TEXT_ARRAY:                    // "$0 read text: page id=$1, from $2 to $3 to array, include empty=$4"
+            return index == 1               ? ParameterUsage::PageID
+                 : index == 2 || index == 3 ? ParameterUsage::StringID : ParameterUsage::None;
+
+         // None:
+         default:
+            return ParameterUsage::None;
+         }
       }
 
       /// <summary>Identifies command type from the ID</summary>
       /// <param name="id">Command ID</param>
+      /// <param name="g">Command group</param>
       /// <returns>Standard/Auxiliary</returns>
-      CommandType   LegacySyntaxReader::IdentifyType(const UINT id)
+      CommandType   LegacySyntaxReader::IdentifyType(UINT id, CommandGroup  g)
       {
+         if (g == CommandGroup::MACRO)
+            return CommandType::Macro;
+
          switch (id)
          {
          case CMD_COMMENT:
@@ -330,12 +369,10 @@ namespace Logic
          if (line.find(L"X3AP") != wstring::npos)
             dec.Versions |= (UINT)GameVersion::AlbionPrelude;
 
-         // ID
+         // ID / Type
          RequireLine(line, L"ID");
          dec.ID = _wtoi(line.c_str());
-
-         // Type
-         dec.Type = (dec.Group == CommandGroup::MACRO ? CommandType::Macro : IdentifyType(dec.ID));
+         dec.Type = IdentifyType(dec.ID, dec.Group);
 
          // URL
          RequireLine(dec.URL, L"help URL");

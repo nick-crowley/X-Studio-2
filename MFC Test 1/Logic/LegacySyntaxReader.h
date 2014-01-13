@@ -27,9 +27,9 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static ParamSyntaxArray  GenerateParams(const wstring& syntax, const list<ParameterType>& params);
+         static ParamSyntaxArray  GenerateParams(UINT id, const wstring& syntax, const list<ParameterType>& params);
          static wstring           GenerateSyntax(const wstring& syntax);
-         static CommandType       IdentifyType(const UINT id);
+         static CommandType       IdentifyType(UINT id, CommandGroup  g);
          static ParameterUsage    IdentifyUsage(UINT id, UINT index);
 
          // --------------------- PROPERTIES ------------------------
