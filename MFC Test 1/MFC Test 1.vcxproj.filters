@@ -219,9 +219,6 @@
     <ClInclude Include="Logic\ScriptFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\ScriptLexer.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\SyntaxWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -229,6 +226,9 @@
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
     <ClInclude Include="Logic\ScriptCommandParser.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptCommandLexer.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
@@ -371,13 +371,13 @@
     <ClCompile Include="Logic\ScriptFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptLexer.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ScriptToken.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
     <ClCompile Include="Logic\ScriptCommandParser.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptCommandLexer.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>

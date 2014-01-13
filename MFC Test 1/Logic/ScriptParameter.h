@@ -18,26 +18,26 @@ namespace Logic
       /// <summary>Defines the type element of a X3 script {type,value} pair</summary>
       enum class DataType : UINT
       {    
-         DT_NULL            = 0,   DT_UNKNOWN        = 1,   DT_VARIABLE      = 2,
-         DT_CONSTANT        = 3,   DT_INTEGER        = 4,   DT_STRING        = 5,
-         DT_SHIP            = 6,   DT_STATION        = 7,   DT_SECTOR        = 8,
-         DT_WARE            = 9,   DT_RACE           = 10,  DT_STATIONSERIAL = 11,
-         DT_OBJECTCLASS     = 12,  DT_TRANSPORTCLASS = 13,  DT_RELATION      = 14,
-         DT_OPERATOR        = 15,  DT_EXPRESSION     = 16,  DT_OBJECT        = 17,
-         DT_OBJECTCOMMAND   = 18,  DT_FLIGHTRETURN   = 19,  DT_DATATYPE      = 20,
-         DT_ARRAY           = 21,  DT_QUEST          = 22,
+         NULL            = 0,   UNKNOWN        = 1,   VARIABLE      = 2,
+         CONSTANT        = 3,   INTEGER        = 4,   STRING        = 5,
+         SHIP            = 6,   STATION        = 7,   SECTOR        = 8,
+         WARE            = 9,   RACE           = 10,  STATIONSERIAL = 11,
+         OBJECTCLASS     = 12,  TRANSPORTCLASS = 13,  RELATION      = 14,
+         OPERATOR        = 15,  EXPRESSION     = 16,  OBJECT        = 17,
+         OBJECTCOMMAND   = 18,  FLIGHTRETURN   = 19,  DATATYPE      = 20,
+         ARRAY           = 21,  QUEST          = 22,
          // New in Terran Conflict
-         DT_WING            = 23,  DT_SCRIPTDEF      = 24,  DT_WINGCOMMAND   = 25,
-         DT_PASSENGER       = 26,
+         WING            = 23,  SCRIPTDEF      = 24,  WINGCOMMAND   = 25,
+         PASSENGER       = 26,
          // Live Types
-         DT_LIVE_CONSTANT  = DT_CONSTANT | DTF_ENCODED,
-         DT_LIVE_VARIABLE  = DT_VARIABLE | DTF_ENCODED,
-         DT_LIVE_OBJECT    = DT_OBJECT   | DTF_OBJECT_DATA,
-         DT_LIVE_SECTOR    = DT_SECTOR   | DTF_OBJECT_DATA,
-         DT_LIVE_SHIP      = DT_SHIP     | DTF_OBJECT_DATA,
-         DT_LIVE_STATION   = DT_STATION  | DTF_OBJECT_DATA,
-         DT_LIVE_WING      = DT_WING     | DTF_OBJECT_DATA,
-         DT_UNARY_OPERATOR = DT_OPERATOR | DTF_UNARY_OPERATOR    
+         LIVE_CONSTANT  = CONSTANT | DTF_ENCODED,
+         LIVE_VARIABLE  = VARIABLE | DTF_ENCODED,
+         LIVE_OBJECT    = OBJECT   | DTF_OBJECT_DATA,
+         LIVE_SECTOR    = SECTOR   | DTF_OBJECT_DATA,
+         LIVE_SHIP      = SHIP     | DTF_OBJECT_DATA,
+         LIVE_STATION   = STATION  | DTF_OBJECT_DATA,
+         LIVE_WING      = WING     | DTF_OBJECT_DATA,
+         UNARY_OPERATOR = OPERATOR | DTF_UNARY_OPERATOR    
       };
 
   

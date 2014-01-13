@@ -28,7 +28,7 @@ namespace Logic
 
          // Comment: Read string
          if (id == CMD_COMMENT)
-            params.push_back( ScriptParameter(syntax.Parameters[0], DataType::DT_STRING, ReadStringNode()) );
+            params.push_back( ScriptParameter(syntax.Parameters[0], DataType::STRING, ReadStringNode()) );
 
          // Return command
          return ScriptCommand(syntax, index, params);
@@ -53,7 +53,7 @@ namespace Logic
          ParameterSyntax expr = syntax.Parameters[1];
 
          // Return value
-         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::DT_VARIABLE, ReadIntNode()) );
+         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ReadIntNode()) );
 
          // Read postfix tuples
          //ParameterArray postfix(count = ReadIntNode());
@@ -66,7 +66,7 @@ namespace Logic
          for (int i = 0; i < count; i++)
          {
             int value = ReadIntNode();    // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
-            params.push_back( value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::DT_OPERATOR, value) );
+            params.push_back( value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::OPERATOR, value) );
          }
 
          // Return command
@@ -83,8 +83,8 @@ namespace Logic
          CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(), Script.Game);
 
          // Read scriptname / RetVar / refObj
-         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::DT_STRING, ReadStringNode()) );
-         params.push_back( ScriptParameter(syntax.Parameters[1], DataType::DT_VARIABLE, ReadIntNode()) );
+         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::STRING, ReadStringNode()) );
+         params.push_back( ScriptParameter(syntax.Parameters[1], DataType::VARIABLE, ReadIntNode()) );
          params.push_back( ReadParameter(syntax.Parameters[2]) );
 
          // Read arguments
@@ -114,7 +114,7 @@ namespace Logic
             switch (p.Type)
             {
             case ParameterType::LABEL_NUMBER:   
-               params.push_back( ScriptParameter(p, DataType::DT_INTEGER, ReadIntNode()) ); 
+               params.push_back( ScriptParameter(p, DataType::INTEGER, ReadIntNode()) ); 
                break;
 
             // Decode RetVar as DT_VARIABLE
@@ -123,14 +123,14 @@ namespace Logic
             case ParameterType::RETURN_VALUE_IF:
             case ParameterType::RETURN_VALUE_IF_START:
             case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
-               params.push_back( ScriptParameter(p, DataType::DT_VARIABLE, ReadIntNode()) ); 
+               params.push_back( ScriptParameter(p, DataType::VARIABLE, ReadIntNode()) ); 
                break;
             
             // Single string node
             case ParameterType::COMMENT:        
             case ParameterType::SCRIPT_NAME:    
             case ParameterType::LABEL_NAME:     
-               params.push_back( ScriptParameter(p, DataType::DT_STRING, ReadStringNode()) );
+               params.push_back( ScriptParameter(p, DataType::STRING, ReadStringNode()) );
                break;
 
             // Parameter as {Type,Value} pair

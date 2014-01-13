@@ -9,8 +9,11 @@ namespace Logic
    {
       namespace Compiler
       {
+         /// <summary>List of script tokens</summary>
+         typedef list<ScriptToken>  TokenList;
+
          /// <summary></summary>
-         class ScriptLexer
+         class ScriptCommandLexer
          {
             // ------------------------ TYPES --------------------------
          private:
@@ -18,15 +21,15 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptLexer(const wstring& line);
-            virtual ~ScriptLexer();
+            ScriptCommandLexer(const wstring& line);
+            virtual ~ScriptCommandLexer();
 
-            DEFAULT_COPY(ScriptLexer);	// Default copy semantics
-            DEFAULT_MOVE(ScriptLexer);	// Default move semantics
+            DEFAULT_COPY(ScriptCommandLexer);	// Default copy semantics
+            DEFAULT_MOVE(ScriptCommandLexer);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
          private:
-            static list<ScriptToken> Parse(const wstring& line);
+            static TokenList Parse(const wstring& line);
 
             // --------------------- PROPERTIES ------------------------
 
@@ -37,7 +40,7 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            const list<ScriptToken>  Tokens;
+            const TokenList  Tokens;
 
          private:
          };
