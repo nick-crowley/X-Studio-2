@@ -21,7 +21,7 @@ namespace Logic
       {
       public:
          /// <summary></summary>
-         class TypeCollection : private map<wstring,ParameterType>
+         class TypeCollection : public map<wstring,ParameterType>
          {
          public:
             bool  Add(wstring& name, ParameterType type) { return insert(TypeCollection::value_type(name, type)).second; }

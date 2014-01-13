@@ -34,6 +34,11 @@ namespace Logic
       {
          CommandSyntax::Declaration  d;
          SyntaxFile   file;
+         
+         // Populate types (hard-coded)
+         for (int i = 0; i < PARAMETER_SYNTAX_COUNT; ++i)
+            if (StrCmpI(szParameterSyntax[i], L"--NONE--") != 0)
+               file.Types[szParameterSyntax[i]] = (ParameterType)i;
 
          // Read syntax blocks
          while (ReadSyntax(d))
@@ -111,6 +116,9 @@ namespace Logic
 
          // URL
          RequireLine(dec.URL, L"help URL");
+         if (dec.URL == L"NONE")
+            dec.URL.clear();
+
          // Syntax
          RequireLine(dec.Syntax, L"syntax text");
 
