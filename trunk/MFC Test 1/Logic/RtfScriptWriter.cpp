@@ -161,32 +161,32 @@ namespace Logic
          // Determine colour
          switch (p.Type)
          {
-         case DataType::DT_VARIABLE:  
+         case DataType::VARIABLE:  
             col = (p.Syntax.IsRetVar() && cmd.GetConditional() != BranchLogic::None ? Blue : Green);  
             break;
 
-         case DataType::DT_STRING:    
+         case DataType::STRING:    
             col = (p.Syntax.Type == ParameterType::COMMENT ? Grey 
                   : p.Syntax.Type == ParameterType::LABEL_NAME ? Purple
                   : Red);      
             break;
 
-         case DataType::DT_INTEGER:   col = Red;      break;
-         case DataType::DT_WARE:      col = Cyan;     break;
-         case DataType::DT_NULL:      col = Green;    break;
-         case DataType::DT_OPERATOR:  col = White;    break;
+         case DataType::INTEGER:   col = Red;      break;
+         case DataType::WARE:      col = Cyan;     break;
+         case DataType::NULL:      col = Green;    break;
+         case DataType::OPERATOR:  col = White;    break;
 
-         case DataType::DT_SECTOR:
-         case DataType::DT_SCRIPTDEF:     
-         case DataType::DT_STATIONSERIAL: 
-         case DataType::DT_TRANSPORTCLASS:
-         case DataType::DT_DATATYPE:      
-         case DataType::DT_FLIGHTRETURN:  
-         case DataType::DT_OBJECTCLASS:   
-         case DataType::DT_OBJECTCOMMAND:  
-         case DataType::DT_WINGCOMMAND:    
-         case DataType::DT_RACE:          
-         case DataType::DT_CONSTANT:  col = Yellow;   break;
+         case DataType::SECTOR:
+         case DataType::SCRIPTDEF:     
+         case DataType::STATIONSERIAL: 
+         case DataType::TRANSPORTCLASS:
+         case DataType::DATATYPE:      
+         case DataType::FLIGHTRETURN:  
+         case DataType::OBJECTCLASS:   
+         case DataType::OBJECTCOMMAND:  
+         case DataType::WINGCOMMAND:    
+         case DataType::RACE:          
+         case DataType::CONSTANT:  col = Yellow;   break;
             
          default:  
             RtfWriter::Write(p.Text);  

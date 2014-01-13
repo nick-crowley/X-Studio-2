@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptLexer.h"
+#include "ScriptCommandLexer.h"
 
 namespace Logic
 {
@@ -9,20 +9,20 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptLexer::ScriptLexer(const wstring& line) : Tokens(Parse(line))
+         ScriptCommandLexer::ScriptCommandLexer(const wstring& line) : Tokens(Parse(line))
          {
          }
 
 
-         ScriptLexer::~ScriptLexer()
+         ScriptCommandLexer::~ScriptCommandLexer()
          {
          }
 
          // ------------------------------- STATIC METHODS -------------------------------
 
-         list<ScriptToken> ScriptLexer::Parse(const wstring& line)
+         TokenList ScriptCommandLexer::Parse(const wstring& line)
          {
-            return list<ScriptToken>();
+            return TokenList();
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------

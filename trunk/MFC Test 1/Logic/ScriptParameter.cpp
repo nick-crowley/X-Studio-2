@@ -39,7 +39,7 @@ namespace Logic
 
          switch (Type)
          {
-         case DataType::DT_VARIABLE:
+         case DataType::VARIABLE:
             format = (Syntax.IsRetVar() ? L"$%s =" : L"$%s");
 
             // Commented: name
@@ -58,36 +58,36 @@ namespace Logic
             }
             break;
 
-         case DataType::DT_STRING:
+         case DataType::STRING:
             Text = (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME ? Value.String 
                     : StringResource::Format(L"'%s'", Value.String.c_str()));
             break;
 
-         case DataType::DT_INTEGER:
+         case DataType::INTEGER:
             Text = StringResource::Format(L"%d", Value.Int);
             break;
 
-         case DataType::DT_NULL:
+         case DataType::NULL:
             Text = L"null";
             break;
 
-         case DataType::DT_SECTOR:
+         case DataType::SECTOR:
             Text = StringResource::Format(L"[%d]", Value.Int);
             break;
 
-         case DataType::DT_SCRIPTDEF:        Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::PARAMETER_TYPES, Value.Int).Text.c_str());  break;
-         case DataType::DT_STATIONSERIAL:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::STATION_SERIALS, Value.Int).Text.c_str());  break;
-         case DataType::DT_TRANSPORTCLASS:   Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::TRANSPORT_CLASSES, Value.Int).Text.c_str());  break;
-         case DataType::DT_OPERATOR:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
-         case DataType::DT_DATATYPE:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::DATA_TYPES, Value.Int).Text.c_str());  break;
-         case DataType::DT_FLIGHTRETURN:     Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::FLIGHT_RETURNS, Value.Int).Text.c_str());  break;
-         case DataType::DT_OBJECTCLASS:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_CLASSES, Value.Int).Text.c_str());  break;
-         case DataType::DT_OBJECTCOMMAND:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_COMMANDS, Value.Int).Text.c_str());  break;
-         case DataType::DT_WINGCOMMAND:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::WING_COMMANDS, Value.Int).Text.c_str());  break;
-         case DataType::DT_RACE:             Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::RACES, Value.Int).Text.c_str());  break;
-         case DataType::DT_CONSTANT:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::CONSTANTS, Value.Int).Text.c_str());  break;
+         case DataType::SCRIPTDEF:        Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::PARAMETER_TYPES, Value.Int).Text.c_str());  break;
+         case DataType::STATIONSERIAL:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::STATION_SERIALS, Value.Int).Text.c_str());  break;
+         case DataType::TRANSPORTCLASS:   Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::TRANSPORT_CLASSES, Value.Int).Text.c_str());  break;
+         case DataType::OPERATOR:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
+         case DataType::DATATYPE:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::DATA_TYPES, Value.Int).Text.c_str());  break;
+         case DataType::FLIGHTRETURN:     Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::FLIGHT_RETURNS, Value.Int).Text.c_str());  break;
+         case DataType::OBJECTCLASS:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_CLASSES, Value.Int).Text.c_str());  break;
+         case DataType::OBJECTCOMMAND:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_COMMANDS, Value.Int).Text.c_str());  break;
+         case DataType::WINGCOMMAND:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::WING_COMMANDS, Value.Int).Text.c_str());  break;
+         case DataType::RACE:             Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::RACES, Value.Int).Text.c_str());  break;
+         case DataType::CONSTANT:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::CONSTANTS, Value.Int).Text.c_str());  break;
 
-         case DataType::DT_WARE:
+         case DataType::WARE:
             Text = StringResource::Format(L"{%d:%d}", HIWORD(Value.Int), LOWORD(Value.Int));
             break;
          }
