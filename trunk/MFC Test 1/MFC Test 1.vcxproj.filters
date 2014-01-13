@@ -228,7 +228,7 @@
     <ClInclude Include="Logic\ScriptToken.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\ScriptParser.h">
+    <ClInclude Include="Logic\ScriptCommandParser.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
@@ -377,7 +377,7 @@
     <ClCompile Include="Logic\ScriptToken.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptParser.cpp">
+    <ClCompile Include="Logic\ScriptCommandParser.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>

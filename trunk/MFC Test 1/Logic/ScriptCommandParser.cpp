@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptParser.h"
+#include "ScriptCommandParser.h"
 
 namespace Logic
 {
@@ -9,12 +9,12 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptParser::ScriptParser()
+         ScriptCommandParser::ScriptCommandParser()
          {
          }
 
 
-         ScriptParser::~ScriptParser()
+         ScriptCommandParser::~ScriptCommandParser()
          {
          }
 
