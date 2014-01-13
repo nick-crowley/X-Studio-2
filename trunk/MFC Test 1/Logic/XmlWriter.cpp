@@ -64,6 +64,9 @@ namespace Logic
       {
          try
          {
+            const CHAR* header = "<?xml version=\"1.0\"?>";
+            UINT headerLen = lstrlenA(header);
+
             // Load style sheet
             XmlDocumentPtr style = XmlDocumentPtr(__uuidof(XML::DOMDocument60));
             style->preserveWhiteSpace = VARIANT_TRUE;
@@ -72,11 +75,21 @@ namespace Logic
             // Perform transformation and convert to UTF8
             string utf = StringResource::Convert( wstring(Document->transformNode(style)), CP_UTF8);
 
-            // HACK: Manually add UTF-8 BOM
-            Output->Write(utf8_bom, 3);
+            // HACK: Use of 'xml' property instead of 'save' method removes the encoding processing instruction. Replace it manually.
+            if (utf.compare(0, headerLen, header) == 0)
+            {
+               const CHAR* instruction = "<?xml version='1.0' encoding='utf-8'?>";
+               
+               // Manually add UTF-8 BOM + processing instruction
+               Output->Write(utf8_bom, 3);
+               Output->Write((const BYTE*)instruction, lstrlenA(instruction));
 
-            // Save as UTF8
-            Output->Write((BYTE*)utf.c_str(), utf.length());
+               // Save document but strip the header
+               Output->Write((BYTE*)utf.c_str() + headerLen, utf.length() - headerLen);
+            }
+            else
+               // If header already correct, output verbatim
+               Output->Write((BYTE*)utf.c_str(), utf.length());
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

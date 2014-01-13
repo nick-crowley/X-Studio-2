@@ -40,8 +40,12 @@ namespace Logic
             if (StrCmpI(szParameterSyntax[i], L"--NONE--") != 0)
                file.Types[szParameterSyntax[i]] = (ParameterType)i;
 
+            // Populate groups (hard-coded)
+         for (int i = 0; i < COMMAND_GROUP_COUNT; ++i)
+            file.Groups[szCommandGroups[i]] = (CommandGroup)i;
+
          // Read syntax blocks
-         while (ReadSyntax(d))
+         while (ReadSyntax(file, d))
             file.Commands.Add( CommandSyntax(d) );
 
          return file;
@@ -55,30 +59,30 @@ namespace Logic
       /// <param name="name">The group name</param>
       /// <returns></returns>
       /// <exception cref="Logic::InvalidValueException">Unknown group</exception>
-      CommandGroup  LegacySyntaxReader::LookupCommandGroup(const WCHAR* name)
+      CommandGroup  LegacySyntaxReader::LookupCommandGroup(const SyntaxFile& f, const wstring& name)
       {
-         for (int i = 0; i < COMMAND_GROUP_COUNT; i++) {
-            if (StrCmp(szCommandGroups[i], name) == 0)
-               return (CommandGroup)i;
-         }
+         // Lookup group
+         auto pair = f.Groups.find(name);
+         if (pair != f.Groups.end())
+            return pair->second;
 
          // Unrecognised group
-         throw InvalidValueException(HERE, GuiString(L"Unrecognised command group '%s' on line %d", name, LineNumber));
+         throw InvalidValueException(HERE, GuiString(L"Unrecognised command group '%s' on line %d", name.c_str(), LineNumber));
       }
 
       /// <summary>Resolve a parameter type from the name</summary>
       /// <param name="name">The parameter type name</param>
       /// <returns></returns>
       /// <exception cref="Logic::InvalidValueException">Unknown parameter type</exception>
-      ParameterType  LegacySyntaxReader::LookupParameterType(const WCHAR* name)
+      ParameterType  LegacySyntaxReader::LookupParameterType(const SyntaxFile& f, const wstring& name)
       {
-         for (int i = 0; i < PARAMETER_SYNTAX_COUNT; i++) {
-            if (StrCmp(szParameterSyntax[i], name) == 0)
-               return (ParameterType)i;
-         }
+         // Lookup type
+         auto pair = f.Types.find(name);
+         if (pair != f.Types.end())
+            return pair->second;
 
          // Unrecognised group
-         throw InvalidValueException(HERE, GuiString(L"Unrecognised parameter type '%s' on line %d", name, LineNumber) );
+         throw InvalidValueException(HERE, GuiString(L"Unrecognised parameter type '%s' on line %d", name.c_str(), LineNumber) );
       }
 
       /// <summary>Reads the next syntax block</summary>
@@ -86,7 +90,7 @@ namespace Logic
       /// <returns>true if successful, false on EOF</returns>
       /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
       /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
-      bool  LegacySyntaxReader::ReadSyntax(CommandSyntax::Declaration& dec)
+      bool  LegacySyntaxReader::ReadSyntax(const SyntaxFile& f, CommandSyntax::Declaration& dec)
       {
          wstring line;
 
@@ -96,7 +100,7 @@ namespace Logic
          // Group
          if (!ReadLine(line))
             return false;  // EOF Reached
-         dec.Group = LookupCommandGroup(line.c_str());
+         dec.Group = LookupCommandGroup(f, line);
 
          // Game versions
          RequireLine(line, L"compatibility flags");
@@ -124,7 +128,7 @@ namespace Logic
 
          // Params
          while (RequireLine(line, L"parameter") && line != END_BLOCK)
-            dec.Params.push_back( LookupParameterType(line.c_str()) );
+            dec.Params.push_back( LookupParameterType(f, line) );
 
          return true;
       }
