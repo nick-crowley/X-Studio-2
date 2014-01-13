@@ -78,24 +78,40 @@ namespace Logic
       void  SyntaxWriter::Write(const SyntaxFile& f)
       {
          map<ParameterType, wstring>  paramNames;
+         map<CommandGroup, wstring>   groupNames;
 
          // Header
          WriteInstruction(L"version='1.0' encoding='utf-8'");
          WriteComment(L"Written by X-Studio II");
          auto root = WriteRoot(L"syntax");
 
-         // Write parameters
-         auto paramSyntax = WriteElement(root, L"parameters");
-         for (const auto& pair : f.Types)
-         {
-            // Name/value
-            auto e = WriteElement(paramSyntax, L"param", pair.first);
-            WriteAttribute(e, L"value", (int)pair.second);
 
-            // Store for rev lookup
-            paramNames[pair.second] = pair.first;
+         // reverse group names lookup
+         for (const auto& pair : f.Groups)
+            groupNames[pair.second] = pair.first;
+
+         // Write groups
+         auto groupSyntax = WriteElement(root, L"groups");
+         for (const auto& pair : groupNames)
+         {  
+            auto e = WriteElement(groupSyntax, L"group", pair.second);  // Name
+            WriteAttribute(e, L"value", (int)pair.first);   // Value
          }
 
+
+         // reverse param syntax lookup
+         for (const auto& pair : f.Types)
+            paramNames[pair.second] = pair.first;
+
+         // Write parameters, ordered by type
+         auto paramSyntax = WriteElement(root, L"parameters");
+         for (const auto& pair : paramNames)
+         {  
+            auto e = WriteElement(paramSyntax, L"param", pair.second);  // Name
+            WriteAttribute(e, L"value", (int)pair.first);   // Value
+         }
+
+         
          // Write commands
          auto commandSyntax = WriteElement(root, L"commands");
          for (const auto& pair : f.Commands)
@@ -120,10 +136,10 @@ namespace Logic
             WriteAttribute(e, L"version", ver);
 
             // Properties
+            WriteElement(e, L"text", cmd.Text);
+            WriteElement(e, L"group", groupNames[cmd.Group]);
             WriteElement(e, L"type", cmd.Type == CommandType::Standard ? L"Standard" 
                                    : cmd.Type == CommandType::Auxiliary ? L"Auxiliary" : L"Macro");
-            WriteElement(e, L"text", cmd.Text);
-            WriteElement(e, L"group", L"TODO");
             WriteElement(e, L"url", cmd.URL);
             
             // Parameters

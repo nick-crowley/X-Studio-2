@@ -20,19 +20,19 @@ namespace Logic
       class SyntaxFile
       {
       public:
-         /// <summary></summary>
+         /// <summary>Maps names of parameter types to their ID</summary>
          class TypeCollection : public map<wstring,ParameterType>
          {
          public:
-            bool  Add(wstring& name, ParameterType type) { return insert(TypeCollection::value_type(name, type)).second; }
+            bool  Add(wstring& name, ParameterType type) { return insert(value_type(name, type)).second; }
          }; 
 
-         /*/// <summary>Command syntax collection, organised by ID</summary>
-         class SyntaxCollection : private multimap<UINT, CommandSyntax>
+         /// <summary>Maps names of command groups to their ID</summary>
+         class GroupCollection : public map<wstring,CommandGroup>
          {
          public:
-            bool  Add(CommandSyntax&& s) { insert(SyntaxCollection::value_type(s.ID, s)); return true; }
-         };*/
+            bool  Add(wstring& name, CommandGroup group) { return insert(value_type(name, group)).second; }
+         }; 
 
          // --------------------- CONSTRUCTION ----------------------
 
@@ -53,6 +53,7 @@ namespace Logic
 		   // -------------------- REPRESENTATION ---------------------
 
          SyntaxCollection  Commands;
+         GroupCollection   Groups;
          TypeCollection    Types;
 
       private:

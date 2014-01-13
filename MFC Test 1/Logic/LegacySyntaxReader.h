@@ -36,10 +36,10 @@ namespace Logic
          SyntaxFile   ReadFile();
 
       private:
-         CommandGroup   LookupCommandGroup(const WCHAR* name);
-         ParameterType  LookupParameterType(const WCHAR* name);
+         CommandGroup   LookupCommandGroup(const SyntaxFile& f, const wstring& name);
+         ParameterType  LookupParameterType(const SyntaxFile& f, const wstring& name);
 
-         bool  ReadSyntax(CommandSyntax::Declaration& dec);
+         bool  ReadSyntax(const SyntaxFile& f, CommandSyntax::Declaration& dec);
          bool  RequireLine(wstring& line, const WCHAR* help);
 
 		   // -------------------- REPRESENTATION ---------------------
