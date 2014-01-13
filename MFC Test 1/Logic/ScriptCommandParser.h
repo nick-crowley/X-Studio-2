@@ -10,7 +10,7 @@ namespace Logic
       namespace Compiler
       {
          /// <summary></summary>
-         class ScriptParser
+         class ScriptCommandParser
          {
             // ------------------------ TYPES --------------------------
          private:
@@ -18,11 +18,11 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptParser();
-            virtual ~ScriptParser();
+            ScriptCommandParser();
+            virtual ~ScriptCommandParser();
 
-            DEFAULT_COPY(ScriptParser);	// Default copy semantics
-            DEFAULT_MOVE(ScriptParser);	// Default move semantics
+            DEFAULT_COPY(ScriptCommandParser);	// Default copy semantics
+            DEFAULT_MOVE(ScriptCommandParser);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
 
