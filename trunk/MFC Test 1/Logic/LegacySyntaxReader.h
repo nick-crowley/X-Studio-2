@@ -26,6 +26,10 @@ namespace Logic
          NO_MOVE_ASSIGN(LegacySyntaxReader);
 
          // ------------------------ STATIC -------------------------
+      private:
+         static ParamSyntaxArray  GenerateParams(const wstring& syntax, const list<ParameterType>& params);
+         static wstring           GenerateSyntax(const wstring& syntax);
+         static CommandType       IdentifyType(const UINT id);
 
          // --------------------- PROPERTIES ------------------------
 			
