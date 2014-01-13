@@ -9,8 +9,8 @@ namespace Logic
    {
       namespace Compiler
       {
-         /// <summary>List of script tokens</summary>
-         typedef list<ScriptToken>  TokenList;
+         /// <summary>Vector of script tokens</summary>
+         typedef vector<ScriptToken> TokenArray;
 
          /// <summary></summary>
          class ScriptCommandLexer
@@ -29,7 +29,7 @@ namespace Logic
 
             // ------------------------ STATIC -------------------------
          private:
-            static TokenList Parse(const wstring& line);
+            static TokenArray Parse(const wstring& line);
 
             // --------------------- PROPERTIES ------------------------
 
@@ -40,7 +40,7 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            const TokenList  Tokens;
+            const TokenArray  Tokens;
 
          private:
          };

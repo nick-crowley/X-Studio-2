@@ -37,6 +37,8 @@ namespace Logic
             MatchCollection  matches;
             auto pos = Lexer.Tokens.begin();
 
+
+
             // Match alternatives
             MatchAssignmentCommand(pos, matches);
             MatchAssignmentExpression(pos, matches);
@@ -66,7 +68,8 @@ namespace Logic
          {
             CommandHash h(pos, Lexer.Tokens.end());
             
-            if (SyntaxLib.Contains(h))
+            // Lookup hash
+            if (SyntaxLib.Contains(h.Hash))
                m.push_back( CommandRule(SyntaxLib.Find(h), pos, Lexer.Tokens.end()) );
          }
          

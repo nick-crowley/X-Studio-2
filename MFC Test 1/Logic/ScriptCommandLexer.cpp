@@ -20,9 +20,9 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
 
-         TokenList ScriptCommandLexer::Parse(const wstring& line)
+         TokenArray ScriptCommandLexer::Parse(const wstring& line)
          {
-            return TokenList();
+            return TokenArray();
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------

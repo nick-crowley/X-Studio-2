@@ -13,9 +13,10 @@ namespace Logic
          /// <summary></summary>
          class ScriptCommandParser
          {
-            typedef vector<ScriptToken>::const_iterator  TokenIterator;
+            
+            typedef TokenArray::const_iterator  TokenIterator;
 
-            typedef vector<Match>   MatchCollection;
+            
 
             enum class Operator : UINT { Equals };
 
@@ -36,6 +37,70 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
 
                const TokenIterator Begin, End;
+            };
+
+            typedef vector<Match>   MatchCollection;
+
+            class CommandHash 
+            {
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               CommandHash(TokenIterator b, TokenIterator e) : Hash(GenerateHash(b,e)), Remainder(SeparateParams(b,e))
+               {}
+
+               // ------------------------ STATIC -------------------------
+            private:
+               static wstring  GenerateHash(TokenIterator begin, TokenIterator end) 
+               {
+                  wstring h;
+                  // Assemble text into hash
+                  for (TokenIterator it = begin; it != end; ++it)
+                     if (it->Type == TokenType::Text)
+                        h += it->Text;
+                  return h;
+               }
+
+               static TokenArray  SeparateParams(TokenIterator begin, TokenIterator end) 
+               {
+                  TokenArray arr;
+                  // Separate tokens
+                  for (TokenIterator it = begin; it != end; ++it)
+                     if (it->Type != TokenType::Text)
+                        arr.push_back(*it);
+                  return arr;
+               }
+
+               // ---------------------- ACCESSORS ------------------------	
+
+               bool  operator==(const CommandHash& r) { return Hash == r.Hash; }
+               bool  operator!=(const CommandHash& r) { return Hash != r.Hash; }
+
+               // ----------------------- MUTATORS ------------------------
+
+               // -------------------- REPRESENTATION ---------------------
+            public:
+               const wstring     Hash;
+               const TokenArray  Remainder;
+            };
+
+            class NoOperationRule : public Match
+            {
+            public:
+               NoOperationRule(TokenIterator end) : Match(end, end)
+               {}
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               ScriptCommand  GetCommand() const
+               {
+                  return ScriptCommand(SyntaxLib.Find(CMD_NOP), ParameterArray());
+               }
+
+               // ----------------------- MUTATORS ------------------------
+
+               // -------------------- REPRESENTATION ---------------------
+
+               Conditional  Conditional;
             };
 
             class ConditionalRule : public Match
@@ -61,7 +126,7 @@ namespace Logic
             class CommandRule : public Match
             {
             public:
-               CommandRule(CommandSyntax s, TokenIterator b, TokenIterator e) : Match(b,e), Syntax(s)
+               CommandRule(CommandSyntax s, TokenArray tok, TokenIterator b, TokenIterator e) : Match(b,e), Syntax(s), Tokens(tok)
                {}
 
                // ---------------------- ACCESSORS ------------------------			
@@ -71,6 +136,7 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
 
                CommandSyntax  Syntax;
+               TokenArray     Tokens;
             };
 
             class ExpressionRule : public CommandRule
