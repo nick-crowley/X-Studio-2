@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="yes"?>
+﻿<?xml version="1.0" standalone="yes"?>
 <?xml-stylesheet href="x2script.xsl" type="text/xsl"?>
 <!-- Generated using X-Studio -->
 <script>
@@ -11403,7 +11403,7 @@
 				<sval type="array" size="3">
 					<sval type="int" val="0" />
 					<sval type="int" val="1" />
-					<sval type="string" val="SCRIPT NAME: ENSLAVE PASSENGERS" />
+					<sval type="string" val="SCRIPT NAME: ENSLAVE АБВДЖИМПСЛ PASSENGERS" />
 				</sval>
 				<sval type="array" size="3">
 					<sval type="int" val="0" />

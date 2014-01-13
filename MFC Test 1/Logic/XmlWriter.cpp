@@ -11,12 +11,12 @@ namespace Logic
       /// <summary>Stylesheet used to indent xml created</summary>
       const CHAR* szStyleSheet = "<?xml version='1.0' encoding='utf-8'?> \r\n"
                                  "<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'> \r\n"
-                                       "<xsl:output method='xml' indent='yes'/>  \r\n"
-                                       "<xsl:template match='@* | node()'> \r\n"
-                                          "<xsl:copy> \r\n"
-                                             "<xsl:apply-templates select='@* | node()'/> \r\n"
-                                          "</xsl:copy>  \r\n"
-                                       "</xsl:template> \r\n"
+                                 "   <xsl:output method='xml' indent='yes'/>  \r\n"
+                                 "      <xsl:template match='@* | node()'> \r\n"
+                                 "         <xsl:copy> \r\n"
+                                 "            <xsl:apply-templates select='@* | node()'/> \r\n"
+                                 "         </xsl:copy> \r\n"
+                                 "      </xsl:template> \r\n"
                                  "</xsl:stylesheet> \r\n";
 
       // -------------------------------- CONSTRUCTION --------------------------------
@@ -66,6 +66,7 @@ namespace Logic
          {
             // Load style sheet
             XmlDocumentPtr style = XmlDocumentPtr(__uuidof(XML::DOMDocument60));
+            style->preserveWhiteSpace = VARIANT_TRUE;
             style->loadXML(szStyleSheet);
 
             // Perform transformation and convert to UTF8
@@ -176,6 +177,20 @@ namespace Logic
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
          }
+      }
+
+      /// <summary>Writes an element with text</summary>
+      /// <param name="node">The element parent.</param>
+      /// <param name="name">The element name.</param>
+      /// <param name="name">The text</param>
+      /// <returns>New element</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& node, const wstring& name, const wstring& txt)
+      {
+         auto e = WriteElement(node, name);
+         WriteText(e, txt);
+         return e;
       }
 
       /// <summary>Writes a processing instruction.</summary>

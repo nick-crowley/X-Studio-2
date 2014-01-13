@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "XmlWriter.h"
+#include "SyntaxFile.h"
 
 namespace Logic
 {
@@ -19,11 +20,16 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
 
+         int  GetSuperScript(const CommandSyntax& cmd, const ParameterSyntax& p);
+
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			
 
 		   // ----------------------- MUTATORS ------------------------
+
+         void  Close();
+         void  Write(const SyntaxFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
 

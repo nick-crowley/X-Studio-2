@@ -28,6 +28,7 @@ namespace Logic
       static void  Test_FileSystem();
       static void  Test_GZip();
       static void  Test_StringLibrary();
+      static void  Test_SyntaxWriter();
       static void  Test_XmlWriter();
 
       // --------------------- PROPERTIES ------------------------
