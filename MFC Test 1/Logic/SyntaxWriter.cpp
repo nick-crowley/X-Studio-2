@@ -51,7 +51,7 @@ namespace Logic
          for (const auto& pair : groupNames)
          {  
             auto e = WriteElement(groupSyntax, L"group", pair.second);  // Name
-            WriteAttribute(e, L"value", (int)pair.first);   // Value
+            WriteAttribute(e, L"id", (int)pair.first);   // Value
          }
 
 
@@ -60,10 +60,10 @@ namespace Logic
             paramNames[pair.second] = pair.first;
 
          // Write parameters, ordered by type
-         auto paramSyntax = WriteElement(root, L"parameters");
+         auto paramSyntax = WriteElement(root, L"types");
          for (const auto& pair : paramNames)
          {  
-            auto e = WriteElement(paramSyntax, L"param", pair.second);  // Name
+            auto e = WriteElement(paramSyntax, L"type", pair.second);  // Name
             WriteAttribute(e, L"value", (int)pair.first);   // Value
          }
 

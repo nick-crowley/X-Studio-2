@@ -36,38 +36,42 @@ namespace Logic
       ParamSyntaxArray  LegacySyntaxReader::GenerateParams(UINT id, const wstring& syntax, const list<ParameterType>& params)
       {
          ParamSyntaxArray  output;
-         map<int,int>      indexMap;   // Key=physical, Value=display
+         vector<int>       displayIndicies(params.size()),
+                           ordinals(params.size());
          UINT              displayIndex = 0,
-                           physicalIndex = 0,
-                           ordinal = 0;
+                           index = 0;
          
          // Iterate thru '$n' syntax parameter markers
          for (auto it = find(syntax.begin(), syntax.end(), L'$'); it != syntax.end(); it = find(++it, syntax.end(), L'$'))
          {
-            // Convert physical index char to int. Calculate/Store display index
-            physicalIndex = *(it+1)-48;               
-            indexMap[physicalIndex] = displayIndex++;  
+            // Convert number character -> integer
+            index = *(it+1)-48;
+
+            // Store display index
+            displayIndicies[index] = displayIndex++;  
 
             // Check for superscript ordinal indicator
             if (it+2 < syntax.end())
                switch (*(it+2))
                {
-               case L'º': case 'o':  ordinal = 1;  break;
-               case L'¹': case 'x':  ordinal = 2;  break;
-               case L'²': case 'y':  ordinal = 3;  break;
-               case L'³': case 'z':  ordinal = 4;  break;
-               case L'ª': case 'a':  ordinal = 5;  break;
+               case L'º': case 'o':  ordinals[index] = 1;  break;
+               case L'¹': case 'x':  ordinals[index] = 2;  break;
+               case L'²': case 'y':  ordinals[index] = 3;  break;
+               case L'³': case 'z':  ordinals[index] = 4;  break;
+               case L'ª': case 'a':  ordinals[index] = 5;  break;
                }
+            else
+               ordinals[index] = 0;
          }
 
          // Generate parameters
-         physicalIndex = 0;
+         index = 0;
          for (auto type : params)
          {
-            ParameterSyntax::Declaration d(type, physicalIndex, indexMap[physicalIndex], ordinal, IdentifyUsage(id, physicalIndex));
+            ParameterSyntax::Declaration d(type, index, displayIndicies[index], ordinals[index], IdentifyUsage(id, index));
             // Store new syntax
             output.push_back( ParameterSyntax(d) );
-            physicalIndex++;
+            index++;
          }
 
          return output;
