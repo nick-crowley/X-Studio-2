@@ -102,6 +102,9 @@ namespace Logic
          SCRIPT_REFERENCE_TYPE          = 62
       };
 
+      /// <summary>Defines the purpose of the parameter</summary>
+      enum class ParameterUsage { None, PageID, StringID, ScriptName };
+
       /// <summary></summary>
       class ParameterSyntax
       {
@@ -113,17 +116,16 @@ namespace Logic
             //Declaration() : PhysicalIndex(0), DisplayIndex(0), Ordinal(0), PageID(false), StringID(false), Optional(false) {}
 
             /// <summary>Creates a declaration from legacy syntax components</summary>
-            Declaration(ParameterType t, UINT physical, UINT display, UINT ord) 
-               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), PageID(false), StringID(false), Optional(false) {}
+            Declaration(ParameterType t, UINT physical, UINT display, UINT ord, ParameterUsage use) 
+               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), Usage(use)
+            {}
 
             ParameterType   Type;
             UINT            PhysicalIndex,
                             DisplayIndex,
                             Ordinal;
-            bool            PageID,
-                            StringID,
-                            ScriptName,
-                            Optional;
+            ParameterUsage  Usage;
+            //bool            Optional;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -168,10 +170,7 @@ namespace Logic
          const UINT           DisplayIndex,
                               PhysicalIndex,
                               Ordinal;
-         const bool           PageID,
-                              StringID,
-                              ScriptName,
-                              Optional;
+         const ParameterUsage Usage;
       };
 
       /// <summary>Vector of parameter syntax</summary>
