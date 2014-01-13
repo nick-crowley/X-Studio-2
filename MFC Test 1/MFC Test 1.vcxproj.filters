@@ -183,9 +183,6 @@
     <ClInclude Include="Logic\ScriptFile.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\ScriptReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\ScriptParameter.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
@@ -215,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="Logic\SyntaxWriter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +317,6 @@
     <ClCompile Include="Logic\LegacySyntaxReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ScriptFile.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
     </ClCompile>
@@ -354,6 +351,9 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\SyntaxWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>

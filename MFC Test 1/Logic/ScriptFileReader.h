@@ -9,7 +9,7 @@ namespace Logic
    {
       
       /// <summary>Reader for MSCI scripts</summary>
-      class ScriptReader : private XmlReader
+      class ScriptFileReader : private XmlReader
       {
       private:
          /// <summary>Base class for MSCI script command readers</summary>
@@ -17,7 +17,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          protected:
-            ScriptCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : Reader(r), Script(s), Command(cmd), NodeIndex(0) {}
+            ScriptCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : Reader(r), Script(s), Command(cmd), NodeIndex(0) {}
          
             // ----------------------- MUTATORS ------------------------
 
@@ -40,7 +40,7 @@ namespace Logic
 
             // -------------------- REPRESENTATION ---------------------
          protected:
-            ScriptReader&         Reader;
+            ScriptFileReader&         Reader;
             ScriptFile&           Script;
             XmlNodePtr&           Command;
 
@@ -54,7 +54,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            AuxiliaryCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
+            AuxiliaryCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
 
             // ----------------------- MUTATORS ------------------------
 
@@ -67,7 +67,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            CommentedCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
+            CommentedCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
 
             // ----------------------- MUTATORS ------------------------
 
@@ -80,7 +80,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ScriptCallCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
+            ScriptCallCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
 
             // ----------------------- MUTATORS ------------------------
 
@@ -93,7 +93,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ExpressionCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
+            ExpressionCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
 
             // ----------------------- MUTATORS ------------------------
 
@@ -106,7 +106,7 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            StandardCommandReader(ScriptReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
+            StandardCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : ScriptCommandReader(r, s, cmd) {}
 
             // ----------------------- MUTATORS ------------------------
 
@@ -122,8 +122,8 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         ScriptReader(StreamPtr in);
-         virtual ~ScriptReader();
+         ScriptFileReader(StreamPtr in);
+         virtual ~ScriptFileReader();
 
          // ------------------------ STATIC -------------------------
 
