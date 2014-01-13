@@ -8,7 +8,7 @@
 #include "XFileSystem.h"
 #include "LegacySyntaxReader.h"
 #include "SyntaxLibrary.h"
-#include "ScriptReader.h"
+#include "ScriptFileReader.h"
 #include "StringLibrary.h"
 #include "XmlWriter.h"
 #include "SyntaxWriter.h"
@@ -45,7 +45,7 @@ namespace Logic
 
       // Parse script
       StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-      return ScriptReader(fs2).ReadFile();
+      return ScriptFileReader(fs2).ReadFile();
    }
 
    void DebugTests::Test_CommandSyntax()
@@ -64,7 +64,7 @@ namespace Logic
          // Test script reader
          path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto script = ScriptReader(fs2).ReadFile();
+         auto script = ScriptFileReader(fs2).ReadFile();
       }
       catch (ExceptionBase&  e)
       {

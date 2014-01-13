@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptReader.h"
+#include "ScriptFileReader.h"
 #include <algorithm>
 
 namespace Logic
@@ -13,12 +13,12 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      ScriptReader::ScriptReader(StreamPtr in) : XmlReader(in)
+      ScriptFileReader::ScriptFileReader(StreamPtr in) : XmlReader(in)
       {
       }
 
       /// <summary>Closes the input stream</summary>
-      ScriptReader::~ScriptReader()
+      ScriptFileReader::~ScriptFileReader()
       {
       }
 
@@ -32,7 +32,7 @@ namespace Logic
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidDataException">Invalid language ID</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      ScriptFile ScriptReader::ReadFile()
+      ScriptFile ScriptFileReader::ReadFile()
       {
          ScriptFile file;
 
@@ -80,7 +80,7 @@ namespace Logic
       /// <param name="type">The type of command</param>
       /// <param name="cmdBranch">The branch containing the command</param>
       /// <returns>Varies</returns>
-      ScriptReader::ReaderPtr  ScriptReader::GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch)
+      ScriptFileReader::ReaderPtr  ScriptFileReader::GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch)
       {
          // Verify node is an array
          int size = ReadArray(cmdBranch);
@@ -110,7 +110,7 @@ namespace Logic
       /// <summary>Reads the array size from an sval node</summary>
       /// <param name="node">The node</param>
       /// <returns>Size of the array</returns>
-      int  ScriptReader::ReadArray(XmlNodePtr& node)
+      int  ScriptFileReader::ReadArray(XmlNodePtr& node)
       {
          // Ensure node is script value
          ReadElement(node, L"sval");
@@ -132,7 +132,7 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="stdBranch">The standard commands branch.</param>
       /// <param name="auxBranch">The auxiliary commands branch.</param>
-      void  ScriptReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch)
+      void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch)
       {
          vector<ScriptCommand>  std;
          list<ScriptCommand>    aux; 
@@ -169,7 +169,7 @@ namespace Logic
       /// <summary>Reads the engine version</summary>
       /// <param name="node">The sval node.</param>
       /// <returns>Equivilent game version</returns>
-      GameVersion ScriptReader::ReadEngineVersion(XmlNodePtr& node)
+      GameVersion ScriptFileReader::ReadEngineVersion(XmlNodePtr& node)
       {
          int val = ReadInt(node);
 
@@ -180,7 +180,7 @@ namespace Logic
       /// <summary>Reads an integer value from a sval node</summary>
       /// <param name="node">The sval node</param>
       /// <returns>Integer value</returns>
-      int  ScriptReader::ReadInt(XmlNodePtr& node)
+      int  ScriptFileReader::ReadInt(XmlNodePtr& node)
       {
          // Ensure node is script value
          ReadElement(node, L"sval");
@@ -196,7 +196,7 @@ namespace Logic
       /// <summary>Reads the string value from a sval node</summary>
       /// <param name="node">The node.</param>
       /// <returns>String value</returns>
-      wstring  ScriptReader::ReadString(XmlNodePtr& node)
+      wstring  ScriptFileReader::ReadString(XmlNodePtr& node)
       {
          // Ensure node is script value
          ReadElement(node, L"sval");
@@ -212,7 +212,7 @@ namespace Logic
       /// <summary>Reads string or int value from a script value node</summary>
       /// <param name="node">The node.</param>
       /// <returns>String/Int value</returns>
-      ParameterValue  ScriptReader::ReadValue(XmlNodePtr& node)
+      ParameterValue  ScriptFileReader::ReadValue(XmlNodePtr& node)
       {
          // Ensure node is script value
          ReadElement(node, L"sval");
@@ -234,7 +234,7 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="varBranch">The variable branch.</param>
       /// <param name="argBranch">The argument branch.</param>
-      void  ScriptReader::ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch)
+      void  ScriptFileReader::ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch)
       {
          wstring name;
 

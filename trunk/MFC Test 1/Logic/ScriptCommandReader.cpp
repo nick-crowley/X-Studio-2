@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptReader.h"
+#include "ScriptFileReader.h"
 #include "SyntaxLibrary.h" 
 
 namespace Logic
@@ -14,7 +14,7 @@ namespace Logic
 
       /// <summary>Reads an auxiliary command</summary>
       /// <returns></returns>
-      ScriptCommand  ScriptReader::AuxiliaryCommandReader::ReadCommand()
+      ScriptCommand  ScriptFileReader::AuxiliaryCommandReader::ReadCommand()
       {
          ParameterArray params;
          wstring        str;
@@ -36,14 +36,14 @@ namespace Logic
 
       /// <summary>Reads a commented command</summary>
       /// <returns></returns>
-      ScriptCommand  ScriptReader::CommentedCommandReader::ReadCommand()
+      ScriptCommand  ScriptFileReader::CommentedCommandReader::ReadCommand()
       {
          throw NotImplementedException(HERE, L"Commented command reader not implemented");
       }
 
       /// <summary>Reads an expression command</summary>
       /// <returns></returns>
-      ScriptCommand  ScriptReader::ExpressionCommandReader::ReadCommand()
+      ScriptCommand  ScriptFileReader::ExpressionCommandReader::ReadCommand()
       {
          ParameterArray params, postfix;
          int count;
@@ -75,7 +75,7 @@ namespace Logic
 
       /// <summary>Reads a script-call command</summary>
       /// <returns></returns>
-      ScriptCommand  ScriptReader::ScriptCallCommandReader::ReadCommand()
+      ScriptCommand  ScriptFileReader::ScriptCallCommandReader::ReadCommand()
       {
          ParameterArray params;
 
@@ -98,7 +98,7 @@ namespace Logic
 
       /// <summary>Reads a standard command</summary>
       /// <returns></returns>
-      ScriptCommand  ScriptReader::StandardCommandReader::ReadCommand()
+      ScriptCommand  ScriptFileReader::StandardCommandReader::ReadCommand()
       {
          ParameterArray params;
 
