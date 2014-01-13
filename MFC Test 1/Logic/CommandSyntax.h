@@ -9,26 +9,29 @@ namespace Logic
       /// <summary>Defines the display group of a script command</summary>
       enum class CommandGroup : UINT;
 
+      /// <summary>Defines how script commands are stored</summary>
       enum class CommandType { Standard, Auxiliary, Macro };
       
       /// <summary>Defines the syntax of a script command</summary>
       class CommandSyntax
       {
       public:
-         typedef vector<ParameterSyntax>  SyntaxArray;
-
          /// <summary>Declares command syntax within an external file</summary>
          class Declaration
          {
          public:
-            Declaration() : Group(), Versions(0), ID(0) {}
+            Declaration() { clear(); }
 
-            CommandGroup        Group;
-            UINT                Versions, 
-                                ID;
-            wstring             URL,
-                                Syntax;
-            list<ParameterType> Params;
+            /// <summary>Clears contents</summary>
+            void clear() { URL.clear(); Syntax.clear(); Params.clear(); Versions = ID = 0; }
+
+            CommandGroup     Group;
+            CommandType      Type;
+            UINT             Versions, 
+                             ID;
+            wstring          URL,
+                             Syntax;
+            ParamSyntaxArray Params;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -39,10 +42,6 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
 
-      private:
-         static SyntaxArray  ParseParams(const wstring& syntax, const list<ParameterType>& params);
-         static CommandType  IdentifyType(const UINT id);
-
          // --------------------- PROPERTIES ------------------------
 		
       public:
@@ -51,6 +50,7 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
       public:
+         /// <summary>Query whether command is a keyword like break, continue etc.</summary>
          bool  IsKeyword() const;
 
 		   // ----------------------- MUTATORS ------------------------
@@ -58,13 +58,13 @@ namespace Logic
 		   // -------------------- REPRESENTATION ---------------------
 
       public:
-         const CommandGroup   Group;
-         const CommandType    Type;
-         const SyntaxArray    Parameters;
-         const UINT           Versions,
-                              ID;
-         const wstring        Text,
-                              URL;
+         const CommandGroup      Group;
+         const CommandType       Type;
+         const ParamSyntaxArray  Parameters;
+         const UINT              Versions,
+                                 ID;
+         const wstring           Text,
+                                 URL;
       };
 
 

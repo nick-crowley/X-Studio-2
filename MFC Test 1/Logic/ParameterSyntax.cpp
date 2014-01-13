@@ -8,8 +8,8 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       ParameterSyntax::ParameterSyntax(Declaration& d)
-         : Type(d.Type), PhysicalIndex(d.PhysicalIndex), DisplayIndex(d.DisplayIndex), Optional(d.Optional),
-           PageID(d.PageID), StringID(d.StringID), ScriptName(d.ScriptName)
+         : Type(d.Type), PhysicalIndex(d.PhysicalIndex), DisplayIndex(d.DisplayIndex), Ordinal(d.Ordinal),
+           Optional(d.Optional), PageID(d.PageID), StringID(d.StringID), ScriptName(d.ScriptName)
       {
       }
 

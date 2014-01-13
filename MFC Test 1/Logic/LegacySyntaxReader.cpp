@@ -26,13 +26,106 @@ namespace Logic
       {
       }
 
+      // -------------------------------- STATIC METHODS -------------------------------
+
+      /// <summary>Generates a parameter lists from a legacy parameter collection</summary>
+      /// <param name="syntax">The legacy format command syntax string</param>
+      /// <param name="params">Parameter types in physical index order</param>
+      /// <returns>New format Parameter array</returns>
+      ParamSyntaxArray  LegacySyntaxReader::GenerateParams(const wstring& syntax, const list<ParameterType>& params)
+      {
+         ParamSyntaxArray  output;
+         map<int,int>      indexMap;   // Key=physical, Value=display
+         UINT              displayIndex = 0,
+                           physicalIndex = 0,
+                           ordinal = 0;
+         
+         // Iterate thru '$n' syntax parameter markers
+         for (auto it = find(syntax.begin(), syntax.end(), L'$'); it != syntax.end(); it = find(++it, syntax.end(), L'$'))
+         {
+            // Convert physical index char to int. Calculate/Store display index
+            physicalIndex = *(it+1)-48;               
+            indexMap[physicalIndex] = displayIndex++;  
+
+            // Check for superscript ordinal indicator
+            if (it+2 < syntax.end())
+               switch (*(it+2))
+               {
+               case L'º': case 'o':  ordinal = 1;  break;
+               case L'¹': case 'x':  ordinal = 2;  break;
+               case L'²': case 'y':  ordinal = 3;  break;
+               case L'³': case 'z':  ordinal = 4;  break;
+               case L'ª': case 'a':  ordinal = 5;  break;
+               }
+         }
+
+         // Generate parameters
+         physicalIndex = 0;
+         for (auto type : params)
+         {
+            ParameterSyntax::Declaration d(type, physicalIndex, indexMap[physicalIndex], ordinal);
+            output.push_back( ParameterSyntax(d) );
+            physicalIndex++;
+         }
+
+         return output;
+      }
+
+      /// <summary>Generates the new format syntax string from the old</summary>
+      /// <param name="syntax">The old syntax text</param>
+      /// <returns></returns>
+      wstring LegacySyntaxReader::GenerateSyntax(const wstring& syntax)
+      {
+         wstring output(syntax);
+
+         // Iterate thru '$n' syntax parameter markers
+         for (auto it = find(output.begin(), output.end(), L'$'); it != output.end(); it = find(++it, output.end(), L'$'))
+         {
+            // Strip superscript ordinal indicator, if any
+            if (it+2 < output.end())
+               switch (*(it+2))
+               {
+               case L'º': case 'o':  
+               case L'¹': case 'x':  
+               case L'²': case 'y':  
+               case L'³': case 'z':  
+               case L'ª': case 'a':  
+                  output.erase(it+2);
+                  break;
+               }
+         }
+
+         return output;
+      }
+      
+      /// <summary>Identifies command type from the ID</summary>
+      /// <param name="id">Command ID</param>
+      /// <returns>Standard/Auxiliary</returns>
+      CommandType   LegacySyntaxReader::IdentifyType(const UINT id)
+      {
+         switch (id)
+         {
+         case CMD_COMMENT:
+         case CMD_COMMAND_COMMENT:
+         case CMD_NOP:
+         case CMD_END:
+         case CMD_ELSE:
+         case CMD_BREAK:
+         case CMD_CONTINUE:
+            return CommandType::Auxiliary;
+
+         default:
+            return CommandType::Standard;
+         }
+
+      }
+      
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire syntax file</summary>
       /// <returns></returns>
       SyntaxFile   LegacySyntaxReader::ReadFile()
       {
-         CommandSyntax::Declaration  d;
          SyntaxFile   file;
          
          // Populate types (hard-coded)
@@ -45,6 +138,7 @@ namespace Logic
             file.Groups[szCommandGroups[i]] = (CommandGroup)i;
 
          // Read syntax blocks
+         CommandSyntax::Declaration  d;
          while (ReadSyntax(file, d))
             file.Commands.Add( CommandSyntax(d) );
 
@@ -92,10 +186,11 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
       bool  LegacySyntaxReader::ReadSyntax(const SyntaxFile& f, CommandSyntax::Declaration& dec)
       {
+         list<ParameterType> params;
          wstring line;
 
          // Init
-         dec = CommandSyntax::Declaration();
+         dec.clear();
 
          // Group
          if (!ReadLine(line))
@@ -118,18 +213,25 @@ namespace Logic
          RequireLine(line, L"ID");
          dec.ID = _wtoi(line.c_str());
 
+         // Type
+         dec.Type = (dec.Group == CommandGroup::MACRO ? CommandType::Macro : IdentifyType(dec.ID));
+
          // URL
          RequireLine(dec.URL, L"help URL");
          if (dec.URL == L"NONE")
             dec.URL.clear();
 
          // Syntax
-         RequireLine(dec.Syntax, L"syntax text");
+         wstring oldSyntax;
+         RequireLine(oldSyntax, L"syntax text");
+         dec.Syntax = GenerateSyntax(oldSyntax);
 
-         // Params
+         // Read Parameter types
          while (RequireLine(line, L"parameter") && line != END_BLOCK)
-            dec.Params.push_back( LookupParameterType(f, line) );
-
+            params.push_back( LookupParameterType(f, line) );
+         
+         // Convert old parameter types into new format
+         dec.Params = GenerateParams(oldSyntax, params);
          return true;
       }
 

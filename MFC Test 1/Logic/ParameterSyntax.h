@@ -109,14 +109,17 @@ namespace Logic
          class Declaration
          {
          public:
-            Declaration() 
-               : PhysicalIndex(0), DisplayIndex(0), PageID(false), StringID(false), Optional(false) {}
-            Declaration(ParameterType t, UINT physical, UINT display) 
-               : Type(t), PhysicalIndex(physical), DisplayIndex(display), PageID(false), StringID(false), Optional(false) {}
+            /// <summary>Creates a declaration use by modern format reader</summary>
+            //Declaration() : PhysicalIndex(0), DisplayIndex(0), Ordinal(0), PageID(false), StringID(false), Optional(false) {}
+
+            /// <summary>Creates a declaration from legacy syntax components</summary>
+            Declaration(ParameterType t, UINT physical, UINT display, UINT ord) 
+               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), PageID(false), StringID(false), Optional(false) {}
 
             ParameterType   Type;
             UINT            PhysicalIndex,
-                            DisplayIndex;
+                            DisplayIndex,
+                            Ordinal;
             bool            PageID,
                             StringID,
                             ScriptName,
@@ -133,11 +136,15 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 			
+         /// <summary>Determines whether parameter is reference object</summary>
+         /// <returns></returns>
          bool  IsRefObj() const
          {
             return Type == ParameterType::REFERENCE_OBJECT;
          }
 
+         /// <summary>Determines whether parameter is return value</summary>
+         /// <returns></returns>
          bool  IsRetVar() const
          {
             switch (Type)
@@ -159,15 +166,16 @@ namespace Logic
       public:
          const ParameterType  Type;
          const UINT           DisplayIndex,
-                              PhysicalIndex;
+                              PhysicalIndex,
+                              Ordinal;
          const bool           PageID,
                               StringID,
                               ScriptName,
                               Optional;
       };
 
-
-      
+      /// <summary>Vector of parameter syntax</summary>
+      typedef vector<ParameterSyntax>  ParamSyntaxArray;
       
 
       // Define helpers for iterating through syntax
