@@ -20,8 +20,6 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
 
-         int  GetSuperScript(const CommandSyntax& cmd, const ParameterSyntax& p);
-
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			

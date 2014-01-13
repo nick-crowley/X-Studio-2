@@ -30,6 +30,7 @@ namespace Logic
          static ParamSyntaxArray  GenerateParams(const wstring& syntax, const list<ParameterType>& params);
          static wstring           GenerateSyntax(const wstring& syntax);
          static CommandType       IdentifyType(const UINT id);
+         static ParameterUsage    IdentifyUsage(UINT id, UINT index);
 
          // --------------------- PROPERTIES ------------------------
 			

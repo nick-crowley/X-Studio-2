@@ -21,50 +21,6 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
-      /// <summary>Gets the super script (if any) of the parameter</summary>
-      /// <param name="cmd">The command syntax</param>
-      /// <param name="p">Parameter syntax</param>
-      /// <returns>Index 0 to 5 if any, otherwise -1</returns>
-      int SyntaxWriter::GetSuperScript(const CommandSyntax& cmd, const ParameterSyntax& p)
-      {
-         auto mark = StringResource::Format(L"$%d", p.PhysicalIndex);
-
-         // Find $0 marker
-         if (cmd.Text.find(mark) != wstring::npos)
-         {
-            // Jump to the letter (if any) following the number
-            auto it = cmd.Text.begin() + cmd.Text.find(mark) + 2;
-
-            if (it != cmd.Text.end())
-               switch (*it)
-               {
-               /*case L'º': case L'¹': case L'²': case L'³': case L'ª':
-               case 'o': case 'x': case 'y': case 'z': case 'a':*/
-               case L'º': 
-               case 'o':  
-                  return 0;
-
-               case L'¹': 
-               case 'x':  
-                  return 1;
-
-               case L'²': 
-               case 'y': 
-                  return 2;
-
-               case L'³': 
-               case 'z': 
-                  return 3;
-
-               case L'ª':
-               case 'a':
-                  return 4;
-               }
-         }
-
-         return -1;
-      }
-
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Writes the syntax file to the output stream</summary>
@@ -147,24 +103,21 @@ namespace Logic
             auto cmdParams = WriteElement(e, L"params");
             for (auto p : cmd.Parameters)
             {
-               // Type/Index
+               // Type
                e = WriteElement(cmdParams, L"param", paramNames[p.Type]);
+
+               // Display index/ordinal
                WriteAttribute(e, L"displayIndex", p.DisplayIndex);
+               if (p.Ordinal != 0)
+                  WriteAttribute(e, L"ordinal", p.Ordinal);
 
-               // Superscript
-               int superscript = GetSuperScript(cmd, p);
-               if (superscript != -1)
-                  WriteAttribute(e, L"superscript", superscript);
-
-               // Extra properties
-               if (p.ScriptName)
-                  WriteAttribute(e, L"scriptname", L"true");
-               if (p.PageID)
-                  WriteAttribute(e, L"pageid", L"true");
-               if (p.StringID)
-                  WriteAttribute(e, L"stringid", L"true");
-               if (p.Optional)
-                  WriteAttribute(e, L"optional", L"true");
+               // Usage
+               switch (p.Usage) 
+               {
+               case ParameterUsage::ScriptName:  WriteAttribute(e, L"usage", L"scriptname");  break;
+               case ParameterUsage::PageID:      WriteAttribute(e, L"usage", L"pageid");  break;
+               case ParameterUsage::StringID:    WriteAttribute(e, L"usage", L"stringid");  break;
+               }
             }
          }
       }
