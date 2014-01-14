@@ -35,7 +35,11 @@ namespace Logic
             auto tree = MatchExpression(InputBegin);
 
             // DEBUG: Print
-            Console::WriteLn( tree->debugPrint(Traversal::InOrder) );
+            Console::WriteLn(L"Output: %s", tree->debugPrint().c_str() );
+            //Console::WriteLn(L"PreOrder (Not Used): %s", tree->printTraversal(Traversal::PreOrder).c_str());
+            Console::WriteLn(L"InOrder (Infix): %s", tree->printTraversal(Traversal::InOrder).c_str());
+            Console::WriteLn(L"PostOrder (Postfix): %s", tree->printTraversal(Traversal::PostOrder).c_str());
+            Console::WriteLn(L"");
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -76,72 +80,70 @@ namespace Logic
 
          ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchSum(TokenIterator& pos)
          {
-            BinaryExpression* sum = nullptr;
-            Expression *left = nullptr;
+            Expression* sum = nullptr;
             ScriptToken* op = nullptr;
 
             // Rule: Sum = Product (('+' / '-') Product)*
-
-            // Match: product
-            if (left = MatchProduct(pos))
-               sum = new BinaryExpression(left);
-            else
-               throw "Missing product";
-            
-            // Match: operator  [nothrow]
-            while ((op = MatchOperator(pos, L"+")) || (op = MatchOperator(pos, L"-")))
+            try
             {
-               try
-               {  // Match: Product  (may throw)
-                  if (Expression* right = MatchProduct(++pos))   // Consume operator
-                     sum->Add(new RightHandSide(*op, right));
-                  else 
-                     throw "Operator but no product";
-               }
-               catch (...)
-               {  // Error: Cleanup 
-                  delete sum;
-                  throw;
-               }
-            }
+               // Match: product   (may throw)
+               if ((sum = MatchProduct(pos)) == nullptr)
+                  throw "Missing unary";
 
-            // Success:
-            return sum;
+               // Match: operator  [nothrow]
+               while ((op = MatchOperator(pos, L"+")) || (op = MatchOperator(pos, L"-")))
+               {
+                  // Match: product  (may throw)
+                  if (Expression* right = MatchProduct(++pos))  // Adv. Consume operator
+                     sum = new BinaryExpression(*op, sum, right);
+                  else 
+                     throw "Operator but no unary";
+               }
+
+               // Success:
+               return sum;
+            }
+            catch (...)
+            {  
+               // Cleanup
+               if (sum != nullptr)
+                  delete sum;
+               throw;
+            }
          }
 
          ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchProduct(TokenIterator& pos)
          {
-            BinaryExpression* product = nullptr;
-            Expression* left = nullptr;
+            Expression* product = nullptr;
             ScriptToken* op = nullptr;
 
             // Rule: Sum = Unary (('+' / '-') Unary)*
-
-            // Match: Unary   (may throw)
-            if (left = MatchUnary(pos))
-               product = new BinaryExpression(left);
-            else
-               throw "Missing unary";
-            
-            // Match: operator  [nothrow]
-            while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")))
+            try
             {
-               try
-               {  // Match: Unary  (may throw)
+               // Match: Unary   (may throw)
+               if ((product = MatchUnary(pos)) == nullptr)
+                  throw "Missing unary";
+
+               // Match: operator  [nothrow]
+               while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")))
+               {
+                  // Match: Unary  (may throw)
                   if (Expression* right = MatchUnary(++pos))  // Adv. Consume operator
-                     product->Add(new RightHandSide(*op, right));
+                     product = new BinaryExpression(*op, product, right);
                   else 
                      throw "Operator but no unary";
                }
-               catch (...)
-               {  // Error: Cleanup
-                  delete product;
-                  throw;
-               }
-            }
 
-            // Success:
-            return product;
+               // Success:
+               return product;
+            }
+            catch (...)
+            {  
+               // Cleanup
+               if (product != nullptr)
+                  delete product;
+               throw;
+            }
          }
 
          ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchUnary(TokenIterator& pos)
@@ -160,11 +162,11 @@ namespace Logic
             }
 
             // Match: Value  (may throw)
-            if (value = MatchValue(pos))
-               return new BinaryExpression(value);
+            if ((value = MatchValue(pos)) == nullptr)
+               throw "Missing value";
 
-            // Failed:
-            throw "Missing value";
+            // Success
+            return value;
          }
 
          
