@@ -31,15 +31,22 @@ namespace Logic
                Console::Write(L"%s ", it->Text.c_str());
             Console::WriteLn(L"");
                          
-            // Produce parse tree
-            auto tree = MatchExpression(InputBegin);
+            try
+            {
+               // Produce parse tree
+               auto tree = MatchExpression(InputBegin);
 
-            // DEBUG: Print
-            Console::WriteLn(L"Output: %s", tree->debugPrint().c_str() );
-            //Console::WriteLn(L"PreOrder (Not Used): %s", tree->printTraversal(Traversal::PreOrder).c_str());
-            Console::WriteLn(L"InOrder (Infix): %s", tree->printTraversal(Traversal::InOrder).c_str());
-            Console::WriteLn(L"PostOrder (Postfix): %s", tree->printTraversal(Traversal::PostOrder).c_str());
-            Console::WriteLn(L"");
+               // DEBUG: Print
+               Console::WriteLn(L"Output: %s", tree->debugPrint().c_str() );
+               //Console::WriteLn(L"PreOrder (Not Used): %s", tree->printTraversal(Traversal::PreOrder).c_str());
+               Console::WriteLn(L"Infix: %s", tree->printTraversal(Traversal::InOrder).c_str());
+               Console::WriteLn(L"Postfix: %s", tree->printTraversal(Traversal::PostOrder).c_str());
+               Console::WriteLn(L"");
+            }
+            catch (ScriptSyntaxException& e)
+            {
+               Console::WriteLn(e.Message);
+            }
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -88,7 +95,7 @@ namespace Logic
             {
                // Match: product   (may throw)
                if ((sum = MatchProduct(pos)) == nullptr)
-                  throw "Missing unary";
+                  throw ScriptSyntaxException(HERE, L"Missing operand");
 
                // Match: operator  [nothrow]
                while ((op = MatchOperator(pos, L"+")) || (op = MatchOperator(pos, L"-")))
@@ -97,7 +104,7 @@ namespace Logic
                   if (Expression* right = MatchProduct(++pos))  // Adv. Consume operator
                      sum = new BinaryExpression(*op, sum, right);
                   else 
-                     throw "Operator but no unary";
+                     throw ScriptSyntaxException(HERE, L"Missing binary operand");
                }
 
                // Success:
@@ -122,7 +129,7 @@ namespace Logic
             {
                // Match: Unary   (may throw)
                if ((product = MatchUnary(pos)) == nullptr)
-                  throw "Missing unary";
+                  throw ScriptSyntaxException(HERE, L"Missing operand");
 
                // Match: operator  [nothrow]
                while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")))
@@ -131,7 +138,7 @@ namespace Logic
                   if (Expression* right = MatchUnary(++pos))  // Adv. Consume operator
                      product = new BinaryExpression(*op, product, right);
                   else 
-                     throw "Operator but no unary";
+                     throw ScriptSyntaxException(HERE, L"Missing binary operand");
                }
 
                // Success:
@@ -158,12 +165,12 @@ namespace Logic
                if (value = MatchValue(++pos))   // Adv. Consume operator
                   return new UnaryExpression(*op, value);
                else
-                  throw "Missing unary operator";
+                  throw ScriptSyntaxException(HERE, L"Missing unary operand");
             }
 
             // Match: Value  (may throw)
             if ((value = MatchValue(pos)) == nullptr)
-               throw "Missing value";
+               throw ScriptSyntaxException(HERE, L"Missing operand");
 
             // Success
             return value;
@@ -185,17 +192,17 @@ namespace Logic
 
             // Match: Bracket   [nothrow]
             if ((open = MatchOperator(pos, L"(")) == nullptr)
-               throw "Missing opening bracket";
+               throw ScriptSyntaxException(HERE, L"Missing opening bracket");
             
             // Match: Expression  (may throw)
             if ((expr = MatchExpression(++pos)) == nullptr) // Adv. then match
-               throw "Missing expression";
+               throw ScriptSyntaxException(HERE, L"Missing expression");
 
             // Match: Bracket   [nothrow]
             if ((close = MatchOperator(pos, L")")) == nullptr) 
             {
                delete expr;
-               throw "Missing opening bracket";
+               throw ScriptSyntaxException(HERE, L"Missing closing bracket");
             }
           
             // Success:

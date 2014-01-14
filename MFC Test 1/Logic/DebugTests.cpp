@@ -132,6 +132,7 @@ namespace Logic
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"("));
          tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
          tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L")"));
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
