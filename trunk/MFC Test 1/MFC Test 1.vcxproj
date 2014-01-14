@@ -148,6 +148,7 @@
     <ClInclude Include="Logic\ReturnValue.h" />
     <ClInclude Include="Logic\RtfWriter.h" />
     <ClInclude Include="Logic\ScriptCommand.h" />
+    <ClInclude Include="Logic\ScriptExpressionParser.h" />
     <ClInclude Include="Logic\ScriptFile.h" />
     <ClInclude Include="Logic\ScriptCommandLexer.h" />
     <ClInclude Include="Logic\ScriptParameter.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Logic\RtfWriter.cpp" />
     <ClCompile Include="Logic\ScriptCommand.cpp" />
     <ClCompile Include="Logic\ScriptCommandReader.cpp" />
+    <ClCompile Include="Logic\ScriptExpressionParser.cpp" />
     <ClCompile Include="Logic\ScriptFile.cpp" />
     <ClCompile Include="Logic\ScriptCommandLexer.cpp" />
     <ClCompile Include="Logic\ScriptParameter.cpp" />
