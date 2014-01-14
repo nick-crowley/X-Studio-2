@@ -173,7 +173,7 @@ namespace Logic
 
          case DataType::INTEGER:   col = Red;      break;
          case DataType::WARE:      col = Cyan;     break;
-         case DataType::NULL:      col = Green;    break;
+         case DataType::Null:      col = Green;    break;
          case DataType::OPERATOR:  col = White;    break;
 
          case DataType::SECTOR:

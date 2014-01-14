@@ -12,6 +12,7 @@
 #include "StringLibrary.h"
 #include "XmlWriter.h"
 #include "SyntaxWriter.h"
+#include "ScriptExpressionParser.h"
 
 namespace Logic
 {
@@ -28,7 +29,8 @@ namespace Logic
       //Test_CommandSyntax();
       //Test_StringLibrary();
       //Test_XmlWriter();
-      Test_SyntaxWriter();
+      //Test_SyntaxWriter();
+      Test_ExpressionParser();
    }
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
@@ -94,6 +96,15 @@ namespace Logic
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
       }
+   }
+
+   void  DebugTests::Test_ExpressionParser()
+   {
+      TokenArray tokens;
+
+      // Generate list of tokens
+
+      // Parse
    }
 
    void  DebugTests::Test_FileSystem()

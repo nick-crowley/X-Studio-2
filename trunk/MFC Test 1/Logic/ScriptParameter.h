@@ -18,7 +18,7 @@ namespace Logic
       /// <summary>Defines the type element of a X3 script {type,value} pair</summary>
       enum class DataType : UINT
       {    
-         NULL            = 0,   UNKNOWN        = 1,   VARIABLE      = 2,
+         Null            = 0,   UNKNOWN        = 1,   VARIABLE      = 2,
          CONSTANT        = 3,   INTEGER        = 4,   STRING        = 5,
          SHIP            = 6,   STATION        = 7,   SECTOR        = 8,
          WARE            = 9,   RACE           = 10,  STATIONSERIAL = 11,

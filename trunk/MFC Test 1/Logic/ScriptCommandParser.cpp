@@ -35,15 +35,15 @@ namespace Logic
 
          ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, Conditional c, TokenArray& params)
          {
-            throw NotImplementedException();
+            throw "Not impl";
          }
          ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, const wstring& retVar, TokenArray& params)
          {
-            throw NotImplementedException();
+            throw "Not impl";
          }
          ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, TokenArray& params)
          {
-            throw NotImplementedException();
+            throw "Not impl";
          }
 
          bool  ScriptCommandParser::Match(const TokenIterator& pos, TokenType  type)
@@ -74,7 +74,7 @@ namespace Logic
                if (MatchCommand(pos, id, params) || MatchExpression(pos, params))
                   return GenerateCommand(id, retVar, params);
 
-               throw error;
+               throw "Match failed";
             }
             // Match: Command/Expr with conditional
             else if (MatchConditional(pos, condition))
@@ -82,14 +82,14 @@ namespace Logic
                if (MatchCommand(pos, id, params) || MatchExpression(pos, params))
                   return GenerateCommand(id, condition, params);
 
-               throw error;
+               throw "Match failed";
             }
             // Match: Command without assign/conditional
             else if (MatchCommand(pos, id, params))
                return GenerateCommand(id, params);
 
             // Unrecognised
-            throw error;
+            throw "Match failed";
          }
 
          
@@ -138,12 +138,14 @@ namespace Logic
             CommandHash hash(pos, Lexer.Tokens.end());
             
             // Lookup hash, copy parameters and consume all tokens
-            return id = SyntaxLib.Identify(hash.Hash, Version) ? (pos=Lexer.Tokens.end(), params=hash.Parameters, true) : false;
+            //return id = SyntaxLib.Identify(hash.Hash, Version) ? (pos=Lexer.Tokens.end(), params=hash.Parameters, true) : false;
+            throw "not impl";
          }
 
          bool ScriptCommandParser::MatchExpression(TokenIterator& pos, TokenArray& params)
          {
-            return ScriptExpressionParser(pos, Lexer.Tokens.end(), params).Parse();
+            //return ScriptExpressionParser(pos, Lexer.Tokens.end(), params).Parse();
+            throw "not impl";
          }
 
          

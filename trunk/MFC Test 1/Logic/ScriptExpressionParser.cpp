@@ -10,6 +10,7 @@ namespace Logic
          // -------------------------------- CONSTRUCTION --------------------------------
 
          ScriptExpressionParser::ScriptExpressionParser(TokenIterator& begin, TokenIterator& end, TokenArray& params)
+            : InputBegin(begin), InputEnd(end), Params(params)
          {
          }
 
@@ -21,6 +22,11 @@ namespace Logic
          // ------------------------------- STATIC METHODS -------------------------------
 
          // ------------------------------- PUBLIC METHODS -------------------------------
+
+         void  ScriptExpressionParser::Parse(TokenIterator& pos)
+         {
+             auto tree = MatchExpression(pos);
+         }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -145,7 +151,7 @@ namespace Logic
 
             // Match: Value  (may throw)
             if (value = MatchValue(pos))
-               return new ValueExpression(value);
+               return new BinaryExpression(value);
 
             // Failed:
             throw "Missing value";
