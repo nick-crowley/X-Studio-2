@@ -10,42 +10,18 @@ namespace Logic
    {
       namespace Compiler
       {
+         typedef TokenArray::const_iterator  TokenIterator;
+
          /// <summary></summary>
          class ScriptCommandParser
          {
-            
-            typedef TokenArray::const_iterator  TokenIterator;
-
-            
-
             enum class Operator : UINT { Equals };
-
-            class Match
-            {
-               // --------------------- CONSTRUCTION ----------------------
-            public:
-               Match(TokenIterator b, TokenIterator e) : Begin(b), End(e)
-               {}
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               virtual ScriptParameter  GetParameter(ParameterSyntax s) const PURE;
-               int                      size() const { return End - Begin; }
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               const TokenIterator Begin, End;
-            };
-
-            typedef vector<Match>   MatchCollection;
 
             class CommandHash 
             {
                // --------------------- CONSTRUCTION ----------------------
             public:
-               CommandHash(TokenIterator b, TokenIterator e) : Hash(GenerateHash(b,e)), Remainder(SeparateParams(b,e))
+               CommandHash(TokenIterator b, TokenIterator e) : Hash(GenerateHash(b,e)), Parameters(SeparateParams(b,e))
                {}
 
                // ------------------------ STATIC -------------------------
@@ -80,237 +56,141 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
             public:
                const wstring     Hash;
-               const TokenArray  Remainder;
+               const TokenArray  Parameters;
             };
 
-            class NoOperationRule : public Match
-            {
-            public:
-               NoOperationRule(TokenIterator end) : Match(end, end)
-               {}
+            //class ExpressionRule : public CommandRule
+            //{
+            //public:
+            //   ExpressionRule(TokenIterator b, TokenIterator e) : CommandRule(SyntaxLib.Find(CMD_EXPRESSION), b,e)
+            //   {}
 
-               // ---------------------- ACCESSORS ------------------------			
+            //   // ---------------------- ACCESSORS ------------------------			
 
-               ScriptCommand  GetCommand() const
-               {
-                  return ScriptCommand(SyntaxLib.Find(CMD_NOP), ParameterArray());
-               }
+            //   ScriptParameter  GetParameter(ParameterSyntax s) const
+            //   {
+            //      throw InvalidOperationException();
+            //   }
 
-               // ----------------------- MUTATORS ------------------------
+            //   virtual list<ScriptParameter>  GetParameters() const PURE;
 
-               // -------------------- REPRESENTATION ---------------------
+            //   // ----------------------- MUTATORS ------------------------
 
-               Conditional  Conditional;
-            };
+            //   // -------------------- REPRESENTATION ---------------------
+            //};
 
-            class ConditionalRule : public Match
-            {
-            public:
-               ConditionalRule(Conditional c, TokenIterator b, TokenIterator e) : Match(b,e), Conditional(c)
-               {}
+            //class BinaryExpressionRule : public ExpressionRule
+            //{
+            //public:
+            //   BinaryExpressionRule(ExpressionRule* l, Operator o, ExpressionRule* r, TokenIterator b, TokenIterator e) 
+            //      : ExpressionRule(b,e), Left(l), Right(r), Operator(o)
+            //   {}
+            //   ~BinaryExpressionRule() 
+            //   {
+            //      delete Left;
+            //      delete Right;
+            //   }
 
-               // ---------------------- ACCESSORS ------------------------			
+            //   // ---------------------- ACCESSORS ------------------------			
 
-               ScriptParameter  GetParameter(ParameterSyntax s) const
-               {
-                  return ScriptParameter(s, DataType::VARIABLE, ReturnValue(Conditional).Value);
-               }
+            //   list<ScriptParameter>  GetParameters() const
+            //   {
+            //      return Left->GetParameters() 
+            //          + ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
+            //          + Right->GetParameters();
+            //   }
 
-               // ----------------------- MUTATORS ------------------------
+            //   // ----------------------- MUTATORS ------------------------
 
-               // -------------------- REPRESENTATION ---------------------
+            //   // -------------------- REPRESENTATION ---------------------
 
-               Conditional  Conditional;
-            };
+            //   ExpressionRule *Left, *Right;
+            //   Operator        Operator;
+            //};
 
-            class CommandRule : public Match
-            {
-            public:
-               CommandRule(CommandSyntax s, TokenArray tok, TokenIterator b, TokenIterator e) : Match(b,e), Syntax(s), Tokens(tok)
-               {}
+            //class BracketExpressionRule : public ExpressionRule
+            //{
+            //public:
+            //   BracketExpressionRule(ExpressionRule* exp, TokenIterator b, TokenIterator e) 
+            //      : ExpressionRule(b,e), Expression(exp)
+            //   {}
+            //   ~BracketExpressionRule() 
+            //   {
+            //      delete Expression;
+            //   }
 
-               // ---------------------- ACCESSORS ------------------------			
+            //   // ---------------------- ACCESSORS ------------------------			
 
-               // ----------------------- MUTATORS ------------------------
+            //   list<ScriptParameter>  GetParameters() const
+            //   {
+            //      return Expression->GetParameters();
+            //   }
 
-               // -------------------- REPRESENTATION ---------------------
+            //   // ----------------------- MUTATORS ------------------------
 
-               CommandSyntax  Syntax;
-               TokenArray     Tokens;
-            };
+            //   // -------------------- REPRESENTATION ---------------------
 
-            class ExpressionRule : public CommandRule
-            {
-            public:
-               ExpressionRule(TokenIterator b, TokenIterator e) : CommandRule(SyntaxLib.Find(CMD_EXPRESSION), b,e)
-               {}
+            //   ExpressionRule *Expression;
+            //};
 
-               // ---------------------- ACCESSORS ------------------------			
+            //class UnaryExpressionRule : public ExpressionRule
+            //{
+            //public:
+            //   UnaryExpressionRule(ExpressionRule* exp, Operator o, TokenIterator b, TokenIterator e) 
+            //      : ExpressionRule(b,e), Expression(exp), Operator(o)
+            //   {}
+            //   ~UnaryExpressionRule() 
+            //   {
+            //      delete Expression;
+            //   }
 
-               ScriptParameter  GetParameter(ParameterSyntax s) const
-               {
-                  throw InvalidOperationException();
-               }
+            //   // ---------------------- ACCESSORS ------------------------			
 
-               virtual list<ScriptParameter>  GetParameters() const PURE;
+            //   list<ScriptParameter>  GetParameters() const
+            //   {
+            //      return ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
+            //          + Expression->GetParameters();
+            //   }
 
-               // ----------------------- MUTATORS ------------------------
+            //   // ----------------------- MUTATORS ------------------------
 
-               // -------------------- REPRESENTATION ---------------------
-            };
+            //   // -------------------- REPRESENTATION ---------------------
 
-            class BinaryExpressionRule : public ExpressionRule
-            {
-            public:
-               BinaryExpressionRule(ExpressionRule* l, Operator o, ExpressionRule* r, TokenIterator b, TokenIterator e) 
-                  : ExpressionRule(b,e), Left(l), Right(r), Operator(o)
-               {}
-               ~BinaryExpressionRule() 
-               {
-                  delete Left;
-                  delete Right;
-               }
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               list<ScriptParameter>  GetParameters() const
-               {
-                  return Left->GetParameters() 
-                      + ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
-                      + Right->GetParameters();
-               }
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               ExpressionRule *Left, *Right;
-               Operator        Operator;
-            };
-
-            class BracketExpressionRule : public ExpressionRule
-            {
-            public:
-               BracketExpressionRule(ExpressionRule* exp, TokenIterator b, TokenIterator e) 
-                  : ExpressionRule(b,e), Expression(exp)
-               {}
-               ~BracketExpressionRule() 
-               {
-                  delete Expression;
-               }
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               list<ScriptParameter>  GetParameters() const
-               {
-                  return Expression->GetParameters();
-               }
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               ExpressionRule *Expression;
-            };
-
-            class UnaryExpressionRule : public ExpressionRule
-            {
-            public:
-               UnaryExpressionRule(ExpressionRule* exp, Operator o, TokenIterator b, TokenIterator e) 
-                  : ExpressionRule(b,e), Expression(exp), Operator(o)
-               {}
-               ~UnaryExpressionRule() 
-               {
-                  delete Expression;
-               }
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               list<ScriptParameter>  GetParameters() const
-               {
-                  return ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
-                      + Expression->GetParameters();
-               }
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               ExpressionRule *Expression;
-               Operator        Operator;
-            };
+            //   ExpressionRule *Expression;
+            //   Operator        Operator;
+            //};
 
 
-            class LiteralExpressionRule : public ExpressionRule
-            {
-            public:
-               LiteralExpressionRule(ScriptToken t, TokenIterator b, TokenIterator e) 
-                  : ExpressionRule(b,e), Token(t)
-               {}
-               ~LiteralExpressionRule()
-               {}
+            //class LiteralExpressionRule : public ExpressionRule
+            //{
+            //public:
+            //   LiteralExpressionRule(ScriptToken t, TokenIterator b, TokenIterator e) 
+            //      : ExpressionRule(b,e), Token(t)
+            //   {}
+            //   ~LiteralExpressionRule()
+            //   {}
 
-               // ---------------------- ACCESSORS ------------------------			
+            //   // ---------------------- ACCESSORS ------------------------			
 
-               list<ScriptParameter>  GetParameters() const
-               {
-                  switch (Token.Type)
-                  {
-                  case TokenType::Constant:
-                  case TokenType::Number:
-                     return ScriptParameter(ParameterType::EXPRESSION, DataType::INTEGER, Token.Text);
-                  case TokenType::Variable:
-                     return ScriptParameter(ParameterType::EXPRESSION, DataType::VARIABLE, Token.Text);
-                  }
-                  
-               }
+            //   list<ScriptParameter>  GetParameters() const
+            //   {
+            //      switch (Token.Type)
+            //      {
+            //      case TokenType::Constant:
+            //      case TokenType::Number:
+            //         return ScriptParameter(ParameterType::EXPRESSION, DataType::INTEGER, Token.Text);
+            //      case TokenType::Variable:
+            //         return ScriptParameter(ParameterType::EXPRESSION, DataType::VARIABLE, Token.Text);
+            //      }
+            //      
+            //   }
 
-               // ----------------------- MUTATORS ------------------------
+            //   // ----------------------- MUTATORS ------------------------
 
-               // -------------------- REPRESENTATION ---------------------
+            //   // -------------------- REPRESENTATION ---------------------
 
-               ScriptToken  Token;
-            };
-
-            class ConditionalCommandRule
-            {
-            public:
-               // ---------------------- ACCESSORS ------------------------			
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               ConditionalRule  Conditional;
-               CommandRule      Command;
-            };
-
-            class ConditionalExpressionRule
-            {
-            public:
-               // ---------------------- ACCESSORS ------------------------			
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               ConditionalRule  Conditional;
-               ExpressionRule   Expression;
-            };
-
-            class AssignmentCommandRule
-            {
-            public:
-               AssignmentRule  Assignment;
-               CommandRule     Command;
-            };
-
-            class AssignmentExpressionRule
-            {
-            public:
-               AssignmentRule  Assignment;
-               ExpressionRule  Expression;
-            };
+            //   ScriptToken  Token;
+            //};
 
             // ------------------------ TYPES --------------------------
          private:
@@ -318,7 +198,7 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptCommandParser(const wstring& line);
+            ScriptCommandParser(const wstring& line, GameVersion  v);
             virtual ~ScriptCommandParser();
 
             DEFAULT_COPY(ScriptCommandParser);	// Default copy semantics
@@ -337,13 +217,24 @@ namespace Logic
          private:
             ScriptCommand  MatchLine();
 
-            void  MatchConditional(TokenIterator pos, MatchCollection m);
-            void  MatchCommand(TokenIterator pos, MatchCollection m);
+            bool  MatchAssignment(TokenIterator& pos, wstring& var);
+            bool  MatchConditional(TokenIterator& pos, Conditional& c);
+            bool  MatchCommand(TokenIterator& pos, UINT& id, TokenArray& params);
+            bool  MatchExpression(TokenIterator& pos, TokenArray& params);
+            bool  MatchNOP(TokenIterator& pos);
+
+            bool  Match(const TokenIterator& pos, TokenType  type);
+            bool  Match(const TokenIterator& pos, TokenType  type, const TCHAR* txt);
+
+            ScriptCommand GenerateCommand(UINT id, TokenArray& params);
+            ScriptCommand GenerateCommand(UINT id, const wstring& retVar, TokenArray& params);
+            ScriptCommand GenerateCommand(UINT id, Conditional c, TokenArray& params);
 
             // -------------------- REPRESENTATION ---------------------
 
          private:
             ScriptCommandLexer  Lexer;
+            GameVersion         Version;
          };
       }
    }

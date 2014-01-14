@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptCommandParser.h"
+#include "ScriptExpressionParser.h"
 #include "SyntaxLibrary.h"
 
 namespace Logic
@@ -10,7 +11,7 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptCommandParser::ScriptCommandParser(const wstring& line) : Lexer(line)
+         ScriptCommandParser::ScriptCommandParser(const wstring& line, GameVersion  v) : Lexer(line), Version(v)
          {
          }
 
@@ -32,56 +33,90 @@ namespace Logic
 
          // ------------------------------- PRIVATE METHODS ------------------------------
 
+         ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, Conditional c, TokenArray& params)
+         {
+            throw NotImplementedException();
+         }
+         ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, const wstring& retVar, TokenArray& params)
+         {
+            throw NotImplementedException();
+         }
+         ScriptCommand  ScriptCommandParser::GenerateCommand(UINT id, TokenArray& params)
+         {
+            throw NotImplementedException();
+         }
+
+         bool  ScriptCommandParser::Match(const TokenIterator& pos, TokenType  type)
+         {
+            return pos < Lexer.Tokens.end() && pos->Type == type;
+         }
+
+         bool  ScriptCommandParser::Match(const TokenIterator& pos, TokenType  type, const TCHAR* txt)
+         {
+            return Match(pos, type) && pos->Text == txt;
+         }
+
          ScriptCommand  ScriptCommandParser::MatchLine()
          {
-            //MatchCollection  matches;
-            ParameterArray params;
-            auto pos = Lexer.Tokens.begin();
+            TokenIterator  pos = Lexer.Tokens.begin();
+            TokenArray     params;
+            wstring        retVar;
+            Conditional    condition;
+            UINT           id;
 
             // NOP:
             if (MatchNOP(pos))
-               return ScriptCommand(SyntaxLib.Find(CMD_NOP, GameVersion), params);
+               return GenerateCommand(CMD_NOP, params);
 
+            // Match: Command/Expr with assignment
+            else if (MatchAssignment(pos, retVar))
+            {
+               if (MatchCommand(pos, id, params) || MatchExpression(pos, params))
+                  return GenerateCommand(id, retVar, params);
 
-            // Match alternatives
-            MatchAssignmentCommand(pos, matches);
-            MatchAssignmentExpression(pos, matches);
+               throw error;
+            }
+            // Match: Command/Expr with conditional
+            else if (MatchConditional(pos, condition))
+            {
+               if (MatchCommand(pos, id, params) || MatchExpression(pos, params))
+                  return GenerateCommand(id, condition, params);
 
-            // Ensure match found
-            if (matches.empty())
-               throw NoMatchException();
+               throw error;
+            }
+            // Match: Command without assign/conditional
+            else if (MatchCommand(pos, id, params))
+               return GenerateCommand(id, params);
 
-            // Ensure nothing unexpected following match
-            if (matches.front().size() < Lexer.Tokens.size())
-               throw UnexpectedTokenException();
-
-            // Create command from best match
-            return GenerateCommand(matches.front());
+            // Unrecognised
+            throw error;
          }
 
-         bool ScriptCommandParser::MatchAssignment(TokenIterator& pos)
+         
+
+         bool ScriptCommandParser::MatchAssignment(TokenIterator& pos, wstring& var)
          {
             // var =
-            return Match(pos, TokenType::Variable) && Match(pos+1, TokenType::Operator, L"=") ? (++pos, true) : false;
+            return Match(pos, TokenType::Variable) && Match(pos+1, TokenType::Operator, L"=") ? (var=pos->Text, ++pos, true) : false;
          }
 
-         bool ScriptCommandParser::MatchCondition(TokenIterator& pos)
+         bool ScriptCommandParser::MatchConditional(TokenIterator& pos, Conditional& c)
          {
             // if, if not
             if (Match(pos, TokenType::Keyword, L"if")) 
-               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, true) : true;
+               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, c=Conditional::IF, true) : (c=Conditional::IF_NOT, true);
 
             // while, while not
             if (Match(pos, TokenType::Keyword, L"while")) 
-               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, true) : true;
+               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, c=Conditional::WHILE, true) : (c=Conditional::WHILE_NOT, true);
 
             // skip if
             if (Match(pos, TokenType::Keyword, L"skip")) 
-               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, true) : false;
+               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, c=Conditional::SKIP_IF, true) : false;
 
             // do if
             if (Match(pos, TokenType::Keyword, L"do")) 
-               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, true) : false;
+               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, c=Conditional::SKIP_IF_NOT, true) : false;
 
             // failed
             return false;
@@ -89,58 +124,40 @@ namespace Logic
 
          bool ScriptCommandParser::MatchNOP(TokenIterator& pos)
          {
-            // episilon
+            // Match zero tokens
             return pos == Lexer.Tokens.begin() && pos == Lexer.Tokens.end();
          }
 
-         bool ScriptCommandParser::MatchCommand(TokenIterator& pos)
+         bool ScriptCommandParser::MatchCommand(TokenIterator& pos, UINT& id, TokenArray& params)
          {
+            // Clear params
+            params.clear();
+            id = CMD_NONE;
+
             // Hash remaining tokens
-            CommandHash h(pos, Lexer.Tokens.end());
+            CommandHash hash(pos, Lexer.Tokens.end());
             
-            // Lookup hash, consume all tokens
-            return SyntaxLib.Contains(h.Hash) ? (pos=Lexer.Tokens.end(), true) : false;
+            // Lookup hash, copy parameters and consume all tokens
+            return id = SyntaxLib.Identify(hash.Hash, Version) ? (pos=Lexer.Tokens.end(), params=hash.Parameters, true) : false;
          }
 
-         bool ScriptCommandParser::MatchExpression(TokenIterator& pos)
+         bool ScriptCommandParser::MatchExpression(TokenIterator& pos, TokenArray& params)
          {
+            return ScriptExpressionParser(pos, Lexer.Tokens.end(), params).Parse();
             TokenIterator origin = pos;
 
             // Unary_op expr
             if (Match(pos, TokenType::Operator, L"!") || Match(pos, TokenType::Operator, L"~") || Match(pos, TokenType::Operator, L"-")) 
                return MatchExpression(++pos) ? true : (pos=origin, false);
 
-            // ( expr )
-            if (Match(pos, TokenType::Operator, L"("))
-               return MatchExpression(++pos) && Match(pos, TokenType::Operator, L")") ? (++pos, true) : (pos=origin, false);
+            
 
             // expr binary_op expr
             if (MatchExpression(pos) && Match(++pos, TokenType::Operator, L"*")
                return MatchExpression(++pos) && Match(++pos, TokenType::Operator, L")") ? true : (pos=origin, false);
          }
 
-         void  ScriptCommandParser::MatchConditional(TokenIterator pos, MatchCollection m)
-         {
-            if (pos->Text == L"skip" && (pos+1)->Text == L"if" && (pos+2)->Text == "not")
-               m.push_back(ConditionalRule(Conditional::SKIP_IF_NOT, pos, pos+3));
-
-            if (pos->Text == L"if" && (pos+1)->Text == L"not")
-               m.push_back(ConditionalRule(Conditional::IF_NOT, pos, pos+1));
-         }
-
-         void  ScriptCommandParser::MatchCommand(TokenIterator pos, MatchCollection m)
-         {
-            CommandHash h(pos, Lexer.Tokens.end());
-            
-            // Lookup hash
-            if (SyntaxLib.Contains(h.Hash))
-               m.push_back( CommandRule(SyntaxLib.Find(h), pos, Lexer.Tokens.end()) );
-         }
          
-
-         ScriptCommand  ScriptCommandParser::GenerateCommand(Match m)
-         {
-         }
       }
    }
 }
