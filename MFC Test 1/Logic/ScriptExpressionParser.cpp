@@ -26,185 +26,163 @@ namespace Logic
 
          // ------------------------------- PRIVATE METHODS ------------------------------
 
-         bool  ScriptExpressionParser::MatchLiteral(const TokenIterator& pos)
+         ScriptToken*  ScriptExpressionParser::MatchLiteral(const TokenIterator& pos)
          {
-            if (pos >= End)
-               return false;
+            // Validate position + check type
+            if (pos < InputEnd && pos->Type != TokenType::Operator && pos->Type != TokenType::Text)
+               return pos._Ptr;
             
-            switch (pos->Type)
-            {
-            default:
-               return false;
-            }
-         }
-
-         bool  ScriptExpressionParser::Match(const TokenIterator& pos, TokenType  type)
-         {
-            return pos < Lexer.Tokens.end() && pos->Type == type;
-         }
-
-         bool  ScriptExpressionParser::Match(const TokenIterator& pos, TokenType  type, const TCHAR* txt)
-         {
-            return Match(pos, type) && pos->Text == txt;
-         }
-
-         bool MatchValue(TokenIterator& pos)
-         {
-            // Literal
-            if (MatchLiteral(pos))
-               return true;
-
-            // ( expr )
-            if (Match(pos, TokenType::Operator, L"("))
-               return MatchExpression(++pos) && Match(pos, TokenType::Operator, L")") ? (++pos, true) : (pos=origin, false);
+            return nullptr;
          }
 
 
-
-         class Expression
+         ScriptToken* ScriptExpressionParser::MatchOperator(const TokenIterator& pos, const WCHAR* op)
          {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
+            // Validate position and compare operator
+            if (pos < InputEnd && pos->Type == TokenType::Operator && pos->Text == op)
+               return pos._Ptr;
+            
+            return nullptr;
+         }
 
-            // ---------------------- ACCESSORS ------------------------			
 
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-         };
-
-         class Literal : public Expression
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-
-            // ---------------------- ACCESSORS ------------------------			
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-
-            ScriptToken  Token;
-         };
-
-         class BracketedExpression : public Expression
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-
-            // ---------------------- ACCESSORS ------------------------			
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-
-            ScriptToken  Open,
-                         Close;
-            Expression*  Expression;
-         };
-
-         class UnaryExpression
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-
-            // ---------------------- ACCESSORS ------------------------			
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-
-            Operator     Operator;
-            Expression*  Value;
-         };
-
-         class RightHandSide : public Expression
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-
-            // ---------------------- ACCESSORS ------------------------			
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-
-            Operator    Operator;
-            Expression* Right;
-         };
-
-         class BinaryExpression : public Expression
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-
-            // ---------------------- ACCESSORS ------------------------			
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-
-            Expression* Left;
-            list<RightHandSide*> Components;
-         };
-
-         ////
-
-         Expression  MatchExpression(TokenIterator& pos)
+         
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchExpression(TokenIterator& pos)
          {
             // Expression = Sum
             return MatchSum(pos);
          }
 
-         Sum  MatchSum(TokenIterator& pos)
-         {
-            // Sum = Product (('+' / '-') Product)*
-            Sum sum(MatchProduct(pos));
+         // Input: Iterator positioned at next token (or EOF)
+         // Out (Match): Iterator positioned after last token
+         // Out (Fail): Iterator not moved
 
-            // Check for ... (('+' / '-') Product)*
-            while ((op = MatchOperator(pos+1, plus) || op = MatchOperator(pos+1, minus))
-                   && product = MatchProduct(pos+2))
+
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchSum(TokenIterator& pos)
+         {
+            BinaryExpression* sum = nullptr;
+            Expression *left = nullptr;
+            ScriptToken* op = nullptr;
+
+            // Rule: Sum = Product (('+' / '-') Product)*
+
+            // Match: product
+            if (left = MatchProduct(pos))
+               sum = new BinaryExpression(left);
+            else
+               throw "Missing product";
+            
+            // Match: operator  [nothrow]
+            while ((op = MatchOperator(pos, L"+")) || (op = MatchOperator(pos, L"-")))
             {
-               sum.Add(op, product);
-               pos += 2;
+               try
+               {  // Match: Product  (may throw)
+                  if (Expression* right = MatchProduct(++pos))   // Consume operator
+                     sum->Add(new RightHandSide(*op, right));
+                  else 
+                     throw "Operator but no product";
+               }
+               catch (...)
+               {  // Error: Cleanup 
+                  delete sum;
+                  throw;
+               }
             }
 
+            // Success:
             return sum;
          }
 
-         Product  MatchProduct(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchProduct(TokenIterator& pos)
          {
-            // Product = Unary (('*' / '/') Unary)*
-            Product prod(MatchUnary(pos));
+            BinaryExpression* product = nullptr;
+            Expression* left = nullptr;
+            ScriptToken* op = nullptr;
 
-            // Check for ... (('*' / '/') Unary)*
-            while (op = MatchOperator(pos, multiply) || op = MatchOperator(pos, divide) && unary = MatchUnary(pos))
-               prod.Add(op, unary);
+            // Rule: Sum = Unary (('+' / '-') Unary)*
 
-            return prod;
+            // Match: Unary   (may throw)
+            if (left = MatchUnary(pos))
+               product = new BinaryExpression(left);
+            else
+               throw "Missing unary";
+            
+            // Match: operator  [nothrow]
+            while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")))
+            {
+               try
+               {  // Match: Unary  (may throw)
+                  if (Expression* right = MatchUnary(++pos))  // Adv. Consume operator
+                     product->Add(new RightHandSide(*op, right));
+                  else 
+                     throw "Operator but no unary";
+               }
+               catch (...)
+               {  // Error: Cleanup
+                  delete product;
+                  throw;
+               }
+            }
+
+            // Success:
+            return product;
          }
 
-         Unary MatchUnary(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchUnary(TokenIterator& pos)
          {
-            // Unary = '!' / '-' / '~' Value
-            if (op = MatchOperator(pos, not) || op = MatchOperator(pos, unary_minus))
-               return Unary(op, MatchValue(pos));
-            
-            // Unary = Value
-            return Unary(MatchValue(pos));
+            Expression*  value = nullptr;
+            ScriptToken* op = nullptr;
+
+            // Match: Operator  [nothrow]
+            if ((op = MatchOperator(pos, L"!")) || (op = MatchOperator(pos, L"-")))
+            {
+               // Match: Value  (may throw)
+               if (value = MatchValue(++pos))   // Adv. Consume operator
+                  return new UnaryExpression(*op, value);
+               else
+                  throw "Missing unary operator";
+            }
+
+            // Match: Value  (may throw)
+            if (value = MatchValue(pos))
+               return new ValueExpression(value);
+
+            // Failed:
+            throw "Missing value";
          }
 
-         Value MatchValue(TokenIterator& pos)
+         
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchValue(TokenIterator& pos)
          {
-            // Value = literal
-            if (val = MatchLiteral(pos))
-               return Value(val);
+            ScriptToken *val = nullptr,
+                        *open = nullptr,
+                        *close = nullptr;
+            Expression  *expr = nullptr;
 
-            // Value = '(' expr ')'
-            if (open = MatchOperator(pos, open_bracket) && expr = MatchExpression(pos) && close = MatchOperator(pos, close_bracket))
-               return Value(open, expr, close);
+            // Match: Literal  [nothrow]
+            if (val = MatchLiteral(pos)) {
+               ++pos;
+               return new LiteralValue(*val);
+            }
+
+            // Match: Bracket   [nothrow]
+            if ((open = MatchOperator(pos, L"(")) == nullptr)
+               throw "Missing opening bracket";
             
-            throw;
+            // Match: Expression  (may throw)
+            if ((expr = MatchExpression(++pos)) == nullptr) // Adv. then match
+               throw "Missing expression";
+
+            // Match: Bracket   [nothrow]
+            if ((close = MatchOperator(pos, L")")) == nullptr) 
+            {
+               delete expr;
+               throw "Missing opening bracket";
+            }
+          
+            // Success:
+            ++pos;
+            return new BracketedExpression(*open, expr, *close);
          }
 
       }

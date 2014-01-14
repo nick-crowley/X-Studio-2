@@ -12,7 +12,7 @@ namespace Logic
       {
          typedef TokenArray::const_iterator  TokenIterator;
 
-         enum class Operator : UINT { Equals, NotEquals, Multiply, Divide, Add, Substract };
+         enum class Operator : UINT { Equals, NotEquals, Multiply, Divide, Add, Subtract };
 
          /// <summary></summary>
          class ScriptCommandParser
@@ -58,139 +58,6 @@ namespace Logic
                const wstring     Hash;
                const TokenArray  Parameters;
             };
-
-            //class ExpressionRule : public CommandRule
-            //{
-            //public:
-            //   ExpressionRule(TokenIterator b, TokenIterator e) : CommandRule(SyntaxLib.Find(CMD_EXPRESSION), b,e)
-            //   {}
-
-            //   // ---------------------- ACCESSORS ------------------------			
-
-            //   ScriptParameter  GetParameter(ParameterSyntax s) const
-            //   {
-            //      throw InvalidOperationException();
-            //   }
-
-            //   virtual list<ScriptParameter>  GetParameters() const PURE;
-
-            //   // ----------------------- MUTATORS ------------------------
-
-            //   // -------------------- REPRESENTATION ---------------------
-            //};
-
-            //class BinaryExpressionRule : public ExpressionRule
-            //{
-            //public:
-            //   BinaryExpressionRule(ExpressionRule* l, Operator o, ExpressionRule* r, TokenIterator b, TokenIterator e) 
-            //      : ExpressionRule(b,e), Left(l), Right(r), Operator(o)
-            //   {}
-            //   ~BinaryExpressionRule() 
-            //   {
-            //      delete Left;
-            //      delete Right;
-            //   }
-
-            //   // ---------------------- ACCESSORS ------------------------			
-
-            //   list<ScriptParameter>  GetParameters() const
-            //   {
-            //      return Left->GetParameters() 
-            //          + ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
-            //          + Right->GetParameters();
-            //   }
-
-            //   // ----------------------- MUTATORS ------------------------
-
-            //   // -------------------- REPRESENTATION ---------------------
-
-            //   ExpressionRule *Left, *Right;
-            //   Operator        Operator;
-            //};
-
-            //class BracketExpressionRule : public ExpressionRule
-            //{
-            //public:
-            //   BracketExpressionRule(ExpressionRule* exp, TokenIterator b, TokenIterator e) 
-            //      : ExpressionRule(b,e), Expression(exp)
-            //   {}
-            //   ~BracketExpressionRule() 
-            //   {
-            //      delete Expression;
-            //   }
-
-            //   // ---------------------- ACCESSORS ------------------------			
-
-            //   list<ScriptParameter>  GetParameters() const
-            //   {
-            //      return Expression->GetParameters();
-            //   }
-
-            //   // ----------------------- MUTATORS ------------------------
-
-            //   // -------------------- REPRESENTATION ---------------------
-
-            //   ExpressionRule *Expression;
-            //};
-
-            //class UnaryExpressionRule : public ExpressionRule
-            //{
-            //public:
-            //   UnaryExpressionRule(ExpressionRule* exp, Operator o, TokenIterator b, TokenIterator e) 
-            //      : ExpressionRule(b,e), Expression(exp), Operator(o)
-            //   {}
-            //   ~UnaryExpressionRule() 
-            //   {
-            //      delete Expression;
-            //   }
-
-            //   // ---------------------- ACCESSORS ------------------------			
-
-            //   list<ScriptParameter>  GetParameters() const
-            //   {
-            //      return ScriptParameter(ParameterType::EXPRESSION, DataType::OPERATOR, (UINT)Operator)
-            //          + Expression->GetParameters();
-            //   }
-
-            //   // ----------------------- MUTATORS ------------------------
-
-            //   // -------------------- REPRESENTATION ---------------------
-
-            //   ExpressionRule *Expression;
-            //   Operator        Operator;
-            //};
-
-
-            //class LiteralExpressionRule : public ExpressionRule
-            //{
-            //public:
-            //   LiteralExpressionRule(ScriptToken t, TokenIterator b, TokenIterator e) 
-            //      : ExpressionRule(b,e), Token(t)
-            //   {}
-            //   ~LiteralExpressionRule()
-            //   {}
-
-            //   // ---------------------- ACCESSORS ------------------------			
-
-            //   list<ScriptParameter>  GetParameters() const
-            //   {
-            //      switch (Token.Type)
-            //      {
-            //      case TokenType::Constant:
-            //      case TokenType::Number:
-            //         return ScriptParameter(ParameterType::EXPRESSION, DataType::INTEGER, Token.Text);
-            //      case TokenType::Variable:
-            //         return ScriptParameter(ParameterType::EXPRESSION, DataType::VARIABLE, Token.Text);
-            //      }
-            //      
-            //   }
-
-            //   // ----------------------- MUTATORS ------------------------
-
-            //   // -------------------- REPRESENTATION ---------------------
-
-            //   ScriptToken  Token;
-            //};
 
             // ------------------------ TYPES --------------------------
          private:
