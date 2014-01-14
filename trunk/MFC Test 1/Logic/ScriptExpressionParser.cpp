@@ -34,7 +34,7 @@ namespace Logic
             try
             {
                // Produce parse tree
-               auto tree = MatchExpression(InputBegin);
+               auto tree = ReadExpression(InputBegin);
 
                // DEBUG: Print
                Console::WriteLn(L"Output: %s", tree->debugPrint().c_str() );
@@ -74,10 +74,10 @@ namespace Logic
 
 
          
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchExpression(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadExpression(TokenIterator& pos)
          {
             // Expression = Sum
-            return MatchSum(pos);
+            return ReadSum(pos);
          }
 
          // Input: Iterator positioned at next token (or EOF)
@@ -85,7 +85,7 @@ namespace Logic
          // Out (Fail): Iterator not moved
 
 
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchSum(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadSum(TokenIterator& pos)
          {
             Expression* sum = nullptr;
             ScriptToken* op = nullptr;
@@ -93,19 +93,13 @@ namespace Logic
             // Rule: Sum = Product (('+' / '-') Product)*
             try
             {
-               // Match: product   (may throw)
-               if ((sum = MatchProduct(pos)) == nullptr)
-                  throw ScriptSyntaxException(HERE, L"Missing operand");
+               // Read: product   (may throw)
+               sum = ReadProduct(pos);
 
                // Match: operator  [nothrow]
                while ((op = MatchOperator(pos, L"+")) || (op = MatchOperator(pos, L"-")))
-               {
-                  // Match: product  (may throw)
-                  if (Expression* right = MatchProduct(++pos))  // Adv. Consume operator
-                     sum = new BinaryExpression(*op, sum, right);
-                  else 
-                     throw ScriptSyntaxException(HERE, L"Missing binary operand");
-               }
+                  // Read: product  (may throw)
+                  sum = new BinaryExpression(*op, sum, ReadProduct(++pos));   // Adv. Consume operator
 
                // Success:
                return sum;
@@ -119,7 +113,7 @@ namespace Logic
             }
          }
 
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchProduct(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadProduct(TokenIterator& pos)
          {
             Expression* product = nullptr;
             ScriptToken* op = nullptr;
@@ -127,19 +121,13 @@ namespace Logic
             // Rule: Sum = Unary (('+' / '-') Unary)*
             try
             {
-               // Match: Unary   (may throw)
-               if ((product = MatchUnary(pos)) == nullptr)
-                  throw ScriptSyntaxException(HERE, L"Missing operand");
+               // Read: Unary   (may throw)
+               product = ReadUnary(pos);
 
                // Match: operator  [nothrow]
-               while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")))
-               {
-                  // Match: Unary  (may throw)
-                  if (Expression* right = MatchUnary(++pos))  // Adv. Consume operator
-                     product = new BinaryExpression(*op, product, right);
-                  else 
-                     throw ScriptSyntaxException(HERE, L"Missing binary operand");
-               }
+               while ((op = MatchOperator(pos, L"*")) || (op = MatchOperator(pos, L"/")) || (op = MatchOperator(pos, L"mod")))
+                  // Read: Unary  (may throw)
+                  product = new BinaryExpression(*op, product, ReadUnary(++pos));  // Adv. Consume operator
 
                // Success:
                return product;
@@ -153,31 +141,21 @@ namespace Logic
             }
          }
 
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchUnary(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadUnary(TokenIterator& pos)
          {
-            Expression*  value = nullptr;
             ScriptToken* op = nullptr;
 
             // Match: Operator  [nothrow]
             if ((op = MatchOperator(pos, L"!")) || (op = MatchOperator(pos, L"-")))
-            {
-               // Match: Value  (may throw)
-               if (value = MatchValue(++pos))   // Adv. Consume operator
-                  return new UnaryExpression(*op, value);
-               else
-                  throw ScriptSyntaxException(HERE, L"Missing unary operand");
-            }
+               // Read: Value  (may throw)
+               return new UnaryExpression(*op, ReadValue(++pos));    // Adv. Consume operator
 
-            // Match: Value  (may throw)
-            if ((value = MatchValue(pos)) == nullptr)
-               throw ScriptSyntaxException(HERE, L"Missing operand");
-
-            // Success
-            return value;
+            // Read: Value  (may throw)
+            return ReadValue(pos);
          }
 
          
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::MatchValue(TokenIterator& pos)
+         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadValue(TokenIterator& pos)
          {
             ScriptToken *val = nullptr,
                         *open = nullptr,
@@ -185,29 +163,29 @@ namespace Logic
             Expression  *expr = nullptr;
 
             // Match: Literal  [nothrow]
-            if (val = MatchLiteral(pos)) {
+            if (val = MatchLiteral(pos)) 
+            {
                ++pos;
                return new LiteralValue(*val);
             }
 
-            // Match: Bracket   [nothrow]
+            // Read: Bracket   [nothrow]
             if ((open = MatchOperator(pos, L"(")) == nullptr)
                throw ScriptSyntaxException(HERE, L"Missing opening bracket");
             
-            // Match: Expression  (may throw)
-            if ((expr = MatchExpression(++pos)) == nullptr) // Adv. then match
-               throw ScriptSyntaxException(HERE, L"Missing expression");
+            // Read: Expression  (may throw)
+            expr = ReadExpression(++pos);   // Adv. then match
 
-            // Match: Bracket   [nothrow]
-            if ((close = MatchOperator(pos, L")")) == nullptr) 
+            // Read: Bracket   [nothrow]
+            if (close = MatchOperator(pos, L")")) 
             {
-               delete expr;
-               throw ScriptSyntaxException(HERE, L"Missing closing bracket");
+               ++pos;
+               return new BracketedExpression(*open, expr, *close);
             }
-          
-            // Success:
-            ++pos;
-            return new BracketedExpression(*open, expr, *close);
+            
+            // Failure:
+            delete expr;
+            throw ScriptSyntaxException(HERE, L"Missing closing bracket");
          }
 
       }

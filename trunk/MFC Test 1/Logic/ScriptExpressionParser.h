@@ -224,12 +224,12 @@ namespace Logic
             ScriptToken* MatchLiteral(const TokenIterator& pos);
             ScriptToken* MatchOperator(const TokenIterator& pos, const WCHAR* op);
 
-            Expression*  MatchExpression(TokenIterator& pos);
-            Expression*  MatchSum(TokenIterator& pos);
-            Expression*  MatchProduct(TokenIterator& pos);
+            Expression*  ReadExpression(TokenIterator& pos);
+            Expression*  ReadSum(TokenIterator& pos);
+            Expression*  ReadProduct(TokenIterator& pos);
 
-            Expression*  MatchUnary(TokenIterator& pos);
-            Expression*  MatchValue(TokenIterator& pos);
+            Expression*  ReadUnary(TokenIterator& pos);
+            Expression*  ReadValue(TokenIterator& pos);
 
             // -------------------- REPRESENTATION ---------------------
 
