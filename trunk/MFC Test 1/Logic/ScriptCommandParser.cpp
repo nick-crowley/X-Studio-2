@@ -34,9 +34,13 @@ namespace Logic
 
          ScriptCommand  ScriptCommandParser::MatchLine()
          {
-            MatchCollection  matches;
+            //MatchCollection  matches;
+            ParameterArray params;
             auto pos = Lexer.Tokens.begin();
 
+            // NOP:
+            if (MatchNOP(pos))
+               return ScriptCommand(SyntaxLib.Find(CMD_NOP, GameVersion), params);
 
 
             // Match alternatives
@@ -53,6 +57,66 @@ namespace Logic
 
             // Create command from best match
             return GenerateCommand(matches.front());
+         }
+
+         bool ScriptCommandParser::MatchAssignment(TokenIterator& pos)
+         {
+            // var =
+            return Match(pos, TokenType::Variable) && Match(pos+1, TokenType::Operator, L"=") ? (++pos, true) : false;
+         }
+
+         bool ScriptCommandParser::MatchCondition(TokenIterator& pos)
+         {
+            // if, if not
+            if (Match(pos, TokenType::Keyword, L"if")) 
+               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, true) : true;
+
+            // while, while not
+            if (Match(pos, TokenType::Keyword, L"while")) 
+               return Match(pos+1, TokenType::Keyword, L"not") ? (++pos, true) : true;
+
+            // skip if
+            if (Match(pos, TokenType::Keyword, L"skip")) 
+               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, true) : false;
+
+            // do if
+            if (Match(pos, TokenType::Keyword, L"do")) 
+               return Match(pos+1, TokenType::Keyword, L"if") ? (++pos, true) : false;
+
+            // failed
+            return false;
+         }
+
+         bool ScriptCommandParser::MatchNOP(TokenIterator& pos)
+         {
+            // episilon
+            return pos == Lexer.Tokens.begin() && pos == Lexer.Tokens.end();
+         }
+
+         bool ScriptCommandParser::MatchCommand(TokenIterator& pos)
+         {
+            // Hash remaining tokens
+            CommandHash h(pos, Lexer.Tokens.end());
+            
+            // Lookup hash, consume all tokens
+            return SyntaxLib.Contains(h.Hash) ? (pos=Lexer.Tokens.end(), true) : false;
+         }
+
+         bool ScriptCommandParser::MatchExpression(TokenIterator& pos)
+         {
+            TokenIterator origin = pos;
+
+            // Unary_op expr
+            if (Match(pos, TokenType::Operator, L"!") || Match(pos, TokenType::Operator, L"~") || Match(pos, TokenType::Operator, L"-")) 
+               return MatchExpression(++pos) ? true : (pos=origin, false);
+
+            // ( expr )
+            if (Match(pos, TokenType::Operator, L"("))
+               return MatchExpression(++pos) && Match(pos, TokenType::Operator, L")") ? (++pos, true) : (pos=origin, false);
+
+            // expr binary_op expr
+            if (MatchExpression(pos) && Match(++pos, TokenType::Operator, L"*")
+               return MatchExpression(++pos) && Match(++pos, TokenType::Operator, L")") ? true : (pos=origin, false);
          }
 
          void  ScriptCommandParser::MatchConditional(TokenIterator pos, MatchCollection m)
