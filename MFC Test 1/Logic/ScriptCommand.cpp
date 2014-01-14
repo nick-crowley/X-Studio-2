@@ -9,16 +9,21 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptCommand::ScriptCommand(CommandSyntax& syntax, ParameterArray& params) 
+      /// <summary>Create a standard command from syntax and parameters (ordered by display index)</summary>
+      /// <param name="syntax">The syntax.</param>
+      /// <param name="params">The parameters, if any (sorted by display index)</param>
+      ScriptCommand::ScriptCommand(CommandSyntax& syntax, ParameterArray& params)
          : Syntax(syntax), RefIndex(0), Parameters(params) 
       {
-         //Translate();
       }
 
-      ScriptCommand::ScriptCommand(CommandSyntax& syntax, UINT  ref, ParameterArray& params) 
+      /// <summary>Create an auxiliary command from syntax and parameters (ordered by display index)</summary>
+      /// <param name="syntax">The command syntax.</param>
+      /// <param name="ref">The index of the associated standard command</param>
+      /// <param name="params">The parameters, if any (sorted by display index)</param>
+      ScriptCommand::ScriptCommand(CommandSyntax& syntax, UINT  ref, ParameterArray& params)
          : Syntax(syntax), RefIndex(ref), Parameters(params) 
       {
-         //Translate();
       }
       
       ScriptCommand::~ScriptCommand()
