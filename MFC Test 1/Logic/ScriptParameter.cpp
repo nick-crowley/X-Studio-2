@@ -67,7 +67,7 @@ namespace Logic
             Text = StringResource::Format(L"%d", Value.Int);
             break;
 
-         case DataType::NULL:
+         case DataType::Null:
             Text = L"null";
             break;
 

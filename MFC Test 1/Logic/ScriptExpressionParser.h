@@ -175,6 +175,10 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
 
+         public:
+            void         Parse(TokenIterator& pos);
+
+         private:
             ScriptToken* MatchLiteral(const TokenIterator& pos);
             ScriptToken* MatchOperator(const TokenIterator& pos, const WCHAR* op);
 
@@ -188,8 +192,9 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          private:
-            TokenIterator  InputBegin,
+            TokenIterator& InputBegin,
                            InputEnd;
+            TokenArray&    Params;
          };
       }
    }
