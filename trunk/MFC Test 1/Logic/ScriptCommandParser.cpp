@@ -144,17 +144,6 @@ namespace Logic
          bool ScriptCommandParser::MatchExpression(TokenIterator& pos, TokenArray& params)
          {
             return ScriptExpressionParser(pos, Lexer.Tokens.end(), params).Parse();
-            TokenIterator origin = pos;
-
-            // Unary_op expr
-            if (Match(pos, TokenType::Operator, L"!") || Match(pos, TokenType::Operator, L"~") || Match(pos, TokenType::Operator, L"-")) 
-               return MatchExpression(++pos) ? true : (pos=origin, false);
-
-            
-
-            // expr binary_op expr
-            if (MatchExpression(pos) && Match(++pos, TokenType::Operator, L"*")
-               return MatchExpression(++pos) && Match(++pos, TokenType::Operator, L")") ? true : (pos=origin, false);
          }
 
          
