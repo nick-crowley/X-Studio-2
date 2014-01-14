@@ -12,11 +12,11 @@ namespace Logic
       {
          typedef TokenArray::const_iterator  TokenIterator;
 
+         enum class Operator : UINT { Equals, NotEquals, Multiply, Divide, Add, Substract };
+
          /// <summary></summary>
          class ScriptCommandParser
          {
-            enum class Operator : UINT { Equals };
-
             class CommandHash 
             {
                // --------------------- CONSTRUCTION ----------------------

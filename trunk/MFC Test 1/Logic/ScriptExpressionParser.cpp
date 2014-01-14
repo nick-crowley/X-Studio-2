@@ -59,6 +59,95 @@ namespace Logic
                return MatchExpression(++pos) && Match(pos, TokenType::Operator, L")") ? (++pos, true) : (pos=origin, false);
          }
 
+
+
+         class Expression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+         };
+
+         class Literal : public Expression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+
+            ScriptToken  Token;
+         };
+
+         class BracketedExpression : public Expression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+
+            ScriptToken  Open,
+                         Close;
+            Expression*  Expression;
+         };
+
+         class UnaryExpression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+
+            Operator     Operator;
+            Expression*  Value;
+         };
+
+         class RightHandSide : public Expression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+
+            Operator    Operator;
+            Expression* Right;
+         };
+
+         class BinaryExpression : public Expression
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
+
+            Expression* Left;
+            list<RightHandSide*> Components;
+         };
+
          ////
 
          Expression  MatchExpression(TokenIterator& pos)
@@ -73,8 +162,12 @@ namespace Logic
             Sum sum(MatchProduct(pos));
 
             // Check for ... (('+' / '-') Product)*
-            while (op = MatchOperator(pos, plus) || op = MatchOperator(pos, minus) && product = MatchProduct(pos))
+            while ((op = MatchOperator(pos+1, plus) || op = MatchOperator(pos+1, minus))
+                   && product = MatchProduct(pos+2))
+            {
                sum.Add(op, product);
+               pos += 2;
+            }
 
             return sum;
          }
