@@ -104,11 +104,38 @@ namespace Logic
       {
          // Generate list of tokens
          TokenArray tokens;
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0, L"4"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0, L"5"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
          tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0, L"3"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
+
+         // Try Parse
+         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
+
+         // Generate list of tokens
+         tokens.clear();
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"("));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L")"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
+
+         // Try Parse
+         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
+
+         // Generate list of tokens
+         tokens.clear();
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"!"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"("));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L")"));
+         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
+         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
 
          // Try Parse
          ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();

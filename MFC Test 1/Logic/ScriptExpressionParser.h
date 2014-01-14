@@ -9,7 +9,7 @@ namespace Logic
    {
       namespace Compiler
       {
-         enum class Traversal  { InOrder, PreOrder, PostOrder };
+         enum class Traversal  { InOrder, PostOrder };
 
          /// <summary></summary>
          class ScriptExpressionParser
@@ -27,7 +27,8 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------			
 
-               virtual wstring  debugPrint(Traversal t) const PURE;
+               virtual wstring  debugPrint() const PURE;
+               virtual wstring  printTraversal(Traversal t) const PURE;
 
                // ----------------------- MUTATORS ------------------------
 
@@ -48,11 +49,16 @@ namespace Logic
                // ---------------------- ACCESSORS ------------------------			
 
                /// <summary>Prints contents to the console</summary>
-               /// <param name="t">The traversal type</param>
-               wstring  debugPrint(Traversal t) const
+               wstring  debugPrint() const
                {
-                  //Console::WriteLn(L"LiteralValue: %s", Token.Text.c_str());
-                  return StringResource::Format(L"{Literal: %s }", Token.Text.c_str());
+                  return StringResource::Format(L"{Literal: %s}", Token.Text.c_str());
+               }
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  printTraversal(Traversal t) const
+               {
+                  return StringResource::Format(L" %s ", Token.Text.c_str());
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -80,12 +86,16 @@ namespace Logic
                // ---------------------- ACCESSORS ------------------------			
 
                /// <summary>Prints contents to the console</summary>
-               /// <param name="t">The traversal type</param>
-               wstring  debugPrint(Traversal t) const
+               wstring  debugPrint() const
                {
-                  /*Console::WriteLn(L"BracketedExpression: ");
-                  Expression->debugPrint(t);*/
-                  return StringResource::Format(L"{Bracketed: (%s) }", Expression->debugPrint(t).c_str());
+                  return StringResource::Format(L"{Bracketed: ( %s ) }", Expression->debugPrint().c_str());
+               }
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  printTraversal(Traversal t) const
+               {
+                  return StringResource::Format(L" (%s) ", Expression->printTraversal(t).c_str());
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -115,12 +125,21 @@ namespace Logic
                // ---------------------- ACCESSORS ------------------------			
 
                /// <summary>Prints contents to the console</summary>
-               /// <param name="t">The traversal type</param>
-               wstring  debugPrint(Traversal t) const
+               wstring  debugPrint() const
                {
-                  /*Console::WriteLn(L"UnaryExpression: %s", Operator.Text.c_str());
-                  Value->debugPrint(t);*/
-                  return StringResource::Format(L"{Unary: %s %s }", Operator.Text.c_str(), Value->debugPrint(t).c_str());
+                  return StringResource::Format(L"{Unary: %s %s}", Operator.Text.c_str(), Value->debugPrint().c_str());
+               }
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  printTraversal(Traversal t) const
+               {
+                  switch (t)
+                  {
+                  case Traversal::InOrder:   return StringResource::Format(L"%s%s", Operator.Text.c_str(), Value->printTraversal(t).c_str());
+                  case Traversal::PostOrder: return StringResource::Format(L"%s%s", Value->printTraversal(t).c_str(), Operator.Text.c_str());
+                  }
+                  throw "Invalid traversal";
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -131,48 +150,16 @@ namespace Logic
                Expression*        Value;
             };
 
-            class RightHandSide : public Expression
-            {
-               // --------------------- CONSTRUCTION ----------------------
-            public:
-               RightHandSide(ScriptToken o, Expression* r) : Operator(o), Right(r)
-               {}
-               ~RightHandSide() {
-                  delete Right;
-                  Right = nullptr;
-               }
-
-               // Prevent shallow copying/moving
-               NO_COPY(RightHandSide);
-               NO_MOVE(RightHandSide);
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               /// <summary>Prints contents to the console</summary>
-               /// <param name="t">The traversal type</param>
-               wstring  debugPrint(Traversal t) const
-               {
-                  return StringResource::Format(L"{RHS: %s %s }", Operator.Text.c_str(), Right->debugPrint(t).c_str());
-               }
-
-               // ----------------------- MUTATORS ------------------------
-
-               // -------------------- REPRESENTATION ---------------------
-
-               const ScriptToken Operator;
-               Expression*       Right;
-            };
 
             class BinaryExpression : public Expression
             {
                // --------------------- CONSTRUCTION ----------------------
             public:
-               BinaryExpression(Expression* l) : Left(l)
+               BinaryExpression(ScriptToken op, Expression* l, Expression* r) : Operator(op), Left(l), Right(r)
                {}
                ~BinaryExpression() {
-                  delete Left;
-                  Left = nullptr;
-                  for_each(Components.begin(), Components.end(), [](RightHandSide* &r) { delete r; r=nullptr; });
+                  delete Left;  Left = nullptr;
+                  delete Right; Right = nullptr;
                }
 
                // Prevent shallow copying/moving
@@ -182,27 +169,33 @@ namespace Logic
                // ---------------------- ACCESSORS ------------------------			
 
                /// <summary>Prints contents to the console</summary>
-               /// <param name="t">The traversal type</param>
-               wstring  debugPrint(Traversal t) const
+               wstring  debugPrint() const
                {
-                  wstring sz = StringResource::Format(L"{Binary: %s ", Left->debugPrint(t).c_str());
+                  return StringResource::Format(L"{Binary: %s %s %s}", Left->debugPrint().c_str(), 
+                                                                       Operator.Text.c_str(), 
+                                                                       Right->debugPrint().c_str());
+               }
 
-                  for (RightHandSide* r : Components)
-                     sz += StringResource::Format(L"%s ", r->debugPrint(t).c_str());
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  printTraversal(Traversal t) const
+               {
+                  switch (t)
+                  {
+                  case Traversal::InOrder:   return Left->printTraversal(t) + Operator.Text + Right->printTraversal(t);
+                  case Traversal::PostOrder: return Left->printTraversal(t) + Right->printTraversal(t) + Operator.Text;
+                  }
 
-                  return sz + L"}";
+                  throw "Invalid traversal";
                }
 
                // ----------------------- MUTATORS ------------------------
 
-               void  Add(RightHandSide* r) {
-                  Components.push_back(r);
-               }
-
                // -------------------- REPRESENTATION ---------------------
 
-               Expression*          Left;
-               list<RightHandSide*> Components;
+               Expression        *Left,
+                                 *Right;
+               const ScriptToken  Operator;
             };
 
          private:
