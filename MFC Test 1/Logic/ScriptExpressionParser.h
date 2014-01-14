@@ -9,6 +9,8 @@ namespace Logic
    {
       namespace Compiler
       {
+         enum class Traversal  { InOrder, PreOrder, PostOrder };
+
          /// <summary></summary>
          class ScriptExpressionParser
          {
@@ -24,6 +26,8 @@ namespace Logic
                {}
 
                // ---------------------- ACCESSORS ------------------------			
+
+               virtual wstring  debugPrint(Traversal t) const PURE;
 
                // ----------------------- MUTATORS ------------------------
 
@@ -42,6 +46,14 @@ namespace Logic
                NO_MOVE(LiteralValue);
 
                // ---------------------- ACCESSORS ------------------------			
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  debugPrint(Traversal t) const
+               {
+                  //Console::WriteLn(L"LiteralValue: %s", Token.Text.c_str());
+                  return StringResource::Format(L"{Literal: %s }", Token.Text.c_str());
+               }
 
                // ----------------------- MUTATORS ------------------------
 
@@ -66,6 +78,15 @@ namespace Logic
                NO_MOVE(BracketedExpression);
 
                // ---------------------- ACCESSORS ------------------------			
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  debugPrint(Traversal t) const
+               {
+                  /*Console::WriteLn(L"BracketedExpression: ");
+                  Expression->debugPrint(t);*/
+                  return StringResource::Format(L"{Bracketed: (%s) }", Expression->debugPrint(t).c_str());
+               }
 
                // ----------------------- MUTATORS ------------------------
 
@@ -93,6 +114,15 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------			
 
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  debugPrint(Traversal t) const
+               {
+                  /*Console::WriteLn(L"UnaryExpression: %s", Operator.Text.c_str());
+                  Value->debugPrint(t);*/
+                  return StringResource::Format(L"{Unary: %s %s }", Operator.Text.c_str(), Value->debugPrint(t).c_str());
+               }
+
                // ----------------------- MUTATORS ------------------------
 
                // -------------------- REPRESENTATION ---------------------
@@ -117,6 +147,13 @@ namespace Logic
                NO_MOVE(RightHandSide);
 
                // ---------------------- ACCESSORS ------------------------			
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  debugPrint(Traversal t) const
+               {
+                  return StringResource::Format(L"{RHS: %s %s }", Operator.Text.c_str(), Right->debugPrint(t).c_str());
+               }
 
                // ----------------------- MUTATORS ------------------------
 
@@ -143,6 +180,18 @@ namespace Logic
                NO_MOVE(BinaryExpression);
 
                // ---------------------- ACCESSORS ------------------------			
+
+               /// <summary>Prints contents to the console</summary>
+               /// <param name="t">The traversal type</param>
+               wstring  debugPrint(Traversal t) const
+               {
+                  wstring sz = StringResource::Format(L"{Binary: %s ", Left->debugPrint(t).c_str());
+
+                  for (RightHandSide* r : Components)
+                     sz += StringResource::Format(L"%s ", r->debugPrint(t).c_str());
+
+                  return sz + L"}";
+               }
 
                // ----------------------- MUTATORS ------------------------
 
@@ -176,7 +225,7 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
 
          public:
-            void         Parse(TokenIterator& pos);
+            void         Parse();
 
          private:
             ScriptToken* MatchLiteral(const TokenIterator& pos);

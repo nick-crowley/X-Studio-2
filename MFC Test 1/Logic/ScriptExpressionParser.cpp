@@ -23,9 +23,19 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
 
-         void  ScriptExpressionParser::Parse(TokenIterator& pos)
+         void  ScriptExpressionParser::Parse()
          {
-             auto tree = MatchExpression(pos);
+            // DEBUG: print input
+            Console::Write(L"Input: ");
+            for (auto it = InputBegin; it != InputEnd; ++it)
+               Console::Write(L"%s ", it->Text.c_str());
+            Console::WriteLn(L"");
+                         
+            // Produce parse tree
+            auto tree = MatchExpression(InputBegin);
+
+            // DEBUG: Print
+            Console::WriteLn( tree->debugPrint(Traversal::InOrder) );
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
