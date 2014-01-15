@@ -37,7 +37,7 @@
 
 
 // Visual Leak Detector
-#include <vld.h>
+//#include <vld.h>
 
 #ifdef _UNICODE
 #if defined _M_IX86

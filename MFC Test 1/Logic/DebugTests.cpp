@@ -116,11 +116,11 @@ namespace Logic
          
          // Try Parse
          tokens = Tokenise(L"4+5*3");
-         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
+         ScriptExpressionParser(tokens.begin(), tokens.end()).Parse();
 
          // Try Parse
          tokens = Tokenise(L"1|2^3&4<5+6*-8");
-         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
+         ScriptExpressionParser(tokens.begin(), tokens.end()).Parse();
 
          // Try Parse
          /*tokens = Tokenise(L"4+5*3");
