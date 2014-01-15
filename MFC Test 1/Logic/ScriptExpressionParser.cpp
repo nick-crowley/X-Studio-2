@@ -54,7 +54,6 @@ namespace Logic
                Console::WriteLn(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
                Console::WriteLn(L"");
 
-               CHAR* test = new CHAR[51];
             }
             catch (ScriptSyntaxException& e)
             {
