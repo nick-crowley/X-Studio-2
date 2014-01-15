@@ -12,8 +12,8 @@
 #include "MFC Test 1Doc.h"
 #include "MFC Test 1View.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,8 +53,8 @@ CMFCTest1App theApp;
 
 BOOL CMFCTest1App::InitInstance()
 {
-   //VLDEnable();
-   _CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
+   VLDEnable();
+   //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
