@@ -221,19 +221,29 @@ namespace Logic
             void         Parse();
 
          private:
-            ScriptToken* MatchLiteral(const TokenIterator& pos);
-            ScriptToken* MatchOperator(const TokenIterator& pos, const WCHAR* op);
+            bool         MatchLiteral(const TokenIterator& pos);
+            bool         MatchOperator(const TokenIterator& pos, const WCHAR* op);
+            bool         MatchOperator(const TokenIterator& pos, UINT precedence);
+
+            const ScriptToken& ReadLiteral(TokenIterator& pos);
+            const ScriptToken& ReadOperator(TokenIterator& pos);
 
             Expression*  ReadExpression(TokenIterator& pos);
+            /*Expression*  ReadComparison(TokenIterator& pos);
+            Expression*  ReadBitwise(TokenIterator& pos);
+            Expression*  ReadLogical(TokenIterator& pos);
             Expression*  ReadSum(TokenIterator& pos);
-            Expression*  ReadProduct(TokenIterator& pos);
+            Expression*  ReadProduct(TokenIterator& pos);*/
 
-            Expression*  ReadUnary(TokenIterator& pos);
+            Expression*  ReadBinaryExpression(TokenIterator& pos, UINT precedence);
+            Expression*  ReadUnaryExpression(TokenIterator& pos);
             Expression*  ReadValue(TokenIterator& pos);
 
             // -------------------- REPRESENTATION ---------------------
 
          private:
+            const UINT  MIN_PRECEDENCE = 0, MAX_PRECEDENCE = 9;
+
             TokenIterator& InputBegin,
                            InputEnd;
             TokenArray&    Params;
