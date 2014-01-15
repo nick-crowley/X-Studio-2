@@ -9,8 +9,11 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptExpressionParser::ScriptExpressionParser(TokenIterator& begin, TokenIterator& end, TokenArray& params)
-            : InputBegin(begin), InputEnd(end), Params(params)
+         /// <summary>Creates a script expression parser</summary>
+         /// <param name="begin">Position of first expression token</param>
+         /// <param name="end">Position after last expression token</param>
+         ScriptExpressionParser::ScriptExpressionParser(TokenIterator& begin, TokenIterator& end)
+            : InputBegin(begin), InputEnd(end)
          {
          }
 
@@ -23,6 +26,10 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
 
+         /// <summary>Parses the expression, ensures it is correct and produces infix/postfix tokens.</summary>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          void  ScriptExpressionParser::Parse()
          {
             // DEBUG: print input
@@ -34,14 +41,20 @@ namespace Logic
             try
             {
                // Produce parse tree
-               auto tree = ReadExpression(InputBegin);
+               unique_ptr<Expression> tree = unique_ptr<Expression>(ReadExpression(InputBegin));
+
+               // Extract tokens
+               tree->getTokenArray(Traversal::InOrder, InfixParams);
+               tree->getTokenArray(Traversal::PostOrder, PostfixParams);
 
                // DEBUG: Print
                Console::WriteLn(L"Output: %s", tree->debugPrint().c_str() );
-               //Console::WriteLn(L"PreOrder (Not Used): %s", tree->printTraversal(Traversal::PreOrder).c_str());
-               Console::WriteLn(L"Infix: %s", tree->printTraversal(Traversal::InOrder).c_str());
-               Console::WriteLn(L"Postfix: %s", tree->printTraversal(Traversal::PostOrder).c_str());
+               //Console::WriteLn(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
+               Console::WriteLn(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
+               Console::WriteLn(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
                Console::WriteLn(L"");
+
+               CHAR* test = new CHAR[51];
             }
             catch (ScriptSyntaxException& e)
             {
@@ -53,6 +66,9 @@ namespace Logic
 
          // ------------------------------- PRIVATE METHODS ------------------------------
 
+         /// <summary>Attempts to matches any literal</summary>
+         /// <param name="pos">Position of literal</param>
+         /// <returns></returns>
          bool  ScriptExpressionParser::MatchLiteral(const TokenIterator& pos)
          {
             // Validate position 
@@ -72,12 +88,19 @@ namespace Logic
             return false;
          }
 
+         /// <summary>Attempts to matches a specific operator</summary>
+         /// <param name="pos">Position of operator</param>
+         /// <returns></returns>
          bool ScriptExpressionParser::MatchOperator(const TokenIterator& pos, const WCHAR* op)
          {
             // Validate position and compare operator
             return pos < InputEnd && pos->Type == TokenType::Operator && pos->Text == op;
          }
 
+         /// <summary>Attempts to matches any operator of a given precedence</summary>
+         /// <param name="pos">Position of operator</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
          bool ScriptExpressionParser::MatchOperator(const TokenIterator& pos, UINT precedence)
          {
             // Validate position. Ensure operator
@@ -102,6 +125,11 @@ namespace Logic
             throw ArgumentException(HERE, L"precedence", GuiString(L"Invalid precedence %d", precedence));
          }
 
+         /// <summary>Reads the current token as a literal</summary>
+         /// <param name="pos">Current position</param>
+         /// <returns>Token</returns>
+         /// <exception cref="Logic::InvalidOperationException">Token is not a literal</exception>
+         /// <remarks>Advances the iterator to beyond the literal</remarks>
          const ScriptToken&  ScriptExpressionParser::ReadLiteral(TokenIterator& pos)
          {
             // Validate position/type
@@ -112,7 +140,11 @@ namespace Logic
             return *(pos++);
          }
 
-
+         /// <summary>Reads the current token as an operator</summary>
+         /// <param name="pos">Current position</param>
+         /// <returns>Token</returns>
+         /// <exception cref="Logic::InvalidOperationException">Token is not a operator</exception>
+         /// <remarks>Advances the iterator to beyond the operator</remarks>
          const ScriptToken&  ScriptExpressionParser::ReadOperator(TokenIterator& pos)
          {
             // Verify operator
@@ -124,161 +156,26 @@ namespace Logic
          }
 
 
-         
+         /// <summary>Reads an entire expression</summary>
+         /// <param name="pos">Position of first token of expression</param>
+         /// <returns>Expression tree</returns>
+         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
+         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadExpression(TokenIterator& pos)
          {
             // Expression = Comparison
             return ReadBinaryExpression(pos, MIN_PRECEDENCE);
          }
 
-         // Input: Iterator positioned at next token (or EOF)
-         // Out (Match): Iterator positioned after last token
-         // Out (Fail): Iterator not moved
-
-         
-         //ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadComparison(TokenIterator& pos)
-         //{
-         //   Expression* expr = nullptr;
-
-         //   // Rule: Comparison = Bitwise ((& / | / ^) Bitwise)*
-         //   try
-         //   {
-         //      // Read: Bitwise   (may throw)
-         //      expr = ReadBitwise(pos);
-
-         //      // Match: operator  
-         //      while (MatchOperator(pos, L"==") || MatchOperator(pos, L"!=") || MatchOperator(pos, L">")
-         //             || MatchOperator(pos, L"<") || MatchOperator(pos, L">=") || MatchOperator(pos, L"<="))
-         //      {  // Read: operator, Bitwise  (may throw)
-         //         auto op = ReadOperator(pos);
-         //         expr = new BinaryExpression(op, expr, ReadBitwise(pos));   
-         //      }
-
-         //      // Success:
-         //      return expr;
-         //   }
-         //   catch (...)
-         //   {  // Cleanup
-         //      if (expr != nullptr)
-         //         delete expr;
-         //      throw;
-         //   }
-         //}
-
-         //ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadBitwise(TokenIterator& pos)
-         //{
-         //   Expression* expr = nullptr;
-
-         //   // Rule: Bitwise = Logical ((& / | / ^) Logical)*
-         //   try
-         //   {
-         //      // Read: Logical   (may throw)
-         //      expr = ReadLogical(pos);
-
-         //      // Match: operator  
-         //      while (MatchOperator(pos, L"&") || MatchOperator(pos, L"|") || MatchOperator(pos, L"^")) 
-         //      {  // Read: operator, Logical  (may throw)
-         //         auto op = ReadOperator(pos);
-         //         expr = new BinaryExpression(op, expr, ReadLogical(pos));   
-         //      }
-
-         //      // Success:
-         //      return expr;
-         //   }
-         //   catch (...)
-         //   {  // Cleanup
-         //      if (expr != nullptr)
-         //         delete expr;
-         //      throw;
-         //   }
-         //}
-
-         //ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadLogical(TokenIterator& pos)
-         //{
-         //   Expression* expr = nullptr;
-
-         //   // Rule: Logical = Sum ((AND / OR) Sum)*
-         //   try
-         //   {
-         //      // Read: Sum   (may throw)
-         //      expr = ReadSum(pos);
-
-         //      // Match: operator  
-         //      while (MatchOperator(pos, L"AND") || MatchOperator(pos, L"OR")) 
-         //      {  // Read: operator, Sum  (may throw)
-         //         auto op = ReadOperator(pos);
-         //         expr = new BinaryExpression(op, expr, ReadSum(pos));   
-         //      }
-
-         //      // Success:
-         //      return expr;
-         //   }
-         //   catch (...)
-         //   {  // Cleanup
-         //      if (expr != nullptr)
-         //         delete expr;
-         //      throw;
-         //   }
-         //}
-
-         //ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadSum(TokenIterator& pos)
-         //{
-         //   Expression* expr = nullptr;
-
-         //   // Rule: Sum = Product (('+' / '-') Product)*
-         //   try
-         //   {
-         //      // Read: product   (may throw)
-         //      expr = ReadProduct(pos);
-
-         //      // Match: operator  
-         //      while (MatchOperator(pos, L"+") || MatchOperator(pos, L"-")) 
-         //      {  // Read: operator, product  (may throw)
-         //         auto op = ReadOperator(pos);
-         //         expr = new BinaryExpression(op, expr, ReadProduct(pos));   
-         //      }
-
-         //      // Success:
-         //      return expr;
-         //   }
-         //   catch (...)
-         //   {  
-         //      // Cleanup
-         //      if (expr != nullptr)
-         //         delete expr;
-         //      throw;
-         //   }
-         //}
-
-         //ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadProduct(TokenIterator& pos)
-         //{
-         //   Expression* expr = nullptr;
-
-         //   // Rule: Sum = Unary (('+' / '-') Unary)*
-         //   try
-         //   {
-         //      // Read: Unary   (may throw)
-         //      expr = ReadUnary(pos);
-
-         //      // Match: operator  
-         //      while (MatchOperator(pos, L"*") || MatchOperator(pos, L"/") || MatchOperator(pos, L"mod")) 
-         //      {  // Read: operator, Unary  (may throw)
-         //         auto op = ReadOperator(pos);
-         //         expr = new BinaryExpression(op, expr, ReadUnary(pos));  
-         //      }
-
-         //      // Success:
-         //      return expr;
-         //   }
-         //   catch (...)
-         //   {  
-         //      // Cleanup
-         //      if (expr != nullptr)
-         //         delete expr;
-         //      throw;
-         //   }
-         //}
-
+         /// <summary>Reads a binary expression, unary expression, sub-expression, or literal</summary>
+         /// <param name="pos">Position of first token of expression</param>
+         /// <returns>Expression tree</returns>
+         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
+         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
          {
             Expression* expr = nullptr;
@@ -312,6 +209,14 @@ namespace Logic
             }
          }
 
+
+         /// <summary>Reads a unary expression, sub-expression, or literal</summary>
+         /// <param name="pos">Position of first token of expression</param>
+         /// <returns>Expression tree</returns>
+         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
+         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadUnaryExpression(TokenIterator& pos)
          {
             // Rule: Unary = (! / - / ~)? Value
@@ -327,7 +232,13 @@ namespace Logic
             return ReadValue(pos);
          }
 
-         
+         /// <summary>Reads a literal or sub-expression</summary>
+         /// <param name="pos">Position of literal or first token of sub-expression</param>
+         /// <returns>Expression tree</returns>
+         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
+         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <remarks>Advances the iterator to beyond the end of the literal or sub-expression</remarks>
          ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadValue(TokenIterator& pos)
          {
             Expression* expr = nullptr;

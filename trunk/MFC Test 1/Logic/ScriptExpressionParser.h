@@ -11,11 +11,12 @@ namespace Logic
       {
          enum class Traversal  { InOrder, PostOrder };
 
-         /// <summary></summary>
+         /// <summary>Parses expression script commands</summary>
          class ScriptExpressionParser
          {
             // ------------------------ TYPES --------------------------
-            
+
+            /// <summary>Base class for all expression tree nodes</summary>
             class Expression
             {
                // --------------------- CONSTRUCTION ----------------------
@@ -27,14 +28,19 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------			
 
+               // Debug:
                virtual wstring  debugPrint() const PURE;
-               virtual wstring  printTraversal(Traversal t) const PURE;
+               virtual wstring  debugPrintTraversal(Traversal t) const PURE;
+
+               // Get tokens from tree
+               virtual void     getTokenArray(Traversal t, TokenArray& tokens) const PURE;
 
                // ----------------------- MUTATORS ------------------------
 
                // -------------------- REPRESENTATION ---------------------
             };
 
+            /// <summary>Expression tree node for a literal value</summary>
             class LiteralValue : public Expression
             {
                // --------------------- CONSTRUCTION ----------------------
@@ -53,12 +59,20 @@ namespace Logic
                {
                   return StringResource::Format(L"{Literal: %s}", Token.Text.c_str());
                }
-
+               
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
-               wstring  printTraversal(Traversal t) const
+               wstring  debugPrintTraversal(Traversal t) const
                {
                   return StringResource::Format(L" %s ", Token.Text.c_str());
+               }
+
+               /// <summary>Populates a token array</summary>
+               /// <param name="t">Order of traversal</param>
+               /// <param name="tokens">Array to populate</param>
+               void  getTokenArray(Traversal t, TokenArray& tokens) const
+               {
+                  tokens.push_back(Token);
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -68,6 +82,7 @@ namespace Logic
                const ScriptToken  Token;
             };
 
+            /// <summary>Expression tree node for a bracketed sub-expression</summary>
             class BracketedExpression : public Expression
             {
                // --------------------- CONSTRUCTION ----------------------
@@ -90,12 +105,20 @@ namespace Logic
                {
                   return StringResource::Format(L"{Bracketed: ( %s ) }", Expression->debugPrint().c_str());
                }
-
+               
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
-               wstring  printTraversal(Traversal t) const
+               wstring  debugPrintTraversal(Traversal t) const
                {
-                  return StringResource::Format(L" (%s) ", Expression->printTraversal(t).c_str());
+                  return StringResource::Format(L" (%s) ", Expression->debugPrintTraversal(t).c_str());
+               }
+
+               /// <summary>Populates a token array</summary>
+               /// <param name="t">Order of traversal</param>
+               /// <param name="tokens">Array to populate</param>
+               void  getTokenArray(Traversal t, TokenArray& tokens) const
+               {
+                  Expression->getTokenArray(t, tokens);
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -107,6 +130,7 @@ namespace Logic
                Expression*        Expression;
             };
 
+            /// <summary>Expression tree node for an unary expression</summary>
             class UnaryExpression : public Expression
             {
                // --------------------- CONSTRUCTION ----------------------
@@ -129,17 +153,32 @@ namespace Logic
                {
                   return StringResource::Format(L"{Unary: %s %s}", Operator.Text.c_str(), Value->debugPrint().c_str());
                }
-
+               
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
-               wstring  printTraversal(Traversal t) const
+               /// <exception cref="Logic::ArgumentException">Unrecognised traversal type</exception>
+               wstring  debugPrintTraversal(Traversal t) const
                {
                   switch (t)
                   {
-                  case Traversal::InOrder:   return StringResource::Format(L"%s%s", Operator.Text.c_str(), Value->printTraversal(t).c_str());
-                  case Traversal::PostOrder: return StringResource::Format(L"%s%s", Value->printTraversal(t).c_str(), Operator.Text.c_str());
+                  case Traversal::InOrder:   return StringResource::Format(L"%s%s", Operator.Text.c_str(), Value->debugPrintTraversal(t).c_str());
+                  case Traversal::PostOrder: return StringResource::Format(L"%s%s", Value->debugPrintTraversal(t).c_str(), Operator.Text.c_str());
                   }
-                  throw "Invalid traversal";
+                  throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+               }
+
+               /// <summary>Populates a token array</summary>
+               /// <param name="t">Order of traversal</param>
+               /// <param name="tokens">Array to populate</param>
+               /// <exception cref="Logic::ArgumentException">Unrecognised traversal type</exception>
+               void  getTokenArray(Traversal t, TokenArray& tokens) const
+               {
+                  switch (t)
+                  {
+                  case Traversal::InOrder:   tokens.push_back(Operator);      Value->getTokenArray(t, tokens);  break;
+                  case Traversal::PostOrder: Value->getTokenArray(t, tokens); tokens.push_back(Operator);       break;
+                  default:  throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                  }
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -150,7 +189,7 @@ namespace Logic
                Expression*        Value;
             };
 
-
+            /// <summary>Expression tree node for a binary expression</summary>
             class BinaryExpression : public Expression
             {
                // --------------------- CONSTRUCTION ----------------------
@@ -175,18 +214,40 @@ namespace Logic
                                                                        Operator.Text.c_str(), 
                                                                        Right->debugPrint().c_str());
                }
-
+               
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
-               wstring  printTraversal(Traversal t) const
+               /// <exception cref="Logic::ArgumentException">Unrecognised traversal type</exception>
+               wstring  debugPrintTraversal(Traversal t) const
                {
                   switch (t)
                   {
-                  case Traversal::InOrder:   return Left->printTraversal(t) + Operator.Text + Right->printTraversal(t);
-                  case Traversal::PostOrder: return Left->printTraversal(t) + Right->printTraversal(t) + Operator.Text;
+                  case Traversal::InOrder:   return Left->debugPrintTraversal(t) + Operator.Text + Right->debugPrintTraversal(t);
+                  case Traversal::PostOrder: return Left->debugPrintTraversal(t) + Right->debugPrintTraversal(t) + Operator.Text;
                   }
 
-                  throw "Invalid traversal";
+                  throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+               }
+
+               /// <summary>Populates a token array</summary>
+               /// <param name="t">Order of traversal</param>
+               /// <param name="tokens">Array to populate</param>
+               /// <exception cref="Logic::ArgumentException">Unrecognised traversal type</exception>
+               void  getTokenArray(Traversal t, TokenArray& tokens) const
+               {
+                  switch (t)
+                  {
+                  case Traversal::InOrder:   
+                     Left->getTokenArray(t, tokens); tokens.push_back(Operator); Right->getTokenArray(t, tokens);   
+                     break;
+
+                  case Traversal::PostOrder: 
+                     Left->getTokenArray(t, tokens); Right->getTokenArray(t, tokens); tokens.push_back(Operator); 
+                     break;
+
+                  default:  
+                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                  }
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -203,11 +264,13 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptExpressionParser(TokenIterator& begin, TokenIterator& end, TokenArray& params);
+            ScriptExpressionParser(TokenIterator& begin, TokenIterator& end);
             virtual ~ScriptExpressionParser();
 
-            DEFAULT_COPY(ScriptExpressionParser);	// Default copy semantics
-            DEFAULT_MOVE(ScriptExpressionParser);	// Default move semantics
+            // Default copy semantics
+            DEFAULT_COPY(ScriptExpressionParser);	
+            // Default move semantics
+            DEFAULT_MOVE(ScriptExpressionParser);	
 
             // ------------------------ STATIC -------------------------
 
@@ -218,35 +281,33 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
 
          public:
-            void         Parse();
+            void  Parse();
 
          private:
-            bool         MatchLiteral(const TokenIterator& pos);
-            bool         MatchOperator(const TokenIterator& pos, const WCHAR* op);
-            bool         MatchOperator(const TokenIterator& pos, UINT precedence);
+            bool  MatchLiteral(const TokenIterator& pos);
+            bool  MatchOperator(const TokenIterator& pos, const WCHAR* op);
+            bool  MatchOperator(const TokenIterator& pos, UINT precedence);
 
             const ScriptToken& ReadLiteral(TokenIterator& pos);
             const ScriptToken& ReadOperator(TokenIterator& pos);
 
             Expression*  ReadExpression(TokenIterator& pos);
-            /*Expression*  ReadComparison(TokenIterator& pos);
-            Expression*  ReadBitwise(TokenIterator& pos);
-            Expression*  ReadLogical(TokenIterator& pos);
-            Expression*  ReadSum(TokenIterator& pos);
-            Expression*  ReadProduct(TokenIterator& pos);*/
-
             Expression*  ReadBinaryExpression(TokenIterator& pos, UINT precedence);
             Expression*  ReadUnaryExpression(TokenIterator& pos);
             Expression*  ReadValue(TokenIterator& pos);
 
             // -------------------- REPRESENTATION ---------------------
 
+         public:
+            TokenArray  InfixParams, 
+                        PostfixParams;
+
          private:
-            const UINT  MIN_PRECEDENCE = 0, MAX_PRECEDENCE = 9;
+            const UINT  MIN_PRECEDENCE = 0, 
+                        MAX_PRECEDENCE = 9;
 
             TokenIterator& InputBegin,
                            InputEnd;
-            TokenArray&    Params;
          };
       }
    }
