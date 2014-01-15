@@ -98,48 +98,33 @@ namespace Logic
       }
    }
 
+   TokenArray  Tokenise(const wstring expr)
+   {
+      TokenArray tokens;
+
+      for (WCHAR ch : expr)
+         tokens.push_back(ScriptToken(iswdigit(ch) ? TokenType::Number : TokenType::Operator, 0, 0, wstring(1, ch)));
+
+      return tokens;
+   }
+
    void  DebugTests::Test_ExpressionParser()
    {
       try
       {
-         // Generate list of tokens
          TokenArray tokens;
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
-
+         
          // Try Parse
+         tokens = Tokenise(L"4+5*3");
          ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
 
-         // Generate list of tokens
-         tokens.clear();
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"("));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L")"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
-
          // Try Parse
+         tokens = Tokenise(L"1|2^3&4<5+6*-8");
          ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
 
-         // Generate list of tokens
-         tokens.clear();
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"!"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"("));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"4"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"+"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"5"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L")"));
-         tokens.push_back(ScriptToken(TokenType::Operator, 0, 0, L"*"));
-         tokens.push_back(ScriptToken(TokenType::Number, 0, 0,   L"3"));
-
          // Try Parse
-         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();
+         /*tokens = Tokenise(L"4+5*3");
+         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();*/
       }
       catch (...)
       {
