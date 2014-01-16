@@ -40,6 +40,9 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
             };
 
+            /// <summary>Shared pointer to an expression tree node</summary>
+            typedef shared_ptr<Expression> ExpressionTree;
+
             /// <summary>Expression tree node for a literal value</summary>
             class LiteralValue : public Expression
             {
@@ -87,12 +90,10 @@ namespace Logic
             {
                // --------------------- CONSTRUCTION ----------------------
             public:
-               BracketedExpression(ScriptToken op, Expression* expr, ScriptToken cl) : Open(op), Expression(expr), Close(cl)
+               BracketedExpression(ScriptToken op, ExpressionTree expr, ScriptToken cl) : Open(op), Expression(expr), Close(cl)
                {}
-               ~BracketedExpression() {
-                  delete Expression;
-                  Expression = nullptr;
-               }
+               ~BracketedExpression()
+               {}
 
                // Prevent shallow copying/moving
                NO_COPY(BracketedExpression);
@@ -127,7 +128,7 @@ namespace Logic
 
                const ScriptToken  Open,
                                   Close;
-               Expression*        Expression;
+               ExpressionTree     Expression;
             };
 
             /// <summary>Expression tree node for an unary expression</summary>
@@ -135,12 +136,10 @@ namespace Logic
             {
                // --------------------- CONSTRUCTION ----------------------
             public:
-               UnaryExpression(ScriptToken o, Expression* v) : Operator(o), Value(v)
+               UnaryExpression(ScriptToken o, ExpressionTree v) : Operator(o), Value(v)
                {}
-               ~UnaryExpression() {
-                  delete Value;
-                  Value = nullptr;
-               }
+               ~UnaryExpression()
+               {}
 
                // Prevent shallow copying/moving
                NO_COPY(UnaryExpression);
@@ -186,7 +185,7 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
 
                const ScriptToken  Operator;
-               Expression*        Value;
+               ExpressionTree     Value;
             };
 
             /// <summary>Expression tree node for a binary expression</summary>
@@ -194,12 +193,10 @@ namespace Logic
             {
                // --------------------- CONSTRUCTION ----------------------
             public:
-               BinaryExpression(ScriptToken op, Expression* l, Expression* r) : Operator(op), Left(l), Right(r)
+               BinaryExpression(ScriptToken op, ExpressionTree l, ExpressionTree r) : Operator(op), Left(l), Right(r)
                {}
-               ~BinaryExpression() {
-                  delete Left;  Left = nullptr;
-                  delete Right; Right = nullptr;
-               }
+               ~BinaryExpression()
+               {}
 
                // Prevent shallow copying/moving
                NO_COPY(BinaryExpression);
@@ -254,8 +251,8 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
 
-               Expression        *Left,
-                                 *Right;
+               ExpressionTree     Left,
+                                  Right;
                const ScriptToken  Operator;
             };
 
@@ -291,10 +288,10 @@ namespace Logic
             const ScriptToken& ReadLiteral(TokenIterator& pos);
             const ScriptToken& ReadOperator(TokenIterator& pos);
 
-            Expression*  ReadExpression(TokenIterator& pos);
-            Expression*  ReadBinaryExpression(TokenIterator& pos, UINT precedence);
-            Expression*  ReadUnaryExpression(TokenIterator& pos);
-            Expression*  ReadValue(TokenIterator& pos);
+            ExpressionTree  ReadExpression(TokenIterator& pos);
+            ExpressionTree  ReadBinaryExpression(TokenIterator& pos, UINT precedence);
+            ExpressionTree  ReadUnaryExpression(TokenIterator& pos);
+            ExpressionTree  ReadValue(TokenIterator& pos);
 
             // -------------------- REPRESENTATION ---------------------
 
