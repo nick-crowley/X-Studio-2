@@ -13,6 +13,7 @@
 #include "XmlWriter.h"
 #include "SyntaxWriter.h"
 #include "ScriptExpressionParser.h"
+#include "ScriptCommandLexer.h"
 
 namespace Logic
 {
@@ -125,6 +126,30 @@ namespace Logic
          // Try Parse
          /*tokens = Tokenise(L"4+5*3");
          ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();*/
+
+         // Test Lexer
+         const WCHAR* cmd = L"$szTemp = sprintf: fmt='iMaximumDistance = %s   iAttackTimeout = %s', $iMaximumDistance, $iAttackTimeout, null, null, null";
+         ScriptCommandLexer lex(cmd);
+
+         // Test lexer
+         cmd = L"= [PLAYERSHIP]-> add $iPassengersEnslaved units of {Slaves}";
+         ScriptCommandLexer lex2(cmd);
+
+         // Test lexer
+         cmd = L"* INFO: `WARNING: The %s have revoked your police license.`";
+         ScriptCommandLexer lex3(cmd);
+         
+         // Test lexer
+         cmd = L"do if $szItemChosen == 'Option.Quit' OR $szItemChosen == -1";
+         ScriptCommandLexer lex4(cmd);
+
+         // Test lexer
+         cmd = L"$oWeapon = $oRequirement[2]";
+         ScriptCommandLexer lex5(cmd);
+         
+         // Test lexer
+         cmd = L"$bMatch = ($BONUS.MARINES.COUNT >= $iActorCount) AND ($BONUS.SIDEARMS.COUNT >= $iActorCount + 1)";
+         ScriptCommandLexer lex6(cmd);
       }
       catch (...)
       {

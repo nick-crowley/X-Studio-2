@@ -232,7 +232,7 @@
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
     <ClInclude Include="Logic\ScriptExpressionParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -384,7 +384,7 @@
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
     <ClCompile Include="Logic\ScriptExpressionParser.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
