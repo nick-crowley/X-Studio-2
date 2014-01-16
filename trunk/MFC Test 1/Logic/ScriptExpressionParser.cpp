@@ -41,7 +41,7 @@ namespace Logic
             try
             {
                // Produce parse tree
-               unique_ptr<Expression> tree = unique_ptr<Expression>(ReadExpression(InputBegin));
+               ExpressionTree tree = ReadExpression(InputBegin);
 
                // Extract tokens
                tree->getTokenArray(Traversal::InOrder, InfixParams);
@@ -171,7 +171,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadExpression(TokenIterator& pos)
+         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadExpression(TokenIterator& pos)
          {
             // Expression = Comparison
             return ReadBinaryExpression(pos, MIN_PRECEDENCE);
@@ -184,37 +184,29 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
+         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
          {
-            Expression* expr = nullptr;
+            ExpressionTree expr = nullptr;
 
             // Rule: BinaryExpr = Operand (operator Operand)*
             //       Operand = Value / UnaryExpr / MultDivExpr / SumExpr / BitwiseExpr / LogicalExpr / ComparisonExpr
-            try
-            {
+            
+            // Read: expression-of-higher-precedence / Value
+            expr = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));    // throws
+
+            // Match: operator  
+            while (MatchOperator(pos, precedence))
+            {  
+               // Read: operator
+               auto op = ReadOperator(pos);                                                        
+
                // Read: expression-of-higher-precedence / Value
-               expr = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));    // throws
-
-               // Match: operator  
-               while (MatchOperator(pos, precedence))
-               {  
-                  // Read: operator
-                  auto op = ReadOperator(pos);                                                        
-
-                  // Read: expression-of-higher-precedence / Value
-                  auto rhs = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));  // throws
-                  expr = new BinaryExpression(op, expr, rhs);     // throws
-               }
-
-               // Success:
-               return expr;
+               auto rhs = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));  // throws
+               expr = ExpressionTree(new BinaryExpression(op, expr, rhs));     // throws
             }
-            catch (...)
-            {  // Cleanup
-               if (expr != nullptr)
-                  delete expr;
-               throw;
-            }
+
+            // Success:
+            return expr;
          }
 
 
@@ -225,7 +217,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadUnaryExpression(TokenIterator& pos)
+         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadUnaryExpression(TokenIterator& pos)
          {
             // Rule: Unary = (! / - / ~)? Value
 
@@ -233,7 +225,7 @@ namespace Logic
             if (MatchOperator(pos, MAX_PRECEDENCE)) 
             {   // Read: operator, Value  (may throw)
                const ScriptToken& op = ReadOperator(pos);
-               return new UnaryExpression(op, ReadValue(pos));    
+               return ExpressionTree(new UnaryExpression(op, ReadValue(pos)));
             }
 
             // Read: Value  (may throw)
@@ -247,15 +239,15 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the literal or sub-expression</remarks>
-         ScriptExpressionParser::Expression*  ScriptExpressionParser::ReadValue(TokenIterator& pos)
+         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadValue(TokenIterator& pos)
          {
-            Expression* expr = nullptr;
+            ExpressionTree expr = nullptr;
 
             // Rule: Value = Literal / '(' Expression ')'
 
             // Match: Literal  
             if (MatchLiteral(pos)) 
-               return new LiteralValue(ReadLiteral(pos));
+               return ExpressionTree( new LiteralValue(ReadLiteral(pos)) );
 
             // Read: Bracket   [nothrow]
             if (!MatchOperator(pos, L"(")) 
@@ -274,10 +266,9 @@ namespace Logic
 
             // Read: Bracket   [nothrow]
             if (MatchOperator(pos, L")")) 
-               return new BracketedExpression(open, expr, ReadOperator(pos));
+               return ExpressionTree( new BracketedExpression(open, expr, ReadOperator(pos)) );
             
             // Failure: Missing closing bracket
-            delete expr;
             throw ScriptSyntaxException(HERE, L"Missing closing bracket");
          }
 
