@@ -73,7 +73,7 @@ namespace Logic
       /// <summary>Writes the formatted text to the console</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="...">Arguments</param>
-      static void  WriteLn(const WCHAR* format, ...)
+      static void  WriteLn(const WCHAR* format = L"", ...)
       {
          va_list args;
          OutputDebugString(StringResource::FormatV(format, va_start(args, format)).c_str());

@@ -25,7 +25,7 @@ namespace Logic
          // ------------------------------- STATIC METHODS -------------------------------
 
          // ------------------------------- PUBLIC METHODS -------------------------------
-
+         
          /// <summary>Parses the expression, ensures it is correct and produces infix/postfix tokens.</summary>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
@@ -76,7 +76,6 @@ namespace Logic
                switch (pos->Type)
                {
                case TokenType::Variable:
-               case TokenType::Constant:
                case TokenType::Number:
                case TokenType::String:
                case TokenType::GameObject:
@@ -131,12 +130,22 @@ namespace Logic
          /// <remarks>Advances the iterator to beyond the literal</remarks>
          const ScriptToken&  ScriptExpressionParser::ReadLiteral(TokenIterator& pos)
          {
-            // Validate position/type
-            if (pos >= InputEnd || pos->Type == TokenType::Operator || pos->Type == TokenType::Text)
-               throw InvalidOperationException(HERE, L"Not a literal");
-
-            // Read literal. Advance position
-            return *(pos++);
+            // Validation position
+            if (pos < InputEnd)
+               switch (pos->Type)
+               {
+               // Check type
+               case TokenType::Variable:
+               case TokenType::Number:
+               case TokenType::String:
+               case TokenType::GameObject:
+               case TokenType::ScriptObject:
+                  // Read literal. Advance position
+                  return *(pos++);
+               }
+          
+            // Error:
+            throw InvalidOperationException(HERE, L"Not a literal");
          }
 
          /// <summary>Reads the current token as an operator</summary>
