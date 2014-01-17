@@ -13,6 +13,7 @@ namespace Logic
 
       /// <summary></summary>
       enum BranchLogic   { None, NOP, If, While, SkipIf, Else, ElseIf, End, Break, Continue };
+      const WCHAR* GetString(BranchLogic l);
 
       /// <summary></summary>
       class ScriptCommand

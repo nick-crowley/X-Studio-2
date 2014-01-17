@@ -6,6 +6,7 @@ namespace Logic
 {
    namespace Scripts
    {
+      
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create the 'unknown' command syntax sentinel value</summary>

@@ -63,6 +63,15 @@ namespace Logic
                   return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
                }
 
+               void  Print(int depth = 0) const
+               {
+                  wstring tab(depth, (WCHAR)L' ');
+                  Console::WriteLn(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Command.Syntax.Text.c_str());
+
+                  for (auto c : Children)
+                     c->Print(depth+1);
+               }
+
                vector<CommandTree>  Children;    // Child commands
             };
 

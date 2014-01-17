@@ -13,10 +13,10 @@ namespace Logic
             : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), Tokens(Parse())
          {
             // DEBUG:
-            Console::WriteLn(L"\nLexing command: %s", line.c_str());
+            /*Console::WriteLn(L"\nLexing command: %s", line.c_str());
             for (const ScriptToken& t : Tokens)
                Console::WriteLn(L"Token: '%s'", t.Text.c_str());
-            Console::WriteLn();
+            Console::WriteLn();*/
          }
 
 
@@ -36,30 +36,39 @@ namespace Logic
             while (ValidPosition)
             {
                // Whitespace: Skip
-               switch (*Position)
+               /*switch (*Position)
                {
                case '\t':
                case '\r':
                case '\n': 
+               case '\v': 
                case ' ':    
                   ReadWhitespace(); 
                   continue;
-               }
+               }*/
+
+               // Whitespace: Skip
+               if (MatchWhitespace()) 
+                  ReadWhitespace();
 
                // Comment: 
-               if (output.size() == 1 && output[0].Text == L"*")
+               else if (output.size() == 1 && output[0].Text == L"*")
                   output.push_back( ReadComment(Position) );
+
+               // Number:
+               else if (MatchNumber())
+                  output.push_back( ReadNumber(Position) );      
 
                // Remainder: 
                else switch (*Position)
                {
-               case L'0': case L'5': 
+               /*case L'0': case L'5': 
                case L'1': case L'6':
                case L'2': case L'7':
                case L'3': case L'8':
                case L'4': case L'9':   
                   output.push_back( ReadNumber(Position) );      
-                  break;
+                  break;*/
 
                case L'$':   output.push_back( ReadVariable(Position) );    break;
                case L'{':   output.push_back( ReadGameObject(Position) );  break;

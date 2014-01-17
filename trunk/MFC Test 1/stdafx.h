@@ -36,6 +36,9 @@
 #include <afxsock.h>            // MFC socket extensions
 
 
+// Win32 Macros
+#include <Windowsx.h>
+
 // Visual Leak Detector
 #include <vld.h>
 

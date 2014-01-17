@@ -33,6 +33,10 @@ namespace Logic
             // Iterate over lines
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
+               // DEBUG:
+               Console::WriteLn(L"Parsing line '%s'", line->c_str());
+
+               // Peek logic
                switch (BranchLogic logic = PeekCommand(line))
                {
                // Conditional (Valid/Invalid): Read branch
@@ -113,6 +117,9 @@ namespace Logic
             ScriptCommandLexer lex(*line);
             TokenIterator pos = lex.Tokens.begin();
             Conditional c = Conditional::NONE;
+
+            // consume line
+            ++line;
             
             // Identify conditional. Consume only tokens that match.  [prev identified logic has matched the initial token(s)]
             switch (logic)

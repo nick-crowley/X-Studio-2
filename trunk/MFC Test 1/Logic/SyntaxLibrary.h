@@ -13,6 +13,8 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
 
+         typedef multimap<wstring,CommandSyntax>  HashCollection;
+
          // --------------------- CONSTRUCTION ----------------------
 
       private:
@@ -35,28 +37,17 @@ namespace Logic
          /// <param name="ver">Game version</param>
          /// <returns></returns>
          /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
-         CommandSyntax  Find(UINT id, GameVersion ver) const
-         { 
-            // Search all syntax with matching ID for a compatible version
-            for (auto it = Commands.find(id); it != Commands.end() && it->first == id; ++it)
-               if (it->second.Versions & (UINT)ver)
-                  return it->second;
+         CommandSyntax  Find(UINT id, GameVersion ver) const;
 
-            // Not found
-            throw SyntaxNotFoundException(HERE, id, ver);
-         }
-
-         CommandSyntax  Identify(const CommandHash& h, GameVersion v) const
-         {
-            return Unknown;
-         }
+         /// <summary>Finds syntax by Hash</summary>
+         /// <param name="h">command hash</param>
+         /// <param name="ver">Game version</param>
+         /// <returns>Syntax if found, otherwise 'Unknown'</returns>
+         CommandSyntax  Identify(const CommandHash& h, GameVersion v) const;
 
          /// <summary>Merges a syntax file into the library</summary>
          /// <param name="f">The file</param>
-         void  Merge(SyntaxFile&& f)
-         { 
-            Commands.Merge(std::move(f)); 
-         }
+         void  Merge(SyntaxFile&& f);
 
 		   // ----------------------- MUTATORS ------------------------
 
@@ -67,6 +58,7 @@ namespace Logic
 
       private:
          SyntaxCollection  Commands;
+         HashCollection    Hashes;
       };
 
    }

@@ -73,6 +73,9 @@ namespace Logic
          Catalogs.clear();
          Files.clear();
 
+         // DEBUG:
+         Console::WriteLn(L"Building %s VFS from '%s'", VersionString(version).c_str(), (WCHAR*)folder);
+
          // Ensure folder exists
          if (!folder.Exists())
             throw DirectoryNotFoundException(HERE, folder);
@@ -175,6 +178,9 @@ namespace Logic
             CatalogReader  reader(cat.GetReader());
             wstring        path;
             DWORD          size;
+
+            // DEBUG:
+            Console::WriteLn(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath);
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
