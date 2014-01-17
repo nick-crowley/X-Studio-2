@@ -46,14 +46,14 @@ namespace Logic
 
          // DEBUG: print results
          for (XFileInfo& f : results)
-            Console::WriteLn(L"Found language file: %s", f.FullPath.c_str());
+            Console.WriteLn(L"Found language file: %s", f.FullPath.c_str());
 
          // Read/Store each file
          for (XFileInfo& f : results)
          {
             try
             {
-               Console::WriteLn(L"Reading language file: %s", f.FullPath.c_str());
+               Console.WriteLn(L"Reading language file: %s", f.FullPath.c_str());
                LanguageFile file = LanguageFileReader(f.Open()).ReadFile(f.FullPath.FileName);
 
                // Skip files that turn out to be foreign
@@ -62,7 +62,7 @@ namespace Logic
             }
             catch (ExceptionBase& e)
             {
-               Console::WriteLn(L"Skipping language file: %s - %s", f.FullPath.c_str(), e.Message.c_str());
+               Console.WriteLn(L"Skipping language file: %s - %s", f.FullPath.c_str(), e.Message.c_str());
             }
          }
 

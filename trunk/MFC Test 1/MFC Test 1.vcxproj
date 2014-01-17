@@ -132,9 +132,11 @@
     <ClInclude Include="Logic\CommandHash.h" />
     <ClInclude Include="Logic\CommandSyntax.h" />
     <ClInclude Include="Logic\Common.h" />
+    <ClInclude Include="Logic\ConsoleWnd.h" />
     <ClInclude Include="Logic\DataStream.h" />
     <ClInclude Include="Logic\DebugTests.h" />
     <ClInclude Include="Logic\Exceptions.h" />
+    <ClInclude Include="Logic\FileSearch.h" />
     <ClInclude Include="Logic\FileStream.h" />
     <ClInclude Include="Logic\GZipStream.h" />
     <ClInclude Include="Logic\LanguageFile.h" />
@@ -146,6 +148,7 @@
     <ClInclude Include="Logic\MemoryStream.h" />
     <ClInclude Include="Logic\msxml.h" />
     <ClInclude Include="Logic\ParameterSyntax.h" />
+    <ClInclude Include="Logic\Path.h" />
     <ClInclude Include="Logic\ReturnValue.h" />
     <ClInclude Include="Logic\RtfWriter.h" />
     <ClInclude Include="Logic\ScriptCommand.h" />
@@ -157,14 +160,13 @@
     <ClInclude Include="Logic\ScriptParser.h" />
     <ClInclude Include="Logic\ScriptToken.h" />
     <ClInclude Include="Logic\ScriptWriter.h" />
-    <ClInclude Include="Logic\STL.h" />
     <ClInclude Include="Logic\Stream.h" />
     <ClInclude Include="Logic\StringLibrary.h" />
     <ClInclude Include="Logic\StringReader.h" />
+    <ClInclude Include="Logic\StringResource.h" />
     <ClInclude Include="Logic\SyntaxFile.h" />
     <ClInclude Include="Logic\SyntaxLibrary.h" />
     <ClInclude Include="Logic\SyntaxWriter.h" />
-    <ClInclude Include="Logic\Utils.h" />
     <ClInclude Include="Logic\XCatalog.h" />
     <ClInclude Include="Logic\XFileInfo.h" />
     <ClInclude Include="Logic\XFileSystem.h" />
@@ -190,6 +192,7 @@
     <ClCompile Include="Logic\CatalogReader.cpp" />
     <ClCompile Include="Logic\CatalogStream.cpp" />
     <ClCompile Include="Logic\CommandSyntax.cpp" />
+    <ClCompile Include="Logic\ConsoleWnd.cpp" />
     <ClCompile Include="Logic\DataStream.cpp" />
     <ClCompile Include="Logic\DebugTests.cpp" />
     <ClCompile Include="Logic\FileSearch.cpp" />

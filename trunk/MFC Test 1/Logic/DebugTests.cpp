@@ -30,8 +30,8 @@ namespace Logic
       ScriptParser p(lines, GameVersion::TerranConflict);
       auto tree = p.ReadScript();
 
-      Console::WriteLn();
-      Console::WriteLn(L"Parser has produced the following tree:");
+      Console.WriteLn();
+      Console.WriteLn(L"Parser has produced the following tree:");
       tree->Print();
    }
 
@@ -47,14 +47,14 @@ namespace Logic
 
 
       // Load legacy syntax file
-      Console::WriteLn(L"Reading legacy syntax file '%s'", syntaxPath);
+      Console.WriteLn(L"Reading legacy syntax file '%s'", syntaxPath);
 
       StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
       SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
 
 
       // Parse script
-      Console::WriteLn(L"Parsing MSCI script '%s'", path);
+      Console.WriteLn(L"Parsing MSCI script '%s'", path);
 
       StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
       return ScriptFileReader(fs2).ReadFile();
@@ -206,7 +206,7 @@ namespace Logic
          // Print file
          wstring line;
          while (reader.ReadLine(line))
-            Console::WriteLn(line);
+            Console.WriteLn(line);
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
@@ -229,7 +229,7 @@ namespace Logic
          wstring line;
 
          while (reader.ReadLine(line))
-            Console::WriteLn(line);
+            Console.WriteLn(line);
       }
       catch (ExceptionBase&  e)
       {
@@ -279,7 +279,7 @@ namespace Logic
 
          // Print results
          for (LanguageString& s : res)
-            Console::WriteLn(s.Text);
+            Console.WriteLn(s.Text);
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
@@ -349,7 +349,7 @@ namespace Logic
          // Test fails because debug window doesn't conv to ANSI Correctly, but the strings are read+stored correctly
          for (const auto& pair : langFile.Pages)
             for (const auto& pair2 : pair.second.Strings)
-               Console::WriteLn(L"Read language string %d : '%s'", pair2.second.ID, pair2.second.Text.c_str());
+               Console.WriteLn(L"Read language string %d : '%s'", pair2.second.ID, pair2.second.Text.c_str());
       }
       catch (ExceptionBase&  e)
       {

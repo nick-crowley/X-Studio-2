@@ -111,12 +111,6 @@
     <ClInclude Include="Logic\Macros.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\STL.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\Utils.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\LanguageFile.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
@@ -236,6 +230,18 @@
     </ClInclude>
     <ClInclude Include="Logic\ExpressionParser.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ConsoleWnd.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Path.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSearch.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\StringResource.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ExpressionParser.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ConsoleWnd.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -35,12 +35,24 @@
 
 #include <afxsock.h>            // MFC socket extensions
 
-
-// Win32 Macros
+// Win32 
 #include <Windowsx.h>
+
 
 // Visual Leak Detector
 #include <vld.h>
+
+
+// STL
+#include <string>
+#include <vector>
+#include <deque>
+#include <list>
+#include <set>
+#include <map>
+#include <memory>
+
+using namespace std;
 
 #ifdef _UNICODE
 #if defined _M_IX86
