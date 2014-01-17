@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Common.h"
-#include "ScriptCommandLexer.h"
+#include "CommandLexer.h"
 #include "ScriptCommand.h"
 #include "SyntaxLibrary.h"
 #include <algorithm>

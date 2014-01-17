@@ -10,7 +10,7 @@ namespace Logic
       namespace Compiler
       {
          /// <summary></summary>
-         class ScriptCommandLexer
+         class CommandLexer
          {
             // ------------------------ TYPES --------------------------
          private:
@@ -19,11 +19,11 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptCommandLexer(const wstring& line);
-            virtual ~ScriptCommandLexer();
+            CommandLexer(const wstring& line);
+            virtual ~CommandLexer();
 
-            DEFAULT_COPY(ScriptCommandLexer);	// Default copy semantics
-            DEFAULT_MOVE(ScriptCommandLexer);	// Default move semantics
+            DEFAULT_COPY(CommandLexer);	// Default copy semantics
+            DEFAULT_MOVE(CommandLexer);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
          private:

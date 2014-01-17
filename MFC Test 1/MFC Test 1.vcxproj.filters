@@ -225,16 +225,16 @@
     <ClInclude Include="Logic\ScriptToken.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\ScriptCommandLexer.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\ScriptExpressionParser.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\CommandHash.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
     <ClInclude Include="Logic\ScriptParser.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\CommandLexer.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ExpressionParser.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
@@ -380,13 +380,13 @@
     <ClCompile Include="Logic\ScriptToken.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptCommandLexer.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\ScriptExpressionParser.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ScriptParser.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\CommandLexer.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ExpressionParser.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace Logic
          enum class Traversal  { InOrder, PostOrder };
 
          /// <summary>Parses expression script commands</summary>
-         class ScriptExpressionParser
+         class ExpressionParser
          {
             // ------------------------ TYPES --------------------------
 
@@ -261,13 +261,13 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptExpressionParser(TokenIterator& begin, TokenIterator& end);
-            virtual ~ScriptExpressionParser();
+            ExpressionParser(TokenIterator& begin, TokenIterator& end);
+            virtual ~ExpressionParser();
 
             // Default copy semantics
-            DEFAULT_COPY(ScriptExpressionParser);	
+            DEFAULT_COPY(ExpressionParser);	
             // Default move semantics
-            DEFAULT_MOVE(ScriptExpressionParser);	
+            DEFAULT_MOVE(ExpressionParser);	
 
             // ------------------------ STATIC -------------------------
 
