@@ -50,6 +50,7 @@ namespace Logic
          wstring           Font;
          string            Output;
          vector<COLORREF>  Colours;
+         COLORREF          Colour;
       };
 
    }

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptWriter.h"
+#include "RtfScriptWriter.h"
 #include "CommandLexer.h"
 
 namespace Logic
@@ -36,6 +36,11 @@ namespace Logic
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Closes the writer.</summary>
+      void  RtfScriptWriter::Close()
+      {
+      }
 
       /// <summary>Writes a script file to the output</summary>
       /// <param name="f">The script</param>

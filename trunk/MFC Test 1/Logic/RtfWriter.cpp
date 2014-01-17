@@ -12,7 +12,7 @@ namespace Logic
       /// <param name="font">Font name</param>
       /// <param name="size">Font size in points</param>
       /// <param name="cols">List of colours</param>
-      RtfWriter::RtfWriter(const wstring& font, UINT size, list<COLORREF> cols) : Font(font), Closed(false)
+      RtfWriter::RtfWriter(const wstring& font, UINT size, list<COLORREF> cols) : Font(font), Closed(false), Colour(0xff000000)
       {
          // Copy colours
          for (COLORREF c : cols)
@@ -57,12 +57,17 @@ namespace Logic
          if (Closed)
             throw InvalidOperationException(HERE, L"Writer is closed");
 
+         // Skip if colour already set
+         if (Colour == c)
+            return;
+
          // Lookup colour ID
          for (UINT id = 0; id < Colours.size(); id++)
             if (Colours[id] == c)
             {  // Write colour change
                StringCchPrintfA(buf, 10, "\\cf%d ", id+1);
                Write(buf);
+               Colour = c;
                return;
             }
 

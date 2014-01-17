@@ -14,7 +14,7 @@
 
 #include "Logic/DebugTests.h"
 #include <Richedit.h>
-#include "Logic/ScriptWriter.h"
+#include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
 
 #ifdef _DEBUG
@@ -121,6 +121,7 @@ void CMFCTest1View::OnBnClickedLoadScript()
       string txt;
       RtfScriptWriter w(txt);
       w.Write(f);
+      w.Close();
 
       /*SETTEXTEX opt = {ST_DEFAULT, CP_UTF8};
       unique_ptr<CHAR> utf8(new CHAR[txt.length()*2]);
