@@ -56,6 +56,8 @@ namespace Logic
          int       Int;
       };
 
+      /// <summary>Defines operator values</summary>
+      enum class Operator : UINT { Equal, NotEqual, Greater, Less, GreaterEqual, LessEqual, BitwiseAnd, BitwiseOr, BitwiseXor, LogicalAnd, LogicalOr, Add, Subtract, Multiply, Divide, Modulus, OpenBracket, CloseBracket, BitwiseNot, Minus, LogicalNot };
 
       /// <summary>Represents a script command parameter</summary>
       class ScriptParameter

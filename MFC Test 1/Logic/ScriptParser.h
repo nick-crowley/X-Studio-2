@@ -18,8 +18,6 @@ namespace Logic
          /// <summary>Constant line iterator</summary>
          typedef LineArray::const_iterator LineIterator;
 
-         enum class Operator : UINT { Equals, NotEquals, Multiply, Divide, Add, Subtract };
-
          /// <summary></summary>
          class ScriptParser
          {

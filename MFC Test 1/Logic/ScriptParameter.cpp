@@ -75,10 +75,21 @@ namespace Logic
             Text = StringResource::Format(L"[%d]", Value.Int);
             break;
 
+         case DataType::OPERATOR:
+            switch ((Operator)Value.Int)
+            {
+            case Operator::CloseBracket:  Text = StringResource::Format(L"%s ", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
+            case Operator::Minus:
+            case Operator::LogicalNot:
+            case Operator::BitwiseNot:
+            case Operator::OpenBracket:   Text = StringResource::Format(L" %s", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());   break;
+            default:                      Text = StringResource::Format(L" %s ", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
+            }
+            break;
+
          case DataType::SCRIPTDEF:        Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::PARAMETER_TYPES, Value.Int).Text.c_str());  break;
          case DataType::STATIONSERIAL:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::STATION_SERIALS, Value.Int).Text.c_str());  break;
          case DataType::TRANSPORTCLASS:   Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::TRANSPORT_CLASSES, Value.Int).Text.c_str());  break;
-         case DataType::OPERATOR:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
          case DataType::DATATYPE:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::DATA_TYPES, Value.Int).Text.c_str());  break;
          case DataType::FLIGHTRETURN:     Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::FLIGHT_RETURNS, Value.Int).Text.c_str());  break;
          case DataType::OBJECTCLASS:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_CLASSES, Value.Int).Text.c_str());  break;
