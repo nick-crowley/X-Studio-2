@@ -97,7 +97,7 @@ namespace Logic
             return ValidPosition && *Position == ch;
          }
 
-         /// <summary>Check if current char matches a string</summary>
+         /// <summary>Check if current position matches a string (CASE SENSITIVE)</summary>
          /// <param name="str">The string to test</param>
          /// <returns></returns>
          bool  ScriptCommandLexer::MatchChars(const WCHAR* str) const

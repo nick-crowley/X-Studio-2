@@ -12,7 +12,7 @@ namespace Logic
       class ScriptFile;
 
       /// <summary></summary>
-      enum BranchLogic   { None, If, SkipIf, Else, End, Break, Continue };
+      enum BranchLogic   { None, NOP, If, While, SkipIf, Else, ElseIf, End, Break, Continue };
 
       /// <summary></summary>
       class ScriptCommand

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "SyntaxFile.h"
+#include "CommandHash.h"
 
 namespace Logic
 {

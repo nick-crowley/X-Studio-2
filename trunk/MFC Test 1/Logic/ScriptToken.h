@@ -34,6 +34,11 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------			
 
+            /*bool  Match(TokenType t, const WCHAR* txt, bool matchCase = false) const
+            {
+               return Type == t && (!matchCase ? Text == txt : StrCmpI(Text.c_str(), txt) == 0);
+            }*/
+
             // ----------------------- MUTATORS ------------------------
 
             // -------------------- REPRESENTATION ---------------------
@@ -48,6 +53,9 @@ namespace Logic
 
          /// <summary>Vector of script tokens</summary>
          typedef vector<ScriptToken> TokenArray;
+
+         /// <summary>Script token array iterator</summary>
+         typedef TokenArray::const_iterator  TokenIterator;
       }
    }
 }
