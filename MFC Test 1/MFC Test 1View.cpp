@@ -15,6 +15,7 @@
 #include "Logic/DebugTests.h"
 #include <Richedit.h>
 #include "Logic/ScriptWriter.h"
+#include "Logic/ScriptParser.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,6 +32,7 @@ BEGIN_MESSAGE_MAP(CMFCTest1View, CFormView)
    ON_BN_CLICKED(IDC_LOADSCRIPT, &CMFCTest1View::OnBnClickedLoadScript)
    ON_WM_SIZE()
    ON_BN_CLICKED(IDC_RUNTESTS, &CMFCTest1View::OnBnClickedRuntests)
+   ON_BN_CLICKED(IDC_COMPILE, &CMFCTest1View::OnBnClickedCompile)
 END_MESSAGE_MAP()
 
 
@@ -159,4 +161,21 @@ void CMFCTest1View::OnBnClickedRuntests()
 {
    DebugTests::RunAll();
    AfxMessageBox(L"Tests complete");
+}
+
+
+void CMFCTest1View::OnBnClickedCompile()
+{
+   LineArray lines;
+   WCHAR  buf[512];
+   
+   // Get text in lines
+   for (INT i = 0; i < m_RichEdit.GetLineCount(); i++)
+   {
+      buf[Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512)]=NULL;
+      lines.push_back(buf);
+   }
+
+   // Test parser
+   DebugTests::CompileScript(lines);
 }

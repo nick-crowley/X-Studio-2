@@ -7,6 +7,12 @@ namespace Logic
 {
    namespace Scripts
    {
+      const WCHAR* GetString(BranchLogic l)
+      {
+         static const WCHAR* txt[] = {L"None", L"NOP", L"If", L"While", L"SkipIf", L"Else", L"ElseIf", L"End", L"Break", L"Continue"};
+         return txt[l];
+      }
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create a standard command from syntax and parameters (ordered by display index)</summary>

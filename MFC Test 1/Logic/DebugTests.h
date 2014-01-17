@@ -19,6 +19,7 @@ namespace Logic
    public:
       static void  RunAll();
 
+      static void        CompileScript(const vector<wstring>& lines);
       static ScriptFile  LoadScript(const WCHAR* path);
 
    private:

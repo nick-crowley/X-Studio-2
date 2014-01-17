@@ -53,6 +53,7 @@ public:
    CRichEditCtrl m_RichEdit;
    afx_msg void OnSize(UINT nType, int cx, int cy);
    afx_msg void OnBnClickedRuntests();
+   afx_msg void OnBnClickedCompile();
 };
 
 #ifndef _DEBUG  // debug version in MFC Test 1View.cpp

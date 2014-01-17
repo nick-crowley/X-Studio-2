@@ -53,7 +53,8 @@ CMFCTest1App theApp;
 
 BOOL CMFCTest1App::InitInstance()
 {
-   VLDEnable();
+   //VLDEnable();
+   VLDDisable();
    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 
 	// InitCommonControlsEx() is required on Windows XP if an application

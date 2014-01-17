@@ -14,12 +14,52 @@
 #include "SyntaxWriter.h"
 #include "ScriptExpressionParser.h"
 #include "ScriptCommandLexer.h"
+#include "ScriptParser.h"
 
 namespace Logic
 {
    // -------------------------------- CONSTRUCTION --------------------------------
 
    // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   
+   void  DebugTests::CompileScript(const vector<wstring>& lines)
+   {
+      ScriptParser p(lines, GameVersion::TerranConflict);
+      auto tree = p.ReadScript();
+
+      Console::WriteLn();
+      Console::WriteLn(L"Parser has produced the following tree:");
+      tree->Print();
+   }
+
+
+   ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
+   {
+      const WCHAR* syntaxPath = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt";
+      XFileSystem vfs;
+
+      // Build VFS. Enumerate language files
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      StringLib.Enumerate(vfs, GameLanguage::English);
+
+
+      // Load legacy syntax file
+      Console::WriteLn(L"Reading legacy syntax file '%s'", syntaxPath);
+
+      StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
+      SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
+
+
+      // Parse script
+      Console::WriteLn(L"Parsing MSCI script '%s'", path);
+
+      StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+      return ScriptFileReader(fs2).ReadFile();
+   }
+
 
    void  DebugTests::RunAll()
    {
@@ -34,23 +74,10 @@ namespace Logic
       Test_ExpressionParser();
    }
 
-   ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
-   {
-      XFileSystem vfs;
+	// ------------------------------ PROTECTED METHODS -----------------------------
 
-      // Build VFS. Enumerate language files
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-      StringLib.Enumerate(vfs, GameLanguage::English);
-
-      // Load legacy syntax file
-      StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
-      SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
-
-      // Parse script
-      StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-      return ScriptFileReader(fs2).ReadFile();
-   }
-
+	// ------------------------------- PRIVATE METHODS ------------------------------
+   
    void DebugTests::Test_CommandSyntax()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt"; 
@@ -331,11 +358,5 @@ namespace Logic
          AfxMessageBox(sz);
       }
    }
-
-   // ------------------------------- PUBLIC METHODS -------------------------------
-
-	// ------------------------------ PROTECTED METHODS -----------------------------
-
-	// ------------------------------- PRIVATE METHODS ------------------------------
 
 }

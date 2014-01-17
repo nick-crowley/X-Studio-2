@@ -25,8 +25,13 @@ namespace Logic
                wstring h;
                // Assemble text into hash
                for (TokenIterator it = begin; it != end; ++it)
-                  if (it->Type == TokenType::Text)
+                  switch (it->Type)
+                  {
+                  case TokenType::Text:
+                  case TokenType::Operator:
+                  case TokenType::Keyword:
                      h += it->Text;
+                  } 
                return h;
             }
 
@@ -35,8 +40,17 @@ namespace Logic
                TokenArray arr;
                // Separate tokens
                for (TokenIterator it = begin; it != end; ++it)
-                  if (it->Type != TokenType::Text)
+                  switch (it->Type)
+                  {
+                  case TokenType::Text:
+                  case TokenType::Operator:
+                  case TokenType::Keyword:
+                     break;
+
+                  default: 
                      arr.push_back(*it);
+                  }  
+                     
                return arr;
             }
 
