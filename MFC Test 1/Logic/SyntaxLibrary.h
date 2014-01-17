@@ -35,7 +35,7 @@ namespace Logic
          /// <param name="ver">Game version</param>
          /// <returns></returns>
          /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
-         CommandSyntax  Find(UINT id, GameVersion ver)
+         CommandSyntax  Find(UINT id, GameVersion ver) const
          { 
             // Search all syntax with matching ID for a compatible version
             for (auto it = Commands.find(id); it != Commands.end() && it->first == id; ++it)
@@ -44,6 +44,11 @@ namespace Logic
 
             // Not found
             throw SyntaxNotFoundException(HERE, id, ver);
+         }
+
+         CommandSyntax  Identify(const CommandHash& h, GameVersion v) const
+         {
+            return Unknown;
          }
 
          /// <summary>Merges a syntax file into the library</summary>
@@ -56,6 +61,9 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
+
+      public:
+         const CommandSyntax  Unknown;
 
       private:
          SyntaxCollection  Commands;

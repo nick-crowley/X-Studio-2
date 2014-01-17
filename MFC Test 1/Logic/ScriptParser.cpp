@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ScriptParser.h"
 #include "ScriptExpressionParser.h"
-#include "SyntaxLibrary.h"
+
 
 namespace Logic
 {
@@ -24,6 +24,40 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
 
+         /// <summary>Reads all commands in the script</summary>
+         /// <returns></returns>
+         ScriptParser::CommandTree  ScriptParser::ReadScript()
+         {
+            CommandTree tree(new CommandNode());
+            
+            // Iterate over lines
+            for (LineIterator line = Input.begin(); line < Input.end(); )
+            {
+               switch (BranchLogic logic = PeekCommand(line))
+               {
+               // Conditional (Valid/Invalid): Read branch
+               case BranchLogic::If:      
+               case BranchLogic::While:  
+               case BranchLogic::ElseIf:  
+               case BranchLogic::Else:    
+               case BranchLogic::SkipIf:  
+                  tree->Add( ReadBranch(line, logic) );
+                  break;
+
+               // Command (Valid/Invalid): Read command
+               default:
+                  tree->Add( ReadCommand(line, logic) );
+                  break;
+               }
+            }
+
+            return tree;
+         }
+         
+         // ------------------------------ PROTECTED METHODS -----------------------------
+
+         // ------------------------------- PRIVATE METHODS ------------------------------
+         
          /// <summary>Get the one-based line number of a line</summary>
          /// <param name="line">The line</param>
          /// <returns>One based line number</returns>
@@ -74,36 +108,6 @@ namespace Logic
          }
 
 
-         /// <summary>Reads all commands in the script</summary>
-         /// <returns></returns>
-         ScriptParser::CommandTree  ScriptParser::ReadScript()
-         {
-            shared_ptr<BranchNode> tree(new BranchNode());
-            
-            // Iterate over lines
-            for (LineIterator line = Input.begin(); line < Input.end(); )
-            {
-               switch (BranchLogic logic = PeekCommand(line))
-               {
-               // Conditional (Valid/Invalid): Read branch
-               case BranchLogic::If:      
-               case BranchLogic::While:  
-               case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-               case BranchLogic::SkipIf:  
-                  tree->Add( ReadBranch(line, logic) );
-                  break;
-
-               // Command (Valid/Invalid): Read command
-               default:
-                  tree->Add( ReadCommand(line, logic) );
-                  break;
-               }
-            }
-
-            return tree;
-         }
-
          ScriptParser::CommandTree ScriptParser::ReadCommand(LineIterator& line, BranchLogic logic)
          {
             ScriptCommandLexer lex(*line);
@@ -148,7 +152,7 @@ namespace Logic
             CommandHash hash(pos, lex.Tokens.end());
             
             // Lookup hash / supply parameters
-            ScriptCommand cmd(SyntaxLib.Identify(hash), hash.Parameters);
+            ScriptCommand cmd(SyntaxLib.Identify(hash, Version), ParameterArray()); // hash.Parameters);
             
             // Generate CommandNode?
             return CommandTree(new CommandNode(c, cmd, GetLineNumber(line)));
@@ -158,7 +162,7 @@ namespace Logic
          ScriptParser::CommandTree ScriptParser::ReadBranch(LineIterator& line, BranchLogic logic)
          {
             // Read conditional command
-            shared_ptr<BranchNode> tree(ReadCommand(line, logic));
+            CommandTree tree(ReadCommand(line, logic));
 
             // Read children
             while (line < Input.end())
@@ -196,110 +200,6 @@ namespace Logic
 
             return CommandTree(tree.get());
          }
-
-
-         // ------------------------------ PROTECTED METHODS -----------------------------
-
-         // ------------------------------- PRIVATE METHODS ------------------------------
-
-
-         //ScriptCommand  ScriptParser::GenerateCommand(UINT id, Conditional c, TokenArray& params)
-         //{
-         //   throw "Not impl";
-         //}
-         //ScriptCommand  ScriptParser::GenerateCommand(UINT id, const wstring& retVar, TokenArray& params)
-         //{
-         //   throw "Not impl";
-         //}
-         //ScriptCommand  ScriptParser::GenerateCommand(UINT id, TokenArray& params)
-         //{
-         //   throw "Not impl";
-         //}
-
-         //bool  ScriptParser::Match(const TokenIterator& pos, TokenType  type)
-         //{
-         //   return pos < Lexer.Tokens.end() && pos->Type == type;
-         //}
-
-         //bool  ScriptParser::Match(const TokenIterator& pos, TokenType  type, const TCHAR* txt)
-         //{
-         //   return Match(pos, type) && pos->Text == txt;
-         //}
-
-         //ScriptCommand  ScriptParser::MatchLine()
-         //{
-         //   TokenIterator  pos = Lexer.Tokens.begin();
-         //   TokenArray     params;
-         //   UINT           id;
-
-         //   // NOP:
-         //   if (MatchNOP(pos))
-         //      return GenerateCommand(CMD_NOP);
-
-         //   // Comment:
-         //   if (MatchComment(pos))
-         //      return GenerateCommand(CMD_COMMENT, Lexer.Tokens);
-
-         //   // Command/Expr Assignment
-         //   else if (MatchAssignment(pos))
-         //      return ReadCommand(pos, ReadAssignment(pos));
-
-         //   // Command/Expr Conditional
-         //   else if (MatchConditional(pos))
-         //      return ReadCommand(pos, ReadConditional(pos));
-         //   
-         //   // Command
-         //   ReadCommand(pos);
-         //}
-
-         //bool  ScriptParser::MatchAssignment(const TokenIterator& pos) const
-         //{
-         //   // Match: variable, '='
-         //   return Match(pos, TokenType::Variable) && Match(pos[1], TokenType::Operator, L"=");
-         //}
-
-         //bool  ScriptParser::MatchConditional(const TokenIterator& pos) const
-         //{
-         //   // if, if not
-         //   return Match(pos, TokenType::Keyword, L"if")
-         //       || Match(pos, TokenType::Keyword, L"while")
-         //       || Match(pos, TokenType::Keyword, L"skip")
-         //       || Match(pos, TokenType::Keyword, L"do");
-         //}
-
-         //bool  ScriptParser::MatchNOP(const TokenIterator& pos) const
-         //{
-         //   // Match zero tokens
-         //   return pos == Lexer.Tokens.begin() && pos == Lexer.Tokens.end();
-         //}
-
-         //const ScriptToken&  ScriptParser::ReadAssignment(TokenIterator& pos)
-         //{
-         //   const ScriptToken& retVar = *pos;
-         //   return (pos += 2, retVar);
-         //}
-
-         //bool  ScriptParser::MatchCommand(TokenIterator& pos, UINT& id, TokenArray& params)
-         //{
-         //   // Clear params
-         //   params.clear();
-         //   id = CMD_NONE;
-
-         //   // Hash remaining tokens
-         //   CommandHash hash(pos, Lexer.Tokens.end());
-         //   
-         //   // Lookup hash, copy parameters and consume all tokens
-         //   //return id = SyntaxLib.Identify(hash.Hash, Version) ? (pos=Lexer.Tokens.end(), params=hash.Parameters, true) : false;
-         //   throw "not impl";
-         //}
-
-         //bool ScriptParser::MatchExpression(TokenIterator& pos, TokenArray& params)
-         //{
-         //   //return ScriptExpressionParser(pos, Lexer.Tokens.end(), params).Parse();
-         //   throw "not impl";
-         //}
-
-         
       }
    }
 }
