@@ -2,6 +2,10 @@
 
 namespace Logic
 {
+   /// <summary>RGB Colours</summary>
+   enum class Colour : COLORREF { Black = RGB(0,0,0), Green = RGB(0,255,0), Blue = RGB(0,0,255), White = RGB(255,255,255), Cyan = RGB(150,220,220),
+                                  Red = RGB(255,0,0), Yellow = RGB(255,255,0), Grey = RGB(128,128,128), Purple = RGB(255,0,255) };
+
    /// <summary>Provides a debugging console</summary>
    class ConsoleWnd
    {
@@ -27,6 +31,52 @@ namespace Logic
       // ----------------------- MUTATORS ------------------------
 
    public:
+      /// <summary>Sets the text colour</summary>
+      /// <param name="cl">The colour</param>
+      ConsoleWnd& operator<<(Colour cl)
+      {
+         switch (cl)
+         {
+         case Colour::Blue:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE); break;
+         case Colour::Green: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN); break;
+         case Colour::Red:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED); break;
+         case Colour::White: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         }
+         return *this;
+      }
+
+      /// <summary>Writes text to the console</summary>
+      /// <param name="txt">Text</param>
+      ConsoleWnd& operator<<(const WCHAR* txt)
+      {
+         WriteText(txt);
+         return *this;
+      }
+
+      /// <summary>Writes signed integer to the console</summary>
+      /// <param name="i">Number</param>
+      ConsoleWnd& operator<<(int i)
+      {
+         Writef(L"%d", i);
+         return *this;
+      }
+
+      /// <summary>Writes unsigned integer to the console</summary>
+      /// <param name="i">number</param>
+      ConsoleWnd& operator<<(UINT i)
+      {
+         Writef(L"%u", i);
+         return *this;
+      }
+
+      /// <summary>Writes text to the console</summary>
+      /// <param name="txt">Text</param>
+      ConsoleWnd& operator<<(const wstring& txt)
+      {
+         WriteText(txt);
+         return *this;
+      }
+
       /// <summary>Writes text to the console</summary>
       /// <param name="txt">Text</param>
       void  Write(const wstring& txt)
