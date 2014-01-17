@@ -13,10 +13,10 @@ namespace Logic
             : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), Tokens(Parse())
          {
             // DEBUG:
-            /*Console.WriteLn(L"\nLexing command: %s", line.c_str());
+            /*Console.WriteLnf(L"\nLexing command: %s", line.c_str());
             for (const ScriptToken& t : Tokens)
-               Console.WriteLn(L"Token: '%s'", t.Text.c_str());
-            Console.WriteLn();*/
+               Console.WriteLnf(L"Token: '%s'", t.Text.c_str());
+            Console.WriteLnf();*/
          }
 
 

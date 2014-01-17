@@ -48,6 +48,8 @@ namespace Logic
       public:
          PROPERTY_GET(bool,Keyword,IsKeyword);
 
+         bool  operator==(const CommandSyntax& r) const   { return ID == r.ID && Versions == r.Versions; }
+
 		   // ---------------------- ACCESSORS ------------------------
 			
       public:

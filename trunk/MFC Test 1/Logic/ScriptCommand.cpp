@@ -7,13 +7,21 @@ namespace Logic
 {
    namespace Scripts
    {
+      /// <summary>Gets BranchLogic string</summary>
+      /// <param name="l">logic</param>
+      /// <returns></returns>
       const WCHAR* GetString(BranchLogic l)
       {
-         static const WCHAR* txt[] = {L"None", L"NOP", L"If", L"While", L"SkipIf", L"Else", L"ElseIf", L"End", L"Break", L"Continue"};
-         return txt[l];
+         static const WCHAR* str[] = {L"None", L"NOP", L"If", L"While", L"SkipIf", L"Else", L"ElseIf", L"End", L"Break", L"Continue"};
+         return str[l];
       }
 
       // -------------------------------- CONSTRUCTION --------------------------------
+
+      ScriptCommand::ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params)
+         : Syntax(syntax), RefIndex(0), Text(text)
+      {
+      }
 
       /// <summary>Create a standard command from syntax and parameters (ordered by display index)</summary>
       /// <param name="syntax">The syntax.</param>

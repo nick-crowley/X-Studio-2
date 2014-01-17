@@ -34,7 +34,7 @@ namespace Logic
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
                // DEBUG:
-               //Console.WriteLn(L"Parsing line '%s'", line->c_str());
+               //Console.WriteLnf(L"Parsing line '%s'", line->c_str());
 
                // Peek logic
                switch (BranchLogic logic = PeekCommand(line))
@@ -74,7 +74,7 @@ namespace Logic
          BranchLogic  ScriptParser::PeekCommand(const LineIterator& line) const
          {
             // Lex line to determine branch logic
-            CommandLexer lex(*line);
+            CommandLexer   lex(*line);
             TokenIterator  begin = lex.Tokens.begin();
 
             // NOP/Comment
@@ -114,13 +114,10 @@ namespace Logic
 
          ScriptParser::CommandTree ScriptParser::ReadCommand(LineIterator& line, BranchLogic logic)
          {
-            CommandLexer lex(*line);
+            CommandLexer  lex(*line);
             TokenIterator pos = lex.Tokens.begin();
-            Conditional c = Conditional::NONE;
+            Conditional   c = Conditional::NONE;
 
-            // consume line
-            ++line;
-            
             // Identify conditional. Consume only tokens that match.  [prev identified logic has matched the initial token(s)]
             switch (logic)
             {
@@ -160,10 +157,17 @@ namespace Logic
             CommandHash hash(pos, lex.Tokens.end());
             
             // Lookup hash / supply parameters
-            ScriptCommand cmd(SyntaxLib.Identify(hash, Version), ParameterArray()); // hash.Parameters);
+            ScriptCommand cmd(*line, SyntaxLib.Identify(hash, Version), hash.Parameters);
+
+            // DEBUG:
+            if (cmd.Syntax == SyntaxLib.Unknown) 
+            {
+               Console.WriteLnf(L"%04d: %s", GetLineNumber(line), line->c_str());
+               Console.WriteLnf(L"    : %s", hash.Hash.c_str());
+            }
             
             // Generate CommandNode?
-            return CommandTree(new CommandNode(c, cmd, GetLineNumber(line)));
+            return CommandTree(new CommandNode(logic, cmd, GetLineNumber(line++)));
 
          }
 
