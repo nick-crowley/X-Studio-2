@@ -20,8 +20,8 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         ScriptCommand(CommandSyntax& syntax, ParameterArray& params);
-         ScriptCommand(CommandSyntax& syntax, UINT  ref, ParameterArray& params);
+         ScriptCommand(const CommandSyntax& syntax, ParameterArray& params);
+         ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params);
          virtual ~ScriptCommand();
 
          // ------------------------ STATIC -------------------------

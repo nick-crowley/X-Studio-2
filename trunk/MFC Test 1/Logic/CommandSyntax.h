@@ -37,6 +37,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
+         CommandSyntax();
          CommandSyntax(const Declaration& d);
          virtual ~CommandSyntax();
 

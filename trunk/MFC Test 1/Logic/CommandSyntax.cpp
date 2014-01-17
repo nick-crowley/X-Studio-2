@@ -8,6 +8,16 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Create the 'unknown' command syntax sentinel value</summary>
+      /// <param name="d">Declaration</param>
+      CommandSyntax::CommandSyntax() 
+         : ID(CMD_NONE), 
+           Versions((UINT)GameVersion::Threat|(UINT)GameVersion::Reunion|(UINT)GameVersion::TerranConflict|(UINT)GameVersion::AlbionPrelude),
+           Type(CommandType::Standard),
+           Group(CommandGroup::HIDDEN)
+      {
+      }
+
       /// <summary>Create command syntax from a declaration</summary>
       /// <param name="d">Declaration</param>
       CommandSyntax::CommandSyntax(const Declaration& d)

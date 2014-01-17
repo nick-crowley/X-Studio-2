@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "ScriptCommandLexer.h"
 #include "ScriptCommand.h"
+#include "SyntaxLibrary.h"
+#include <algorithm>
 
 namespace Logic
 {
@@ -23,11 +25,20 @@ namespace Logic
          {
             // ------------------------ TYPES --------------------------
          private:
+            class CommandNode;
+
+            /// <summary>Shared pointer to a node in the script command tree</summary>
+            typedef shared_ptr<CommandNode>  CommandTree;
+
             /// <summary>Simple command or assignment expression</summary>
             class CommandNode
             {
             public:
-               CommandNode(const ScriptCommand& cmd) : Command(cmd)
+               CommandNode() 
+                  : Logic(BranchLogic::None), LineNumber(1), Index(0), JumpTarget(nullptr), Command(SyntaxLib.Unknown, ParameterArray())
+               {}
+               CommandNode(Conditional c, const ScriptCommand& cmd, UINT line) 
+                  : Logic(BranchLogic::None), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
                {}
                virtual ~CommandNode()
                {}
@@ -37,27 +48,11 @@ namespace Logic
                UINT           LineNumber,       // 1-based line number
                               Index;            // 0-based standard codearray index
                bool           Valid;            // Successfully compiled flag
-            };
 
-            /// <summary>Shared pointer to a node in the script command tree</summary>
-            typedef shared_ptr<CommandNode>  CommandTree;
-
-
-            /// <summary>Any command that executes a jump: break/continue/hiddenJump + any conditional</summary>
-            class JumpNode : public CommandNode
-            {
-            public:
+               // JumpNode
                ScriptCommand* JumpTarget;    // Destination of jump
-            };
-
-
-            /// <summary>Conditional command: if/skip/else/elseif/while</summary>
-            class BranchNode : public JumpNode
-            {
-            public:
-               BranchNode(ScriptCommand cmd) : CommandNode(cmd)
-               {}
-
+               
+               // BranchNode
                void  Add(const CommandTree& cmd)
                {
                   Children.push_back(cmd);
@@ -65,11 +60,39 @@ namespace Logic
 
                bool  Contains(BranchLogic l) const
                {
-                  return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ t->Logic == l; }) != Children.end();
+                  return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
                }
 
                vector<CommandTree>  Children;    // Child commands
             };
+
+            ///// <summary>Any command that executes a jump: break/continue/hiddenJump + any conditional</summary>
+            //class JumpNode : public CommandNode
+            //{
+            //public:
+            //   ScriptCommand* JumpTarget;    // Destination of jump
+            //};
+
+
+            /// <summary>Conditional command: if/skip/else/elseif/while</summary>
+            //class BranchNode : public JumpNode
+            //{
+            //public:
+            //   BranchNode(ScriptCommand cmd) : CommandNode(cmd)
+            //   {}
+
+            //   void  Add(const CommandTree& cmd)
+            //   {
+            //      Children.push_back(cmd);
+            //   }
+
+            //   bool  Contains(BranchLogic l) const
+            //   {
+            //      return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ t->Logic == l; }) != Children.end();
+            //   }
+
+            //   vector<CommandTree>  Children;    // Child commands
+            //};
 
             
 

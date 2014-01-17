@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "ScriptCommandParser.h"
+#include "ScriptParser.h"
 #include <algorithm>
 
 namespace Logic
