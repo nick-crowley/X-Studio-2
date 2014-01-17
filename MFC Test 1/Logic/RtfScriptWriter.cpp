@@ -46,7 +46,7 @@ namespace Logic
          // Examine commands
          for (ScriptCommand& cmd : f.Commands)
          {
-            BranchLogic logic = cmd.GetConditional();
+            BranchLogic logic = cmd.Logic;
 
             // Push/pop branching logic from stack
             switch (logic)
@@ -165,7 +165,7 @@ namespace Logic
          switch (p.Type)
          {
          case DataType::VARIABLE:  
-            col = (p.Syntax.IsRetVar() && cmd.GetConditional() != BranchLogic::None ? Blue : Green);  
+            col = (p.Syntax.IsRetVar() && cmd.Logic != BranchLogic::None ? Blue : Green);  
             break;
 
          case DataType::STRING:    

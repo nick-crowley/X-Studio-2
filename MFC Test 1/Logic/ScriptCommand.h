@@ -29,9 +29,11 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(BranchLogic,Logic,GetLogic);
+
 		   // ---------------------- ACCESSORS ------------------------			
 
-         BranchLogic  GetConditional() const;
+         BranchLogic  GetLogic() const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:
