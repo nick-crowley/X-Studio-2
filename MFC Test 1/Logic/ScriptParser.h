@@ -37,8 +37,8 @@ namespace Logic
                CommandNode() 
                   : Logic(BranchLogic::None), LineNumber(1), Index(0), JumpTarget(nullptr), Command(SyntaxLib.Unknown, ParameterArray())
                {}
-               CommandNode(Conditional c, const ScriptCommand& cmd, UINT line) 
-                  : Logic(BranchLogic::None), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
+               CommandNode(BranchLogic logic, const ScriptCommand& cmd, UINT line) 
+                  : Logic(logic), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
                {}
                virtual ~CommandNode()
                {}
@@ -66,7 +66,16 @@ namespace Logic
                void  Print(int depth = 0) const
                {
                   wstring tab(depth, (WCHAR)L' ');
-                  Console.WriteLn(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Command.Syntax.Text.c_str());
+
+                  Console.Writef(L"%03d: %s%s : ", LineNumber, tab.c_str(), GetString(Logic));
+                  Console.WriteLn(Command.Syntax == SyntaxLib.Unknown ? Command.Text : Command.Syntax.Text);
+                  /*if (Command.Syntax == SyntaxLib.Unknown)
+                  {
+
+                  }
+                  else
+                     Console.WriteLn();*/
+                  
 
                   for (auto c : Children)
                      c->Print(depth+1);

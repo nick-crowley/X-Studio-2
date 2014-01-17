@@ -16,7 +16,8 @@ namespace Logic
       case GameVersion::Reunion:        assign(L"Reunion");         break;
       case GameVersion::Threat:         assign(L"The Threat");      break;
       case GameVersion::Rebirth:        assign(L"Rebirth");         break;
-      default: throw ArgumentException(HERE, L"v", L"Unknown game version");
+      default: 
+         throw ArgumentException(HERE, L"v", L"Unknown game version");
       }
    }
 

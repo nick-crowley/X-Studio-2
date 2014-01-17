@@ -27,10 +27,17 @@ namespace Logic
       // ----------------------- MUTATORS ------------------------
 
    public:
+      /// <summary>Writes text to the console</summary>
+      /// <param name="txt">Text</param>
+      void  Write(const wstring& txt)
+      {
+         WriteText(txt);
+      }
+
       /// <summary>Writes the formatted text to the console</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="...">Arguments</param>
-      void  Write(const WCHAR* format, ...)
+      void  Writef(const WCHAR* format, ...)
       {
          va_list args;
          WriteText( StringResource::FormatV(format, va_start(args, format)) );
@@ -39,16 +46,24 @@ namespace Logic
       /// <summary>Writes the formatted text to the console</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="...">Arguments</param>
-      void  Write(const wstring& format, ...)
+      void  Writef(const wstring& format, ...)
       {
          va_list args;
          WriteText( StringResource::FormatV(format.c_str(), va_start(args, format)) );
       }
 
+      /// <summary>Writes text to the console</summary>
+      /// <param name="txt">Text</param>
+      void  WriteLn(const wstring& txt = L"")
+      {
+         WriteText(txt);
+         WriteText(L"\n");
+      }
+
       /// <summary>Writes the formatted text to the console</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="...">Arguments</param>
-      void  WriteLn(const WCHAR* format = L"", ...)
+      void  WriteLnf(const WCHAR* format = L"", ...)
       {
          va_list args;
          WriteText( StringResource::FormatV(format, va_start(args, format)) );
@@ -58,7 +73,7 @@ namespace Logic
       /// <summary>Writes the formatted text to the console</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="...">Arguments</param>
-      void  WriteLn(const wstring& format, ...)
+      void  WriteLnf(const wstring& format, ...)
       {
          va_list args;
          WriteText( StringResource::FormatV(format.c_str(), va_start(args, format)) );

@@ -75,7 +75,7 @@ namespace Logic
          Files.clear();
 
          // DEBUG:
-         Console.WriteLn(L"Building %s VFS from '%s'", VersionString(version).c_str(), (WCHAR*)folder);
+         Console.WriteLnf(L"Building %s VFS from '%s'", VersionString(version).c_str(), (WCHAR*)folder);
 
          // Ensure folder exists
          if (!folder.Exists())
@@ -181,7 +181,7 @@ namespace Logic
             DWORD          size;
 
             // DEBUG:
-            Console.WriteLn(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath);
+            Console.WriteLnf(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath);
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
