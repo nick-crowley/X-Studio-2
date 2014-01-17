@@ -42,7 +42,7 @@ namespace Logic
 
       /// <summary>Identify the type of branching conditional used (if any)</summary>
       /// <returns></returns>
-      BranchLogic  ScriptCommand::GetConditional() const
+      BranchLogic  ScriptCommand::GetLogic() const
       {
          switch (Syntax.ID)
          {

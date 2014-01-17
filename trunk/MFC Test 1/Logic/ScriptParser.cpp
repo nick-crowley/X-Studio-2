@@ -34,7 +34,7 @@ namespace Logic
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
                // DEBUG:
-               Console::WriteLn(L"Parsing line '%s'", line->c_str());
+               //Console::WriteLn(L"Parsing line '%s'", line->c_str());
 
                // Peek logic
                switch (BranchLogic logic = PeekCommand(line))
@@ -149,10 +149,11 @@ namespace Logic
             case BranchLogic::Continue: 
                break;
 
+            // Detect Assignment
             case BranchLogic::None:
-               // Assignment
                if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=")) 
                   pos += 2;
+               break;
             }
             
             // Generate hash from remaining tokens
