@@ -66,7 +66,7 @@ namespace Logic
          {
             // Hash command syntax
             CommandLexer lex(pair.second.Text);
-            CommandHash        h(lex.Tokens.begin(), lex.Tokens.end());
+            CommandHash  h(lex.Tokens.begin(), lex.Tokens.end());
             
             // Insert {Hash,Syntax}
             Hashes.insert(HashCollection::value_type(h.Hash, pair.second));

@@ -31,6 +31,8 @@ namespace Logic
       {
          list<XFileInfo> results;
 
+         Console << ENDL << Colour::Cyan << L"Enumerating language files" << ENDL;
+
          // Clear previous contents
          Clear();
 
@@ -45,24 +47,26 @@ namespace Logic
          }
 
          // DEBUG: print results
-         for (XFileInfo& f : results)
-            Console.WriteLnf(L"Found language file: %s", f.FullPath.c_str());
+         /*for (XFileInfo& f : results)
+            Console << Colour::White << L"Found language file: " << f.FullPath << ENDL;*/
 
          // Read/Store each file
          for (XFileInfo& f : results)
          {
             try
             {
-               Console.WriteLnf(L"Reading language file: %s", f.FullPath.c_str());
+               Console << L"Reading language file: " << f.FullPath << L"...";
                LanguageFile file = LanguageFileReader(f.Open()).ReadFile(f.FullPath.FileName);
 
                // Skip files that turn out to be foreign
                if (file.Language == lang)
                   Files.insert(file);
+
+               Console << Colour::Green << L"Success" << ENDL;
             }
             catch (ExceptionBase& e)
             {
-               Console.WriteLnf(L"Skipping language file: %s - %s", f.FullPath.c_str(), e.Message.c_str());
+               Console << Colour::Red << L"Failed: " << e.Message << ENDL;
             }
          }
 

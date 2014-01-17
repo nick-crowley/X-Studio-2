@@ -3,6 +3,7 @@
 
 namespace Logic
 {
+   /// <summary>Singleton instance</summary>
    ConsoleWnd  ConsoleWnd::Instance;
 
    // -------------------------------- CONSTRUCTION --------------------------------

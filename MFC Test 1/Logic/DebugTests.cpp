@@ -47,14 +47,16 @@ namespace Logic
 
 
       // Load legacy syntax file
-      Console.WriteLnf(L"Reading legacy syntax file '%s'", syntaxPath);
+      Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << syntaxPath << ENDL;
 
       StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
       SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
 
+      Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+
 
       // Parse script
-      Console.WriteLnf(L"Parsing MSCI script '%s'", path);
+      Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
 
       StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
       return ScriptFileReader(fs2).ReadFile();

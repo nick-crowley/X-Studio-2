@@ -6,6 +6,10 @@ namespace Logic
    enum class Colour : COLORREF { Black = RGB(0,0,0), Green = RGB(0,255,0), Blue = RGB(0,0,255), White = RGB(255,255,255), Cyan = RGB(150,220,220),
                                   Red = RGB(255,0,0), Yellow = RGB(255,255,0), Grey = RGB(128,128,128), Purple = RGB(255,0,255) };
 
+
+   /// <summary>Console manipulators</summary>
+   enum class Cons { Normal, Bold, Endl };
+
    /// <summary>Provides a debugging console</summary>
    class ConsoleWnd
    {
@@ -37,10 +41,26 @@ namespace Logic
       {
          switch (cl)
          {
-         case Colour::Blue:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE); break;
-         case Colour::Green: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN); break;
-         case Colour::Red:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED); break;
+         case Colour::Blue:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE);                  break;
+         case Colour::Cyan:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE|FOREGROUND_GREEN); break;
+         case Colour::Green: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);                 break;
+         case Colour::Red:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);                   break;
+         case Colour::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN|FOREGROUND_RED); break;
+         case Colour::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE|FOREGROUND_RED);  break;
          case Colour::White: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         }
+         return *this;
+      }
+
+      /// <summary>Inserts text manipulator</summary>
+      /// <param name="cl">The colour</param>
+      ConsoleWnd& operator<<(Cons c)
+      {
+         switch (c)
+         {
+         case Cons::Bold:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         case Cons::Normal: return *this << Colour::White;
+         case Cons::Endl:   return *this << Colour::White << L"\n";
          }
          return *this;
       }

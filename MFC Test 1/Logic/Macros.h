@@ -42,3 +42,7 @@
 
 // Macro: Throws ArgumentNullException if argument is null
 #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
+
+// Macro: Shorthand for console end-of-line manipulator
+#define ENDL      Cons::Endl
+
