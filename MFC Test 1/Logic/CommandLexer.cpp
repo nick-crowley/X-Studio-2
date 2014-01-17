@@ -9,8 +9,8 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         CommandLexer::CommandLexer(const wstring& line) 
-            : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), Tokens(Parse())
+         CommandLexer::CommandLexer(const wstring& line, bool  skipWhitespace) 
+            : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), SkipWhitespace(skipWhitespace), Tokens(Parse())
          {
             // DEBUG:
             /*Console.WriteLnf(L"\nLexing command: %s", line.c_str());
@@ -36,23 +36,15 @@ namespace Logic
             while (ValidPosition)
             {
                // Whitespace: Skip
-               /*switch (*Position)
-               {
-               case '\t':
-               case '\r':
-               case '\n': 
-               case '\v': 
-               case ' ':    
-                  ReadWhitespace(); 
-                  continue;
-               }*/
+               if (SkipWhitespace && MatchWhitespace()) 
+                  ReadWhitespace(Position);
 
-               // Whitespace: Skip
-               if (MatchWhitespace()) 
-                  ReadWhitespace();
+               // Whitespace: Read
+               else if (!SkipWhitespace && MatchWhitespace())
+                  output.push_back( ReadWhitespace(Position) );
 
                // Comment: 
-               else if (output.size() == 1 && output[0].Text == L"*")
+               else if (output.size() >= 1 && output[0].Text == L"*")
                   output.push_back( ReadComment(Position) );
 
                // Number:
@@ -62,14 +54,6 @@ namespace Logic
                // Remainder: 
                else switch (*Position)
                {
-               /*case L'0': case L'5': 
-               case L'1': case L'6':
-               case L'2': case L'7':
-               case L'3': case L'8':
-               case L'4': case L'9':   
-                  output.push_back( ReadNumber(Position) );      
-                  break;*/
-
                case L'$':   output.push_back( ReadVariable(Position) );    break;
                case L'{':   output.push_back( ReadGameObject(Position) );  break;
                case L'\'':  output.push_back( ReadString(Position) );      break;
@@ -93,7 +77,7 @@ namespace Logic
          /// <param name="start">The start.</param>
          /// <param name="t">Token type</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::MakeToken(StringIterator start, TokenType t) const
+         ScriptToken  CommandLexer::MakeToken(CharIterator start, TokenType t) const
          {
             return ScriptToken(t, start-LineStart, Position-LineStart, wstring(start, Position));
          }
@@ -120,13 +104,28 @@ namespace Logic
             return true;
          }
 
+         /// <summary>Check if current position matches a string (CASE SENSITIVE)</summary>
+         /// <param name="pos">The position to test</param>
+         /// <param name="str">The string to test</param>
+         /// <returns></returns>
+         bool  CommandLexer::MatchChars(const CharIterator pos, const WCHAR* str) const
+         {
+            // Match each char
+            for (UINT i = 0; str[i]; ++i)
+               if (pos+i >= LineEnd || pos[i] != str[i])
+                  return false; // EOL/Mismatch
+
+            // Match
+            return true;
+         }
+
          /// <summary>Check if current char is the opening bracket of a script object</summary>
          /// <returns></returns>
          bool  CommandLexer::MatchConstant() const
          {
             // Match: '[', alpha
             return ValidPosition && MatchChar(L'[')
-                && Position+1 >= LineEnd && iswalpha(Position[1]);
+                && Position+1 <= LineEnd && iswalpha(Position[1]);
          }
 
          /// <summary>Check if current character is a number</summary>
@@ -245,7 +244,7 @@ namespace Logic
          /// <summary>Reads a ScriptObject, Operator or Text, some of which share first letters</summary>
          /// <param name="start">Current position (first character)</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadAmbiguous(StringIterator start)
+         ScriptToken  CommandLexer::ReadAmbiguous(CharIterator start)
          {
             // Constant: Avoid interpreting '[' as an operator
             if (MatchConstant())
@@ -262,7 +261,7 @@ namespace Logic
          /// <summary>Reads the script object</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadConstant(StringIterator start)
+         ScriptToken  CommandLexer::ReadConstant(CharIterator start)
          {
             // Consume all, excluding trailing bracket
             while (ReadChar() && !MatchChar(L']'))
@@ -279,7 +278,7 @@ namespace Logic
          /// <summary>Reads a comment</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadComment(StringIterator start)
+         ScriptToken  CommandLexer::ReadComment(CharIterator start)
          {
             // Consume entire line
             while (ReadChar())
@@ -293,7 +292,7 @@ namespace Logic
          /// <summary>Reads the game object.</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadGameObject(StringIterator start)
+         ScriptToken  CommandLexer::ReadGameObject(CharIterator start)
          {
             // Consume all, excluding trailing bracket
             while (ReadChar() && !MatchChar(L'}'))
@@ -310,7 +309,7 @@ namespace Logic
          /// <summary>Reads the string</summary>
          /// <param name="start">Current position (leading apostrophe)</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadString(StringIterator start)
+         ScriptToken  CommandLexer::ReadString(CharIterator start)
          {
             // Consume all, excluding trailing apostrophe
             while (ReadChar() && !MatchChar(L'\''))
@@ -325,7 +324,7 @@ namespace Logic
          }
 
 
-         ScriptToken  CommandLexer::ReadNumber(StringIterator start)
+         ScriptToken  CommandLexer::ReadNumber(CharIterator start)
          {
             // Consume digits
             while (MatchNumber() && ReadChar())
@@ -336,7 +335,7 @@ namespace Logic
          }
 
          
-         ScriptToken  CommandLexer::ReadOperator(StringIterator start) 
+         ScriptToken  CommandLexer::ReadOperator(CharIterator start) 
          {
             // Read single char 
             switch (*Position)
@@ -405,18 +404,31 @@ namespace Logic
 
 
          
-         ScriptToken  CommandLexer::ReadText(StringIterator start)
+         ScriptToken  CommandLexer::ReadText(CharIterator start)
          {
+            bool Keyword = false;
+
             // Read remaining text
             while (MatchText() && ReadChar())
             {}
+
+            // Identify keywords
+            switch (Position - start)
+            {
+            case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");      break;
+            case 3: Keyword = MatchChars(start, L"end") || MatchChars(start, L"not");    break;
+            case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");  break;
+            case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
+            case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");    break;
+            case 8: Keyword = MatchChars(start, L"continue");  break;
+            }
             
-            // Return TEXT
-            return MakeToken(start, TokenType::Text);
+            // Return KEYWORD/TEXT
+            return MakeToken(start, Keyword ? TokenType::Keyword : TokenType::Text);
          }
 
 
-         ScriptToken  CommandLexer::ReadVariable(StringIterator start)
+         ScriptToken  CommandLexer::ReadVariable(CharIterator start)
          {
             // Dollar sign
             ReadChar();
@@ -425,16 +437,19 @@ namespace Logic
             while (MatchVariable() && ReadChar())
             {}
 
-            // Return as TEXT if name is missing, otherwise VARIABLE
-            return MakeToken(start, Position-start > 0 ? TokenType::Variable : TokenType::Number);
+            // Return as OPERATOR if name is missing, otherwise VARIABLE
+            return MakeToken(start, Position-start > 0 ? TokenType::Variable : TokenType::Operator);
          }
 
 
-         void  CommandLexer::ReadWhitespace()
+         ScriptToken  CommandLexer::ReadWhitespace(CharIterator start)
          {
             // Consume whitespace
             while (MatchWhitespace() && ReadChar())
             {}
+
+             // Return as WHITESPACE
+            return MakeToken(start, TokenType::Whitespace);
          }
 
          

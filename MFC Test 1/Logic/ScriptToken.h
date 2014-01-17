@@ -9,7 +9,7 @@ namespace Logic
       namespace Compiler
       {
          /// <summary>Types of tokens produced by the script lexer</summary>
-         enum class TokenType { Text, Number, String, Operator, Keyword, Variable, Comment, GameObject, ScriptObject };
+         enum class TokenType { Text, Whitespace, Number, String, Operator, Keyword, Variable, Comment, GameObject, ScriptObject };
 
          /// <summary></summary>
          class ScriptToken

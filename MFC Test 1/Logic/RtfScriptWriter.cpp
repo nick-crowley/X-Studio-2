@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptWriter.h"
+#include "CommandLexer.h"
 
 namespace Logic
 {
@@ -101,50 +102,14 @@ namespace Logic
       /// <param name="indent">Indent in characters</param>
       void  RtfScriptWriter::RtfCommandWriter::Write(const ScriptCommand& cmd, UINT  indent)
       {
-         bool Marker = false;
-
-         // Set colour
-         RtfWriter::SetColour(cmd.Syntax.IsKeyword() ? Blue : White);
+         CommandLexer lex(cmd.Text, false);
 
          // Write indent
          RtfWriter::Write(wstring(indent, L' '));
 
          // Write command text
-         for (const WCHAR& ch : cmd.Syntax.Text)
-         {
-            switch (ch)
-            {
-            // Param Marker: Switch mode to marker
-            case '$':
-               Marker = true;
-               break;
-
-            // ParamID/Literal: Insert appropriate parameter 
-            case '0': case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
-               if (Marker)
-                  Write(cmd, cmd.Parameters[ch-48]);
-               else
-                  RtfWriter::Write(ch);
-               break;
-               
-            // Superscript marker: Ignore
-            case L'º': case L'¹': case L'²': case L'³': case L'ª':
-               break;
-
-            // Possible Superscript marker: Ignore iff superscript marker
-            case 'o': case 'x': case 'y': case 'z': case 'a':
-               if (!Marker)
-                  RtfWriter::Write(ch);
-               break;
-            
-            // Text: Insert verbatim
-            default:
-               Marker = false;
-               RtfWriter::Write(ch);
-               break;
-            }
-         }
+         for (const ScriptToken& tok : lex.Tokens)
+            Write(tok);
 
          // Add CRLF
          RtfWriter::WriteLn(L"");
@@ -154,51 +119,33 @@ namespace Logic
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
 
-      /// <summary>Writes a parameter to the output.</summary>
-      /// <param name="cmd">The command containing the parameter</param>
-      /// <param name="p">The parameter</param>
-      void  RtfScriptWriter::RtfCommandWriter::Write(const ScriptCommand& cmd, const ScriptParameter& p)
+      /// <summary>Writes a token to the output.</summary>
+      /// <param name="p">The token</param>
+      void  RtfScriptWriter::RtfCommandWriter::Write(const ScriptToken& tok)
       {
          COLORREF col;
 
          // Determine colour
-         switch (p.Type)
+         switch (tok.Type)
          {
-         case DataType::VARIABLE:  
-            col = (p.Syntax.IsRetVar() && cmd.Logic != BranchLogic::None ? Blue : Green);  
-            break;
+         case TokenType::Whitespace:   RtfWriter::Write(tok.Text);  return;
 
-         case DataType::STRING:    
-            col = (p.Syntax.Type == ParameterType::COMMENT ? Grey 
-                  : p.Syntax.Type == ParameterType::LABEL_NAME ? Purple
-                  : Red);      
-            break;
+         case TokenType::Comment:      col = Grey;    break;
+         case TokenType::Variable:     col = Green;   break;
+         case TokenType::Keyword:      col = Blue;    break;
+         case TokenType::Number:     
+         case TokenType::String:       col = Red;     break;    
+         case TokenType::GameObject:   col = Cyan;    break;    
+         case TokenType::ScriptObject: col = Yellow;  break;        
+         case TokenType::Operator:     
+         case TokenType::Text:         col = White;   break;
 
-         case DataType::INTEGER:   col = Red;      break;
-         case DataType::WARE:      col = Cyan;     break;
-         case DataType::Null:      col = Green;    break;
-         case DataType::OPERATOR:  col = White;    break;
-
-         case DataType::SECTOR:
-         case DataType::SCRIPTDEF:     
-         case DataType::STATIONSERIAL: 
-         case DataType::TRANSPORTCLASS:
-         case DataType::DATATYPE:      
-         case DataType::FLIGHTRETURN:  
-         case DataType::OBJECTCLASS:   
-         case DataType::OBJECTCOMMAND:  
-         case DataType::WINGCOMMAND:    
-         case DataType::RACE:          
-         case DataType::CONSTANT:  col = Yellow;   break;
-            
-         default:  
-            RtfWriter::Write(p.Text);  
-            return;
+         throw ArgumentException(HERE, L"tok", GuiString(L"Unknown token type: %s", tok.Text.c_str()));
          }
 
-         // Write parameter
+         // Write token
          RtfWriter::SetColour(col);
-         RtfWriter::Write(p.Text);
+         RtfWriter::Write(tok.Text);
 
          // Reset colour
          RtfWriter::SetColour(White);

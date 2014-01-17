@@ -40,8 +40,7 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
       public:
-         /*void  TranslateRtf(ScriptFile& f, RtfWriter& w);
-         void  Generate() {}*/
+         void  Translate(ScriptFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
       public:

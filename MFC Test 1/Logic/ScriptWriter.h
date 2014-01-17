@@ -4,6 +4,7 @@
 #include "ScriptFile.h"
 #include "ScriptCommand.h"
 #include "RtfWriter.h"
+#include "ScriptToken.h"
 
 namespace Logic
 {
@@ -65,7 +66,7 @@ namespace Logic
             void  Write(const ScriptCommand& cmd, UINT  indent);
 
          private:
-            void  Write(const ScriptCommand& cmd, const ScriptParameter& p);
+            void  Write(const ScriptToken& tok);
 
             // -------------------- REPRESENTATION ---------------------
          };
