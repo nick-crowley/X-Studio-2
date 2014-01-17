@@ -12,8 +12,8 @@
 #include "StringLibrary.h"
 #include "XmlWriter.h"
 #include "SyntaxWriter.h"
-#include "ScriptExpressionParser.h"
-#include "ScriptCommandLexer.h"
+#include "ExpressionParser.h"
+#include "CommandLexer.h"
 #include "ScriptParser.h"
 
 namespace Logic
@@ -144,39 +144,39 @@ namespace Logic
          
          // Try Parse
          tokens = Tokenise(L"4+5*3");
-         ScriptExpressionParser(tokens.begin(), tokens.end()).Parse();
+         ExpressionParser(tokens.begin(), tokens.end()).Parse();
 
          // Try Parse
          tokens = Tokenise(L"1|2^3&4<5+6*-8");
-         ScriptExpressionParser(tokens.begin(), tokens.end()).Parse();
+         ExpressionParser(tokens.begin(), tokens.end()).Parse();
 
          // Try Parse
          /*tokens = Tokenise(L"4+5*3");
-         ScriptExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();*/
+         ExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();*/
 
          // Test Lexer
          const WCHAR* cmd = L"$szTemp = sprintf: fmt='iMaximumDistance = %s   iAttackTimeout = %s', $iMaximumDistance, $iAttackTimeout, null, null, null";
-         ScriptCommandLexer lex(cmd);
+         CommandLexer lex(cmd);
 
          // Test lexer
          cmd = L"= [PLAYERSHIP]-> add $iPassengersEnslaved units of {Slaves}";
-         ScriptCommandLexer lex2(cmd);
+         CommandLexer lex2(cmd);
 
          // Test lexer
          cmd = L"* INFO: `WARNING: The %s have revoked your police license.`";
-         ScriptCommandLexer lex3(cmd);
+         CommandLexer lex3(cmd);
          
          // Test lexer
          cmd = L"do if $szItemChosen == 'Option.Quit' OR $szItemChosen == -1";
-         ScriptCommandLexer lex4(cmd);
+         CommandLexer lex4(cmd);
 
          // Test lexer
          cmd = L"$oWeapon = $oRequirement[2]";
-         ScriptCommandLexer lex5(cmd);
+         CommandLexer lex5(cmd);
          
          // Test lexer
          cmd = L"$bMatch = ($BONUS.MARINES.COUNT >= $iActorCount) AND ($BONUS.SIDEARMS.COUNT >= $iActorCount + 1)";
-         ScriptCommandLexer lex6(cmd);
+         CommandLexer lex6(cmd);
       }
       catch (...)
       {

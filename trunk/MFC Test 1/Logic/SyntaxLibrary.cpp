@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SyntaxLibrary.h"
-#include "ScriptCommandLexer.h"
+#include "CommandLexer.h"
 
 namespace Logic
 {
@@ -65,7 +65,7 @@ namespace Logic
          for (auto& pair : Commands)
          {
             // Hash command syntax
-            ScriptCommandLexer lex(pair.second.Text);
+            CommandLexer lex(pair.second.Text);
             CommandHash        h(lex.Tokens.begin(), lex.Tokens.end());
             
             // Insert {Hash,Syntax}

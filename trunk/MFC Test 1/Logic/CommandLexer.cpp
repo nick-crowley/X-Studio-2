@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptCommandLexer.h"
+#include "CommandLexer.h"
 
 namespace Logic
 {
@@ -9,7 +9,7 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptCommandLexer::ScriptCommandLexer(const wstring& line) 
+         CommandLexer::CommandLexer(const wstring& line) 
             : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), Tokens(Parse())
          {
             // DEBUG:
@@ -20,7 +20,7 @@ namespace Logic
          }
 
 
-         ScriptCommandLexer::~ScriptCommandLexer()
+         CommandLexer::~CommandLexer()
          {
          }
 
@@ -28,7 +28,7 @@ namespace Logic
 
          /// <summary>Parses all the input text</summary>
          /// <returns>Token array</returns>
-         TokenArray ScriptCommandLexer::Parse()
+         TokenArray CommandLexer::Parse()
          {
             TokenArray output;
 
@@ -93,7 +93,7 @@ namespace Logic
          /// <param name="start">The start.</param>
          /// <param name="t">Token type</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::MakeToken(StringIterator start, TokenType t) const
+         ScriptToken  CommandLexer::MakeToken(StringIterator start, TokenType t) const
          {
             return ScriptToken(t, start-LineStart, Position-LineStart, wstring(start, Position));
          }
@@ -101,7 +101,7 @@ namespace Logic
          /// <summary>Check if current char matches a character</summary>
          /// <param name="ch">The character to test</param>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchChar(WCHAR ch) const
+         bool  CommandLexer::MatchChar(WCHAR ch) const
          {
             return ValidPosition && *Position == ch;
          }
@@ -109,7 +109,7 @@ namespace Logic
          /// <summary>Check if current position matches a string (CASE SENSITIVE)</summary>
          /// <param name="str">The string to test</param>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchChars(const WCHAR* str) const
+         bool  CommandLexer::MatchChars(const WCHAR* str) const
          {
             // Match each char
             for (UINT i = 0; str[i]; ++i)
@@ -122,7 +122,7 @@ namespace Logic
 
          /// <summary>Check if current char is the opening bracket of a script object</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchConstant() const
+         bool  CommandLexer::MatchConstant() const
          {
             // Match: '[', alpha
             return ValidPosition && MatchChar(L'[')
@@ -131,14 +131,14 @@ namespace Logic
 
          /// <summary>Check if current character is a number</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchNumber() const
+         bool  CommandLexer::MatchNumber() const
          {
             return ValidPosition && iswdigit(*Position);
          }
 
          /// <summary>Check if current char is an operator</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchOperator() const
+         bool  CommandLexer::MatchOperator() const
          {
             if (ValidPosition)
                // Check first char of operator
@@ -178,7 +178,7 @@ namespace Logic
          
          /// <summary>Check if current char is text.</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchText() const
+         bool  CommandLexer::MatchText() const
          {
             // Exclude whitespace and known operators, while allowing all other characters
             if (ValidPosition)
@@ -221,7 +221,7 @@ namespace Logic
          
          /// <summary>Check if current char is variable name</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchVariable() const
+         bool  CommandLexer::MatchVariable() const
          {
             // Match alphanumeric/dot/underscore  (nb: not dollar)
             return ValidPosition && (iswalnum(*Position) || MatchChar(L'.') || MatchChar(L'_'));
@@ -229,7 +229,7 @@ namespace Logic
 
          /// <summary>Check if current char is whitespace</summary>
          /// <returns></returns>
-         bool  ScriptCommandLexer::MatchWhitespace() const
+         bool  CommandLexer::MatchWhitespace() const
          {
             // Match whitespace
             return ValidPosition && iswspace(*Position);
@@ -237,7 +237,7 @@ namespace Logic
 
          /// <summary>Consume character and move to the next, if available</summary>
          /// <returns>True if found, false if end-of-line</returns>
-         bool  ScriptCommandLexer::ReadChar()
+         bool  CommandLexer::ReadChar()
          {
             return ValidPosition && ++Position < LineEnd;
          }
@@ -245,7 +245,7 @@ namespace Logic
          /// <summary>Reads a ScriptObject, Operator or Text, some of which share first letters</summary>
          /// <param name="start">Current position (first character)</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::ReadAmbiguous(StringIterator start)
+         ScriptToken  CommandLexer::ReadAmbiguous(StringIterator start)
          {
             // Constant: Avoid interpreting '[' as an operator
             if (MatchConstant())
@@ -262,7 +262,7 @@ namespace Logic
          /// <summary>Reads the script object</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::ReadConstant(StringIterator start)
+         ScriptToken  CommandLexer::ReadConstant(StringIterator start)
          {
             // Consume all, excluding trailing bracket
             while (ReadChar() && !MatchChar(L']'))
@@ -279,7 +279,7 @@ namespace Logic
          /// <summary>Reads a comment</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::ReadComment(StringIterator start)
+         ScriptToken  CommandLexer::ReadComment(StringIterator start)
          {
             // Consume entire line
             while (ReadChar())
@@ -293,7 +293,7 @@ namespace Logic
          /// <summary>Reads the game object.</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::ReadGameObject(StringIterator start)
+         ScriptToken  CommandLexer::ReadGameObject(StringIterator start)
          {
             // Consume all, excluding trailing bracket
             while (ReadChar() && !MatchChar(L'}'))
@@ -310,7 +310,7 @@ namespace Logic
          /// <summary>Reads the string</summary>
          /// <param name="start">Current position (leading apostrophe)</param>
          /// <returns></returns>
-         ScriptToken  ScriptCommandLexer::ReadString(StringIterator start)
+         ScriptToken  CommandLexer::ReadString(StringIterator start)
          {
             // Consume all, excluding trailing apostrophe
             while (ReadChar() && !MatchChar(L'\''))
@@ -325,7 +325,7 @@ namespace Logic
          }
 
 
-         ScriptToken  ScriptCommandLexer::ReadNumber(StringIterator start)
+         ScriptToken  CommandLexer::ReadNumber(StringIterator start)
          {
             // Consume digits
             while (MatchNumber() && ReadChar())
@@ -336,7 +336,7 @@ namespace Logic
          }
 
          
-         ScriptToken  ScriptCommandLexer::ReadOperator(StringIterator start) 
+         ScriptToken  CommandLexer::ReadOperator(StringIterator start) 
          {
             // Read single char 
             switch (*Position)
@@ -405,7 +405,7 @@ namespace Logic
 
 
          
-         ScriptToken  ScriptCommandLexer::ReadText(StringIterator start)
+         ScriptToken  CommandLexer::ReadText(StringIterator start)
          {
             // Read remaining text
             while (MatchText() && ReadChar())
@@ -416,7 +416,7 @@ namespace Logic
          }
 
 
-         ScriptToken  ScriptCommandLexer::ReadVariable(StringIterator start)
+         ScriptToken  CommandLexer::ReadVariable(StringIterator start)
          {
             // Dollar sign
             ReadChar();
@@ -430,7 +430,7 @@ namespace Logic
          }
 
 
-         void  ScriptCommandLexer::ReadWhitespace()
+         void  CommandLexer::ReadWhitespace()
          {
             // Consume whitespace
             while (MatchWhitespace() && ReadChar())

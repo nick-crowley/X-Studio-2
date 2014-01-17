@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptExpressionParser.h"
+#include "ExpressionParser.h"
 
 namespace Logic
 {
@@ -12,13 +12,13 @@ namespace Logic
          /// <summary>Creates a script expression parser</summary>
          /// <param name="begin">Position of first expression token</param>
          /// <param name="end">Position after last expression token</param>
-         ScriptExpressionParser::ScriptExpressionParser(TokenIterator& begin, TokenIterator& end)
+         ExpressionParser::ExpressionParser(TokenIterator& begin, TokenIterator& end)
             : InputBegin(begin), InputEnd(end)
          {
          }
 
 
-         ScriptExpressionParser::~ScriptExpressionParser()
+         ExpressionParser::~ExpressionParser()
          {
          }
 
@@ -30,7 +30,7 @@ namespace Logic
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
-         void  ScriptExpressionParser::Parse()
+         void  ExpressionParser::Parse()
          {
             // DEBUG: print input
             Console::Write(L"Input: ");
@@ -68,7 +68,7 @@ namespace Logic
          /// <summary>Attempts to matches any literal</summary>
          /// <param name="pos">Position of literal</param>
          /// <returns></returns>
-         bool  ScriptExpressionParser::MatchLiteral(const TokenIterator& pos)
+         bool  ExpressionParser::MatchLiteral(const TokenIterator& pos)
          {
             // Validate position 
             if (pos < InputEnd) 
@@ -89,7 +89,7 @@ namespace Logic
          /// <summary>Attempts to matches a specific operator</summary>
          /// <param name="pos">Position of operator</param>
          /// <returns></returns>
-         bool ScriptExpressionParser::MatchOperator(const TokenIterator& pos, const WCHAR* op)
+         bool ExpressionParser::MatchOperator(const TokenIterator& pos, const WCHAR* op)
          {
             // Validate position and compare operator
             return pos < InputEnd && pos->Type == TokenType::Operator && pos->Text == op;
@@ -99,7 +99,7 @@ namespace Logic
          /// <param name="pos">Position of operator</param>
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
-         bool ScriptExpressionParser::MatchOperator(const TokenIterator& pos, UINT precedence)
+         bool ExpressionParser::MatchOperator(const TokenIterator& pos, UINT precedence)
          {
             // Validate position. Ensure operator
             if (pos >= InputEnd || pos->Type != TokenType::Operator)
@@ -128,7 +128,7 @@ namespace Logic
          /// <returns>Token</returns>
          /// <exception cref="Logic::InvalidOperationException">Token is not a literal</exception>
          /// <remarks>Advances the iterator to beyond the literal</remarks>
-         const ScriptToken&  ScriptExpressionParser::ReadLiteral(TokenIterator& pos)
+         const ScriptToken&  ExpressionParser::ReadLiteral(TokenIterator& pos)
          {
             // Validation position
             if (pos < InputEnd)
@@ -153,7 +153,7 @@ namespace Logic
          /// <returns>Token</returns>
          /// <exception cref="Logic::InvalidOperationException">Token is not a operator</exception>
          /// <remarks>Advances the iterator to beyond the operator</remarks>
-         const ScriptToken&  ScriptExpressionParser::ReadOperator(TokenIterator& pos)
+         const ScriptToken&  ExpressionParser::ReadOperator(TokenIterator& pos)
          {
             // Verify operator
             if (pos >= InputEnd || pos->Type != TokenType::Operator)
@@ -171,7 +171,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadExpression(TokenIterator& pos)
+         ExpressionParser::ExpressionTree  ExpressionParser::ReadExpression(TokenIterator& pos)
          {
             // Expression = Comparison
             return ReadBinaryExpression(pos, MIN_PRECEDENCE);
@@ -184,7 +184,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
+         ExpressionParser::ExpressionTree  ExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
          {
             ExpressionTree expr = nullptr;
 
@@ -217,7 +217,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
-         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadUnaryExpression(TokenIterator& pos)
+         ExpressionParser::ExpressionTree  ExpressionParser::ReadUnaryExpression(TokenIterator& pos)
          {
             // Rule: Unary = (! / - / ~)? Value
 
@@ -239,7 +239,7 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the literal or sub-expression</remarks>
-         ScriptExpressionParser::ExpressionTree  ScriptExpressionParser::ReadValue(TokenIterator& pos)
+         ExpressionParser::ExpressionTree  ExpressionParser::ReadValue(TokenIterator& pos)
          {
             ExpressionTree expr = nullptr;
 

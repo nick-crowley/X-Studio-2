@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ScriptParser.h"
-#include "ScriptExpressionParser.h"
+#include "ExpressionParser.h"
 
 
 namespace Logic
@@ -74,7 +74,7 @@ namespace Logic
          BranchLogic  ScriptParser::PeekCommand(const LineIterator& line) const
          {
             // Lex line to determine branch logic
-            ScriptCommandLexer lex(*line);
+            CommandLexer lex(*line);
             TokenIterator  begin = lex.Tokens.begin();
 
             // NOP/Comment
@@ -114,7 +114,7 @@ namespace Logic
 
          ScriptParser::CommandTree ScriptParser::ReadCommand(LineIterator& line, BranchLogic logic)
          {
-            ScriptCommandLexer lex(*line);
+            CommandLexer lex(*line);
             TokenIterator pos = lex.Tokens.begin();
             Conditional c = Conditional::NONE;
 
