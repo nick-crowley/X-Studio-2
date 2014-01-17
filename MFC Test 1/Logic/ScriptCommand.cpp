@@ -44,29 +44,34 @@ namespace Logic
          case CMD_ELSE:     return BranchLogic::Else;
          case CMD_BREAK:    return BranchLogic::Break;
          case CMD_CONTINUE: return BranchLogic::Continue;
+
+         case CMD_COMMAND_COMMENT:
+         case CMD_COMMENT: 
+         case CMD_NOP:      return BranchLogic::NOP;
+         
          default:
-            // Find RetVar parameter, if any
+            // Find Return parameter, if any
             auto it = find_if(Parameters.begin(), Parameters.end(), [](const ScriptParameter& p) { return p.Syntax.IsRetVar(); });
             
-            // None / variable
+            // RetVar/Discard
             if (it == Parameters.end() || it->Value.Type == ValueType::String)
                return BranchLogic::None;
 
-            // Ensure conditional exists
+            // RetVar/Discard
             ReturnValue retVar(it->Value.Int);
             if (retVar.ReturnType == ReturnType::ASSIGNMENT || retVar.ReturnType == ReturnType::DISCARD)
                return BranchLogic::None;
                
-            // Examine conditional
+            // Conditional
             switch (retVar.Conditional)
             {
             case Conditional::IF:      
-            case Conditional::IF_NOT:
-            case Conditional::WHILE:   
-            case Conditional::WHILE_NOT:     return BranchLogic::If;
+            case Conditional::IF_NOT:        return BranchLogic::If;
+            case Conditional::WHILE:         
+            case Conditional::WHILE_NOT:     return BranchLogic::While;
 
             case Conditional::ELSE_IF:  
-            case Conditional::ELSE_IF_NOT:   return BranchLogic::Else;
+            case Conditional::ELSE_IF_NOT:   return BranchLogic::ElseIf;
 
             case Conditional::SKIP_IF:  
             case Conditional::SKIP_IF_NOT:   return BranchLogic::SkipIf;

@@ -56,6 +56,7 @@ namespace Logic
                branch.push_back(logic); 
                break;
 
+            case BranchLogic::ElseIf:
             case BranchLogic::Else:    
             case BranchLogic::End:      
                branch.pop_back();       
@@ -69,7 +70,9 @@ namespace Logic
             switch (logic)
             {
             case BranchLogic::If:
+            case BranchLogic::While:
             case BranchLogic::Else:
+            case BranchLogic::ElseIf:
                branch.push_back(logic);
                break;
 

@@ -39,8 +39,8 @@ namespace Logic
          // My custom IDs to represent auxiliary branching commands, jumps, gotos and labels.
          BREAK     = 11,  CONTINUE    = 12,
          ELSE      = 13,  END         = 14,
-         LABEL     = 15,  GOTO_LABEL  = 16,
-         GOTO_SUB  = 17,  END_SUB     = 18  
+         LABEL     = 15,  GOTO        = 16,
+         GOSUB     = 17,  ENDSUB      = 18  
       };
 
       /// <summary>Represents the encoded return value of a script command</summary>

@@ -35,6 +35,26 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------			
 
+         public:
+            /// <summary>Matches a token at the specified position</summary>
+            /// <param name="pos">The position.</param>
+            /// <param name="t">The token type</param>
+            /// <returns></returns>
+            bool  Match(const TokenIterator& pos, TokenType t) const
+            {
+               return pos < Tokens.end() && pos->Type == t;
+            }
+
+            /// <summary>Matches a token at the specified position (CASE INSENSITIVE)</summary>
+            /// <param name="pos">The position.</param>
+            /// <param name="t">The token type</param>
+            /// <param name="txt">The token text (Case insensitive)</param>
+            /// <returns></returns>
+            bool  Match(const TokenIterator& pos, TokenType t, const WCHAR* txt) const
+            {
+               return Match(pos, t) && StrCmpI(pos->Text.c_str(), txt)==0;
+            }
+
          private:
             bool  IsValidPosition() const  { return Position < LineEnd; }
             
@@ -42,10 +62,8 @@ namespace Logic
             bool  MatchChars(const WCHAR* str) const;
 
             bool  MatchConstant() const;
-            //bool  MatchGameObject() const;
             bool  MatchNumber() const;
             bool  MatchOperator() const;
-            //bool  MatchString() const;
             bool  MatchText() const;
             bool  MatchVariable() const;
             bool  MatchWhitespace() const;
@@ -71,7 +89,7 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
          
          private:
-            const StringIterator  LineStart,    // Do not re-order, these declarations, relied upon by ctor
+            const StringIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
                                   LineEnd;
             StringIterator        Position;
 
