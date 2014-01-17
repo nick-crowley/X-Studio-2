@@ -204,9 +204,6 @@
     <ClInclude Include="Logic\RtfWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\ScriptWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\XmlWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -242,6 +239,9 @@
     </ClInclude>
     <ClInclude Include="Logic\StringResource.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RtfScriptWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,28 +16,28 @@ namespace Logic
    {
          
       /// <summary></summary>
-      class ScriptWriter
-      {
-         // --------------------- CONSTRUCTION ----------------------
+     // class ScriptWriter
+     // {
+     //    // --------------------- CONSTRUCTION ----------------------
 
-      public:
-         ScriptWriter() {}
-         virtual ~ScriptWriter() {}
+     // public:
+     //    ScriptWriter() {}
+     //    virtual ~ScriptWriter() {}
 
-         // ------------------------ STATIC -------------------------
+     //    // ------------------------ STATIC -------------------------
 
-         // --------------------- PROPERTIES ------------------------
+     //    // --------------------- PROPERTIES ------------------------
 			
-		   // ---------------------- ACCESSORS ------------------------			
+		   //// ---------------------- ACCESSORS ------------------------			
 
-		   // ----------------------- MUTATORS ------------------------
+		   //// ----------------------- MUTATORS ------------------------
 
-         virtual void  Write(ScriptFile& f) PURE;
+     //    virtual void  Write(ScriptFile& f) PURE;
 
-		   // -------------------- REPRESENTATION ---------------------
+		   //// -------------------- REPRESENTATION ---------------------
 
-      private:
-      };
+     // private:
+     // };
 
       /// <summary>Writes entire scripts in RTF</summary>
       class RtfScriptWriter
@@ -85,6 +85,7 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
+         void  Close();
          void  Write(ScriptFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
