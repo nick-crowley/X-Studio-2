@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Common.h"
+#include "FileSearch.h"
 #include <Shlwapi.h>
 
 namespace Logic

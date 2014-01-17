@@ -1,10 +1,27 @@
 #include "stdafx.h"
-#include "Common.h"
-#include <Strsafe.h>       // C String handling
+#include "Common.h"       // Do not include StringResource.h directly, referenced via common.h
+#include <Strsafe.h>
 #include "../MFC Test 1.h"    // the app
 
 namespace Logic
 {
+   // -------------------------------- CONSTRUCTION --------------------------------
+
+   VersionString::VersionString(GameVersion v)
+   {
+      switch (v)
+      {
+      case GameVersion::AlbionPrelude:  assign(L"Albion Prelude");  break;
+      case GameVersion::TerranConflict: assign(L"Terran Conflict"); break;
+      case GameVersion::Reunion:        assign(L"Reunion");         break;
+      case GameVersion::Threat:         assign(L"The Threat");      break;
+      case GameVersion::Rebirth:        assign(L"Rebirth");         break;
+      default: throw ArgumentException(HERE, L"v", L"Unknown game version");
+      }
+   }
+
+   // ------------------------------- STATIC METHODS -------------------------------
+
    /// <summary>Converts a narrow byte string to wide char</summary>
    /// <param name="str">The string</param>
    /// <param name="codepage">The codepage used for conversion</param>
@@ -97,5 +114,13 @@ namespace Logic
 
       return msg;
    }
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
+   // ------------------------------- PRIVATE METHODS ------------------------------
+
+   
 
 }

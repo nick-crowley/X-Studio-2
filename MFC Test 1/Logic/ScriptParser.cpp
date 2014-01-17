@@ -34,7 +34,7 @@ namespace Logic
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
                // DEBUG:
-               //Console::WriteLn(L"Parsing line '%s'", line->c_str());
+               //Console.WriteLn(L"Parsing line '%s'", line->c_str());
 
                // Peek logic
                switch (BranchLogic logic = PeekCommand(line))

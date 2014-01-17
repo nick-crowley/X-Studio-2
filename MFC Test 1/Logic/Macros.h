@@ -38,7 +38,7 @@
 #define PROPERTY_GET_SET(type,name,fget,fset)   __declspec(property(get=fget,put=fset)) type name
 
 // Macro: Assembles wide character description of code location
-#define  HERE   __WFUNCTION__
+#define HERE   __WFUNCTION__
 
 // Macro: Throws ArgumentNullException if argument is null
 #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
