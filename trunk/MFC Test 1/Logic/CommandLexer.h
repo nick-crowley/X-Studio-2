@@ -14,12 +14,12 @@ namespace Logic
          {
             // ------------------------ TYPES --------------------------
          private:
-            typedef wstring::const_iterator StringIterator;
+            typedef wstring::const_iterator CharIterator;
 
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            CommandLexer(const wstring& line);
+            CommandLexer(const wstring& line, bool skipWhitespace = true);
             virtual ~CommandLexer();
 
             DEFAULT_COPY(CommandLexer);	// Default copy semantics
@@ -60,6 +60,7 @@ namespace Logic
             
             bool  MatchChar(WCHAR ch) const;
             bool  MatchChars(const WCHAR* str) const;
+            bool  MatchChars(const CharIterator pos, const WCHAR* str) const;
 
             bool  MatchConstant() const;
             bool  MatchNumber() const;
@@ -68,30 +69,31 @@ namespace Logic
             bool  MatchVariable() const;
             bool  MatchWhitespace() const;
 
-            ScriptToken  MakeToken(StringIterator start, TokenType t) const;
+            ScriptToken  MakeToken(CharIterator start, TokenType t) const;
 
             // ----------------------- MUTATORS ------------------------
 
          private:
             bool         ReadChar();
-            void         ReadWhitespace();
 
-            ScriptToken  ReadAmbiguous(StringIterator start);
-            ScriptToken  ReadConstant(StringIterator start);
-            ScriptToken  ReadComment(StringIterator start);
-            ScriptToken  ReadGameObject(StringIterator start);
-            ScriptToken  ReadNumber(StringIterator start);
-            ScriptToken  ReadOperator(StringIterator start);
-            ScriptToken  ReadString(StringIterator start);
-            ScriptToken  ReadText(StringIterator start);
-            ScriptToken  ReadVariable(StringIterator start);
+            ScriptToken  ReadAmbiguous(CharIterator start);
+            ScriptToken  ReadConstant(CharIterator start);
+            ScriptToken  ReadComment(CharIterator start);
+            ScriptToken  ReadGameObject(CharIterator start);
+            ScriptToken  ReadNumber(CharIterator start);
+            ScriptToken  ReadOperator(CharIterator start);
+            ScriptToken  ReadString(CharIterator start);
+            ScriptToken  ReadText(CharIterator start);
+            ScriptToken  ReadVariable(CharIterator start);
+            ScriptToken  ReadWhitespace(CharIterator start);
 
             // -------------------- REPRESENTATION ---------------------
          
          private:
-            const StringIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
+            const CharIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
                                   LineEnd;
-            StringIterator        Position;
+            CharIterator        Position;
+            const bool            SkipWhitespace;
 
          public:
             const TokenArray      Tokens;
