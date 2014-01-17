@@ -107,34 +107,8 @@ namespace Logic
             p.Translate(f);
 
          // Format command
-         //for (const WCHAR& ch : Syntax.Text)
-         //{
-         //   switch (ch)
-         //   {
-         //   // Param Marker: Switch mode to marker
-         //   case '$':
-         //      Param = true;
-         //      break;
-
-         //   // ParamID/Literal: Insert appropriate parameter 
-         //   case '0': case '1': case '2': case '3': case '4': 
-         //   case '5': case '6': case '7': case '8': case '9': 
-         //      if (Param)
-         //         Text.append(Parameters[ch-48].Text);
-         //      else
-         //         Text.push_back(ch);
-         //      break;
-         //      
-         //   // Text: Insert verbatim
-         //   default:
-         //      Param = false;
-         //      Text.push_back(ch);
-         //      break;
-         //   }
-         //}
-
-         // Format command
          for (const ScriptToken& tok : lex.Tokens)
+         {
             if (tok.Type == TokenType::Variable || tok.Type == TokenType::Comment)
             {
                int i = (tok.Text[1]-48);
@@ -142,6 +116,12 @@ namespace Logic
             }
             else
                Text.append(tok.Text);
+         }
+
+         // Expressions: Print remaining syntax
+         if (Syntax.ID == CMD_EXPRESSION)
+            for (UINT i = 2; i < Parameters.size(); ++i)
+               Text.append(Parameters[i].Text);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
