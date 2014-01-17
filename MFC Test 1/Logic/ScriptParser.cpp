@@ -160,11 +160,8 @@ namespace Logic
             ScriptCommand cmd(*line, SyntaxLib.Identify(hash, Version), hash.Parameters);
 
             // DEBUG:
-            if (cmd.Syntax == SyntaxLib.Unknown) 
-            {
-               Console.WriteLnf(L"%04d: %s", GetLineNumber(line), line->c_str());
-               Console.WriteLnf(L"    : %s", hash.Hash.c_str());
-            }
+            Console << GetLineNumber(line) << L": " << *line << L"\n";
+            Console << (cmd.Syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << Colour::White << L"\n";
             
             // Generate CommandNode?
             return CommandTree(new CommandNode(logic, cmd, GetLineNumber(line++)));
