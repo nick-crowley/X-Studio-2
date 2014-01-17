@@ -75,7 +75,7 @@ namespace Logic
          Files.clear();
 
          // DEBUG:
-         Console.WriteLnf(L"Building %s VFS from '%s'", VersionString(version).c_str(), (WCHAR*)folder);
+         Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << (WCHAR*)folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())
@@ -90,7 +90,11 @@ namespace Logic
 
          // Enumerate catalogs/files
          EnumerateCatalogs();
-         return EnumerateFiles();
+         EnumerateFiles();
+         Console << Colour::Green << L"FileSystem enumerated successfully" << ENDL;
+
+         // Return count
+         return Files.size();
       }
 
       /// <summary>Queries whether file system contains a file</summary>
@@ -181,7 +185,7 @@ namespace Logic
             DWORD          size;
 
             // DEBUG:
-            Console.WriteLnf(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath);
+            Console << Colour::White << L"Reading catalog " << (const WCHAR*)cat.FullPath << ENDL;
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
