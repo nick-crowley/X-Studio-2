@@ -156,7 +156,8 @@ namespace Logic
             ScriptTree  ParseScript();
 
          private:
-            void  ParseBranch(CommandTree& branch, LineIterator& line);
+            void           ParseBranch(CommandTree& branch, LineIterator& line);
+            CommandTree    ParseNode(LineIterator& line);
 
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
@@ -165,7 +166,6 @@ namespace Logic
             ScriptCommand  ReadComment(const CommandLexer& lex, const LineIterator& line);
             ScriptCommand  ReadCommand(const CommandLexer& lex, const LineIterator& line);
             ScriptCommand  ReadExpression(const CommandLexer& lex, const LineIterator& line);
-            CommandTree    ReadLine(LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
 
