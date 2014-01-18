@@ -41,7 +41,16 @@ namespace Logic
          CommandSyntax(const Declaration& d);
          virtual ~CommandSyntax();
 
-         //CommandSyntax& operator=(const CommandSyntax& r) = default;
+         //CommandSyntax& operator=(const CommandSyntax& r) //= default;
+         //{
+         //   const_cast<CommandGroup>(Group) = r.Group;
+         //   const_cast<CommandType>(Type) = r.Type;
+         //   const_cast<ParamSyntaxArray>(Parameters) = r.Parameters;
+         //   const_cast<UINT>(Versions) = r.Versions;
+         //   const_cast<UINT>(ID) = r.ID;
+         //   const_cast<wstring>(Text) = r.Text;
+         //   const_cast<wstring>(URL) = r.URL;
+         //}
 
          // ------------------------ STATIC -------------------------
 
@@ -51,6 +60,7 @@ namespace Logic
          PROPERTY_GET(bool,Keyword,IsKeyword);
 
          bool  operator==(const CommandSyntax& r) const   { return ID == r.ID && Versions == r.Versions; }
+         bool  operator!=(const CommandSyntax& r) const   { return ID != r.ID || Versions != r.Versions; }
 
 		   // ---------------------- ACCESSORS ------------------------
 			

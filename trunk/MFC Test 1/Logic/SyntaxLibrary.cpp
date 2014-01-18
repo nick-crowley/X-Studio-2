@@ -64,13 +64,43 @@ namespace Logic
          // add hashes
          for (auto& pair : Commands)
          {
-            // Hash command syntax
-            CommandLexer lex(pair.second.Text);
-            CommandHash  h(lex.Tokens.begin(), lex.Tokens.end());
+            // Tokenise syntax
+            CommandSyntax& syntax = pair.second;
+            CommandLexer lex(syntax.Text);
             
-            // Insert {Hash,Syntax}
-            Hashes.insert(HashCollection::value_type(h.Hash, pair.second));
+            // Add hash to hash collection 
+            CommandHash  h(lex.Tokens.begin(), lex.Tokens.end());
+            Hashes.insert(HashCollection::value_type(h.Hash, syntax));
+
+            try
+            {
+               // Skip comments
+               if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT)
+                  continue;
+
+               // NEW: Add to syntax tree
+               list<ScriptToken> tokens;
+               for (const ScriptToken& t : lex.Tokens)
+               {
+                  if (t.Type == TokenType::Variable)
+                  {
+                     auto p = syntax.Parameters[t.Text[1]-48];
+                     if (p.IsRefObj() || p.IsRetVar())
+                        continue;
+                  }
+
+                  tokens.push_back(t);
+               }
+               Tree.Add(syntax, tokens);
+            }
+            catch (ExceptionBase& e)
+            {
+               Console << Colour::Red << L"Unable to insert syntax: " << syntax.Text << L" : " << Colour::Yellow << e.Message << ENDL;
+            }
          }
+
+         // NEW:
+         Tree.Print();
       }
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
