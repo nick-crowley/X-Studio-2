@@ -36,6 +36,26 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
 
          public:
+            TokenIterator begin() const 
+            { 
+               return Tokens.begin(); 
+            }
+
+            TokenIterator end() const 
+            { 
+               return Tokens.end(); 
+            }
+
+            TokenArray::size_type count() const
+            {
+               return Tokens.size();
+            }
+
+            bool  Valid(const TokenIterator& pos) const
+            {
+               return pos < Tokens.end();
+            }
+
             /// <summary>Matches a token at the specified position</summary>
             /// <param name="pos">The position.</param>
             /// <param name="t">The token type</param>

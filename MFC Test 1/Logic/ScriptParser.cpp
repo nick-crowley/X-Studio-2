@@ -112,6 +112,135 @@ namespace Logic
          }
 
 
+         bool  ScriptParser::MatchComment(const CommandLexer& lex)
+         {
+            TokenIterator pos = lex.begin();
+
+            // Nop:
+            if (lex.count() == 0)
+               return true;
+
+            // Comment: '*' text?
+            if (lex.Match(pos, TokenType::Operator, L"*"))
+               return lex.count() == 1 || (lex.count() == 2 && lex.Match(pos+1, TokenType::Comment));
+
+            // Failed
+            return false;
+         }
+
+
+         bool  ScriptParser::MatchAssignment(const CommandLexer& lex)
+         {
+            TokenIterator pos = lex.begin();
+
+            // Assignment: variable '='
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos+1, TokenType::Operator, L"=");
+         }
+
+         bool  ScriptParser::MatchConditional(const CommandLexer& lex)
+         {
+            TokenIterator pos = lex.begin();
+
+            // If/while
+            if (lex.Match(pos, TokenType::Keyword, L"if") || lex.Match(pos, TokenType::Keyword, L"while"))
+               return true;
+
+            // SkipIf/DoIf
+            if (lex.Match(pos, TokenType::Keyword, L"skip") || lex.Match(pos, TokenType::Keyword, L"do"))
+               return lex.Match(++pos, TokenType::Keyword, L"if");
+
+            // ElseIf
+            return lex.Match(pos, TokenType::Keyword, L"else") && lex.Match(++pos, TokenType::Keyword, L"if");
+         }
+
+         wstring  ScriptParser::ReadAssignment(CommandLexer& lex, TokenIterator& pos)
+         {
+            wstring retVar = pos->Text;
+            return (pos += 2, retVar);
+         }
+
+         Conditional ScriptParser::ReadConditional(CommandLexer& lex, TokenIterator& pos)
+         {
+            Conditional c = Conditional::NONE;
+
+            // 'if' 'not'?
+            if (lex.Match(pos, TokenType::Keyword, L"if"))
+               return lex.Match(++pos, TokenType::Keyword, L"not") ? (++pos, Conditional::IF_NOT) : Conditional::IF;
+               
+            // 'while' 'not'?
+            else if (lex.Match(pos, TokenType::Keyword, L"while"))
+               return lex.Match(++pos, TokenType::Keyword, L"not") ? (++pos, Conditional::WHILE_NOT) : Conditional::WHILE;
+
+            // 'else' 'if' 'not'?
+            else if (lex.Match(pos, TokenType::Keyword, L"else") && lex.Match(++pos, TokenType::Keyword, L"if"))
+               return lex.Match(++pos, TokenType::Keyword, L"not") ? (++pos, Conditional::ELSE_IF_NOT) : Conditional::ELSE_IF;
+
+            // 'skip' 'if'
+            else if (lex.Match(pos, TokenType::Keyword, L"skip") && lex.Match(++pos, TokenType::Keyword, L"if")) 
+               return (++pos, Conditional::SKIP_IF);
+
+            // 'do' 'if'
+            else if (lex.Match(pos, TokenType::Keyword, L"do") && lex.Match(++pos, TokenType::Keyword, L"if")) 
+               return (++pos, Conditional::SKIP_IF_NOT);
+               
+            throw "Invalid conditional - use sentinel syntax";
+         }
+
+         bool ScriptParser::MatchReferenceObject(const CommandLexer& lex, const TokenIterator& pos) const
+         {
+            return (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable))
+                && lex.Match(pos+1, TokenType::Operator, L"->");
+         }
+
+         ScriptToken ScriptParser::ReadReferenceObject(CommandLexer& lex, TokenIterator& pos)
+         {
+            ScriptToken refObj = *pos;
+            return (pos+=2, refObj);
+         }
+
+         bool ScriptParser::MatchCommandText(const CommandLexer& lex, const TokenIterator& pos) const
+         {
+            return lex.Match(pos, TokenType::Text);
+         }
+
+         bool ScriptParser::MatchExpression(const CommandLexer& lex, const TokenIterator& start) const
+         {
+            TokenIterator pos = start;
+            
+            // Unary_operator?
+            if (lex.Match(pos, TokenType::Operator, L"!") || lex.Match(pos, TokenType::Operator, L"-") || lex.Match(pos, TokenType::Operator, L"~"))
+               ++pos;
+
+            // Value  {constant/variable/literal/null}
+            if (lex.Match(pos, TokenType::Number) || lex.Match(pos, TokenType::String) || lex.Match(pos, TokenType::GameObject) || lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable))
+               // (operator value)+   {simplify to check for any non-refobj operator)
+               return lex.Match(pos+1, TokenType::Operator) && !lex.Match(pos+1, TokenType::Operator, L"->");
+            
+            // Failed
+            return false;
+         }
+
+         bool  ScriptParser::MatchCommand(const CommandLexer& lex)
+         {
+            TokenIterator pos = lex.begin();
+            //return MatchAssignment(lex) || MatchConditional(lex)
+
+#progress: Match() functions need to move the iterator so further matching can take place. theyll have to be called with new iterators each time.
+         }
+
+         
+         ScriptCommand  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
+         {
+            // Return NOP/Comment
+            CommandSyntax syntax = SyntaxLib.Find(lex.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
+            return ScriptCommand(*line, syntax, lex.Tokens);
+         }
+
+
+         ScriptCommand  ScriptParser::ReadCommand2(const CommandLexer& lex, const LineIterator& line)
+         {
+         }
+
          ScriptParser::CommandTree ScriptParser::ReadCommand(LineIterator& line, BranchLogic logic)
          {
             CommandLexer  lex(*line);
@@ -132,7 +261,26 @@ namespace Logic
             command = (assignment/conditional)? (constant/variable/null '->')? text
             expression = (assignment/conditional) unary_operator? value (operator value)+
 
+            --
+
+            if (matchComment())        // Reads NOP and comment
+               command = readComment();
+
+            else if (matchCommand())
+               command = readCommand();
+
+            else if (matchExpression())
+               command = readExpression();
+            else
+               error: create command using 'Unknown' syntax
+
+            * could potentially validate parameters at this point
+            
+            NB: Read() methods responsible for assembling conditional/retVar into new command
             */
+
+            
+
 
             // Identify conditional. Consume only tokens that match.  [prev identified logic has matched the initial token(s)]
             switch (logic)
