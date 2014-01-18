@@ -2,6 +2,7 @@
 #include "ScriptCommand.h"
 #include "ScriptFile.h"
 #include "CommandLexer.h"
+#include "SyntaxLibrary.h"
 #include <algorithm>
 
 namespace Logic
@@ -18,6 +19,11 @@ namespace Logic
       }
 
       // -------------------------------- CONSTRUCTION --------------------------------
+
+      ScriptCommand::ScriptCommand()
+         : Syntax(SyntaxLib.Unknown), RefIndex(0)
+      {
+      }
 
       ScriptCommand::ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params)
          : Syntax(syntax), RefIndex(0), Text(text)

@@ -32,14 +32,16 @@ namespace Logic
             class CommandNode
             {
             public:
-               CommandNode() 
+               /*CommandNode() 
                   : Logic(BranchLogic::None), LineNumber(1), Index(0), JumpTarget(nullptr), Command(SyntaxLib.Unknown, ParameterArray())
-               {}
-               CommandNode(BranchLogic logic, const ScriptCommand& cmd, UINT line) 
-                  : Logic(logic), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
-               {}
-               virtual ~CommandNode()
-               {}
+               {}*/
+               CommandNode(const ScriptCommand& cmd, UINT line) 
+                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
+               {
+                  Logic = Command.Logic;
+               }
+               /*virtual ~CommandNode()
+               {}*/
 
                BranchLogic    Logic;            // logic type
                ScriptCommand  Command;          // Command
@@ -80,6 +82,17 @@ namespace Logic
                }
 
                vector<CommandTree>  Children;    // Child commands
+            };
+
+            class ScriptTree
+            {
+            public:
+               void  Add(CommandTree t)   
+               { 
+                  Commands.push_back(t); 
+               }
+
+               vector<CommandTree> Commands;
             };
 
             ///// <summary>Any command that executes a jump: break/continue/hiddenJump + any conditional</summary>
@@ -129,16 +142,30 @@ namespace Logic
 
          private:
             UINT  GetLineNumber(const LineIterator& line) const;
-            BranchLogic  PeekCommand(const LineIterator& line) const;
+
+            bool  MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const;
+            bool  MatchConditional(const CommandLexer& lex, TokenIterator& pos) const;
+            bool  MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const;
+            bool  MatchComment(const CommandLexer& lex) const;
+            bool  MatchCommand(const CommandLexer& lex) const;
+            bool  MatchExpression(const CommandLexer& lex) const;
 
             // ----------------------- MUTATORS ------------------------
          
          public:
-            CommandTree  ReadScript();
+            ScriptTree  ParseScript();
 
          private:
-            CommandTree  ReadBranch(LineIterator& line, BranchLogic logic);
-            CommandTree  ReadCommand(LineIterator& line, BranchLogic logic);
+            void  ParseBranch(CommandTree& branch, LineIterator& line);
+
+            TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
+            Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
+            TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
+
+            ScriptCommand  ReadComment(const CommandLexer& lex, const LineIterator& line);
+            ScriptCommand  ReadCommand(const CommandLexer& lex, const LineIterator& line);
+            ScriptCommand  ReadExpression(const CommandLexer& lex, const LineIterator& line);
+            CommandTree    ReadLine(LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
 

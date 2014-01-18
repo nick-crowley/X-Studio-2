@@ -30,7 +30,7 @@ namespace Logic
       Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
 
       ScriptParser p(lines, GameVersion::TerranConflict);
-      auto tree = p.ReadScript();
+      auto tree = p.ParseScript();
 
       /*Console.WriteLnf();
       Console.WriteLnf(L"Parser has produced the following tree:");
