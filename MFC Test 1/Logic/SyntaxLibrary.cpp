@@ -39,73 +39,182 @@ namespace Logic
          throw SyntaxNotFoundException(HERE, id, ver);
       }
 
-      /// <summary>Finds syntax by Hash</summary>
-      /// <param name="h">command hash</param>
+      /// <summary>Finds syntax by name</summary>
+      /// <param name="pos">First token</param>
+      /// <param name="end">End of tokens</param>
       /// <param name="v">Game version</param>
-      /// <returns>Syntax if found, otherwise 'Unknown'</returns>
-      CommandSyntax  SyntaxLibrary::Identify(const CommandHash& h, GameVersion v) const
+      /// <returns>Syntax if found, otherwise sentinel syntax</returns>
+      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
       {
-         // Search all syntax with matching hash for a compatible version
-         for (auto it = Hashes.find(h.Hash); it != Hashes.end() && it->first == h.Hash; ++it)
-            if (it->second.Versions & (UINT)v)
-               return it->second;
-
-         // Not found
-         return Unknown;
+         return NameTree.Find(pos, end, ver);
       }
 
       /// <summary>Merges a syntax file into the library</summary>
       /// <param name="f">The file</param>
       void  SyntaxLibrary::Merge(SyntaxFile&& f)
       { 
-         // Merge commands
+         // Merge commands table
          Commands.Merge(std::move(f)); 
 
-         // add hashes
+         // Insert into syntax tree
          for (auto& pair : Commands)
          {
-            // Tokenise syntax
             CommandSyntax& syntax = pair.second;
-            CommandLexer lex(syntax.Text);
             
-            // Add hash to hash collection 
-            CommandHash  h(lex.Tokens.begin(), lex.Tokens.end());
-            Hashes.insert(HashCollection::value_type(h.Hash, syntax));
-
             try
             {
-               // Skip comments
-               if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT)
+               // Skip commands that are manually matched by parser
+               if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT || syntax.ID == CMD_EXPRESSION)
                   continue;
 
-               // NEW: Add to syntax tree
-               list<ScriptToken> tokens;
+               // Lex syntax string
+               CommandLexer lex(syntax.Text);
+               TokenArray tokens;
+
+               // Copy token array excluding RefObj & RetVar
                for (const ScriptToken& t : lex.Tokens)
                {
-                  if (t.Type == TokenType::Variable)
+                  if (t.Type != TokenType::Variable)
+                     tokens.push_back(t);
+                  else
                   {
-                     auto p = syntax.Parameters[t.Text[1]-48];
-                     if (p.IsRefObj() || p.IsRetVar())
-                        continue;
-                  }
+                     auto param = syntax.Parameters[t.Text[1]-48];
 
-                  tokens.push_back(t);
+                     if (!param.IsRefObj() && !param.IsRetVar())
+                        tokens.push_back(t);
+                  }
                }
-               Tree.Add(syntax, tokens);
+
+               // Insert command
+               NameTree.Insert(syntax, tokens.begin(), tokens.end()); 
             }
             catch (ExceptionBase& e)
             {
                Console << Colour::Red << L"Unable to insert syntax: " << syntax.Text << L" : " << Colour::Yellow << e.Message << ENDL;
             }
          }
-
-         // NEW:
-         Tree.Print();
       }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
 
+
+
+
+      // -------------------------------- CONSTRUCTION --------------------------------
+
+      SyntaxLibrary::SyntaxNode::SyntaxNode() : Syntax(nullptr)
+      {
+      }
+
+      SyntaxLibrary::SyntaxNode::SyntaxNode(const ScriptToken& t) : Token(t), Syntax(nullptr)
+      {
+      }
+
+      // ------------------------------- STATIC METHODS -------------------------------
+
+      // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Finds syntax by text</summary>
+      /// <param name="pos">First token</param>
+      /// <param name="end">End of tokens</param>
+      /// <param name="ver">Desired game version</param>
+      /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
+      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
+      {
+         // EOF: Return of this node (if any)
+         if (pos >= end)
+            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : SyntaxLib.Unknown;
+
+         // Lookup next token
+         auto pair = Children.find( GetKey(*pos) );
+               
+         // Not found: Return sentinel
+         if (pair == Children.end())
+            return SyntaxLib.Unknown;
+
+         // Found: Search children
+         return pair->second.Find(++pos, end, ver);
+      };
+
+      /// <summary>Inserts new syntax into the tree</summary>
+      /// <param name="s">The syntax</param>
+      /// <param name="pos">First token</param>
+      /// <param name="end">End of tokens</param>
+      /// <exception cref="Logic::GenericException">Syntax conflicts with existing syntax</exception>
+      void  SyntaxLibrary::SyntaxNode::Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end)
+      {
+         if (pos < end)
+         {
+            // (Insert/Lookup) next child
+            auto pair = Children.insert( NodeMap::value_type(GetKey(*pos), SyntaxNode(*pos)) );
+
+            // Check child against next token
+            pair.first->second.Insert(s, ++pos, end);
+         }
+         else
+         {
+            // Ensure not duplicate
+            if (HasSyntax())
+               throw GenericException(HERE, GuiString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
+
+            // EndOfInput: Store syntax here
+            Syntax = SyntaxPtr(new CommandSyntax(s));
+         }
+      }
+
+      /// <summary>Prints node and all children to the console</summary>
+      /// <param name="depth">Current depth</param>
+      void SyntaxLibrary::SyntaxNode::Print(int depth) const
+      {
+         // DEBUG: Abort
+         if (depth == 3)
+            return;
+
+         // Print node
+         wstring indent(depth, L' ');
+         Console << indent << L"Token: " << Colour::Yellow << Token.Text << Colour::White << L"   Syntax: " << Colour::Yellow << GetSyntax().Text << ENDL;
+
+         // Print children
+         for (auto c : Children)
+            c.second.Print(depth+1);
+      }
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+
+      /// <summary>Gets the node map lookup key for a token</summary>
+      /// <param name="tok">The token</param>
+      /// <returns></returns>
+      const wstring&  SyntaxLibrary::SyntaxNode::GetKey(const ScriptToken& tok) const
+      {
+         switch (tok.Type)
+         {
+         case TokenType::Operator:  
+         case TokenType::Keyword:  
+         case TokenType::Text:      
+            return tok.Text;
+
+         default: 
+            return VARIABLE;
+         }
+      }
+
+      /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
+      /// <returns></returns>
+      CommandSyntax  SyntaxLibrary::SyntaxNode::GetSyntax() const
+      {
+         return HasSyntax() ? *Syntax : SyntaxLib.Unknown;
+      }
+
+      /// <summary>Determine whether node has syntax</summary>
+      /// <returns></returns>
+      bool  SyntaxLibrary::SyntaxNode::HasSyntax() const
+      {
+         return Syntax != nullptr;
+      }
    }
 }
 

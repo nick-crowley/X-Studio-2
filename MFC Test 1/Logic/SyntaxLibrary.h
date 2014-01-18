@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "SyntaxFile.h"
-#include "CommandHash.h"
 #include "ScriptToken.h"
 
 // Syntax library singleton
@@ -18,14 +17,11 @@ namespace Logic
          // ------------------------ TYPES --------------------------
       private:
          /// <summary></summary>
-         typedef multimap<wstring,CommandSyntax>  HashCollection;
-
-         /// <summary></summary>
          class SyntaxNode
          {
             // ------------------------ TYPES --------------------------
          private:
-            /// <summary>Sentinel value for a parameter</summary>
+            /// <summary>Sentinel node map key for a parameter</summary>
             const wstring VARIABLE = L"¶¶¶¶¶";
 
             /// <summary>Nodes keyed by token text</summary>
@@ -36,10 +32,8 @@ namespace Logic
          
             // --------------------- CONSTRUCTION ----------------------
          public:
-            SyntaxNode() : Syntax(nullptr)
-            {}
-            SyntaxNode(const ScriptToken& t) : Token(t), Syntax(nullptr)
-            {}
+            SyntaxNode();
+            SyntaxNode(const ScriptToken& t);
 
             // ------------------------ STATIC -------------------------
 
@@ -47,88 +41,25 @@ namespace Logic
 			
             // ---------------------- ACCESSORS ------------------------			
 
-            CommandSyntax Find(list<ScriptToken>& tokens) const
-            {
-               // Empty: Return syntax / sentinel
-               if (tokens.empty())
-                  return GetSyntax();
+         public:
+            CommandSyntax  Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
+            void           Print(int depth = 1) const;
 
-               // Lookup next token
-               auto pair = Children.find( GetKey(tokens.front()) );
-               
-               // Not found: Return sentinel
-               if (pair == Children.end())
-                  return SyntaxLib.Unknown;
-
-               // Found: Search children
-               tokens.pop_front();
-               return pair->second.Find(tokens);
-            };
-
-            const wstring& GetKey(const ScriptToken& tok) const
-            {
-               switch (tok.Type)
-               {
-               case TokenType::Operator:  
-               case TokenType::Keyword:  
-               case TokenType::Text:      
-                  return tok.Text;
-
-               default: 
-                  return VARIABLE;
-               }
-            }
-            
-            CommandSyntax  GetSyntax() const
-            {
-               return HasSyntax() ? *Syntax : SyntaxLib.Unknown;
-            }
-
-            bool HasSyntax() const
-            {
-               return Syntax != nullptr;
-            }
-
-            void Print(int depth = 1) const
-            {
-               if (depth == 3)
-                  return;
-               wstring indent(depth, L' ');
-               Console << indent << L"Token: " << Colour::Yellow << Token.Text << Colour::White << L"   Syntax: " << Colour::Yellow << GetSyntax().Text << ENDL;
-               for (auto c : Children)
-                  c.second.Print(depth+1);
-            }
+         private:
+            const wstring& GetKey(const ScriptToken& tok) const;
+            CommandSyntax  GetSyntax() const;
+            bool           HasSyntax() const;
 
             // ----------------------- MUTATORS ------------------------
 
-            void  Add(const CommandSyntax& s, list<ScriptToken>& tokens)
-            {
-               // Empty: Store syntax at this node
-               if (tokens.empty())
-               {
-                  if (HasSyntax())
-                     throw ArgumentException(HERE, L"s", GuiString(L"Syntax already present: (id:%d) %s", Syntax->ID, Syntax->Text.c_str()));
-
-                  // Store syntax 
-                  Syntax = SyntaxPtr(new CommandSyntax(s));
-               }
-               else
-               {
-                  // (Insert/Lookup) next token/child
-                  auto t = tokens.front();
-                  auto pair = Children.insert( NodeMap::value_type(GetKey(t), SyntaxNode(t)) );
-
-                  // Remove token, recurse into new/existing child
-                  tokens.pop_front();
-                  pair.first->second.Add(s, tokens);
-               }
-            }
+         public:
+            void  Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end);
 
             // -------------------- REPRESENTATION ---------------------
 
-            NodeMap        Children;
-            SyntaxPtr      Syntax;
-            ScriptToken    Token;
+            NodeMap      Children;
+            SyntaxPtr    Syntax;
+            ScriptToken  Token;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -155,11 +86,12 @@ namespace Logic
          /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
          CommandSyntax  Find(UINT id, GameVersion ver) const;
 
-         /// <summary>Finds syntax by Hash</summary>
-         /// <param name="h">command hash</param>
-         /// <param name="ver">Game version</param>
-         /// <returns>Syntax if found, otherwise 'Unknown'</returns>
-         CommandSyntax  Identify(const CommandHash& h, GameVersion v) const;
+         /// <summary>Finds syntax by name</summary>
+         /// <param name="pos">First token</param>
+         /// <param name="end">End of tokens</param>
+         /// <param name="v">Game version</param>
+         /// <returns>Syntax if found, otherwise sentinel syntax</returns>
+         CommandSyntax  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
 
          /// <summary>Merges a syntax file into the library</summary>
          /// <param name="f">The file</param>
@@ -174,8 +106,7 @@ namespace Logic
 
       private:
          SyntaxCollection  Commands;
-         HashCollection    Hashes;
-         SyntaxNode        Tree;
+         SyntaxNode        NameTree;
       };
 
    }
