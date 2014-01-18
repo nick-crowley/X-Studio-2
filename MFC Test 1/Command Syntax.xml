@@ -292,7 +292,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="100" version="X2,X3R,X3TC,X3AP">
-      <text>goto label $0:</text>
+      <text>goto $0:</text>
       <group>FLOW_CONTROL</group>
       <type>Standard</type>
       <url></url>
@@ -424,7 +424,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="112" version="X2,X3R,X3TC,X3AP">
-      <text>hidden goto label $0</text>
+      <text>jump $0</text>
       <group>HIDDEN</group>
       <type>Standard</type>
       <url></url>

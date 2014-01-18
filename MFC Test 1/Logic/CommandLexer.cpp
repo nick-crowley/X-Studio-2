@@ -412,21 +412,23 @@ namespace Logic
             while (MatchText() && ReadChar())
             {}
 
+            // Return LABEL if ':' immediately follows first word
+            if (MatchChar(L':') && start == LineStart)
+               return MakeToken(start, TokenType::Label);
+
+            // Return NULL as own type
+            if (MatchChars(start, L"null"))
+               return MakeToken(start, TokenType::Null);
+
             // Identify keywords
             switch (Position - start)
             {
             case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");             break;
             case 3: Keyword = MatchChars(start, L"end") || MatchChars(start, L"not");           break;
+            case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");   break;
             case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
             case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");     break;
             case 8: Keyword = MatchChars(start, L"continue");                                   break;
-            case 4: 
-               if (MatchChars(start, L"null"))
-                  // Return NULL
-                  return MakeToken(start, TokenType::Null);
-               else
-                  Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");  
-               break;
             }
             
             // Return KEYWORD/TEXT
