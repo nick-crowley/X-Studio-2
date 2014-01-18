@@ -3131,7 +3131,7 @@ X2,X3R,X3TC,X3AP
 NONE
 $0 put into environment $1
 RefObj
-RefObj
+Var/Environment
 -------------- END DEFINITION ---------------
 GAME_ENGINE
 X2,X3R,X3TC,X3AP
