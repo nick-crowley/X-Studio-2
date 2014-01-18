@@ -121,6 +121,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="Command Syntax.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +276,7 @@
     <None Include="res\MFCTest1.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="Command Syntax.xml" />
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

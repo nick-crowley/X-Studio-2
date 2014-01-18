@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="Command Syntax.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -488,5 +489,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
+    <Xml Include="Command Syntax.xml" />
   </ItemGroup>
 </Project>
