@@ -5102,7 +5102,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="1046" version="X3R,X3TC,X3AP">
-      <text>set player tracking aim to $0</text>
+      <text>$0 set player tracking aim to</text>
       <group>PLAYER</group>
       <type>Standard</type>
       <url></url>

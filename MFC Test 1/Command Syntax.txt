@@ -3667,7 +3667,7 @@ PLAYER
 X3R,X3TC,X3AP
 1046
 NONE
-set player tracking aim to $0
+$0 set player tracking aim to
 RefObj
 -------------- END DEFINITION ---------------
 OBJECT_PROPERTY
