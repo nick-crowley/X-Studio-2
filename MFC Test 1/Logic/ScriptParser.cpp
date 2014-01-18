@@ -117,7 +117,7 @@ namespace Logic
          bool  ScriptParser::MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const
          {
             // Assignment: variable '='
-            return lex.Match(pos, TokenType::Variable) && lex.Match(++pos, TokenType::Operator, L"=") ? (++pos, true) : false;
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=");
          }
 
          bool  ScriptParser::MatchConditional(const CommandLexer& lex, TokenIterator& pos) const
@@ -286,7 +286,8 @@ namespace Logic
                 condition = ReadConditional(lex, pos);
 
             // (constant/variable/null '->')?
-            if (MatchReferenceObject(lex, pos))
+            TokenIterator dummy = pos;
+            if (MatchReferenceObject(lex, dummy))
                refObj = ReadReferenceObject(lex, pos);
 
             // text: Hash remaining tokens

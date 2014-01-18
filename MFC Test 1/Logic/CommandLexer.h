@@ -72,7 +72,7 @@ namespace Logic
             /// <returns></returns>
             bool  Match(TokenIterator& pos, TokenType t, const WCHAR* txt) const
             {
-               return Match(pos, t) && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
+               return pos < Tokens.end() && pos->Type == t && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
             }
 
          private:
