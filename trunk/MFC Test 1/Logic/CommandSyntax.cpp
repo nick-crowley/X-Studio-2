@@ -34,6 +34,14 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Determines whether the command is compatible with a game</summary>
+      /// <param name="v">The game version</param>
+      /// <returns></returns>
+      bool  CommandSyntax::IsCompatible(GameVersion v) const
+      {
+         return (Versions & (UINT)v) != 0;
+      }
+
       /// <summary>Determines whether command is a keyword.</summary>
       /// <returns></returns>
       bool  CommandSyntax::IsKeyword() const

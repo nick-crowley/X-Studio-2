@@ -210,6 +210,20 @@ namespace Logic
    
    // ------------------------ USER TYPES --------------------------
 
+
+   /// <summary>General exception for any circumstance</summary>
+   class GenericException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create a GenericException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Message</param>
+      GenericException(wstring  src, wstring msg) 
+         : ExceptionBase(src, msg)
+      {}
+   };
+
+
    /// <summary>Occurs when a language string is missing</summary>
    class PageNotFoundException : public ExceptionBase
    {
@@ -254,8 +268,7 @@ namespace Logic
    public:
       /// <summary>Create an ScriptSyntaxException</summary>
       /// <param name="src">Location of throw</param>
-      /// <param name="id">command id</param>
-      /// <param name="ver">game version</param>
+      /// <param name="msg">Message</param>
       ScriptSyntaxException(wstring  src, wstring msg) 
          : ExceptionBase(src, GuiString(L"Syntax error: %s", msg.c_str()))
       {}

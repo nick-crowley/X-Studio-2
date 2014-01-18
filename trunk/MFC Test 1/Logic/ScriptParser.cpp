@@ -56,8 +56,6 @@ namespace Logic
             return script;
          }
 
-         
-         
          // ------------------------------ PROTECTED METHODS -----------------------------
 
          // ------------------------------- PRIVATE METHODS ------------------------------
@@ -376,15 +374,17 @@ namespace Logic
             if (MatchReferenceObject(lex, dummy))
                refObj = ReadReferenceObject(lex, pos);
 
-            // text: Hash remaining tokens
-            CommandHash hash(pos, lex.end());
-            CommandSyntax syntax = SyntaxLib.Identify(hash, Version);
+            // Lookup command using remaining tokens
+            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
             
             // TODO: Arrange parameters
-            TokenArray params(hash.Parameters);
+            TokenArray params;
 
             // DEBUG:
-            Console << (syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << ENDL;
+            if (syntax != SyntaxLib.Unknown)
+               Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
+            else
+               Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
 
             // Create command
             return ScriptCommand(*line, syntax, params);
