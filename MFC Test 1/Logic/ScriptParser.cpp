@@ -168,12 +168,16 @@ namespace Logic
          
          bool  ScriptParser::MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const
          {
+            TokenIterator start = pos;
+
             // Assignment: variable '='
-            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=");
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") ? true : (pos=start, false);
          }
 
          bool  ScriptParser::MatchConditional(const CommandLexer& lex, TokenIterator& pos) const
          {
+            TokenIterator start = pos;
+
             // If/while not?
             if (lex.Match(pos, TokenType::Keyword, L"if") || lex.Match(pos, TokenType::Keyword, L"while"))
             {
@@ -196,14 +200,17 @@ namespace Logic
                return true;
             }
 
-            return false;
+            // Failed
+            return (pos=start, false);
          }
          
          bool ScriptParser::MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const
          {
+            TokenIterator start = pos;
+
             // (constant/variable/null '->')?
             return (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-                 && lex.Match(pos, TokenType::Operator, L"->");
+                 && lex.Match(pos, TokenType::Operator, L"->") ? true : (pos=start, false);
          }
 
          
@@ -226,23 +233,16 @@ namespace Logic
 
          bool  ScriptParser::MatchCommand(const CommandLexer& lex) const
          {
-            TokenIterator pos = lex.begin(),
-                          dummy = lex.begin();
+            TokenIterator pos = lex.begin();
             
             // command = (assignment/conditional)? (constant/variable/null '->')? text
 
             // (assignment/conditional)?
             if (!MatchAssignment(lex, pos))
-               pos = lex.begin();
-            else if (!MatchConditional(lex, pos))
-               pos = lex.begin();
-
-            /*if (MatchAssignment(lex, dummy) || MatchConditional(lex, dummy))
-               pos = dummy;*/
+               MatchConditional(lex, pos);
 
             // (constant/variable/null '->')?
-            if (MatchReferenceObject(lex, dummy))
-               pos = dummy;
+            MatchReferenceObject(lex, pos);
 
             // text
             return lex.Match(pos, TokenType::Text);
@@ -251,9 +251,9 @@ namespace Logic
 
          bool ScriptParser::MatchExpression(const CommandLexer& lex) const
          {
-            TokenIterator pos = lex.begin(),
-                          dummy = lex.begin();
+            TokenIterator pos = lex.begin();
 
+            // value = variable/literal/null
             // expression = (assignment/conditional) unary_operator? value (operator value)*
 
             // (assignment/conditional)
@@ -261,13 +261,14 @@ namespace Logic
                return false;
 
             // Unary_operator?
+            TokenIterator dummy = pos;
             if (lex.Match(dummy, TokenType::Operator, L"!") 
              || lex.Match(dummy, TokenType::Operator, L"-") 
              || lex.Match(dummy, TokenType::Operator, L"~")
-             || lex.Match(dummy, TokenType::Operator, L"("))
+             || lex.Match(dummy, TokenType::Operator, L"("))      // allow open bracket
                ++pos;
 
-            // Value  {constant/variable/literal/null}
+            // Value        
             if (lex.Match(pos, TokenType::Number) 
              || lex.Match(pos, TokenType::String) 
              || lex.Match(pos, TokenType::Variable)
@@ -409,7 +410,7 @@ namespace Logic
             else 
                 condition = ReadConditional(lex, pos);
 
-            // unary_operator? value (operator value)+
+            // (unary_operator? value (operator value)*)
             ExpressionParser exp(pos, lex.end());
             exp.Parse();  // nb: may throw 
             

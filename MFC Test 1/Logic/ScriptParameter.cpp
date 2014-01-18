@@ -78,6 +78,7 @@ namespace Logic
          case DataType::OPERATOR:
             switch ((Operator)Value.Int)
             {
+            case Operator::Add:           Text = L"+"; break;
             case Operator::CloseBracket:  Text = StringResource::Format(L"%s ", StringLib.Find(KnownPage::OPERATORS, Value.Int).Text.c_str());  break;
             case Operator::Minus:
             case Operator::LogicalNot:
