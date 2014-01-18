@@ -4408,7 +4408,7 @@ usage : (optional) Defines the meaning of the parameter
       <url></url>
       <params>
         <param displayIndex="0">RefObj</param>
-        <param displayIndex="1">RefObj</param>
+        <param displayIndex="1">Var/Environment</param>
       </params>
     </command>
 
