@@ -32,6 +32,8 @@ namespace Logic
                   case TokenType::Operator:
                   case TokenType::Keyword:
                      h += it->Text;
+
+                  // Exclude literals (during script parsing), and variables (during syntax parsing)
                   } 
                return h;
             }
@@ -49,6 +51,7 @@ namespace Logic
                   case TokenType::Keyword:
                      break;
 
+                  // Include literals
                   default: 
                      arr.push_back(*it);
                   }  
