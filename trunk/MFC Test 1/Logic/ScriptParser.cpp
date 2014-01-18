@@ -118,6 +118,22 @@ namespace Logic
             TokenIterator pos = lex.Tokens.begin();
             Conditional   c = Conditional::NONE;
 
+            /*
+
+            New command grammar:
+
+            conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
+            value = constant/variable/literal/null
+            assignment = variable '='
+            comment = '*' text?
+            nop = ws*
+
+            line = nop/comment/command/expression
+            command = (assignment/conditional)? (constant/variable/null '->')? text
+            expression = (assignment/conditional) unary_operator? value (operator value)+
+
+            */
+
             // Identify conditional. Consume only tokens that match.  [prev identified logic has matched the initial token(s)]
             switch (logic)
             {
@@ -148,7 +164,7 @@ namespace Logic
 
             // Detect Assignment
             case BranchLogic::None:
-               if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=")) 
+               if (lex.Match(pos, TokenType::Variable) && lex.Match(pos+1, TokenType::Operator, L"=")) 
                   pos += 2;
                break;
             }
@@ -160,8 +176,8 @@ namespace Logic
             ScriptCommand cmd(*line, SyntaxLib.Identify(hash, Version), hash.Parameters);
 
             // DEBUG:
-            Console << GetLineNumber(line) << L": " << *line << L"\n";
-            Console << (cmd.Syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << Colour::White << L"\n";
+            Console << GetLineNumber(line) << L": " << *line << ENDL;
+            Console << (cmd.Syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << ENDL;
             
             // Generate CommandNode?
             return CommandTree(new CommandNode(logic, cmd, GetLineNumber(line++)));
