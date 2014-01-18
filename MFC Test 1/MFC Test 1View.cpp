@@ -173,7 +173,8 @@ void CMFCTest1View::OnBnClickedCompile()
    // Get text in lines
    for (INT i = 0; i < m_RichEdit.GetLineCount(); i++)
    {
-      buf[Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512)]=NULL;
+      int len = Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512);
+      buf[len > 0 && buf[len-1] == '\v' ? len-1 : len] = NULL;
       lines.push_back(buf);
    }
 

@@ -27,6 +27,8 @@ namespace Logic
    
    void  DebugTests::CompileScript(const vector<wstring>& lines)
    {
+      Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
+
       ScriptParser p(lines, GameVersion::TerranConflict);
       auto tree = p.ReadScript();
 
@@ -59,7 +61,10 @@ namespace Logic
       Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
 
       StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-      return ScriptFileReader(fs2).ReadFile();
+      ScriptFile script = ScriptFileReader(fs2).ReadFile();
+
+      Console << Colour::Green << L"Script loaded successfully" << ENDL;
+      return script;
    }
 
 
