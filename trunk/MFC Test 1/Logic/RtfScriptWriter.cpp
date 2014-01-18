@@ -136,6 +136,7 @@ namespace Logic
          case TokenType::Whitespace:   RtfWriter::Write(tok.Text);  return;
 
          case TokenType::Comment:      col = Grey;    break;
+         case TokenType::Null: 
          case TokenType::Variable:     col = Green;   break;
          case TokenType::Keyword:      col = Blue;    break;
          case TokenType::Number:     

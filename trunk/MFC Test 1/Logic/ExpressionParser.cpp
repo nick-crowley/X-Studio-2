@@ -77,6 +77,7 @@ namespace Logic
                {
                case TokenType::Variable:
                case TokenType::Number:
+               case TokenType::Null:
                case TokenType::String:
                case TokenType::GameObject:
                case TokenType::ScriptObject:
@@ -137,6 +138,7 @@ namespace Logic
                // Check type
                case TokenType::Variable:
                case TokenType::Number:
+               case TokenType::Null:
                case TokenType::String:
                case TokenType::GameObject:
                case TokenType::ScriptObject:

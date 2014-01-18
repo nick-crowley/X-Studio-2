@@ -137,7 +137,7 @@ namespace Logic
          bool ScriptParser::MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const
          {
             // (constant/variable/null '->')?
-            return (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable))
+            return (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
                  && lex.Match(pos, TokenType::Operator, L"->");
          }
 
@@ -191,9 +191,10 @@ namespace Logic
             // Value  {constant/variable/literal/null}
             if (lex.Match(pos, TokenType::Number) 
              || lex.Match(pos, TokenType::String) 
+             || lex.Match(pos, TokenType::Variable)
+             || lex.Match(pos, TokenType::Null)
              || lex.Match(pos, TokenType::GameObject) 
-             || lex.Match(pos, TokenType::ScriptObject) 
-             || lex.Match(pos, TokenType::Variable))
+             || lex.Match(pos, TokenType::ScriptObject) )
                // (operator value)+   {simplify to check for any non-refobj operator)
                return lex.Match(pos, TokenType::Operator) && (pos-1)->Text != L"->";
             
