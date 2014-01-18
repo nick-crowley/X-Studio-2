@@ -60,9 +60,9 @@ namespace Logic
             /// <param name="pos">The position.</param>
             /// <param name="t">The token type</param>
             /// <returns></returns>
-            bool  Match(const TokenIterator& pos, TokenType t) const
+            bool  Match(TokenIterator& pos, TokenType t) const
             {
-               return pos < Tokens.end() && pos->Type == t;
+               return pos < Tokens.end() && pos->Type == t ? (++pos, true) : false;
             }
 
             /// <summary>Matches a token at the specified position (CASE INSENSITIVE)</summary>
@@ -70,9 +70,9 @@ namespace Logic
             /// <param name="t">The token type</param>
             /// <param name="txt">The token text (Case insensitive)</param>
             /// <returns></returns>
-            bool  Match(const TokenIterator& pos, TokenType t, const WCHAR* txt) const
+            bool  Match(TokenIterator& pos, TokenType t, const WCHAR* txt) const
             {
-               return Match(pos, t) && StrCmpI(pos->Text.c_str(), txt)==0;
+               return Match(pos, t) && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
             }
 
          private:
