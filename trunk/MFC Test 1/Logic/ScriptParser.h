@@ -18,7 +18,8 @@ namespace Logic
          /// <summary>Constant line iterator</summary>
          typedef LineArray::const_iterator LineIterator;
 
-         /// <summary></summary>
+         /// <summary>Generates a parse tree from MSCI scripts</summary>
+         /// <remarks>TODO: Handle the START keyword</remarks>
          class ScriptParser
          {
             // ------------------------ TYPES --------------------------
