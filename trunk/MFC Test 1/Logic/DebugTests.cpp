@@ -29,8 +29,17 @@ namespace Logic
    {
       Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
 
-      ScriptParser p(lines, GameVersion::TerranConflict);
-      auto tree = p.ParseScript();
+      try
+      {
+         ScriptParser p(lines, GameVersion::TerranConflict);
+         auto tree = p.ParseScript();
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to parse script : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
 
       /*Console.WriteLnf();
       Console.WriteLnf(L"Parser has produced the following tree:");

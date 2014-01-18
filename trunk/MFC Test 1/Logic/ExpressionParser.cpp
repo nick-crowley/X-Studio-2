@@ -33,10 +33,10 @@ namespace Logic
          void  ExpressionParser::Parse()
          {
             // DEBUG: print input
-            Console.Writef(L"Input: ");
+            /*Console.Writef(L"Input: ");
             for (auto it = InputBegin; it != InputEnd; ++it)
                Console.Writef(L"%s ", it->Text.c_str());
-            Console.WriteLnf(L"");
+            Console.WriteLnf(L"");*/
                          
             try
             {
@@ -48,11 +48,11 @@ namespace Logic
                tree->getTokenArray(Traversal::PostOrder, PostfixParams);
 
                // DEBUG: Print
-               Console.WriteLnf(L"Output: %s", tree->debugPrint().c_str() );
-               //Console.WriteLnf(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
-               Console.WriteLnf(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
-               Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
-               Console.WriteLnf(L"");
+               //Console.WriteLnf(L"Output: %s", tree->debugPrint().c_str() );
+               ////Console.WriteLnf(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
+               //Console.WriteLnf(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
+               //Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
+               //Console.WriteLnf(L"");
 
             }
             catch (ScriptSyntaxException& e)
