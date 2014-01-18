@@ -244,8 +244,8 @@ namespace Logic
             // (constant/variable/null '->')?
             MatchReferenceObject(lex, pos);
 
-            // text
-            return lex.Match(pos, TokenType::Text);
+            // text/keyword
+            return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword);
          }
 
 
