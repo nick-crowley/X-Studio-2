@@ -20,6 +20,8 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
+            ScriptToken() : Type(TokenType::Whitespace), Start(0), End(0)
+            {}
             ScriptToken(TokenType t, UINT s, UINT e, const wstring& txt) : Type(t), Start(s), End(e), Text(txt)
             {}
             virtual ~ScriptToken()
