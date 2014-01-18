@@ -129,8 +129,8 @@ namespace Logic
             nop = ws*
 
             line = nop/comment/command/expression
-            command = (assignment/conditional)? (constant/variable/null '->')? text
-            expression = (assignment/conditional) unary_operator? value (operator value)+
+            command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
+            expression = (assignment/conditional) unary_operator? value (operator value)*
             */
 
             // DEBUG:
@@ -235,7 +235,7 @@ namespace Logic
          {
             TokenIterator pos = lex.begin();
             
-            // command = (assignment/conditional)? (constant/variable/null '->')? text
+            // command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
 
             // (assignment/conditional)?
             if (!MatchAssignment(lex, pos))
@@ -244,8 +244,8 @@ namespace Logic
             // (constant/variable/null '->')?
             MatchReferenceObject(lex, pos);
 
-            // text/keyword
-            return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword);
+            // text/keyword/label
+            return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword) || lex.Match(pos, TokenType::Label);
          }
 
 
@@ -356,7 +356,7 @@ namespace Logic
             conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
             assignment = variable '='
             
-            command = (assignment/conditional)? (constant/variable/null '->')? text
+            command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
             */
             Conditional   condition = Conditional::NONE;
             TokenIterator refObj = lex.end(), 

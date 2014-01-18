@@ -27,6 +27,7 @@ namespace Logic
                for (TokenIterator it = begin; it != end; ++it)
                   switch (it->Type)
                   {
+                  // Include text/operators/keywords
                   case TokenType::Text:
                   case TokenType::Operator:
                   case TokenType::Keyword:
@@ -42,6 +43,7 @@ namespace Logic
                for (TokenIterator it = begin; it != end; ++it)
                   switch (it->Type)
                   {
+                  // Exclude text/operators/keywords
                   case TokenType::Text:
                   case TokenType::Operator:
                   case TokenType::Keyword:

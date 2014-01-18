@@ -138,6 +138,7 @@ namespace Logic
          case TokenType::Comment:      col = Grey;    break;
          case TokenType::Null: 
          case TokenType::Variable:     col = Green;   break;
+         case TokenType::Label:        col = Purple;  break;
          case TokenType::Keyword:      col = Blue;    break;
          case TokenType::Number:     
          case TokenType::String:       col = Red;     break;    

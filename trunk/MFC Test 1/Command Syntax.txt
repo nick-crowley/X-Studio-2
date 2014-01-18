@@ -45,7 +45,7 @@ FLOW_CONTROL
 X2,X3R,X3TC,X3AP
 100
 NONE
-goto label $0:
+goto $0:
 Label Number
 -------------- END DEFINITION ---------------
 HIDDEN
@@ -141,7 +141,7 @@ HIDDEN
 X2,X3R,X3TC,X3AP
 112
 NONE
-hidden goto label $0
+jump $0
 Label Number
 -------------- END DEFINITION ---------------
 SCRIPT_PROPERTY
