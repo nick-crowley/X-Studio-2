@@ -41,6 +41,8 @@ namespace Logic
          CommandSyntax(const Declaration& d);
          virtual ~CommandSyntax();
 
+         //CommandSyntax& operator=(const CommandSyntax& r) = default;
+
          // ------------------------ STATIC -------------------------
 
          // --------------------- PROPERTIES ------------------------

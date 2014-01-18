@@ -23,10 +23,13 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
+         ScriptCommand();
          ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params);
          ScriptCommand(const CommandSyntax& syntax, ParameterArray& params);
          ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params);
          virtual ~ScriptCommand();
+
+         //ScriptCommand& operator=(const ScriptCommand& r) = default;
 
          // ------------------------ STATIC -------------------------
 

@@ -134,6 +134,8 @@ namespace Logic
          ParameterSyntax(Declaration& d);
          virtual ~ParameterSyntax();
 
+         //ParameterSyntax& operator=(const ParameterSyntax& r) = default;
+
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------

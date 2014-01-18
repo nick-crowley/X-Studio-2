@@ -13,6 +13,8 @@ namespace Logic
 
          ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v)
          {
+            if (lines.size() == 0)
+               throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
          }
 
 
@@ -26,37 +28,35 @@ namespace Logic
 
          /// <summary>Reads all commands in the script</summary>
          /// <returns></returns>
-         ScriptParser::CommandTree  ScriptParser::ReadScript()
+         ScriptParser::ScriptTree  ScriptParser::ParseScript()
          {
-            CommandTree tree(new CommandNode());
+            ScriptTree  script;
+            CommandTree node;
             
-            // Iterate over lines
+            // Iterate over lines  (count >= 1)
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
-               // DEBUG:
-               //Console.WriteLnf(L"Parsing line '%s'", line->c_str());
-
-               // Peek logic
-               switch (BranchLogic logic = PeekCommand(line))
+               // Read command, add to script
+               script.Add(node = ReadLine(line));
+               
+               // Examine command
+               switch (node->Logic)
                {
-               // Conditional (Valid/Invalid): Read branch
+               // Conditional: Read child commands into node
                case BranchLogic::If:      
                case BranchLogic::While:  
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
                case BranchLogic::SkipIf:  
-                  tree->Add( ReadBranch(line, logic) );
-                  break;
-
-               // Command (Valid/Invalid): Read command
-               default:
-                  tree->Add( ReadCommand(line, logic) );
+                  ParseBranch(node, line);
                   break;
                }
             }
 
-            return tree;
+            return script;
          }
+
+         
          
          // ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -70,59 +70,58 @@ namespace Logic
             return line - Input.begin() + 1;
          }
 
-         
-         BranchLogic  ScriptParser::PeekCommand(const LineIterator& line) const
+
+         void ScriptParser::ParseBranch(CommandTree& branch, LineIterator& line)
          {
-            // Lex line to determine branch logic
-            CommandLexer   lex(*line);
-            TokenIterator  begin = lex.Tokens.begin();
+            CommandTree node;
 
-            // NOP/Comment
-            if (lex.Tokens.size() == 0 || lex.Match(begin, TokenType::Operator, L"*"))
-               return BranchLogic::NOP;
+            // Read children
+            while (line < Input.end())
+            {
+               // Read command, add to branch
+               branch->Add(node = ReadLine(line));
 
-            // If/SkipIf/DoIf
-            if (lex.Match(begin, TokenType::Keyword, L"if"))
-               return BranchLogic::If;
+               // Examine command
+               switch (node->Logic)
+               {
+               // Conditional: Read child commands into node
+               case BranchLogic::If:      
+               case BranchLogic::While:  
+               case BranchLogic::ElseIf:  
+               case BranchLogic::Else:    
+               case BranchLogic::SkipIf:  
+                  ParseBranch(node, line);
+                  break;
 
-            if (lex.Match(begin, TokenType::Keyword, L"skip") || lex.Match(begin, TokenType::Keyword, L"do"))
-               return BranchLogic::SkipIf;
+               // Comment: Always valid, read any/all
+               case BranchLogic::NOP: 
+                  break;
 
-            // End
-            else if (lex.Match(begin, TokenType::Keyword, L"end"))
-               return BranchLogic::End;
+               // End: Abort if branch == if/while
+               case BranchLogic::End:     
+                  if (branch->Logic == BranchLogic::If || branch->Logic == BranchLogic::While)
+                     return;
+                  break;
 
-            // While
-            else if (lex.Match(begin, TokenType::Keyword, L"while"))
-               return BranchLogic::While;
-
-            // Break/Continue
-            else if (lex.Match(begin, TokenType::Keyword, L"break"))
-               return BranchLogic::Break;
-
-            else if (lex.Match(begin, TokenType::Keyword, L"continue"))
-               return BranchLogic::Continue;
-
-            // Else/ElseIf
-            else if (lex.Match(begin, TokenType::Keyword, L"else"))
-               return lex.Match(begin+1, TokenType::Keyword, L"if") ? BranchLogic::ElseIf : BranchLogic::Else;
-
-            // Command/Unrecognised:
-            return BranchLogic::None;
+               // Command: Abort if branch == SkipIf
+               default: 
+                  if (branch->Logic == BranchLogic::SkipIf)
+                     return;
+                  break;
+               }
+            }
          }
 
 
-
-         bool  ScriptParser::MatchAssignment(const CommandLexer& lex, TokenIterator& pos)
+         
+         bool  ScriptParser::MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const
          {
             // Assignment: variable '='
             return lex.Match(pos, TokenType::Variable) && lex.Match(++pos, TokenType::Operator, L"=") ? (++pos, true) : false;
          }
 
-         bool  ScriptParser::MatchConditional(const CommandLexer& lex)
+         bool  ScriptParser::MatchConditional(const CommandLexer& lex, TokenIterator& pos) const
          {
-            TokenIterator pos = lex.begin();
-
             // If/while
             if (lex.Match(pos, TokenType::Keyword, L"if") || lex.Match(pos, TokenType::Keyword, L"while"))
                return true;
@@ -143,7 +142,7 @@ namespace Logic
          }
 
          
-         bool  ScriptParser::MatchComment(const CommandLexer& lex)
+         bool  ScriptParser::MatchComment(const CommandLexer& lex) const
          {
             TokenIterator pos = lex.begin();
 
@@ -160,7 +159,7 @@ namespace Logic
          }
 
 
-         bool  ScriptParser::MatchCommand(const CommandLexer& lex)
+         bool  ScriptParser::MatchCommand(const CommandLexer& lex) const
          {
             TokenIterator pos = lex.begin(),
                           dummy = lex.begin();
@@ -217,14 +216,14 @@ namespace Logic
 
          
 
-         TokenIterator  ScriptParser::ReadAssignment(CommandLexer& lex, TokenIterator& pos)
+         TokenIterator  ScriptParser::ReadAssignment(const CommandLexer& lex, TokenIterator& pos)
          {
             TokenIterator retVar = pos;
             return (pos += 2, retVar);
          }
 
          
-         Conditional ScriptParser::ReadConditional(CommandLexer& lex, TokenIterator& pos)
+         Conditional ScriptParser::ReadConditional(const CommandLexer& lex, TokenIterator& pos)
          {
             // 'if' 'not'?
             if (lex.Match(pos, TokenType::Keyword, L"if"))
@@ -246,10 +245,10 @@ namespace Logic
             else if (lex.Match(pos, TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
                return Conditional::SKIP_IF_NOT;
                
-            throw "Invalid conditional - use sentinel syntax";
+            throw ScriptSyntaxException(HERE, L"Invalid conditional - use sentinel syntax");
          }
          
-         TokenIterator ScriptParser::ReadReferenceObject(CommandLexer& lex, TokenIterator& pos)
+         TokenIterator ScriptParser::ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos)
          {
             // RefObj '->'
             TokenIterator refObj = pos;
@@ -265,7 +264,7 @@ namespace Logic
          }
 
 
-         ScriptCommand  ScriptParser::ReadCommand2(const CommandLexer& lex, const LineIterator& line)
+         ScriptCommand  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
             /*
             conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -299,7 +298,7 @@ namespace Logic
 
             // DEBUG:
             Console << GetLineNumber(line) << L": " << *line << ENDL;
-            Console << (cmd.Syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << ENDL;
+            Console << (syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << ENDL;
 
             // Create command
             return ScriptCommand(*line, syntax, params);
@@ -327,23 +326,29 @@ namespace Logic
 
             // unary_operator? value (operator value)+
             ExpressionParser exp(pos, lex.end());
-            exp.Parse();   // throws
+            exp.Parse();  // nb: may throw 
             
             // TODO: Arrange parameters?
-            TokenArray params(hash.Parameters);
+            //TokenArray params(hash.Parameters);
 
             // DEBUG:
             Console << GetLineNumber(line) << L": " << *line << ENDL;
-            Console << (cmd.Syntax == SyntaxLib.Unknown ? Colour::Red : Colour::Green) << hash.Hash << ENDL;
+            Console << Colour::Green << L"expression" << ENDL;
 
             // Create expression
-            return ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams, exp.PostfixParams);
+            return ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams);
          }
 
-
-         ScriptParser::CommandTree ScriptParser::ReadCommand(LineIterator& line, BranchLogic logic)
+         
+         ScriptParser::CommandTree ScriptParser::ReadLine(LineIterator& line)
          {
+            LineIterator  text = line++;  // consume line
+            CommandLexer  lex(*text);
+            //ScriptCommand cmd;            // 'Unknown' syntax
+
             /*
+            Grammar:
+
             conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
             value = constant/variable/literal/null
             assignment = variable '='
@@ -355,72 +360,29 @@ namespace Logic
             expression = (assignment/conditional) unary_operator? value (operator value)+
             */
 
-            
-            LineIterator  text = line++;  // consume line
-            CommandLexer  lex(*text);
-            ScriptCommand cmd;            // 'Unknown' syntax
-
             // Comment/NOP:
             if (MatchComment(lex))
-               cmd = ReadComment(lex, text);
+               //cmd = ReadComment(lex, text);
+               return CommandTree( new CommandNode(ReadComment(lex, text), GetLineNumber(text)) );
 
             // Command:
             else if (MatchCommand(lex))
-               cmd = ReadCommand2(lex, text);
+               //cmd = ReadCommand(lex, text);
+               return CommandTree( new CommandNode(ReadCommand(lex, text), GetLineNumber(text)) );
 
             // Expression:
             else if (MatchExpression(lex))
-               cmd = ReadExpression(lex, text);
+               //cmd = ReadExpression(lex, text);
+               return CommandTree( new CommandNode(ReadExpression(lex, text), GetLineNumber(text)) );
             
             // * could potentially validate parameters at this point
 
-
             // Generate node, advance line
-            return CommandTree( new CommandNode(cmd, GetLineNumber(text)) );
+            return CommandTree( new CommandNode(ScriptCommand(), GetLineNumber(text)) );
 
          }
 
-         ScriptParser::CommandTree ScriptParser::ReadBranch(LineIterator& line, BranchLogic logic)
-         {
-            // Read conditional command
-            CommandTree tree(ReadCommand(line, logic));
 
-            // Read children
-            while (line < Input.end())
-            {
-               switch (BranchLogic logic = PeekCommand(line))
-               {
-               // Conditional (Valid/Invalid): Read command tree
-               case BranchLogic::If:      
-               case BranchLogic::While:  
-               case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-               case BranchLogic::SkipIf:  
-                  tree->Add( ReadBranch(line, logic) );
-                  break;
-
-               // Comment: Always valid, read any/all
-               case BranchLogic::NOP: 
-                  tree->Add( ReadCommand(line, BranchLogic::NOP) );
-                  break;
-
-               // End: Read for if/while, otherwise kick back to parent
-               case BranchLogic::End:     
-                  if (tree->Logic == BranchLogic::If || tree->Logic == BranchLogic::While)
-                     tree->Add( ReadCommand(line, BranchLogic::End) );
-                  return tree;
-
-               // Command: Read only 1 command under skip-if
-               default: 
-                  tree->Add( ReadCommand(line, logic) );
-                  if (tree->Logic == BranchLogic::SkipIf)
-                     return tree;
-                  break;
-               }
-            }
-
-            return CommandTree(tree.get());
-         }
       }
    }
 }
