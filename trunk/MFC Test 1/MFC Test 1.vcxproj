@@ -138,6 +138,7 @@
     <ClInclude Include="Logic\ConsoleWnd.h" />
     <ClInclude Include="Logic\DataStream.h" />
     <ClInclude Include="Logic\DebugTests.h" />
+    <ClInclude Include="Logic\Event.h" />
     <ClInclude Include="Logic\Exceptions.h" />
     <ClInclude Include="Logic\FileSearch.h" />
     <ClInclude Include="Logic\FileStream.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Logic\ConsoleWnd.cpp" />
     <ClCompile Include="Logic\DataStream.cpp" />
     <ClCompile Include="Logic\DebugTests.cpp" />
+    <ClCompile Include="Logic\Event.cpp" />
     <ClCompile Include="Logic\FileSearch.cpp" />
     <ClCompile Include="Logic\FileStream.cpp" />
     <ClCompile Include="Logic\GZipStream.cpp" />
