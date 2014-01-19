@@ -70,8 +70,18 @@ void CMFCTest1View::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 	ResizeParentToFit();
 
-   // Enable EN_UPDATE
+   // Enable EN_CHANGE
    m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+
+   // TEST: set paragraph
+   //PARAFORMAT2 pf;
+   //pf.cbSize = sizeof(pf);
+   //pf.dwMask = PFM_LINESPACING;
+   //pf.bLineSpacingRule = 0; // Single spaced
+   //pf.dyLineSpacing = 20;
+   //
+   //m_RichEdit.SetSel(0,-1);
+   //m_RichEdit.SetParaFormat(pf);
 }
 
 void CMFCTest1View::OnRButtonUp(UINT /* nFlags */, CPoint point)
