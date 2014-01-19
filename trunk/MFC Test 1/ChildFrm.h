@@ -4,30 +4,39 @@
 
 #pragma once
 
-class CChildFrame : public CMDIChildWndEx
+
+/// <summary>User interface</summary>
+namespace GUI
 {
-	DECLARE_DYNCREATE(CChildFrame)
-public:
-	CChildFrame();
 
-// Attributes
-public:
+   class CChildFrame : public CMDIChildWndEx
+   {
+	   DECLARE_DYNCREATE(CChildFrame)
+   public:
+	   CChildFrame();
 
-// Operations
-public:
+   // Attributes
+   public:
 
-// Overrides
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+   // Operations
+   public:
 
-// Implementation
-public:
-	virtual ~CChildFrame();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
+   // Overrides
+	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
-// Generated message map functions
-protected:
-	DECLARE_MESSAGE_MAP()
-};
+   // Implementation
+   public:
+	   virtual ~CChildFrame();
+   #ifdef _DEBUG
+	   virtual void AssertValid() const;
+	   virtual void Dump(CDumpContext& dc) const;
+   #endif
+
+   // Generated message map functions
+   protected:
+	   DECLARE_MESSAGE_MAP()
+   };
+
+}
+
+using namespace GUI;
