@@ -244,6 +244,12 @@
     <ClInclude Include="ViewTree.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="LanguageView.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageDocument.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -399,6 +405,12 @@
     <ClCompile Include="ViewTree.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="LanguageDocument.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageView.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\class_view.ico">
@@ -474,6 +486,9 @@
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="UserImages.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="..\MFC Test 1res\LanguageView.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
   </ItemGroup>

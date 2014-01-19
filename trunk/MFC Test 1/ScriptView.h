@@ -20,7 +20,7 @@ namespace GUI
 	   DECLARE_DYNCREATE(ScriptView)
 
    public:
-	   enum{ IDD = IDD_MFCTEST1_FORM };
+	   enum{ IDD = IDD_SCRIPTVIEW };
 
    // Attributes
    public:

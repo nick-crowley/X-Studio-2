@@ -11,6 +11,8 @@
 #include "ChildFrm.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "LanguageView.h"
+#include "LanguageDocument.h"
 
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
@@ -53,6 +55,7 @@ Application theApp;
 
 BOOL Application::InitInstance()
 {
+	
    //VLDEnable();
    VLDDisable();
    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
@@ -103,16 +106,24 @@ BOOL Application::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
-	// Register the application's document templates.  Document templates
-	//  serve as the connection between documents, frame windows and views
+	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views
 	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_MFCTest1TYPE,
-		RUNTIME_CLASS(ScriptDocument),
-		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(ScriptView));
+	pDocTemplate = new CMultiDocTemplate(IDR_SCRIPTVIEW_TMPL,
+		RUNTIME_CLASS(GUI::ScriptDocument),
+		RUNTIME_CLASS(GUI::CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(GUI::ScriptView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
+
+   pDocTemplate = new CMultiDocTemplate(IDR_LANGUAGEVIEW_TMPL,
+		RUNTIME_CLASS(GUI::LanguageDocument),
+		RUNTIME_CLASS(GUI::CChildFrame),
+		RUNTIME_CLASS(GUI::LanguageView));
+   if (!pDocTemplate)
+		return FALSE;
+	AddDocTemplate(pDocTemplate);
+
 
 	// create main MDI Frame window
 	MainWnd* pMainFrame = new MainWnd;
