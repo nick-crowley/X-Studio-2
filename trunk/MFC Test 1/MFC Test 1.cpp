@@ -79,7 +79,7 @@ BOOL CMFCTest1App::InitInstance()
 	EnableTaskbarInteraction();
 
 	// AfxInitRichEdit2() is required to use RichEdit control	
-   //AfxInitRichEdit2();
+   AfxInitRichEdit2();
 	AfxInitRichEdit5();
 
 	// Standard initialization
