@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "MainFrm.h"
+#include "MainWnd.h"
 #include "ClassView.h"
 #include "Resource.h"
-#include "MFC Test 1.h"
+#include "Application.h"
 
 class CClassViewMenuButton : public CMFCToolBarMenuButton
 {

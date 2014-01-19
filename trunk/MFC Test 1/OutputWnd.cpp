@@ -3,7 +3,7 @@
 
 #include "OutputWnd.h"
 #include "Resource.h"
-#include "MainFrm.h"
+#include "MainWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

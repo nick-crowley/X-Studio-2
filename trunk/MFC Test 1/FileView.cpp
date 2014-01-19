@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
-#include "mainfrm.h"
+#include "MainWnd.h"
 #include "FileView.h"
-#include "MFC Test 1.h"
+#include "Application.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

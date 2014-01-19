@@ -5,12 +5,12 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
-#include "MFC Test 1.h"
-#include "MainFrm.h"
+#include "Application.h"
+#include "MainWnd.h"
 
 #include "ChildFrm.h"
-#include "MFC Test 1Doc.h"
-#include "MFC Test 1View.h"
+#include "ScriptDocument.h"
+#include "ScriptView.h"
 
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
@@ -20,19 +20,19 @@
 #endif
 
 
-// CMFCTest1App
+// Application
 
-BEGIN_MESSAGE_MAP(CMFCTest1App, CWinAppEx)
-	ON_COMMAND(ID_APP_ABOUT, &CMFCTest1App::OnAppAbout)
+BEGIN_MESSAGE_MAP(Application, CWinAppEx)
+	ON_COMMAND(ID_APP_ABOUT, &Application::OnAppAbout)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
 
-// CMFCTest1App construction
+// Application construction
 
-CMFCTest1App::CMFCTest1App()
+Application::Application()
 {
 	m_bHiColorIcons = TRUE;
 
@@ -44,14 +44,14 @@ CMFCTest1App::CMFCTest1App()
 	// Place all significant initialization in InitInstance
 }
 
-// The one and only CMFCTest1App object
+// The one and only Application object
 
-CMFCTest1App theApp;
+Application theApp;
 
 
-// CMFCTest1App initialization
+// Application initialization
 
-BOOL CMFCTest1App::InitInstance()
+BOOL Application::InitInstance()
 {
    //VLDEnable();
    VLDDisable();
@@ -107,15 +107,15 @@ BOOL CMFCTest1App::InitInstance()
 	//  serve as the connection between documents, frame windows and views
 	CMultiDocTemplate* pDocTemplate;
 	pDocTemplate = new CMultiDocTemplate(IDR_MFCTest1TYPE,
-		RUNTIME_CLASS(CMFCTest1Doc),
+		RUNTIME_CLASS(ScriptDocument),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(CMFCTest1View));
+		RUNTIME_CLASS(ScriptView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
 	// create main MDI Frame window
-	CMainFrame* pMainFrame = new CMainFrame;
+	MainWnd* pMainFrame = new MainWnd;
 	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
 	{
 		delete pMainFrame;
@@ -139,13 +139,13 @@ BOOL CMFCTest1App::InitInstance()
 	return TRUE;
 }
 
-int CMFCTest1App::ExitInstance()
+int Application::ExitInstance()
 {
 	//TODO: handle additional resources you may have added
 	return CWinAppEx::ExitInstance();
 }
 
-// CMFCTest1App message handlers
+// Application message handlers
 
 
 // CAboutDlg dialog used for App About
@@ -179,15 +179,15 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
-void CMFCTest1App::OnAppAbout()
+void Application::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
 
-// CMFCTest1App customization load/save methods
+// Application customization load/save methods
 
-void CMFCTest1App::PreLoadState()
+void Application::PreLoadState()
 {
 	BOOL bNameValid;
 	CString strName;
@@ -199,15 +199,15 @@ void CMFCTest1App::PreLoadState()
 	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EXPLORER);
 }
 
-void CMFCTest1App::LoadCustomState()
+void Application::LoadCustomState()
 {
 }
 
-void CMFCTest1App::SaveCustomState()
+void Application::SaveCustomState()
 {
 }
 
-// CMFCTest1App message handlers
+// Application message handlers
 
 
 

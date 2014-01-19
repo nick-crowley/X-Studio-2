@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"       // Do not include StringResource.h directly, referenced via common.h
 #include <Strsafe.h>
-#include "../MFC Test 1.h"    // the app
+#include "../Application.h"    // the app
 
 namespace Logic
 {

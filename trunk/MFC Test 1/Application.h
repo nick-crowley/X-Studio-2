@@ -10,14 +10,14 @@
 #include "resource.h"       // main symbols
 
 
-// CMFCTest1App:
+// Application:
 // See MFC Test 1.cpp for the implementation of this class
 //
 
-class CMFCTest1App : public CWinAppEx
+class Application : public CWinAppEx
 {
 public:
-	CMFCTest1App();
+	Application();
 
 
 // Overrides
@@ -37,4 +37,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CMFCTest1App theApp;
+extern Application theApp;
