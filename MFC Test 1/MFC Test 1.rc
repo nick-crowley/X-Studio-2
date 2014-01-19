@@ -17,10 +17,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// English (United Kingdom) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 #pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\MFC Test 1.ico"
-IDR_MFCTest1TYPE        ICON                    "res\\MFC Test 1Doc.ico"
+IDR_SCRIPTVIEW_TMPL     ICON                    "res\\MFC Test 1Doc.ico"
 IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
 IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
 IDI_CLASS_VIEW          ICON                    "res\\class_view.ico"
@@ -40,6 +40,7 @@ IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
 IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
 IDI_PROPERTIES_WND_HC   ICON                    "res\\properties_wnd_hc.ico"
+IDR_LANGUAGEVIEW_TMPL   ICON                    "d:\\My Projects\\MFC Test 1\\MFC Test 1res\\LanguageView.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -174,7 +175,7 @@ BEGIN
     END
 END
 
-IDR_MFCTest1TYPE MENU
+IDR_SCRIPTVIEW_TMPL MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -293,6 +294,50 @@ BEGIN
     MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
 END
 
+IDR_LANGUAGEVIEW_TMPL MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About...",                   ID_APP_ABOUT
+    END
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -333,14 +378,21 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,132,48,50,14,WS_GROUP
 END
 
-IDD_MFCTEST1_FORM DIALOGEX 0, 0, 320, 200
+IDD_SCRIPTVIEW DIALOGEX 0, 0, 320, 200
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "Load Script",IDC_LOADSCRIPT,"MfcButton",WS_TABSTOP,7,7,45,16
-    CONTROL         "",IDC_RICHEDIT,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,25,306,168
+    CONTROL         "",IDC_RICHEDIT,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x10c4,7,25,306,168
     CONTROL         "Run Tests",IDC_RUNTESTS,"MfcButton",WS_TABSTOP,59,7,50,14
     CONTROL         "Compile",IDC_COMPILE,"MfcButton",WS_TABSTOP,115,7,52,16
+END
+
+IDD_LANGUAGEVIEW DIALOG 0, 0, 320, 200
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "TODO: Place form controls on this dialog.",IDC_STATIC,24,42,280,8
 END
 
 
@@ -399,7 +451,15 @@ BEGIN
         BOTTOMMARGIN, 62
     END
 
-    IDD_MFCTEST1_FORM, DIALOG
+    IDD_SCRIPTVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_LANGUAGEVIEW, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 313
@@ -415,7 +475,7 @@ END
 // Dialog Info
 //
 
-IDD_MFCTEST1_FORM DLGINIT
+IDD_SCRIPTVIEW DLGINIT
 BEGIN
     IDC_LOADSCRIPT, 0x37c, 369, 0
 0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
@@ -487,6 +547,48 @@ BEGIN
 END
 
 
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#include ""res\\MFCTest1.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""      // Standard components\r\n"
+    "#if !defined(_AFXDLL)\r\n"
+    "#include ""afxprint.rc""        // printing/print preview resources\r\n"
+    "#include ""afxribbon.rc""        // MFC ribbon and control bar resources\r\n"
+    "#endif\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -500,7 +602,7 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "MFC Test 1"
-    IDR_MFCTest1TYPE        "\nMFCTest1\nMFC Test 1\n\n\nMFCTest1.Document\nMFC Test 1.Document"
+    IDR_SCRIPTVIEW_TMPL     "ScriptView\nScript File\nScriptFile\nScript Files (*.xml)\n.xml\nXStudio.ScriptFile\nX³ Script File"
     ID_WINDOW_MANAGER       "&Windows..."
 END
 
@@ -629,6 +731,7 @@ STRINGTABLE
 BEGIN
     IDS_EXPLORER            "Explorer"
     IDS_EDIT_MENU           "Edit"
+    IDR_LANGUAGEVIEW_TMPL   "LanguageView\nLanguage File\nLanguageFile\nLanguage Files (*.xml)\n.xml\nXStudio.LanguageFile\nX³ Language File"
 END
 
 STRINGTABLE
@@ -637,58 +740,6 @@ BEGIN
     IDS_DEBUG_TAB           "Debug"
     IDS_FIND_TAB            "Find"
 END
-
-#endif    // English (United States) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (United Kingdom) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(1252)
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
-    "#endif\r\n"
-    "#include ""afxres.h""\r\n"
-    "#include ""verrsrc.h""\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "#define _AFX_NO_OLE_RESOURCES\r\n"
-    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
-    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
-    "\r\n"
-    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
-    "LANGUAGE 9, 1\r\n"
-    "#include ""res\\MFCTest1.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
-    "#include ""afxres.rc""      // Standard components\r\n"
-    "#if !defined(_AFXDLL)\r\n"
-    "#include ""afxprint.rc""        // printing/print preview resources\r\n"
-    "#include ""afxribbon.rc""        // MFC ribbon and control bar resources\r\n"
-    "#endif\r\n"
-    "#endif\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
