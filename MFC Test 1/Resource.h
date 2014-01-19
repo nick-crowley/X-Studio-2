@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by MFC Test 1.rc
 //
+
 #define IDD_ABOUTBOX                    100
 #define IDD_MFCTEST1_FORM               101
 #define IDP_SOCKETS_INIT_FAILED         104

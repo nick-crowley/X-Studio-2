@@ -33,13 +33,15 @@ BEGIN_MESSAGE_MAP(CMFCTest1View, CFormView)
    ON_WM_SIZE()
    ON_BN_CLICKED(IDC_RUNTESTS, &CMFCTest1View::OnBnClickedRuntests)
    ON_BN_CLICKED(IDC_COMPILE, &CMFCTest1View::OnBnClickedCompile)
+   ON_EN_UPDATE(IDC_RICHEDIT, &CMFCTest1View::OnEnUpdateRichedit)
+   ON_EN_CHANGE(IDC_RICHEDIT, &CMFCTest1View::OnEnChangeRichedit)
 END_MESSAGE_MAP()
 
 
 // CMFCTest1View construction/destruction
 
 CMFCTest1View::CMFCTest1View()
-	: CFormView(CMFCTest1View::IDD)
+	: CFormView(CMFCTest1View::IDD), Updating(false)
 {
 	// TODO: add construction code here
    //MSFTEDIT_CLASS
@@ -68,6 +70,8 @@ void CMFCTest1View::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 	ResizeParentToFit();
 
+   // Enable EN_UPDATE
+   m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
 }
 
 void CMFCTest1View::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -170,14 +174,123 @@ void CMFCTest1View::OnBnClickedCompile()
    LineArray lines;
    WCHAR  buf[512];
    
-   // Get text in lines
-   for (INT i = 0; i < m_RichEdit.GetLineCount(); i++)
+   try
    {
-      int len = Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512);
-      buf[len > 0 && buf[len-1] == '\v' ? len-1 : len] = NULL;
-      lines.push_back(buf);
-   }
+      // Get text in lines
+      for (INT i = 0; i < m_RichEdit.GetLineCount(); i++)
+      {
+         int len = Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512);
+         buf[len > 0 && buf[len-1] == '\v' ? len-1 : len] = NULL;
+         lines.push_back(buf);
+      }
 
-   // Test parser
-   DebugTests::CompileScript(lines);
+      // Test parser
+      auto tree = DebugTests::CompileScript(lines);
+
+      // Test error markup
+      for (const auto& err : tree.GetErrors())
+      {
+         CHARFORMAT2 cf;
+         cf.cbSize = sizeof(cf);
+         cf.dwMask = CFM_UNDERLINE | CFM_UNDERLINETYPE;
+         cf.dwEffects = CFE_UNDERLINE;
+         cf.bUnderlineType = CFU_UNDERLINEWAVE;
+
+         BYTE* colour = &cf.bRevAuthor + 1;
+         //cf.bUnderlineColor = 0x01;
+         *colour = 0x02;
+
+         // Select error
+         UINT start = m_RichEdit.LineIndex(err.Line-1);
+         m_RichEdit.SetSel(start+err.Start, start+err.End);
+
+         // Underline
+         m_RichEdit.SetSelectionCharFormat(cf);
+      }
+   }
+   catch (ExceptionBase&  e)
+   {
+      CString sz;
+      sz.Format(L"Unable to parse script : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
+      AfxMessageBox(sz);
+   }
+}
+
+
+void CMFCTest1View::OnEnUpdateRichedit()
+{
+   // TODO:  If this is a RICHEDIT control, the control will not
+   // send this notification unless you override the CFormView::OnInitDialog()
+   // function to send the EM_SETEVENTMASK message to the control
+   // with the ENM_UPDATE flag ORed into the lParam mask.
+
+   // TODO:  Add your control notification handler code here
+
+   
+}
+
+
+void CMFCTest1View::OnEnChangeRichedit()
+{
+   // TODO:  If this is a RICHEDIT control, the control will not
+   // send this notification unless you override the CFormView::OnInitDialog()
+   // function and call CRichEditCtrl().SetEventMask()
+   // with the ENM_CHANGE flag ORed into the mask.
+
+   // TODO:  Add your control notification handler code here
+
+   // Disable EN_UPDATE
+   //m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() ^ ENM_UPDATE);
+   if (!Updating)
+   {
+      Updating = true;
+
+      // Preserve selection
+      CHARRANGE sel;
+      m_RichEdit.GetSel(sel);
+      m_RichEdit.SetRedraw(FALSE);
+
+      // Get line char pos
+      UINT start = m_RichEdit.LineIndex(-1);
+
+      // Get line text
+      WCHAR buf[512];
+      int len = m_RichEdit.GetLine(m_RichEdit.LineFromChar(-1), buf, 512);
+      buf[len] = NULL;
+
+      // Lex line
+      CommandLexer lex(buf);
+      for (const auto& tok : lex.Tokens)
+      {
+         CHARFORMAT2 cf;
+         cf.cbSize = sizeof(cf);
+         cf.dwMask = CFM_COLOR;
+         cf.dwEffects = NULL;
+      
+         // Set colour
+         switch (tok.Type)
+         {
+         case TokenType::Comment:  cf.crTextColor = RGB(128,128,128);      break;
+         case TokenType::Null:
+         case TokenType::Variable: cf.crTextColor = RGB(0,255,0);      break;
+         case TokenType::Keyword:  cf.crTextColor = RGB(0,0,255);      break;
+         case TokenType::Number:  
+         case TokenType::String:   cf.crTextColor = RGB(255,0,0);      break;
+         default:                  cf.crTextColor = RGB(255,255,255);  break;
+         }
+
+         // Set char format
+         m_RichEdit.SetSel(start+tok.Start, start+tok.End);
+         m_RichEdit.SetSelectionCharFormat(cf);
+      }
+
+      // Restore selection
+      m_RichEdit.SetRedraw(TRUE);
+      m_RichEdit.SetSel(sel);
+      m_RichEdit.Invalidate();
+
+      // Enable EN_UPDATE
+      //m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE);
+      Updating = false;
+   }
 }
