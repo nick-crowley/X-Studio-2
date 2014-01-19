@@ -2,8 +2,7 @@
 #pragma once
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
 
    class CPropertiesToolBar : public CMFCToolBar
@@ -65,7 +64,6 @@ namespace GUI
 	   int m_nComboHeight;
    };
 
-}
 
-using namespace GUI;
+NAMESPACE_END(GUI)
 

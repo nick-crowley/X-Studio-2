@@ -6,8 +6,7 @@
 
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    // LanguageDocument
 
@@ -68,4 +67,5 @@ namespace GUI
 
    // LanguageDocument commands
 
-}
+NAMESPACE_END(GUI)
+

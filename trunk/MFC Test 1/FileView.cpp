@@ -11,8 +11,8 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
+
 
    /////////////////////////////////////////////////////////////////////////////
    // CFileView
@@ -257,5 +257,5 @@ namespace GUI
    }
 
 
-   
-} // NS:GUI
+NAMESPACE_END(GUI)
+

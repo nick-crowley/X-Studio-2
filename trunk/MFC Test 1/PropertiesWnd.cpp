@@ -1,10 +1,10 @@
-
 #include "stdafx.h"
 
 #include "PropertiesWnd.h"
 #include "Resource.h"
 #include "MainWnd.h"
 #include "Application.h"
+   
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -12,22 +12,10 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
-
-   /////////////////////////////////////////////////////////////////////////////
-   // CResourceViewBar
-
-   CPropertiesWnd::CPropertiesWnd()
-   {
-	   m_nComboHeight = 0;
-   }
-
-   CPropertiesWnd::~CPropertiesWnd()
-   {
-   }
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
 	   ON_WM_CREATE()
@@ -43,6 +31,18 @@ namespace GUI
 	   ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
+
+   /////////////////////////////////////////////////////////////////////////////
+   // CResourceViewBar
+
+   CPropertiesWnd::CPropertiesWnd()
+   {
+	   m_nComboHeight = 0;
+   }
+
+   CPropertiesWnd::~CPropertiesWnd()
+   {
+   }
 
    /////////////////////////////////////////////////////////////////////////////
    // CResourceViewBar message handlers
@@ -282,6 +282,5 @@ namespace GUI
 	   m_wndObjectCombo.SetFont(&m_fntPropList);
    }
 
-   
+NAMESPACE_END(GUI)
 
-}

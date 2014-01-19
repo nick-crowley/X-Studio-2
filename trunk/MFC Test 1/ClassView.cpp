@@ -6,8 +6,7 @@
 #include "Application.h"
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    class CClassViewMenuButton : public CMFCToolBarMenuButton
    {
@@ -326,4 +325,5 @@ namespace GUI
 	   m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* Locked */);
    }
    
-} // NS:GUI
+NAMESPACE_END(GUI)
+

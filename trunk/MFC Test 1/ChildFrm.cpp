@@ -12,8 +12,7 @@
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    // CChildFrame
 
@@ -59,5 +58,5 @@ namespace GUI
 
    // CChildFrame message handlers
 
-} //gui
+NAMESPACE_END(GUI)
 

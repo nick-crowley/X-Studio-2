@@ -8,9 +8,9 @@
 #include "afxcmn.h"
 #include "Logic/Common.h"
 
+
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
 
    class ScriptView : public CFormView
@@ -68,6 +68,6 @@ namespace GUI
       { return reinterpret_cast<ScriptDocument*>(m_pDocument); }
    #endif
 
-}
+   
+NAMESPACE_END(GUI)
 
-using namespace GUI;

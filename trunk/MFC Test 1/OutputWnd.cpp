@@ -12,8 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    /////////////////////////////////////////////////////////////////////////////
    // COutputBar
@@ -202,5 +201,5 @@ namespace GUI
 	   }
    }
 
+NAMESPACE_END(GUI)
 
-}
