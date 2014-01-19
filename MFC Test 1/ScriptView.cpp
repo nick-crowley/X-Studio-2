@@ -9,6 +9,7 @@
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
 #include <Richedit.h>
+#include "Logic/Event.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -126,7 +127,7 @@ NAMESPACE_BEGIN(GUI)
 
    // ScriptView message handlers
 
-   #define ST_UNICODE (DWORD)8
+   //#define ST_UNICODE (DWORD)8
 
    void ScriptView::OnBnClickedLoadScript()
    {
@@ -177,7 +178,8 @@ NAMESPACE_BEGIN(GUI)
 
    void ScriptView::OnBnClickedRuntests()
    {
-      DebugTests::RunAll();
+      //DebugTests::RunAll();
+      simpleEventTest();
       AfxMessageBox(L"Tests complete");
    }
 
