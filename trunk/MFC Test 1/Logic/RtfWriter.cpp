@@ -183,7 +183,10 @@ namespace Logic
          Write("}\n");
 
          // Unknown
-         Write("\\viewkind4\\uc1\\pard\\sa200\\sl276\\slmult1\\lang9\\cb1 ");
+         // \saN == spacing after
+         // \slN == space between lines
+         // \smult == Line spacing multiple
+         Write("\\viewkind4\\uc1\\pard\\lang9\\cb1 ");   //\\sa200\\sl276\\slmult1
       }
 
       /// <summary>Writes RTF footer</summary>
