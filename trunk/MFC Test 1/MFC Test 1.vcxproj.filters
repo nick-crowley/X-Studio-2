@@ -220,12 +220,6 @@
     <ClInclude Include="Logic\ConsoleWnd.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\Path.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\FileSearch.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\StringResource.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
@@ -243,6 +237,12 @@
     </ClInclude>
     <ClInclude Include="MainWnd.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileSearch.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Path.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -266,12 +266,6 @@
     </ClCompile>
     <ClCompile Include="ViewTree.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\FileSearch.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\Path.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="Logic\StringResource.cpp">
       <Filter>Source Files\Logic</Filter>
@@ -398,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="MainWnd.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Path.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileSearch.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

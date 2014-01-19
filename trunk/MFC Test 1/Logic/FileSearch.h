@@ -3,46 +3,50 @@
 
 namespace Logic
 {
-   /// <summary>Provides the ability to search for files</summary>
-   class FileSearch
+   namespace IO
    {
-      // --------------------- CONSTRUCTION ----------------------
+      /// <summary>Provides the ability to search for files</summary>
+      class FileSearch
+      {
+         // --------------------- CONSTRUCTION ----------------------
 
-   public:
-      FileSearch(Path query);
-      ~FileSearch();
+      public:
+         FileSearch(Path query);
+         ~FileSearch();
 
-      // ------------------------ STATIC -------------------------
+         // ------------------------ STATIC -------------------------
 
-      // --------------------- PROPERTIES ------------------------
+         // --------------------- PROPERTIES ------------------------
 			
-      PROPERTY_GET(DWORD,Attributes,GetAttributes);
-      PROPERTY_GET(wstring,FileName,GetFileName);
-      PROPERTY_GET(DWORD,FileSize,GetFileSize);
-      PROPERTY_GET(Path,FullPath,GetFullPath);
+         PROPERTY_GET(DWORD,Attributes,GetAttributes);
+         PROPERTY_GET(wstring,FileName,GetFileName);
+         PROPERTY_GET(DWORD,FileSize,GetFileSize);
+         PROPERTY_GET(Path,FullPath,GetFullPath);
 
-		// ---------------------- ACCESSORS ------------------------
+		   // ---------------------- ACCESSORS ------------------------
 
-      DWORD   GetAttributes()  { return Data.dwFileAttributes; }
-      DWORD   GetFileSize()    { return Data.nFileSizeLow;     }
-      wstring GetFileName()    { return Data.cFileName;        }
-      Path    GetFullPath()    { return (Folder+Data.cFileName).Text; }
-      bool    IsDirectory()    { return (GetAttributes() & FILE_ATTRIBUTE_DIRECTORY) != 0; }
+         DWORD   GetAttributes()  { return Data.dwFileAttributes; }
+         DWORD   GetFileSize()    { return Data.nFileSizeLow;     }
+         wstring GetFileName()    { return Data.cFileName;        }
+         Path    GetFullPath()    { return (Folder+Data.cFileName).Text; }
+         bool    IsDirectory()    { return (GetAttributes() & FILE_ATTRIBUTE_DIRECTORY) != 0; }
 
-      bool  HasResult();
+         bool  HasResult();
 
-		// ----------------------- MUTATORS ------------------------
+		   // ----------------------- MUTATORS ------------------------
 
-      void  Close();
-      void  Next();
+         void  Close();
+         void  Next();
 
-      // -------------------- REPRESENTATION ---------------------
+         // -------------------- REPRESENTATION ---------------------
 
-   private:
-      WIN32_FIND_DATA Data;
-      HANDLE          Handle;
-      Path            Folder;
-   };
+      private:
+         WIN32_FIND_DATA Data;
+         HANDLE          Handle;
+         Path            Folder;
+      };
 
-
+   }
 }
+
+using namespace Logic::IO;
