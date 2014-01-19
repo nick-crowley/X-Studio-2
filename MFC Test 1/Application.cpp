@@ -111,7 +111,7 @@ BOOL Application::InitInstance()
 	pDocTemplate = new CMultiDocTemplate(IDR_SCRIPTVIEW_TMPL,
 		RUNTIME_CLASS(GUI::ScriptDocument),
 		RUNTIME_CLASS(GUI::CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(GUI::ScriptView));
+		RUNTIME_CLASS(ScriptView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
@@ -219,6 +219,4 @@ void Application::SaveCustomState()
 }
 
 // Application message handlers
-
-
 

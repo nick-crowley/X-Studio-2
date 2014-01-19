@@ -3,28 +3,19 @@
 //
 
 #include "stdafx.h"
-// SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
-// and search filter handlers and allows sharing of document code with that project.
-#ifndef SHARED_HANDLERS
-#include "Application.h"
-#endif
-
 #include "ScriptDocument.h"
 #include "ScriptView.h"
-
 #include "Logic/DebugTests.h"
-#include <Richedit.h>
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
+#include <Richedit.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
-
+NAMESPACE_BEGIN(GUI)
 
    // ScriptView
 
@@ -106,9 +97,9 @@ namespace GUI
 
    void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
    {
-   #ifndef SHARED_HANDLERS
+   /*#ifndef SHARED_HANDLERS
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
-   #endif
+   #endif*/
    }
 
 
@@ -317,4 +308,6 @@ namespace GUI
       }
    }
 
-}
+
+NAMESPACE_END(GUI)
+

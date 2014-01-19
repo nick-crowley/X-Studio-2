@@ -13,8 +13,8 @@
 
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
+
 
    // MainWnd
 
@@ -433,5 +433,5 @@ namespace GUI
 	   m_wndOutput.UpdateFonts();
    }
 
-} //gui
+NAMESPACE_END(GUI)
 

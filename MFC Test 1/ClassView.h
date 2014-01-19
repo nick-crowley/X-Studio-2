@@ -4,8 +4,7 @@
 #include "ViewTree.h"
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    class CClassToolBar : public CMFCToolBar
    {
@@ -56,6 +55,6 @@ namespace GUI
 	   DECLARE_MESSAGE_MAP()
    };
 
-} // NS:GUI
+NAMESPACE_END(GUI)
 
-using namespace GUI;
+

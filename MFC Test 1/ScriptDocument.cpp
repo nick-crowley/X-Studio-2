@@ -18,8 +18,7 @@
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -131,5 +130,6 @@ namespace GUI
 
    // ------------------------------- PRIVATE METHODS ------------------------------
 
-}
+
+NAMESPACE_END(GUI)
 

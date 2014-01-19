@@ -4,8 +4,8 @@
 #include "Logic/ScriptFile.h"
 
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
+
 
    class ScriptDocument : public CDocument
    {
@@ -47,6 +47,6 @@ namespace GUI
 
    };
 
-}
 
-using namespace GUI;
+NAMESPACE_END(GUI)
+

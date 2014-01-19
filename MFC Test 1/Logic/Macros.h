@@ -46,3 +46,6 @@
 // Macro: Shorthand for console end-of-line manipulator
 #define ENDL      Cons::Endl
 
+// Macro: ClassWizard fix that enables classes in namespaces
+#define NAMESPACE_BEGIN(n)     namespace n {
+#define NAMESPACE_END(n)       }  using namespace n;

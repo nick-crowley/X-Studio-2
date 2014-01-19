@@ -2,9 +2,7 @@
 #pragma once
 
 /// <summary>User interface</summary>
-namespace GUI
-{
-
+NAMESPACE_BEGIN(GUI)
 
    /////////////////////////////////////////////////////////////////////////////
    // COutputList window
@@ -62,6 +60,6 @@ namespace GUI
 	   DECLARE_MESSAGE_MAP()
    };
 
-}
 
-using namespace GUI;
+NAMESPACE_END(GUI)
+

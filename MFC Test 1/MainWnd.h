@@ -9,9 +9,7 @@
 #include "PropertiesWnd.h"
 
 /// <summary>User interface</summary>
-namespace GUI
-{
-
+NAMESPACE_BEGIN(GUI)
 
    class MainWnd : public CMDIFrameWndEx
    {
@@ -65,7 +63,7 @@ namespace GUI
 
 
 
-}
+NAMESPACE_END(GUI)
 
-using namespace GUI;
+
 

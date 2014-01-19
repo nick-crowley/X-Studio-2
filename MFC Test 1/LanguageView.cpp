@@ -5,10 +5,8 @@
 #include "resource.h"
 #include "LanguageView.h"
 
-
 /// <summary>User interface</summary>
-namespace GUI
-{
+NAMESPACE_BEGIN(GUI)
 
    // LanguageView
 
@@ -51,5 +49,6 @@ namespace GUI
 
 
    // LanguageView message handlers
+   
+NAMESPACE_END(GUI)
 
-}
