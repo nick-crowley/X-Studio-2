@@ -1,31 +1,31 @@
 
-// MainFrm.cpp : implementation of the CMainFrame class
+// MainFrm.cpp : implementation of the MainWnd class
 //
 
 #include "stdafx.h"
-#include "MFC Test 1.h"
+#include "Application.h"
 
-#include "MainFrm.h"
+#include "MainWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-// CMainFrame
+// MainWnd
 
-IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
+IMPLEMENT_DYNAMIC(MainWnd, CMDIFrameWndEx)
 
 const int  iMaxUserToolbars = 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
-BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
+BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
 	ON_WM_CREATE()
-	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
-	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
-	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
-	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
+	ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
+	ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
+	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &MainWnd::OnApplicationLook)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &MainWnd::OnUpdateApplicationLook)
 	ON_WM_SETTINGCHANGE()
 END_MESSAGE_MAP()
 
@@ -37,19 +37,19 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };
 
-// CMainFrame construction/destruction
+// MainWnd construction/destruction
 
-CMainFrame::CMainFrame()
+MainWnd::MainWnd()
 {
 	// TODO: add member initialization code here
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 }
 
-CMainFrame::~CMainFrame()
+MainWnd::~MainWnd()
 {
 }
 
-int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -192,7 +192,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
+BOOL MainWnd::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CMDIFrameWndEx::PreCreateWindow(cs) )
 		return FALSE;
@@ -202,7 +202,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
-BOOL CMainFrame::CreateDockingWindows()
+BOOL MainWnd::CreateDockingWindows()
 {
 	BOOL bNameValid;
 
@@ -250,7 +250,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	return TRUE;
 }
 
-void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
+void MainWnd::SetDockingWindowIcons(BOOL bHiColorIcons)
 {
 	HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_FILE_VIEW_HC : IDI_FILE_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndFileView.SetIcon(hFileViewIcon, FALSE);
@@ -267,36 +267,36 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	UpdateMDITabbedBarsIcons();
 }
 
-// CMainFrame diagnostics
+// MainWnd diagnostics
 
 #ifdef _DEBUG
-void CMainFrame::AssertValid() const
+void MainWnd::AssertValid() const
 {
 	CMDIFrameWndEx::AssertValid();
 }
 
-void CMainFrame::Dump(CDumpContext& dc) const
+void MainWnd::Dump(CDumpContext& dc) const
 {
 	CMDIFrameWndEx::Dump(dc);
 }
 #endif //_DEBUG
 
 
-// CMainFrame message handlers
+// MainWnd message handlers
 
-void CMainFrame::OnWindowManager()
+void MainWnd::OnWindowManager()
 {
 	ShowWindowsDialog();
 }
 
-void CMainFrame::OnViewCustomize()
+void MainWnd::OnViewCustomize()
 {
 	CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
 	pDlgCust->EnableUserDefinedToolbars();
 	pDlgCust->Create();
 }
 
-LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
+LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
 {
 	LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
 	if (lres == 0)
@@ -316,7 +316,7 @@ LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
 	return lres;
 }
 
-void CMainFrame::OnApplicationLook(UINT id)
+void MainWnd::OnApplicationLook(UINT id)
 {
 	CWaitCursor wait;
 
@@ -387,13 +387,13 @@ void CMainFrame::OnApplicationLook(UINT id)
 	theApp.WriteInt(_T("ApplicationLook"), theApp.m_nAppLook);
 }
 
-void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
+void MainWnd::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
 
 
-BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
+BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
 {
 	// base class does the real work
 
@@ -422,7 +422,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 }
 
 
-void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {
 	CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
 	m_wndOutput.UpdateFonts();

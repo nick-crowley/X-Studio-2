@@ -76,18 +76,6 @@
     <ClInclude Include="FileView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MFC Test 1.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MFC Test 1Doc.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MFC Test 1View.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="OutputWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -244,6 +232,18 @@
     <ClInclude Include="Logic\RtfScriptWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptDocument.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptView.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWnd.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -256,18 +256,6 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="FileView.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MFC Test 1.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MFC Test 1Doc.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MFC Test 1View.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="OutputWnd.cpp">
@@ -398,6 +386,18 @@
     </ClCompile>
     <ClCompile Include="Logic\ConsoleWnd.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptDocument.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptView.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

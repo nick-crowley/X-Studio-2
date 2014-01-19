@@ -1,5 +1,5 @@
 
-// MainFrm.h : interface of the CMainFrame class
+// MainFrm.h : interface of the MainWnd class
 //
 
 #pragma once
@@ -8,11 +8,11 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 
-class CMainFrame : public CMDIFrameWndEx
+class MainWnd : public CMDIFrameWndEx
 {
-	DECLARE_DYNAMIC(CMainFrame)
+	DECLARE_DYNAMIC(MainWnd)
 public:
-	CMainFrame();
+	MainWnd();
 
 // Attributes
 public:
@@ -27,7 +27,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CMainFrame();
+	virtual ~MainWnd();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

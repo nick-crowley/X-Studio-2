@@ -1,16 +1,16 @@
 
-// MFC Test 1View.cpp : implementation of the CMFCTest1View class
+// MFC Test 1View.cpp : implementation of the ScriptView class
 //
 
 #include "stdafx.h"
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
 #ifndef SHARED_HANDLERS
-#include "MFC Test 1.h"
+#include "Application.h"
 #endif
 
-#include "MFC Test 1Doc.h"
-#include "MFC Test 1View.h"
+#include "ScriptDocument.h"
+#include "ScriptView.h"
 
 #include "Logic/DebugTests.h"
 #include <Richedit.h>
@@ -22,42 +22,42 @@
 #endif
 
 
-// CMFCTest1View
+// ScriptView
 
-IMPLEMENT_DYNCREATE(CMFCTest1View, CFormView)
+IMPLEMENT_DYNCREATE(ScriptView, CFormView)
 
-BEGIN_MESSAGE_MAP(CMFCTest1View, CFormView)
+BEGIN_MESSAGE_MAP(ScriptView, CFormView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
-   ON_BN_CLICKED(IDC_LOADSCRIPT, &CMFCTest1View::OnBnClickedLoadScript)
+   ON_BN_CLICKED(IDC_LOADSCRIPT, &ScriptView::OnBnClickedLoadScript)
    ON_WM_SIZE()
-   ON_BN_CLICKED(IDC_RUNTESTS, &CMFCTest1View::OnBnClickedRuntests)
-   ON_BN_CLICKED(IDC_COMPILE, &CMFCTest1View::OnBnClickedCompile)
-   ON_EN_UPDATE(IDC_RICHEDIT, &CMFCTest1View::OnEnUpdateRichedit)
-   ON_EN_CHANGE(IDC_RICHEDIT, &CMFCTest1View::OnEnChangeRichedit)
+   ON_BN_CLICKED(IDC_RUNTESTS, &ScriptView::OnBnClickedRuntests)
+   ON_BN_CLICKED(IDC_COMPILE, &ScriptView::OnBnClickedCompile)
+   ON_EN_UPDATE(IDC_RICHEDIT, &ScriptView::OnEnUpdateRichedit)
+   ON_EN_CHANGE(IDC_RICHEDIT, &ScriptView::OnEnChangeRichedit)
 END_MESSAGE_MAP()
 
 
-// CMFCTest1View construction/destruction
+// ScriptView construction/destruction
 
-CMFCTest1View::CMFCTest1View()
-	: CFormView(CMFCTest1View::IDD), Updating(false)
+ScriptView::ScriptView()
+	: CFormView(ScriptView::IDD), Updating(false)
 {
 	// TODO: add construction code here
    //MSFTEDIT_CLASS
 }
 
-CMFCTest1View::~CMFCTest1View()
+ScriptView::~ScriptView()
 {
 }
 
-void CMFCTest1View::DoDataExchange(CDataExchange* pDX)
+void ScriptView::DoDataExchange(CDataExchange* pDX)
 {
    CFormView::DoDataExchange(pDX);
    DDX_Control(pDX, IDC_RICHEDIT, m_RichEdit);
 }
 
-BOOL CMFCTest1View::PreCreateWindow(CREATESTRUCT& cs)
+BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
@@ -65,7 +65,7 @@ BOOL CMFCTest1View::PreCreateWindow(CREATESTRUCT& cs)
 	return CFormView::PreCreateWindow(cs);
 }
 
-void CMFCTest1View::OnInitialUpdate()
+void ScriptView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	ResizeParentToFit();
@@ -84,13 +84,13 @@ void CMFCTest1View::OnInitialUpdate()
    //m_RichEdit.SetParaFormat(pf);
 }
 
-void CMFCTest1View::OnRButtonUp(UINT /* nFlags */, CPoint point)
+void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {
 	ClientToScreen(&point);
 	OnContextMenu(this, point);
 }
 
-void CMFCTest1View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 #ifndef SHARED_HANDLERS
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
@@ -98,32 +98,32 @@ void CMFCTest1View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 }
 
 
-// CMFCTest1View diagnostics
+// ScriptView diagnostics
 
 #ifdef _DEBUG
-void CMFCTest1View::AssertValid() const
+void ScriptView::AssertValid() const
 {
 	CFormView::AssertValid();
 }
 
-void CMFCTest1View::Dump(CDumpContext& dc) const
+void ScriptView::Dump(CDumpContext& dc) const
 {
 	CFormView::Dump(dc);
 }
 
-CMFCTest1Doc* CMFCTest1View::GetDocument() const // non-debug version is inline
+ScriptDocument* ScriptView::GetDocument() const // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CMFCTest1Doc)));
-	return (CMFCTest1Doc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(ScriptDocument)));
+	return (ScriptDocument*)m_pDocument;
 }
 #endif //_DEBUG
 
 
-// CMFCTest1View message handlers
+// ScriptView message handlers
 
 #define ST_UNICODE (DWORD)8
 
-void CMFCTest1View::OnBnClickedLoadScript()
+void ScriptView::OnBnClickedLoadScript()
 {
    const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml";
    try
@@ -156,7 +156,7 @@ void CMFCTest1View::OnBnClickedLoadScript()
 }
 
 
-void CMFCTest1View::OnSize(UINT nType, int cx, int cy)
+void ScriptView::OnSize(UINT nType, int cx, int cy)
 {
    CFormView::OnSize(nType, cx, cy);
 
@@ -172,14 +172,14 @@ void CMFCTest1View::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void CMFCTest1View::OnBnClickedRuntests()
+void ScriptView::OnBnClickedRuntests()
 {
    DebugTests::RunAll();
    AfxMessageBox(L"Tests complete");
 }
 
 
-void CMFCTest1View::OnBnClickedCompile()
+void ScriptView::OnBnClickedCompile()
 {
    LineArray lines;
    WCHAR  buf[512];
@@ -227,7 +227,7 @@ void CMFCTest1View::OnBnClickedCompile()
 }
 
 
-void CMFCTest1View::OnEnUpdateRichedit()
+void ScriptView::OnEnUpdateRichedit()
 {
    // TODO:  If this is a RICHEDIT control, the control will not
    // send this notification unless you override the CFormView::OnInitDialog()
@@ -240,7 +240,7 @@ void CMFCTest1View::OnEnUpdateRichedit()
 }
 
 
-void CMFCTest1View::OnEnChangeRichedit()
+void ScriptView::OnEnChangeRichedit()
 {
    // TODO:  If this is a RICHEDIT control, the control will not
    // send this notification unless you override the CFormView::OnInitDialog()

@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "MFC Test 1.h"
+#include "Application.h"
 
 #include "ChildFrm.h"
 

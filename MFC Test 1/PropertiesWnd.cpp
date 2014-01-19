@@ -3,8 +3,8 @@
 
 #include "PropertiesWnd.h"
 #include "Resource.h"
-#include "MainFrm.h"
-#include "MFC Test 1.h"
+#include "MainWnd.h"
+#include "Application.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -1,15 +1,15 @@
 
-// MFC Test 1Doc.cpp : implementation of the CMFCTest1Doc class
+// MFC Test 1Doc.cpp : implementation of the ScriptDocument class
 //
 
 #include "stdafx.h"
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
 #ifndef SHARED_HANDLERS
-#include "MFC Test 1.h"
+#include "Application.h"
 #endif
 
-#include "MFC Test 1Doc.h"
+#include "ScriptDocument.h"
 
 #include <propkey.h>
 
@@ -17,27 +17,27 @@
 #define new DEBUG_NEW
 #endif
 
-// CMFCTest1Doc
+// ScriptDocument
 
-IMPLEMENT_DYNCREATE(CMFCTest1Doc, CDocument)
+IMPLEMENT_DYNCREATE(ScriptDocument, CDocument)
 
-BEGIN_MESSAGE_MAP(CMFCTest1Doc, CDocument)
+BEGIN_MESSAGE_MAP(ScriptDocument, CDocument)
 END_MESSAGE_MAP()
 
 
-// CMFCTest1Doc construction/destruction
+// ScriptDocument construction/destruction
 
-CMFCTest1Doc::CMFCTest1Doc()
+ScriptDocument::ScriptDocument()
 {
 	// TODO: add one-time construction code here
 
 }
 
-CMFCTest1Doc::~CMFCTest1Doc()
+ScriptDocument::~ScriptDocument()
 {
 }
 
-BOOL CMFCTest1Doc::OnNewDocument()
+BOOL ScriptDocument::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -51,9 +51,9 @@ BOOL CMFCTest1Doc::OnNewDocument()
 
 
 
-// CMFCTest1Doc serialization
+// ScriptDocument serialization
 
-void CMFCTest1Doc::Serialize(CArchive& ar)
+void ScriptDocument::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -68,7 +68,7 @@ void CMFCTest1Doc::Serialize(CArchive& ar)
 #ifdef SHARED_HANDLERS
 
 // Support for thumbnails
-void CMFCTest1Doc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
+void ScriptDocument::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
 	// Modify this code to draw the document's data
 	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
@@ -89,7 +89,7 @@ void CMFCTest1Doc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 }
 
 // Support for Search Handlers
-void CMFCTest1Doc::InitializeSearchContent()
+void ScriptDocument::InitializeSearchContent()
 {
 	CString strSearchContent;
 	// Set search contents from document's data. 
@@ -99,7 +99,7 @@ void CMFCTest1Doc::InitializeSearchContent()
 	SetSearchContent(strSearchContent);
 }
 
-void CMFCTest1Doc::SetSearchContent(const CString& value)
+void ScriptDocument::SetSearchContent(const CString& value)
 {
 	if (value.IsEmpty())
 	{
@@ -119,19 +119,19 @@ void CMFCTest1Doc::SetSearchContent(const CString& value)
 
 #endif // SHARED_HANDLERS
 
-// CMFCTest1Doc diagnostics
+// ScriptDocument diagnostics
 
 #ifdef _DEBUG
-void CMFCTest1Doc::AssertValid() const
+void ScriptDocument::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CMFCTest1Doc::Dump(CDumpContext& dc) const
+void ScriptDocument::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
 
-// CMFCTest1Doc commands
+// ScriptDocument commands

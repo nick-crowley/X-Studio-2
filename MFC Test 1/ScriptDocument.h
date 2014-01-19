@@ -1,16 +1,16 @@
 
-// MFC Test 1Doc.h : interface of the CMFCTest1Doc class
+// MFC Test 1Doc.h : interface of the ScriptDocument class
 //
 
 
 #pragma once
 
 
-class CMFCTest1Doc : public CDocument
+class ScriptDocument : public CDocument
 {
 protected: // create from serialization only
-	CMFCTest1Doc();
-	DECLARE_DYNCREATE(CMFCTest1Doc)
+	ScriptDocument();
+	DECLARE_DYNCREATE(ScriptDocument)
 
 // Attributes
 public:
@@ -29,7 +29,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CMFCTest1Doc();
+	virtual ~ScriptDocument();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
