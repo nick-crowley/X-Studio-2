@@ -1,23 +1,29 @@
 
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CViewTree window
-
-class CViewTree : public CTreeCtrl
+/// <summary>User interface</summary>
+namespace GUI
 {
-// Construction
-public:
-	CViewTree();
 
-// Overrides
-protected:
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+   /////////////////////////////////////////////////////////////////////////////
+   // CViewTree window
 
-// Implementation
-public:
-	virtual ~CViewTree();
+   class CViewTree : public CTreeCtrl
+   {
+   // Construction
+   public:
+	   CViewTree();
 
-protected:
-	DECLARE_MESSAGE_MAP()
-};
+   // Overrides
+   protected:
+	   virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+
+   // Implementation
+   public:
+	   virtual ~CViewTree();
+
+   protected:
+	   DECLARE_MESSAGE_MAP()
+   };
+   
+} // NS:GUI

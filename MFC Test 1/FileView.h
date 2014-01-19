@@ -3,53 +3,59 @@
 
 #include "ViewTree.h"
 
-class CFileViewToolBar : public CMFCToolBar
+/// <summary>User interface</summary>
+namespace GUI
 {
-	virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
-	{
-		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
-	}
 
-	virtual BOOL AllowShowOnList() const { return FALSE; }
-};
+   class CFileViewToolBar : public CMFCToolBar
+   {
+	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
+	   {
+		   CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
+	   }
 
-class CFileView : public CDockablePane
-{
-// Construction
-public:
-	CFileView();
+	   virtual BOOL AllowShowOnList() const { return FALSE; }
+   };
 
-	void AdjustLayout();
-	void OnChangeVisualStyle();
+   class CFileView : public CDockablePane
+   {
+   // Construction
+   public:
+	   CFileView();
 
-// Attributes
-protected:
+	   void AdjustLayout();
+	   void OnChangeVisualStyle();
 
-	CViewTree m_wndFileView;
-	CImageList m_FileViewImages;
-	CFileViewToolBar m_wndToolBar;
+   // Attributes
+   protected:
 
-protected:
-	void FillFileView();
+	   CViewTree m_wndFileView;
+	   CImageList m_FileViewImages;
+	   CFileViewToolBar m_wndToolBar;
 
-// Implementation
-public:
-	virtual ~CFileView();
+   protected:
+	   void FillFileView();
 
-protected:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnProperties();
-	afx_msg void OnFileOpen();
-	afx_msg void OnFileOpenWith();
-	afx_msg void OnDummyCompile();
-	afx_msg void OnEditCut();
-	afx_msg void OnEditCopy();
-	afx_msg void OnEditClear();
-	afx_msg void OnPaint();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
+   // Implementation
+   public:
+	   virtual ~CFileView();
 
-	DECLARE_MESSAGE_MAP()
-};
+   protected:
+	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg void OnSize(UINT nType, int cx, int cy);
+	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	   afx_msg void OnProperties();
+	   afx_msg void OnFileOpen();
+	   afx_msg void OnFileOpenWith();
+	   afx_msg void OnDummyCompile();
+	   afx_msg void OnEditCut();
+	   afx_msg void OnEditCopy();
+	   afx_msg void OnEditClear();
+	   afx_msg void OnPaint();
+	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 
+	   DECLARE_MESSAGE_MAP()
+   };
+
+   
+} // NS:GUI

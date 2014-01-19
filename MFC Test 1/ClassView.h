@@ -3,52 +3,57 @@
 
 #include "ViewTree.h"
 
-class CClassToolBar : public CMFCToolBar
+/// <summary>User interface</summary>
+namespace GUI
 {
-	virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
-	{
-		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
-	}
 
-	virtual BOOL AllowShowOnList() const { return FALSE; }
-};
+   class CClassToolBar : public CMFCToolBar
+   {
+	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
+	   {
+		   CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
+	   }
 
-class CClassView : public CDockablePane
-{
-public:
-	CClassView();
-	virtual ~CClassView();
+	   virtual BOOL AllowShowOnList() const { return FALSE; }
+   };
 
-	void AdjustLayout();
-	void OnChangeVisualStyle();
+   class CClassView : public CDockablePane
+   {
+   public:
+	   CClassView();
+	   virtual ~CClassView();
 
-protected:
-	CClassToolBar m_wndToolBar;
-	CViewTree m_wndClassView;
-	CImageList m_ClassViewImages;
-	UINT m_nCurrSort;
+	   void AdjustLayout();
+	   void OnChangeVisualStyle();
 
-	void FillClassView();
+   protected:
+	   CClassToolBar m_wndToolBar;
+	   CViewTree m_wndClassView;
+	   CImageList m_ClassViewImages;
+	   UINT m_nCurrSort;
 
-// Overrides
-public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	   void FillClassView();
 
-protected:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnClassAddMemberFunction();
-	afx_msg void OnClassAddMemberVariable();
-	afx_msg void OnClassDefinition();
-	afx_msg void OnClassProperties();
-	afx_msg void OnNewFolder();
-	afx_msg void OnPaint();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg LRESULT OnChangeActiveTab(WPARAM, LPARAM);
-	afx_msg void OnSort(UINT id);
-	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
+   // Overrides
+   public:
+	   virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-	DECLARE_MESSAGE_MAP()
-};
+   protected:
+	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg void OnSize(UINT nType, int cx, int cy);
+	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	   afx_msg void OnClassAddMemberFunction();
+	   afx_msg void OnClassAddMemberVariable();
+	   afx_msg void OnClassDefinition();
+	   afx_msg void OnClassProperties();
+	   afx_msg void OnNewFolder();
+	   afx_msg void OnPaint();
+	   afx_msg void OnSetFocus(CWnd* pOldWnd);
+	   afx_msg LRESULT OnChangeActiveTab(WPARAM, LPARAM);
+	   afx_msg void OnSort(UINT id);
+	   afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
+	   DECLARE_MESSAGE_MAP()
+   };
+
+} // NS:GUI
