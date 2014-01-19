@@ -27,3 +27,5 @@ namespace GUI
    };
    
 } // NS:GUI
+
+using namespace GUI;
