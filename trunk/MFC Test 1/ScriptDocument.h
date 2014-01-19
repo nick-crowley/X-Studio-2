@@ -1,7 +1,7 @@
-
 // MFC Test 1Doc.h : interface of the ScriptDocument class
 //
 #pragma once
+#include "Logic/ScriptFile.h"
 
 /// <summary>User interface</summary>
 namespace GUI
@@ -9,43 +9,42 @@ namespace GUI
 
    class ScriptDocument : public CDocument
    {
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+
    protected: // create from serialization only
 	   ScriptDocument();
 	   DECLARE_DYNCREATE(ScriptDocument)
-
-   // Attributes
-   public:
-
-   // Operations
-   public:
-
-   // Overrides
-   public:
-	   virtual BOOL OnNewDocument();
-	   virtual void Serialize(CArchive& ar);
-   #ifdef SHARED_HANDLERS
-	   virtual void InitializeSearchContent();
-	   virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
-   #endif // SHARED_HANDLERS
-
-   // Implementation
    public:
 	   virtual ~ScriptDocument();
+
+      // ------------------------ STATIC -------------------------
+
+      // --------------------- PROPERTIES ------------------------
+			
+      // ---------------------- ACCESSORS ------------------------			
+
+      // ----------------------- MUTATORS ------------------------
+   public:
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
 
-   protected:
+	   virtual BOOL OnNewDocument();
+      virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+	   virtual void Serialize(CArchive& ar);
+   
+   
+      // -------------------- REPRESENTATION ---------------------
+   public:
+      ScriptFile  Script;
 
-   // Generated message map functions
    protected:
 	   DECLARE_MESSAGE_MAP()
 
-   #ifdef SHARED_HANDLERS
-	   // Helper function that sets search content for a Search Handler
-	   void SetSearchContent(const CString& value);
-   #endif // SHARED_HANDLERS
    };
 
 }

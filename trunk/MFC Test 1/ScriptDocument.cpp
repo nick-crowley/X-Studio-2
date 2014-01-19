@@ -3,15 +3,15 @@
 //
 
 #include "stdafx.h"
-// SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
-// and search filter handlers and allows sharing of document code with that project.
-#ifndef SHARED_HANDLERS
-#include "Application.h"
-#endif
-
 #include "ScriptDocument.h"
-
 #include <propkey.h>
+#include "Logic/FileStream.h"
+#include "Logic/GZipStream.h"
+#include "Logic/XFileSystem.h"
+#include "Logic/LegacySyntaxReader.h"
+#include "Logic/SyntaxLibrary.h"
+#include "Logic/ScriptFileReader.h"
+#include "Logic/StringLibrary.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,15 +21,14 @@
 namespace GUI
 {
 
-   // ScriptDocument
-
+   // --------------------------------- APP WIZARD ---------------------------------
+  
    IMPLEMENT_DYNCREATE(ScriptDocument, CDocument)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, CDocument)
    END_MESSAGE_MAP()
 
-
-   // ScriptDocument construction/destruction
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    ScriptDocument::ScriptDocument()
    {
@@ -41,89 +40,9 @@ namespace GUI
    {
    }
 
-   BOOL ScriptDocument::OnNewDocument()
-   {
-	   if (!CDocument::OnNewDocument())
-		   return FALSE;
+   // ------------------------------- STATIC METHODS -------------------------------
 
-	   // TODO: add reinitialization code here
-	   // (SDI documents will reuse this document)
-
-	   return TRUE;
-   }
-
-
-
-
-   // ScriptDocument serialization
-
-   void ScriptDocument::Serialize(CArchive& ar)
-   {
-	   if (ar.IsStoring())
-	   {
-		   // TODO: add storing code here
-	   }
-	   else
-	   {
-		   // TODO: add loading code here
-	   }
-   }
-
-   #ifdef SHARED_HANDLERS
-
-   // Support for thumbnails
-   void ScriptDocument::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
-   {
-	   // Modify this code to draw the document's data
-	   dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
-
-	   CString strText = _T("TODO: implement thumbnail drawing here");
-	   LOGFONT lf;
-
-	   CFont* pDefaultGUIFont = CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	   pDefaultGUIFont->GetLogFont(&lf);
-	   lf.lfHeight = 36;
-
-	   CFont fontDraw;
-	   fontDraw.CreateFontIndirect(&lf);
-
-	   CFont* pOldFont = dc.SelectObject(&fontDraw);
-	   dc.DrawText(strText, lprcBounds, DT_CENTER | DT_WORDBREAK);
-	   dc.SelectObject(pOldFont);
-   }
-
-   // Support for Search Handlers
-   void ScriptDocument::InitializeSearchContent()
-   {
-	   CString strSearchContent;
-	   // Set search contents from document's data. 
-	   // The content parts should be separated by ";"
-
-	   // For example:  strSearchContent = _T("point;rectangle;circle;ole object;");
-	   SetSearchContent(strSearchContent);
-   }
-
-   void ScriptDocument::SetSearchContent(const CString& value)
-   {
-	   if (value.IsEmpty())
-	   {
-		   RemoveChunk(PKEY_Search_Contents.fmtid, PKEY_Search_Contents.pid);
-	   }
-	   else
-	   {
-		   CMFCFilterChunkValueImpl *pChunk = NULL;
-		   ATLTRY(pChunk = new CMFCFilterChunkValueImpl);
-		   if (pChunk != NULL)
-		   {
-			   pChunk->SetTextValue(PKEY_Search_Contents, value, CHUNK_TEXT);
-			   SetChunkValue(pChunk);
-		   }
-	   }
-   }
-
-   #endif // SHARED_HANDLERS
-
-   // ScriptDocument diagnostics
+   // ------------------------------- PUBLIC METHODS -------------------------------
 
    #ifdef _DEBUG
    void ScriptDocument::AssertValid() const
@@ -137,6 +56,80 @@ namespace GUI
    }
    #endif //_DEBUG
 
+   
+   BOOL ScriptDocument::OnNewDocument()
+   {
+	   if (!CDocument::OnNewDocument())
+		   return FALSE;
 
-   // ScriptDocument commands
+	   // TODO: add reinitialization code here
+	   // (SDI documents will reuse this document)
+
+	   return TRUE;
+   }
+
+
+   BOOL ScriptDocument::OnOpenDocument(LPCTSTR lpszPathName)
+   {
+      /*if (!CDocument::OnOpenDocument(lpszPathName))
+         return FALSE;*/
+      const WCHAR* syntaxPath = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt";
+      
+      try
+      {
+         XFileSystem vfs;
+
+         // Build VFS. Enumerate language files
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+         StringLib.Enumerate(vfs, GameLanguage::English);
+
+
+         // Load legacy syntax file
+         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << syntaxPath << ENDL;
+
+         StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
+         SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
+
+         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+
+
+         // Parse script
+         Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;
+
+         StreamPtr fs2( new FileStream(lpszPathName, FileMode::OpenExisting, FileAccess::Read) );
+         Script = ScriptFileReader(fs2).ReadFile();
+
+         Console << Colour::Green << L"Script loaded successfully" << ENDL;
+      
+         //UpdateAllViews(NULL);
+         return TRUE;
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", lpszPathName, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+         return FALSE;
+      }
+   }
+
+
+
+   void ScriptDocument::Serialize(CArchive& ar)
+   {
+	   if (ar.IsStoring())
+	   {
+		   // TODO: add storing code here
+	   }
+	   else
+	   {
+		   // TODO: add loading code here
+	   }
+   }
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
+   // ------------------------------- PRIVATE METHODS ------------------------------
+
 }
+

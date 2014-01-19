@@ -86,6 +86,16 @@ namespace GUI
       //
       //m_RichEdit.SetSel(0,-1);
       //m_RichEdit.SetParaFormat(pf);
+
+      string txt;
+      RtfScriptWriter w(txt);
+      w.Write(GetDocument()->Script);
+      w.Close();
+
+
+      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+      m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -167,11 +177,9 @@ namespace GUI
       // TODO: Add your message handler code here
       if (m_RichEdit.m_hWnd != nullptr)
       {
-         CRect edit, wnd;
-         GetWindowRect(&wnd);
-         m_RichEdit.GetWindowRect(&edit);
-
-         m_RichEdit.SetWindowPos(nullptr, NULL, NULL, wnd.Width() -(edit.left-wnd.left)-10, wnd.Height() -(edit.top-wnd.top)-10, SWP_NOMOVE | SWP_NOZORDER);
+         CRect wnd;
+         GetClientRect(&wnd);
+         m_RichEdit.SetWindowPos(nullptr, NULL, 60, wnd.Width(), wnd.Height()-60, SWP_NOZORDER);
       }
    }
 
