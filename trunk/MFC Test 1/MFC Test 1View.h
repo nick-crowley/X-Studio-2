@@ -41,6 +41,7 @@ public:
 #endif
 
 protected:
+   bool Updating;
 
 // Generated message map functions
 protected:
@@ -54,6 +55,8 @@ public:
    afx_msg void OnSize(UINT nType, int cx, int cy);
    afx_msg void OnBnClickedRuntests();
    afx_msg void OnBnClickedCompile();
+   afx_msg void OnEnUpdateRichedit();
+   afx_msg void OnEnChangeRichedit();
 };
 
 #ifndef _DEBUG  // debug version in MFC Test 1View.cpp

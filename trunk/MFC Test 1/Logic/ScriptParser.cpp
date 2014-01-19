@@ -138,17 +138,17 @@ namespace Logic
             // Comment/NOP:
             if (MatchComment(lex))
                //cmd = ReadComment(lex, text);
-               return CommandTree( new CommandNode(ReadComment(lex, text), GetLineNumber(text)) );
+               return CommandTree( new CommandNode(ReadComment(lex, text), GetLineNumber(text), ErrorArray()) );
 
             // Command:
             else if (MatchCommand(lex))
                //cmd = ReadCommand(lex, text);
-               return CommandTree( new CommandNode(ReadCommand(lex, text), GetLineNumber(text)) );
+               return ReadCommand(lex, text);
 
             // Expression:
             else if (MatchExpression(lex))
                //cmd = ReadExpression(lex, text);
-               return CommandTree( new CommandNode(ReadExpression(lex, text), GetLineNumber(text)) );
+               return CommandTree( new CommandNode(ReadExpression(lex, text), GetLineNumber(text), ErrorArray()) );
             
             // * could potentially validate parameters at this point
 
@@ -158,7 +158,7 @@ namespace Logic
                Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
 
             // Generate node, advance line
-            return CommandTree( new CommandNode(ScriptCommand(), GetLineNumber(text)) );
+            return CommandTree( new CommandNode(ScriptCommand(), GetLineNumber(text), ErrorArray()) );
 
          }
 
@@ -348,7 +348,7 @@ namespace Logic
          }
 
 
-         ScriptCommand  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandTree  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
             /*
             conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -356,6 +356,7 @@ namespace Logic
             
             command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
             */
+            ErrorArray    errors;
             Conditional   condition = Conditional::NONE;
             TokenIterator refObj = lex.end(), 
                           retVar = lex.end(),
@@ -378,16 +379,22 @@ namespace Logic
             CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
             
             // TODO: Arrange parameters
-            TokenArray params;
+            // TokenArray params;
+            ScriptCommand cmd(*line, syntax, TokenArray());
 
             // DEBUG:
             if (syntax != SyntaxLib.Unknown)
                Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
             else
+            {
                Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
 
-            // Create command
-            return ScriptCommand(*line, syntax, params);
+               if (pos != lex.end())
+                  errors.push_back(ErrorToken(GetLineNumber(line), pos->Start, pos->End));
+            }
+
+            // Create node
+            return CommandTree( new CommandNode(cmd, GetLineNumber(line), errors) );
          }
 
          ScriptCommand  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)

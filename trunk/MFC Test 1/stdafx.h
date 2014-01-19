@@ -17,6 +17,11 @@
 #define _AFX_ALL_WARNINGS
 
 #include <afxwin.h>         // MFC core and standard components
+
+// Failed Attempt at redefining CHARFORMAT2 struct with all fields, but not present in richEdit.h :(
+#undef _RICHEDIT_VER
+#define _RICHEDIT_VER 0x0500
+
 #include <afxext.h>         // MFC extensions
 
 

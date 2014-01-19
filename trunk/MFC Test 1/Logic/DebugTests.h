@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "ScriptFile.h"
+#include "ScriptParser.h"
 
 namespace Logic
 {
@@ -19,7 +20,7 @@ namespace Logic
    public:
       static void  RunAll();
 
-      static void        CompileScript(const vector<wstring>& lines);
+      static ScriptParser::ScriptTree CompileScript(const vector<wstring>& lines);
       static ScriptFile  LoadScript(const WCHAR* path);
 
    private:

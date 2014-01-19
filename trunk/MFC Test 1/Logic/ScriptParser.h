@@ -23,11 +23,29 @@ namespace Logic
          class ScriptParser
          {
             // ------------------------ TYPES --------------------------
-         private:
+         public:
             class CommandNode;
 
             /// <summary>Shared pointer to a node in the script command tree</summary>
             typedef shared_ptr<CommandNode>  CommandTree;
+
+            /// <summary>Script error</summary>
+            class ErrorToken
+            {
+            public:
+               /*ErrorToken(const ScriptToken& t) : Start(t.Start), End(t.End), Text(t.Text)
+               {}*/
+               ErrorToken(UINT line, UINT start, UINT end) : Line(line), Start(start), End(end)
+               {}
+
+               const UINT    Line,
+                             Start, 
+                             End;
+               //const wstring Text;
+            };
+
+            /// <summary>Vector of error tokens</summary>
+            typedef vector<ErrorToken>  ErrorArray;
 
             /// <summary>Simple command or assignment expression</summary>
             class CommandNode
@@ -36,8 +54,8 @@ namespace Logic
                /*CommandNode() 
                   : Logic(BranchLogic::None), LineNumber(1), Index(0), JumpTarget(nullptr), Command(SyntaxLib.Unknown, ParameterArray())
                {}*/
-               CommandNode(const ScriptCommand& cmd, UINT line) 
-                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd)
+               CommandNode(const ScriptCommand& cmd, UINT line, const ErrorArray& err) 
+                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Errors(err)
                {
                   Logic = Command.Logic;
                }
@@ -48,7 +66,8 @@ namespace Logic
                ScriptCommand  Command;          // Command
                UINT           LineNumber,       // 1-based line number
                               Index;            // 0-based standard codearray index
-               bool           Valid;            // Successfully compiled flag
+               //bool           Valid;            // Successfully compiled flag
+               ErrorArray     Errors;           // Compilation errors
 
                // JumpNode
                ScriptCommand* JumpTarget;    // Destination of jump
@@ -64,20 +83,24 @@ namespace Logic
                   return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
                }
 
+               void  GetErrors(ErrorArray& err)
+               {
+                  // Copy errors
+                  for (const auto& e : Errors)
+                     err.push_back(e);
+
+                  // Recurse into children
+                  for (const auto& c : Children)
+                     c->GetErrors(err);
+               }
+
                void  Print(int depth = 0) const
                {
                   wstring tab(depth, (WCHAR)L' ');
 
                   Console.Writef(L"%03d: %s%s : ", LineNumber, tab.c_str(), GetString(Logic));
                   Console.WriteLn(Command.Syntax == SyntaxLib.Unknown ? Command.Text : Command.Syntax.Text);
-                  /*if (Command.Syntax == SyntaxLib.Unknown)
-                  {
-
-                  }
-                  else
-                     Console.WriteLn();*/
                   
-
                   for (auto c : Children)
                      c->Print(depth+1);
                }
@@ -85,6 +108,7 @@ namespace Logic
                vector<CommandTree>  Children;    // Child commands
             };
 
+         public:
             class ScriptTree
             {
             public:
@@ -93,38 +117,17 @@ namespace Logic
                   Commands.push_back(t); 
                }
 
+               ErrorArray GetErrors()
+               {
+                  ErrorArray err;
+                  for (const CommandTree& t : Commands)
+                     t->GetErrors(err);
+                  return err;
+               }
+
+            private:
                vector<CommandTree> Commands;
             };
-
-            ///// <summary>Any command that executes a jump: break/continue/hiddenJump + any conditional</summary>
-            //class JumpNode : public CommandNode
-            //{
-            //public:
-            //   ScriptCommand* JumpTarget;    // Destination of jump
-            //};
-
-
-            /// <summary>Conditional command: if/skip/else/elseif/while</summary>
-            //class BranchNode : public JumpNode
-            //{
-            //public:
-            //   BranchNode(ScriptCommand cmd) : CommandNode(cmd)
-            //   {}
-
-            //   void  Add(const CommandTree& cmd)
-            //   {
-            //      Children.push_back(cmd);
-            //   }
-
-            //   bool  Contains(BranchLogic l) const
-            //   {
-            //      return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ t->Logic == l; }) != Children.end();
-            //   }
-
-            //   vector<CommandTree>  Children;    // Child commands
-            //};
-
-            
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -165,7 +168,7 @@ namespace Logic
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
             ScriptCommand  ReadComment(const CommandLexer& lex, const LineIterator& line);
-            ScriptCommand  ReadCommand(const CommandLexer& lex, const LineIterator& line);
+            CommandTree  ReadCommand(const CommandLexer& lex, const LineIterator& line);
             ScriptCommand  ReadExpression(const CommandLexer& lex, const LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------

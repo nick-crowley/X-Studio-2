@@ -14,7 +14,7 @@
 #include "SyntaxWriter.h"
 #include "ExpressionParser.h"
 #include "CommandLexer.h"
-#include "ScriptParser.h"
+
 
 namespace Logic
 {
@@ -25,25 +25,12 @@ namespace Logic
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    
-   void  DebugTests::CompileScript(const vector<wstring>& lines)
+   ScriptParser::ScriptTree  DebugTests::CompileScript(const vector<wstring>& lines)
    {
       Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
 
-      try
-      {
-         ScriptParser p(lines, GameVersion::TerranConflict);
-         auto tree = p.ParseScript();
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to parse script : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
-      }
-
-      /*Console.WriteLnf();
-      Console.WriteLnf(L"Parser has produced the following tree:");
-      tree->Print();*/
+      ScriptParser p(lines, GameVersion::TerranConflict);
+      return p.ParseScript();
    }
 
 
