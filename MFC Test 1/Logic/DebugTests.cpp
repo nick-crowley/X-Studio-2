@@ -14,7 +14,7 @@
 #include "SyntaxWriter.h"
 #include "ExpressionParser.h"
 #include "CommandLexer.h"
-
+#include "TFileReader.h"
 
 namespace Logic
 {
@@ -74,7 +74,8 @@ namespace Logic
       //Test_StringLibrary();
       //Test_XmlWriter();
       //Test_SyntaxWriter();
-      Test_ExpressionParser();
+      //Test_ExpressionParser();
+      Test_TFileReader();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -252,6 +253,30 @@ namespace Logic
          // Test LanguageFileReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
+   }
+
+   void  DebugTests::Test_TFileReader()
+   {
+      const WCHAR* path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TWareT.txt";
+   
+      try
+      {
+         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
+
+         // Test TFileReader
+         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto tFile = TFileReader(fs).ReadFile();
+
+         // Print
+         for (auto& obj : tFile.Objects)
+            Console << obj->id << ENDL;
       }
       catch (ExceptionBase&  e)
       {

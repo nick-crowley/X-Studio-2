@@ -32,6 +32,10 @@ namespace Logic
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       TFile  TFileReader::ReadFile()
       {
+         // Skip comments
+         while (ReadComment())
+         {}
+
          // Parse header
          int  ver   = ReadInt(L"File version");
          int  count = ReadInt(L"Number of objects");
@@ -175,7 +179,23 @@ namespace Logic
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
-   
+
+      /// <summary>Skips the comment, if any, on this line</summary>
+      /// <returns>True if comment was present, false otherwise</returns>
+      bool TFileReader::ReadComment()
+      {
+         WCHAR ch;
+         wstring line;
+
+         // Line starting with '/' indicate a comment
+         if (PeekChar(ch) && ch == L'/')
+         {
+            ReadLine(line);
+            return true;
+         }
+
+         return false;
+      }
    }
 }
 
