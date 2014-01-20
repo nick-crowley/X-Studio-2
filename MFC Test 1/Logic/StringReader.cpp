@@ -12,7 +12,7 @@ namespace Logic
       /// <param name="src">The input stream</param>
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-      StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr), LineNum(0)
+      StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr), LineNum(1)
       {
          REQUIRED(src);
 
@@ -41,6 +41,27 @@ namespace Logic
       // ------------------------------- STATIC  METHODS ------------------------------
       
       // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Reads the next character</summary>
+      /// <param name="c">Next character</param>
+      /// <returns>True if read, false if EOF</returns>
+      bool  StringReader::ReadChar(WCHAR&  c)
+      {
+         // EOF: Return false
+         if (IsEOF())
+         {
+            c = NULL;
+            return false;
+         }
+
+         // Increment line number 
+         if (c == L'\n')
+            LineNum++;
+
+         // Set byte, advance position, return true
+         c = Buffer.get()[Position++];
+         return true;
+      }
 
       /// <summary>Reads the next line, if any</summary>
       /// <param name="line">The line.</param>
@@ -52,9 +73,6 @@ namespace Logic
                end   = Length;      // End of characters on line
          WCHAR ch;
 
-         // Increment line number before start (ensures 1-based)
-         LineNum++;
-
          // Ensure stream has not been moved
          if (Input == nullptr)
             throw InvalidOperationException(HERE, L"Underlying stream has been closed");
@@ -64,7 +82,7 @@ namespace Logic
             Buffer = FileStream::ConvertFileBuffer(Input, Length);
 
          // EOF: Return false
-         if (Position >= Length)
+         if (IsEOF())
          {
             line.clear();
             return false;
@@ -95,33 +113,13 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 
-		// ------------------------------- PRIVATE METHODS ------------------------------
-
-      
-      /// <summary>Reads the next character</summary>
-      /// <param name="c">Next character</param>
-      /// <returns>True if read, false if EOF</returns>
-      bool  StringReader::ReadChar(WCHAR&  c)
-      {
-         // EOF: Return false
-         if (Position >= Length)
-         {
-            c = NULL;
-            return false;
-         }
-
-         // Set byte, advance position, return true
-         c = Buffer.get()[Position++];
-         return true;
-      }
-
       /// <summary>Peeks the next character</summary>
       /// <param name="c">Next character</param>
       /// <returns>True if read, false if EOF</returns>
       bool  StringReader::PeekChar(WCHAR&  c)
       {
          // EOF: Return false
-         if (Position >= Length)
+         if (IsEOF())
          {
             c = NULL;
             return false;
@@ -132,6 +130,7 @@ namespace Logic
          return true;
       }
 
+		// ------------------------------- PRIVATE METHODS ------------------------------
 
    }
 }

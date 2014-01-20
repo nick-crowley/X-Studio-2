@@ -94,6 +94,14 @@ namespace Logic
       FileFormatException(wstring  src, wstring  msg) 
          : ExceptionBase(src, wstring(L"The file format is invalid: ") + msg)
       {}
+
+      /// <summary>Create an FileFormatException for a specific line</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="line">One based line number</param>
+      /// <param name="msg">Message</param>
+      FileFormatException(wstring  src, UINT line, wstring  msg) 
+         : ExceptionBase(src, GuiString(L"The file format is invalid on line %u: ", line) + msg)
+      {}
    };
 
    /// <summary>Occurs when a file is not found</summary>

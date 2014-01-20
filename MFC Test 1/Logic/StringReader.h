@@ -29,22 +29,31 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 		public:	
+         /// <summary>Get the current line number</summary>
          PROPERTY_GET(DWORD,LineNumber,GetLineNumber);
 
 			// ---------------------- ACCESSORS ------------------------
 
-         DWORD    GetLineNumber() const     { return LineNum; }
+      public:
+         /// <summary>Get the current line number</summary>
+         /// <returns>One based line number</returns>
+         DWORD    GetLineNumber() const  { return LineNum; }
+
+         /// <summary>Check for EOF</summary>
+         /// <returns></returns>
+         bool     IsEOF() const          { return Position >= Length; }
 
 			// ----------------------- MUTATORS ------------------------
 
-         virtual bool   ReadLine(wstring&  line);
+         virtual bool  ReadChar(WCHAR&  c);
+         virtual bool  ReadLine(wstring&  line);
 
-      private:
+      protected:
          bool  PeekChar(WCHAR&  c);
-         bool  ReadChar(WCHAR&  c);
-
+         
          // -------------------- REPRESENTATION ---------------------
 
+      private:
          StreamPtr    Input;
          CharArrayPtr Buffer;
          DWORD        LineNum,
