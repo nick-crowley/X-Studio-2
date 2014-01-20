@@ -171,6 +171,7 @@
     <ClInclude Include="Logic\SyntaxFile.h" />
     <ClInclude Include="Logic\SyntaxLibrary.h" />
     <ClInclude Include="Logic\SyntaxWriter.h" />
+    <ClInclude Include="Logic\TFileReader.h" />
     <ClInclude Include="Logic\XCatalog.h" />
     <ClInclude Include="Logic\XFileInfo.h" />
     <ClInclude Include="Logic\XFileSystem.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="Logic\SyntaxFile.cpp" />
     <ClCompile Include="Logic\SyntaxLibrary.cpp" />
     <ClCompile Include="Logic\SyntaxWriter.cpp" />
+    <ClCompile Include="Logic\TFileReader.cpp" />
     <ClCompile Include="Logic\XCatalog.cpp" />
     <ClCompile Include="Logic\XFileInfo.cpp" />
     <ClCompile Include="Logic\XFileSystem.cpp" />
