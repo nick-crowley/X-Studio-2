@@ -269,22 +269,35 @@ namespace Logic
    
       try
       {
-         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
+         // Load string library
+         XFileSystem vfs;
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+         StringLib.Enumerate(vfs, GameLanguage::English);
 
-         // Test TFileReader
+         // Read TWareT
+         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto file = TWareReader(fs).ReadFile();
 
-         // Print
-         /*for (auto& obj : file.Objects)
-            Console << obj.id << ENDL;*/
+         // Print IDs/Names
+         for (auto& obj : file.Objects)
+         {
+            Console << Colour::Yellow << obj.id << Colour::White << L" : ";
+            Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
+         }
 
+         // Read TLaser
          path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TLaser.txt";
          Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
-
-         // Test TFileReader
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto file2 = TLaserReader(fs2).ReadFile();
+
+         // Print IDs/Names
+         for (auto& obj : file.Objects)
+         {
+            Console << Colour::Yellow << obj.id << Colour::White << L" : ";
+            Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
+         }
       }
       catch (ExceptionBase&  e)
       {
