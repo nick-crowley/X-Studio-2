@@ -34,6 +34,9 @@ NAMESPACE_BEGIN(GUI)
 
 	   void UpdateFonts();
 
+      // test
+      void onGameDataLoaded();
+
    // Attributes
    protected:
 	   CMFCTabCtrl	m_wndTabs;
