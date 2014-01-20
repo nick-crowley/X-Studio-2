@@ -10,6 +10,7 @@ namespace Logic
       typedef shared_ptr<TObject>  TObjectPtr;
 
       /// <summary></summary>
+      template <typename OBJ>
       class TFile
       {
          // ------------------------ TYPES --------------------------
@@ -19,8 +20,12 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TFile(UINT count);
-         virtual ~TFile();
+         TFile(UINT count)
+         {
+            Objects.reserve(count);
+         }
+         virtual ~TFile()
+         {}
 
          DEFAULT_COPY(TFile);	// Default copy semantics
          DEFAULT_MOVE(TFile);	// Default move semantics
@@ -36,7 +41,7 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         vector<TObjectPtr>  Objects;
+         vector<OBJ>  Objects;
       };
    
    }

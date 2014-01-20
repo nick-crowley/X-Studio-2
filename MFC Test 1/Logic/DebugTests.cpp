@@ -14,7 +14,7 @@
 #include "SyntaxWriter.h"
 #include "ExpressionParser.h"
 #include "CommandLexer.h"
-#include "TFileReader.h"
+#include "TFileReader.hpp"
 
 namespace Logic
 {
@@ -272,11 +272,11 @@ namespace Logic
 
          // Test TFileReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto tFile = TFileReader(fs).ReadFile();
+         auto tFile = TFileReader<TObject>(fs).ReadFile();
 
          // Print
          for (auto& obj : tFile.Objects)
-            Console << obj->id << ENDL;
+            Console << obj.id << ENDL;
       }
       catch (ExceptionBase&  e)
       {
