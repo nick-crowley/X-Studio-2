@@ -42,8 +42,7 @@ namespace Logic
 	      float            randezvousDistance;
 	      int              soundVolume;
 	      wstring          modelScene;
-         //XStringResource  race;
-         UINT             race;
+         LookupString     race;
 	      wstring          internalScene;
 	      int              effectExplosion;
 	      int              bodyExplosionDefinition;
@@ -95,8 +94,7 @@ namespace Logic
 		      obj.soundVolume        = ReadInt("soundVolume");
 		      obj.modelScene         = ReadString("modelScene");
 		      obj.internalScene      = ReadString("internalScene");
-		      //obj.race               = new XStringResource(ReadInt("race"), KnownPage.Races);
-            obj.race               = ReadInt("race");
+            obj.race               = LookupString(ReadInt(L"race"), KnownPage::RACES);
 		      obj.effectExplosion    = ReadInt("effectExplosion");
 		      obj.bodyExplosionDefinition = ReadInt("bodyExplosionDefinition");
 		      obj.shieldRechargeRate = ReadInt("shieldRechargeRate");

@@ -148,6 +148,7 @@
     <ClInclude Include="Logic\LanguagePage.h" />
     <ClInclude Include="Logic\LanguageString.h" />
     <ClInclude Include="Logic\LegacySyntaxReader.h" />
+    <ClInclude Include="Logic\LookupString.h" />
     <ClInclude Include="Logic\Macros.h" />
     <ClInclude Include="Logic\MemoryStream.h" />
     <ClInclude Include="Logic\msxml.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Logic\TFileReader.hpp" />
     <ClInclude Include="Logic\TLaser.h" />
     <ClInclude Include="Logic\TObject.h" />
+    <ClInclude Include="Logic\TShield.h" />
     <ClInclude Include="Logic\TWare.h" />
     <ClInclude Include="Logic\XCatalog.h" />
     <ClInclude Include="Logic\XFileInfo.h" />
@@ -217,6 +219,7 @@
     <ClCompile Include="Logic\LanguagePage.cpp" />
     <ClCompile Include="Logic\LanguageString.cpp" />
     <ClCompile Include="Logic\LegacySyntaxReader.cpp" />
+    <ClCompile Include="Logic\LookupString.cpp" />
     <ClCompile Include="Logic\MemoryStream.cpp" />
     <ClCompile Include="Logic\ParameterSyntax.cpp" />
     <ClCompile Include="Logic\Path.cpp" />

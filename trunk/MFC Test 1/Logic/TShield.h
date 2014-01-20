@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Common.h"
-#include "TDock.h"
+#include "TObject.h"
+#include "TFileReader.hpp"
 
 namespace Logic
 {
@@ -9,7 +10,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class TFactory : public TDock
+      class TShield : public TObject
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -17,13 +18,13 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TFactory()
+         TShield()
          {}
-         virtual ~TFactory()
+         virtual ~TShield()
          {}
 
-         DEFAULT_COPY(TFactory);	// Default copy semantics
-         DEFAULT_MOVE(TFactory);	// Default move semantics
+         DEFAULT_COPY(TShield);	// Default copy semantics
+         DEFAULT_MOVE(TShield);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
 
@@ -36,11 +37,14 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         int  factorySize;
+         int capacity;
+	      int powerInput;
+	      int hitEffect;
+	      float efficiency;
       };
 
       /// <summary></summary>
-      class TFactoryReader : public TFileReader<TFactory>
+      class TShieldReader : public TFileReader<TShield>
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -48,18 +52,18 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         /// <summary>Create a TFactory reader from an input stream</summary>
+         /// <summary>Create a TShield reader from an input stream</summary>
          /// <param name="in">The input stream</param>
          /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
          /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-         TFactoryReader(StreamPtr in) : TFileReader(in)
+         TShieldReader(StreamPtr in) : TFileReader(in)
          {}
-         virtual ~TFactoryReader()
+         virtual ~TShieldReader()
          {}
 
-         NO_COPY(TFactoryReader);	// No copy semantics
-		   NO_MOVE(TFactoryReader);	// No move semantics
+         NO_COPY(TShieldReader);	// No copy semantics
+		   NO_MOVE(TShieldReader);	// No move semantics
 
          // ------------------------ STATIC -------------------------
 
@@ -75,21 +79,12 @@ namespace Logic
          /// <param name="ver">File version</param>
          /// <exception cref="Logic::FileFormatException">File contains a syntax error</exception>
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-	      void  ReadObject(TFactory& obj, GameVersion ver)
+	      void  ReadObject(TShield& obj, GameVersion ver)
          {
-            obj.flyBySound         = ReadInt("flyBySound");
-		      obj.dockingDistance    = ReadFloat("dockingDistance");
-		      obj.randezvousDistance = ReadFloat("randezvousDistance");
-		      obj.soundVolume        = ReadInt("soundVolume");
-		      obj.modelScene         = ReadString("modelScene");
-		      obj.internalScene      = ReadString("internalScene");
-		      obj.race               = LookupString(ReadInt(L"race"), KnownPage::RACES);
-		      obj.effectExplosion    = ReadInt("effectExplosion");
-		      obj.bodyExplosionDefinition = ReadInt("bodyExplosionDefinition");
-		      obj.shieldRechargeRate = ReadInt("shieldRechargeRate");
-
-            obj.factorySize        = ReadInt("factorySize");
-		      obj.icon               = ReadString("hudIcon");
+            obj.powerInput = ReadInt("powerDrain");
+		      obj.capacity   = ReadInt("strength");
+		      obj.hitEffect  = ReadInt("hitEffect");
+		      obj.efficiency = ReadFloat("efficiency");
          }
 
          // -------------------- REPRESENTATION ---------------------

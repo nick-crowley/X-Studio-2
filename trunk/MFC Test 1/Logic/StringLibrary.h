@@ -13,7 +13,7 @@ namespace Logic
       {  
          SECTORS              = 7,
          STATION_SERIALS      = 12,
-         SHIPS_STATIONS_WARES = 17,
+         NAMES_DESCRIPTIONS   = 17,
          RELATIONS            = 35,
          RACES                = 1266,
          TRANSPORT_CLASSES    = 1999,

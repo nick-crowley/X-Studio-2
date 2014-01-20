@@ -130,7 +130,7 @@ namespace Logic
 		      o.rotation.z = ReadFloat(L"rotation.z");
 
 		      o.subtype    = ReadString(L"subtype");		   
-            o.name       = ReadInt(L"name"); //new XStringResource(ReadInt(L"name"), KnownPage.Names); 
+            o.name       = LookupString(ReadInt(L"name"), KnownPage::NAMES_DESCRIPTIONS);
 	      }
 
          /// <summary>Reads the properties unique to this type</summary>

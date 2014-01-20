@@ -280,6 +280,12 @@
     <ClInclude Include="Logic\TFactory.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\TShield.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\LookupString.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -446,6 +452,9 @@
     </ClCompile>
     <ClCompile Include="Logic\TObject.cpp">
       <Filter>Source Files\Logic\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LookupString.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
