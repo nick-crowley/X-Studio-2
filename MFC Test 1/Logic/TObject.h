@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "LookupString.h"
 
 namespace Logic
 {
@@ -59,8 +60,7 @@ namespace Logic
 	      wstring         bodyFile;
 	      int             pictureID;
 	      wstring         subtype;
-         //XStringResource name;  
-         UINT            name;
+         LookupString    name;  
    	
          // Footer
 	      int             volume;
