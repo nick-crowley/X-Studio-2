@@ -21,7 +21,10 @@ NAMESPACE_BEGIN(GUI)
    COutputWnd::COutputWnd()
    {
       //theApp.GameDataLoaded.Register<this
-      theApp.GameDataLoaded.Register<COutputWnd>(this, &COutputWnd::onGameDataLoaded);
+      //theApp.GameDataLoaded.Register<COutputWnd>(this, &COutputWnd::onGameDataLoaded);
+      //MethodDelegate<COutputWnd, &COutputWnd::onGameDataLoaded>
+
+      theApp.GameDataLoaded.Register(this, &COutputWnd::onGameDataLoaded);
    }
 
    COutputWnd::~COutputWnd()
