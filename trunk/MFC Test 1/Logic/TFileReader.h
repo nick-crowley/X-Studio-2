@@ -43,6 +43,9 @@ namespace Logic
          int      ReadInt(const WCHAR* field);
          wstring  ReadString(const WCHAR* field);
 
+      private:
+         bool  ReadComment();
+
          // -------------------- REPRESENTATION ---------------------
 
       private:
