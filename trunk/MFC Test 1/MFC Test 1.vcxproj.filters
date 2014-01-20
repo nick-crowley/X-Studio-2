@@ -259,14 +259,14 @@
     <ClInclude Include="Logic\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\TFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\TObject.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\TFile.h">
+    <ClInclude Include="Logic\TFile.hpp">
       <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\TFileReader.hpp">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -432,13 +432,7 @@
     <ClCompile Include="Logic\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\TFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\TObject.cpp">
-      <Filter>Source Files\Logic\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\TFile.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
   </ItemGroup>

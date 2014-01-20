@@ -15,14 +15,14 @@
 #define DEFAULT_MOVE(type)       // MS BUG:800114:     type::type(type&&) = default;  type& operator=(type&&) = default;
 
 // Macro: Provides default copy constructor and assignment
-#define DEFAULT_COPY(type)       type::type(const type&) = default;  type& operator=(const type&) = default;
+#define DEFAULT_COPY(type)       type(const type&) = default;  type& operator=(const type&) = default;
 
 
 // Macro: Prevents a class from being moved
-#define NO_MOVE(type)            type::type(type&&) = delete;  NO_MOVE_ASSIGN(type)
+#define NO_MOVE(type)            type(type&&) = delete;  NO_MOVE_ASSIGN(type)
 
 // Macro: Prevents a class from being copied
-#define NO_COPY(type)            type::type(const type&) = delete;  NO_COPY_ASSIGN(type)
+#define NO_COPY(type)            type(const type&) = delete;  NO_COPY_ASSIGN(type)
 
 // Macro: Disables move assignment operator
 #define NO_MOVE_ASSIGN(type)     type& operator=(type&&) = delete;
