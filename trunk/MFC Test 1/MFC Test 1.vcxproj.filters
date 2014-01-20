@@ -274,6 +274,12 @@
     <ClInclude Include="Logic\TLaser.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\TDock.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\TFactory.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
