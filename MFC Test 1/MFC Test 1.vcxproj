@@ -171,6 +171,8 @@
     <ClInclude Include="Logic\SyntaxFile.h" />
     <ClInclude Include="Logic\SyntaxLibrary.h" />
     <ClInclude Include="Logic\SyntaxWriter.h" />
+    <ClInclude Include="Logic\TDock.h" />
+    <ClInclude Include="Logic\TFactory.h" />
     <ClInclude Include="Logic\TFile.hpp" />
     <ClInclude Include="Logic\TFileReader.hpp" />
     <ClInclude Include="Logic\TLaser.h" />
