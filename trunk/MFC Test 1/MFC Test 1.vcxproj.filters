@@ -58,6 +58,12 @@
     <Filter Include="Source Files\Logic\Scripts\Compiler">
       <UniqueIdentifier>{a1dd8a1f-5a45-4196-97f2-8470382b0056}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\Types">
+      <UniqueIdentifier>{c26d04ad-0413-46d8-ab22-a5e4b9f66297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic\Types">
+      <UniqueIdentifier>{00f4b317-8be4-489a-93a8-cb5abc1fa3b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -256,6 +262,12 @@
     <ClInclude Include="Logic\TFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\TObject.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\TFile.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -422,6 +434,12 @@
     </ClCompile>
     <ClCompile Include="Logic\TFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\TObject.cpp">
+      <Filter>Source Files\Logic\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\TFile.cpp">
+      <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

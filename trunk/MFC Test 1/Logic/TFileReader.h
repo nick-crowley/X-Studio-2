@@ -2,6 +2,8 @@
 
 #include "Common.h"
 #include "StringReader.h"
+#include "TObject.h"
+#include "TFile.h"
 
 namespace Logic
 {
@@ -31,8 +33,14 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
 
-         int      ReadInt(const WCHAR* field);
+      public:
+         TFile  ReadFile();
+
+      protected:
          float    ReadFloat(const WCHAR* field);
+         void     ReadFooter(TObject& o);
+         void     ReadHeader(TObject& o);
+         int      ReadInt(const WCHAR* field);
          wstring  ReadString(const WCHAR* field);
 
          // -------------------- REPRESENTATION ---------------------
