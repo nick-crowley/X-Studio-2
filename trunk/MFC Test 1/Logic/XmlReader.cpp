@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "XmlReader.h"
 #include "StringReader.h"
+#include "FileStream.h"
 
 namespace Logic
 {
@@ -64,7 +65,7 @@ namespace Logic
 
             // Extract stream
             DWORD length = Input->GetLength();
-            Buffer = StringReader::ConvertFileBuffer(Input, length);
+            Buffer = FileStream::ConvertFileBuffer(Input, length);
 
             // Load/Parse file : "%s (line %d, char %d)"
             if (Document->loadXML(Buffer.get()) == VARIANT_FALSE)

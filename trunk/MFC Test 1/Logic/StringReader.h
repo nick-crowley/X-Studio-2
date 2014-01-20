@@ -27,11 +27,8 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
 
-      public:
-         static CharArrayPtr  ConvertFileBuffer(StreamPtr  s, DWORD&  Length);
-
          // --------------------- PROPERTIES ------------------------
-			
+		public:	
          PROPERTY_GET(DWORD,LineNumber,GetLineNumber);
 
 			// ---------------------- ACCESSORS ------------------------

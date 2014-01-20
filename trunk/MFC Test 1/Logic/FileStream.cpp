@@ -40,6 +40,62 @@ namespace Logic
          SafeClose();
       }
 
+      // ------------------------------- STATIC  METHODS ------------------------------
+
+      /// <summary>Converts a text file into a WCHAR buffer based on the byte ordering mark, if any</summary>
+      /// <param name="s">The input stream</param>
+      /// <param name="length">Stream length on input, character length on output</param>
+      /// <returns>Wide char buffer</returns>
+      /// <exception cref="Logic::IOException">Conversion failed</exception>
+      CharArrayPtr  FileStream::ConvertFileBuffer(StreamPtr  s, DWORD&  Length)
+      {
+         BYTE         utf8[3] = { 0xEF, 0xBB, 0xBF },    // UTF-8 byte ordering header
+                      utf16[2] = { 0xFF, 0xFE };         // UTF-16 byte ordering header
+         UINT         newLength;
+         CharArrayPtr output;
+
+         // Read entire file
+         auto input = s->ReadAllBytes();
+
+         // UTF16: Convert byte array -> wchar array
+         if (Length > 2 && memcmp(input.get(), utf16, 2) == 0)
+         {
+            // Conv byte length -> char length  (minus 2byte BOM)
+            newLength = (Length -= 2) / 2;
+
+            // Copy exluding 2 byte BOM
+            output = CharArrayPtr(new WCHAR[newLength+1]);
+            memcpy(output.get(), input.get()+2, Length);
+         }
+         // UTF8: Convert UTF8 to UTF16
+         if (Length > 3 && memcmp(input.get(), utf8, 3) == 0)
+         {
+            // Calculate UTF16 length (minus 3byte BOM)
+            newLength = 2 * (Length -= 3);
+
+            // Copy excluding 3 byte BOM
+            output = CharArrayPtr(new WCHAR[newLength+1]);
+            newLength = MultiByteToWideChar(CP_UTF8, NULL, (char*)input.get()+3, Length, output.get(), newLength);
+         }
+         // ASCII: Convert ASCII to UTF16
+         else
+         {
+            // Simple double in length
+            newLength = 2*Length;
+            output = CharArrayPtr(new WCHAR[newLength+1]);
+            newLength = MultiByteToWideChar(1250, NULL, (char*)input.get(), Length, output.get(), newLength);
+         }
+
+         // Failed: Throw
+         if (Length > 0 && (Length=newLength) == 0)
+            throw IOException(HERE, SysErrorString());
+
+         // Null terminate + return
+         output.get()[newLength] = NULL;
+         return output;
+      }
+
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the stream.</summary>

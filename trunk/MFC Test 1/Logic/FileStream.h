@@ -19,6 +19,10 @@ namespace Logic
          NO_MOVE(FileStream);
          NO_COPY(FileStream);
 
+         // ------------------------ STATIC -------------------------
+
+         static CharArrayPtr  ConvertFileBuffer(StreamPtr  s, DWORD&  Length);
+
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
