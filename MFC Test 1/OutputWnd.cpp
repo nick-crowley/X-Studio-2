@@ -5,6 +5,7 @@
 #include "Resource.h"
 #include "MainWnd.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -19,6 +20,8 @@ NAMESPACE_BEGIN(GUI)
 
    COutputWnd::COutputWnd()
    {
+      //theApp.GameDataLoaded.Register<this
+      theApp.GameDataLoaded.Register<COutputWnd>(this, &COutputWnd::onGameDataLoaded);
    }
 
    COutputWnd::~COutputWnd()
@@ -107,11 +110,16 @@ NAMESPACE_BEGIN(GUI)
 	   dc.SelectObject(pOldFont);
    }
 
+   void COutputWnd::onGameDataLoaded()
+   {
+      m_wndOutputBuild.AddString(_T("Game data has been loaded"));
+   }
+
    void COutputWnd::FillBuildWindow()
    {
-	   m_wndOutputBuild.AddString(_T("Build output is being displayed here."));
+	   /*m_wndOutputBuild.AddString(_T("Build output is being displayed here."));
 	   m_wndOutputBuild.AddString(_T("The output is being displayed in rows of a list view"));
-	   m_wndOutputBuild.AddString(_T("but you can change the way it is displayed as you wish..."));
+	   m_wndOutputBuild.AddString(_T("but you can change the way it is displayed as you wish..."));*/
    }
 
    void COutputWnd::FillDebugWindow()

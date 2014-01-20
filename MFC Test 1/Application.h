@@ -8,17 +8,17 @@
 #endif
 
 #include "resource.h"       // main symbols
+#include "Logic/Event.h"
 
+typedef Event<>  GameDataEvent;
 
 // Application:
-// See MFC Test 1.cpp for the implementation of this class
-//
-
 class Application : public CWinAppEx
 {
 public:
 	Application();
 
+   GameDataEvent GameDataLoaded;
 
 // Overrides
 public:
