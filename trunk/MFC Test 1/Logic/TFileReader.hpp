@@ -64,8 +64,9 @@ namespace Logic
             {
                OBJ obj;
 
-               // Read contents
+               // Read header/contents/footer
                ReadHeader(obj);
+               ReadObject(obj, GameVersion::TerranConflict);
                ReadFooter(obj);
 
                // Add to file
@@ -131,7 +132,14 @@ namespace Logic
 		      o.subtype    = ReadString(L"subtype");		   
             o.name       = ReadInt(L"name"); //new XStringResource(ReadInt(L"name"), KnownPage.Names); 
 	      }
-      
+
+         /// <summary>Reads the properties unique to this type</summary>
+         /// <param name="o">Object to read into</param>
+         /// <param name="ver">File version</param>
+         /// <exception cref="Logic::FileFormatException">File contains a syntax error</exception>
+         /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+	      virtual void  ReadObject(OBJ& o, GameVersion ver) PURE;
+
          /// <summary>Reads the next int</summary>
          /// <param name="field">The name of the field</param>
          /// <returns>Value if present.  If missing or End-of-line, zero is returned</returns>
