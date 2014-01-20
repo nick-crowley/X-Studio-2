@@ -173,7 +173,9 @@
     <ClInclude Include="Logic\SyntaxWriter.h" />
     <ClInclude Include="Logic\TFile.hpp" />
     <ClInclude Include="Logic\TFileReader.hpp" />
+    <ClInclude Include="Logic\TLaser.h" />
     <ClInclude Include="Logic\TObject.h" />
+    <ClInclude Include="Logic\TWare.h" />
     <ClInclude Include="Logic\XCatalog.h" />
     <ClInclude Include="Logic\XFileInfo.h" />
     <ClInclude Include="Logic\XFileSystem.h" />

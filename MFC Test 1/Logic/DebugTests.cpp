@@ -14,7 +14,8 @@
 #include "SyntaxWriter.h"
 #include "ExpressionParser.h"
 #include "CommandLexer.h"
-#include "TFileReader.hpp"
+#include "TWare.h"
+#include "TLaser.h"
 
 namespace Logic
 {
@@ -272,11 +273,18 @@ namespace Logic
 
          // Test TFileReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto tFile = TFileReader<TObject>(fs).ReadFile();
+         auto file = TWareReader(fs).ReadFile();
 
          // Print
-         for (auto& obj : tFile.Objects)
-            Console << obj.id << ENDL;
+         /*for (auto& obj : file.Objects)
+            Console << obj.id << ENDL;*/
+
+         path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TLaser.txt";
+         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
+
+         // Test TFileReader
+         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto file2 = TLaserReader(fs2).ReadFile();
       }
       catch (ExceptionBase&  e)
       {
