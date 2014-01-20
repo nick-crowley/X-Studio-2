@@ -59,11 +59,12 @@
 
 using namespace std;
 
-// Logic stuff
+// Common classes from Logic
 #include "Logic/Common.h"
 
-// Application
+// Application + Global Events
 #include "Application.h"
+#include "EventLibrary.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86

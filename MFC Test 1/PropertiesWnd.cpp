@@ -35,7 +35,7 @@ NAMESPACE_BEGIN(GUI)
    /////////////////////////////////////////////////////////////////////////////
    // CResourceViewBar
 
-   CPropertiesWnd::CPropertiesWnd()
+   CPropertiesWnd::CPropertiesWnd() : documentActivated(EventLib.DocumentActivated.Register(this, &CPropertiesWnd::OnDocumentActivated))
    {
 	   m_nComboHeight = 0;
    }

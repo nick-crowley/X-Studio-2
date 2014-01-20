@@ -286,6 +286,9 @@
     <ClInclude Include="Logic\LookupString.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="EventLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -455,6 +458,9 @@
     </ClCompile>
     <ClCompile Include="Logic\LookupString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="EventLibrary.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

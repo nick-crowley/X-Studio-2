@@ -31,6 +31,7 @@ NAMESPACE_BEGIN(GUI)
       ON_BN_CLICKED(IDC_COMPILE, &ScriptView::OnBnClickedCompile)
       ON_EN_UPDATE(IDC_RICHEDIT, &ScriptView::OnEnUpdateRichedit)
       ON_EN_CHANGE(IDC_RICHEDIT, &ScriptView::OnEnChangeRichedit)
+      ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
 
@@ -230,6 +231,21 @@ NAMESPACE_BEGIN(GUI)
       }
    }
 
+   
+
+   
+   void ScriptView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   {
+      //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
+      
+      // Raise 'DOCUMENT ACTIVATED'
+      if (bActivate != FALSE)
+         EventLib.DocumentActivated.Raise(GetDocument());
+
+      CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+   }
+   
+
 
    void ScriptView::OnEnUpdateRichedit()
    {
@@ -311,4 +327,5 @@ NAMESPACE_BEGIN(GUI)
 
 
 NAMESPACE_END(GUI)
+
 

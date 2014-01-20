@@ -61,6 +61,8 @@ NAMESPACE_BEGIN(GUI)
       afx_msg void OnBnClickedCompile();
       afx_msg void OnEnUpdateRichedit();
       afx_msg void OnEnChangeRichedit();
+      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      
    };
 
    #ifndef _DEBUG  // debug version in MFC Test 1View.cpp

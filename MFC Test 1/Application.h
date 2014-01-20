@@ -8,17 +8,13 @@
 #endif
 
 #include "resource.h"       // main symbols
-#include "Logic/Event.h"
 
-typedef Event<>  GameDataEvent;
 
 // Application:
 class Application : public CWinAppEx
 {
 public:
 	Application();
-
-   GameDataEvent GameDataLoaded;
 
 // Overrides
 public:

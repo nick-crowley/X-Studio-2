@@ -18,7 +18,7 @@ NAMESPACE_BEGIN(GUI)
    /////////////////////////////////////////////////////////////////////////////
    // COutputBar
 
-   COutputWnd::COutputWnd() : gameDataLoaded(theApp.GameDataLoaded.Register(this, &COutputWnd::onGameDataLoaded))
+   COutputWnd::COutputWnd() //: gameDataLoaded(theApp.GameDataLoaded.Register(this, &COutputWnd::onGameDataLoaded))
    {
       
    }

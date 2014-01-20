@@ -38,6 +38,13 @@ NAMESPACE_BEGIN(GUI)
 	   CPropertiesToolBar m_wndToolBar;
 	   CMFCPropertyGridCtrl m_wndPropList;
 
+      DocumentActivatedHandler  documentActivated;
+
+      void OnDocumentActivated(CDocument* pDocument)
+      {
+         Console << L"Properties window: " << pDocument << L" activated" << ENDL;
+      }
+
    // Implementation
    public:
 	   virtual ~CPropertiesWnd();
