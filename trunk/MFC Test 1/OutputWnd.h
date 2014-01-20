@@ -37,6 +37,9 @@ NAMESPACE_BEGIN(GUI)
       // test
       void onGameDataLoaded();
 
+   private:
+      GameDataEvent::DelegatePtr gameDataLoaded;
+
    // Attributes
    protected:
 	   CMFCTabCtrl	m_wndTabs;

@@ -122,7 +122,6 @@ namespace Logic
       /// <summary>Event delegate</summary>
       typedef VargDelegate<Args...> Delegate;
 
-   private:
       /// <summary>Delegate smart pointer</summary>
       typedef shared_ptr<Delegate>  DelegatePtr;
       
