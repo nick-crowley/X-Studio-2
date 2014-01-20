@@ -12,6 +12,7 @@ namespace Logic
       /// <param name="src">The input stream</param>
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       StringReader::StringReader(StreamPtr src) : Input(src), Position(0), Buffer(nullptr), LineNum(1)
       {
          REQUIRED(src);
@@ -45,8 +46,18 @@ namespace Logic
       /// <summary>Reads the next character</summary>
       /// <param name="c">Next character</param>
       /// <returns>True if read, false if EOF</returns>
+      /// <exception cref="Logic::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       bool  StringReader::ReadChar(WCHAR&  c)
       {
+         // Ensure stream has not been moved
+         if (Input == nullptr)
+            throw InvalidOperationException(HERE, L"Underlying stream has been closed");
+
+         // First Call: Read entire file 
+         else if (Buffer == nullptr)
+            Buffer = FileStream::ConvertFileBuffer(Input, Length);
+
          // EOF: Return false
          if (IsEOF())
          {
@@ -67,19 +78,12 @@ namespace Logic
       /// <param name="line">The line.</param>
       /// <returns>True if read, false if EOF</returns>
       /// <exception cref="Logic::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       bool  StringReader::ReadLine(wstring&  line)
       {
          DWORD start = Position,    // Start of line
                end   = Length;      // End of characters on line
          WCHAR ch;
-
-         // Ensure stream has not been moved
-         if (Input == nullptr)
-            throw InvalidOperationException(HERE, L"Underlying stream has been closed");
-
-         // Read entire file on first call
-         if (Buffer == nullptr)
-            Buffer = FileStream::ConvertFileBuffer(Input, Length);
 
          // EOF: Return false
          if (IsEOF())
@@ -116,8 +120,18 @@ namespace Logic
       /// <summary>Peeks the next character</summary>
       /// <param name="c">Next character</param>
       /// <returns>True if read, false if EOF</returns>
+      /// <exception cref="Logic::InvalidOperationException">Stream has been closed (reader has been move-copied)</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       bool  StringReader::PeekChar(WCHAR&  c)
       {
+         // Ensure stream has not been moved
+         if (Input == nullptr)
+            throw InvalidOperationException(HERE, L"Underlying stream has been closed");
+         
+         // First Call: Read entire file 
+         else if (Buffer == nullptr)
+            Buffer = FileStream::ConvertFileBuffer(Input, Length);
+
          // EOF: Return false
          if (IsEOF())
          {
