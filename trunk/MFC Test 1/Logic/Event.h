@@ -7,7 +7,7 @@ namespace Logic
 {
 
 
-   void simpleEventTest();
+   //void simpleEventTest();
    
    
    template<typename ...Args>
@@ -16,44 +16,57 @@ namespace Logic
    public:
       typedef VargDelegate<Args...>  Base;
 
+      VargDelegate() : Disconnected(false)
+      {}
       virtual ~VargDelegate()
       {}
 
       virtual void Invoke(Args...) PURE;
-      virtual bool Equals(Base* r) PURE;
+
+      void OnDisconnect()
+      {
+         Disconnected = true;
+      }
+
+   protected:
+      bool  Disconnected;
    };
 
 
-
+   template<typename ...Args>
+   class Event;
 
    template<typename Type, typename ...Args>
    class MethodDelegate : public VargDelegate<Args...>
    {
    private:
       typedef void(Type::*Member)(Args...);
+      typedef Event<Args...>  EventType;
 
    public:
-      MethodDelegate(Type* instance, Member method) : Object(instance), Method(method)
+      MethodDelegate(EventType& ev, Type* instance, Member method) 
+         : Event(ev), Object(instance), Method(method)
       {
          REQUIRED(instance);
          REQUIRED(method);
       }
-
-      virtual bool Equals(Base* r)
+      ~MethodDelegate()
       {
-         auto r2 = static_cast<decltype(this)>(r);
-         return Object == r2->Object && Method == r2->Method;
+         if (!Disconnected)
+            Event.UnRegister(this);
       }
 
-      virtual void Invoke(Args... args)
+      void Invoke(Args... args)
       {
-         //if (Object != nullptr && Method != nullptr)
+         if (!Disconnected)
             (Object->*Method)(args...);
       }
 
+
    private:
-      Type*  Object;
-      Member Method;
+      Type*       Object;
+      Member      Method;
+      EventType&  Event;
    };
 
 
@@ -69,7 +82,11 @@ namespace Logic
       
    public:
       Event() {}
-      ~Event() {}
+      ~Event() 
+      {
+         for (auto& obj : Listeners)
+            obj->OnDisconnect();
+      }
 
    public:
       
@@ -79,42 +96,31 @@ namespace Logic
             obj->Invoke(args...);
       }
 
-      template <typename Type, typename Member>
-      void Register(Type* t, Member fn)
-      {
-         REQUIRED(t);
-         REQUIRED(fn);
-
-         Register(DelegatePtr( new MethodDelegate<Type, Args...>(t, fn) ));
-      }
+   public:
 
       template <typename Type, typename Member>
-      void UnRegister(Type* t, Member fn)
+      DelegatePtr Register(Type* instance, Member method)
       {
-         REQUIRED(t);
-         REQUIRED(fn);
+         REQUIRED(instance);
+         REQUIRED(method);
 
-         UnRegister(DelegatePtr( new MethodDelegate<Type, Args...>(t, fn) ));
-      }
-
-   private:
-      void Register(DelegatePtr p)
-      {
-         // Ensure not present
-         for (DelegatePtr l : Listeners)
-            if (l->Equals(p.get()))    
-               return;
-         
+         // Create/register delegate
+         Delegate* p = new MethodDelegate<Type, Args...>(*this, instance, method);
          Listeners.push_back(p);
+
+         // Return smart ptr
+         return DelegatePtr(p);
       }
 
-      void UnRegister(DelegatePtr p)
+      void UnRegister(Delegate* p)
       {
-         Listeners.remove_if([&p](DelegatePtr& l) { return l->Equals(p.get()); } );
+         REQUIRED(p);
+
+         Listeners.remove(p);
       }
 
    private:
-      list<DelegatePtr> Listeners;
+      list<Delegate*> Listeners;
    };
 
 }

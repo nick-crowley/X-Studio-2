@@ -178,8 +178,7 @@ NAMESPACE_BEGIN(GUI)
 
    void ScriptView::OnBnClickedRuntests()
    {
-      //DebugTests::RunAll();
-      simpleEventTest();
+      DebugTests::RunAll();
       AfxMessageBox(L"Tests complete");
    }
 
