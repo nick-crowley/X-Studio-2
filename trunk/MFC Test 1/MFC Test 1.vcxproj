@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="EventLibrary.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="LanguageDocument.h" />
     <ClInclude Include="LanguageView.h" />
@@ -201,6 +202,7 @@
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="EventLibrary.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />
     <ClCompile Include="LanguageView.cpp" />

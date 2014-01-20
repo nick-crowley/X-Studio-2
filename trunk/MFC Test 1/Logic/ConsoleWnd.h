@@ -97,6 +97,14 @@ namespace Logic
          return *this;
       }
 
+      /// <summary>Writes pointer to the console</summary>
+      /// <param name="p">Pointer</param>
+      ConsoleWnd& operator<<(const void* p)
+      {
+         Writef(L"0x%x", p);
+         return *this;
+      }
+
       /// <summary>Writes text to the console</summary>
       /// <param name="txt">Text</param>
       void  Write(const wstring& txt)

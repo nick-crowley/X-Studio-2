@@ -91,9 +91,6 @@ NAMESPACE_BEGIN(GUI)
 
          Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
 
-         // TEST:
-         theApp.GameDataLoaded.Raise();
-
          // Parse script
          Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;
 

@@ -118,12 +118,13 @@ namespace Logic
    class Event
    {
       // ------------------------ TYPES --------------------------
-   public:
-      /// <summary>Event delegate</summary>
-      typedef VargDelegate<Args...> Delegate;
+   private:
+      /// <summary>Event delegate with matching signature (but no class type)</summary>
+      typedef VargDelegate<Args...> DelegateBase;
 
+   public:
       /// <summary>Delegate smart pointer</summary>
-      typedef shared_ptr<Delegate>  DelegatePtr;
+      typedef shared_ptr<DelegateBase>  DelegatePtr;
       
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -163,7 +164,7 @@ namespace Logic
          REQUIRED(method);
 
          // Create/register delegate
-         Delegate* p = new MethodDelegate<Type, Args...>(*this, instance, method);
+         DelegateBase* p = new MethodDelegate<Type, Args...>(*this, instance, method);
          Listeners.push_back(p);
 
          // Return smart ptr
@@ -172,7 +173,7 @@ namespace Logic
 
       /// <summary>Unregisters a delegate</summary>
       /// <param name="p">The delegate</param>
-      void UnRegister(Delegate* p)
+      void UnRegister(DelegateBase* p)
       {
          REQUIRED(p);
 
@@ -183,7 +184,7 @@ namespace Logic
 
       // -------------------- REPRESENTATION ---------------------
    private:
-      list<Delegate*> Listeners;
+      list<DelegateBase*> Listeners;
    };
 
 }
