@@ -6,6 +6,7 @@
 #include "ProjectWnd.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
+#include "GameDataWnd.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -40,8 +41,9 @@ NAMESPACE_BEGIN(GUI)
 	   CMFCToolBar       m_wndToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
-	   CProjectWnd         m_wndProject;
+	   CProjectWnd       m_wndProject;
 	   COutputWnd        m_wndOutput;
+      CGameDataWnd      m_wndGameData;
 	   CPropertiesWnd    m_wndProperties;
 
    // Generated message map functions

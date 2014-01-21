@@ -2,16 +2,16 @@
 #pragma once
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Controls)
 
    /////////////////////////////////////////////////////////////////////////////
-   // CViewTree window
+   // CFileTreeCtrl window
 
-   class CViewTree : public CTreeCtrl
+   class CFileTreeCtrl : public CTreeCtrl
    {
    // Construction
    public:
-	   CViewTree();
+	   CFileTreeCtrl();
 
    // Overrides
    protected:
@@ -19,11 +19,11 @@ NAMESPACE_BEGIN(GUI)
 
    // Implementation
    public:
-	   virtual ~CViewTree();
+	   virtual ~CFileTreeCtrl();
 
    protected:
 	   DECLARE_MESSAGE_MAP()
    };
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Controls)
 

@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "ViewTree.h"
+#include "FileTreeCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -9,28 +9,26 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /// <summary>User interface</summary>
-namespace GUI
-{
-
+NAMESPACE_BEGIN2(GUI,Controls)
 
    /////////////////////////////////////////////////////////////////////////////
-   // CViewTree
+   // CFileTreeCtrl
 
-   CViewTree::CViewTree()
+   CFileTreeCtrl::CFileTreeCtrl()
    {
    }
 
-   CViewTree::~CViewTree()
+   CFileTreeCtrl::~CFileTreeCtrl()
    {
    }
 
-   BEGIN_MESSAGE_MAP(CViewTree, CTreeCtrl)
+   BEGIN_MESSAGE_MAP(CFileTreeCtrl, CTreeCtrl)
    END_MESSAGE_MAP()
 
    /////////////////////////////////////////////////////////////////////////////
-   // CViewTree message handlers
+   // CFileTreeCtrl message handlers
 
-   BOOL CViewTree::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+   BOOL CFileTreeCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
    {
 	   BOOL bRes = CTreeCtrl::OnNotify(wParam, lParam, pResult);
 
@@ -45,4 +43,4 @@ namespace GUI
 	   return bRes;
    }
    
-} // NS:GUI
+NAMESPACE_END2(GUI,Controls)

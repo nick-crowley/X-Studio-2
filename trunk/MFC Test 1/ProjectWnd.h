@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "ViewTree.h"
+#include "FileTreeCtrl.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -28,7 +28,7 @@ NAMESPACE_BEGIN(GUI)
    // Attributes
    protected:
 
-	   CViewTree TreeView;
+	   CFileTreeCtrl TreeView;
 	   CImageList Images;
 	   CFileViewToolBar Toolbar;
 
