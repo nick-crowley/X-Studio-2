@@ -17,7 +17,7 @@
 #define IDR_MAINFRAME_256               129
 #define IDR_SCRIPTVIEW_TMPL             130
 #define ID_WINDOW_MANAGER               131
-#define ID_VIEW_FILEVIEW                133
+#define ID_VIEW_PROJECTWND                133
 #define ID_VIEW_CLASSVIEW               134
 #define ID_PROPERTIES                   135
 #define ID_OPEN                         136
@@ -43,8 +43,8 @@
 #define IDS_CLASS_VIEW                  156
 #define IDS_OUTPUT_WND                  157
 #define IDS_PROPERTIES_WND              158
-#define IDI_FILE_VIEW                   161
-#define IDI_FILE_VIEW_HC                162
+#define IDI_PROJECT_WND                   161
+#define IDI_PROJECT_WND_HC                162
 #define IDI_CLASS_VIEW                  163
 #define IDI_CLASS_VIEW_HC               164
 #define IDI_OUTPUT_WND                  165

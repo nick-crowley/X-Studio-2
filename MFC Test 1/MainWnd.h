@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "FileView.h"
+#include "ProjectWnd.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 
@@ -40,7 +40,7 @@ NAMESPACE_BEGIN(GUI)
 	   CMFCToolBar       m_wndToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
-	   CFileView         m_wndFileView;
+	   CProjectWnd         m_wndProject;
 	   COutputWnd        m_wndOutput;
 	   CPropertiesWnd    m_wndProperties;
 
