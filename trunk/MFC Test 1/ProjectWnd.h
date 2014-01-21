@@ -16,11 +16,11 @@ NAMESPACE_BEGIN(GUI)
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
    };
 
-   class CFileView : public CDockablePane
+   class CProjectWnd : public CDockablePane
    {
    // Construction
    public:
-	   CFileView();
+	   CProjectWnd();
 
 	   void AdjustLayout();
 	   void OnChangeVisualStyle();
@@ -28,16 +28,16 @@ NAMESPACE_BEGIN(GUI)
    // Attributes
    protected:
 
-	   CViewTree m_wndFileView;
-	   CImageList m_FileViewImages;
-	   CFileViewToolBar m_wndToolBar;
+	   CViewTree TreeView;
+	   CImageList Images;
+	   CFileViewToolBar Toolbar;
 
    protected:
 	   void FillFileView();
 
    // Implementation
    public:
-	   virtual ~CFileView();
+	   virtual ~CProjectWnd();
 
    protected:
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

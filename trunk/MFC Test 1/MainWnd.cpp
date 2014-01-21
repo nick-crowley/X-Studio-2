@@ -130,11 +130,11 @@ NAMESPACE_BEGIN(GUI)
 		   return -1;
 	   }
 
-	   m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
+	   m_wndProject.EnableDocking(CBRS_ALIGN_ANY);
 	   //m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
-	   DockPane(&m_wndFileView);
+	   DockPane(&m_wndProject);
 	   //CDockablePane* pTabbedBar = NULL;
-	   //m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+	   //m_wndClassView.AttachToTabWnd(&m_wndProject, DM_SHOW, TRUE, &pTabbedBar);
 	   m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
 	   DockPane(&m_wndOutput);
 	   m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
@@ -211,11 +211,11 @@ NAMESPACE_BEGIN(GUI)
    {
 	   BOOL bNameValid;
 
-	   // Create file view
+	   // Create project window
 	   CString strFileView;
 	   bNameValid = strFileView.LoadString(IDS_FILE_VIEW);
 	   ASSERT(bNameValid);
-	   if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+	   if (!m_wndProject.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
 	   {
 		   TRACE0("Failed to create File View window\n");
 		   return FALSE; // failed to create
@@ -247,8 +247,8 @@ NAMESPACE_BEGIN(GUI)
 
    void MainWnd::SetDockingWindowIcons(BOOL bHiColorIcons)
    {
-	   HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_FILE_VIEW_HC : IDI_FILE_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-	   m_wndFileView.SetIcon(hFileViewIcon, FALSE);
+	   HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROJECT_WND_HC : IDI_PROJECT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	   m_wndProject.SetIcon(hFileViewIcon, FALSE);
 
 	   HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	   m_wndOutput.SetIcon(hOutputBarIcon, FALSE);

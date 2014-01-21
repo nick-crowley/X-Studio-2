@@ -32,8 +32,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\MFC Test 1.ico"
 IDR_SCRIPTVIEW_TMPL     ICON                    "res\\MFC Test 1Doc.ico"
-IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
-IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
+IDI_PROJECT_WND           ICON                    "res\\file_view.ico"
+IDI_PROJECT_WND_HC        ICON                    "res\\file_view_hc.ico"
 IDI_CLASS_VIEW          ICON                    "res\\class_view.ico"
 IDI_CLASS_VIEW_HC       ICON                    "res\\class_view_hc.ico"
 IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
