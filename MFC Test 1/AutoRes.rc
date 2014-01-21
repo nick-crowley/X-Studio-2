@@ -43,13 +43,7 @@ BEGIN
     BUTTON      ID_APP_ABOUT
 END
 
-IDR_SORT TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_SORT_MENU
-    BUTTON      ID_NEW_FOLDER
-END
-
-IDR_EXPLORER TOOLBAR 16, 15
+IDR_PROJECT TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_PROPERTIES
 END
@@ -97,25 +91,9 @@ BEGIN
     BEGIN
         POPUP "&Toolbars and Docking Windows"
         BEGIN
-            MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
+            MENUITEM "<placeholder>",               ID_VIEW_CUSTOMIZE
         END
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        POPUP "&Application Look"
-        BEGIN
-            MENUITEM "Windows &2000",               ID_VIEW_APPLOOK_WIN_2000
-            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_OFF_XP
-            MENUITEM "&Windows XP",                 ID_VIEW_APPLOOK_WIN_XP
-            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_OFF_2003
-            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
-            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
-            POPUP "Office 200&7"
-            BEGIN
-                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_OFF_2007_BLUE
-                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_OFF_2007_BLACK
-                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_OFF_2007_SILVER
-                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_OFF_2007_AQUA
-            END
-        END
     END
     POPUP "&Help"
     BEGIN
@@ -123,7 +101,7 @@ BEGIN
     END
 END
 
-IDR_SCRIPTVIEW_TMPL MENU
+IDR_SCRIPTVIEW MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -149,26 +127,9 @@ BEGIN
     BEGIN
         POPUP "&Toolbars and Docking Windows"
         BEGIN
-            MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
+            MENUITEM "<placeholder>",               ID_VIEW_CUSTOMIZE
         END
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        POPUP "&Application Look"
-        BEGIN
-            MENUITEM "Windows &2000",               ID_VIEW_APPLOOK_WIN_2000
-            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_OFF_XP
-            MENUITEM "&Windows XP",                 ID_VIEW_APPLOOK_WIN_XP
-            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_OFF_2003
-            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
-            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
-            POPUP "Office 200&7"
-            BEGIN
-                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_OFF_2007_BLUE
-                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_OFF_2007_BLACK
-                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_OFF_2007_SILVER
-                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_OFF_2007_AQUA
-                MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
-            END
-        END
     END
     POPUP "&Window"
     BEGIN
@@ -180,61 +141,7 @@ BEGIN
     END
 END
 
-IDR_POPUP_EDIT MENU
-BEGIN
-    POPUP "Edit"
-    BEGIN
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-    END
-END
-
-IDR_POPUP_SORT MENU
-BEGIN
-    POPUP "Sorting"
-    BEGIN
-        MENUITEM "&Sort Alphabeticaly",         ID_SORTING_SORTALPHABETIC
-        MENUITEM "Sort by &Type",               ID_SORTING_SORTBYTYPE
-        MENUITEM "Sort by Acc&ess",             ID_SORTING_SORTBYACCESS
-        MENUITEM "Group by t&ype",              ID_SORTING_GROUPBYTYPE
-    END
-END
-
-IDR_POPUP_EXPLORER MENU
-BEGIN
-    POPUP "Explorer"
-    BEGIN
-        MENUITEM "&Open",                       ID_OPEN
-        MENUITEM "Open &With....",              ID_OPEN_WITH
-        MENUITEM SEPARATOR
-        MENUITEM "&Compile",                    ID_DUMMY_COMPILE
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Remove",                     ID_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Properties...",              ID_PROPERTIES
-    END
-END
-
-IDR_OUTPUT_POPUP MENU
-BEGIN
-    POPUP "Popup"
-    BEGIN
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Clear",                      ID_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
-    END
-END
-
-IDR_HELP_MENU MENU
-BEGIN
-    MENUITEM "&About MFC Test 1...",        ID_APP_ABOUT
-END
-
-IDR_LANGUAGEVIEW_TMPL MENU
+IDR_LANGUAGEVIEW MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -262,7 +169,7 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Toolbar",                    ID_VIEW_CUSTOMIZE
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Window"
@@ -278,6 +185,52 @@ BEGIN
     END
 END
 
+IDM_EDIT_POPUP MENU
+BEGIN
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+END
+
+
+IDM_PROJECT_POPUP MENU
+BEGIN
+    POPUP "Explorer"
+    BEGIN
+        MENUITEM "&Open",                       ID_OPEN
+        MENUITEM "Open &With....",              ID_OPEN_WITH
+        MENUITEM SEPARATOR
+        MENUITEM "&Compile",                    ID_DUMMY_COMPILE
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Remove",                     ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Properties...",              ID_PROPERTIES
+    END
+END
+
+IDM_OUTPUT_POPUP MENU
+BEGIN
+    POPUP "Popup"
+    BEGIN
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Clear",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
+    END
+END
+
+
+IDR_HELP_MENU MENU
+BEGIN
+    MENUITEM "&About MFC Test 1...",        ID_APP_ABOUT
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

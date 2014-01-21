@@ -100,7 +100,7 @@ NAMESPACE_BEGIN(GUI)
    void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
    {
    /*#ifndef SHARED_HANDLERS
-	   theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    #endif*/
    }
 

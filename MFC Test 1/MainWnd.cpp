@@ -116,15 +116,15 @@ NAMESPACE_BEGIN(GUI)
 
 
 	      // Project Window:
-	      if (!m_wndProject.Create(GuiString(IDS_FILE_VIEW).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+	      if (!m_wndProject.Create(GuiString(IDR_PROJECT).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
             throw Win32Exception(HERE, L"Unable to create Project window");
 	   
 	      // Output Window:
-	      if (!m_wndOutput.Create(GuiString(IDS_OUTPUT_WND).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Output window");
 
 	      // Properties Window:
-	      if (!m_wndProperties.Create(GuiString(IDS_PROPERTIES_WND).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
 
          // Game Data Window:
@@ -132,10 +132,10 @@ NAMESPACE_BEGIN(GUI)
 	         throw Win32Exception(HERE, L"Unable to create GameData window");
 
          // Set icons
-         m_wndProject.SetIcon(theApp.LoadIconW(IDI_PROJECT_WND, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndOutput.SetIcon(theApp.LoadIconW(IDI_OUTPUT_WND, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndProperties.SetIcon(theApp.LoadIconW(IDI_PROPERTIES_WND, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndGameData.SetIcon(theApp.LoadIconW(IDI_PROPERTIES_WND, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndGameData.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 	      UpdateMDITabbedBarsIcons();
 
          // Dock each window
@@ -156,11 +156,11 @@ NAMESPACE_BEGIN(GUI)
 	      // set the visual manager and style based on persisted value
 	      OnApplicationLook(theApp.m_nAppLook);
 
-	      // Enable enhanced windows management dialog
+	      // Enable windows management dialog
 	      EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
 
-	      // Enable toolbar and docking window menu replacement
-	      EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_TOOLBAR);
+	      // Enable 'customize' command in menu 
+	      EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
 
 	      // enable quick (Alt+drag) toolbar customization
 	      CMFCToolBar::EnableQuickCustomization();
@@ -188,7 +188,7 @@ NAMESPACE_BEGIN(GUI)
 	      lstBasicCommands.AddTail(ID_EDIT_UNDO);
 	      lstBasicCommands.AddTail(ID_APP_ABOUT);
 	      lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
-	      lstBasicCommands.AddTail(ID_VIEW_TOOLBAR);
+	      lstBasicCommands.AddTail(ID_VIEW_CUSTOMIZE);
 	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2003);
 	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_VS_2005);
 	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_BLUE);

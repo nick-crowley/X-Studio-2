@@ -266,18 +266,17 @@
     <ResourceCompile Include="AutoRes.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\MFC Test 1res\LanguageView.ico" />
-    <Image Include="res\explorer.bmp" />
-    <Image Include="res\fileview.bmp" />
-    <Image Include="res\file_view.ico" />
+    <Image Include="res\Icon - LanguageView.ico" />
+    <Image Include="res\Icon - MainWnd.ico" />
+    <Image Include="res\Icon - OutputWnd.ico" />
+    <Image Include="res\Icon - ProjectWnd.ico" />
+    <Image Include="res\Icon - PropertiesWnd.ico" />
+    <Image Include="res\Icon - ScriptView.ico" />
+    <Image Include="res\ImageList - ProjectWnd.bmp" />
     <Image Include="res\menuimages.bmp" />
-    <Image Include="res\MFC Test 1.ico" />
-    <Image Include="res\MFC Test 1Doc.ico" />
-    <Image Include="res\output_wnd.ico" />
-    <Image Include="res\properties.bmp" />
-    <Image Include="res\properties_wnd.ico" />
-    <Image Include="res\sort.bmp" />
-    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar - MainWnd.bmp" />
+    <Image Include="res\Toolbar - ProjectWnd.bmp" />
+    <Image Include="res\Toolbar - PropertiesWnd.bmp" />
     <Image Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>

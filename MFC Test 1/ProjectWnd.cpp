@@ -61,11 +61,11 @@ NAMESPACE_BEGIN(GUI)
 	   }
 
 	   // Load view images:
-	   Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
+	   Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255));
 	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
-	   Toolbar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EXPLORER);
-	   Toolbar.LoadToolBar(IDR_EXPLORER, 0, 0, TRUE /* Is locked */);
+	   Toolbar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROJECT);
+	   Toolbar.LoadToolBar(IDR_PROJECT, 0, 0, TRUE /* Is locked */);
 
 	   OnChangeVisualStyle();
 
@@ -152,7 +152,7 @@ NAMESPACE_BEGIN(GUI)
 	   }
 
 	   pWndTree->SetFocus();
-	   theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
    }
 
    void CProjectWnd::AdjustLayout()
@@ -229,14 +229,14 @@ NAMESPACE_BEGIN(GUI)
    void CProjectWnd::OnChangeVisualStyle()
    {
 	   Toolbar.CleanUpLockedImages();
-	   Toolbar.LoadBitmap(IDR_EXPLORER, 0, 0, TRUE /* Locked */);
+	   Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
 
 	   Images.DeleteImageList();
 
 	   CBitmap bmp;
-	   if (!bmp.LoadBitmap(IDB_FILE_VIEW))
+	   if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
 	   {
-		   TRACE(_T("Can't load bitmap: %x\n"), IDB_FILE_VIEW);
+		   TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
 		   ASSERT(FALSE);
 		   return;
 	   }

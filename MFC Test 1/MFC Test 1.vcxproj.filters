@@ -473,43 +473,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\explorer.bmp">
+    <Image Include="UserImages.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\file_view.ico">
+    <Image Include="res\Icon - LanguageView.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\fileview.bmp">
+    <Image Include="res\Icon - MainWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - OutputWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - ProjectWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - PropertiesWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - ScriptView.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\ImageList - ProjectWnd.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\menuimages.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\MFC Test 1.ico">
+    <Image Include="res\Toolbar - MainWnd.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\MFC Test 1Doc.ico">
+    <Image Include="res\Toolbar - ProjectWnd.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\output_wnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\properties.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\properties_wnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\sort.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="UserImages.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="..\MFC Test 1res\LanguageView.ico">
+    <Image Include="res\Toolbar - PropertiesWnd.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
   </ItemGroup>
