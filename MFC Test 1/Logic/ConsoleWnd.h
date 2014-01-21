@@ -8,7 +8,7 @@ namespace Logic
 
 
    /// <summary>Console manipulators</summary>
-   enum class Cons { Normal, Bold, Endl };
+   enum class Cons { Normal, Bold, Endl, Error };
 
    /// <summary>Provides a debugging console</summary>
    class ConsoleWnd
@@ -61,6 +61,7 @@ namespace Logic
          case Cons::Bold:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
          case Cons::Normal: return *this << Colour::White;
          case Cons::Endl:   return *this << Colour::White << L"\n";
+         case Cons::Error:  return *this << Colour::Red << L"ERROR : " << Colour::Yellow;
          }
          return *this;
       }
@@ -103,6 +104,13 @@ namespace Logic
       {
          Writef(L"0x%x", p);
          return *this;
+      }
+
+      /// <summary>Writes an exception to the console</summary>
+      /// <param name="e">Exception</param>
+      ConsoleWnd& operator<<(const ExceptionBase&  e)
+      {
+         return *this << Colour::Red << L"EXCEPTION: " << Colour::Yellow << e.Message << Colour::White << L" source: " << e.Source << ENDL;
       }
 
       /// <summary>Writes text to the console</summary>

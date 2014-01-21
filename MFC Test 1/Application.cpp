@@ -36,8 +36,6 @@ END_MESSAGE_MAP()
 
 Application::Application()
 {
-	m_bHiColorIcons = TRUE;
-
 	// TODO: replace application ID string below with unique ID string; recommended
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("MFC Test 1.AppID.NoVersion"));

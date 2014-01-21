@@ -201,17 +201,11 @@ namespace Logic
    class Win32Exception : public ExceptionBase
    {
    public:
-      /// <summary>Create a Win32Exception from the last system error</summary>
-      /// <param name="src">Location of throw</param>
-      Win32Exception(wstring  src) 
-         : ExceptionBase(src, wstring(L"Win32API method failed: ") + SysErrorString())
-      {}
-
-      /// <summary>Create an Win32Exception with a message</summary>
+      /// <summary>Create an Win32Exception from the last system error</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="msg">message</param>
       Win32Exception(wstring  src, wstring  msg) 
-         : ExceptionBase(src, wstring(L"Win32API method failed: ") + msg)
+         : ExceptionBase(src, msg + L" : " + SysErrorString())
       {}
    };
 
