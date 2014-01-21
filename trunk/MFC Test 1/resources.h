@@ -1,38 +1,40 @@
 
 ///////////////////////////////// ID //////////////////////////////////
 
-#define IDR_MAINFRAME                   128
-#define IDR_PROPERTIES                  183
-#define IDR_EXPLORER                    169
-#define IDR_SORT                        171
+#define IDR_MAINFRAME                   100
+#define IDR_PROPERTIES                  101
+#define IDR_PROJECT                     102
+#define IDR_OUTPUT                      103
+#define IDR_GAMEDATA                    104
 
-#define IDR_POPUP_EDIT                  119
-#define IDR_OUTPUT_POPUP                182
-#define IDR_POPUP_SORT                  173
-#define IDR_POPUP_EXPLORER              174
+#define IDR_LANGUAGEVIEW                105
+#define IDR_SCRIPTVIEW                  106
 
 #define IDR_MENU_IMAGES                 179
 
-#define IDR_LANGUAGEVIEW_TMPL           311
-#define IDR_SCRIPTVIEW_TMPL             130
-
-///////////////////////////////// DIALOGS //////////////////////////////////
+///////////////////////////////// DIALOGS //////////////////////////////
 
 #define IDD_ABOUTBOX                    100
 #define IDD_SCRIPTVIEW                  101
 #define IDD_LANGUAGEVIEW                310
 
-///////////////////////////////// BITMAPS //////////////////////////////////
+////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDB_FILE_VIEW                   175
+#define IDM_EDIT_POPUP                  119
+#define IDM_PROJECT_POPUP               174
+#define IDM_OUTPUT_POPUP                182
 
-///////////////////////////////// ICONS //////////////////////////////////
+///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDI_PROJECT_WND                 161
-#define IDI_OUTPUT_WND                  165
-#define IDI_PROPERTIES_WND              167
+#define IDB_PROJECT_ICONS               175
 
-///////////////////////////////// COMMANDS //////////////////////////////////
+////////////////////////////////// ICONS ///////////////////////////////
+
+//#define IDI_PROJECT_WND                 161
+//#define IDI_OUTPUT_WND                  165
+//#define IDI_PROPERTIES_WND              167
+
+///////////////////////////////// COMMANDS /////////////////////////////
 
 #define ID_STATUSBAR_PANE1              120
 #define ID_STATUSBAR_PANE2              121
@@ -74,7 +76,7 @@
 #define ID_VIEW_APPLOOK_OFF_2007_AQUA   218
 #define ID_VIEW_APPLOOK_WINDOWS_7       219
 
-///////////////////////////////// CONTROLS //////////////////////////////////
+///////////////////////////////// CONTROLS //////////////////////////////
 
 #define IDC_LOADSCRIPT                  1003
 #define IDC_RICHEDIT                    1004
@@ -82,7 +84,7 @@
 #define IDC_COMPILE                     1006
 
 
-///////////////////////////////// STRINGS //////////////////////////////////
+///////////////////////////////// STRINGS ///////////////////////////////
 
 #define ERR_XML_MISSING_ELEMENT         1000
 #define ERR_XML_UNEXPECTED_ELEMENT      1001
@@ -107,6 +109,6 @@
 #define IDS_STATUS_PANE2                123
 #define IDS_TOOLBAR_STANDARD            124
 #define IDS_TOOLBAR_CUSTOMIZE           125
-#define IDS_FILE_VIEW                   155
-#define IDS_OUTPUT_WND                  157
-#define IDS_PROPERTIES_WND              158
+//#define IDS_FILE_VIEW                   155
+//#define IDS_OUTPUT_WND                  157
+//#define IDS_PROPERTIES_WND              158

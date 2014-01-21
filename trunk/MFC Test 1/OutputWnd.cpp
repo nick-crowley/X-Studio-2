@@ -165,7 +165,7 @@ NAMESPACE_BEGIN(GUI)
    void COutputList::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
    {
 	   CMenu menu;
-	   menu.LoadMenu(IDR_OUTPUT_POPUP);
+	   menu.LoadMenu(IDM_OUTPUT_POPUP);
 
 	   CMenu* pSumMenu = menu.GetSubMenu(0);
 

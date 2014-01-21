@@ -106,7 +106,7 @@ BOOL Application::InitInstance()
 
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views
 	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_SCRIPTVIEW_TMPL,
+	pDocTemplate = new CMultiDocTemplate(IDR_SCRIPTVIEW,
 		RUNTIME_CLASS(GUI::ScriptDocument),
 		RUNTIME_CLASS(GUI::CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(ScriptView));
@@ -114,7 +114,7 @@ BOOL Application::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-   pDocTemplate = new CMultiDocTemplate(IDR_LANGUAGEVIEW_TMPL,
+   pDocTemplate = new CMultiDocTemplate(IDR_LANGUAGEVIEW,
 		RUNTIME_CLASS(GUI::LanguageDocument),
 		RUNTIME_CLASS(GUI::CChildFrame),
 		RUNTIME_CLASS(GUI::LanguageView));
@@ -198,14 +198,9 @@ void Application::OnAppAbout()
 
 void Application::PreLoadState()
 {
-	BOOL bNameValid;
-	CString strName;
-	bNameValid = strName.LoadString(IDS_EDIT_MENU);
-	ASSERT(bNameValid);
-	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
-	bNameValid = strName.LoadString(IDS_EXPLORER);
-	ASSERT(bNameValid);
-	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EXPLORER);
+	GetContextMenuManager()->AddMenu(GuiString(IDS_EDIT_MENU).c_str(), IDM_EDIT_POPUP);
+
+	GetContextMenuManager()->AddMenu(GuiString(IDS_EXPLORER).c_str(), IDM_PROJECT_POPUP);
 }
 
 void Application::LoadCustomState()

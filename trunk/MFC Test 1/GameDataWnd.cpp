@@ -57,7 +57,7 @@ NAMESPACE_BEGIN(GUI)
 	   //}
 
 	   //pWndTree->SetFocus();
-	   //theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EXPLORER, point.x, point.y, this, TRUE);
+	   //theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
    }
 
 
