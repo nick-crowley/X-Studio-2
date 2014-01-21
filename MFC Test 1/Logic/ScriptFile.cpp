@@ -8,7 +8,7 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptFile::ScriptFile()
+      ScriptFile::ScriptFile() : Version(0), Game(GameVersion::Threat), LiveData(false) 
       {
       }
 

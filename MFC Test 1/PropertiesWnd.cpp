@@ -3,8 +3,8 @@
 #include "PropertiesWnd.h"
 #include "Resource.h"
 #include "MainWnd.h"
-#include "Application.h"
-   
+//#include "Application.h"
+#include "ScriptDocument.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -16,6 +16,7 @@ static char THIS_FILE[]=__FILE__;
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   // --------------------------------- APP WIZARD ---------------------------------
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
 	   ON_WM_CREATE()
@@ -31,21 +32,22 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
-
-   /////////////////////////////////////////////////////////////////////////////
-   // CResourceViewBar
+   
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    CPropertiesWnd::CPropertiesWnd() : documentActivated(EventLib.DocumentActivated.Register(this, &CPropertiesWnd::OnDocumentActivated))
    {
-	   m_nComboHeight = 0;
    }
 
    CPropertiesWnd::~CPropertiesWnd()
    {
    }
 
-   /////////////////////////////////////////////////////////////////////////////
-   // CResourceViewBar message handlers
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
 
    void CPropertiesWnd::AdjustLayout()
    {
@@ -57,18 +59,15 @@ NAMESPACE_BEGIN(GUI)
 	   CRect rectClient;
 	   GetClientRect(rectClient);
 
-	   int cyTlb = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
+	   int barHeight = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
-	   m_wndObjectCombo.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), m_nComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	   m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top + m_nComboHeight, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	   m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + m_nComboHeight + cyTlb, rectClient.Width(), rectClient.Height() -(m_nComboHeight+cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
+	   m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
 
-   /// <summary>
-   /// Called when [create].
-   /// </summary>
-   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <summary>Create child controls</summary>
+   /// <param name="lpCreateStruct">create params</param>
    /// <returns></returns>
    int CPropertiesWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -78,31 +77,20 @@ NAMESPACE_BEGIN(GUI)
 	   CRect rectDummy;
 	   rectDummy.SetRectEmpty();
 
-	   // Create combo:
-	   const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
-	   if (!m_wndObjectCombo.Create(dwViewStyle, rectDummy, this, 1))
-	   {
-		   TRACE0("Failed to create Properties Combo \n");
-		   return -1;      // fail to create
-	   }
-
-	   m_wndObjectCombo.AddString(_T("Application"));
-	   m_wndObjectCombo.AddString(_T("Properties Window"));
-	   m_wndObjectCombo.SetCurSel(0);
-
-	   CRect rectCombo;
-	   m_wndObjectCombo.GetClientRect (&rectCombo);
-
-	   m_nComboHeight = rectCombo.Height();
-
+      // Create property grid
 	   if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, 2))
 	   {
 		   TRACE0("Failed to create Properties Grid \n");
 		   return -1;      // fail to create
 	   }
 
-	   InitPropList();
+      SetPropListFont();
+	   //InitPropList();
+      m_wndPropList.EnableHeaderCtrl(FALSE);
+	   m_wndPropList.EnableDescriptionArea();
+	   m_wndPropList.SetVSDotNetLook();
+	   m_wndPropList.MarkModifiedProperties();
+      //m_wndPropList.RemoveAll();
 
 	   m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
 	   m_wndToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE /* Is locked */);
@@ -120,10 +108,46 @@ NAMESPACE_BEGIN(GUI)
 	   return 0;
    }
 
-   void CPropertiesWnd::OnSize(UINT nType, int cx, int cy)
+   void CPropertiesWnd::OnDocumentActivated(CDocument* pDocument)
    {
-	   CDockablePane::OnSize(nType, cx, cy);
-	   AdjustLayout();
+      CMFCPropertyGridProperty* prop;
+      
+      // TODO: Examine document type
+      ScriptDocument* doc = dynamic_cast<ScriptDocument*>(pDocument);
+      
+      // Clear contents
+      m_wndPropList.RemoveAll();
+
+      // Group: General
+      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("General"));
+      group->AddSubItem(new CMFCPropertyGridProperty(L"Name", doc->Script.Name.c_str(), L"How script is referenced throughout the game"));
+      group->AddSubItem(new CMFCPropertyGridProperty(L"Description", doc->Script.Description.c_str(), L"Short description of functionality"));
+      group->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)doc->Script.Version, L"Current version number"));
+      group->AddSubItem(new CMFCPropertyGridProperty(L"Command", L"TODO", L"ID of ship/station command implemented by the script"));
+
+      // Property: EngineVersion comboBox
+      prop = new CMFCPropertyGridProperty(L"Game Required", VersionString(doc->Script.Game).c_str(),  L"Minimum version of game required");
+      prop->AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
+      prop->AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
+      prop->AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
+      prop->AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
+      group->AddSubItem(prop);
+
+      // Property: Signed
+      group->AddSubItem(prop = new CMFCPropertyGridProperty(L"Signed", (_variant_t)false, L"Version number"));
+      prop->Enable(FALSE);
+
+      // Add group
+      m_wndPropList.AddProperty(group);
+
+      // Arguments
+      group = new CMFCPropertyGridProperty(_T("Arguments"));
+      for (ScriptVariable& v : doc->Script.Variables)
+         group->AddSubItem(new CMFCPropertyGridProperty(v.Name.c_str(), L"TODO", v.Description.c_str()));
+      //group->AddSubItem(new CMFCPropertyGridProperty(L"arg2", L"Var/Number", L"I am an argument description"));
+
+      // Add group
+      m_wndPropList.AddProperty(group);
    }
 
    void CPropertiesWnd::OnExpandAllProperties()
@@ -131,49 +155,30 @@ NAMESPACE_BEGIN(GUI)
 	   m_wndPropList.ExpandAll();
    }
 
-   void CPropertiesWnd::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */)
+   void CPropertiesWnd::OnProperties1()
    {
+	   // TODO: Add your command handler code here
+   }
+   
+   void CPropertiesWnd::OnProperties2()
+   {
+	   // TODO: Add your command handler code here
+   }
+   
+   void CPropertiesWnd::OnSize(UINT nType, int cx, int cy)
+   {
+	   CDockablePane::OnSize(nType, cx, cy);
+	   AdjustLayout();
    }
 
    void CPropertiesWnd::OnSortProperties()
    {
 	   m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
    }
-
-   void CPropertiesWnd::OnUpdateSortProperties(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
-   }
-
-   void CPropertiesWnd::OnProperties1()
-   {
-	   // TODO: Add your command handler code here
-   }
-
-   void CPropertiesWnd::OnUpdateProperties1(CCmdUI* /*pCmdUI*/)
-   {
-	   // TODO: Add your command update UI handler code here
-   }
-
-   void CPropertiesWnd::OnProperties2()
-   {
-	   // TODO: Add your command handler code here
-   }
-
-   void CPropertiesWnd::OnUpdateProperties2(CCmdUI* /*pCmdUI*/)
-   {
-	   // TODO: Add your command update UI handler code here
-   }
-
+   
    void CPropertiesWnd::InitPropList()
    {
-	   SetPropListFont();
-
-	   m_wndPropList.EnableHeaderCtrl(FALSE);
-	   m_wndPropList.EnableDescriptionArea();
-	   m_wndPropList.SetVSDotNetLook();
-	   m_wndPropList.MarkModifiedProperties();
-
+	   
 	   CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Appearance"));
 
 	   pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("3D Look"), (_variant_t) false, _T("Specifies the window's font will be non-bold and controls will have a 3D border")));
@@ -260,6 +265,26 @@ NAMESPACE_BEGIN(GUI)
 	   SetPropListFont();
    }
 
+   void CPropertiesWnd::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */)
+   {
+   }
+
+   void CPropertiesWnd::OnUpdateSortProperties(CCmdUI* pCmdUI)
+   {
+	   pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+   }
+
+   void CPropertiesWnd::OnUpdateProperties1(CCmdUI* pCmdUI)
+   {
+	   pCmdUI->Enable(FALSE);
+   }
+
+   void CPropertiesWnd::OnUpdateProperties2(CCmdUI* pCmdUI)
+   {
+	   pCmdUI->Enable(FALSE);
+   }
+
+   
    void CPropertiesWnd::SetPropListFont()
    {
 	   ::DeleteObject(m_fntPropList.Detach());
@@ -279,8 +304,18 @@ NAMESPACE_BEGIN(GUI)
 	   m_fntPropList.CreateFontIndirect(&lf);
 
 	   m_wndPropList.SetFont(&m_fntPropList);
-	   m_wndObjectCombo.SetFont(&m_fntPropList);
    }
+   
+   void CPropertiesWnd::SetVSDotNetLook(BOOL bSet)
+	{
+		m_wndPropList.SetVSDotNetLook(bSet);
+		m_wndPropList.SetGroupNameFullWidth(bSet);
+	}
+
+   
+   // ------------------------------- PRIVATE METHODS ------------------------------
+
+   
 
 NAMESPACE_END(GUI)
 

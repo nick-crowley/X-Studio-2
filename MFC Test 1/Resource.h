@@ -3,7 +3,7 @@
 // Used by MFC Test 1.rc
 //
 #define IDD_ABOUTBOX                    100
-#define IDD_SCRIPTVIEW             101
+#define IDD_SCRIPTVIEW                  101
 #define IDP_SOCKETS_INIT_FAILED         104
 #define IDR_POPUP_EDIT                  119
 #define ID_STATUSBAR_PANE1              120
@@ -67,7 +67,6 @@
 #define IDR_OUTPUT_POPUP                182
 #define IDR_PROPERTIES                  183
 #define IDB_PROPERTIES_HC               184
-#define IDR_THEME_MENU                  200
 #define ID_SET_STYLE                    201
 #define ID_VIEW_APPLOOK_WIN_2000        205
 #define ID_VIEW_APPLOOK_OFF_XP          206
@@ -105,7 +104,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        314
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           312
