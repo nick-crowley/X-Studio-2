@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "resource.h"
 #include "afxcmn.h"
 #include "Logic/Common.h"
 

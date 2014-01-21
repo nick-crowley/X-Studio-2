@@ -2,7 +2,6 @@
 #include "stdafx.h"
 
 #include "OutputWnd.h"
-#include "Resource.h"
 #include "MainWnd.h"
 
 

@@ -1,9 +1,7 @@
 #include "stdafx.h"
 
 #include "PropertiesWnd.h"
-#include "Resource.h"
 #include "MainWnd.h"
-//#include "Application.h"
 #include "ScriptDocument.h"
 
 #ifdef _DEBUG
@@ -95,7 +93,7 @@ NAMESPACE_BEGIN(GUI)
 	   m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
 	   m_wndToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE /* Is locked */);
 	   m_wndToolBar.CleanUpLockedImages();
-	   m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_PROPERTIES_HC : IDR_PROPERTIES, 0, 0, TRUE /* Locked */);
+	   m_wndToolBar.LoadBitmap(IDR_PROPERTIES, 0, 0, TRUE /* Locked */);
 
 	   m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	   m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));

@@ -75,7 +75,7 @@ BOOL Application::InitInstance()
 
 	if (!AfxSocketInit())
 	{
-		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
+		AfxMessageBox(IDS_SOCKETS_INIT_FAILED);
 		return FALSE;
 	}
 

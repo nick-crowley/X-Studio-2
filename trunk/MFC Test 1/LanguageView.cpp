@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "resource.h"
 #include "LanguageView.h"
 
 /// <summary>User interface</summary>

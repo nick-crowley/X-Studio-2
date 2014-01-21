@@ -190,11 +190,12 @@
     <ClInclude Include="Logic\zlib.h" />
     <ClInclude Include="MainWnd.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="resources.h" />
     <ClInclude Include="ScriptDocument.h" />
     <ClInclude Include="ScriptView.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
-    <ClInclude Include="Resource.h" />
+    <ClInclude Include="AutoRes.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="FileTreeCtrl.h" />
@@ -262,39 +263,26 @@
     <ClCompile Include="FileTreeCtrl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MFC Test 1.rc" />
+    <ResourceCompile Include="AutoRes.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\MFC Test 1res\LanguageView.ico" />
-    <Image Include="res\classview.bmp" />
-    <Image Include="res\classview_hc.bmp" />
-    <Image Include="res\class_view.ico" />
-    <Image Include="res\class_view_hc.ico" />
     <Image Include="res\explorer.bmp" />
-    <Image Include="res\explorer_hc.bmp" />
     <Image Include="res\fileview.bmp" />
-    <Image Include="res\fileview_hc.bmp" />
     <Image Include="res\file_view.ico" />
-    <Image Include="res\file_view_hc.ico" />
     <Image Include="res\menuimages.bmp" />
-    <Image Include="res\menuimages_hc.bmp" />
     <Image Include="res\MFC Test 1.ico" />
     <Image Include="res\MFC Test 1Doc.ico" />
     <Image Include="res\output_wnd.ico" />
-    <Image Include="res\output_wnd_hc.ico" />
     <Image Include="res\properties.bmp" />
-    <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
-    <Image Include="res\properties_wnd_hc.ico" />
     <Image Include="res\sort.bmp" />
-    <Image Include="res\sort_hc.bmp" />
     <Image Include="res\Toolbar.bmp" />
-    <Image Include="res\Toolbar256.bmp" />
     <Image Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="res\MFCTest1.rc2" />
+    <None Include="res\CustomRes.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Command Syntax.xml" />
