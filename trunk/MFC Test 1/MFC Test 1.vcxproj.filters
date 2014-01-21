@@ -244,9 +244,6 @@
     <ClInclude Include="FileView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="ViewTree.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -434,9 +431,6 @@
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClassView.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="FileView.cpp">
       <Filter>Source Files\GUI</Filter>

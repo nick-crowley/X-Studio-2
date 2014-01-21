@@ -18,39 +18,29 @@ NAMESPACE_BEGIN(GUI)
 
    class CPropertiesWnd : public CDockablePane
    {
-   // Construction
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+      
    public:
-	   CPropertiesWnd();
-
-	   void AdjustLayout();
-
-   // Attributes
-   public:
-	   void SetVSDotNetLook(BOOL bSet)
-	   {
-		   m_wndPropList.SetVSDotNetLook(bSet);
-		   m_wndPropList.SetGroupNameFullWidth(bSet);
-	   }
-
+      CPropertiesWnd();
+      virtual ~CPropertiesWnd();
+       
+      // ------------------------ STATIC -------------------------
+      
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+      
+      // ----------------------- MUTATORS ------------------------
    protected:
-	   CFont m_fntPropList;
-	   CComboBox m_wndObjectCombo;
-	   CPropertiesToolBar m_wndToolBar;
-	   CMFCPropertyGridCtrl m_wndPropList;
+      void AdjustLayout();
+      void InitPropList();
+	   void SetPropListFont();
+      void SetVSDotNetLook(BOOL bSet);
 
-      DocumentActivatedHandler  documentActivated;
-
-      void OnDocumentActivated(CDocument* pDocument)
-      {
-         Console << L"Properties window: " << pDocument << L" activated" << ENDL;
-      }
-
-   // Implementation
-   public:
-	   virtual ~CPropertiesWnd();
-
-   protected:
-	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnExpandAllProperties();
 	   afx_msg void OnUpdateExpandAllProperties(CCmdUI* pCmdUI);
@@ -65,10 +55,16 @@ NAMESPACE_BEGIN(GUI)
 
 	   DECLARE_MESSAGE_MAP()
 
-	   void InitPropList();
-	   void SetPropListFont();
+      void OnDocumentActivated(CDocument* pDocument);
 
-	   int m_nComboHeight;
+      // -------------------- REPRESENTATION ---------------------
+   protected:
+      CFont                m_fntPropList;
+	   CPropertiesToolBar   m_wndToolBar;
+	   CMFCPropertyGridCtrl m_wndPropList;
+
+      DocumentActivatedHandler  documentActivated;
+   
    };
 
 

@@ -218,6 +218,7 @@ BEGIN
                 MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_OFF_2007_BLACK
                 MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_OFF_2007_SILVER
                 MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_OFF_2007_AQUA
+                MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
             END
         END
     END
@@ -283,15 +284,6 @@ END
 IDR_HELP_MENU MENU
 BEGIN
     MENUITEM "&About MFC Test 1...",        ID_APP_ABOUT
-END
-
-IDR_THEME_MENU MENU
-BEGIN
-    MENUITEM "Office 2007 (&Blue Style)",   ID_VIEW_APPLOOK_OFF_2007_BLUE
-    MENUITEM "Office 2007 (B&lack Style)",  ID_VIEW_APPLOOK_OFF_2007_BLACK
-    MENUITEM "Office 2007 (&Silver Style)", ID_VIEW_APPLOOK_OFF_2007_SILVER
-    MENUITEM "Office 2007 (&Aqua Style)",   ID_VIEW_APPLOOK_OFF_2007_AQUA
-    MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
 END
 
 IDR_LANGUAGEVIEW_TMPL MENU
