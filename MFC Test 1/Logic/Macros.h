@@ -49,3 +49,7 @@
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN(n)     namespace n {
 #define NAMESPACE_END(n)       }  using namespace n;
+
+// Macro: ClassWizard fix that enables classes in namespaces
+#define NAMESPACE_BEGIN2(n1,n2)     namespace n1 {  namespace n2 {
+#define NAMESPACE_END2(n1,n2)       } }  using namespace n1::n2;

@@ -64,6 +64,12 @@
     <Filter Include="Source Files\Logic\Types">
       <UniqueIdentifier>{00f4b317-8be4-489a-93a8-cb5abc1fa3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\Controls">
+      <UniqueIdentifier>{af9cdcef-7f32-4bb6-adcc-f2b84c4c6502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Controls">
+      <UniqueIdentifier>{6f3f9ea7-cdcd-42fc-a25c-167d62390c5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -241,9 +247,6 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ViewTree.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="LanguageView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -284,6 +287,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ProjectWnd.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTreeCtrl.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDataWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -432,9 +441,6 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ViewTree.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="LanguageDocument.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -454,6 +460,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProjectWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTreeCtrl.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDataWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
