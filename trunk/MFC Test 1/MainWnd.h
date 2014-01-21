@@ -57,8 +57,6 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	   DECLARE_MESSAGE_MAP()
 
-	   BOOL CreateDockingWindows();
-	   void SetDockingWindowIcons(BOOL bHiColorIcons);
    };
 
 

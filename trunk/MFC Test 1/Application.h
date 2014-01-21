@@ -14,6 +14,12 @@ class Application : public CWinAppEx
 public:
 	Application();
 
+
+   HICON  LoadIcon(UINT nResID, UINT iSize)
+   {
+      return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
+   }
+
 // Overrides
 public:
 	virtual BOOL InitInstance();
@@ -21,7 +27,6 @@ public:
 
 // Implementation
 	UINT  m_nAppLook;
-	BOOL  m_bHiColorIcons;
 
 	virtual void PreLoadState();
 	virtual void LoadCustomState();
