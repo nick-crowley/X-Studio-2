@@ -76,6 +76,8 @@ NAMESPACE_BEGIN(GUI)
 		   return -1;      // fail to create
 	   }
 
+
+
 	   // Load view images:
 	   /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
 	   ListView.SetImageList(&Images, LVSIL_NORMAL);*/
@@ -121,11 +123,6 @@ NAMESPACE_BEGIN(GUI)
 
 	   CRect rcClient;
 	   GetClientRect(rcClient);
-
-	   /*int barHeight = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
-
-	   m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	   m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);*/
 
       ListView.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
    }
