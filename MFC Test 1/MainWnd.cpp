@@ -64,7 +64,7 @@ NAMESPACE_BEGIN(GUI)
 	   CMDITabInfo mdiTabParams;
 	   mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; // other styles available...
 	   mdiTabParams.m_bActiveTabCloseButton = TRUE;      // set to FALSE to place close button at right of tab area
-	   mdiTabParams.m_bTabIcons = FALSE;    // set to TRUE to enable document icons on MDI taba
+	   mdiTabParams.m_bTabIcons = TRUE;    // set to TRUE to enable document icons on MDI taba
 	   mdiTabParams.m_bAutoColor = TRUE;    // set to FALSE to disable auto-coloring of MDI tabs
 	   mdiTabParams.m_bDocumentMenu = TRUE; // enable the document menu at the right edge of the tab area
 	   EnableMDITabbedGroups(TRUE, mdiTabParams);
@@ -81,7 +81,7 @@ NAMESPACE_BEGIN(GUI)
 	   CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
 	   if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		   !m_wndToolBar.LoadToolBar(theApp.m_bHiColorIcons ? IDR_MAINFRAME_256 : IDR_MAINFRAME))
+		   !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	   {
 		   TRACE0("Failed to create toolbar\n");
 		   return -1;      // fail to create
@@ -121,7 +121,7 @@ NAMESPACE_BEGIN(GUI)
 	   EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
 	   // Load menu item image (not placed on any standard toolbars):
-	   CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, theApp.m_bHiColorIcons ? IDB_MENU_IMAGES_24 : 0);
+	   CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, IDR_MENU_IMAGES);
 
 	   // create docking windows
 	   if (!CreateDockingWindows())
@@ -259,13 +259,13 @@ NAMESPACE_BEGIN(GUI)
 
    void MainWnd::SetDockingWindowIcons(BOOL bHiColorIcons)
    {
-	   HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROJECT_WND_HC : IDI_PROJECT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	   HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_PROJECT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	   m_wndProject.SetIcon(hFileViewIcon, FALSE);
 
-	   HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	   HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	   m_wndOutput.SetIcon(hOutputBarIcon, FALSE);
 
-	   HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	   HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	   m_wndProperties.SetIcon(hPropertiesBarIcon, FALSE);
 	   m_wndGameData.SetIcon(hPropertiesBarIcon, FALSE);
 

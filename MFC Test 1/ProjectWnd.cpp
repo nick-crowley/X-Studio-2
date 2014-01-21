@@ -229,16 +229,14 @@ NAMESPACE_BEGIN(GUI)
    void CProjectWnd::OnChangeVisualStyle()
    {
 	   Toolbar.CleanUpLockedImages();
-	   Toolbar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_EXPLORER_24 : IDR_EXPLORER, 0, 0, TRUE /* Locked */);
+	   Toolbar.LoadBitmap(IDR_EXPLORER, 0, 0, TRUE /* Locked */);
 
 	   Images.DeleteImageList();
 
-	   UINT uiBmpId = theApp.m_bHiColorIcons ? IDB_FILE_VIEW_24 : IDB_FILE_VIEW;
-
 	   CBitmap bmp;
-	   if (!bmp.LoadBitmap(uiBmpId))
+	   if (!bmp.LoadBitmap(IDB_FILE_VIEW))
 	   {
-		   TRACE(_T("Can't load bitmap: %x\n"), uiBmpId);
+		   TRACE(_T("Can't load bitmap: %x\n"), IDB_FILE_VIEW);
 		   ASSERT(FALSE);
 		   return;
 	   }
@@ -246,11 +244,7 @@ NAMESPACE_BEGIN(GUI)
 	   BITMAP bmpObj;
 	   bmp.GetBitmap(&bmpObj);
 
-	   UINT nFlags = ILC_MASK;
-
-	   nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
-
-	   Images.Create(16, bmpObj.bmHeight, nFlags, 0, 0);
+	   Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
 	   Images.Add(&bmp, RGB(255, 0, 255));
 
 	   TreeView.SetImageList(&Images, TVSIL_NORMAL);

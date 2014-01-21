@@ -238,9 +238,6 @@
     <ClInclude Include="Logic\Path.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -294,6 +291,12 @@
     </ClInclude>
     <ClInclude Include="GameDataWnd.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoRes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -470,40 +473,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\class_view.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\class_view_hc.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\classview.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\classview_hc.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\explorer.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\explorer_hc.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\file_view.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\file_view_hc.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\fileview.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\fileview_hc.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\menuimages.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\menuimages_hc.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\MFC Test 1.ico">
@@ -515,31 +494,16 @@
     <Image Include="res\output_wnd.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\output_wnd_hc.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\properties.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\properties_hc.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\properties_wnd.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\properties_wnd_hc.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\sort.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\sort_hc.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
     <Image Include="res\Toolbar.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar256.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="UserImages.bmp">
@@ -550,18 +514,18 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\MFCTest1.rc2">
+    <None Include="cpp.hint" />
+    <None Include="res\CustomRes.rc2">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MFC Test 1.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
     <Xml Include="Command Syntax.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AutoRes.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

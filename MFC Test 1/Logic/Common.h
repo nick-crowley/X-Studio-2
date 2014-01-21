@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Resource.h"
+#include "../Resources.h"
 #include "Macros.h"
 
 /// <summary>A unique pointer to a byte array</summary>
