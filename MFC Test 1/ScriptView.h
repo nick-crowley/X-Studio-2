@@ -6,7 +6,7 @@
 
 #include "afxcmn.h"
 #include "Logic/Common.h"
-
+#include "ScriptDocument.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)

@@ -19,13 +19,14 @@ public:
 	Application();
 
    // ------------------------ STATIC -------------------------
-   
+protected:
    DECLARE_MESSAGE_MAP()
 
    // --------------------- PROPERTIES ------------------------
 	  
    // ---------------------- ACCESSORS ------------------------			
    
+public:
    HICON  LoadIcon(UINT nResID, UINT iSize) const
    {
       return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);

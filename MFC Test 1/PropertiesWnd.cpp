@@ -1,8 +1,7 @@
 #include "stdafx.h"
 
 #include "PropertiesWnd.h"
-#include "MainWnd.h"
-#include "ScriptDocument.h"
+#include "ScriptView.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -30,10 +29,14 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
+
+   // ----------------------------------- GLOBAL ----------------------------------
+
+   PropertiesEvent   CPropertiesWnd::DisplayProperties;
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CPropertiesWnd::CPropertiesWnd() : documentActivated(EventLib.DocumentActivated.Register(this, &CPropertiesWnd::OnDocumentActivated))
+   CPropertiesWnd::CPropertiesWnd() : fnDisplayProperties(DisplayProperties.Register(this, &CPropertiesWnd::OnDisplayProperties))
    {
    }
 
@@ -106,12 +109,12 @@ NAMESPACE_BEGIN(GUI)
 	   return 0;
    }
 
-   void CPropertiesWnd::OnDocumentActivated(CDocument* pDocument)
+   void CPropertiesWnd::OnDisplayProperties(CWnd* pWnd, PropertyTarget type)
    {
       CMFCPropertyGridProperty* prop;
       
       // TODO: Examine document type
-      ScriptDocument* doc = dynamic_cast<ScriptDocument*>(pDocument);
+      ScriptDocument* doc = dynamic_cast<ScriptView*>(pWnd)->GetDocument();
       
       // Clear contents
       m_wndPropList.RemoveAll();
