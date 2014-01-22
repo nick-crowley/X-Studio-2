@@ -7,7 +7,7 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 #include "GameDataWnd.h"
-#include "LoadingThread.h"
+#include "GameDataWorker.h"
 #include "Logic/Event.h"
 
 /// <summary>User interface</summary>
@@ -33,7 +33,7 @@ NAMESPACE_BEGIN(GUI)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static FeedbackEvent    LoadingFeedback;
+      static FeedbackEvent    GameDataFeedback;
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -70,7 +70,7 @@ NAMESPACE_BEGIN(GUI)
       CGameDataWnd      m_wndGameData;
 	   CPropertiesWnd    m_wndProperties;
 
-      WorkerThread      GameDataWorker;
+      GameDataWorker    GameDataThread;
    };
 
 

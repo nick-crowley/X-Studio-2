@@ -68,6 +68,14 @@ namespace Logic
          // "COM object error: ...."
          : ExceptionBase(src, err.Error(), wstring(L"COM object error: ") + err.ErrorMessage())
       {}
+
+      /// <summary>Create a ComException from a _com_error</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="err">COM error</param>
+      ComException(wstring  src, HRESULT hr) 
+         // "COM object error: ...."
+         : ExceptionBase(src, hr, wstring(L"COM object error: ") + SysErrorString(hr))
+      {}
    };
 
    /// <summary>Occurs when a file is not found</summary>
