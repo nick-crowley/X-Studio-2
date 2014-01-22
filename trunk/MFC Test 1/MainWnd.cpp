@@ -315,8 +315,22 @@ NAMESPACE_BEGIN(GUI)
 
       // Raise event. Delete data.
       GameDataFeedback.Raise(p);
-      delete p;
 
+      // Change app state
+      if (p->Type == ProgressType::Succcess)
+      {
+         theApp.State = AppState::GameDataPresent;
+
+         // Parse command line for standard shell commands, DDE, file open
+	      CCommandLineInfo cmdInfo;
+	      theApp.ParseCommandLine(cmdInfo);
+
+	      // Dispatch commands specified on the command line.
+	      theApp.ProcessShellCommand(cmdInfo);
+      }
+
+      // Cleanup
+      delete p;
       return 0;
    }
 

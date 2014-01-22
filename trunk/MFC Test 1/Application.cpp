@@ -57,14 +57,10 @@ END_MESSAGE_MAP()
 
 // -------------------------------- CONSTRUCTION --------------------------------
 
-Application::Application()
+Application::Application() : GameDataState(AppState::NoGameData)
 {
-	// TODO: replace application ID string below with unique ID string; recommended
-	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
+	// TODO: replace application ID string below with unique ID string; recommended format for string is CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("MFC Test 1.AppID.NoVersion"));
-
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
 }
 
 
@@ -157,16 +153,7 @@ BOOL Application::InitInstance()
 	}
 	m_pMainWnd = pMainFrame;
 
-
-	// Parse command line for standard shell commands, DDE, file open
-	CCommandLineInfo cmdInfo;
-	ParseCommandLine(cmdInfo);
-
-	// Dispatch commands specified on the command line.  Will return FALSE if
-	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
-	if (!ProcessShellCommand(cmdInfo))
-		return FALSE;
-	// The main window has been initialized, so show and update it
+	// Show window
 	pMainFrame->ShowWindow(m_nCmdShow);
 	pMainFrame->UpdateWindow();
 
