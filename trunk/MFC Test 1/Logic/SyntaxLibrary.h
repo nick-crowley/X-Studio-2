@@ -17,6 +17,19 @@ namespace Logic
       public:
          /// <summary>Command syntax array</summary>
          typedef vector<const CommandSyntax*>  ResultCollection;
+
+         /// <summary>Command group collection</summary>
+         typedef map<CommandGroup, wstring>  GroupCollection;
+
+         /// <summary>Command syntax collection organised by ID</summary>
+         class CommandCollection : public multimap<UINT, CommandSyntax>
+         {
+         public:
+            void  Add(CommandSyntax& s) 
+            { 
+               insert(value_type(s.ID, s)); 
+            }
+         };
       
       private:
          /// <summary></summary>
@@ -56,6 +69,7 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
 
          public:
+            void  Clear();
             void  Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end);
 
             // -------------------- REPRESENTATION ---------------------
@@ -82,31 +96,18 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------			
 
       public:
-         /// <summary>Finds syntax by ID</summary>
-         /// <param name="id">command ID</param>
-         /// <param name="ver">Game version</param>
-         /// <returns></returns>
-         /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
-         CommandSyntax  Find(UINT id, GameVersion ver) const;
-
-         /// <summary>Finds syntax by name</summary>
-         /// <param name="pos">First token</param>
-         /// <param name="end">End of tokens</param>
-         /// <param name="v">Game version</param>
-         /// <returns>Syntax if found, otherwise sentinel syntax</returns>
-         CommandSyntax  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
-
-         /// <summary>Search for all syntax containing a given term</summary>
-         /// <param name="str">Search term</param>
-         /// <param name="ver">Game version</param>
-         /// <returns>Array of matching Syntax</returns>
+         GroupCollection   GetGroups() const;
+         CommandSyntax     Find(UINT id, GameVersion ver) const;
+         CommandSyntax     Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
          ResultCollection  Query(const wstring& str, GameVersion ver) const;
 
-         /// <summary>Merges a syntax file into the library</summary>
-         /// <param name="f">The file</param>
-         void  Merge(SyntaxFile&& f);
-
 		   // ----------------------- MUTATORS ------------------------
+      public:
+         void  Clear();
+         UINT  Enumerate();
+
+      private:
+         void  Merge(SyntaxFile&& f);
 
 		   // -------------------- REPRESENTATION ---------------------
 
@@ -114,8 +115,9 @@ namespace Logic
          const CommandSyntax  Unknown;
 
       private:
-         SyntaxCollection  Commands;
-         SyntaxNode        NameTree;
+         CommandCollection  Commands;
+         GroupCollection    Groups;
+         SyntaxNode         NameTree;
       };
 
    }

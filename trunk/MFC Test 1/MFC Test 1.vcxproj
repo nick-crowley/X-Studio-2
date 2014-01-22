@@ -208,6 +208,7 @@
     <ClCompile Include="EventLibrary.cpp" />
     <ClCompile Include="GameDataWorker.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />
     <ClCompile Include="LanguageView.cpp" />

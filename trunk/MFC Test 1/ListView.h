@@ -6,7 +6,7 @@
 NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary></summary>
-   class LVGroup : LVGROUP
+   class LVGroup : public LVGROUP
    {
       // ------------------------ TYPES --------------------------
    private:

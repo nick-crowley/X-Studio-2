@@ -37,22 +37,12 @@ namespace Logic
 
    ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
    {
-      const WCHAR* syntaxPath = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt";
       XFileSystem vfs;
 
       // Build VFS. Enumerate language files
       vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
       StringLib.Enumerate(vfs, GameLanguage::English);
-
-
-      // Load legacy syntax file
-      Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << syntaxPath << ENDL;
-
-      StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
-      SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
-
-      Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
-
+      SyntaxLib.Enumerate();
 
       // Parse script
       Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
@@ -85,19 +75,17 @@ namespace Logic
    
    void DebugTests::Test_CommandSyntax()
    {
-      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt"; 
-   
+      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
+
       try
       {
          // Test LegacySyntaxReader
-         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
+         SyntaxLib.Enumerate();
 
          // Test Lookup
          SyntaxLib.Find(CMD_EXPRESSION, GameVersion::TerranConflict);
 
          // Test script reader
-         path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto script = ScriptFileReader(fs2).ReadFile();
       }

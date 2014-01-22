@@ -192,39 +192,48 @@ NAMESPACE_BEGIN(GUI)
 
    void  CGameDataWnd::UpdateContent()
    {
-      // Clear prev content
-      Content.clear();
-
-      if (theApp.State == AppState::GameDataPresent)
+      try
       {
-         // TODO: Get search text
+         // Clear prev content
+         Content.clear();
 
-         // Lookup matches
-         Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
-
-         // Populate groups
-         for (UINT i = (UINT)CommandGroup::ARRAY; i < (UINT)CommandGroup::HIDDEN; ++i)
+         if (theApp.State == AppState::GameDataPresent)
          {
-            LVGroup grp(i, GuiString(IDS_FIRST_COMMAND_GROUP+i));
-            ListView.InsertGroup(i, (LVGROUP*)&grp);
-         }
+            // TODO: Get search text
 
-         // Display results
-         ListView.SetItemCount(Content.size());
-         for (UINT i = 0; i < Content.size(); ++i)
-         {
-            LVITEM item;
-            item.mask = LVIF_TEXT | LVIF_GROUPID;
-            item.iGroupId = (UINT)Content[i]->Group;
-            item.pszText = (WCHAR*)Content[i]->Text.c_str();
-            item.iItem = i;
+            // Lookup matches
+            Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
+
+            // Populate group names
+            for (auto pair : SyntaxLib.GetGroups())
+            {
+               LVGroup grp((UINT)pair.first, pair.second);
+               if (ListView.InsertGroup(grp.iGroupId, (LVGROUP*)&grp) != grp.iGroupId)
+                  throw Win32Exception(HERE, GuiString(L"Unable to insert command group ") + pair.second);
+            }
+
+            // Display results
+            ListView.SetItemCount(Content.size());
+            for (UINT i = 0; i < Content.size(); ++i)
+            {
+               LVITEM item;
+               item.mask = LVIF_TEXT | LVIF_GROUPID;
+               item.iGroupId = (UINT)Content[i]->Group;
+               item.pszText = (WCHAR*)Content[i]->Text.c_str();
+               item.iItem = i;
             
-            //ListView.InsertItem(i, Content[i]->Text.c_str(), 0);
-            ListView.InsertItem(&item);
+               //ListView.InsertItem(i, Content[i]->Text.c_str(), 0);
+               if (ListView.InsertItem(&item) == -1)
+                  throw Win32Exception(HERE, GuiString(L"Unable to insert command '%s' (item %d, group %d)", item.pszText, i, item.iGroupId));
+            }
          }
+         else
+            ListView.SetItemCount(0);
       }
-      else
-         ListView.SetItemCount(0);
+      catch (ExceptionBase& e)
+      {
+         Console << e << ENDL;
+      }
    }
    
 NAMESPACE_END(GUI)
