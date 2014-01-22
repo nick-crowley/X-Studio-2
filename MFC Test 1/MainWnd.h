@@ -7,9 +7,13 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 #include "GameDataWnd.h"
+#include "LoadingThread.h"
+#include "Logic/Event.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
+
+   // ------------------------ CLASSES ------------------------
 
    /// <summary>Main window</summary>
    class MainWnd : public CMDIFrameWndEx
@@ -27,6 +31,9 @@ NAMESPACE_BEGIN(GUI)
       DECLARE_DYNAMIC(MainWnd)
    protected:
       DECLARE_MESSAGE_MAP()
+
+   public:
+      static FeedbackEvent    LoadingFeedback;
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -49,6 +56,7 @@ NAMESPACE_BEGIN(GUI)
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
       afx_msg void OnViewCustomize();
       afx_msg void OnWindowManager();
+      afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------
 
@@ -61,6 +69,8 @@ NAMESPACE_BEGIN(GUI)
 	   COutputWnd        m_wndOutput;
       CGameDataWnd      m_wndGameData;
 	   CPropertiesWnd    m_wndProperties;
+
+      WorkerThread      GameDataWorker;
    };
 
 

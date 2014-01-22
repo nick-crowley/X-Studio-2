@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameDataWnd.h"
+#include <strsafe.h>
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -12,6 +13,7 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
+      ON_NOTIFY(LVN_GETDISPINFO,1,&CGameDataWnd::onRequestItem)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -63,28 +65,38 @@ NAMESPACE_BEGIN(GUI)
 
    int CGameDataWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-	   if (CDockablePane::OnCreate(lpCreateStruct) == -1)
-		   return -1;
+      try
+      {
+         CRect rectDummy;
+	      rectDummy.SetRectEmpty();
 
-	   CRect rectDummy;
-	   rectDummy.SetRectEmpty();
+         // Create page
+	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
+		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
-	   // Create view:
-	   if (!ListView.Create(WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_OWNERDATA, rectDummy, this, 1))
-	   {
-		   TRACE0("Failed to create file view\n");
-		   return -1;      // fail to create
-	   }
+	      // Create List:
+	      if (!ListView.CreateEx(LVS_EX_FULLROWSELECT, WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_OWNERDATA, rectDummy, this, 1))
+            throw Win32Exception(HERE, L"Unable to create game data window listview");
 
+         // Insert columns
+         ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
+         ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
+         
 
+	      // Load view images:
+	      /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
+	      ListView.SetImageList(&Images, LVSIL_NORMAL);*/
 
-	   // Load view images:
-	   /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
-	   ListView.SetImageList(&Images, LVSIL_NORMAL);*/
-
-	   // Resize
-	   AdjustLayout();
-	   return 0;
+	      // Resize + Display
+	      AdjustLayout();
+         UpdateContent();
+	      return 0;
+      }
+      catch (ExceptionBase& e)
+      {
+         Console << e << ENDL;
+         return -1;
+      }
    }
 
    void CGameDataWnd::OnPaint()
@@ -114,6 +126,18 @@ NAMESPACE_BEGIN(GUI)
    }
 
 
+   void CGameDataWnd::onRequestItem(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
+      auto syntax = Content[item.iItem];
+      
+      // Text
+      if (item.mask & LVIF_TEXT)
+         StringCchCopy(item.pszText, item.cchTextMax, syntax->Text.c_str());
+
+      *pResult = TRUE;
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    void CGameDataWnd::AdjustLayout()
@@ -125,6 +149,18 @@ NAMESPACE_BEGIN(GUI)
 	   GetClientRect(rcClient);
 
       ListView.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+   }
+
+   void  CGameDataWnd::UpdateContent()
+   {
+      // TODO: Get search text
+
+      // Lookup matches
+      Content.clear();
+      Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
+
+      // Display results
+      ListView.SetItemCountEx(Content.size());
    }
    
 NAMESPACE_END(GUI)

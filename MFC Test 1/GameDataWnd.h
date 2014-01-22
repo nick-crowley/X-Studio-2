@@ -1,6 +1,6 @@
 #pragma once
 #include "afxdockablepane.h"
-
+#include "Logic/SyntaxLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -32,15 +32,19 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
+      afx_msg void onRequestItem(NMHDR* pNMHDR, LRESULT* pResult);
 
    private:
       void  AdjustLayout();
+      void  UpdateContent();
 
       // -------------------- REPRESENTATION ---------------------
 
    protected:
       CListCtrl  ListView;
 	   CImageList Images;
+
+      vector<const CommandSyntax*> Content;
    };
    
 NAMESPACE_END(GUI)

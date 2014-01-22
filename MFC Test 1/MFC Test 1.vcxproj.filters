@@ -298,6 +298,12 @@
     <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoadingThread.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkerThread.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -469,6 +475,9 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="GameDataWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingThread.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
