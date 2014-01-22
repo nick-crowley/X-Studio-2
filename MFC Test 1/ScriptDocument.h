@@ -16,11 +16,14 @@ NAMESPACE_BEGIN(GUI)
 
    protected: // create from serialization only
 	   ScriptDocument();
-	   DECLARE_DYNCREATE(ScriptDocument)
    public:
 	   virtual ~ScriptDocument();
 
       // ------------------------ STATIC -------------------------
+
+   protected:
+      DECLARE_DYNCREATE(ScriptDocument)
+	   DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
 			
@@ -37,13 +40,11 @@ NAMESPACE_BEGIN(GUI)
       virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 	   virtual void Serialize(CArchive& ar);
    
-   
       // -------------------- REPRESENTATION ---------------------
    public:
       ScriptFile  Script;
 
-   protected:
-	   DECLARE_MESSAGE_MAP()
+   
 
    };
 

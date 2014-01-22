@@ -6,17 +6,14 @@
 #define IDR_PROJECT                     102
 #define IDR_OUTPUT                      103
 #define IDR_GAMEDATA                    104
+#define IDR_CUSTOM                      179
 
 #define IDR_LANGUAGEVIEW                105
 #define IDR_SCRIPTVIEW                  106
 
-#define IDR_MENU_IMAGES                 179
-
 ///////////////////////////////// DIALOGS //////////////////////////////
 
 #define IDD_ABOUTBOX                    100
-#define IDD_SCRIPTVIEW                  101
-#define IDD_LANGUAGEVIEW                310
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
@@ -30,9 +27,6 @@
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
-//#define IDI_PROJECT_WND                 161
-//#define IDI_OUTPUT_WND                  165
-//#define IDI_PROPERTIES_WND              167
 
 ///////////////////////////////// COMMANDS /////////////////////////////
 

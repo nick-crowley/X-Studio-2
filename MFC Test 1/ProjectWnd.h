@@ -6,8 +6,14 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   class CFileViewToolBar : public CMFCToolBar
+   /// <summary>Project explorer toolbar</summary>
+   class CProjectToolBar : public CMFCToolBar
    {
+      // --------------------- CONSTRUCTION ----------------------
+
+      // ----------------------- MUTATORS ------------------------
+
+   protected:
 	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	   {
 		   CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
@@ -16,30 +22,31 @@ NAMESPACE_BEGIN(GUI)
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
    };
 
+   /// <summary>Project explorer docking pane</summary>
    class CProjectWnd : public CDockablePane
    {
-   // Construction
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
    public:
 	   CProjectWnd();
+      virtual ~CProjectWnd();
 
-	   void AdjustLayout();
-	   void OnChangeVisualStyle();
-
-   // Attributes
+      // ------------------------ STATIC -------------------------
    protected:
+      DECLARE_MESSAGE_MAP()
 
-	   CFileTreeCtrl TreeView;
-	   CImageList Images;
-	   CFileViewToolBar Toolbar;
-
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+      
+      // ----------------------- MUTATORS ------------------------
    protected:
+      void AdjustLayout();
 	   void FillFileView();
+      void OnChangeVisualStyle();
 
-   // Implementation
-   public:
-	   virtual ~CProjectWnd();
-
-   protected:
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -53,7 +60,11 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 
-	   DECLARE_MESSAGE_MAP()
+      // -------------------- REPRESENTATION ---------------------
+   protected:
+	   CImageList      Images;
+      CFileTreeCtrl   TreeView;
+	   CProjectToolBar Toolbar;
    };
 
 

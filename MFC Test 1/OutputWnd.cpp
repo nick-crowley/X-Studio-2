@@ -14,8 +14,14 @@ static char THIS_FILE[] = __FILE__;
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   /////////////////////////////////////////////////////////////////////////////
-   // COutputBar
+   // --------------------------------- APP WIZARD ---------------------------------
+   
+   BEGIN_MESSAGE_MAP(COutputWnd, CDockablePane)
+	   ON_WM_CREATE()
+	   ON_WM_SIZE()
+   END_MESSAGE_MAP()
+
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    COutputWnd::COutputWnd() //: gameDataLoaded(theApp.GameDataLoaded.Register(this, &COutputWnd::onGameDataLoaded))
    {
@@ -26,10 +32,30 @@ NAMESPACE_BEGIN(GUI)
    {
    }
 
-   BEGIN_MESSAGE_MAP(COutputWnd, CDockablePane)
-	   ON_WM_CREATE()
-	   ON_WM_SIZE()
-   END_MESSAGE_MAP()
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   void COutputWnd::AdjustHorzScroll(CListBox& wndListBox)
+   {
+	   CClientDC dc(this);
+	   CFont* pOldFont = dc.SelectObject(&afxGlobalData.fontRegular);
+
+	   int cxExtentMax = 0;
+
+	   for (int i = 0; i < wndListBox.GetCount(); i ++)
+	   {
+		   CString strItem;
+		   wndListBox.GetText(i, strItem);
+
+		   cxExtentMax = max(cxExtentMax, (int)dc.GetTextExtent(strItem).cx);
+	   }
+
+	   wndListBox.SetHorizontalExtent(cxExtentMax);
+	   dc.SelectObject(pOldFont);
+   }
 
    int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -59,26 +85,16 @@ NAMESPACE_BEGIN(GUI)
 
 	   UpdateFonts();
 
-	   CString strTabName;
-	   BOOL bNameValid;
-
 	   // Attach list windows to tab:
-	   bNameValid = strTabName.LoadString(IDS_BUILD_TAB);
-	   ASSERT(bNameValid);
-	   m_wndTabs.AddTab(&m_wndOutputBuild, strTabName, (UINT)0);
-	   bNameValid = strTabName.LoadString(IDS_DEBUG_TAB);
-	   ASSERT(bNameValid);
-	   m_wndTabs.AddTab(&m_wndOutputDebug, strTabName, (UINT)1);
-	   bNameValid = strTabName.LoadString(IDS_FIND_TAB);
-	   ASSERT(bNameValid);
-	   m_wndTabs.AddTab(&m_wndOutputFind, strTabName, (UINT)2);
-
-	   // Fill output tabs with some dummy text (nothing magic here)
-	   FillBuildWindow();
-	   FillDebugWindow();
-	   FillFindWindow();
-
+	   m_wndTabs.AddTab(&m_wndOutputBuild, GuiString(IDS_BUILD_TAB).c_str(), (UINT)0);
+	   m_wndTabs.AddTab(&m_wndOutputDebug, GuiString(IDS_DEBUG_TAB).c_str(), (UINT)1);
+	   m_wndTabs.AddTab(&m_wndOutputFind, GuiString(IDS_FIND_TAB).c_str(), (UINT)2);
 	   return 0;
+   }
+   
+   void COutputWnd::onGameDataLoaded()
+   {
+      m_wndOutputBuild.AddString(_T("Game data has been loaded"));
    }
 
    void COutputWnd::OnSize(UINT nType, int cx, int cy)
@@ -89,51 +105,6 @@ NAMESPACE_BEGIN(GUI)
 	   m_wndTabs.SetWindowPos (NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
-   void COutputWnd::AdjustHorzScroll(CListBox& wndListBox)
-   {
-	   CClientDC dc(this);
-	   CFont* pOldFont = dc.SelectObject(&afxGlobalData.fontRegular);
-
-	   int cxExtentMax = 0;
-
-	   for (int i = 0; i < wndListBox.GetCount(); i ++)
-	   {
-		   CString strItem;
-		   wndListBox.GetText(i, strItem);
-
-		   cxExtentMax = max(cxExtentMax, (int)dc.GetTextExtent(strItem).cx);
-	   }
-
-	   wndListBox.SetHorizontalExtent(cxExtentMax);
-	   dc.SelectObject(pOldFont);
-   }
-
-   void COutputWnd::onGameDataLoaded()
-   {
-      m_wndOutputBuild.AddString(_T("Game data has been loaded"));
-   }
-
-   void COutputWnd::FillBuildWindow()
-   {
-	   /*m_wndOutputBuild.AddString(_T("Build output is being displayed here."));
-	   m_wndOutputBuild.AddString(_T("The output is being displayed in rows of a list view"));
-	   m_wndOutputBuild.AddString(_T("but you can change the way it is displayed as you wish..."));*/
-   }
-
-   void COutputWnd::FillDebugWindow()
-   {
-	   m_wndOutputDebug.AddString(_T("Debug output is being displayed here."));
-	   m_wndOutputDebug.AddString(_T("The output is being displayed in rows of a list view"));
-	   m_wndOutputDebug.AddString(_T("but you can change the way it is displayed as you wish..."));
-   }
-
-   void COutputWnd::FillFindWindow()
-   {
-	   m_wndOutputFind.AddString(_T("Find output is being displayed here."));
-	   m_wndOutputFind.AddString(_T("The output is being displayed in rows of a list view"));
-	   m_wndOutputFind.AddString(_T("but you can change the way it is displayed as you wish..."));
-   }
-
    void COutputWnd::UpdateFonts()
    {
 	   m_wndOutputBuild.SetFont(&afxGlobalData.fontRegular);
@@ -141,8 +112,27 @@ NAMESPACE_BEGIN(GUI)
 	   m_wndOutputFind.SetFont(&afxGlobalData.fontRegular);
    }
 
-   /////////////////////////////////////////////////////////////////////////////
-   // COutputList1
+   // ------------------------------- PRIVATE METHODS ------------------------------
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   // --------------------------------- APP WIZARD ---------------------------------
+   
+   BEGIN_MESSAGE_MAP(COutputList, CListBox)
+	   ON_WM_CONTEXTMENU()
+	   ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
+	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
+	   ON_COMMAND(ID_VIEW_OUTPUTWND, OnViewOutput)
+	   ON_WM_WINDOWPOSCHANGING()
+   END_MESSAGE_MAP()
+
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    COutputList::COutputList()
    {
@@ -152,15 +142,11 @@ NAMESPACE_BEGIN(GUI)
    {
    }
 
-   BEGIN_MESSAGE_MAP(COutputList, CListBox)
-	   ON_WM_CONTEXTMENU()
-	   ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
-	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
-	   ON_COMMAND(ID_VIEW_OUTPUTWND, OnViewOutput)
-	   ON_WM_WINDOWPOSCHANGING()
-   END_MESSAGE_MAP()
-   /////////////////////////////////////////////////////////////////////////////
-   // COutputList message handlers
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
 
    void COutputList::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
    {
@@ -206,6 +192,10 @@ NAMESPACE_BEGIN(GUI)
 
 	   }
    }
+
+   // ------------------------------- PRIVATE METHODS ------------------------------
+
+   
 
 NAMESPACE_END(GUI)
 

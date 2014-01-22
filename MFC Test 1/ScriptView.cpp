@@ -18,8 +18,8 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   // ScriptView
-
+   // --------------------------------- APP WIZARD ---------------------------------
+  
    IMPLEMENT_DYNCREATE(ScriptView, CFormView)
 
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
@@ -29,83 +29,23 @@ NAMESPACE_BEGIN(GUI)
       ON_WM_SIZE()
       ON_BN_CLICKED(IDC_RUNTESTS, &ScriptView::OnBnClickedRuntests)
       ON_BN_CLICKED(IDC_COMPILE, &ScriptView::OnBnClickedCompile)
-      ON_EN_UPDATE(IDC_RICHEDIT, &ScriptView::OnEnUpdateRichedit)
       ON_EN_CHANGE(IDC_RICHEDIT, &ScriptView::OnEnChangeRichedit)
       ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
-
-   // ScriptView construction/destruction
-
-   ScriptView::ScriptView()
-	   : CFormView(ScriptView::IDD), Updating(false)
+   // -------------------------------- CONSTRUCTION --------------------------------
+   
+   ScriptView::ScriptView() : CFormView(ScriptView::IDD), Updating(false)
    {
-	   // TODO: add construction code here
-      //MSFTEDIT_CLASS
    }
 
    ScriptView::~ScriptView()
    {
    }
 
-   void ScriptView::DoDataExchange(CDataExchange* pDX)
-   {
-      CFormView::DoDataExchange(pDX);
-      DDX_Control(pDX, IDC_RICHEDIT, m_RichEdit);
-   }
+   // ------------------------------- STATIC METHODS -------------------------------
 
-   BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
-   {
-	   // TODO: Modify the Window class or styles here by modifying
-	   //  the CREATESTRUCT cs
-
-	   return CFormView::PreCreateWindow(cs);
-   }
-
-   void ScriptView::OnInitialUpdate()
-   {
-	   CFormView::OnInitialUpdate();
-	   ResizeParentToFit();
-
-      // Enable EN_CHANGE
-      m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
-
-      // TEST: set paragraph
-      //PARAFORMAT2 pf;
-      //pf.cbSize = sizeof(pf);
-      //pf.dwMask = PFM_LINESPACING;
-      //pf.bLineSpacingRule = 0; // Single spaced
-      //pf.dyLineSpacing = 20;
-      //
-      //m_RichEdit.SetSel(0,-1);
-      //m_RichEdit.SetParaFormat(pf);
-
-      string txt;
-      RtfScriptWriter w(txt);
-      w.Write(GetDocument()->Script);
-      w.Close();
-
-
-      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
-   }
-
-   void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
-   {
-	   ClientToScreen(&point);
-	   OnContextMenu(this, point);
-   }
-
-   void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
-   {
-   /*#ifndef SHARED_HANDLERS
-	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
-   #endif*/
-   }
-
-
-   // ScriptView diagnostics
+   // ------------------------------- PUBLIC METHODS -------------------------------
 
    #ifdef _DEBUG
    void ScriptView::AssertValid() const
@@ -125,64 +65,28 @@ NAMESPACE_BEGIN(GUI)
    }
    #endif //_DEBUG
 
-
-   // ScriptView message handlers
-
-   //#define ST_UNICODE (DWORD)8
-
-   void ScriptView::OnBnClickedLoadScript()
+   
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   
+   void ScriptView::DoDataExchange(CDataExchange* pDX)
    {
-      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml";
-      try
-      {
-         ScriptFile f( DebugTests::LoadScript(path) );
-      
-      
-
-         string txt;
-         RtfScriptWriter w(txt);
-         w.Write(f);
-         w.Close();
-
-         /*SETTEXTEX opt = {ST_DEFAULT, CP_UTF8};
-         unique_ptr<CHAR> utf8(new CHAR[txt.length()*2]);
-         utf8.get()[WideCharToMultiByte(CP_UTF8, NULL, txt.c_str(), txt.length(), utf8.get(), txt.length()*2, NULL, NULL)] = NULL;
-      
-         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)utf8.get());*/
-
-         SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-         m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
-      }
+      CFormView::DoDataExchange(pDX);
+      DDX_Control(pDX, IDC_RICHEDIT, m_RichEdit);
    }
 
 
-   void ScriptView::OnSize(UINT nType, int cx, int cy)
+   void ScriptView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
-      CFormView::OnSize(nType, cx, cy);
+      //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
+      
+      // Raise 'DOCUMENT ACTIVATED'
+      if (bActivate != FALSE)
+         EventLib.DocumentActivated.Raise(GetDocument());
 
-      // TODO: Add your message handler code here
-      if (m_RichEdit.m_hWnd != nullptr)
-      {
-         CRect wnd;
-         GetClientRect(&wnd);
-         m_RichEdit.SetWindowPos(nullptr, NULL, 60, wnd.Width(), wnd.Height()-60, SWP_NOZORDER);
-      }
+      CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
-
-
-   void ScriptView::OnBnClickedRuntests()
-   {
-      DebugTests::RunAll();
-      AfxMessageBox(L"Tests complete");
-   }
-
+   
 
    void ScriptView::OnBnClickedCompile()
    {
@@ -232,34 +136,89 @@ NAMESPACE_BEGIN(GUI)
    }
 
    
-
-   
-   void ScriptView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   void ScriptView::OnBnClickedLoadScript()
    {
-      //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
+      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml";
+      try
+      {
+         ScriptFile f( DebugTests::LoadScript(path) );
       
-      // Raise 'DOCUMENT ACTIVATED'
-      if (bActivate != FALSE)
-         EventLib.DocumentActivated.Raise(GetDocument());
+      
 
-      CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+         string txt;
+         RtfScriptWriter w(txt);
+         w.Write(f);
+         w.Close();
+
+         /*SETTEXTEX opt = {ST_DEFAULT, CP_UTF8};
+         unique_ptr<CHAR> utf8(new CHAR[txt.length()*2]);
+         utf8.get()[WideCharToMultiByte(CP_UTF8, NULL, txt.c_str(), txt.length(), utf8.get(), txt.length()*2, NULL, NULL)] = NULL;
+      
+         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)utf8.get());*/
+
+         SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+         m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
    }
+
    
-
-
-   void ScriptView::OnEnUpdateRichedit()
+   void ScriptView::OnBnClickedRuntests()
    {
-      // TODO:  If this is a RICHEDIT control, the control will not
-      // send this notification unless you override the CFormView::OnInitDialog()
-      // function to send the EM_SETEVENTMASK message to the control
-      // with the ENM_UPDATE flag ORed into the lParam mask.
-
-      // TODO:  Add your control notification handler code here
-
-   
+      DebugTests::RunAll();
+      AfxMessageBox(L"Tests complete");
    }
 
 
+   void ScriptView::OnInitialUpdate()
+   {
+	   CFormView::OnInitialUpdate();
+	   ResizeParentToFit();
+
+      // Enable EN_CHANGE
+      m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+
+      // TEST: set paragraph
+      //PARAFORMAT2 pf;
+      //pf.cbSize = sizeof(pf);
+      //pf.dwMask = PFM_LINESPACING;
+      //pf.bLineSpacingRule = 0; // Single spaced
+      //pf.dyLineSpacing = 20;
+      //
+      //m_RichEdit.SetSel(0,-1);
+      //m_RichEdit.SetParaFormat(pf);
+
+      string txt;
+      RtfScriptWriter w(txt);
+      w.Write(GetDocument()->Script);
+      w.Close();
+
+
+      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+      m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
+   }
+
+   void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
+   {
+	   ClientToScreen(&point);
+	   OnContextMenu(this, point);
+   }
+
+   void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+   {
+   /*#ifndef SHARED_HANDLERS
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
+   #endif*/
+   }
+
+   
    void ScriptView::OnEnChangeRichedit()
    {
       // TODO:  If this is a RICHEDIT control, the control will not
@@ -324,6 +283,30 @@ NAMESPACE_BEGIN(GUI)
          Updating = false;
       }
    }
+
+   
+   void ScriptView::OnSize(UINT nType, int cx, int cy)
+   {
+      CFormView::OnSize(nType, cx, cy);
+
+      // TODO: Add your message handler code here
+      if (m_RichEdit.m_hWnd != nullptr)
+      {
+         CRect wnd;
+         GetClientRect(&wnd);
+         m_RichEdit.SetWindowPos(nullptr, NULL, 60, wnd.Width(), wnd.Height()-60, SWP_NOZORDER);
+      }
+   }
+
+   BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
+   {
+	   // TODO: Modify the Window class or styles here by modifying
+	   //  the CREATESTRUCT cs
+
+	   return CFormView::PreCreateWindow(cs);
+   }
+
+   // ------------------------------- PRIVATE METHODS ------------------------------
 
 
 NAMESPACE_END(GUI)
