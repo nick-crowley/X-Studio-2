@@ -45,6 +45,8 @@ NAMESPACE_BEGIN(GUI)
    protected:
       CListCtrl  ListView;
 	   CImageList Images;
+      CComboBox  Groups;
+      CEdit      Search;
 
       SyntaxLibrary::ResultCollection Content;
       AppStateChangedHandler          fnAppStateChanged;
