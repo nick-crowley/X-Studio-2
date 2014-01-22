@@ -8,48 +8,39 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   // LanguageDocument
-
+   // --------------------------------- APP WIZARD ---------------------------------
+  
    IMPLEMENT_DYNCREATE(LanguageDocument, CDocument)
+
+   BEGIN_MESSAGE_MAP(LanguageDocument, CDocument)
+   END_MESSAGE_MAP()
+
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    LanguageDocument::LanguageDocument()
    {
-   }
-
-   BOOL LanguageDocument::OnNewDocument()
-   {
-	   if (!CDocument::OnNewDocument())
-		   return FALSE;
-	   return TRUE;
    }
 
    LanguageDocument::~LanguageDocument()
    {
    }
 
+   // ------------------------------- STATIC METHODS -------------------------------
 
-   BEGIN_MESSAGE_MAP(LanguageDocument, CDocument)
-   END_MESSAGE_MAP()
-
-
-   // LanguageDocument diagnostics
-
+   // ------------------------------- PUBLIC METHODS -------------------------------
+   
    #ifdef _DEBUG
    void LanguageDocument::AssertValid() const
    {
 	   CDocument::AssertValid();
    }
 
-   #ifndef _WIN32_WCE
+   
    void LanguageDocument::Dump(CDumpContext& dc) const
    {
 	   CDocument::Dump(dc);
    }
-   #endif
    #endif //_DEBUG
-
-   #ifndef _WIN32_WCE
-   // LanguageDocument serialization
 
    void LanguageDocument::Serialize(CArchive& ar)
    {
@@ -62,10 +53,17 @@ NAMESPACE_BEGIN(GUI)
 		   // TODO: add loading code here
 	   }
    }
-   #endif
 
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   BOOL LanguageDocument::OnNewDocument()
+   {
+	   if (!CDocument::OnNewDocument())
+		   return FALSE;
+	   return TRUE;
+   }
 
-   // LanguageDocument commands
-
+   // ------------------------------- PRIVATE METHODS ------------------------------
+   
 NAMESPACE_END(GUI)
 

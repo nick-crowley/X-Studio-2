@@ -4,29 +4,41 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   // LanguageDocument document
-
+   /// <summary>Language document</summary>
    class LanguageDocument : public CDocument
    {
-	   DECLARE_DYNCREATE(LanguageDocument)
-
+	   // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+      
    public:
-	   LanguageDocument();
+      LanguageDocument();
 	   virtual ~LanguageDocument();
-   #ifndef _WIN32_WCE
-	   virtual void Serialize(CArchive& ar);   // overridden for document i/o
-   #endif
-   #ifdef _DEBUG
+
+      // ------------------------ STATIC -------------------------
+   public:
+      DECLARE_DYNCREATE(LanguageDocument)
+   protected:
+      DECLARE_MESSAGE_MAP()
+
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+     public:
+	#ifdef _DEBUG
 	   virtual void AssertValid() const;
-   #ifndef _WIN32_WCE
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
-   #endif
+      // ----------------------- MUTATORS ------------------------
+   public:
+      virtual void Serialize(CArchive& ar);      
 
    protected:
 	   virtual BOOL OnNewDocument();
 
-	   DECLARE_MESSAGE_MAP()
+      // -------------------- REPRESENTATION ---------------------
+   
    };
 
 

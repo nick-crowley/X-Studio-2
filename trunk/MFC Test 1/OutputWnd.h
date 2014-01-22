@@ -5,7 +5,7 @@
 NAMESPACE_BEGIN(GUI)
 
    
-   /// <summary></summary>
+   /// <summary>Output window list</summary>
    class COutputList : public CListBox
    {
       // ------------------------ TYPES --------------------------
@@ -31,7 +31,7 @@ NAMESPACE_BEGIN(GUI)
 
 
 
-   /// <summary></summary>
+   /// <summary>Dockable output window</summary>
    class COutputWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------

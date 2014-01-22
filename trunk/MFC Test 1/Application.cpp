@@ -21,9 +21,30 @@
 #define new DEBUG_NEW
 #endif
 
+// --------------------------------- GLOBAL --------------------------------
 
-// Application
+Application theApp;
 
+// --------------------------------- TYPES ---------------------------------
+
+class CAboutDlg : public CDialogEx
+{
+public:
+	CAboutDlg();
+
+// Dialog Data
+	enum { IDD = IDD_ABOUTBOX };
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+// Implementation
+protected:
+	DECLARE_MESSAGE_MAP()
+};
+
+// --------------------------------- APP WIZARD ---------------------------------
+  
 BEGIN_MESSAGE_MAP(Application, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &Application::OnAppAbout)
 	// Standard file based document commands
@@ -31,8 +52,10 @@ BEGIN_MESSAGE_MAP(Application, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+END_MESSAGE_MAP()
 
-// Application construction
+// -------------------------------- CONSTRUCTION --------------------------------
 
 Application::Application()
 {
@@ -44,12 +67,14 @@ Application::Application()
 	// Place all significant initialization in InitInstance
 }
 
-// The one and only Application object
 
-Application theApp;
+CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
+{
+}
 
+// ------------------------------- STATIC METHODS -------------------------------
 
-// Application initialization
+// ------------------------------- PUBLIC METHODS -------------------------------
 
 BOOL Application::InitInstance()
 {
@@ -154,38 +179,6 @@ int Application::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
-// Application message handlers
-
-
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
 
 // App command to run the dialog
 void Application::OnAppAbout()
@@ -211,5 +204,13 @@ void Application::SaveCustomState()
 {
 }
 
-// Application message handlers
+// ------------------------------ PROTECTED METHODS -----------------------------
+
+void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+}
+
+// ------------------------------- PRIVATE METHODS ------------------------------
+
 

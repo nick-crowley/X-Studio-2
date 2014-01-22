@@ -7,12 +7,11 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   // LanguageView
+   // --------------------------------- APP WIZARD ---------------------------------
+  
+   // -------------------------------- CONSTRUCTION --------------------------------
 
-   IMPLEMENT_DYNCREATE(LanguageView, CFormView)
-
-   LanguageView::LanguageView()
-	   : CFormView(LanguageView::IDD)
+   LanguageView::LanguageView() : CFormView(LanguageView::IDD)
    {
 
    }
@@ -21,16 +20,14 @@ NAMESPACE_BEGIN(GUI)
    {
    }
 
-   void LanguageView::DoDataExchange(CDataExchange* pDX)
-   {
-	   CFormView::DoDataExchange(pDX);
-   }
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   IMPLEMENT_DYNCREATE(LanguageView, CFormView)
 
    BEGIN_MESSAGE_MAP(LanguageView, CFormView)
    END_MESSAGE_MAP()
 
-
-   // LanguageView diagnostics
+   // ------------------------------- PUBLIC METHODS -------------------------------
 
    #ifdef _DEBUG
    void LanguageView::AssertValid() const
@@ -38,16 +35,22 @@ NAMESPACE_BEGIN(GUI)
 	   CFormView::AssertValid();
    }
 
-   #ifndef _WIN32_WCE
+   
    void LanguageView::Dump(CDumpContext& dc) const
    {
 	   CFormView::Dump(dc);
    }
-   #endif
    #endif //_DEBUG
 
+   void LanguageView::DoDataExchange(CDataExchange* pDX)
+   {
+	   CFormView::DoDataExchange(pDX);
 
-   // LanguageView message handlers
+   }
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
+   // ------------------------------- PRIVATE METHODS ------------------------------
+
    
 NAMESPACE_END(GUI)
 

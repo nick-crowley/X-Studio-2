@@ -4,9 +4,14 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-
+   /// <summary>Properties window toolbar</summary>
    class CPropertiesToolBar : public CMFCToolBar
    {
+      // --------------------- CONSTRUCTION ----------------------
+
+      // ---------------------- ACCESSORS ------------------------			
+      
+      // ----------------------- MUTATORS ------------------------
    public:
 	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	   {
@@ -16,6 +21,7 @@ NAMESPACE_BEGIN(GUI)
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
    };
 
+   /// <summary>Dockable properties window</summary>
    class CPropertiesWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------

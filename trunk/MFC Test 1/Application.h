@@ -8,31 +8,42 @@
 #endif
 
 
-// Application:
+/// <summary>Main thread</summary>
 class Application : public CWinAppEx
 {
+   // ------------------------ TYPES --------------------------
+private:
+	  
+   // --------------------- CONSTRUCTION ----------------------
 public:
 	Application();
 
+   // ------------------------ STATIC -------------------------
+   
+   DECLARE_MESSAGE_MAP()
 
-   HICON  LoadIcon(UINT nResID, UINT iSize)
+   // --------------------- PROPERTIES ------------------------
+	  
+   // ---------------------- ACCESSORS ------------------------			
+   
+   HICON  LoadIcon(UINT nResID, UINT iSize) const
    {
       return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
    }
 
-// Overrides
+   // ----------------------- MUTATORS ------------------------
 public:
 	virtual BOOL InitInstance();
-	virtual int ExitInstance();
-
-// Implementation
+	virtual int  ExitInstance();
 
 	virtual void PreLoadState();
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
 
 	afx_msg void OnAppAbout();
-	DECLARE_MESSAGE_MAP()
+
+   // -------------------- REPRESENTATION ---------------------
+   
 };
 
 extern Application theApp;
