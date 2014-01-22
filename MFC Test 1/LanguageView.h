@@ -4,29 +4,38 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   // LanguageView form view
-
+   /// <summary>Language document view</summary>
    class LanguageView : public CFormView
    {
-	   DECLARE_DYNCREATE(LanguageView)
-
+      // ------------------------ TYPES --------------------------
+   public:
+	   enum { IDD = IDR_LANGUAGEVIEW };
+	  
+      // --------------------- CONSTRUCTION ----------------------
    protected:
 	   LanguageView();           // protected constructor used by dynamic creation
 	   virtual ~LanguageView();
 
+      // ------------------------ STATIC -------------------------
    public:
-	   enum { IDD = IDR_LANGUAGEVIEW };
+      DECLARE_DYNCREATE(LanguageView)
+   protected:
+      DECLARE_MESSAGE_MAP()
+
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+   public:
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
-   #ifndef _WIN32_WCE
 	   virtual void Dump(CDumpContext& dc) const;
-   #endif
-   #endif
+   #endif   
 
+      // ----------------------- MUTATORS ------------------------
    protected:
-	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
 
-	   DECLARE_MESSAGE_MAP()
+      // -------------------- REPRESENTATION ---------------------
    };
 
 

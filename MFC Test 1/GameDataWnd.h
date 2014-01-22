@@ -5,7 +5,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
    
-   /// <summary></summary>
+   /// <summary>Dockable game data window</summary>
    class CGameDataWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------

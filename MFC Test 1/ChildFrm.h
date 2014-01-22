@@ -8,6 +8,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   /// <summary>Child frame</summary>
    class CChildFrame : public CMDIChildWndEx
    {
 	   DECLARE_DYNCREATE(CChildFrame)

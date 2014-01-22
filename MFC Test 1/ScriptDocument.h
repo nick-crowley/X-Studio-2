@@ -6,7 +6,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-
+   /// <summary>MSCI Script document</summary>
    class ScriptDocument : public CDocument
    {
       // ------------------------ TYPES --------------------------
