@@ -1,5 +1,6 @@
 
 #pragma once
+#include "WorkerThread.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -57,11 +58,11 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
 	   void AdjustHorzScroll(CListBox& wndListBox);
-
-      void onGameDataLoaded();
+      void onWorkerFeedback(WorkerProgress* progress);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
+
 
       // -------------------- REPRESENTATION ---------------------
    protected:
@@ -70,6 +71,8 @@ NAMESPACE_BEGIN(GUI)
 	   COutputList m_wndOutputBuild;
 	   COutputList m_wndOutputDebug;
 	   COutputList m_wndOutputFind;
+
+      FeedbackHandler fnWorkerFeedback;
    };
 
 

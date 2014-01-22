@@ -4,8 +4,8 @@
 
 #include "stdafx.h"
 #include "Application.h"
-
 #include "MainWnd.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,9 +15,13 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   // --------------------------------- CONSTANTS ---------------------------------
+
    const int  iMaxUserToolbars = 10;
    const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
    const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+
+   // --------------------------------- GLOBAL DATA --------------------------------
 
    static UINT indicators[] =
    {
@@ -26,6 +30,8 @@ NAMESPACE_BEGIN(GUI)
 	   ID_INDICATOR_NUM,
 	   ID_INDICATOR_SCRL,
    };
+
+   FeedbackEvent   MainWnd::LoadingFeedback;
 
    // --------------------------------- APP WIZARD ---------------------------------
 
@@ -36,12 +42,13 @@ NAMESPACE_BEGIN(GUI)
 	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+      ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
 	   ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   MainWnd::MainWnd()
+   MainWnd::MainWnd() : GameDataWorker((ThreadProc)LoadingThread::ThreadMain)
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -253,6 +260,9 @@ NAMESPACE_BEGIN(GUI)
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
 
+
+         // Load game data
+         GameDataWorker.Start(new WorkerData());
 	      return 0;
       }
       catch (ExceptionBase& e)
@@ -298,8 +308,16 @@ NAMESPACE_BEGIN(GUI)
    }
 
    
-   
+   LRESULT MainWnd::OnWorkerFeedback(WPARAM wParam, LPARAM lParam)
+   {
+      WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
 
+      // Raise event. Delete data.
+      LoadingFeedback.Raise(p);
+      delete p;
+
+      return 0;
+   }
 
 
    // ------------------------------- PRIVATE METHODS ------------------------------

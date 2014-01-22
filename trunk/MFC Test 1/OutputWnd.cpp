@@ -23,7 +23,7 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   COutputWnd::COutputWnd() //: gameDataLoaded(theApp.GameDataLoaded.Register(this, &COutputWnd::onGameDataLoaded))
+   COutputWnd::COutputWnd() : fnWorkerFeedback(MainWnd::LoadingFeedback.Register(this, &COutputWnd::onWorkerFeedback))
    {
       
    }
@@ -92,10 +92,11 @@ NAMESPACE_BEGIN(GUI)
 	   return 0;
    }
    
-   void COutputWnd::onGameDataLoaded()
+   void COutputWnd::onWorkerFeedback(WorkerProgress* progress)
    {
-      m_wndOutputBuild.AddString(_T("Game data has been loaded"));
+      m_wndOutputBuild.AddString(progress->Text.c_str());
    }
+
 
    void COutputWnd::OnSize(UINT nType, int cx, int cy)
    {

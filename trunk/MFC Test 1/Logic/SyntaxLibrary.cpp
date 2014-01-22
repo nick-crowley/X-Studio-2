@@ -95,6 +95,27 @@ namespace Logic
          }
       }
 
+      /// <summary>Search for all syntax containing a given term</summary>
+      /// <param name="str">Search term</param>
+      /// <param name="ver">Game version</param>
+      /// <returns>Array of matching Syntax</returns>
+      SyntaxLibrary::ResultCollection  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
+      {
+         ResultCollection results;
+
+         // Search commands
+         for (const auto& pair : Commands)
+         {
+            const CommandSyntax& syntax = pair.second;
+
+            // Check compatibility. Check search term (if any)
+            if (syntax.IsCompatible(ver) && (!str.length() || syntax.Text.find(str) != wstring::npos))
+               results.push_back(&syntax);
+         }
+
+         return results;
+      }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------

@@ -10,11 +10,14 @@ namespace Logic
 {
    namespace Scripts
    {
-         
       /// <summary></summary>
       class SyntaxLibrary
       {
          // ------------------------ TYPES --------------------------
+      public:
+         /// <summary>Command syntax array</summary>
+         typedef vector<const CommandSyntax*>  ResultCollection;
+      
       private:
          /// <summary></summary>
          class SyntaxNode
@@ -92,6 +95,12 @@ namespace Logic
          /// <param name="v">Game version</param>
          /// <returns>Syntax if found, otherwise sentinel syntax</returns>
          CommandSyntax  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
+
+         /// <summary>Search for all syntax containing a given term</summary>
+         /// <param name="str">Search term</param>
+         /// <param name="ver">Game version</param>
+         /// <returns>Array of matching Syntax</returns>
+         ResultCollection  Query(const wstring& str, GameVersion ver) const;
 
          /// <summary>Merges a syntax file into the library</summary>
          /// <param name="f">The file</param>
