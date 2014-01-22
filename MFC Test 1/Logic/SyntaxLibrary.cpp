@@ -71,13 +71,14 @@ namespace Logic
                CommandLexer lex(syntax.Text);
                TokenArray tokens;
 
-               // Copy token array excluding RefObj & RetVar
+               // Duplicate token array WITHOUT RefObj & RetVar
                for (const ScriptToken& t : lex.Tokens)
                {
                   if (t.Type != TokenType::Variable)
                      tokens.push_back(t);
                   else
                   {
+                     // Lookup parameter by physical index marker
                      auto param = syntax.Parameters[t.Text[1]-48];
 
                      if (!param.IsRefObj() && !param.IsRetVar())
