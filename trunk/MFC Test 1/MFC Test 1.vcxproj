@@ -129,6 +129,7 @@
     <ClInclude Include="EventLibrary.h" />
     <ClInclude Include="GameDataWorker.h" />
     <ClInclude Include="GameDataWnd.h" />
+    <ClInclude Include="ListView.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
     <ClInclude Include="LanguageView.h" />

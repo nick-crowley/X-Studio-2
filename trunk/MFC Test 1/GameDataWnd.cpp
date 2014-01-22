@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameDataWnd.h"
 #include <strsafe.h>
+#include "ListView.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -80,7 +81,7 @@ NAMESPACE_BEGIN(GUI)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
 	      // ListView
-	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
+	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT |  LVS_ALIGNTOP |/*LVS_OWNERDATA |*/ LVS_NOCOLUMNHEADER, rectDummy, this, 1))
             throw Win32Exception(HERE, L"Unable to create game data window listview");
 
          // Insert columns
@@ -88,6 +89,7 @@ NAMESPACE_BEGIN(GUI)
          ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          ListView.SetFont(&afxGlobalData.fontRegular);
+         ListView.EnableGroupView(TRUE);
          
          // ListView ImageList:
 	      /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
@@ -200,11 +202,29 @@ NAMESPACE_BEGIN(GUI)
          // Lookup matches
          Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
 
+         // Populate groups
+         for (UINT i = (UINT)CommandGroup::ARRAY; i < (UINT)CommandGroup::HIDDEN; ++i)
+         {
+            LVGroup grp(i, GuiString(IDS_FIRST_COMMAND_GROUP+i));
+            ListView.InsertGroup(i, (LVGROUP*)&grp);
+         }
+
          // Display results
-         ListView.SetItemCountEx(Content.size());
+         ListView.SetItemCount(Content.size());
+         for (UINT i = 0; i < Content.size(); ++i)
+         {
+            LVITEM item;
+            item.mask = LVIF_TEXT | LVIF_GROUPID;
+            item.iGroupId = (UINT)Content[i]->Group;
+            item.pszText = (WCHAR*)Content[i]->Text.c_str();
+            item.iItem = i;
+            
+            //ListView.InsertItem(i, Content[i]->Text.c_str(), 0);
+            ListView.InsertItem(&item);
+         }
       }
       else
-         ListView.SetItemCountEx(0);
+         ListView.SetItemCount(0);
    }
    
 NAMESPACE_END(GUI)

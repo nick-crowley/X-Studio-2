@@ -310,6 +310,9 @@
     <ClInclude Include="GameDataWorker.h">
       <Filter>Header Files\GUI\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="ListView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
