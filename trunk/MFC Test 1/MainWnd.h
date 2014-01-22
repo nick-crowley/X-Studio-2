@@ -11,32 +11,48 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   /// <summary>Main window</summary>
    class MainWnd : public CMDIFrameWndEx
    {
-	   DECLARE_DYNAMIC(MainWnd)
+      // ------------------------ TYPES --------------------------
+
+      // --------------------- CONSTRUCTION ----------------------
+	   
    public:
 	   MainWnd();
+      virtual ~MainWnd();
 
-   // Attributes
+      // ------------------------ STATIC -------------------------
    public:
+      DECLARE_DYNAMIC(MainWnd)
+   protected:
+      DECLARE_MESSAGE_MAP()
 
-   // Operations
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
    public:
-
-   // Overrides
-   public:
-	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	   virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
-
-   // Implementation
-   public:
-	   virtual ~MainWnd();
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
-   #endif
+   #endif 
 
-   protected:  // control bar embedded members
+      // ----------------------- MUTATORS ------------------------
+   
+   public:
+      virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
+	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+   protected:
+	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+      afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
+      afx_msg void OnViewCustomize();
+      afx_msg void OnWindowManager();
+
+      // -------------------- REPRESENTATION ---------------------
+
+   protected: 
 	   CMFCMenuBar       m_wndMenuBar;
 	   CMFCToolBar       m_wndToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
@@ -45,18 +61,6 @@ NAMESPACE_BEGIN(GUI)
 	   COutputWnd        m_wndOutput;
       CGameDataWnd      m_wndGameData;
 	   CPropertiesWnd    m_wndProperties;
-
-   // Generated message map functions
-   protected:
-	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnWindowManager();
-	   afx_msg void OnViewCustomize();
-	   afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
-	   afx_msg void OnApplicationLook(UINT id);
-	   afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
-	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
-	   DECLARE_MESSAGE_MAP()
-
    };
 
 

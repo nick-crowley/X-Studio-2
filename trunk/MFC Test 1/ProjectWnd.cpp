@@ -14,17 +14,8 @@ static char THIS_FILE[]=__FILE__;
 NAMESPACE_BEGIN(GUI)
 
 
-   /////////////////////////////////////////////////////////////////////////////
-   // CProjectWnd
-
-   CProjectWnd::CProjectWnd()
-   {
-   }
-
-   CProjectWnd::~CProjectWnd()
-   {
-   }
-
+   // --------------------------------- APP WIZARD ---------------------------------
+  
    BEGIN_MESSAGE_MAP(CProjectWnd, CDockablePane)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
@@ -40,8 +31,72 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
 
-   /////////////////////////////////////////////////////////////////////////////
-   // CWorkspaceBar message handlers
+   // -------------------------------- CONSTRUCTION --------------------------------
+
+   CProjectWnd::CProjectWnd()
+   {
+   }
+
+   CProjectWnd::~CProjectWnd()
+   {
+   }
+
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
+   void CProjectWnd::AdjustLayout()
+   {
+	   if (GetSafeHwnd() == NULL)
+	   {
+		   return;
+	   }
+
+	   CRect rectClient;
+	   GetClientRect(rectClient);
+
+	   int cyTlb = Toolbar.CalcFixedLayout(FALSE, TRUE).cy;
+
+	   Toolbar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
+	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
+   }
+
+   void CProjectWnd::FillFileView()
+   {
+	   HTREEITEM hRoot = TreeView.InsertItem(_T("FakeApp files"), 0, 0);
+	   TreeView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+
+	   HTREEITEM hSrc = TreeView.InsertItem(_T("FakeApp Source Files"), 0, 0, hRoot);
+
+	   TreeView.InsertItem(_T("FakeApp.cpp"), 1, 1, hSrc);
+	   TreeView.InsertItem(_T("FakeApp.rc"), 1, 1, hSrc);
+	   TreeView.InsertItem(_T("FakeAppDoc.cpp"), 1, 1, hSrc);
+	   TreeView.InsertItem(_T("FakeAppView.cpp"), 1, 1, hSrc);
+	   TreeView.InsertItem(_T("MainFrm.cpp"), 1, 1, hSrc);
+	   TreeView.InsertItem(_T("StdAfx.cpp"), 1, 1, hSrc);
+
+	   HTREEITEM hInc = TreeView.InsertItem(_T("FakeApp Header Files"), 0, 0, hRoot);
+
+	   TreeView.InsertItem(_T("FakeApp.h"), 2, 2, hInc);
+	   TreeView.InsertItem(_T("FakeAppDoc.h"), 2, 2, hInc);
+	   TreeView.InsertItem(_T("FakeAppView.h"), 2, 2, hInc);
+	   TreeView.InsertItem(_T("Resource.h"), 2, 2, hInc);
+	   TreeView.InsertItem(_T("MainFrm.h"), 2, 2, hInc);
+	   TreeView.InsertItem(_T("StdAfx.h"), 2, 2, hInc);
+
+	   HTREEITEM hRes = TreeView.InsertItem(_T("FakeApp Resource Files"), 0, 0, hRoot);
+
+	   TreeView.InsertItem(_T("FakeApp.ico"), 2, 2, hRes);
+	   TreeView.InsertItem(_T("FakeApp.rc2"), 2, 2, hRes);
+	   TreeView.InsertItem(_T("FakeAppDoc.ico"), 2, 2, hRes);
+	   TreeView.InsertItem(_T("FakeToolbar.bmp"), 2, 2, hRes);
+
+	   TreeView.Expand(hRoot, TVE_EXPAND);
+	   TreeView.Expand(hSrc, TVE_EXPAND);
+	   TreeView.Expand(hInc, TVE_EXPAND);
+   }
 
    int CProjectWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -85,45 +140,28 @@ NAMESPACE_BEGIN(GUI)
 	   return 0;
    }
 
-   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
+   void CProjectWnd::OnChangeVisualStyle()
    {
-	   CDockablePane::OnSize(nType, cx, cy);
-	   AdjustLayout();
-   }
+	   Toolbar.CleanUpLockedImages();
+	   Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
 
-   void CProjectWnd::FillFileView()
-   {
-	   HTREEITEM hRoot = TreeView.InsertItem(_T("FakeApp files"), 0, 0);
-	   TreeView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+	   Images.DeleteImageList();
 
-	   HTREEITEM hSrc = TreeView.InsertItem(_T("FakeApp Source Files"), 0, 0, hRoot);
+	   CBitmap bmp;
+	   if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
+	   {
+		   TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
+		   ASSERT(FALSE);
+		   return;
+	   }
 
-	   TreeView.InsertItem(_T("FakeApp.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeApp.rc"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeAppDoc.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeAppView.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("MainFrm.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("StdAfx.cpp"), 1, 1, hSrc);
+	   BITMAP bmpObj;
+	   bmp.GetBitmap(&bmpObj);
 
-	   HTREEITEM hInc = TreeView.InsertItem(_T("FakeApp Header Files"), 0, 0, hRoot);
+	   Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
+	   Images.Add(&bmp, RGB(255, 0, 255));
 
-	   TreeView.InsertItem(_T("FakeApp.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("FakeAppDoc.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("FakeAppView.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("Resource.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("MainFrm.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("StdAfx.h"), 2, 2, hInc);
-
-	   HTREEITEM hRes = TreeView.InsertItem(_T("FakeApp Resource Files"), 0, 0, hRoot);
-
-	   TreeView.InsertItem(_T("FakeApp.ico"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeApp.rc2"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeAppDoc.ico"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeToolbar.bmp"), 2, 2, hRes);
-
-	   TreeView.Expand(hRoot, TVE_EXPAND);
-	   TreeView.Expand(hSrc, TVE_EXPAND);
-	   TreeView.Expand(hInc, TVE_EXPAND);
+	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
    }
 
    void CProjectWnd::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -153,28 +191,6 @@ NAMESPACE_BEGIN(GUI)
 
 	   pWndTree->SetFocus();
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
-   }
-
-   void CProjectWnd::AdjustLayout()
-   {
-	   if (GetSafeHwnd() == NULL)
-	   {
-		   return;
-	   }
-
-	   CRect rectClient;
-	   GetClientRect(rectClient);
-
-	   int cyTlb = Toolbar.CalcFixedLayout(FALSE, TRUE).cy;
-
-	   Toolbar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
-   }
-
-   void CProjectWnd::OnProperties()
-   {
-	   AfxMessageBox(_T("Properties...."));
-
    }
 
    void CProjectWnd::OnFileOpen()
@@ -219,6 +235,12 @@ NAMESPACE_BEGIN(GUI)
 	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
+   void CProjectWnd::OnProperties()
+   {
+	   AfxMessageBox(_T("Properties...."));
+
+   }
+
    void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
    {
 	   CDockablePane::OnSetFocus(pOldWnd);
@@ -226,30 +248,13 @@ NAMESPACE_BEGIN(GUI)
 	   TreeView.SetFocus();
    }
 
-   void CProjectWnd::OnChangeVisualStyle()
+   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
    {
-	   Toolbar.CleanUpLockedImages();
-	   Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
-
-	   Images.DeleteImageList();
-
-	   CBitmap bmp;
-	   if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
-	   {
-		   TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
-		   ASSERT(FALSE);
-		   return;
-	   }
-
-	   BITMAP bmpObj;
-	   bmp.GetBitmap(&bmpObj);
-
-	   Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
-	   Images.Add(&bmp, RGB(255, 0, 255));
-
-	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
+	   CDockablePane::OnSize(nType, cx, cy);
+	   AdjustLayout();
    }
 
+   // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END(GUI)
 

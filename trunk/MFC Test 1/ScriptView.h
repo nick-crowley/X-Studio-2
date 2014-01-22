@@ -11,60 +11,62 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-
+   /// <summary>Script view</summary>
    class ScriptView : public CFormView
    {
+   public:
+	   enum{ IDD = IDR_SCRIPTVIEW };
+      // ------------------------ TYPES --------------------------
    protected: // create from serialization only
 	   ScriptView();
-	   DECLARE_DYNCREATE(ScriptView)
+	public:
+      virtual ~ScriptView();   
+	  
+      // --------------------- CONSTRUCTION ----------------------
 
+      // ------------------------ STATIC -------------------------
+   protected: 
+      DECLARE_DYNCREATE(ScriptView)
+      DECLARE_MESSAGE_MAP()
+   
+      // --------------------- PROPERTIES ------------------------
+			
+      // ---------------------- ACCESSORS ------------------------			
    public:
-	   enum{ IDD = IDD_SCRIPTVIEW };
-
-   // Attributes
-   public:
-	   ScriptDocument* GetDocument() const;
-
-   // Operations
-   public:
-
-   // Overrides
-   public:
-	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-   protected:
-	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	   virtual void OnInitialUpdate(); // called first time after construct
-
-   // Implementation
-   public:
-	   virtual ~ScriptView();
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
 
+	   ScriptDocument* GetDocument() const;
+
+      // ----------------------- MUTATORS ------------------------
+
+   protected:
+      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+      virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      afx_msg void OnBnClickedCompile();
+      afx_msg void OnBnClickedLoadScript();
+      afx_msg void OnBnClickedRuntests();
+      afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnEnChangeRichedit();
+      afx_msg void OnFilePrintPreview();
+	   virtual void OnInitialUpdate(); // called first time after construct
+      afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+      afx_msg void OnSize(UINT nType, int cx, int cy);	  
+
+      // -------------------- REPRESENTATION ---------------------
+   public:
+      CRichEditCtrl m_RichEdit;
+
    protected:
       bool Updating;
 
-   // Generated message map functions
-   protected:
-	   afx_msg void OnFilePrintPreview();
-	   afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	   DECLARE_MESSAGE_MAP()
-   public:
-      afx_msg void OnBnClickedLoadScript();
-      CRichEditCtrl m_RichEdit;
-      afx_msg void OnSize(UINT nType, int cx, int cy);
-      afx_msg void OnBnClickedRuntests();
-      afx_msg void OnBnClickedCompile();
-      afx_msg void OnEnUpdateRichedit();
-      afx_msg void OnEnChangeRichedit();
-      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
-      
    };
 
-   #ifndef _DEBUG  // debug version in MFC Test 1View.cpp
+   #ifndef _DEBUG  
    inline ScriptDocument* ScriptView::GetDocument() const
       { return reinterpret_cast<ScriptDocument*>(m_pDocument); }
    #endif

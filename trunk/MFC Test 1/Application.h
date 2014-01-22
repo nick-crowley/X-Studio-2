@@ -26,7 +26,6 @@ public:
 	virtual int ExitInstance();
 
 // Implementation
-	UINT  m_nAppLook;
 
 	virtual void PreLoadState();
 	virtual void LoadCustomState();

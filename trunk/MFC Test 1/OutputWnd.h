@@ -4,65 +4,72 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-   /////////////////////////////////////////////////////////////////////////////
-   // COutputList window
-
+   
+   /// <summary></summary>
    class COutputList : public CListBox
    {
-   // Construction
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+      
    public:
-	   COutputList();
-
-   // Implementation
-   public:
+      COutputList();
 	   virtual ~COutputList();
 
+      // ------------------------ STATIC -------------------------
+   protected:
+	   DECLARE_MESSAGE_MAP()
+
+      // ----------------------- MUTATORS ------------------------
    protected:
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnEditCopy();
 	   afx_msg void OnEditClear();
 	   afx_msg void OnViewOutput();
-
-	   DECLARE_MESSAGE_MAP()
    };
 
+
+
+   /// <summary></summary>
    class COutputWnd : public CDockablePane
    {
-   // Construction
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+      
    public:
-	   COutputWnd();
+      COutputWnd();
+      virtual ~COutputWnd();
+      
+      // ------------------------ STATIC -------------------------
+   protected:
+      DECLARE_MESSAGE_MAP()
 
-	   void UpdateFonts();
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+      
+      // ----------------------- MUTATORS ------------------------
+   public:
+      void UpdateFonts();
 
-      // test
+   protected:
+	   void AdjustHorzScroll(CListBox& wndListBox);
+
       void onGameDataLoaded();
 
-   
+	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg void OnSize(UINT nType, int cx, int cy);
 
-   // Attributes
+      // -------------------- REPRESENTATION ---------------------
    protected:
 	   CMFCTabCtrl	m_wndTabs;
 
 	   COutputList m_wndOutputBuild;
 	   COutputList m_wndOutputDebug;
 	   COutputList m_wndOutputFind;
-
-   protected:
-	   void FillBuildWindow();
-	   void FillDebugWindow();
-	   void FillFindWindow();
-
-	   void AdjustHorzScroll(CListBox& wndListBox);
-
-   // Implementation
-   public:
-	   virtual ~COutputWnd();
-
-   protected:
-	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnSize(UINT nType, int cx, int cy);
-
-	   DECLARE_MESSAGE_MAP()
    };
 
 

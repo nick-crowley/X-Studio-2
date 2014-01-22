@@ -15,24 +15,9 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
-
-   // MainWnd
-
-   IMPLEMENT_DYNAMIC(MainWnd, CMDIFrameWndEx)
-
    const int  iMaxUserToolbars = 10;
    const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
    const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
-
-   BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
-	   ON_WM_CREATE()
-	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
-	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
-	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
-	   ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &MainWnd::OnApplicationLook)
-	   ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &MainWnd::OnUpdateApplicationLook)
-	   ON_WM_SETTINGCHANGE()
-   END_MESSAGE_MAP()
 
    static UINT indicators[] =
    {
@@ -42,17 +27,75 @@ NAMESPACE_BEGIN(GUI)
 	   ID_INDICATOR_SCRL,
    };
 
-   // MainWnd construction/destruction
+   // --------------------------------- APP WIZARD ---------------------------------
+
+   IMPLEMENT_DYNAMIC(MainWnd, CMDIFrameWndEx)
+
+   BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
+	   ON_WM_CREATE()
+	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
+	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
+	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+	   ON_WM_SETTINGCHANGE()
+   END_MESSAGE_MAP()
+
+   // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd()
    {
-	   // TODO: add member initialization code here
-	   theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
+	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
 
    MainWnd::~MainWnd()
    {
    }
+
+   // ------------------------------- STATIC METHODS -------------------------------
+
+   // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   #ifdef _DEBUG
+   void MainWnd::AssertValid() const
+   {
+	   CMDIFrameWndEx::AssertValid();
+   }
+
+   void MainWnd::Dump(CDumpContext& dc) const
+   {
+	   CMDIFrameWndEx::Dump(dc);
+   }
+   #endif //_DEBUG
+
+   BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
+   {
+	   // base class does the real work
+	   if (!CMDIFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
+	      return FALSE;
+
+	   // enable customization button for all user toolbars
+	   GuiString szCustomize(IDS_TOOLBAR_CUSTOMIZE);
+
+	   for (int i = 0; i < iMaxUserToolbars; i ++)
+	   {
+		   CMFCToolBar* pUserToolbar = GetUserToolBarByIndex(i);
+		   if (pUserToolbar != NULL)
+		      pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, szCustomize.c_str());
+	   }
+
+	   return TRUE;
+   }
+   
+   BOOL MainWnd::PreCreateWindow(CREATESTRUCT& cs)
+   {
+	   if( !CMDIFrameWndEx::PreCreateWindow(cs) )
+		   return FALSE;
+	   // TODO: Modify the Window class or styles here by modifying
+	   //  the CREATESTRUCT cs
+
+	   return TRUE;
+   }
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
 
    int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -83,7 +126,7 @@ NAMESPACE_BEGIN(GUI)
 
          // ToolBar:
 	      if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		      !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+		       !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
             throw Win32Exception(HERE, L"Unable to create MainWnd toolbar");
 	      
 	      m_wndToolBar.SetWindowText(GuiString(IDS_TOOLBAR_STANDARD).c_str());
@@ -112,7 +155,7 @@ NAMESPACE_BEGIN(GUI)
 	      EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
 	      // Load menu item image (not placed on any standard toolbars):
-	      CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, IDR_MENU_IMAGES);
+	      CMFCToolBar::AddToolBarForImageCollection(IDR_CUSTOM, IDR_CUSTOM);
 
 
 	      // Project Window:
@@ -152,9 +195,12 @@ NAMESPACE_BEGIN(GUI)
          DockPane(&m_wndGameData);
 
 
+	      // set the visual manager and style 
+	      CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
+		   CDockingManager::SetDockingMode(DT_SMART);
+	      m_wndOutput.UpdateFonts();
+	      RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
-	      // set the visual manager and style based on persisted value
-	      OnApplicationLook(theApp.m_nAppLook);
 
 	      // Enable windows management dialog
 	      EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
@@ -216,39 +262,27 @@ NAMESPACE_BEGIN(GUI)
       }
    }
 
-   BOOL MainWnd::PreCreateWindow(CREATESTRUCT& cs)
+   
+   void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
-	   if( !CMDIFrameWndEx::PreCreateWindow(cs) )
-		   return FALSE;
-	   // TODO: Modify the Window class or styles here by modifying
-	   //  the CREATESTRUCT cs
-
-	   return TRUE;
+	   CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
+	   m_wndOutput.UpdateFonts();
    }
 
 
-
-   // MainWnd diagnostics
-
-   #ifdef _DEBUG
-   void MainWnd::AssertValid() const
+   LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
    {
-	   CMDIFrameWndEx::AssertValid();
+	   LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
+	   if (lres == 0)
+	      return 0;
+
+	   CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
+	   ASSERT_VALID(pUserToolbar);
+
+	   pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
+	   return lres;
    }
 
-   void MainWnd::Dump(CDumpContext& dc) const
-   {
-	   CMDIFrameWndEx::Dump(dc);
-   }
-   #endif //_DEBUG
-
-
-   // MainWnd message handlers
-
-   void MainWnd::OnWindowManager()
-   {
-	   ShowWindowsDialog();
-   }
 
    void MainWnd::OnViewCustomize()
    {
@@ -257,137 +291,18 @@ NAMESPACE_BEGIN(GUI)
 	   pDlgCust->Create();
    }
 
-   LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
+
+   void MainWnd::OnWindowManager()
    {
-	   LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
-	   if (lres == 0)
-	   {
-		   return 0;
-	   }
-
-	   CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
-	   ASSERT_VALID(pUserToolbar);
-
-	   BOOL bNameValid;
-	   CString strCustomize;
-	   bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-	   ASSERT(bNameValid);
-
-	   pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
-	   return lres;
+	   ShowWindowsDialog();
    }
 
-   void MainWnd::OnApplicationLook(UINT id)
-   {
-	   CWaitCursor wait;
-
-	   theApp.m_nAppLook = id;
-
-	   switch (theApp.m_nAppLook)
-	   {
-	   case ID_VIEW_APPLOOK_WIN_2000:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManager));
-		   break;
-
-	   case ID_VIEW_APPLOOK_OFF_XP:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOfficeXP));
-		   break;
-
-	   case ID_VIEW_APPLOOK_WIN_XP:
-		   CMFCVisualManagerWindows::m_b3DTabsXPTheme = TRUE;
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
-		   break;
-
-	   case ID_VIEW_APPLOOK_OFF_2003:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2003));
-		   CDockingManager::SetDockingMode(DT_SMART);
-		   break;
-
-	   case ID_VIEW_APPLOOK_VS_2005:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2005));
-		   CDockingManager::SetDockingMode(DT_SMART);
-		   break;
-
-	   case ID_VIEW_APPLOOK_VS_2008:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
-		   CDockingManager::SetDockingMode(DT_SMART);
-		   break;
-
-	   case ID_VIEW_APPLOOK_WINDOWS_7:
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
-		   CDockingManager::SetDockingMode(DT_SMART);
-		   break;
-
-	   default:
-		   switch (theApp.m_nAppLook)
-		   {
-		   case ID_VIEW_APPLOOK_OFF_2007_BLUE:
-			   CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
-			   break;
-
-		   case ID_VIEW_APPLOOK_OFF_2007_BLACK:
-			   CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_ObsidianBlack);
-			   break;
-
-		   case ID_VIEW_APPLOOK_OFF_2007_SILVER:
-			   CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Silver);
-			   break;
-
-		   case ID_VIEW_APPLOOK_OFF_2007_AQUA:
-			   CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Aqua);
-			   break;
-		   }
-
-		   CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
-		   CDockingManager::SetDockingMode(DT_SMART);
-	   }
-
-	   m_wndOutput.UpdateFonts();
-	   RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
-
-	   theApp.WriteInt(_T("ApplicationLook"), theApp.m_nAppLook);
-   }
-
-   void MainWnd::OnUpdateApplicationLook(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
-   }
+   
+   
 
 
-   BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
-   {
-	   // base class does the real work
 
-	   if (!CMDIFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
-	   {
-		   return FALSE;
-	   }
-
-
-	   // enable customization button for all user toolbars
-	   BOOL bNameValid;
-	   CString strCustomize;
-	   bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-	   ASSERT(bNameValid);
-
-	   for (int i = 0; i < iMaxUserToolbars; i ++)
-	   {
-		   CMFCToolBar* pUserToolbar = GetUserToolBarByIndex(i);
-		   if (pUserToolbar != NULL)
-		   {
-			   pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
-		   }
-	   }
-
-	   return TRUE;
-   }
-
-
-   void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
-   {
-	   CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
-	   m_wndOutput.UpdateFonts();
-   }
+   // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END(GUI)
 

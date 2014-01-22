@@ -15,7 +15,7 @@ NAMESPACE_BEGIN(GUI)
 	   virtual ~LanguageView();
 
    public:
-	   enum { IDD = IDD_LANGUAGEVIEW };
+	   enum { IDD = IDR_LANGUAGEVIEW };
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
    #ifndef _WIN32_WCE
