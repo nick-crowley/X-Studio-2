@@ -5,11 +5,11 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "PropertiesWnd.h"
 #include "Logic/DebugTests.h"
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
 #include <Richedit.h>
-#include "Logic/Event.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -80,10 +80,11 @@ NAMESPACE_BEGIN(GUI)
    {
       //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
       
-      // Raise 'DOCUMENT ACTIVATED'
+      // Raise 'DISPLAY PROPERTIES'
       if (bActivate != FALSE)
-         EventLib.DocumentActivated.Raise(GetDocument());
+         CPropertiesWnd::DisplayProperties.Raise(this, PropertyTarget::ScriptView);
 
+      // Handle
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    

@@ -1,8 +1,20 @@
 
 #pragma once
+#include "Logic/Event.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
+
+   // ------------------------------------ ENUMS -----------------------------------
+
+   enum class PropertyTarget  { ScriptView, LanguageView, Project };
+
+   // ----------------------------- EVENTS AND DELEGATES ---------------------------
+
+   typedef Event<CWnd*, PropertyTarget>   PropertiesEvent;
+   typedef PropertiesEvent::DelegatePtr   PropertiesHandler;
+
+   // ----------------------------------- CLASSES ----------------------------------
 
    /// <summary>Properties window toolbar</summary>
    class CPropertiesToolBar : public CMFCToolBar
@@ -21,12 +33,14 @@ NAMESPACE_BEGIN(GUI)
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
    };
 
+
+
    /// <summary>Dockable properties window</summary>
    class CPropertiesWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------
-   private:
-	  
+   public:
+      
       // --------------------- CONSTRUCTION ----------------------
       
    public:
@@ -35,6 +49,9 @@ NAMESPACE_BEGIN(GUI)
        
       // ------------------------ STATIC -------------------------
       
+   public:
+      static PropertiesEvent   DisplayProperties;
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
@@ -61,7 +78,7 @@ NAMESPACE_BEGIN(GUI)
 
 	   DECLARE_MESSAGE_MAP()
 
-      void OnDocumentActivated(CDocument* pDocument);
+      void  OnDisplayProperties(CWnd* pWnd, PropertyTarget type);
 
       // -------------------- REPRESENTATION ---------------------
    protected:
@@ -69,9 +86,10 @@ NAMESPACE_BEGIN(GUI)
 	   CPropertiesToolBar   m_wndToolBar;
 	   CMFCPropertyGridCtrl m_wndPropList;
 
-      DocumentActivatedHandler  documentActivated;
+      PropertiesHandler    fnDisplayProperties;
    
    };
+
 
 
 NAMESPACE_END(GUI)

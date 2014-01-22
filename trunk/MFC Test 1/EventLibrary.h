@@ -6,13 +6,13 @@ namespace GUI
 {
    // -------------------------- EVENTS --------------------------
 
-   typedef Event<CDocument*>  DocumentActivatedEvent;
-   typedef Event<CDocument*>  DocumentUpdatedEvent;
+   /*typedef Event<CDocument*>  DocumentActivatedEvent;
+   typedef Event<CDocument*>  DocumentUpdatedEvent;*/
 
    // ------------------------- DELEGATES ------------------------
 
-   typedef DocumentActivatedEvent::DelegatePtr  DocumentActivatedHandler;
-   typedef DocumentUpdatedEvent::DelegatePtr    DocumentUpdatedHandler;
+   /*typedef DocumentActivatedEvent::DelegatePtr  DocumentActivatedHandler;
+   typedef DocumentUpdatedEvent::DelegatePtr    DocumentUpdatedHandler;*/
 
    // -------------------------- CLASSES -------------------------
 
@@ -45,8 +45,8 @@ namespace GUI
       static EventLibrary Instance;
 
    public:
-      DocumentActivatedEvent  DocumentActivated;
-      DocumentUpdatedEvent    DocumentUpdated;
+      /*DocumentActivatedEvent  DocumentActivated;
+      DocumentUpdatedEvent    DocumentUpdated;*/
    };
    
    // Macro for accessing event library singleton
