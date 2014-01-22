@@ -33,6 +33,8 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void onRequestItem(NMHDR* pNMHDR, LRESULT* pResult);
+      
+      void onAppStateChanged(AppState s);
 
    private:
       void  AdjustLayout();
@@ -44,7 +46,8 @@ NAMESPACE_BEGIN(GUI)
       CListCtrl  ListView;
 	   CImageList Images;
 
-      vector<const CommandSyntax*> Content;
+      SyntaxLibrary::ResultCollection Content;
+      AppStateChangedHandler          fnAppStateChanged;
    };
    
 NAMESPACE_END(GUI)

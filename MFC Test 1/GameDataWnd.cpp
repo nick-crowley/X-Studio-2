@@ -18,7 +18,7 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CGameDataWnd::CGameDataWnd()
+   CGameDataWnd::CGameDataWnd() : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::onAppStateChanged))
    {
    }
 
@@ -32,6 +32,11 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+
+   void CGameDataWnd::onAppStateChanged(AppState s)
+   {
+      UpdateContent();
+   }
 
    void CGameDataWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
@@ -75,12 +80,13 @@ NAMESPACE_BEGIN(GUI)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
 	      // Create List:
-	      if (!ListView.CreateEx(LVS_EX_FULLROWSELECT, WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_OWNERDATA, rectDummy, this, 1))
+	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
             throw Win32Exception(HERE, L"Unable to create game data window listview");
 
          // Insert columns
          ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
          ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
+         ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          
 
 	      // Load view images:
@@ -133,7 +139,10 @@ NAMESPACE_BEGIN(GUI)
       
       // Text
       if (item.mask & LVIF_TEXT)
-         StringCchCopy(item.pszText, item.cchTextMax, syntax->Text.c_str());
+      {
+         if (item.iSubItem == 0)
+            StringCchCopy(item.pszText, item.cchTextMax, syntax->Text.c_str());
+      }
 
       *pResult = TRUE;
    }
@@ -148,19 +157,28 @@ NAMESPACE_BEGIN(GUI)
 	   CRect rcClient;
 	   GetClientRect(rcClient);
 
+      // Stretch ListView and column
       ListView.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+      ListView.SetColumnWidth(0, rcClient.Width());
    }
 
    void  CGameDataWnd::UpdateContent()
    {
-      // TODO: Get search text
-
-      // Lookup matches
+      // Clear prev content
       Content.clear();
-      Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
 
-      // Display results
-      ListView.SetItemCountEx(Content.size());
+      if (theApp.State == AppState::GameDataPresent)
+      {
+         // TODO: Get search text
+
+         // Lookup matches
+         Content = SyntaxLib.Query(L"", GameVersion::TerranConflict);
+
+         // Display results
+         ListView.SetItemCountEx(Content.size());
+      }
+      else
+         ListView.SetItemCountEx(0);
    }
    
 NAMESPACE_END(GUI)

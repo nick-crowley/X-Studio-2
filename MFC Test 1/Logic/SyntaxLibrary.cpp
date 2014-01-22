@@ -109,7 +109,9 @@ namespace Logic
             const CommandSyntax& syntax = pair.second;
 
             // Check compatibility. Check search term (if any)
-            if (syntax.IsCompatible(ver) && (!str.length() || syntax.Text.find(str) != wstring::npos))
+            if (syntax.Group != CommandGroup::HIDDEN 
+             && syntax.IsCompatible(ver) 
+             && (!str.length() || syntax.Text.find(str) != wstring::npos))
                results.push_back(&syntax);
          }
 
