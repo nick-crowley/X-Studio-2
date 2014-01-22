@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SyntaxLibrary.h"
 #include "CommandLexer.h"
+#include "FileStream.h"
+#include "LegacySyntaxReader.h"
 
 namespace Logic
 {
@@ -22,6 +24,40 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Clears the library</summary>
+      void  SyntaxLibrary::Clear()
+      {
+         Commands.clear();
+         NameTree.Clear();
+         Groups.clear();
+      }
+
+
+      /// <summary>Populates the library from the syntax files</summary>
+      /// <returns>Commands enumerated</returns>
+      /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
+      /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+      UINT  SyntaxLibrary::Enumerate()
+      {
+         const Path path(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt");
+
+         // Clear previous contents
+         Clear();
+         
+         // Load legacy syntax file
+         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << (const WCHAR*)path << ENDL;
+         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+
+         // Merge contents
+         Merge( LegacySyntaxReader(fs).ReadFile() );
+         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+         
+         // Return commands read
+         return Commands.size();
+      }
+
 
       /// <summary>Finds syntax by ID</summary>
       /// <param name="id">command ID</param>
@@ -39,6 +75,13 @@ namespace Logic
          throw SyntaxNotFoundException(HERE, id, ver);
       }
 
+      /// <summary>Gets the groups collection</summary>
+      /// <returns></returns>
+      SyntaxLibrary::GroupCollection  SyntaxLibrary::GetGroups() const
+      {
+         return Groups;
+      }
+
       /// <summary>Finds syntax by name</summary>
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
@@ -49,12 +92,44 @@ namespace Logic
          return NameTree.Find(pos, end, ver);
       }
 
+      /// <summary>Search for all syntax containing a given term</summary>
+      /// <param name="str">Search term</param>
+      /// <param name="ver">Game version</param>
+      /// <returns>Array of matching Syntax</returns>
+      SyntaxLibrary::ResultCollection  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
+      {
+         ResultCollection results;
+
+         // Search commands
+         for (const auto& pair : Commands)
+         {
+            const CommandSyntax& syntax = pair.second;
+
+            // Check compatibility. Check search term (if any)
+            if (syntax.Group != CommandGroup::HIDDEN 
+             && syntax.IsCompatible(ver) 
+             && (!str.length() || syntax.Text.find(str) != wstring::npos))
+               results.push_back(&syntax);
+         }
+
+         return results;
+      }
+
+		// ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+      
       /// <summary>Merges a syntax file into the library</summary>
       /// <param name="f">The file</param>
       void  SyntaxLibrary::Merge(SyntaxFile&& f)
       { 
-         // Merge commands table
-         Commands.Merge(std::move(f)); 
+         // Merge commands arrays
+         for (auto pair : f.Commands)
+            Commands.Add(pair.second);
+
+         // Merge groups & lookup names
+         for (auto pair : f.Groups)
+            Groups[pair.second] = GuiString(IDS_FIRST_COMMAND_GROUP + (UINT)pair.second);
 
          // Insert into syntax tree
          for (auto& pair : Commands)
@@ -96,149 +171,6 @@ namespace Logic
          }
       }
 
-      /// <summary>Search for all syntax containing a given term</summary>
-      /// <param name="str">Search term</param>
-      /// <param name="ver">Game version</param>
-      /// <returns>Array of matching Syntax</returns>
-      SyntaxLibrary::ResultCollection  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
-      {
-         ResultCollection results;
-
-         // Search commands
-         for (const auto& pair : Commands)
-         {
-            const CommandSyntax& syntax = pair.second;
-
-            // Check compatibility. Check search term (if any)
-            if (syntax.Group != CommandGroup::HIDDEN 
-             && syntax.IsCompatible(ver) 
-             && (!str.length() || syntax.Text.find(str) != wstring::npos))
-               results.push_back(&syntax);
-         }
-
-         return results;
-      }
-
-		// ------------------------------ PROTECTED METHODS -----------------------------
-
-		// ------------------------------- PRIVATE METHODS ------------------------------
-
-
-
-
-      // -------------------------------- CONSTRUCTION --------------------------------
-
-      SyntaxLibrary::SyntaxNode::SyntaxNode() : Syntax(nullptr)
-      {
-      }
-
-      SyntaxLibrary::SyntaxNode::SyntaxNode(const ScriptToken& t) : Token(t), Syntax(nullptr)
-      {
-      }
-
-      // ------------------------------- STATIC METHODS -------------------------------
-
-      // ------------------------------- PUBLIC METHODS -------------------------------
-      
-      /// <summary>Finds syntax by text</summary>
-      /// <param name="pos">First token</param>
-      /// <param name="end">End of tokens</param>
-      /// <param name="ver">Desired game version</param>
-      /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
-      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
-      {
-         // EOF: Return of this node (if any)
-         if (pos >= end)
-            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : SyntaxLib.Unknown;
-
-         // Lookup next token
-         auto pair = Children.find( GetKey(*pos) );
-               
-         // Not found: Return sentinel
-         if (pair == Children.end())
-            return SyntaxLib.Unknown;
-
-         // Found: Search children
-         return pair->second.Find(++pos, end, ver);
-      };
-
-      /// <summary>Inserts new syntax into the tree</summary>
-      /// <param name="s">The syntax</param>
-      /// <param name="pos">First token</param>
-      /// <param name="end">End of tokens</param>
-      /// <exception cref="Logic::GenericException">Syntax conflicts with existing syntax</exception>
-      void  SyntaxLibrary::SyntaxNode::Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end)
-      {
-         if (pos < end)
-         {
-            // (Insert/Lookup) next child
-            auto pair = Children.insert( NodeMap::value_type(GetKey(*pos), SyntaxNode(*pos)) );
-
-            // Check child against next token
-            pair.first->second.Insert(s, ++pos, end);
-         }
-         else
-         {
-            // Ensure not duplicate
-            if (HasSyntax())
-               throw GenericException(HERE, GuiString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
-
-            // EndOfInput: Store syntax here
-            Syntax = SyntaxPtr(new CommandSyntax(s));
-         }
-      }
-
-      /// <summary>Prints node and all children to the console</summary>
-      /// <param name="depth">Current depth</param>
-      void SyntaxLibrary::SyntaxNode::Print(int depth) const
-      {
-         // DEBUG: Abort
-         if (depth == 3)
-            return;
-
-         // Print node
-         wstring indent(depth, L' ');
-         Console << indent << L"Token: " << Colour::Yellow << Token.Text << Colour::White << L"   Syntax: " << Colour::Yellow << GetSyntax().Text << ENDL;
-
-         // Print children
-         for (auto c : Children)
-            c.second.Print(depth+1);
-      }
-
-      // ------------------------------ PROTECTED METHODS -----------------------------
-
-		// ------------------------------- PRIVATE METHODS ------------------------------
-
-      /// <summary>Gets the node map lookup key for a token</summary>
-      /// <param name="tok">The token</param>
-      /// <returns></returns>
-      const wstring&  SyntaxLibrary::SyntaxNode::GetKey(const ScriptToken& tok) const
-      {
-         switch (tok.Type)
-         {
-         case TokenType::Operator:  
-         case TokenType::Keyword:  
-         case TokenType::Text:      
-            return tok.Text;
-
-         default: 
-            return VARIABLE;
-         }
-      }
-
-      /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
-      /// <returns></returns>
-      CommandSyntax  SyntaxLibrary::SyntaxNode::GetSyntax() const
-      {
-         return HasSyntax() ? *Syntax : SyntaxLib.Unknown;
-      }
-
-      /// <summary>Determine whether node has syntax</summary>
-      /// <returns></returns>
-      bool  SyntaxLibrary::SyntaxNode::HasSyntax() const
-      {
-         return Syntax != nullptr;
-      }
    }
 }
 

@@ -110,7 +110,9 @@ namespace Logic
       /// <param name="e">Exception</param>
       ConsoleWnd& operator<<(const ExceptionBase&  e)
       {
-         return *this << Colour::Red << L"EXCEPTION: " << Colour::Yellow << e.Message << Colour::White << L" source: " << e.Source << ENDL;
+         *this << Colour::Red << L"EXCEPTION: " << Colour::Yellow << e.Message << ENDL;
+         *this << Colour::Red << L"Trace: " << Colour::Yellow << e.Source << ENDL;
+         return *this;
       }
 
       /// <summary>Writes text to the console</summary>

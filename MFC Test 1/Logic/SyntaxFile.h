@@ -8,30 +8,40 @@ namespace Logic
    {
       class SyntaxFile;
 
-      /// <summary>Command syntax collection, organised by ID</summary>
-      class SyntaxCollection : public multimap<UINT, CommandSyntax>
-      {
-      public:
-         bool  Add(CommandSyntax&& s);
-         void  Merge(SyntaxFile&& f);
-      };
+      
 
       /// <summary></summary>
       class SyntaxFile
       {
       public:
+         /// <summary>Command syntax collection organised by ID</summary>
+         class CommandCollection : public multimap<UINT, CommandSyntax>
+         {
+         public:
+            void  Add(CommandSyntax& s)
+            { 
+               insert(value_type(s.ID, s)); 
+            }
+         };
+
          /// <summary>Maps names of parameter types to their ID</summary>
          class TypeCollection : public map<wstring,ParameterType>
          {
          public:
-            bool  Add(wstring& name, ParameterType type) { return insert(value_type(name, type)).second; }
+            bool  Add(wstring& name, ParameterType type) 
+            { 
+               return insert(value_type(name, type)).second; 
+            }
          }; 
 
          /// <summary>Maps names of command groups to their ID</summary>
          class GroupCollection : public map<wstring,CommandGroup>
          {
          public:
-            bool  Add(wstring& name, CommandGroup group) { return insert(value_type(name, group)).second; }
+            bool  Add(wstring& name, CommandGroup group) 
+            { 
+               return insert(value_type(name, group)).second; 
+            }
          }; 
 
          // --------------------- CONSTRUCTION ----------------------
@@ -48,13 +58,11 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
-         //bool  Add(CommandSyntax&& s) { return false; }
-
 		   // -------------------- REPRESENTATION ---------------------
 
-         SyntaxCollection  Commands;
-         GroupCollection   Groups;
-         TypeCollection    Types;
+         CommandCollection  Commands;
+         GroupCollection    Groups;
+         TypeCollection     Types;
 
       private:
       };

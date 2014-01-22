@@ -72,7 +72,6 @@ NAMESPACE_BEGIN(GUI)
    {
       /*if (!CDocument::OnOpenDocument(lpszPathName))
          return FALSE;*/
-      const WCHAR* syntaxPath = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt";
       
       try
       {
@@ -81,15 +80,7 @@ NAMESPACE_BEGIN(GUI)
          // Build VFS. Enumerate language files
          vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
          StringLib.Enumerate(vfs, GameLanguage::English);
-
-
-         // Load legacy syntax file
-         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << syntaxPath << ENDL;
-
-         StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
-         SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
-
-         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+         SyntaxLib.Enumerate();
 
          // Parse script
          Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;

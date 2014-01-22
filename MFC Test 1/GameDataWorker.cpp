@@ -28,41 +28,29 @@ NAMESPACE_BEGIN2(GUI,Threads)
 
    DWORD WINAPI GameDataWorker::ThreadMain(GameDataWorkerData* data)
    {
-      const WCHAR* syntaxPath = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt";
-
       try
       {
-         // Init COM
+         XFileSystem vfs;
          HRESULT  hr;
+
+         // Init COM
          if (FAILED(hr=CoInitialize(NULL)))
             throw ComException(HERE, hr);
 
-         // Feedback
-         data->SendFeedback(ProgressType::Info, L"Building VFS");
-
          // Build VFS. 
-         XFileSystem vfs;
+         data->SendFeedback(ProgressType::Info, L"Building VFS");
          vfs.Enumerate(data->GameFolder, data->Version);
 
-         // Feedback
-         data->SendFeedback(ProgressType::Info, L"Enumerating language files");
-
          // Enumerate language files
+         data->SendFeedback(ProgressType::Info, L"Enumerating language files");
          StringLib.Enumerate(vfs, GameLanguage::English);
 
-         // Feedback
-         data->SendFeedback(ProgressType::Info, L"Loading legacy syntax file");
-         
          // Load legacy syntax file
-         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << syntaxPath << ENDL;
-         StreamPtr fs( new FileStream(syntaxPath, FileMode::OpenExisting, FileAccess::Read) );
-         SyntaxLib.Merge( LegacySyntaxReader(fs).ReadFile() );
-         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+         data->SendFeedback(ProgressType::Info, L"Loading legacy syntax file");
+         SyntaxLib.Enumerate();
 
-         // Feedback
-         data->SendFeedback(ProgressType::Succcess, L"Loaded game data successfully");
-         
          // Cleanup
+         data->SendFeedback(ProgressType::Succcess, L"Loaded game data successfully");
          CoUninitialize();
          return 0;
       }

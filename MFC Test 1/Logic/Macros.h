@@ -4,12 +4,18 @@
 #define WIDEN2(x)                L ## x
 #define WIDEN(x)                 WIDEN2(x)
 
+#define STRINGIZE(n)             #n
+
 // Macro: Wide character equivilent of __FILE__
 #define __WFILE__                WIDEN(__FILE__)
 
 // Macro: Wide character equivilent of __FUNCTION__
 #define __WFUNCTION__            WIDEN(__FUNCTION__)
 
+// Macro: Assembles wide character description of code location
+#define HERE                     GuiString(L"%s() on line %d", __WFUNCTION__, __LINE__)
+//#define HERE   __WFUNCTION__ L" on line " STRINGIZE(__LINE__)
+//#define HERE   WIDEN(__FUNCTION__ " on line " STRINGIZE(__LINE__))
 
 // Macro: Provides default move constructor and assignment (Not functional)
 #define DEFAULT_MOVE(type)       // MS BUG:800114:     type::type(type&&) = default;  type& operator=(type&&) = default;
@@ -36,9 +42,6 @@
 
 // Macro: Declares a read-write property 
 #define PROPERTY_GET_SET(type,name,fget,fset)   __declspec(property(get=fget,put=fset)) type name
-
-// Macro: Assembles wide character description of code location
-#define HERE   __WFUNCTION__
 
 // Macro: Throws ArgumentNullException if argument is null
 #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }

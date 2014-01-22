@@ -489,6 +489,9 @@
     <ClCompile Include="GameDataWorker.cpp">
       <Filter>Source Files\GUI\Threads</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\SyntaxNode.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="UserImages.bmp">
