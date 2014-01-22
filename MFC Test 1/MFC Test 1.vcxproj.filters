@@ -70,6 +70,12 @@
     <Filter Include="Header Files\GUI\Controls">
       <UniqueIdentifier>{6f3f9ea7-cdcd-42fc-a25c-167d62390c5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Threads">
+      <UniqueIdentifier>{ab35f208-f803-46bf-ae84-864fc302be24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Threads">
+      <UniqueIdentifier>{b5a7447d-e844-4458-a95c-a5b13cdef070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -298,11 +304,11 @@
     <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LoadingThread.h">
-      <Filter>Header Files\GUI</Filter>
+    <ClInclude Include="BackgroundWorker.h">
+      <Filter>Header Files\GUI\Threads</Filter>
     </ClInclude>
-    <ClInclude Include="WorkerThread.h">
-      <Filter>Header Files\GUI</Filter>
+    <ClInclude Include="GameDataWorker.h">
+      <Filter>Header Files\GUI\Threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -477,8 +483,8 @@
     <ClCompile Include="GameDataWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingThread.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="GameDataWorker.cpp">
+      <Filter>Source Files\GUI\Threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

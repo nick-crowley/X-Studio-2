@@ -1,13 +1,13 @@
 
 #pragma once
-#include "WorkerThread.h"
+#include "BackgroundWorker.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
    
    /// <summary>Output window list</summary>
-   class COutputList : public CListBox
+   class COutputList : public CListCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -24,10 +24,13 @@ NAMESPACE_BEGIN(GUI)
 
       // ----------------------- MUTATORS ------------------------
    protected:
+      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnEditCopy();
 	   afx_msg void OnEditClear();
 	   afx_msg void OnViewOutput();
+   public:
+      afx_msg void OnSize(UINT nType, int cx, int cy);
    };
 
 
@@ -58,7 +61,7 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
 	   void AdjustHorzScroll(CListBox& wndListBox);
-      void onWorkerFeedback(WorkerProgress* progress);
+      void onGameDataFeedback(WorkerProgress* progress);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -71,8 +74,9 @@ NAMESPACE_BEGIN(GUI)
 	   COutputList m_wndOutputBuild;
 	   COutputList m_wndOutputDebug;
 	   COutputList m_wndOutputFind;
+      CImageList  Images;
 
-      FeedbackHandler fnWorkerFeedback;
+      FeedbackHandler fnGameDataFeedback;
    };
 
 

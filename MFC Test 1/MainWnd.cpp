@@ -31,7 +31,8 @@ NAMESPACE_BEGIN(GUI)
 	   ID_INDICATOR_SCRL,
    };
 
-   FeedbackEvent   MainWnd::LoadingFeedback;
+   // Events
+   FeedbackEvent   MainWnd::GameDataFeedback;
 
    // --------------------------------- APP WIZARD ---------------------------------
 
@@ -48,7 +49,7 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   MainWnd::MainWnd() : GameDataWorker((ThreadProc)LoadingThread::ThreadMain)
+   MainWnd::MainWnd() 
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -262,7 +263,7 @@ NAMESPACE_BEGIN(GUI)
 
 
          // Load game data
-         GameDataWorker.Start(new WorkerData());
+         GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict));
 	      return 0;
       }
       catch (ExceptionBase& e)
@@ -313,7 +314,7 @@ NAMESPACE_BEGIN(GUI)
       WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
 
       // Raise event. Delete data.
-      LoadingFeedback.Raise(p);
+      GameDataFeedback.Raise(p);
       delete p;
 
       return 0;

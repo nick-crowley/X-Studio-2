@@ -1,45 +1,57 @@
 #pragma once
-#include "Logic/Macros.h"
+#include "stdafx.h"
+#include "Logic/Event.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Threads)
 
    /// <summary>User interface</summary>
    #define WM_FEEDBACK     (WM_USER+1)
 
    // ------------------------ CLASSES ------------------------
 
-   /// <summary>Thread function</summary>
-   /// <remarks>DWORD (WINAPI *PTHREAD_START_ROUTINE)(LPVOID lpThreadParameter)</remarks>
-   typedef LPTHREAD_START_ROUTINE  ThreadProc;    
+   /// <summary></summary>
+   enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
    /// <summary></summary>
    class WorkerProgress
    {
    public:
-      WorkerProgress(const wstring& sz) : Text(sz)
+      WorkerProgress(ProgressType t, const wstring& sz) : Type(t), Text(sz)
       {}
 
-      wstring Text;
+      const ProgressType  Type;
+      const wstring       Text;
    };
 
    /// <summary></summary>
    class WorkerData
    {
    public:
-      WorkerData() : MainWnd(AfxGetMainWnd()), Abort(false)
+      WorkerData() : MainWnd(AfxGetMainWnd()), Aborted(false)
       {}
       virtual ~WorkerData()
       {}
 
-      void  SendFeedback(const wstring& sz)
+      /// <summary>Command thread to stop</summary>
+      void  Abort()
       {
-         MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(sz));
+         Aborted = true;
       }
 
+      /// <summary>Inform main window of progress</summary>
+      void  SendFeedback(ProgressType t, const wstring& sz)
+      {
+         MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(t, sz));
+      }
+
+   private:
       CWnd*  MainWnd;
-      bool   Abort;
+      bool   Aborted;
    };
+
+   /// <summary>Thread function</summary>
+   typedef DWORD (WINAPI *ThreadProc)(WorkerData*);
 
    // ----------------- EVENTS AND DELEGATES ------------------
 
@@ -49,17 +61,18 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------ CLASSES ------------------------
 
    /// <summary></summary>
-   class WorkerThread
+   class BackgroundWorker
    {
       // ------------------------ TYPES --------------------------
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
       
-   public:
-      WorkerThread(ThreadProc pfn) : ThreadProc(pfn), Thread(NULL)
+   protected:
+      BackgroundWorker(ThreadProc pfn) : Proc(pfn), Thread(NULL)
       {}
-      virtual ~WorkerThread()
+   public:
+      virtual ~BackgroundWorker()
       {}
       
       // ------------------------ STATIC -------------------------
@@ -70,6 +83,21 @@ NAMESPACE_BEGIN(GUI)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      bool  Stop()
+      {
+         if (Thread == nullptr)
+            throw InvalidOperationException(HERE, L"Thread not running");
+
+         // Request thread stop
+         Data->Abort();
+
+         // Close handle
+         CloseHandle(Thread);
+         Thread = nullptr;
+         return true;
+      }
+
+   protected:
       bool  Start(WorkerData* param)
       {
          REQUIRED(param);
@@ -79,33 +107,18 @@ NAMESPACE_BEGIN(GUI)
             throw InvalidOperationException(HERE, L"Thread already running");
 
          // Launch thread
-         Thread = CreateThread(NULL, 0, ThreadProc, (void*)(Data=param), NULL, NULL);
+         Thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Proc, (void*)(Data=param), NULL, NULL);
          return Thread != NULL;
-      }
-
-
-      bool  Stop()
-      {
-         if (Thread == nullptr)
-            throw InvalidOperationException(HERE, L"Thread not running");
-
-         // Request thread stop
-         Data->Abort = true;
-
-         // Close handle
-         CloseHandle(Thread);
-         Thread = nullptr;
-         return true;
       }
 
       // -------------------- REPRESENTATION ---------------------
       
    private:
-      ThreadProc   ThreadProc;
+      ThreadProc   Proc;
       WorkerData*  Data;
       HANDLE       Thread;
    };
    
 
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Threads)
