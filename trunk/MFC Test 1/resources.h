@@ -81,16 +81,16 @@
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
-#define ERR_XML_MISSING_ELEMENT         1000
-#define ERR_XML_UNEXPECTED_ELEMENT      1001
-#define ERR_XML_MISSING_ATTRIBUTE       1002
-#define ERR_XML_PARSE_FAILED            1003
+#define ERR_XML_MISSING_ELEMENT         400
+#define ERR_XML_UNEXPECTED_ELEMENT      401
+#define ERR_XML_MISSING_ATTRIBUTE       402
+#define ERR_XML_PARSE_FAILED            403
 
-#define ERR_LANGUAGE_ID_INVALID         1004
-#define ERR_ARGUMENT_NULL               1005
-#define ERR_NO_READ_ACCESS              1006
-#define ERR_NO_WRITE_ACCESS             1007
-#define ERR_NO_SEEK_ACCESS              1008
+#define ERR_LANGUAGE_ID_INVALID         404
+#define ERR_ARGUMENT_NULL               405
+#define ERR_NO_READ_ACCESS              406
+#define ERR_NO_WRITE_ACCESS             407
+#define ERR_NO_SEEK_ACCESS              408
 
 #define IDS_SOCKETS_INIT_FAILED         104
 
@@ -107,3 +107,40 @@
 //#define IDS_FILE_VIEW                   155
 //#define IDS_OUTPUT_WND                  157
 //#define IDS_PROPERTIES_WND              158
+
+// Command Group Names
+#define IDS_COMMAND_GROUP_ARRAY			                   979
+#define IDS_COMMAND_GROUP_CUSTOM                          980
+#define IDS_COMMAND_GROUP_FLEET						          981
+#define IDS_COMMAND_GROUP_FLOW_CONTROL							 982
+#define IDS_COMMAND_GROUP_GAME_ENGINE							 983
+#define IDS_COMMAND_GROUP_GRAPH							       984 
+#define IDS_COMMAND_GROUP_MACRO                           985
+#define IDS_COMMAND_GROUP_MARINE							       986
+#define IDS_COMMAND_GROUP_MATHS							       987
+#define IDS_COMMAND_GROUP_MERCHANT							    988
+#define IDS_COMMAND_GROUP_NON_PLAYER							 989
+#define IDS_COMMAND_GROUP_OBJECT_ACTION						 990
+#define IDS_COMMAND_GROUP_OBJECT_PROPERTY						 991
+#define IDS_COMMAND_GROUP_PASSENGER							    992
+#define IDS_COMMAND_GROUP_PILOT							       993
+#define IDS_COMMAND_GROUP_PLAYER							       994
+#define IDS_COMMAND_GROUP_SCRIPT_PROPERTY						 995
+#define IDS_COMMAND_GROUP_SHIP_ACTION							 996
+#define IDS_COMMAND_GROUP_SHIP_PROPERTY						 997
+#define IDS_COMMAND_GROUP_SHIP_TRADE							 998
+#define IDS_COMMAND_GROUP_SHIP_WING							    999
+#define IDS_COMMAND_GROUP_STATION_PROPERTY					 1000
+#define IDS_COMMAND_GROUP_STATION_TRADE						 1001
+#define IDS_COMMAND_GROUP_STOCK_EXCHANGE						 1002
+#define IDS_COMMAND_GROUP_STRING							       1003
+#define IDS_COMMAND_GROUP_SYSTEM_PROPERTY						 1004
+#define IDS_COMMAND_GROUP_UNIVERSE_DATA						 1005
+#define IDS_COMMAND_GROUP_UNIVERSE_PROPERTY					 1006
+#define IDS_COMMAND_GROUP_USER_INTERFACE						 1007
+#define IDS_COMMAND_GROUP_WAR					                1008
+#define IDS_COMMAND_GROUP_WARE_PROPERTY						 1009
+#define IDS_COMMAND_GROUP_WEAPON_PROPERTY						 1010
+#define IDS_COMMAND_GROUP_HIDDEN		                      1011
+
+#define IDS_FIRST_COMMAND_GROUP                           IDS_COMMAND_GROUP_ARRAY

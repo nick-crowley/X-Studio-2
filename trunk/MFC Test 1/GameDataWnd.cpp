@@ -75,25 +75,39 @@ NAMESPACE_BEGIN(GUI)
          CRect rectDummy;
 	      rectDummy.SetRectEmpty();
 
-         // Create page
+         // Base 
 	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
-	      // Create List:
-	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
+	      // ListView
+	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
             throw Win32Exception(HERE, L"Unable to create game data window listview");
 
          // Insert columns
          ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
          ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+         ListView.SetFont(&afxGlobalData.fontRegular);
          
-
-	      // Load view images:
+         // ListView ImageList:
 	      /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
 	      ListView.SetImageList(&Images, LVSIL_NORMAL);*/
 
-	      // Resize + Display
+         // Edit
+	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
+            throw Win32Exception(HERE, L"Unable to create game data window edit control");
+         Search.SetFont(&afxGlobalData.fontRegular);
+
+         // Combobox
+	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, 3))
+            throw Win32Exception(HERE, L"Unable to create game data window combo box");
+         Groups.SetFont(&afxGlobalData.fontRegular);
+
+         // Populate groups
+         for (UINT g = (UINT)CommandGroup::ARRAY; g < (UINT)CommandGroup::HIDDEN; ++g)
+            Groups.AddString(GuiString(IDS_FIRST_COMMAND_GROUP + g).c_str());
+
+	      // Layout controls + Populate
 	      AdjustLayout();
          UpdateContent();
 	      return 0;
@@ -151,15 +165,27 @@ NAMESPACE_BEGIN(GUI)
    
    void CGameDataWnd::AdjustLayout()
    {
+      // Destroyed/Minimised
 	   if (GetSafeHwnd() == NULL || (AfxGetMainWnd() != NULL && AfxGetMainWnd()->IsIconic()))
          return;
 
-	   CRect rcClient;
-	   GetClientRect(rcClient);
+	   CRect client, edit, combo;
+	   GetClientRect(client);
+      Search.GetClientRect(edit);
+      Groups.GetClientRect(combo);
 
-      // Stretch ListView and column
-      ListView.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
-      ListView.SetColumnWidth(0, rcClient.Width());
+      // Anchor Edit to top
+      Search.SetWindowPos(NULL, client.left, client.top, client.Width(), combo.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+
+      // Anchor Group below Edit
+      Groups.SetWindowPos(NULL, client.left, client.top+edit.Height(), client.Width(), combo.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+
+      // Stretch ListView over remaining area
+      UINT header = edit.Height()+combo.Height();
+      ListView.SetWindowPos(NULL, client.left, client.top+header, client.Width(), client.Height()-header, SWP_NOACTIVATE | SWP_NOZORDER);
+
+      // Stretch ListView column
+      ListView.SetColumnWidth(0, client.Width());
    }
 
    void  CGameDataWnd::UpdateContent()
