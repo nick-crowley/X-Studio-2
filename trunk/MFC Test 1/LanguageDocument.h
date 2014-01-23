@@ -1,8 +1,24 @@
 #pragma once
-
+#include "Logic/LanguageFile.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
+
+   class LanguageDocTemplate : public CMultiDocTemplate
+   {
+      // --------------------- CONSTRUCTION ----------------------
+   public:
+      LanguageDocTemplate(UINT nIDResource, CRuntimeClass* pDocClass, CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass)
+         : CMultiDocTemplate(nIDResource, pDocClass, pFrameClass, pViewClass)
+      {}
+
+      // ------------------------ STATIC -------------------------
+
+      DECLARE_DYNAMIC(LanguageDocTemplate)
+
+      // ---------------------- ACCESSORS ------------------------	
+      virtual CDocTemplate::Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
+   };
 
    /// <summary>Language document</summary>
    class LanguageDocument : public CDocument
@@ -36,9 +52,11 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
 	   virtual BOOL OnNewDocument();
+      virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 
       // -------------------- REPRESENTATION ---------------------
-   
+   public:
+      LanguageFile  Content;
    };
 
 
