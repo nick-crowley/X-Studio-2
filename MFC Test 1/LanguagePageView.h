@@ -9,8 +9,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ----------------- EVENTS AND DELEGATES ------------------
 
-   typedef Event<LanguagePage&>         PageClickEvent;
-   typedef PageClickEvent::DelegatePtr  PageClickHandler;
+   typedef Event<>                             SelectionChangedEvent;
+   typedef SelectionChangedEvent::DelegatePtr  SelectionChangedHandler;
    
    // ----------------------- CLASSES -------------------------
 
@@ -41,6 +41,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
       LanguageDocument* GetDocument() const;
+      LanguagePage*     GetSelectedPage() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
@@ -51,7 +52,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
-      PageClickEvent    PageClick;
+      SelectionChangedEvent   SelectionChanged;
 
    private:
       

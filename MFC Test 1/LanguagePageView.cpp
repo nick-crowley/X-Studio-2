@@ -45,6 +45,12 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   return (LanguageDocument*)m_pDocument;
    }
    #endif //_DEBUG
+
+   LanguagePage*   LanguagePageView::GetSelectedPage() const
+   {
+      int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
+      return item != -1 ? &GetDocument()->Content.Pages.FindByIndex(item) : nullptr;
+   }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
@@ -93,8 +99,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       
       Console << L"User activated language page " << pItem->iItem << ENDL;
 
-      // Raise PAGE_CLICK
-      PageClick.Raise(GetDocument()->Content.Pages.FindByIndex(pItem->iItem));
+      // Raise SELECTION CHANGED
+      SelectionChanged.Raise();  //GetDocument()->Content.Pages.FindByIndex(pItem->iItem)
 
       // Return
       *pResult = 0;
