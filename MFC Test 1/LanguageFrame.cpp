@@ -52,12 +52,18 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try
       {
+         int pageWidth = theApp.GetSectionInt(L"LanguageView", L"PageWidth", 150),
+             strWidth = theApp.GetSectionInt(L"LanguageView", L"StringWidth", 500),
+             strHeight = theApp.GetSectionInt(L"LanguageView", L"StringHeight", 400),
+             editHeight = theApp.GetSectionInt(L"LanguageView", L"EditHeight", 100);
+
+         //theApp.WriteSectionInt(L"LanguageView", L"Width", 100);
          // Split horizontally:  x | y
          if (!Splitter.CreateStatic(this, 1, 2, WS_CHILD | WS_VISIBLE, AFX_IDW_PANE_FIRST))
             throw Win32Exception(HERE, L"Unable to create main splitter");
 
          // Page: LHS
-         if (!Splitter.CreateView(0, 0, RUNTIME_CLASS(LanguagePageView), CSize(100,0), pContext))
+         if (!Splitter.CreateView(0, 0, RUNTIME_CLASS(LanguagePageView), CSize(pageWidth, 0), pContext))
             throw Win32Exception(HERE, L"Unable to create page pane");
 
          // Split rhs vertically:  a/b
@@ -65,11 +71,11 @@ NAMESPACE_BEGIN2(GUI,Views)
             throw Win32Exception(HERE, L"Unable to create child splitter");
 
          // StringPane: RHS top
-         if (!SubSplitter.CreateView(0, 0, RUNTIME_CLASS(LanguageStringView), CSize(200,100), pContext))
+         if (!SubSplitter.CreateView(0, 0, RUNTIME_CLASS(LanguageStringView), CSize(strWidth, strHeight), pContext))
             throw Win32Exception(HERE, L"Unable to create string pane");
 
          // EditPane: RHS bottom
-         if (!SubSplitter.CreateView(1, 0, RUNTIME_CLASS(LanguageEditView), CSize(200,200), pContext))
+         if (!SubSplitter.CreateView(1, 0, RUNTIME_CLASS(LanguageEditView), CSize(strWidth, editHeight), pContext))
             throw Win32Exception(HERE, L"Unable to create edit pane");
 
          // Don't call base
