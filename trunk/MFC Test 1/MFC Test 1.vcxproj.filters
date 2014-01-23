@@ -313,6 +313,9 @@
     <ClInclude Include="Logic\GameDataWorker.h">
       <Filter>Header Files\Logic\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\WorkerFeedback.h">
+      <Filter>Header Files\Logic\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

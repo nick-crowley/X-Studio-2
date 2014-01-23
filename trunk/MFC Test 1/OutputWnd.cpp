@@ -193,14 +193,16 @@ NAMESPACE_BEGIN(GUI)
       }
    }
    
-   void COutputWnd::onGameDataFeedback(WorkerProgress* progress)
+   void COutputWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
-      LVItem item(m_wndOutputBuild.GetItemCount(), progress->Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
-      item.iImage = (UINT)progress->Type;
-      item.iIndent = progress->Indent;
+      // Create item
+      LVItem item(m_wndOutputBuild.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
+      item.iImage = (UINT)wp.Type;
+      item.iIndent = wp.Indent;
 
-      //m_wndOutputBuild.InsertItem(m_wndOutputBuild.GetItemCount(), progress->Text.c_str(), (UINT)progress->Type);
+      // Insert/display
       m_wndOutputBuild.InsertItem(&item);
+      m_wndOutputBuild.EnsureVisible(m_wndOutputBuild.GetItemCount()-1, FALSE);
    }
 
 

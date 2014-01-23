@@ -49,7 +49,7 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   MainWnd::MainWnd() 
+   MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback))
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -273,6 +273,21 @@ NAMESPACE_BEGIN(GUI)
       }
    }
 
+   void MainWnd::onGameDataFeedback(const WorkerProgress& wp)
+   {
+      // Success: Change app state
+      if (wp.Type == ProgressType::Succcess)
+      {
+         theApp.State = AppState::GameDataPresent;
+
+         // Parse command line for standard shell commands, DDE, file open
+	      CCommandLineInfo cmdInfo;
+	      theApp.ParseCommandLine(cmdInfo);
+
+	      // Dispatch commands specified on the command line.
+	      theApp.ProcessShellCommand(cmdInfo);
+      }
+   }
    
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
@@ -313,23 +328,14 @@ NAMESPACE_BEGIN(GUI)
    {
       WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
 
-      // Raise event. Delete data.
-      GameDataFeedback.Raise(p);
-
-      // Change app state
-      if (p->Type == ProgressType::Succcess)
+      // Raise appropriate event
+      switch (p->Operation)
       {
-         theApp.State = AppState::GameDataPresent;
-
-         // Parse command line for standard shell commands, DDE, file open
-	      CCommandLineInfo cmdInfo;
-	      theApp.ParseCommandLine(cmdInfo);
-
-	      // Dispatch commands specified on the command line.
-	      theApp.ProcessShellCommand(cmdInfo);
+      case Operation::LoadGameData:    GameDataFeedback.Raise(*p);    break;
+      // TODO: Add more operations
       }
-
-      // Cleanup
+      
+      // Delete data
       delete p;
       return 0;
    }
