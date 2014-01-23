@@ -1,4 +1,5 @@
 #pragma once
+#include "afxcmn.h"
 
 
 /// <summary>User interface</summary>
@@ -33,9 +34,18 @@ NAMESPACE_BEGIN(GUI)
 
       // ----------------------- MUTATORS ------------------------
    protected:
+      void AdjustLayout();
+
 	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
+      virtual void OnInitialUpdate();
+      afx_msg void OnSize(UINT nType, int cx, int cy);
 
       // -------------------- REPRESENTATION ---------------------
+   public:
+      CListCtrl PageList;
+      CListCtrl StringList;
+      CRichEditCtrl StringEdit;
+      
    };
 
 
