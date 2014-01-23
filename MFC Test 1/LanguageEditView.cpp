@@ -28,6 +28,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    BEGIN_MESSAGE_MAP(LanguageEditView, CFormView)
       ON_WM_SIZE()
+      ON_WM_CREATE()
    END_MESSAGE_MAP()
 
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -78,16 +79,38 @@ NAMESPACE_BEGIN2(GUI,Views)
       CRect view;
       GetClientRect(view);
 
-      // TODO: Anchor toolbar to top
+      // Anchor toolbar to top
+      int barHeight = ToolBar.CalcFixedLayout(FALSE, TRUE).cy;
+	   ToolBar.SetWindowPos(nullptr, view.left, view.top, view.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
 
       // Stretch RichEdit over remainder
-      RichEdit.SetWindowPos(nullptr, 0, 40, view.Width(), view.Height()-40, SWP_NOZORDER | SWP_NOACTIVATE);
+      RichEdit.SetWindowPos(nullptr, view.left, view.top+barHeight, view.Width(), view.Height()-barHeight, SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
    void LanguageEditView::DoDataExchange(CDataExchange* pDX)
    {
       CFormView::DoDataExchange(pDX);
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
+   }
+   
+   int LanguageEditView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+   {
+      if (CFormView::OnCreate(lpCreateStruct) == -1)
+         return -1;
+
+      ToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EDITOR);
+	   ToolBar.LoadToolBar(IDR_EDITOR, 0, 0, TRUE /* Is locked */);
+	   ToolBar.CleanUpLockedImages();
+	   ToolBar.LoadBitmap(IDR_EDITOR, 0, 0, TRUE /* Locked */);
+
+      ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
+	   ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
+	   ToolBar.SetOwner(this);
+
+      // All commands will be routed via this control , not via the parent frame:
+	   ToolBar.SetRouteCommandsViaFrame(FALSE);
+
+      return 0;
    }
 
    /// <summary>Initialise control</summary>
@@ -124,6 +147,5 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    
 NAMESPACE_END2(GUI,Views)
-
 
 
