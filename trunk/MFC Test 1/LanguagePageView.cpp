@@ -78,6 +78,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       CListView::OnInitialUpdate();
 
       // Setup listView
+      GetListCtrl().ModifyStyle(WS_BORDER, NULL);
       GetListCtrl().SetView(LV_VIEW_DETAILS);
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
