@@ -50,6 +50,21 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
 
+   LanguageStringView*  LanguageEditView::GetStringView() const
+   {
+      // Iterate thru views
+      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
+      {
+         auto pView = dynamic_cast<LanguageStringView*>(GetDocument()->GetNextView(pos));
+         if (pView != nullptr)
+            return pView;
+      }   
+
+      throw GenericException(HERE, L"Cannot find language string View");
+   }
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+
    void  LanguageEditView::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -76,27 +91,25 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CFormView::OnInitialUpdate();
 
-      //// Setup lists
-      //PageList.InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
-      //PageList.InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
-      //PageList.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-
-      //StringList.InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
-      //StringList.InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
-      //StringList.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-
-      // Populate pages
+      // Listen for string SelectionChanged
+      fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
    }
 
+   void LanguageEditView::onStringSelectionChanged()
+   {
+      // Clear text
+      RichEdit.SetWindowTextW(L"");
+
+      // Re-populate
+      if (LanguageString* str = GetStringView()->GetSelectedString())
+         RichEdit.SetWindowTextW(str->Text.c_str());
+   }
    
    void LanguageEditView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);
       AdjustLayout();
    }
-
-   // ------------------------------ PROTECTED METHODS -----------------------------
-   
 
    // ------------------------------- PRIVATE METHODS ------------------------------
 

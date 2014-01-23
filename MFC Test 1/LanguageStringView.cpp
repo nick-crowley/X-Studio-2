@@ -11,6 +11,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    BEGIN_MESSAGE_MAP(LanguageStringView, CListView)
       ON_WM_SIZE()
+      ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -45,6 +46,25 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
    
+   LanguagePageView*  LanguageStringView::GetPageView() const
+   {
+      // Iterate thru views
+      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
+      {
+         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
+         if (pView != nullptr)
+            return pView;
+      }   
+
+      throw GenericException(HERE, L"Cannot find page View");
+   }
+
+   LanguageString*   LanguageStringView::GetSelectedString() const
+   {
+      int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
+      return item != -1 ? &GetPageView()->GetSelectedPage()->Strings.FindByIndex(item) : nullptr;
+   }
+   
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    void  LanguageStringView::AdjustLayout()
@@ -60,19 +80,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
-   LanguagePageView*  LanguageStringView::GetPageView() const
-   {
-      // Iterate thru views
-      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
-      {
-         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
-         if (pView != nullptr)
-            return pView;
-      }   
-
-      throw GenericException(HERE, L"Cannot find page View");
-   }
-
    
    void LanguageStringView::OnInitialUpdate()
    {
@@ -86,6 +93,16 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Listen for PageClicked
       fnPageSelectionChanged = GetPageView()->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+   }
+   
+   void LanguageStringView::OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+      
+      // Raise 'SELECTION CHANGED'
+      SelectionChanged.Raise();
+
+      *pResult = 0;
    }
 
    void LanguageStringView::onPageSelectionChanged()
@@ -123,4 +140,5 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    
 NAMESPACE_END2(GUI,Views)
+
 
