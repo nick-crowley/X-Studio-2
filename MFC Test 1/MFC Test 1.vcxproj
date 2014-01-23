@@ -200,6 +200,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="ScriptDocument.h" />
+    <ClInclude Include="ScriptEdit.h" />
     <ClInclude Include="ScriptView.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="MainWnd.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ScriptDocument.cpp" />
+    <ClCompile Include="ScriptEdit.cpp" />
     <ClCompile Include="ScriptView.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />

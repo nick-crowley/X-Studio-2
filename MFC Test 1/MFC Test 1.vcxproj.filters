@@ -334,6 +334,9 @@
     <ClInclude Include="Logic\FileIdentifier.h">
       <Filter>Header Files\Logic\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptEdit.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -524,6 +527,9 @@
     </ClCompile>
     <ClCompile Include="Logic\FileIdentifier.cpp">
       <Filter>Source Files\Logic\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEdit.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

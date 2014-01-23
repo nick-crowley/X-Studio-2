@@ -131,9 +131,11 @@ namespace Logic
             expression = (assignment/conditional) unary_operator? value (operator value)*
             */
 
-            // DEBUG:
-            Console << GetLineNumber(text) << L": " << *text << ENDL;
-            auto num = GetLineNumber(text);
+            #ifdef PRINT_CONSOLE
+               // DEBUG:
+               Console << GetLineNumber(text) << L": " << *text << ENDL;
+               auto num = GetLineNumber(text);
+            #endif
 
             // Comment/NOP:
             if (MatchComment(lex))
@@ -152,10 +154,12 @@ namespace Logic
             
             // * could potentially validate parameters at this point
 
-            // DEBUG:
-            Console << Colour::Yellow << L"FAILED" << ENDL;
-            for (auto tok : lex.Tokens)
-               Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
+            #ifdef PRINT_CONSOLE
+               // DEBUG:
+               Console << Colour::Yellow << L"FAILED" << ENDL;
+               for (auto tok : lex.Tokens)
+                  Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
+            #endif
 
             // Generate node, advance line
             return CommandTree( new CommandNode(ScriptCommand(), GetLineNumber(text), ErrorArray()) );
@@ -340,8 +344,10 @@ namespace Logic
          {
             UINT id = (lex.count() == 0 ? CMD_NOP : CMD_COMMENT);
             
-            // DEBUG:
-            Console << Colour::Green << (id == CMD_NOP ? L"nop" : L"comment") << ENDL;
+            #ifdef PRINT_CONSOLE
+               // DEBUG:
+               Console << Colour::Green << (id == CMD_NOP ? L"nop" : L"comment") << ENDL;
+            #endif
 
             // Return NOP/Comment
             return ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens);
@@ -382,16 +388,18 @@ namespace Logic
             // TokenArray params;
             ScriptCommand cmd(*line, syntax, TokenArray());
 
-            // DEBUG:
-            if (syntax != SyntaxLib.Unknown)
-               Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
-            else
-            {
-               Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
+            
+            #ifdef PRINT_CONSOLE
+               // DEBUG:
+               if (syntax != SyntaxLib.Unknown)
+                  Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
+               else
+                  Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
+            #endif
 
-               if (pos != lex.end())
-                  errors.push_back(ErrorToken(GetLineNumber(line), pos->Start, pos->End));
-            }
+            // Unrecognised: Push error
+            if (syntax == SyntaxLib.Unknown && pos != lex.end())
+               errors.push_back(ErrorToken(GetLineNumber(line), pos->Start, pos->End));
 
             // Create node
             return CommandTree( new CommandNode(cmd, GetLineNumber(line), errors) );
@@ -424,8 +432,10 @@ namespace Logic
             // TODO: Arrange parameters?
             //TokenArray params(hash.Parameters);
 
-            // DEBUG:
-            Console << Colour::Green << L"expression" << ENDL;
+            #ifdef PRINT_CONSOLE
+               // DEBUG:
+               Console << Colour::Green << L"expression" << ENDL;
+            #endif
 
             // Create expression
             return ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams);

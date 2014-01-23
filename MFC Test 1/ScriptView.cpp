@@ -9,7 +9,6 @@
 #include "Logic/DebugTests.h"
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
-#include <Richedit.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,13 +27,12 @@ NAMESPACE_BEGIN(GUI)
       ON_WM_SIZE()
       ON_COMMAND(ID_TEST_RUN_ALL, &ScriptView::OnRuntests)
       ON_COMMAND(ID_TEST_COMPILE, &ScriptView::OnCompile)
-      ON_EN_CHANGE(IDC_SCRIPT_EDIT, &ScriptView::OnEnChangeRichedit)
       ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
    
-   ScriptView::ScriptView() : CFormView(ScriptView::IDD), Updating(false)
+   ScriptView::ScriptView() : CFormView(ScriptView::IDD)
    {
    }
 
@@ -111,17 +109,12 @@ NAMESPACE_BEGIN(GUI)
    void ScriptView::OnCompile()
    {
       LineArray lines;
-      WCHAR  buf[512];
    
       try
       {
          // Get text in lines
-         for (INT i = 0; i < RichEdit.GetLineCount(); i++)
-         {
-            int len = Edit_GetLine(RichEdit.m_hWnd, i, buf, 512);
-            buf[len > 0 && buf[len-1] == '\v' ? len-1 : len] = NULL;
-            lines.push_back(buf);
-         }
+         for (int i = 0; i < RichEdit.GetLineCount(); i++)
+            lines.push_back(RichEdit.GetLine(i));
 
          // Test parser
          auto tree = DebugTests::CompileScript(lines);
@@ -170,7 +163,7 @@ NAMESPACE_BEGIN(GUI)
 	   ResizeParentToFit();
 
       // Enable EN_CHANGE
-      RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+      //RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
 
       // TEST: set paragraph
       //PARAFORMAT2 pf;
@@ -182,6 +175,10 @@ NAMESPACE_BEGIN(GUI)
       //RichEdit.SetSel(0,-1);
       //RichEdit.SetParaFormat(pf);
 
+      // Set background colour
+      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+
       // Convert script to RTF (ansi)
       string txt;
       RtfScriptWriter w(txt);
@@ -189,9 +186,10 @@ NAMESPACE_BEGIN(GUI)
       w.Close();
 
       // Display text
-      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
+      //SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+      //RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      //RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
+      RichEdit.SetRtf(txt);
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -202,78 +200,9 @@ NAMESPACE_BEGIN(GUI)
 
    void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
    {
-   /*#ifndef SHARED_HANDLERS
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
-   #endif*/
    }
 
-   
-   void ScriptView::OnEnChangeRichedit()
-   {
-      // TODO:  If this is a RICHEDIT control, the control will not
-      // send this notification unless you override the CFormView::OnInitDialog()
-      // function and call CRichEditCtrl().SetEventMask()
-      // with the ENM_CHANGE flag ORed into the mask.
-
-      // TODO:  Add your control notification handler code here
-
-      // Disable EN_UPDATE
-      //RichEdit.SetEventMask(RichEdit.GetEventMask() ^ ENM_UPDATE);
-      if (!Updating)
-      {
-         Updating = true;
-
-         // Preserve selection
-         CHARRANGE sel;
-         RichEdit.GetSel(sel);
-         RichEdit.SetRedraw(FALSE);
-
-         // Get line char pos
-         UINT start = RichEdit.LineIndex(-1);
-
-         // Get line text
-         WCHAR buf[512];
-         int len = RichEdit.GetLine(RichEdit.LineFromChar(-1), buf, 512);
-         buf[len] = NULL;
-
-         // Lex line
-         CommandLexer lex(buf);
-         for (const auto& tok : lex.Tokens)
-         {
-            CHARFORMAT2 cf;
-            cf.cbSize = sizeof(cf);
-            cf.dwMask = CFM_COLOR;
-            cf.dwEffects = NULL;
-      
-            // Set colour
-            switch (tok.Type)
-            {
-            case TokenType::Comment:  cf.crTextColor = RGB(128,128,128);      break;
-            case TokenType::Null:
-            case TokenType::Variable: cf.crTextColor = RGB(0,255,0);      break;
-            case TokenType::Keyword:  cf.crTextColor = RGB(0,0,255);      break;
-            case TokenType::Number:  
-            case TokenType::String:   cf.crTextColor = RGB(255,0,0);      break;
-            default:                  cf.crTextColor = RGB(255,255,255);  break;
-            }
-
-            // Set char format
-            RichEdit.SetSel(start+tok.Start, start+tok.End);
-            RichEdit.SetSelectionCharFormat(cf);
-         }
-
-         // Restore selection
-         RichEdit.SetRedraw(TRUE);
-         RichEdit.SetSel(sel);
-         RichEdit.Invalidate();
-
-         // Enable EN_UPDATE
-         //RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE);
-         Updating = false;
-      }
-   }
-
-   
    void ScriptView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);
