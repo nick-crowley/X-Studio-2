@@ -12,6 +12,7 @@
 #include "Logic/SyntaxLibrary.h"
 #include "Logic/ScriptFileReader.h"
 #include "Logic/StringLibrary.h"
+#include "Logic/FileIdentifier.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,12 +45,6 @@ NAMESPACE_BEGIN(GUI)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   CDocTemplate::Confidence ScriptDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
-   {
-      rpDocMatch = NULL;
-      return maybeAttemptNative;
-   }
-
    #ifdef _DEBUG
    void ScriptDocument::AssertValid() const
    {
@@ -62,7 +57,23 @@ NAMESPACE_BEGIN(GUI)
    }
    #endif //_DEBUG
 
-   
+   /// <summary>Queries whether an external file should be opened as a script</summary>
+   /// <param name="lpszPathName">Path of file.</param>
+   /// <param name="rpDocMatch">The already open document, if any.</param>
+   /// <returns>yesAlreadyOpen if already open, yesAttemptNative if script, noAttempt if unrecognised</returns>
+   CDocTemplate::Confidence ScriptDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
+   {
+      Confidence conf;
+
+      // Ensure document not already open
+      if ((conf = CMultiDocTemplate::MatchDocType(lpszPathName, rpDocMatch)) == yesAlreadyOpen)
+         return yesAlreadyOpen;
+
+      // Identify language file from header
+      rpDocMatch = nullptr;
+      return FileIdentifier::Identify(lpszPathName) == FileType::Script ? yesAttemptNative : noAttempt;
+   }
+
    BOOL ScriptDocument::OnNewDocument()
    {
 	   if (!CDocument::OnNewDocument())

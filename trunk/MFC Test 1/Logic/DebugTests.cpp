@@ -194,7 +194,7 @@ namespace Logic
 
          // Test search
          XFileInfo f = vfs.Find(L"D:\\X3 Albion Prelude\\types\\TLaser");
-         StringReader reader(f.Open());
+         StringReader reader(f.OpenRead());
 
          // Print file
          wstring line;

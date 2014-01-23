@@ -42,7 +42,7 @@ namespace Logic
          Path       GetDataFile() const; 
 
          bool       Matches(Path path, bool checkExtension) const;
-         StreamPtr  Open() const;
+         StreamPtr  OpenRead() const;
 
 			// ----------------------- MUTATORS ------------------------
 

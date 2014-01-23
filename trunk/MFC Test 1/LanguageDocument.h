@@ -4,6 +4,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   /// <summary>Language document template</summary>
    class LanguageDocTemplate : public CMultiDocTemplate
    {
       // --------------------- CONSTRUCTION ----------------------
@@ -17,7 +18,8 @@ NAMESPACE_BEGIN(GUI)
       DECLARE_DYNAMIC(LanguageDocTemplate)
 
       // ---------------------- ACCESSORS ------------------------	
-      virtual CDocTemplate::Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
+
+      virtual Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
    };
 
    /// <summary>Language document</summary>

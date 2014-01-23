@@ -247,17 +247,11 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LanguageView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="LanguageDocument.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\Event.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logic\TObject.h">
       <Filter>Header Files\Logic\Types</Filter>
@@ -286,9 +280,6 @@
     <ClInclude Include="Logic\LookupString.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="EventLibrary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ProjectWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -297,12 +288,6 @@
     </ClInclude>
     <ClInclude Include="GameDataWnd.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoRes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resources.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ListView.h">
       <Filter>Header Files\GUI\Controls</Filter>
@@ -316,11 +301,26 @@
     <ClInclude Include="Logic\WorkerFeedback.h">
       <Filter>Header Files\Logic\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Event.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="EventLibrary.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoRes.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\FileIdentifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -459,26 +459,17 @@
     <ClCompile Include="Logic\FileSearch.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LanguageDocument.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="LanguageView.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\TObject.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LookupString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="EventLibrary.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProjectWnd.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -494,6 +485,21 @@
     </ClCompile>
     <ClCompile Include="Logic\GameDataWorker.cpp">
       <Filter>Source Files\Logic\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Event.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="EventLibrary.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\FileIdentifier.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

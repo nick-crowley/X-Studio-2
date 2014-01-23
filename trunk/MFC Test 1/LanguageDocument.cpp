@@ -5,6 +5,7 @@
 #include "LanguageDocument.h"
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
+#include "Logic/FileIdentifier.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -31,48 +32,6 @@ NAMESPACE_BEGIN(GUI)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   CDocTemplate::Confidence LanguageDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
-   {
-      rpDocMatch = NULL;
-      return yesAttemptNative;
-
-	   /*ASSERT(lpszPathName != NULL);
-	   rpDocMatch = NULL;
-
-	   // go through all documents
-	   POSITION pos = GetFirstDocPosition();
-	   while (pos != NULL)
-	   {
-		   CDocument* pDoc = GetNextDoc(pos);
-		   if (AfxComparePath(pDoc->GetPathName(), lpszPathName))
-		   {
-			   // already open
-			   rpDocMatch = pDoc;
-			   return yesAlreadyOpen;
-		   }
-	   }
-
-	   // see if it matches our default suffix
-	   CString strFilterExt;
-	   if (GetDocString(strFilterExt, CDocTemplate::filterExt) &&
-	     !strFilterExt.IsEmpty())
-	   {
-		   // see if extension matches
-		   ASSERT(strFilterExt[0] == '.');
-		   LPCTSTR lpszDot = ::PathFindExtension(lpszPathName);
-		   if (lpszDot != NULL)
-           {
-               if(::AfxComparePath(lpszDot, static_cast<const TCHAR *>(strFilterExt)))
-               {
-			       return yesAttemptNative; // extension matches, looks like ours
-               }
-           }
-	   }
-
-	   // otherwise we will guess it may work
-	   return yesAttemptForeign;*/
-   }
-
    #ifdef _DEBUG
    void LanguageDocument::AssertValid() const
    {
@@ -85,6 +44,23 @@ NAMESPACE_BEGIN(GUI)
 	   CDocument::Dump(dc);
    }
    #endif //_DEBUG
+   
+   /// <summary>Queries whether an external file should be opened as a language file</summary>
+   /// <param name="lpszPathName">Path of file.</param>
+   /// <param name="rpDocMatch">The already open document, if any.</param>
+   /// <returns>yesAlreadyOpen if already open, yesAttemptNative if language file, noAttempt if unrecognised</returns>
+   CDocTemplate::Confidence LanguageDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
+   {
+      Confidence conf;
+
+      // Ensure document not already open
+      if ((conf = CMultiDocTemplate::MatchDocType(lpszPathName, rpDocMatch)) == yesAlreadyOpen)
+         return yesAlreadyOpen;
+
+      // Identify language file from header
+      rpDocMatch = nullptr;
+      return FileIdentifier::Identify(lpszPathName) == FileType::Language ? yesAttemptNative : noAttempt;
+   }
 
    void LanguageDocument::Serialize(CArchive& ar)
    {

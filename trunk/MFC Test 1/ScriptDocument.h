@@ -20,7 +20,7 @@ NAMESPACE_BEGIN(GUI)
       DECLARE_DYNAMIC(ScriptDocTemplate)
 
       // ---------------------- ACCESSORS ------------------------	
-      virtual CDocTemplate::Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
+      virtual Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
    };
 
    /// <summary>MSCI Script document</summary>

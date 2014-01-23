@@ -130,6 +130,7 @@
     <ClInclude Include="GameDataWnd.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
+    <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="EventLibrary.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
