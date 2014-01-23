@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
 
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
 
@@ -57,6 +58,19 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // TODO: Layout code
    }
+   
+   LanguagePageView*  LanguageStringView::GetPageView() const
+   {
+      // Iterate thru views
+      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
+      {
+         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
+         if (pView != nullptr)
+            return pView;
+      }   
+
+      throw Win32Exception(HERE, L"View not found");
+   }
 
    
    void LanguageStringView::OnInitialUpdate()
@@ -68,6 +82,21 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+      // Listen for PageClicked
+      POSITION pos = GetDocument()->GetFirstViewPosition();
+      while (pos != NULL)
+      {
+         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
+
+         if (pView != nullptr)
+            fnPageClick = pView->PageClick.Register(this, &LanguageStringView::onPageClick);
+      }   
+   }
+
+   void LanguageStringView::onPageClick(LanguagePage& p)
+   {
+      Console << L"User has clicked on page: " << p.ID << L" : " << p.Title << ENDL;
    }
 
    

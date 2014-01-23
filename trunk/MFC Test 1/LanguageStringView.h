@@ -2,6 +2,7 @@
 
 #include "afxcview.h"
 #include "LanguageDocument.h"
+#include "LanguagePageView.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -34,15 +35,21 @@ NAMESPACE_BEGIN2(GUI,Views)
    #endif  
       LanguageDocument* GetDocument() const;
 
+   protected:
+      LanguagePageView* GetPageView() const;
+
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+
+      void onPageClick(LanguagePage& p);
 	  
       virtual void OnInitialUpdate();
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
    private:
+      PageClickHandler  fnPageClick;
    };
    
    #ifndef _DEBUG  
