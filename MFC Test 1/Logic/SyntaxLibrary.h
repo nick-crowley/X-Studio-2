@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "SyntaxFile.h"
 #include "ScriptToken.h"
+#include "BackgroundWorker.h"
 
 // Syntax library singleton
 #define SyntaxLib SyntaxLibrary::Instance
@@ -104,7 +105,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  Clear();
-         UINT  Enumerate();
+         UINT  Enumerate(WorkerData* data);
 
       private:
          void  Merge(SyntaxFile&& f);

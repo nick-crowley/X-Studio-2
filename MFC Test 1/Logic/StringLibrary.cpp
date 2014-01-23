@@ -36,7 +36,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, L"Enumerating language files");
+         data->SendFeedback(ProgressType::Info, 1, L"Enumerating language files");
          Console << ENDL << Colour::Cyan << L"Enumerating language files" << ENDL;
 
          // Enumerate non-foreign language files
@@ -55,7 +55,7 @@ namespace Logic
             try
             {
                // Feedback
-               data->SendFeedback(ProgressType::Info, GuiString(L"Reading language file '%s'...", (const WCHAR*)f.FullPath));
+               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", (const WCHAR*)f.FullPath));
                Console << L"Reading language file: " << f.FullPath << L"...";
 
                // Parse language file
@@ -69,7 +69,7 @@ namespace Logic
             }
             catch (ExceptionBase& e)
             {
-               data->SendFeedback(ProgressType::Warning, GuiString(L"Failed: ") + e.Message);
+               data->SendFeedback(ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
                Console << Colour::Red << L"Failed: " << e.Message << ENDL;
             }
          }

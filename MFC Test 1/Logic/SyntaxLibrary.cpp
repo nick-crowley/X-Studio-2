@@ -35,26 +35,33 @@ namespace Logic
 
 
       /// <summary>Populates the library from the syntax files</summary>
+      /// <param name="data">Background worker data</param>
       /// <returns>Commands enumerated</returns>
       /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
       /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      UINT  SyntaxLibrary::Enumerate()
+      UINT  SyntaxLibrary::Enumerate(WorkerData* data)
       {
          const Path path(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt");
 
          // Clear previous contents
          Clear();
-         
-         // Load legacy syntax file
-         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << (const WCHAR*)path << ENDL;
-         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
 
-         // Merge contents
-         Merge( LegacySyntaxReader(fs).ReadFile() );
-         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+         // Feedback
+         data->SendFeedback(ProgressType::Info, 1, L"Loading command syntax...");
+
+         // TODO: Check for new format syntax file
+
+         // Feedback
+         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading legacy syntax file '%s'", path.FileName.c_str()));
+         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << (const WCHAR*)path << ENDL;
          
+         // Load/Merge legacy syntax file
+         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         Merge( LegacySyntaxReader(fs).ReadFile() );
+
          // Return commands read
+         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
          return Commands.size();
       }
 

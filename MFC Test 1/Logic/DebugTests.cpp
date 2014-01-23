@@ -42,7 +42,7 @@ namespace Logic
       // Build VFS. Enumerate language files
       vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
       StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
-      SyntaxLib.Enumerate();
+      SyntaxLib.Enumerate(nullptr);
 
       // Parse script
       Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
@@ -80,7 +80,7 @@ namespace Logic
       try
       {
          // Test LegacySyntaxReader
-         SyntaxLib.Enumerate();
+         SyntaxLib.Enumerate(nullptr);
 
          // Test Lookup
          SyntaxLib.Find(CMD_EXPRESSION, GameVersion::TerranConflict);
