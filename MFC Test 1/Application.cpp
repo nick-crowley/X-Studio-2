@@ -140,7 +140,7 @@ BOOL Application::InitInstance()
    pDocTemplate = new LanguageDocTemplate(IDR_LANGUAGEVIEW,
 		RUNTIME_CLASS(GUI::LanguageDocument),
 		RUNTIME_CLASS(GUI::Views::LanguageFrame),
-		RUNTIME_CLASS(GUI::Views::LanguageEditView));
+		nullptr);
    if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
