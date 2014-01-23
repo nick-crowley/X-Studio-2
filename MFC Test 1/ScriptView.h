@@ -7,6 +7,7 @@
 #include "afxcmn.h"
 #include "Logic/Common.h"
 #include "ScriptDocument.h"
+#include "afxwin.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -43,13 +44,13 @@ NAMESPACE_BEGIN(GUI)
       // ----------------------- MUTATORS ------------------------
 
    protected:
+      void AdjustLayout();
       virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
-      afx_msg void OnBnClickedCompile();
-      afx_msg void OnBnClickedLoadScript();
-      afx_msg void OnBnClickedRuntests();
+      afx_msg void OnCompile();
+      afx_msg void OnRuntests();
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnEnChangeRichedit();
       afx_msg void OnFilePrintPreview();
@@ -59,7 +60,9 @@ NAMESPACE_BEGIN(GUI)
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      CRichEditCtrl m_RichEdit;
+      CRichEditCtrl RichEdit;
+      CComboBox     ScopeCombo;
+      CComboBox     VariablesCombo;
 
    protected:
       bool Updating;

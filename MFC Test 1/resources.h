@@ -48,10 +48,6 @@
 #define ID_CLASS_PROPERTIES             142
 #define ID_NEW_FOLDER                   143
 #define ID_SORT_MENU                    144
-#define ID_SORTING_GROUPBYTYPE          145
-#define ID_SORTING_SORTALPHABETIC       146
-#define ID_SORTING_SORTBYTYPE           147
-#define ID_SORTING_SORTBYACCESS         148
 #define ID_VIEW_OUTPUTWND               149
 #define ID_VIEW_PROPERTIESWND           150
 #define ID_SORTPROPERTIES               151
@@ -60,25 +56,18 @@
 #define ID_EXPAND_ALL                   154
 #define ID_TOOLS_MACRO                  181
 #define ID_SET_STYLE                    201
-#define ID_VIEW_APPLOOK_WIN_2000        205
-#define ID_VIEW_APPLOOK_OFF_XP          206
-#define ID_VIEW_APPLOOK_WIN_XP          207
-#define ID_VIEW_APPLOOK_OFF_2003        208
-#define ID_VIEW_APPLOOK_VS_2005         209
-#define ID_VIEW_APPLOOK_VS_2008         210
-#define ID_VIEW_APPLOOK_OFF_2007_BLUE   215
-#define ID_VIEW_APPLOOK_OFF_2007_BLACK  216
-#define ID_VIEW_APPLOOK_OFF_2007_SILVER 217
-#define ID_VIEW_APPLOOK_OFF_2007_AQUA   218
-#define ID_VIEW_APPLOOK_WINDOWS_7       219
+#define ID_TEST_RUN_ALL                 220
+#define ID_TEST_COMPILE                 221
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
 #define IDC_LOADSCRIPT                  1003
-#define IDC_RICHEDIT                    1004
 #define IDC_RUNTESTS                    1005
 #define IDC_COMPILE                     1006
 
+#define IDC_SCOPE_COMBO                 1007
+#define IDC_VARIABLES_COMBO             1008
+#define IDC_SCRIPT_EDIT                 1009
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
