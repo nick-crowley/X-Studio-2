@@ -54,6 +54,8 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
       public:
+         wstring GetDisplayText() const;
+
          /// <summary>Query whether command is compatible with a version</summary>
          bool  IsCompatible(GameVersion v) const;
 

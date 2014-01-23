@@ -40,6 +40,11 @@ namespace Logic
             {
                return Type == t && (!matchCase ? Text == txt : StrCmpI(Text.c_str(), txt) == 0);
             }*/
+         public:
+            UINT  Length() const 
+            { 
+               return End - Start; 
+            }
 
             // ----------------------- MUTATORS ------------------------
 
