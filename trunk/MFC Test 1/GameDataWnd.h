@@ -32,7 +32,7 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
-      afx_msg void onRequestItem(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void OnSearchTermChanged();
       
       void onAppStateChanged(AppState s);
 
