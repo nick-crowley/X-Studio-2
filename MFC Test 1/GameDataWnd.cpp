@@ -14,7 +14,7 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
-      ON_NOTIFY(LVN_GETDISPINFO,1,&CGameDataWnd::onRequestItem)
+      ON_EN_CHANGE(2, &CGameDataWnd::OnSearchTermChanged)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -81,12 +81,12 @@ NAMESPACE_BEGIN(GUI)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
 	      // ListView
-	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT |  LVS_ALIGNTOP |/*LVS_OWNERDATA |*/ LVS_NOCOLUMNHEADER, rectDummy, this, 1))
+	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT |  LVS_ALIGNTOP | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
             throw Win32Exception(HERE, L"Unable to create game data window listview");
 
          // Insert columns
          ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
-         ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
+         //ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          ListView.SetFont(&afxGlobalData.fontRegular);
          ListView.EnableGroupView(TRUE);
@@ -99,6 +99,7 @@ NAMESPACE_BEGIN(GUI)
 	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
             throw Win32Exception(HERE, L"Unable to create game data window edit control");
          Search.SetFont(&afxGlobalData.fontRegular);
+         Search.SetCueBanner(L"Enter search term...");
 
          // Combobox
 	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, 3))
@@ -109,6 +110,7 @@ NAMESPACE_BEGIN(GUI)
          Groups.AddString(L"All Groups");
          for (UINT g = (UINT)CommandGroup::ARRAY; g < (UINT)CommandGroup::HIDDEN; ++g)
             Groups.AddString(GuiString(IDS_FIRST_COMMAND_GROUP + g).c_str());
+         Groups.SetCurSel(0);
 
 	      // Layout controls + Populate
 	      AdjustLayout();
@@ -142,26 +144,15 @@ NAMESPACE_BEGIN(GUI)
 	   ListView.SetFocus();
    }
 
+   void CGameDataWnd::OnSearchTermChanged()
+   {
+      UpdateContent();
+   }
+
    void CGameDataWnd::OnSize(UINT nType, int cx, int cy)
    {
 	   CDockablePane::OnSize(nType, cx, cy);
 	   AdjustLayout();
-   }
-
-
-   void CGameDataWnd::onRequestItem(NMHDR* pNMHDR, LRESULT* pResult)
-   {
-      LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
-      auto syntax = Content[item.iItem];
-      
-      // Text
-      if (item.mask & LVIF_TEXT)
-      {
-         if (item.iSubItem == 0)
-            StringCchCopy(item.pszText, item.cchTextMax, syntax->Text.c_str());
-      }
-
-      *pResult = TRUE;
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
