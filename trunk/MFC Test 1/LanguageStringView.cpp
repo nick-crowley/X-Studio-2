@@ -57,6 +57,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetClientRect(wnd);
 
       // TODO: Layout code
+      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
    LanguagePageView*  LanguageStringView::GetPageView() const
@@ -69,7 +70,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             return pView;
       }   
 
-      throw Win32Exception(HERE, L"View not found");
+      throw GenericException(HERE, L"Cannot find page View");
    }
 
    
@@ -84,14 +85,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Listen for PageClicked
-      POSITION pos = GetDocument()->GetFirstViewPosition();
-      while (pos != NULL)
-      {
-         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
-
-         if (pView != nullptr)
-            fnPageClick = pView->PageClick.Register(this, &LanguageStringView::onPageClick);
-      }   
+      fnPageClick = GetPageView()->PageClick.Register(this, &LanguageStringView::onPageClick);
    }
 
    void LanguageStringView::onPageClick(LanguagePage& p)

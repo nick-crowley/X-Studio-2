@@ -143,6 +143,26 @@ namespace Logic
             Message += L"Unspecified";
       }
    };
+   
+   /// <summary>Occurs when an index is out of range</summary>
+   class IndexOutOfRangeException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an IndexOutOfRangeException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="index">Desired index</param>
+      /// <param name="count">Item count</param>
+      IndexOutOfRangeException(wstring  src, UINT index, UINT count) 
+         : ExceptionBase(src, GuiString(L"The index %d is out of range, only %d objects in collection", index, count))
+      {}
+
+      /// <summary>Create an IndexOutOfRangeException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="index">Desired index</param>
+      IndexOutOfRangeException(wstring  src, UINT index) 
+         : ExceptionBase(src, GuiString(L"The index %d is out of range", index))
+      {}
+   };
 
    /// <summary>Occurs when an invalid operation is attempted</summary>
    class InvalidOperationException : public ExceptionBase
@@ -238,7 +258,7 @@ namespace Logic
    class PageNotFoundException : public ExceptionBase
    {
    public:
-      /// <summary>Create an PageNotFoundException</summary>
+      /// <summary>Create a PageNotFoundException</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="page">page id</param>
       PageNotFoundException(wstring  src, UINT page) 
@@ -250,7 +270,7 @@ namespace Logic
    class StringNotFoundException : public ExceptionBase
    {
    public:
-      /// <summary>Create an StringNotFoundException</summary>
+      /// <summary>Create a StringNotFoundException</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="page">page id</param>
       /// <param name="id">string id</param>
