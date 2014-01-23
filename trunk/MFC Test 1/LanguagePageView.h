@@ -1,28 +1,28 @@
 #pragma once
-#include "afxcmn.h"
 
+#include "afxcview.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
-
-   /// <summary>Language document view</summary>
-   class LanguageView : public CFormView
+NAMESPACE_BEGIN2(GUI,Views)
+   
+   /// <summary></summary>
+   class LanguagePageView : public CListView
    {
       // ------------------------ TYPES --------------------------
-   public:
-	   enum { IDD = IDR_LANGUAGEVIEW };
+   private:
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
-	   LanguageView();           // protected constructor used by dynamic creation
-	   virtual ~LanguageView();
-
+      LanguagePageView();    // Protected constructor used by dynamic creation
+   public:
+      virtual ~LanguagePageView();
+       
       // ------------------------ STATIC -------------------------
    public:
-      DECLARE_DYNCREATE(LanguageView)
+      DECLARE_DYNCREATE(LanguagePageView)
    protected:
       DECLARE_MESSAGE_MAP()
-
+	  
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
@@ -30,24 +30,17 @@ NAMESPACE_BEGIN(GUI)
    #ifdef _DEBUG
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
-   #endif   
-
+   #endif  
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-
-	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
-      virtual void OnInitialUpdate();
-      afx_msg void OnSize(UINT nType, int cx, int cy);
-
+	  
+	  afx_msg void OnSize(UINT nType, int cx, int cy);
+	  
       // -------------------- REPRESENTATION ---------------------
-   public:
-      CListCtrl PageList;
-      CListCtrl StringList;
-      CRichEditCtrl StringEdit;
       
+   private:
    };
+   
 
-
-NAMESPACE_END(GUI)
-
+NAMESPACE_END2(GUI,Views)

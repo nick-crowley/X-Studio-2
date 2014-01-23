@@ -76,6 +76,12 @@
     <Filter Include="Header Files\Logic\Threads">
       <UniqueIdentifier>{ab35f208-f803-46bf-ae84-864fc302be24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\Views">
+      <UniqueIdentifier>{412f0bcd-51c8-4d67-88aa-3f994a98ed79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Views">
+      <UniqueIdentifier>{2ee8dfd1-9ee4-4227-8edd-109fce1ffcbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -232,9 +238,6 @@
     <ClInclude Include="ScriptDocument.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptView.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="MainWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -246,9 +249,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageView.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="LanguageDocument.h">
       <Filter>Header Files\GUI</Filter>
@@ -316,8 +316,23 @@
     <ClInclude Include="AutoRes.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptView.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageEditView.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageFrame.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguagePageView.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageStringView.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
     <ClInclude Include="Logic\FileIdentifier.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Logic\FileSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -447,9 +462,6 @@
     <ClCompile Include="ScriptDocument.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptView.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="MainWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -460,9 +472,6 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="LanguageDocument.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageView.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\TObject.cpp">
@@ -498,8 +507,23 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptView.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageEditView.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageFrame.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguagePageView.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageStringView.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
     <ClCompile Include="Logic\FileIdentifier.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Logic\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
