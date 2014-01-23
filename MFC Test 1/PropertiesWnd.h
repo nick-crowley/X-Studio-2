@@ -7,7 +7,7 @@ NAMESPACE_BEGIN(GUI)
 
    // ------------------------------------ ENUMS -----------------------------------
 
-   enum class PropertyTarget  { ScriptView, LanguageView, Project };
+   enum class PropertyTarget  { ScriptView, LanguageEditView, Project };
 
    // ----------------------------- EVENTS AND DELEGATES ---------------------------
 

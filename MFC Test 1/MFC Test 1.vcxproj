@@ -128,6 +128,9 @@
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="EventLibrary.h" />
     <ClInclude Include="GameDataWnd.h" />
+    <ClInclude Include="LanguageFrame.h" />
+    <ClInclude Include="LanguagePageView.h" />
+    <ClInclude Include="LanguageStringView.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
@@ -135,7 +138,7 @@
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
-    <ClInclude Include="LanguageView.h" />
+    <ClInclude Include="LanguageEditView.h" />
     <ClInclude Include="Logic\CatalogReader.h" />
     <ClInclude Include="Logic\CatalogStream.h" />
     <ClInclude Include="Logic\CommandHash.h" />
@@ -209,12 +212,15 @@
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="EventLibrary.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="LanguageFrame.cpp" />
+    <ClCompile Include="LanguagePageView.cpp" />
+    <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />
-    <ClCompile Include="LanguageView.cpp" />
+    <ClCompile Include="LanguageEditView.cpp" />
     <ClCompile Include="Logic\CatalogReader.cpp" />
     <ClCompile Include="Logic\CatalogStream.cpp" />
     <ClCompile Include="Logic\CommandSyntax.cpp" />

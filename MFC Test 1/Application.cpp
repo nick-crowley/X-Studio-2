@@ -5,13 +5,15 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+#include "afxcview.h"
 #include "Application.h"
 #include "MainWnd.h"
 
 #include "ChildFrm.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
-#include "LanguageView.h"
+#include "LanguageFrame.h"
+#include "LanguageEditView.h"
 #include "LanguageDocument.h"
 
 //#define _CRTDBG_MAP_ALLOC
@@ -137,8 +139,8 @@ BOOL Application::InitInstance()
 
    pDocTemplate = new LanguageDocTemplate(IDR_LANGUAGEVIEW,
 		RUNTIME_CLASS(GUI::LanguageDocument),
-		RUNTIME_CLASS(GUI::CChildFrame),
-		RUNTIME_CLASS(GUI::LanguageView));
+		RUNTIME_CLASS(GUI::Views::LanguageFrame),
+		RUNTIME_CLASS(GUI::Views::LanguageEditView));
    if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);

@@ -68,6 +68,7 @@ using namespace std;
 
 // Resource IDs
 #include "Resources.h"
+#include <afxcview.h>
 
 #ifdef _UNICODE
 #if defined _M_IX86
