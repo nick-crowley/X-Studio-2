@@ -38,19 +38,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  SetRtf(const string& rtf);
 
    protected:
-      void  FreezeWindow(bool freeze);
+      void   FreezeWindow(bool freeze);
+      CPoint GetScrollCoordinates();
+      void   SetScrollCoordinates(const CPoint& pt);
+      void   SetCompilerTimer(bool set);
 
-      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-      afx_msg void OnChange();
+      afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
 	  
       // -------------------- REPRESENTATION ---------------------
    private:
       CHARRANGE Selection;
       DWORD     EventMask;
-      
-   public:
-      
+      CPoint    ScrollPos;
+            
    };
    
 
