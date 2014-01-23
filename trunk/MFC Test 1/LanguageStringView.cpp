@@ -46,6 +46,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
    
+   /// <summary>Gets the language page view</summary>
+   /// <returns></returns>
+   /// <exception cref="Logic::GenericException">View not found</exception>
    LanguagePageView*  LanguageStringView::GetPageView() const
    {
       // Iterate thru views
@@ -59,6 +62,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       throw GenericException(HERE, L"Cannot find page View");
    }
 
+   /// <summary>Gets the currently selected string.</summary>
+   /// <returns>Selected string if any, otherwise nullptr</returns>
+   /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
    LanguageString*   LanguageStringView::GetSelectedString() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
@@ -67,6 +73,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Arrange controls</summary>
    void  LanguageStringView::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -81,6 +88,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
    
+   /// <summary>Initialise control</summary>
    void LanguageStringView::OnInitialUpdate()
    {
       CListView::OnInitialUpdate();
@@ -95,6 +103,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       fnPageSelectionChanged = GetPageView()->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
    }
    
+   /// <summary>Raise the STRING SELECTION CHANGED event</summary>
+   /// <param name="pNMHDR">Item data</param>
+   /// <param name="pResult">Notify result.</param>
    void LanguageStringView::OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
@@ -105,6 +116,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       *pResult = 0;
    }
 
+   /// <summary>Populates the strings for the currently selected page</summary>
    void LanguageStringView::onPageSelectionChanged()
    {
       // Clear prev
@@ -129,6 +141,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
+   /// <summary>Adjusts layout</summary>
+   /// <param name="nType">Type of the resize</param>
+   /// <param name="cx">The new width</param>
+   /// <param name="cy">The new height</param>
    void LanguageStringView::OnSize(UINT nType, int cx, int cy)
    {
       CListView::OnSize(nType, cx, cy);

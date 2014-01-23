@@ -50,6 +50,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
 
+   /// <summary>Gets the language string view</summary>
+   /// <returns></returns>
+   /// <exception cref="Logic::GenericException">View not found</exception>
    LanguageStringView*  LanguageEditView::GetStringView() const
    {
       // Iterate thru views
@@ -65,6 +68,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 
+   /// <summary>Arrange controls</summary>
    void  LanguageEditView::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -86,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
    }
 
-   
+   /// <summary>Initialise control</summary>
    void LanguageEditView::OnInitialUpdate()
    {
       CFormView::OnInitialUpdate();
@@ -95,6 +99,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
    }
 
+   /// <summary>Populates the text of the currently selected string</summary>
    void LanguageEditView::onStringSelectionChanged()
    {
       // Clear text
@@ -105,6 +110,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          RichEdit.SetWindowTextW(str->Text.c_str());
    }
    
+   /// <summary>Adjusts layout</summary>
+   /// <param name="nType">Type of the resize</param>
+   /// <param name="cx">The new width</param>
+   /// <param name="cy">The new height</param>
    void LanguageEditView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);
