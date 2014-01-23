@@ -92,8 +92,13 @@ NAMESPACE_BEGIN(GUI)
          ListView.EnableGroupView(TRUE);
          
          // ListView ImageList:
-	      Images.Create(IDB_GAMEDATA_ICONS, 16, 0, RGB(255, 0, 255));
+	      //Images.Create(IDB_GAMEDATA_ICONS, 16, 0, RGB(255, 0, 255));
+         CBitmap* icons = theApp.LoadBitmapW(IDB_GAMEDATA_ICONS, 0, 0, LR_CREATEDIBSECTION | LR_LOADMAP3DCOLORS);
+         Images.Create(16, 16, ILC_COLOR24|ILC_MASK, 1, 5);
+         //Images.SetBkColor(RGB(255,0,255));
+         Images.Add(icons, RGB(255,0,255));
 	      ListView.SetImageList(&Images, LVSIL_SMALL);
+         delete icons;
 
          // Edit
 	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
