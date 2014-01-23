@@ -84,7 +84,7 @@ namespace Logic
 
       /// <summary>Opens a stream for reading</summary>
       /// <returns></returns>
-      StreamPtr  XFileInfo::Open() const
+      StreamPtr  XFileInfo::OpenRead() const
       {
          Stream*  s;
 
