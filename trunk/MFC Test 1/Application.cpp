@@ -62,7 +62,7 @@ END_MESSAGE_MAP()
 Application::Application() : GameDataState(AppState::NoGameData)
 {
 	// TODO: replace application ID string below with unique ID string; recommended format for string is CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("MFC Test 1.AppID.NoVersion"));
+	SetAppID(_T("BearWare.X-Studio.2"));
 }
 
 
@@ -106,17 +106,16 @@ BOOL Application::InitInstance()
    AfxInitRichEdit2();
 	AfxInitRichEdit5();
 
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	// of your final executable, you should remove from the following
-	// the specific initialization routines you do not need
+	
 	// Change the registry key under which our settings are stored
-	// TODO: You should modify this string to be something appropriate
-	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(L"Bearware");
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 
 
+   // Standard initialization
+	// If you are not using these features and wish to reduce the size
+	// of your final executable, you should remove from the following
+	// the specific initialization routines you do not need
 	InitContextMenuManager();
 
 	InitKeyboardManager();
