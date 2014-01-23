@@ -42,7 +42,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       
       void onStringSelectionChanged();
 
-	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
+      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
+      afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       virtual void OnInitialUpdate();
       afx_msg void OnSize(UINT nType, int cx, int cy);
       
@@ -50,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       SelectionChangedHandler  fnStringSelectionChanged;
       CRichEditCtrl            RichEdit;
-      
+      CMFCToolBar              ToolBar;
    };
 
    #ifndef _DEBUG  
