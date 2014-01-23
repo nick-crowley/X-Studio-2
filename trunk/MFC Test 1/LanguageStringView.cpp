@@ -125,7 +125,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Get selection, if any
       if (LanguagePage* page = GetPageView()->GetSelectedPage())
       {
-         UINT item = 0;
+         int item = -1;
          //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;
 
          // Re-Populate strings   
@@ -134,7 +134,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             const LanguageString& str = pair.second;
 
             // Add item {ID,Text}
-            item = GetListCtrl().InsertItem(item++, GuiString(L"%d", str.ID).c_str(), 0);
+            GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
             GetListCtrl().SetItem(item, 1, LVIF_TEXT, str.Text.c_str(), 0, NULL, NULL, NULL);
          }
       }

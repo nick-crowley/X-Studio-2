@@ -85,13 +85,13 @@ NAMESPACE_BEGIN2(GUI,Views)
       //GetListCtrl().EnableGroupView(TRUE);
 
       // Populate pages
-      UINT item = 0;
+      int item = -1;
       for (const auto& pair : GetDocument()->Content.Pages)
       {
          const LanguagePage& p = pair.second;
          
          // Add item {ID,Title}
-         item = GetListCtrl().InsertItem(item++, GuiString(L"%d", p.ID).c_str(), 0);
+         GetListCtrl().InsertItem(++item, GuiString(L"%d", p.ID).c_str(), 0);
          GetListCtrl().SetItem(item, 1, LVIF_TEXT, p.Title.c_str(), 0, NULL, NULL, NULL);
       }
    }
