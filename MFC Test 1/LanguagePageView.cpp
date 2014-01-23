@@ -46,6 +46,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
 
+   /// <summary>Gets the currently selected page.</summary>
+   /// <returns>Selected page if any, otherwise nullptr</returns>
+   /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
    LanguagePage*   LanguagePageView::GetSelectedPage() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
@@ -54,6 +57,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Adjusts the layout.</summary>
    void  LanguagePageView::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -68,6 +72,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
+   /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
    {
       CListView::OnInitialUpdate();
@@ -92,7 +97,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
-
+   /// <summary>Raise the PAGE SELECTION CHANGED event</summary>
+   /// <param name="pNMHDR">Item data</param>
+   /// <param name="pResult">Notify result.</param>
    void LanguagePageView::OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
@@ -102,6 +109,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       *pResult = 0;
    }
 
+   /// <summary>Adjusts layout</summary>
+   /// <param name="nType">Type of the resize</param>
+   /// <param name="cx">The new width</param>
+   /// <param name="cy">The new height</param>
    void LanguagePageView::OnSize(UINT nType, int cx, int cy)
    {
       CListView::OnSize(nType, cx, cy);
