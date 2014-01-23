@@ -70,11 +70,11 @@
     <Filter Include="Header Files\GUI\Controls">
       <UniqueIdentifier>{6f3f9ea7-cdcd-42fc-a25c-167d62390c5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Threads">
-      <UniqueIdentifier>{ab35f208-f803-46bf-ae84-864fc302be24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Threads">
+    <Filter Include="Source Files\Logic\Threads">
       <UniqueIdentifier>{b5a7447d-e844-4458-a95c-a5b13cdef070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\Threads">
+      <UniqueIdentifier>{ab35f208-f803-46bf-ae84-864fc302be24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -304,14 +304,14 @@
     <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BackgroundWorker.h">
-      <Filter>Header Files\GUI\Threads</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDataWorker.h">
-      <Filter>Header Files\GUI\Threads</Filter>
-    </ClInclude>
     <ClInclude Include="ListView.h">
       <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\BackgroundWorker.h">
+      <Filter>Header Files\Logic\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GameDataWorker.h">
+      <Filter>Header Files\Logic\Threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -486,11 +486,11 @@
     <ClCompile Include="GameDataWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="GameDataWorker.cpp">
-      <Filter>Source Files\GUI\Threads</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\SyntaxNode.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameDataWorker.cpp">
+      <Filter>Source Files\Logic\Threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

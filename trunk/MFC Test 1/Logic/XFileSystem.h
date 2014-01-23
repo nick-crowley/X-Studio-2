@@ -2,8 +2,7 @@
 #include "Common.h"
 #include "XCatalog.h"
 #include "XFileInfo.h"
-
-using namespace Logic::FileSystem;
+#include "BackgroundWorker.h"
 
 namespace Logic
 {
@@ -89,11 +88,11 @@ namespace Logic
 			// ----------------------- MUTATORS ------------------------
 
       public:
-         DWORD   Enumerate(Path folder, GameVersion version);
+         DWORD   Enumerate(Path folder, GameVersion version, WorkerData* data);
          
       private:
          DWORD   EnumerateCatalogs();
-         DWORD   EnumerateFiles();
+         DWORD   EnumerateFiles(WorkerData* data);
          void    EnumerateFolder(Path  folder);
          
          // -------------------- REPRESENTATION ---------------------
@@ -105,7 +104,7 @@ namespace Logic
          GameVersion        Version;
       };
 
-
-      
    }
 }
+
+using namespace Logic::FileSystem;

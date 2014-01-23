@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "LanguageFile.h"
 #include "XFileSystem.h"
+#include "BackgroundWorker.h"
 #include <algorithm>
 
 namespace Logic
@@ -67,7 +68,7 @@ namespace Logic
 
       public:
          void  Clear();
-         UINT  Enumerate(XFileSystem& vfs, GameLanguage lang);
+         UINT  Enumerate(XFileSystem& vfs, GameLanguage lang, WorkerData* data);
 
       private:
          LanguageFile  GetSpecialCases(GameLanguage lang);

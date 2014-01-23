@@ -75,13 +75,6 @@ NAMESPACE_BEGIN(GUI)
       
       try
       {
-         XFileSystem vfs;
-
-         // Build VFS. Enumerate language files
-         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-         StringLib.Enumerate(vfs, GameLanguage::English);
-         SyntaxLib.Enumerate();
-
          // Parse script
          Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;
 
