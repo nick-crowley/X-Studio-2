@@ -217,10 +217,13 @@ NAMESPACE_BEGIN(GUI)
             for (UINT i = 0; i < Content.size(); ++i)
             {
                LVITEM item;
+               wstring txt(Content[i]->GetDisplayText());
+
                item.mask = LVIF_TEXT | LVIF_GROUPID;
                item.iGroupId = (UINT)Content[i]->Group;
-               item.pszText = (WCHAR*)Content[i]->Text.c_str();
+               item.pszText = (WCHAR*)txt.c_str();
                item.iItem = i;
+               item.iSubItem = 0;
             
                //ListView.InsertItem(i, Content[i]->Text.c_str(), 0);
                if (ListView.InsertItem(&item) == -1)

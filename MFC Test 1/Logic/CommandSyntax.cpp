@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CommandSyntax.h"
+#include "CommandLexer.h"
+#include "StringLibrary.h"
 #include <algorithm>
 
 namespace Logic
@@ -33,6 +35,32 @@ namespace Logic
       // -------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Get populated display text</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::PageNotFoundException">Parameter types Page does not exist</exception>
+      /// <exception cref="Logic::StringNotFoundException">Parameter type string does not exist</exception>
+      wstring  CommandSyntax::GetDisplayText() const
+      {
+         CommandLexer lex(Text, false);
+         wstring      output(Text);
+
+         // Iterate backwards thru tokens
+         for (auto tok = lex.Tokens.rbegin(); tok < lex.Tokens.rend(); ++tok)
+         {
+            if (tok->Type == TokenType::Variable)
+            {
+               // Lookup parameter name
+               auto param = Parameters[tok->Text[1]-48];
+               GuiString name(L"<%s>", StringLib.Find(KnownPage::PARAMETER_TYPES, (UINT)param.Type).Text.c_str());
+
+               // Replace $n marker with parameter text
+               output.replace(tok->Start, tok->Length(), name.c_str());
+            }
+         }
+
+         return output;
+      }
 
       /// <summary>Determines whether the command is compatible with a game</summary>
       /// <param name="v">The game version</param>
