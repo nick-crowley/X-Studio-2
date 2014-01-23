@@ -25,11 +25,10 @@ NAMESPACE_BEGIN(GUI)
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_RBUTTONUP()
-      ON_BN_CLICKED(IDC_LOADSCRIPT, &ScriptView::OnBnClickedLoadScript)
       ON_WM_SIZE()
-      ON_BN_CLICKED(IDC_RUNTESTS, &ScriptView::OnBnClickedRuntests)
-      ON_BN_CLICKED(IDC_COMPILE, &ScriptView::OnBnClickedCompile)
-      ON_EN_CHANGE(IDC_RICHEDIT, &ScriptView::OnEnChangeRichedit)
+      ON_COMMAND(ID_TEST_RUN_ALL, &ScriptView::OnRuntests)
+      ON_COMMAND(ID_TEST_COMPILE, &ScriptView::OnCompile)
+      ON_EN_CHANGE(IDC_SCRIPT_EDIT, &ScriptView::OnEnChangeRichedit)
       ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
@@ -69,10 +68,30 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    
+   void  ScriptView::AdjustLayout()
+   {
+      // Destroyed/Minimised
+	   if (RichEdit.GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
+         return;
+         
+      CRect view, combo;
+      GetClientRect(view);
+      ScopeCombo.GetClientRect(combo);
+
+      // Anchor combos at top of view
+      ScopeCombo.SetWindowPos(nullptr, 0, 0, view.Width()/2, combo.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
+      VariablesCombo.SetWindowPos(nullptr, view.Width()/2, 0, view.Width()/2, combo.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
+
+      // Stretch RichEdit below
+      RichEdit.SetWindowPos(nullptr, 0, combo.Height(), view.Width(), view.Height()-combo.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
+   }
+
    void ScriptView::DoDataExchange(CDataExchange* pDX)
    {
       CFormView::DoDataExchange(pDX);
-      DDX_Control(pDX, IDC_RICHEDIT, m_RichEdit);
+      DDX_Control(pDX, IDC_SCRIPT_EDIT, RichEdit);
+      DDX_Control(pDX, IDC_SCOPE_COMBO, ScopeCombo);
+      DDX_Control(pDX, IDC_VARIABLES_COMBO, VariablesCombo);
    }
 
 
@@ -89,7 +108,7 @@ NAMESPACE_BEGIN(GUI)
    }
    
 
-   void ScriptView::OnBnClickedCompile()
+   void ScriptView::OnCompile()
    {
       LineArray lines;
       WCHAR  buf[512];
@@ -97,9 +116,9 @@ NAMESPACE_BEGIN(GUI)
       try
       {
          // Get text in lines
-         for (INT i = 0; i < m_RichEdit.GetLineCount(); i++)
+         for (INT i = 0; i < RichEdit.GetLineCount(); i++)
          {
-            int len = Edit_GetLine(m_RichEdit.m_hWnd, i, buf, 512);
+            int len = Edit_GetLine(RichEdit.m_hWnd, i, buf, 512);
             buf[len > 0 && buf[len-1] == '\v' ? len-1 : len] = NULL;
             lines.push_back(buf);
          }
@@ -121,11 +140,11 @@ NAMESPACE_BEGIN(GUI)
             *colour = 0x02;
 
             // Select error
-            UINT start = m_RichEdit.LineIndex(err.Line-1);
-            m_RichEdit.SetSel(start+err.Start, start+err.End);
+            UINT start = RichEdit.LineIndex(err.Line-1);
+            RichEdit.SetSel(start+err.Start, start+err.End);
 
             // Underline
-            m_RichEdit.SetSelectionCharFormat(cf);
+            RichEdit.SetSelectionCharFormat(cf);
          }
       }
       catch (ExceptionBase&  e)
@@ -136,41 +155,9 @@ NAMESPACE_BEGIN(GUI)
       }
    }
 
+  
    
-   void ScriptView::OnBnClickedLoadScript()
-   {
-      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml";
-      try
-      {
-         ScriptFile f( DebugTests::LoadScript(path) );
-      
-      
-
-         string txt;
-         RtfScriptWriter w(txt);
-         w.Write(f);
-         w.Close();
-
-         /*SETTEXTEX opt = {ST_DEFAULT, CP_UTF8};
-         unique_ptr<CHAR> utf8(new CHAR[txt.length()*2]);
-         utf8.get()[WideCharToMultiByte(CP_UTF8, NULL, txt.c_str(), txt.length(), utf8.get(), txt.length()*2, NULL, NULL)] = NULL;
-      
-         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)utf8.get());*/
-
-         SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-         m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-         m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
-      }
-   }
-
-   
-   void ScriptView::OnBnClickedRuntests()
+   void ScriptView::OnRuntests()
    {
       DebugTests::RunAll();
       AfxMessageBox(L"Tests complete");
@@ -183,7 +170,7 @@ NAMESPACE_BEGIN(GUI)
 	   ResizeParentToFit();
 
       // Enable EN_CHANGE
-      m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+      RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
 
       // TEST: set paragraph
       //PARAFORMAT2 pf;
@@ -192,18 +179,19 @@ NAMESPACE_BEGIN(GUI)
       //pf.bLineSpacingRule = 0; // Single spaced
       //pf.dyLineSpacing = 20;
       //
-      //m_RichEdit.SetSel(0,-1);
-      //m_RichEdit.SetParaFormat(pf);
+      //RichEdit.SetSel(0,-1);
+      //RichEdit.SetParaFormat(pf);
 
+      // Convert script to RTF (ansi)
       string txt;
       RtfScriptWriter w(txt);
       w.Write(GetDocument()->Script);
       w.Close();
 
-
+      // Display text
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      m_RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      m_RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
+      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -230,22 +218,22 @@ NAMESPACE_BEGIN(GUI)
       // TODO:  Add your control notification handler code here
 
       // Disable EN_UPDATE
-      //m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() ^ ENM_UPDATE);
+      //RichEdit.SetEventMask(RichEdit.GetEventMask() ^ ENM_UPDATE);
       if (!Updating)
       {
          Updating = true;
 
          // Preserve selection
          CHARRANGE sel;
-         m_RichEdit.GetSel(sel);
-         m_RichEdit.SetRedraw(FALSE);
+         RichEdit.GetSel(sel);
+         RichEdit.SetRedraw(FALSE);
 
          // Get line char pos
-         UINT start = m_RichEdit.LineIndex(-1);
+         UINT start = RichEdit.LineIndex(-1);
 
          // Get line text
          WCHAR buf[512];
-         int len = m_RichEdit.GetLine(m_RichEdit.LineFromChar(-1), buf, 512);
+         int len = RichEdit.GetLine(RichEdit.LineFromChar(-1), buf, 512);
          buf[len] = NULL;
 
          // Lex line
@@ -270,17 +258,17 @@ NAMESPACE_BEGIN(GUI)
             }
 
             // Set char format
-            m_RichEdit.SetSel(start+tok.Start, start+tok.End);
-            m_RichEdit.SetSelectionCharFormat(cf);
+            RichEdit.SetSel(start+tok.Start, start+tok.End);
+            RichEdit.SetSelectionCharFormat(cf);
          }
 
          // Restore selection
-         m_RichEdit.SetRedraw(TRUE);
-         m_RichEdit.SetSel(sel);
-         m_RichEdit.Invalidate();
+         RichEdit.SetRedraw(TRUE);
+         RichEdit.SetSel(sel);
+         RichEdit.Invalidate();
 
          // Enable EN_UPDATE
-         //m_RichEdit.SetEventMask(m_RichEdit.GetEventMask() | ENM_UPDATE);
+         //RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE);
          Updating = false;
       }
    }
@@ -289,14 +277,7 @@ NAMESPACE_BEGIN(GUI)
    void ScriptView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);
-
-      // TODO: Add your message handler code here
-      if (m_RichEdit.m_hWnd != nullptr)
-      {
-         CRect wnd;
-         GetClientRect(&wnd);
-         m_RichEdit.SetWindowPos(nullptr, NULL, 60, wnd.Width(), wnd.Height()-60, SWP_NOZORDER);
-      }
+      AdjustLayout();
    }
 
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)

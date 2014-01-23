@@ -243,17 +243,6 @@ NAMESPACE_BEGIN(GUI)
 	      lstBasicCommands.AddTail(ID_APP_ABOUT);
 	      lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
 	      lstBasicCommands.AddTail(ID_VIEW_CUSTOMIZE);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2003);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_VS_2005);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_BLUE);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_SILVER);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_BLACK);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_OFF_2007_AQUA);
-	      lstBasicCommands.AddTail(ID_VIEW_APPLOOK_WINDOWS_7);
-	      lstBasicCommands.AddTail(ID_SORTING_SORTALPHABETIC);
-	      lstBasicCommands.AddTail(ID_SORTING_SORTBYTYPE);
-	      lstBasicCommands.AddTail(ID_SORTING_SORTBYACCESS);
-	      lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
 
 	      CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
