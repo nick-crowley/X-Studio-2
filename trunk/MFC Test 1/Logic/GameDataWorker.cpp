@@ -39,7 +39,7 @@ namespace Logic
 
             // Feedback
             Console << ENDL << Colour::Cyan << L"Loading " << VersionString(data->Version) << L" game data from " << data->GameFolder.c_str() << ENDL;
-            data->SendFeedback(ProgressType::Operation, GuiString(L"Loading %s game data from '%s'", VersionString(data->Version).c_str(), data->GameFolder.c_str()));
+            data->SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading %s game data from '%s'", VersionString(data->Version).c_str(), data->GameFolder.c_str()));
 
             // Build VFS. 
             vfs.Enumerate(data->GameFolder, data->Version, data);
@@ -48,18 +48,17 @@ namespace Logic
             StringLib.Enumerate(vfs, GameLanguage::English, data);
 
             // Load legacy syntax file
-            data->SendFeedback(ProgressType::Info, L"Loading legacy syntax file");
-            SyntaxLib.Enumerate();
+            SyntaxLib.Enumerate(data);
 
             // Cleanup
-            data->SendFeedback(ProgressType::Succcess, L"Loaded game data successfully");
+            data->SendFeedback(ProgressType::Succcess, 0, L"Loaded game data successfully");
             CoUninitialize();
             return 0;
          }
          catch (ExceptionBase& e)
          {
             // Feedback
-            data->SendFeedback(ProgressType::Error, GuiString(L"Unable to load game data : ") + e.Message);
+            data->SendFeedback(ProgressType::Error, 0, GuiString(L"Unable to load game data : ") + e.Message);
             Console << e << ENDL;
 
             // Cleanup

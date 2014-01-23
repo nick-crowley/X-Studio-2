@@ -3,6 +3,7 @@
 
 #include "OutputWnd.h"
 #include "MainWnd.h"
+#include "ListView.h"
 
 
 #ifdef _DEBUG
@@ -177,7 +178,6 @@ NAMESPACE_BEGIN(GUI)
          // Load view images:
 	      if (!Images.Create(IDB_OUTPUT_ICONS, 16, 0, RGB(255, 0, 255)))
             throw Win32Exception(HERE, L"Unable to create output window image list");
-
 	      m_wndOutputBuild.SetImageList(&Images, LVSIL_SMALL);
 
 	      // Attach list windows to tab:
@@ -195,8 +195,12 @@ NAMESPACE_BEGIN(GUI)
    
    void COutputWnd::onGameDataFeedback(WorkerProgress* progress)
    {
-      m_wndOutputBuild.InsertItem(m_wndOutputBuild.GetItemCount(), progress->Text.c_str(), (UINT)progress->Type);
-      //m_wndOutputBuild.AddString(progress->Text.c_str());
+      LVItem item(m_wndOutputBuild.GetItemCount(), progress->Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
+      item.iImage = (UINT)progress->Type;
+      item.iIndent = progress->Indent;
+
+      //m_wndOutputBuild.InsertItem(m_wndOutputBuild.GetItemCount(), progress->Text.c_str(), (UINT)progress->Type);
+      m_wndOutputBuild.InsertItem(&item);
    }
 
 

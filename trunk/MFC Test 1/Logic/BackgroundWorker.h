@@ -20,11 +20,12 @@ namespace Logic
       class WorkerProgress
       {
       public:
-         WorkerProgress(ProgressType t, const wstring& sz) : Type(t), Text(sz)
+         WorkerProgress(ProgressType t, UINT indent, const wstring& sz) : Type(t), Text(sz), Indent(indent)
          {}
 
          const ProgressType  Type;
          const wstring       Text;
+         const UINT          Indent;
       };
 
       /// <summary></summary>
@@ -43,9 +44,9 @@ namespace Logic
          }
 
          /// <summary>Inform main window of progress</summary>
-         void  SendFeedback(ProgressType t, const wstring& sz)
+         void  SendFeedback(ProgressType t, UINT indent, const wstring& sz)
          {
-            MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(t, sz));
+            MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(t, indent, sz));
          }
 
       private:

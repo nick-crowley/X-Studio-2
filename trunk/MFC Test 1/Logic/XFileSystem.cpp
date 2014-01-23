@@ -78,7 +78,7 @@ namespace Logic
          Files.clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, L"Searching for catalogs...");
+         data->SendFeedback(ProgressType::Info, 1, L"Searching for catalogs...");
          Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << (WCHAR*)folder << ENDL;
 
          // Ensure folder exists
@@ -191,7 +191,7 @@ namespace Logic
 
             // Feedback
             Console << Colour::White << L"Reading catalog " << (const WCHAR*)cat.FullPath << ENDL;
-            data->SendFeedback(ProgressType::Info, GuiString(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath));
+            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath));
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
