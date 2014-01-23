@@ -92,8 +92,8 @@ NAMESPACE_BEGIN(GUI)
          ListView.EnableGroupView(TRUE);
          
          // ListView ImageList:
-	      /*Images.Create(IDB_FILE_VIEW, 16, 0, RGB(255, 0, 255));
-	      ListView.SetImageList(&Images, LVSIL_NORMAL);*/
+	      Images.Create(IDB_GAMEDATA_ICONS, 16, 0, RGB(255, 0, 255));
+	      ListView.SetImageList(&Images, LVSIL_SMALL);
 
          // Edit
 	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
@@ -217,7 +217,8 @@ NAMESPACE_BEGIN(GUI)
             // Generate/insert display text for each command
             for (UINT i = 0; i < Content.size(); ++i)
             {
-               LVItem item(i, Content[i]->GetDisplayText(), (UINT)Content[i]->Group, LVIF_TEXT | LVIF_GROUPID);
+               LVItem item(i, Content[i]->GetDisplayText(), (UINT)Content[i]->Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+               item.iImage = 0;
 
                // Insert item
                if (ListView.InsertItem((LVITEM*)&item) == -1)

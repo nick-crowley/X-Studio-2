@@ -25,6 +25,7 @@
 
 #define IDB_PROJECT_ICONS               175
 #define IDB_OUTPUT_ICONS                176
+#define IDB_GAMEDATA_ICONS              177
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
