@@ -83,6 +83,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
+    POPUP "&Test"
+    BEGIN
+        MENUITEM "Run All",                     ID_TEST_RUN_ALL
+    END
     POPUP "&View"
     BEGIN
         POPUP "&Toolbars and Docking Windows"
@@ -119,7 +123,7 @@ BEGIN
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
-    POPUP "&Text"
+    POPUP "&Test"
     BEGIN
         MENUITEM "Run All",                     ID_TEST_RUN_ALL
         MENUITEM "Compile Script",              ID_TEST_COMPILE
