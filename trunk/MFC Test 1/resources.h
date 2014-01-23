@@ -69,6 +69,10 @@
 #define IDC_VARIABLES_COMBO             1008
 #define IDC_SCRIPT_EDIT                 1009
 
+#define IDC_PAGE_LIST                   1010
+#define IDC_STRING_LIST                 1011
+#define IDC_STRING_EDIT                 1012
+
 ///////////////////////////////// STRINGS ///////////////////////////////
 
 #define ERR_XML_MISSING_ELEMENT         400
