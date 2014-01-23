@@ -2,6 +2,7 @@
 
 #include "afxcmn.h"
 #include "LanguageDocument.h"
+#include "LanguageStringView.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -33,18 +34,22 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif   
       LanguageDocument* GetDocument() const;
+      LanguageStringView* GetStringView() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+      
+      void onStringSelectionChanged();
 
 	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
       virtual void OnInitialUpdate();
       afx_msg void OnSize(UINT nType, int cx, int cy);
-
+      
       // -------------------- REPRESENTATION ---------------------
-   public:
-      CRichEditCtrl RichEdit;
+   protected:
+      SelectionChangedHandler  fnStringSelectionChanged;
+      CRichEditCtrl            RichEdit;
       
    };
 

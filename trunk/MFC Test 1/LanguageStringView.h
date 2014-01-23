@@ -34,9 +34,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
       LanguageDocument* GetDocument() const;
-
-   protected:
       LanguagePageView* GetPageView() const;
+      LanguageString*   GetSelectedString() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
@@ -45,11 +44,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       void onPageSelectionChanged();
 	  
       virtual void OnInitialUpdate();
+      afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
+   public:
+      SelectionChangedEvent    SelectionChanged;
+
    private:
       SelectionChangedHandler  fnPageSelectionChanged;
+   
    };
    
    #ifndef _DEBUG  

@@ -60,6 +60,23 @@ namespace Logic
                return it->second;
             }
 
+            /// <summary>Finds a string by index</summary>
+            /// <param name="index">The index</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+            LanguageString&  FindByIndex(UINT index) 
+            {
+               UINT i = 0;
+
+               // Linear search
+               for (iterator it = begin(); it != end(); ++it)
+                  if (index == i++)
+                     return it->second;
+
+               // Not found
+               throw IndexOutOfRangeException(HERE, index, size());
+            }
+
             /// <summary>Finds the specified string.</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>

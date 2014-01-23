@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       void AdjustLayout();
 	  
       virtual void OnInitialUpdate();
+      afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
@@ -56,8 +57,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    private:
       
-   public:
-      afx_msg void OnLvnItemActivate(NMHDR *pNMHDR, LRESULT *pResult);
    };
    
    #ifndef _DEBUG  
