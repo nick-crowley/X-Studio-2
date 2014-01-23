@@ -5,7 +5,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
-   /// <summary></summary>
+   /// <summary>Listview group helper</summary>
    class LVGroup : public LVGROUP
    {
       // ------------------------ TYPES --------------------------
@@ -23,8 +23,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          iGroupId  = id;
          pszHeader = (WCHAR*)Header.c_str();
       }
-      //virtual ~LVGroup();
-       
       
       // ------------------------ STATIC -------------------------
       
@@ -40,6 +38,37 @@ NAMESPACE_BEGIN2(GUI,Controls)
       wstring Header;
    };
    
+   /// <summary>Listview item helper</summary>
+   class LVItem : public LVITEM
+   {
+      // ------------------------ TYPES --------------------------
+   private:
+	  
+      // --------------------- CONSTRUCTION ----------------------
+      
+   public:
+      LVItem(UINT item, const wstring& txt, UINT group, UINT flags = LVIF_TEXT | LVIF_GROUPID) : Text(txt)
+      {
+         ZeroMemory((LVITEM*)this, sizeof(LVITEM));
 
+         mask     = flags;
+         iItem    = item;
+         iGroupId = group;
+         pszText  = (WCHAR*)Text.c_str();
+      }
+      
+      // ------------------------ STATIC -------------------------
+      
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+      
+      // ----------------------- MUTATORS ------------------------
+      
+      // -------------------- REPRESENTATION ---------------------
+      
+   private:
+      wstring Text;
+   };
 
 NAMESPACE_END2(GUI,Controls)
