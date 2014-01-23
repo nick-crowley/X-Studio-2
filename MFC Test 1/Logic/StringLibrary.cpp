@@ -26,15 +26,18 @@ namespace Logic
       /// <summary>Populates the library with all the language files in the 't' subfolder</summary>
       /// <param name="vfs">The VFS to search</param>
       /// <param name="lang">The language of strings to search for</param>
+      /// <param name="data">Background worker data</param>
       /// <returns>Number of files found</returns>
-      UINT  StringLibrary::Enumerate(XFileSystem& vfs, GameLanguage lang)
+      UINT  StringLibrary::Enumerate(XFileSystem& vfs, GameLanguage lang, WorkerData* data)
       {
          list<XFileInfo> results;
 
-         Console << ENDL << Colour::Cyan << L"Enumerating language files" << ENDL;
-
          // Clear previous contents
          Clear();
+
+         // Feedback
+         data->SendFeedback(ProgressType::Info, L"Enumerating language files");
+         Console << ENDL << Colour::Cyan << L"Enumerating language files" << ENDL;
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))
@@ -46,16 +49,16 @@ namespace Logic
                results.push_back(f);
          }
 
-         // DEBUG: print results
-         /*for (XFileInfo& f : results)
-            Console << Colour::White << L"Found language file: " << f.FullPath << ENDL;*/
-
          // Read/Store each file
          for (XFileInfo& f : results)
          {
             try
             {
+               // Feedback
+               data->SendFeedback(ProgressType::Info, GuiString(L"Reading language file '%s'...", (const WCHAR*)f.FullPath));
                Console << L"Reading language file: " << f.FullPath << L"...";
+
+               // Parse language file
                LanguageFile file = LanguageFileReader(f.Open()).ReadFile(f.FullPath.FileName);
 
                // Skip files that turn out to be foreign
@@ -66,6 +69,7 @@ namespace Logic
             }
             catch (ExceptionBase& e)
             {
+               data->SendFeedback(ProgressType::Warning, GuiString(L"Failed: ") + e.Message);
                Console << Colour::Red << L"Failed: " << e.Message << ENDL;
             }
          }

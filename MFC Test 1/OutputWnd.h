@@ -1,6 +1,6 @@
 
 #pragma once
-#include "BackgroundWorker.h"
+#include "Logic/BackgroundWorker.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)

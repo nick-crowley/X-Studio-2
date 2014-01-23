@@ -7,7 +7,7 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 #include "GameDataWnd.h"
-#include "GameDataWorker.h"
+#include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
 
 /// <summary>User interface</summary>

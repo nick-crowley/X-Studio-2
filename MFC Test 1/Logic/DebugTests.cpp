@@ -40,8 +40,8 @@ namespace Logic
       XFileSystem vfs;
 
       // Build VFS. Enumerate language files
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-      StringLib.Enumerate(vfs, GameLanguage::English);
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
+      StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
       SyntaxLib.Enumerate();
 
       // Parse script
@@ -186,7 +186,7 @@ namespace Logic
       try 
       {
          // Test XFileSystem
-         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
 
          // Test browse
          for (auto f : vfs.Browse(L"D:\\X3 Albion Prelude\\t"))
@@ -259,8 +259,8 @@ namespace Logic
       {
          // Load string library
          XFileSystem vfs;
-         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-         StringLib.Enumerate(vfs, GameLanguage::English);
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
+         StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
 
          // Read TWareT
          Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
@@ -303,8 +303,8 @@ namespace Logic
       try 
       {
          // Test enumerate
-         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-         StringLib.Enumerate(vfs, GameLanguage::English);
+         vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
+         StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
 
          // Test search
          list<LanguageString>  res;

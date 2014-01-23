@@ -63,18 +63,22 @@ namespace Logic
       }
 
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
+      /// <param name="folder">Folder to enumerate</param>
+      /// <param name="version">Game version</param>
+      /// <param name="data">Background worker data</param>
       /// <returns>Number of files found</returns>
       /// <exception cref="Logic::DirectoryNotFoundException">Folder does not exist</exception>
       /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version)
+      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version, WorkerData* data)
       {
          // Clear previous
          Catalogs.clear();
          Files.clear();
 
-         // DEBUG:
+         // Feedback
+         data->SendFeedback(ProgressType::Info, L"Searching for catalogs...");
          Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << (WCHAR*)folder << ENDL;
 
          // Ensure folder exists
@@ -90,7 +94,7 @@ namespace Logic
 
          // Enumerate catalogs/files
          EnumerateCatalogs();
-         EnumerateFiles();
+         EnumerateFiles(data);
          Console << Colour::Green << L"FileSystem enumerated successfully" << ENDL;
 
          // Return count
@@ -172,10 +176,11 @@ namespace Logic
       }
 
       /// <summary>Enumerates the files within the catalogs</summary>
+      /// <param name="data">Background worker data</param>
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::EnumerateFiles()
+      DWORD  XFileSystem::EnumerateFiles(WorkerData* data)
       {
          // Iterate thru catalogs (Highest priority -> Lowest)
          for (const XCatalog& cat : Catalogs)
@@ -184,8 +189,9 @@ namespace Logic
             wstring        path;
             DWORD          size;
 
-            // DEBUG:
+            // Feedback
             Console << Colour::White << L"Reading catalog " << (const WCHAR*)cat.FullPath << ENDL;
+            data->SendFeedback(ProgressType::Info, GuiString(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath));
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
