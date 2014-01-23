@@ -36,6 +36,12 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
 	   CListView::Dump(dc);
    }
+
+   LanguageDocument* LanguageStringView::GetDocument() const // non-debug version is inline
+   {
+	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(LanguageDocument)));
+	   return (LanguageDocument*)m_pDocument;
+   }
    #endif //_DEBUG
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -51,6 +57,19 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // TODO: Layout code
    }
+
+   
+   void LanguageStringView::OnInitialUpdate()
+   {
+      CListView::OnInitialUpdate();
+
+      // Setup listView
+      GetListCtrl().SetView(LV_VIEW_DETAILS);
+      GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
+      GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
+      GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
+   }
+
    
    void LanguageStringView::OnSize(UINT nType, int cx, int cy)
    {
@@ -58,7 +77,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
 NAMESPACE_END2(GUI,Views)
+

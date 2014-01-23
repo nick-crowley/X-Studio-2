@@ -38,10 +38,15 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   CFormView::AssertValid();
    }
 
-   
    void LanguageEditView::Dump(CDumpContext& dc) const
    {
 	   CFormView::Dump(dc);
+   }
+
+   LanguageDocument* LanguageEditView::GetDocument() const // non-debug version is inline
+   {
+	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(LanguageDocument)));
+	   return (LanguageDocument*)m_pDocument;
    }
    #endif //_DEBUG
 

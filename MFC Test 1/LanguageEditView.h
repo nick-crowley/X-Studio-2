@@ -1,6 +1,7 @@
 #pragma once
-#include "afxcmn.h"
 
+#include "afxcmn.h"
+#include "LanguageDocument.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -31,6 +32,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif   
+      LanguageDocument* GetDocument() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
@@ -45,6 +47,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       CRichEditCtrl RichEdit;
       
    };
+
+   #ifndef _DEBUG  
+   inline LanguageDocument* LanguageEditView::GetDocument() const
+      { return reinterpret_cast<LanguageDocument*>(m_pDocument); }
+   #endif
 
 
 NAMESPACE_END2(GUI,Views)
