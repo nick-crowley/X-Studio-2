@@ -11,6 +11,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
       ON_WM_SIZE()
+      ON_NOTIFY_REFLECT(LVN_ITEMACTIVATE, &LanguagePageView::OnLvnItemActivate)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -82,6 +83,27 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
+   
+
+   void LanguagePageView::OnLvnItemActivate(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LPNMITEMACTIVATE pItem = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+      
+      Console << L"User activated language page " << pItem->iItem << ENDL;
+      
+      UINT i = 0;
+      for (auto page = GetDocument()->Content.Pages.begin(); page != GetDocument()->Content.Pages.end(); ++page)
+         if (i++ == pItem->iItem)
+         {
+            PageClick.Raise(page->second);
+            break;
+         }
+      
+
+      // Return
+      *pResult = 0;
+   }
+
    void LanguagePageView::OnSize(UINT nType, int cx, int cy)
    {
       CListView::OnSize(nType, cx, cy);
@@ -92,5 +114,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    
 NAMESPACE_END2(GUI,Views)
+
 
 

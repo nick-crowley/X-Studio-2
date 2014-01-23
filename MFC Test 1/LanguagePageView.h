@@ -2,10 +2,18 @@
 
 #include "afxcview.h"
 #include "LanguageDocument.h"
+#include "Logic/Event.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
+
+   // ----------------- EVENTS AND DELEGATES ------------------
+
+   typedef Event<LanguagePage&>         PageClickEvent;
+   typedef PageClickEvent::DelegatePtr  PageClickHandler;
    
+   // ----------------------- CLASSES -------------------------
+
    /// <summary></summary>
    class LanguagePageView : public CListView
    {
@@ -42,8 +50,13 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
+   public:
+      PageClickEvent    PageClick;
+
    private:
       
+   public:
+      afx_msg void OnLvnItemActivate(NMHDR *pNMHDR, LRESULT *pResult);
    };
    
    #ifndef _DEBUG  
