@@ -105,50 +105,6 @@ NAMESPACE_BEGIN(GUI)
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
-
-   void ScriptView::OnCompile()
-   {
-      LineArray lines;
-   
-      try
-      {
-         // Get text in lines
-         for (int i = 0; i < RichEdit.GetLineCount(); i++)
-            lines.push_back(RichEdit.GetLine(i));
-
-         // Test parser
-         auto tree = DebugTests::CompileScript(lines);
-
-         // Test error markup
-         for (const auto& err : tree.GetErrors())
-         {
-            CHARFORMAT2 cf;
-            cf.cbSize = sizeof(cf);
-            cf.dwMask = CFM_UNDERLINE | CFM_UNDERLINETYPE;
-            cf.dwEffects = CFE_UNDERLINE;
-            cf.bUnderlineType = CFU_UNDERLINEWAVE;
-
-            BYTE* colour = &cf.bRevAuthor + 1;
-            //cf.bUnderlineColor = 0x01;
-            *colour = 0x02;
-
-            // Select error
-            UINT start = RichEdit.LineIndex(err.Line-1);
-            RichEdit.SetSel(start+err.Start, start+err.End);
-
-            // Underline
-            RichEdit.SetSelectionCharFormat(cf);
-         }
-      }
-      catch (ExceptionBase&  e)
-      {
-         CString sz;
-         sz.Format(L"Unable to parse script : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
-      }
-   }
-
-  
    
    void ScriptView::OnRuntests()
    {
@@ -162,33 +118,17 @@ NAMESPACE_BEGIN(GUI)
 	   CFormView::OnInitialUpdate();
 	   ResizeParentToFit();
 
-      // Enable EN_CHANGE
-      //RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
-
-      // TEST: set paragraph
-      //PARAFORMAT2 pf;
-      //pf.cbSize = sizeof(pf);
-      //pf.dwMask = PFM_LINESPACING;
-      //pf.bLineSpacingRule = 0; // Single spaced
-      //pf.dyLineSpacing = 20;
-      //
-      //RichEdit.SetSel(0,-1);
-      //RichEdit.SetParaFormat(pf);
-
-      // Set background colour
-      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      RichEdit.SetEventMask(RichEdit.GetEventMask() | ENM_UPDATE | ENM_CHANGE);
-
       // Convert script to RTF (ansi)
       string txt;
       RtfScriptWriter w(txt);
       w.Write(GetDocument()->Script);
       w.Close();
 
+      // Setup RichEdit
+      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+      RichEdit.SetEventMask(ENM_CHANGE | ENM_SCROLL); 
+
       // Display text
-      //SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      //RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      //RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)txt.c_str());
       RichEdit.SetRtf(txt);
    }
 

@@ -5,12 +5,16 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
+   // --------------------------------- CONSTANTS ----------------------------------
+
+   #define COMPILE_TIMER      42
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNAMIC(ScriptEdit, CRichEditCtrl)
 
    BEGIN_MESSAGE_MAP(ScriptEdit, CRichEditCtrl)
-      ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnChange)
+      ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_WM_CREATE()
       ON_WM_TIMER()
    END_MESSAGE_MAP()
@@ -105,6 +109,38 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    
+   void ScriptEdit::FreezeWindow(bool freeze)
+   {
+      if (freeze)
+      {
+         // Pause updating
+         EventMask = SetEventMask(NULL);
+         SetRedraw(FALSE);
+
+         // Preserve selection / scrollpos
+         GetSel(Selection);
+         ScrollPos = GetScrollCoordinates();
+      }
+      else
+      {
+         // Restore selection
+         SetSel(Selection);
+         SetScrollCoordinates(ScrollPos);
+         
+         // Redraw + Restore events
+         SetRedraw(TRUE);
+         Invalidate();
+         SetEventMask(EventMask);
+      }
+   }
+   
+   CPoint ScriptEdit::GetScrollCoordinates()
+   {
+      // Preserve scroll position
+      int pos = CharFromPos(CPoint(0,0));
+      return CPoint(pos-LineIndex(pos), LineFromChar(pos));
+   }
+
    int ScriptEdit::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       if (CRichEditCtrl::OnCreate(lpCreateStruct) == -1)
@@ -118,88 +154,105 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       return 0;
    }
-
-   void ScriptEdit::FreezeWindow(bool freeze)
+   
+   void ScriptEdit::OnTextChange()
    {
-      if (freeze)
-      {
-         // Pause updating
-         EventMask = SetEventMask(NULL);
-         SetRedraw(FALSE);
+      //Console << L"OnChange" << ENDL;
 
-         // Preserve selection
-         GetSel(Selection);
-      }
-      else
-      {
-         // Restore selection
-         SetSel(Selection);
-         
-         // Redraw + Restore events
-         SetRedraw(TRUE);
-         Invalidate();
-         SetEventMask(EventMask);
-      }
-   }
-
-   void ScriptEdit::OnChange()
-   {
+      // Freeze window
       FreezeWindow(true);
-
+      
       // Set/Reset background compiler timer
-      SetTimer(42, 1500, nullptr);
+      SetCompilerTimer(true);
 
       // Get index of first character
       UINT start = LineIndex(-1);
 
-      // Lex current line
-      CommandLexer lex(GetLine(-1));
-      for (const auto& tok : lex.Tokens)
+      try 
       {
-         CHARFORMAT2 cf;
-         cf.cbSize = sizeof(cf);
-         cf.dwMask = CFM_COLOR;
-         cf.dwEffects = NULL;
-      
-         // Set colour
-         switch (tok.Type)
+         // Lex current line
+         CommandLexer lex(GetLine(-1));
+         for (const auto& tok : lex.Tokens)
          {
-         case TokenType::Comment:  cf.crTextColor = RGB(128,128,128);      break;
-         case TokenType::Null:
-         case TokenType::Variable: cf.crTextColor = RGB(0,255,0);      break;
-         case TokenType::Keyword:  cf.crTextColor = RGB(0,0,255);      break;
-         case TokenType::Number:  
-         case TokenType::String:   cf.crTextColor = RGB(255,0,0);      break;
-         default:                  cf.crTextColor = RGB(255,255,255);  break;
-         }
+            CHARFORMAT2 cf;
+            cf.cbSize = sizeof(cf);
+            cf.dwMask = CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE;
+            cf.bUnderlineType = NULL;
+            cf.dwEffects = NULL;
+      
+            // Set colour
+            switch (tok.Type)
+            {
+            case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
+            case TokenType::Null:
+            case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
+            case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;
+            case TokenType::Number:  
+            case TokenType::String:       cf.crTextColor = RGB(255,0,0);      break;
+            case TokenType::ScriptObject: cf.crTextColor = RGB(255,255,0);    break;
+            case TokenType::GameObject:   cf.crTextColor = RGB(0,255,255);    break;
+            default:                      cf.crTextColor = RGB(255,255,255);  break;
+            }
 
-         // Set char format
-         SetSel(start+tok.Start, start+tok.End);
-         SetSelectionCharFormat(cf);
+            // Set char format
+            SetSel(start+tok.Start, start+tok.End);
+            SetSelectionCharFormat(cf);
+         }
+      }
+      catch (ExceptionBase& e) 
+      { 
+         Console << e << ENDL; 
       }
 
       // Restore selection
       FreezeWindow(false);
    }
-
    
-
    void ScriptEdit::OnTimer(UINT_PTR nIDEvent)
    {
-      // End compiler timer
-      KillTimer(nIDEvent);
+      if (nIDEvent == COMPILE_TIMER)
+      {
+         CWaitCursor c;
+         Console << L"Background compiler activated" << ENDL;
 
-      // Get array of line text
-      LineArray lines;
-      for (int i = 0; i < GetLineCount(); i++)
-         lines.push_back(GetLine(i));
-
-      // Parse script + highlight errors
-      HighlightErrors(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+         // End compiler timer
+         SetCompilerTimer(false);
+         
+         // Get array of line text
+         LineArray lines;
+         for (int i = 0; i < GetLineCount(); i++)
+            lines.push_back(GetLine(i));
+         
+         // Parse script + highlight errors
+         try 
+         { 
+            HighlightErrors(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+         }
+         catch (ExceptionBase& e) 
+         { 
+            Console << e << ENDL; 
+         }
+      }
 
       CRichEditCtrl::OnTimer(nIDEvent);
    }
-   
+
+   void ScriptEdit::SetCompilerTimer(bool set)
+   {
+      // Set/Reset background compiler timer
+      if (set)
+         SetTimer(COMPILE_TIMER, 1500, nullptr);
+      else
+         KillTimer(COMPILE_TIMER);
+   }
+
+   void ScriptEdit::SetScrollCoordinates(const CPoint& pt)
+   {
+      CPoint now = GetScrollCoordinates();
+      CPoint diff = pt-now;
+      LineScroll(diff.y, diff.x);
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
