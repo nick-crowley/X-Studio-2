@@ -34,7 +34,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-	   CSplitterWnd Splitter;
+	   CSplitterWnd SubSplitter,
+                   Splitter;
    };
 
 

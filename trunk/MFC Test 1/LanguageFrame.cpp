@@ -52,16 +52,27 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try
       {
+         // Split horizontally:  x | y
          if (!Splitter.CreateStatic(this, 1, 2, WS_CHILD | WS_VISIBLE, AFX_IDW_PANE_FIRST))
-            throw Win32Exception(HERE, L"Unable to create languageView splitter");
+            throw Win32Exception(HERE, L"Unable to create main splitter");
 
-         if (!Splitter.CreateView(0, 0, RUNTIME_CLASS(LanguagePageView), CSize(0,0), pContext))
-            throw Win32Exception(HERE, L"Unable to create languageView page pane");
+         // Page: LHS
+         if (!Splitter.CreateView(0, 0, RUNTIME_CLASS(LanguagePageView), CSize(100,0), pContext))
+            throw Win32Exception(HERE, L"Unable to create page pane");
 
-         if (!Splitter.CreateView(0, 1, RUNTIME_CLASS(LanguageStringView), CSize(0,0), pContext))
-            throw Win32Exception(HERE, L"Unable to create languageView string pane");
+         // Split rhs vertically:  a/b
+         if (!SubSplitter.CreateStatic(&Splitter, 2, 1, WS_CHILD | WS_VISIBLE, Splitter.IdFromRowCol(0,1)))
+            throw Win32Exception(HERE, L"Unable to create child splitter");
 
-         //return CMDIChildWndEx::OnCreateClient(lpcs, pContext);
+         // StringPane: RHS top
+         if (!SubSplitter.CreateView(0, 0, RUNTIME_CLASS(LanguageStringView), CSize(200,100), pContext))
+            throw Win32Exception(HERE, L"Unable to create string pane");
+
+         // EditPane: RHS bottom
+         if (!SubSplitter.CreateView(1, 0, RUNTIME_CLASS(LanguageEditView), CSize(200,200), pContext))
+            throw Win32Exception(HERE, L"Unable to create edit pane");
+
+         // Don't call base
          return TRUE;
       }
       catch (ExceptionBase& e)
