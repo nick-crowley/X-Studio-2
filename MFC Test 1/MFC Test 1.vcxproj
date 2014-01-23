@@ -131,6 +131,7 @@
     <ClInclude Include="ListView.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
+    <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
     <ClInclude Include="LanguageView.h" />

@@ -1,6 +1,6 @@
 
 #pragma once
-#include "Logic/BackgroundWorker.h"
+#include "Logic/WorkerFeedback.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -61,7 +61,7 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
 	   void AdjustHorzScroll(CListBox& wndListBox);
-      void onGameDataFeedback(WorkerProgress* progress);
+      void onGameDataFeedback(const WorkerProgress& wp);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);

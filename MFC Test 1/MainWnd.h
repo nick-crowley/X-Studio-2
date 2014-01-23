@@ -51,6 +51,8 @@ NAMESPACE_BEGIN(GUI)
 	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
    protected:
+      void onGameDataFeedback(const WorkerProgress& wp);
+
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
@@ -71,6 +73,7 @@ NAMESPACE_BEGIN(GUI)
 	   CPropertiesWnd    m_wndProperties;
 
       GameDataWorker    GameDataThread;
+      FeedbackHandler   fnGameDataFeedback;
    };
 
 

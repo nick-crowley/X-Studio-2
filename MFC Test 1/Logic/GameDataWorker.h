@@ -12,7 +12,7 @@ namespace Logic
       class GameDataWorkerData : public WorkerData
       {
       public:
-         GameDataWorkerData(Path folder, GameVersion ver) : GameFolder(folder), Version(ver)
+         GameDataWorkerData(Path folder, GameVersion ver) : WorkerData(Operation::LoadGameData), GameFolder(folder), Version(ver)
          {}
 
          Path         GameFolder;
