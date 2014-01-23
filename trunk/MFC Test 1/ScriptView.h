@@ -7,7 +7,8 @@
 #include "afxcmn.h"
 #include "Logic/Common.h"
 #include "ScriptDocument.h"
-#include "afxwin.h"
+#include "ScriptEdit.h"
+//#include "afxwin.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -52,20 +53,17 @@ NAMESPACE_BEGIN(GUI)
       afx_msg void OnCompile();
       afx_msg void OnRuntests();
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-      afx_msg void OnEnChangeRichedit();
-      afx_msg void OnFilePrintPreview();
-	   virtual void OnInitialUpdate(); // called first time after construct
+	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      CRichEditCtrl RichEdit;
-      CComboBox     ScopeCombo;
-      CComboBox     VariablesCombo;
+      ScriptEdit RichEdit;
+      CComboBox  ScopeCombo;
+      CComboBox  VariablesCombo;
 
    protected:
-      bool Updating;
 
    };
 
