@@ -42,14 +42,14 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       void AdjustLayout();
 
-      void onPageClick(LanguagePage& p);
+      void onPageSelectionChanged();
 	  
       virtual void OnInitialUpdate();
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
    private:
-      PageClickHandler  fnPageClick;
+      SelectionChangedHandler  fnPageSelectionChanged;
    };
    
    #ifndef _DEBUG  

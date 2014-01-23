@@ -85,12 +85,30 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Listen for PageClicked
-      fnPageClick = GetPageView()->PageClick.Register(this, &LanguageStringView::onPageClick);
+      fnPageSelectionChanged = GetPageView()->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
    }
 
-   void LanguageStringView::onPageClick(LanguagePage& p)
+   void LanguageStringView::onPageSelectionChanged()
    {
-      Console << L"User has clicked on page: " << p.ID << L" : " << p.Title << ENDL;
+      // Clear prev
+      GetListCtrl().DeleteAllItems();
+
+      // Get selection, if any
+      if (LanguagePage* page = GetPageView()->GetSelectedPage())
+      {
+         UINT item = 0;
+         //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;
+
+         // Re-Populate strings   
+         for (const auto& pair : page->Strings)
+         {
+            const LanguageString& str = pair.second;
+
+            // Add item {ID,Text}
+            item = GetListCtrl().InsertItem(item++, GuiString(L"%d", str.ID).c_str(), 0);
+            GetListCtrl().SetItem(item, 1, LVIF_TEXT, str.Text.c_str(), 0, NULL, NULL, NULL);
+         }
+      }
    }
 
    
