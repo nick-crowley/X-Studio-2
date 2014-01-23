@@ -12,7 +12,7 @@ namespace Logic
       {
       public:
          /// <summary>Collection of language pages, sorted by ID</summary>
-         class PageCollection : public map<UINT, LanguagePage>
+         class PageCollection : public map<UINT, LanguagePage, less<UINT>>
          {
          public:
             /// <summary>Query whether a page is present</summary>
@@ -56,6 +56,23 @@ namespace Logic
             const LanguageString&  Find(UINT page, UINT id) const
             {
                return Find(page).Strings[id]; 
+            }
+
+            /// <summary>Finds a page by index</summary>
+            /// <param name="index">The index</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+            LanguagePage&  FindByIndex(UINT index) 
+            {
+               UINT i = 0;
+
+               // Linear search
+               for (iterator it = begin(); it != end(); ++it)
+                  if (index == i++)
+                     return it->second;
+
+               // Not found
+               throw IndexOutOfRangeException(HERE, index, size());
             }
 
             /// <summary>Merges a page into the collection</summary>

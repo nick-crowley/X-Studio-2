@@ -58,6 +58,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetClientRect(wnd);
 
       // TODO: Layout code
+      //GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
+      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
    void LanguagePageView::OnInitialUpdate()
@@ -78,7 +80,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          const LanguagePage& p = pair.second;
          
          // Add item {ID,Title}
-         item = GetListCtrl().InsertItem(item, GuiString(L"%d", p.ID).c_str(), 0);
+         item = GetListCtrl().InsertItem(item++, GuiString(L"%d", p.ID).c_str(), 0);
          GetListCtrl().SetItem(item, 1, LVIF_TEXT, p.Title.c_str(), 0, NULL, NULL, NULL);
       }
    }
@@ -90,15 +92,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       LPNMITEMACTIVATE pItem = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
       
       Console << L"User activated language page " << pItem->iItem << ENDL;
-      
-      UINT i = 0;
-      for (auto page = GetDocument()->Content.Pages.begin(); page != GetDocument()->Content.Pages.end(); ++page)
-         if (i++ == pItem->iItem)
-         {
-            PageClick.Raise(page->second);
-            break;
-         }
-      
+
+      // Raise PAGE_CLICK
+      PageClick.Raise(GetDocument()->Content.Pages.FindByIndex(pItem->iItem));
 
       // Return
       *pResult = 0;
