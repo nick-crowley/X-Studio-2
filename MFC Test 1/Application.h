@@ -49,6 +49,14 @@ public:
       return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
    }
 
+   CBitmap*  LoadBitmap(UINT nResID, int x, int y, UINT flags)
+   {
+      CBitmap* bmp = new CBitmap();
+      HBITMAP h = (HBITMAP)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_BITMAP, x, y, flags);
+      bmp->Attach(h);
+      return bmp;
+   }
+
    // ----------------------- MUTATORS ------------------------
 public:
 	virtual BOOL InitInstance();
