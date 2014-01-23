@@ -127,15 +127,15 @@ BOOL Application::InitInstance()
 
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views
 	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_SCRIPTVIEW,
+	pDocTemplate = new ScriptDocTemplate(IDR_SCRIPTVIEW,
 		RUNTIME_CLASS(GUI::ScriptDocument),
 		RUNTIME_CLASS(GUI::CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(ScriptView));
+		RUNTIME_CLASS(GUI::ScriptView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-   pDocTemplate = new CMultiDocTemplate(IDR_LANGUAGEVIEW,
+   pDocTemplate = new LanguageDocTemplate(IDR_LANGUAGEVIEW,
 		RUNTIME_CLASS(GUI::LanguageDocument),
 		RUNTIME_CLASS(GUI::CChildFrame),
 		RUNTIME_CLASS(GUI::LanguageView));

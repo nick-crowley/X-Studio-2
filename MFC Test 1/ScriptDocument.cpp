@@ -23,6 +23,7 @@ NAMESPACE_BEGIN(GUI)
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(ScriptDocument, CDocument)
+   IMPLEMENT_DYNAMIC(ScriptDocTemplate, CMultiDocTemplate)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, CDocument)
    END_MESSAGE_MAP()
@@ -42,6 +43,12 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   CDocTemplate::Confidence ScriptDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
+   {
+      rpDocMatch = NULL;
+      return maybeAttemptNative;
+   }
 
    #ifdef _DEBUG
    void ScriptDocument::AssertValid() const
