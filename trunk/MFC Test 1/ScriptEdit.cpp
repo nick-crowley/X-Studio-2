@@ -20,9 +20,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_WM_CREATE()
       ON_WM_TIMER()
-      ON_WM_CHAR()
-      ON_WM_KEYDOWN()
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
+      ON_WM_KILLFOCUS()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -187,6 +186,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"Unable to destroy suggestion list");
    }
 
+   void ScriptEdit::InsertSuggestion()
+   {
+      // Ensure exists
+      if (Suggestions.GetSafeHwnd() == nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+
+      // TODO: insert
+
+      // Close
+      CloseSuggestions();
+   }
+
    void ScriptEdit::ShowSuggestions()
    {
       // Ensure does not exist
@@ -206,45 +217,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Ensure exists
       if (Suggestions.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
+
+      // TODO
    }
-
-   void ScriptEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
-   {
-      //try
-      //{
-      //   // Normal: Display suggestions if character is initiator
-      //   if (State == InputState::Normal && IsSuggestionInitiator(nChar))
-      //      ShowSuggestions();
-
-      //   // Suggestions: Update match
-      //   else if (State == InputState::Suggestions)
-      //      UpdateSuggestions();
-      //}
-      //catch (ExceptionBase& e) { 
-      //   Console << e; 
-      //}
-
-      // Process char
-      CRichEditCtrl::OnChar(nChar, nRepCnt, nFlags);
-   }
-
-   
-   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-   {
-      //try
-      //{
-      //   // Suggestions: Close on escape
-      //   if (State == InputState::Suggestions && nChar == VK_ESCAPE)
-      //      CloseSuggestions();
-      //}
-      //catch (ExceptionBase& e) { 
-      //   Console << e; 
-      //}
-
-      // Process keypress
-      CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
-   }
-
 
    /// <summary>Setup control</summary>
    /// <param name="lpCreateStruct">The create structure.</param>
@@ -269,33 +244,80 @@ NAMESPACE_BEGIN2(GUI,Controls)
       MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
       wchar chr = pFilter->wParam;
    
+      // Allow input by default
+      *pResult = ALLOW_INPUT;
+
       try
       {
          switch (pFilter->msg)
          {
+         // CHAR: Display/update suggestions
          case WM_CHAR:
-            // Normal mode: Display suggestions if character is initiator
+            // Display in response to initiator
             if (State == InputState::Normal && IsSuggestionInitiator(chr))
                ShowSuggestions();
 
-            // Suggestions mode: Update match
+            // Update current match
             else if (State == InputState::Suggestions)
                UpdateSuggestions();
             break;
 
+         // NON-CHAR: Close suggestions / Forward key
          case WM_KEYDOWN:
-            // Suggestions mode: Close on escape
-            if (State == InputState::Suggestions && chr == VK_ESCAPE)
+            if (State == InputState::Suggestions)
+               switch (chr)
+               {
+               // ESCAPE: Close suggestions
+               case VK_ESCAPE:   
+                  CloseSuggestions(); 
+                  break;
+
+               // TAB: Insert suggestion. Block key to prevent focus switch
+               case VK_TAB:
+                  InsertSuggestion();
+                  *pResult = BLOCK_INPUT;
+                  break;
+
+               // UP/DOWN/PAGEUP/PAGEDOWN: Navigate suggestions list
+               case VK_UP:    
+               case VK_DOWN:
+               case VK_PRIOR: 
+               case VK_NEXT:   
+                  Suggestions.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
+                  *pResult = BLOCK_INPUT;
+                  return;
+               }
+            break;
+
+         // CLICK: Close Suggestions
+         case WM_LBUTTONDOWN:
+         case WM_RBUTTONDOWN:
+         case WM_MBUTTONDOWN:
+            if (State == InputState::Suggestions)
                CloseSuggestions();
+            break;
+
+         // WHEEL: Forward to list
+         case WM_MOUSEWHEEL:
+            Suggestions.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
+            *pResult = BLOCK_INPUT;
             break;
          }
       }
       catch (ExceptionBase& e) { 
          Console << e; 
       }
+   }
+   
 
-      // Pass to base
-      *pResult = ALLOW_INPUT;
+
+   void ScriptEdit::OnKillFocus(CWnd* pNewWnd)
+   {
+      // Close suggestions, unless they're gaining focus
+      if (State == InputState::Suggestions && (!pNewWnd || Suggestions != *pNewWnd))
+         CloseSuggestions();
+
+      CRichEditCtrl::OnKillFocus(pNewWnd);
    }
 
 
@@ -407,6 +429,5 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
-
 
 

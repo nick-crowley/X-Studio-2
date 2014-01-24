@@ -4,7 +4,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
-   //CSize SuggestionList::DefaultSize = CSize(200,100);
+   #define CTRL_ID   666
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -48,7 +48,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       rc.OffsetRect(0, -DefaultSize.cy);
 
       // Create
-      return CListCtrl::Create(WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_SINGLESEL|LVS_NOCOLUMNHEADER, rc, parent, 666);
+      return CListCtrl::Create(WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER, rc, parent, CTRL_ID);
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -72,13 +72,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Setup columns
       InsertColumn(0, L"text");
-      SetColumnWidth(0, DefaultSize.cx);
+      SetColumnWidth(0, DefaultSize.cx - GetSystemMetrics(SM_CXVSCROLL));
+
+      // Setup style
+      SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Populate somehow
-      InsertItem(0, L"First");
-      InsertItem(1, L"Second");
-      InsertItem(2, L"Third");
-      InsertItem(3, L"Fourth");
+      for (int i = 0; i < 50; ++i)
+         InsertItem(i, GuiString(L"Variable #%03d", i).c_str());
 
       return 0;
    }
