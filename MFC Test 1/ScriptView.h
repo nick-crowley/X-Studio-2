@@ -50,11 +50,10 @@ NAMESPACE_BEGIN(GUI)
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
-      afx_msg void OnCompile();
-      afx_msg void OnRuntests();
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+      afx_msg void OnRuntests();
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
 
       // -------------------- REPRESENTATION ---------------------
