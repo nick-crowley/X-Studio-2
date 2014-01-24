@@ -186,7 +186,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       for (const auto& err : t.GetErrors())
       {
          FormatToken(LineIndex(err.Line-1), err, cf);
-         Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
+         //Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
       }
 
       // UnFreeze window
@@ -224,7 +224,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          TokenIterator pos = lex.begin();
 
          // Match: <char>
-         if (!lex.Valid(pos) || pos->Start <= (UINT)GetCaretIndex())
+         if (!lex.Valid(pos) || (UINT)GetCaretIndex() <= pos->Start)
             return Suggestion::Command;
 
          // Match: variable '=' <char>
@@ -326,12 +326,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Lex current line
       CommandLexer lex(GetLineText(-1));
       TokenIterator pos = lex.Find(GetCaretIndex());
+
+      Console << L"Updating from token '" << (lex.Valid(pos)?pos->Text:L"<end>") << L" at index " << GetCaretIndex() << ENDL;
       
       // Close suggestions if caret has left the token
       if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
+      {
+         Console << Colour::Red << L"Match failed" << ENDL;
          CloseSuggestions();
+         return;
+      }
 
       // Display best match
+      Console << Colour::Green << L"Matching suggestion" << ENDL;
       Suggestions.MatchSuggestion(pos->Text);
    }
 
