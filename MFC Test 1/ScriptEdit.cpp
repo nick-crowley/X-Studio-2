@@ -48,7 +48,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Get line text</summary>
    /// <param name="line">zero based line index, or -1 for current line</param>
    /// <returns></returns>
-   wstring ScriptEdit::GetLine(int line) const
+   wstring ScriptEdit::GetLineText(int line) const
    {
       // Use line containing caret if unspecified
       line = (line == -1 ? LineFromChar(-1) : line);
@@ -70,6 +70,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return txt.get();
    }
 
+   /// <summary>Highlights errors indicated by the compiler</summary>
+   /// <param name="t">Script tree</param>
    void ScriptEdit::HighlightErrors(ScriptParser::ScriptTree& t)
    {
       CHARFORMAT2 cf;
@@ -115,7 +117,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   
+   /// <summary>Freezes or unfreezes the window.</summary>
+   /// <param name="freeze">True to freeze, false to restore</param>
    void ScriptEdit::FreezeWindow(bool freeze)
    {
       if (freeze)
@@ -141,6 +144,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
    
+   /// <summary>Gets the coordinates of the first character</summary>
+   /// <returns>Character co-orindates</returns>
    CPoint ScriptEdit::GetScrollCoordinates()
    {
       // Preserve scroll position
@@ -148,6 +153,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CPoint(pos-LineIndex(pos), LineFromChar(pos));
    }
 
+   /// <summary>Setup control</summary>
+   /// <param name="lpCreateStruct">The create structure.</param>
+   /// <returns></returns>
    int ScriptEdit::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       if (CRichEditCtrl::OnCreate(lpCreateStruct) == -1)
@@ -162,6 +170,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return 0;
    }
    
+   /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
    {
       //Console << L"OnChange" << ENDL;
@@ -178,7 +187,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try 
       {
          // Lex current line
-         CommandLexer lex(GetLine(-1));
+         CommandLexer lex(GetLineText(-1));
          for (const auto& tok : lex.Tokens)
          {
             CHARFORMAT2 cf;
@@ -215,6 +224,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(false);
    }
    
+   /// <summary>Compiles the current text</summary>
+   /// <param name="nIDEvent">The timer identifier.</param>
    void ScriptEdit::OnTimer(UINT_PTR nIDEvent)
    {
       if (nIDEvent == COMPILE_TIMER)
@@ -228,7 +239,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Get array of line text
          LineArray lines;
          for (int i = 0; i < GetLineCount(); i++)
-            lines.push_back(GetLine(i));
+            lines.push_back(GetLineText(i));
          
          // Parse script + highlight errors
          try 
@@ -244,6 +255,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::OnTimer(nIDEvent);
    }
 
+   /// <summary>Sets/resets/cancels the compiler timer.</summary>
+   /// <param name="set">True to set/reset, false to cancel</param>
    void ScriptEdit::SetCompilerTimer(bool set)
    {
       // Set/Reset background compiler timer
@@ -253,6 +266,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          KillTimer(COMPILE_TIMER);
    }
 
+   /// <summary>Scrolls window to the position of a character</summary>
+   /// <param name="pt">Character co-orindates</param>
    void ScriptEdit::SetScrollCoordinates(const CPoint& pt)
    {
       CPoint now = GetScrollCoordinates();

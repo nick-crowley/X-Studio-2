@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
-      wstring GetLine(int line) const;
+      wstring GetLineText(int line) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
