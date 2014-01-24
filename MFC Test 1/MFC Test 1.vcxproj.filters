@@ -337,6 +337,9 @@
     <ClInclude Include="ScriptEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="SuggestionList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -530,6 +533,9 @@
     </ClCompile>
     <ClCompile Include="ScriptEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="SuggestionList.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
