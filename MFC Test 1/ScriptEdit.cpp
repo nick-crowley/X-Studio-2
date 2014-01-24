@@ -17,6 +17,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_WM_CREATE()
       ON_WM_TIMER()
+      ON_WM_CHAR()
+      ON_WM_KEYDOWN()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -79,7 +81,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Freeze window
       FreezeWindow(true);
 
-      Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
+      //Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
 
       // Examine errors
       for (const auto& err : t.GetErrors())
@@ -100,7 +102,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          SetSel(start+err.Start, start+err.End);
          SetSelectionCharFormat(cf);
 
-         Console << L"Error: '" << (const WCHAR*)GetSelText() << L"' on line " << err.Line << ENDL;
+         Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
       }
 
       // UnFreeze window
@@ -123,24 +125,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       if (freeze)
       {
-         // Pause updating
-         EventMask = SetEventMask(NULL);
+         // Freeze window
          SetRedraw(FALSE);
 
-         // Preserve selection / scrollpos
-         GetSel(Selection);
-         ScrollPos = GetScrollCoordinates();
+         // Preserve state
+         GetSel(PrevState.Selection);
+         PrevState.EventMask = SetEventMask(NULL);
+         PrevState.ScrollPos = GetScrollCoordinates();
       }
       else
       {
-         // Restore selection
-         SetSel(Selection);
-         SetScrollCoordinates(ScrollPos);
-         
-         // Redraw + Restore events
+         // Restore state
+         SetSel(PrevState.Selection);
+         SetScrollCoordinates(PrevState.ScrollPos);
+         SetEventMask(PrevState.EventMask);
+
+         // Redraw 
          SetRedraw(TRUE);
          Invalidate();
-         SetEventMask(EventMask);
       }
    }
    
@@ -152,6 +154,106 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int pos = CharFromPos(CPoint(0,0));
       return CPoint(pos-LineIndex(pos), LineFromChar(pos));
    }
+
+   CHARRANGE ScriptEdit::GetSelection() const
+   {
+      CHARRANGE sel;
+      CRichEditCtrl::GetSel(sel);
+      return sel;
+   }
+   
+   bool ScriptEdit::IsSuggestionInitiator(wchar ch) const
+   {
+      return ch == '$';
+   }
+
+   void ScriptEdit::CloseSuggestions()
+   {
+      // Ensure exists
+      if (SuggestionList.GetSafeHwnd() == nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+
+      // Revert state
+      State = InputState::Normal;
+
+      // Destroy
+      if (!SuggestionList.DestroyWindow())
+         throw Win32Exception(HERE, L"Unable to destroy suggestion list");
+   }
+
+   void ScriptEdit::ShowSuggestions()
+   {
+      const CSize size(200,100);
+
+      // Ensure does not exist
+      if (SuggestionList.GetSafeHwnd() != nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list already exists");
+
+      // Calc position
+      CPoint pt = GetCharPos(GetSelection().cpMin);
+      CRect rc(pt, size);
+      rc.OffsetRect(0, -size.cy);
+
+      // Show list
+      if (!SuggestionList.Create(WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_SINGLESEL|LVS_NOCOLUMNHEADER, rc, this, 666)) //WS_POPUP|
+         throw Win32Exception(HERE, L"Unable to create suggestion list");
+
+      // Update state
+      State = InputState::Suggestions;
+
+      // Populate somehow
+      SuggestionList.InsertColumn(0, L"text");
+      SuggestionList.SetColumnWidth(0, size.cx);
+      SuggestionList.InsertItem(0, L"First");
+      SuggestionList.InsertItem(1, L"Second");
+      SuggestionList.InsertItem(2, L"Third");
+      SuggestionList.InsertItem(3, L"Fourth");
+   }
+
+   void ScriptEdit::UpdateSuggestions()
+   {
+      // Ensure exists
+      if (SuggestionList.GetSafeHwnd() == nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+   }
+
+   void ScriptEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      try
+      {
+         // Normal: Display suggestions if character is initiator
+         if (State == InputState::Normal && IsSuggestionInitiator(nChar))
+            ShowSuggestions();
+
+         // Suggestions: Update match
+         else if (State == InputState::Suggestions)
+            UpdateSuggestions();
+      }
+      catch (ExceptionBase& e) { 
+         Console << e; 
+      }
+
+      // Process char
+      CRichEditCtrl::OnChar(nChar, nRepCnt, nFlags);
+   }
+
+   
+   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      try
+      {
+         // Suggestions: Close on escape
+         if (State == InputState::Suggestions && nChar == VK_ESCAPE)
+            CloseSuggestions();
+      }
+      catch (ExceptionBase& e) { 
+         Console << e; 
+      }
+
+      // Process keypress
+      CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+   }
+
 
    /// <summary>Setup control</summary>
    /// <param name="lpCreateStruct">The create structure.</param>
@@ -215,8 +317,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             SetSelectionCharFormat(cf);
          }
       }
-      catch (ExceptionBase& e) 
-      { 
+      catch (ExceptionBase& e) { 
          Console << e << ENDL; 
       }
 
@@ -231,7 +332,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (nIDEvent == COMPILE_TIMER)
       {
          CWaitCursor c;
-         Console << L"Background compiler activated" << ENDL;
+         //Console << L"Background compiler activated" << ENDL;
 
          // End compiler timer
          SetCompilerTimer(false);
@@ -279,5 +380,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
+
 
 
