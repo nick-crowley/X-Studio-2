@@ -139,3 +139,18 @@
 #define IDS_COMMAND_GROUP_HIDDEN		                      1011
 
 #define IDS_FIRST_COMMAND_GROUP                           IDS_COMMAND_GROUP_ARRAY
+
+#define IDS_LANGUAGE_GROUP_DATA                             1430
+#define IDS_LANGUAGE_GROUP_DIALOGUE                         1431
+#define IDS_LANGUAGE_GROUP_MISC                             1432
+#define IDS_LANGUAGE_GROUP_QUEST                            1433
+#define IDS_LANGUAGE_GROUP_BONUS                            1434
+#define IDS_LANGUAGE_GROUP_MENU                             1435
+#define IDS_LANGUAGE_GROUP_EDITOR                           1436
+#define IDS_LANGUAGE_GROUP_NEWS                             1437
+#define IDS_LANGUAGE_GROUP_PLOT                             1438
+#define IDS_LANGUAGE_GROUP_NPC                              1439
+#define IDS_LANGUAGE_GROUP_USER                             1440
+
+#define IDS_FIRST_LANGUAGE_GROUP                           IDS_LANGUAGE_GROUP_DATA
+

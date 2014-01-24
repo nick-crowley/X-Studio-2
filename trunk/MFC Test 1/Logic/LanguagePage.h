@@ -8,6 +8,9 @@ namespace Logic
 {
    namespace Language
    {
+      /// <summary>Categorises language page ID</summary>
+      enum class PageGroup : UINT { DATA, DIALOGUE, MISC, QUEST, BONUS, MENU, EDITOR, NEWS, PLOT, NPC, USER };
+
       /// <summary>Represents a collection of language strings</summary>
       class LanguagePage
       {
@@ -110,6 +113,9 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          const LanguageString&  Find(UINT  id) const        { return Strings.Find(id);     }
+
+         /// <summary>Get category</summary>
+         PageGroup  GetGroup() const;
 
          /// <summary>Finds the specified string.</summary>
          /// <param name="id">The string id</param>

@@ -123,22 +123,30 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Clear prev
       GetListCtrl().DeleteAllItems();
 
-      // Get selection, if any
-      if (LanguagePage* page = GetPageView()->GetSelectedPage())
+      try
       {
-         int item = -1;
-         //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;
-
-         // Re-Populate strings   
-         for (const auto& pair : page->Strings)
+         // Get selection, if any
+         if (LanguagePage* page = GetPageView()->GetSelectedPage())
          {
-            const LanguageString& str = pair.second;
+            int item = -1;
+            //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;
 
-            // Add item {ID,Text}
-            GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
-            GetListCtrl().SetItem(item, 1, LVIF_TEXT, str.Text.c_str(), 0, NULL, NULL, NULL);
+            // Re-Populate strings
+            GetListCtrl().SetRedraw(FALSE);
+            for (const auto& pair : page->Strings)
+            {
+               const LanguageString& str = pair.second;
+
+               // Add item {ID,Text}
+               GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
+               GetListCtrl().SetItemText(item, 1, str.Text.c_str());
+            }
+            GetListCtrl().SetRedraw(TRUE);
+            GetListCtrl().UpdateWindow();
          }
       }
+      catch (ExceptionBase& e)
+      { Console << e; }
    }
 
    

@@ -83,17 +83,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
-      //GetListCtrl().EnableGroupView(TRUE);
+      GetListCtrl().EnableGroupView(TRUE);
+
+      // Define groups
+      for (UINT i = (UINT)PageGroup::DATA; i <= (UINT)PageGroup::USER; ++i)
+      {
+         LVGroup g(i, GuiString(i+IDS_FIRST_LANGUAGE_GROUP));
+         GetListCtrl().InsertGroup(i, &g);
+      }
 
       // Populate pages
-      int item = -1;
+      int index = 0;
       for (const auto& pair : GetDocument()->Content.Pages)
       {
          const LanguagePage& p = pair.second;
          
          // Add item {ID,Title}
-         GetListCtrl().InsertItem(++item, GuiString(L"%d", p.ID).c_str(), 0);
-         GetListCtrl().SetItem(item, 1, LVIF_TEXT, p.Title.c_str(), 0, NULL, NULL, NULL);
+         LVItem item(index++, GuiString(L"%d", p.ID), (UINT)p.GetGroup(), LVIF_TEXT | LVIF_GROUPID);
+         GetListCtrl().InsertItem(&item);
+         GetListCtrl().SetItemText(item.iItem, 1, p.Title.c_str());
       }
    }
 
