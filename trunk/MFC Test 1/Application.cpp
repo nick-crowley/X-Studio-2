@@ -49,7 +49,6 @@ protected:
   
 BEGIN_MESSAGE_MAP(Application, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &Application::OnAppAbout)
-	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
@@ -59,21 +58,29 @@ END_MESSAGE_MAP()
 
 // -------------------------------- CONSTRUCTION --------------------------------
 
-Application::Application() : GameDataState(AppState::NoGameData)
-{
-	// TODO: replace application ID string below with unique ID string; recommended format for string is CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("BearWare.X-Studio.2"));
-}
-
-
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 {
+}
+
+Application::Application() : GameDataState(AppState::NoGameData)
+{
+	SetAppID(_T("BearWare.X-Studio.2"));
 }
 
 // ------------------------------- STATIC METHODS -------------------------------
 
 // ------------------------------- PUBLIC METHODS -------------------------------
 
+/// <summary>Exits the instance.</summary>
+/// <returns></returns>
+int Application::ExitInstance()
+{
+	//TODO: handle additional resources you may have added
+	return CWinAppEx::ExitInstance();
+}
+
+/// <summary>Initializes the instance.</summary>
+/// <returns></returns>
 BOOL Application::InitInstance()
 {
 	
@@ -161,22 +168,50 @@ BOOL Application::InitInstance()
 	return TRUE;
 }
 
-int Application::ExitInstance()
+/// <summary>Loads an icon.</summary>
+/// <param name="nResID">The resource identifier.</param>
+/// <param name="iSize">Size of the icon</param>
+/// <returns></returns>
+HICON  Application::LoadIcon(UINT nResID, UINT iSize) const
 {
-	//TODO: handle additional resources you may have added
-	return CWinAppEx::ExitInstance();
+   return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
 }
 
+/// <summary>Loads a bitmap.</summary>
+/// <param name="nResID">The resource identifier.</param>
+/// <param name="cx">The width.</param>
+/// <param name="cy">The height.</param>
+/// <param name="flags">Loading flags.</param>
+/// <returns></returns>
+CBitmap*  Application::LoadBitmap(UINT nResID, int cx, int cy, UINT flags) const
+{
+   CBitmap* bmp = new CBitmap();
+   HBITMAP h = (HBITMAP)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_BITMAP, cx, cy, flags);
+   bmp->Attach(h);
+   return bmp;
+}
 
-// App command to run the dialog
+/// <summary>Dispay about box</summary>
 void Application::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
 
-// Application customization load/save methods
+/// <summary>Opens the string library.</summary>
+/// <returns></returns>
+BOOL  Application::OpenStringLibrary()
+{
+   for (POSITION pos = GetFirstDocTemplatePosition(); pos != NULL; )
+   {
+      LanguageDocTemplate* doc = dynamic_cast<LanguageDocTemplate*>(GetNextDocTemplate(pos));
+      if (doc != nullptr)
+         return doc->OpenDocumentFile(L"String Library", FALSE, TRUE) != nullptr;
+   }
+   return FALSE;
+}
 
+/// <summary>Application customization load/save methods</summary>
 void Application::PreLoadState()
 {
 	GetContextMenuManager()->AddMenu(GuiString(IDS_EDIT_MENU).c_str(), IDM_EDIT_POPUP);

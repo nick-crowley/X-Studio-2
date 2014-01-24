@@ -59,6 +59,7 @@
 #define ID_SET_STYLE                    201
 #define ID_TEST_RUN_ALL                 220
 #define ID_TEST_COMPILE                 221
+#define ID_VIEW_STRING_LIBRARY          222
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 

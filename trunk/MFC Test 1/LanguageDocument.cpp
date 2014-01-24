@@ -59,7 +59,7 @@ NAMESPACE_BEGIN(GUI)
 
       // Identify language file from header
       rpDocMatch = nullptr;
-      return FileIdentifier::Identify(lpszPathName) == FileType::Language ? yesAttemptNative : noAttempt;
+      return GuiString(L"String Library") == lpszPathName || FileIdentifier::Identify(lpszPathName) == FileType::Language ? yesAttemptNative : noAttempt;
    }
 
    void LanguageDocument::Serialize(CArchive& ar)
@@ -90,8 +90,11 @@ NAMESPACE_BEGIN(GUI)
          Console << ENDL << Colour::Cyan << L"Parsing language file: " << szPathName << ENDL;
 
          // Parse file
-         StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
-         Content = LanguageFileReader(fs2).ReadFile(Path(szPathName).FileName);
+         if (GuiString(L"String Library") != szPathName)
+         {
+            StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
+            Content = LanguageFileReader(fs2).ReadFile(Path(szPathName).FileName);
+         }
 
          Console << Colour::Green << L"Language file loaded successfully" << ENDL;
          return TRUE;

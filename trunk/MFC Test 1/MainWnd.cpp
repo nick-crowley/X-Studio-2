@@ -42,6 +42,7 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_CREATE()
 	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
+      ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnViewStringLibrary)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
 	   ON_WM_SETTINGCHANGE()
@@ -306,6 +307,10 @@ NAMESPACE_BEGIN(GUI)
 	   pDlgCust->Create();
    }
 
+   void MainWnd::OnViewStringLibrary()
+   {
+      theApp.OpenStringLibrary();
+   }
 
    void MainWnd::OnWindowManager()
    {

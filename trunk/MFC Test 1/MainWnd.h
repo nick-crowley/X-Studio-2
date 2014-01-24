@@ -57,6 +57,7 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
       afx_msg void OnViewCustomize();
+      afx_msg void OnViewStringLibrary();
       afx_msg void OnWindowManager();
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
