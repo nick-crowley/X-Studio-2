@@ -92,38 +92,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CRichEditCtrl::LineLength(nChar);
    }
 
-   /// <summary>Highlights errors indicated by the compiler</summary>
-   /// <param name="t">Script tree</param>
-   void ScriptEdit::HighlightErrors(ScriptParser::ScriptTree& t)
-   {
-      // Freeze window
-      FreezeWindow(true);
-
-      // Define underline
-      CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
-      cf.bUnderlineType = CFU_UNDERLINEWAVE;
-
-      //Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
-
-      // Examine errors
-      for (const auto& err : t.GetErrors())
-      {
-         // TEST: Undocumented underline colour
-         //cf.bUnderlineColor = 0x02;
-
-         // Format text
-         UINT start = LineIndex(err.Line-1);
-         FormatToken(start, err, cf);
-         SetSel(start+err.Start, start+err.End);
-         SetSelectionCharFormat(cf);
-
-         Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
-      }
-
-      // UnFreeze window
-      FreezeWindow(false);
-   }
-
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
    void ScriptEdit::SetRtf(const string& rtf)
@@ -188,6 +156,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::GetSel(sel);
       return sel;
    }
+
+   
+   /// <summary>Highlights errors indicated by the compiler</summary>
+   /// <param name="t">Script tree</param>
+   void ScriptEdit::HighlightErrors(ScriptParser::ScriptTree& t)
+   {
+      // Freeze window
+      FreezeWindow(true);
+
+      // Define underline
+      CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
+      cf.bUnderlineType = CFU_UNDERLINEWAVE;
+
+      // TEST: Undocumented underline colour
+      //cf.bUnderlineColor = 0x02;
+
+      //Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
+
+      // Format errors
+      for (const auto& err : t.GetErrors())
+      {
+         FormatToken(LineIndex(err.Line-1), err, cf);
+         Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
+      }
+
+      // UnFreeze window
+      FreezeWindow(false);
+   }
+
    
    bool ScriptEdit::IsSuggestionInitiator(wchar ch) const
    {
@@ -362,24 +359,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
    {
-      //Console << L"OnChange" << ENDL;
-
       // Freeze window
       FreezeWindow(true);
       
       // Set/Reset background compiler timer
       SetCompilerTimer(true);
 
-      // Get index of first character
-      UINT start = LineIndex(-1);
-
       try 
       {
+         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
+         UINT start = LineIndex(-1);
+
          // Lex current line
          CommandLexer lex(GetLineText(-1));
          
          // Format tokens
-         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
          for (const auto& tok : lex.Tokens)
          {
             // Set colour

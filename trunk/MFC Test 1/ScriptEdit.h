@@ -86,13 +86,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  HighlightErrors(ScriptParser::ScriptTree& t);
       void  SetRtf(const string& rtf);
 
    protected:
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze);
       CPoint GetScrollCoordinates();
+      void   HighlightErrors(ScriptParser::ScriptTree& t);
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
 
