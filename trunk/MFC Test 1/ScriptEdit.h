@@ -1,6 +1,7 @@
 #pragma once
 #include <Richedit.h>
 #include "Logic/ScriptParser.h"
+#include "SuggestionList.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -72,9 +73,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // -------------------- REPRESENTATION ---------------------
    private:
-      DisplayState  PrevState;
-      InputState    State;
-      CListCtrl     SuggestionList;
+      DisplayState   PrevState;
+      InputState     State;
+      SuggestionList Suggestions;
       
    public:
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
