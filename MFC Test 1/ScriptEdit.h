@@ -42,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ------------------------ TYPES --------------------------
    private:
+      /// <summary>Records state of text selection, view position, event mask</summary>
       class DisplayState
       {
       public:
@@ -54,7 +55,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          CPoint    ScrollPos;
       };
 
-      enum class InputState { Normal, Suggestions };
+      /// <summary>Defines whether suggestions visible</summary>
+      enum class InputState : UINT { Normal, Suggestions };
+
+      /// <summary>Defines suggestion categories</summary>
+      enum class Suggestion : UINT { None, Variable, Command, GameObject, ScriptObject, Label };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -66,6 +71,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_DYNAMIC(ScriptEdit)
    protected:
       DECLARE_MESSAGE_MAP()
+
+      static const wchar*  GetString(Suggestion& s);
 	  
       // --------------------- PROPERTIES ------------------------
 	  
@@ -75,6 +82,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
+      int GetCaretIndex() const;
       int GetLineLength(int line = -1) const;
       wstring GetLineText(int line) const;
       CHARRANGE GetSelection() const;
@@ -82,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int LineLength(int nChar = -1) const;
 
    protected:
-      bool IsSuggestionInitiator(wchar ch) const;
+      Suggestion IdentifySuggestion(wchar ch) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -111,6 +119,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       DisplayState   PrevState;
       InputState     State;
+      Suggestion     Focus;
       SuggestionList Suggestions;
       
    public:
