@@ -119,7 +119,7 @@ NAMESPACE_BEGIN(GUI)
 
       // Setup RichEdit
       RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      RichEdit.SetEventMask(ENM_CHANGE | ENM_SCROLL); 
+      RichEdit.SetEventMask(ENM_CHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
 
       // Display text
       RichEdit.SetRtf(txt);
