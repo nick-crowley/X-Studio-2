@@ -54,12 +54,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       line = (line == -1 ? LineFromChar(-1) : line);
 
       // Allocate buffer long enough to hold text + buffer length stored in first DWORD
-      int len = max(4, LineLength(line));
+      int len = LineLength(LineIndex(line));
+      len = max(4, len);
+      
+      // Get text. 
       CharArrayPtr txt(new WCHAR[len+1]);
-
-      // Get text. Strip \v if present
       len = CRichEditCtrl::GetLine(line, txt.get(), len);
-      if (txt.get()[min(0,len-1)] == '\v')
+
+      // Strip \v if present
+      if (txt.get()[max(0,len-1)] == '\v')
          --len;
 
       // Null terminate
@@ -73,6 +76,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Freeze window
       FreezeWindow(true);
+
+      Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
 
       // Examine errors
       for (const auto& err : t.GetErrors())
@@ -92,6 +97,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          UINT start = LineIndex(err.Line-1);
          SetSel(start+err.Start, start+err.End);
          SetSelectionCharFormat(cf);
+
+         Console << L"Error: '" << (const WCHAR*)GetSelText() << L"' on line " << err.Line << ENDL;
       }
 
       // UnFreeze window

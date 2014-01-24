@@ -2,6 +2,7 @@
 #include "ScriptParser.h"
 #include "ExpressionParser.h"
 
+//#define PRINT_CONSOLE
 
 namespace Logic
 {

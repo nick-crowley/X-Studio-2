@@ -26,7 +26,6 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_COMMAND(ID_TEST_RUN_ALL, &ScriptView::OnRuntests)
-      ON_COMMAND(ID_TEST_COMPILE, &ScriptView::OnCompile)
       ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
@@ -62,9 +61,7 @@ NAMESPACE_BEGIN(GUI)
    }
    #endif //_DEBUG
 
-   
    // ------------------------------ PROTECTED METHODS -----------------------------
-   
    
    void  ScriptView::AdjustLayout()
    {
@@ -92,7 +89,6 @@ NAMESPACE_BEGIN(GUI)
       DDX_Control(pDX, IDC_VARIABLES_COMBO, VariablesCombo);
    }
 
-
    void ScriptView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
       //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
@@ -105,13 +101,10 @@ NAMESPACE_BEGIN(GUI)
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
-   
-   void ScriptView::OnRuntests()
+   void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
    {
-      DebugTests::RunAll();
-      AfxMessageBox(L"Tests complete");
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    }
-
 
    void ScriptView::OnInitialUpdate()
    {
@@ -137,10 +130,11 @@ NAMESPACE_BEGIN(GUI)
 	   ClientToScreen(&point);
 	   OnContextMenu(this, point);
    }
-
-   void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+   
+   void ScriptView::OnRuntests()
    {
-	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
+      DebugTests::RunAll();
+      AfxMessageBox(L"Tests complete");
    }
 
    void ScriptView::OnSize(UINT nType, int cx, int cy)
