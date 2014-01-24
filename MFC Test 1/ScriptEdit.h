@@ -6,28 +6,26 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
-/// <summary></summary>
+/// <summary>Character format helper</summary>
    struct CHARFORMAT3 : public CHARFORMAT2
    {
    public:
       BYTE bUnderlineColor;   // Undocumented index into RTF colour table
    };
 
-   /// <summary></summary>
+   /// <summary>Character format helper</summary>
    class CharFormat : public CHARFORMAT3
    {
    public:
-      CharFormat()
-      {
-         Clear();
-      }
-      CharFormat(DWORD mask, DWORD effects)
+      CharFormat() { Clear(); }
+      CharFormat(DWORD mask, DWORD effects) 
       {
          Clear();
          dwMask = mask;
          dwEffects = effects;
       }
 
+      /// <summary>Clear formatting</summary>
       void  Clear()
       {
          ZeroMemory((CHARFORMAT3*)this, sizeof(CHARFORMAT2));
@@ -35,7 +33,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    };
 
-   /// <summary></summary>
+   /// <summary>Script editing control</summary>
    class ScriptEdit : public CRichEditCtrl
    {
       friend class SuggestionList;
@@ -82,36 +80,37 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
-      int GetCaretIndex() const;
-      int GetLineLength(int line = -1) const;
-      wstring GetLineText(int line) const;
+   public:
+      int       GetCaretIndex() const;
+      int       GetLineLength(int line = -1) const;
+      wstring   GetLineText(int line) const;
       CHARRANGE GetSelection() const;
-
-      int LineLength(int nChar = -1) const;
+      int       LineLength(int nChar = -1) const;
 
    protected:
+      CPoint     GetScrollCoordinates() const;
       Suggestion IdentifySuggestion(wchar ch) const;
-      bool MatchSuggestionType(Compiler::TokenType t) const;
+      bool       MatchSuggestionType(Compiler::TokenType t) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       void  SetRtf(const string& rtf);
 
    protected:
+      void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze);
-      CPoint GetScrollCoordinates();
       void   HighlightErrors(ScriptParser::ScriptTree& t);
+      void   InsertSuggestion();
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
-
-      // NEW:
-      void CloseSuggestions();
-      void InsertSuggestion();
-      void ShowSuggestions();
-      void UpdateSuggestions();
-
+      void   ShowSuggestions();
+      void   UpdateSuggestions();
+      
+      afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+      afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -124,7 +123,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList Suggestions;
       
    public:
-      afx_msg void OnKillFocus(CWnd* pNewWnd);
+      
+      
    };
    
 

@@ -24,6 +24,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_TIMER()
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
       ON_WM_KILLFOCUS()
+      ON_WM_CHAR()
+      ON_WM_KEYDOWN()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -59,6 +61,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    #endif //_DEBUG
 
    
+   /// <summary>Gets the character index of the caret with respect to the current line.</summary>
+   /// <returns></returns>
+   int ScriptEdit::GetCaretIndex() const
+   {
+      return GetSelection().cpMin - LineIndex(-1);
+   }
+
    /// <summary>Gets the length of the line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
@@ -91,6 +100,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       txt.get()[len] = NULL;
       return txt.get();
    }
+   
+   /// <summary>Gets the co-ordinates of the current selection</summary>
+   /// <returns></returns>
+   CHARRANGE ScriptEdit::GetSelection() const
+   {
+      CHARRANGE sel;
+      CRichEditCtrl::GetSel(sel);
+      return sel;
+   }
 
    /// <summary>Gets the length of the line by character index.</summary>
    /// <param name="nChar">The zero-based character index, or -1 for current line</param>
@@ -110,6 +128,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Closes the suggestion list</summary>
+   void ScriptEdit::CloseSuggestions()
+   {
+      // Ensure exists
+      if (Suggestions.GetSafeHwnd() == nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+
+      // Revert state
+      State = InputState::Normal;
+
+      // Destroy
+      if (!Suggestions.DestroyWindow())
+         throw Win32Exception(HERE, L"Unable to destroy suggestion list");
+   }
+
    /// <summary>Selects and formats a token.</summary>
    /// <param name="offset">The character index of the line</param>
    /// <param name="t">The token</param>
@@ -149,20 +182,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Gets the coordinates of the first character</summary>
    /// <returns>Character co-orindates</returns>
-   CPoint ScriptEdit::GetScrollCoordinates()
+   CPoint ScriptEdit::GetScrollCoordinates() const
    {
       // Preserve scroll position
       int pos = CharFromPos(CPoint(0,0));
       return CPoint(pos-LineIndex(pos), LineFromChar(pos));
-   }
-
-   /// <summary>Gets the co-ordinates of the current selection</summary>
-   /// <returns></returns>
-   CHARRANGE ScriptEdit::GetSelection() const
-   {
-      CHARRANGE sel;
-      CRichEditCtrl::GetSel(sel);
-      return sel;
    }
 
    
@@ -193,11 +217,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(false);
    }
 
-   int ScriptEdit::GetCaretIndex() const
-   {
-      return GetSelection().cpMin - LineIndex(-1);
-   }
    
+   /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
+   /// <param name="ch">The character just typed</param>
+   /// <returns></returns>
    ScriptEdit::Suggestion  ScriptEdit::IdentifySuggestion(wchar ch) const
    {
       switch (ch)
@@ -210,29 +233,34 @@ NAMESPACE_BEGIN2(GUI,Controls)
          CommandLexer lex(GetLineText(-1));
          TokenIterator pos = lex.begin();
          
-         // Match: GoSub|Goto ' ' caret
+         // Match: GoSub|Goto ' ' <caret>  { caret following single space after goto/gosub }
          if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
-          && lex.Trails(pos-1, GetCaretIndex()))
+             && GetCaretIndex() == (pos-1)->End+1)
             return Suggestion::Label;
          break;
        }
       default:  
-       { // Rule: <char>
-         // Rule: variable '=' <char>
-         // Rule: (variable '=')? constant/variable/null '->' <char>
+       { 
+         // Ensure character is alpha-numeric
+         if (!iswalpha(ch))
+            return Suggestion::None;
+
+         // Lex current line
          CommandLexer lex(GetLineText(-1));
          TokenIterator pos = lex.begin();
 
-         // Match: <char>
-         if (!lex.Valid(pos) || (UINT)GetCaretIndex() <= pos->Start)
+         // Rule: char <caret>  { first token is text. caret on 2nd letter }
+         if (lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
             return Suggestion::Command;
 
-         // Match: variable '=' <char>
-         if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && lex.Trails(pos-1, GetCaretIndex()))
+         // Rule: variable '=' char <caret>  { 3 tokens: variable, equals, text. caret on 2nd letter }
+         if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && lex.Match(pos, TokenType::Text)
+             && GetCaretIndex() == (pos-1)->Start+1)
              return Suggestion::Command;
 
-         // Match: (variable '=')? constant/variable/null '->' <char>
-         // Variable is ambiguous:   var '=' / var '->'
+         
+         // Rule: (variable '=')? constant/variable/null '->' char <caret>
+         // match (variable '=')? while accounting for  variable '->'
          if (lex.Match(pos=lex.begin(), TokenType::Variable))
          {
             // (variable '=')?   
@@ -245,9 +273,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
                return Suggestion::None;
          }
          
-         // constant/variable/null '->' <char>
+         // constant/variable/null 
          if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-            if (lex.Match(pos, TokenType::Operator, L"->") && lex.Trails(pos-1, GetCaretIndex()))
+            // '->' char <caret>  { caret on 2nd letter }
+            if (lex.Match(pos, TokenType::Operator, L"->") && lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
                return Suggestion::Command;
        }
       }
@@ -255,20 +284,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return Suggestion::None;
    }
 
-   void ScriptEdit::CloseSuggestions()
-   {
-      // Ensure exists
-      if (Suggestions.GetSafeHwnd() == nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list does not exist");
-
-      // Revert state
-      State = InputState::Normal;
-
-      // Destroy
-      if (!Suggestions.DestroyWindow())
-         throw Win32Exception(HERE, L"Unable to destroy suggestion list");
-   }
-
+   /// <summary>Inserts the current suggestion and closes the list</summary>
    void ScriptEdit::InsertSuggestion()
    {
       // Ensure exists
@@ -276,70 +292,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
       // TODO: insert
+      Console << Colour::Green << L"Inserting suggestion: " << Suggestions.GetSuggestion() << ENDL;
 
       // Close
       CloseSuggestions();
-   }
-
-   void ScriptEdit::ShowSuggestions()
-   {
-      // Ensure does not exist
-      if (Suggestions.GetSafeHwnd() != nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list already exists");
-
-      // Show list
-      if (!Suggestions.Create(this, GetCharPos(GetSelection().cpMin))) 
-         throw Win32Exception(HERE, L"Unable to create suggestion list");
-
-      // Update state
-      State = InputState::Suggestions;
-   }
-
-   /*bool operator==(Logic::Scripts::Compiler::TokenType t, ScriptEdit::Suggestion s)
-   {
-      switch (t)
-      {
-      }
-      return false;
-   }*/
-
-   bool ScriptEdit::MatchSuggestionType(Compiler::TokenType t) const
-   {
-      switch (Focus)
-      {
-      case Suggestion::Variable:     return t == TokenType::Variable;
-      case Suggestion::GameObject:   return t == TokenType::GameObject;
-      case Suggestion::ScriptObject: return t == TokenType::ScriptObject;
-      case Suggestion::Label:        return t == TokenType::Label;
-      case Suggestion::Command:      return t == TokenType::Text;
-      }
-
-      return false;
-   }
-
-   void ScriptEdit::UpdateSuggestions()
-   {
-      // Ensure exists
-      if (Suggestions.GetSafeHwnd() == nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list does not exist");
-
-      // Lex current line
-      CommandLexer lex(GetLineText(-1));
-      TokenIterator pos = lex.Find(GetCaretIndex());
-
-      Console << L"Updating from token '" << (lex.Valid(pos)?pos->Text:L"<end>") << L" at index " << GetCaretIndex() << ENDL;
-      
-      // Close suggestions if caret has left the token
-      if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
-      {
-         Console << Colour::Red << L"Match failed" << ENDL;
-         CloseSuggestions();
-         return;
-      }
-
-      // Display best match
-      Console << Colour::Green << L"Matching suggestion" << ENDL;
-      Suggestions.MatchSuggestion(pos->Text);
    }
 
    /// <summary>Setup control</summary>
@@ -360,6 +316,56 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    
 
+   /// <summary>Shows/updates the suggestion list in response to character input</summary>
+   /// <param name="nChar">The character.</param>
+   /// <param name="nRepCnt">The repeat count.</param>
+   /// <param name="nFlags">The flags.</param>
+   void ScriptEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      // Process character
+      CRichEditCtrl::OnChar(nChar, nRepCnt, nFlags);
+
+      // Update suggestions
+      if (State == InputState::Suggestions)
+         UpdateSuggestions();
+
+      // display suggestions if appropriate
+      else if ((Focus = IdentifySuggestion(nChar)) != Suggestion::None)
+      {
+         //Console << L"Identified " << GetString(Focus) << L" from " << (wchar)nChar << ENDL;
+         ShowSuggestions();
+      }
+   }
+
+
+   /// <summary>Updates the suggestion list in response to caret movement</summary>
+   /// <param name="nChar">The character.</param>
+   /// <param name="nRepCnt">The repeat count.</param>
+   /// <param name="nFlags">The flags.</param>
+   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      // Process caret movement
+      CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+
+      switch (nChar)
+      {
+      // LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
+      case VK_LEFT:
+      case VK_RIGHT:
+      case VK_HOME:
+      case VK_END:
+      case VK_DELETE:
+      case VK_BACK:
+         if (State == InputState::Suggestions)
+            UpdateSuggestions();
+         break;
+      }
+   }
+
+
+   /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
+   /// <param name="pNMHDR">The notify header</param>
+   /// <param name="pResult">message result</param>
    void ScriptEdit::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
    {
       MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
@@ -372,33 +378,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          switch (pFilter->msg)
          {
-         // CHAR: Close/Insert/Update/Display suggestions
          case WM_CHAR:
-            // Suggestions: Close/Update/Insert 
-            if (State == InputState::Suggestions)
-               switch (chr)
-               {
-               // ESCAPE: Close suggestions
-               case VK_ESCAPE: 
-                  CloseSuggestions(); 
-                  break;
-
-               // TAB: Insert suggestion. Block key to prevent focus switch
-               case VK_TAB:
-                  InsertSuggestion();
-                  *pResult = BLOCK_INPUT;
-                  break;
-
-               // CHAR: Update current match
-               default:
-                  UpdateSuggestions();
-                  break;
-               }
-            // Normal: Check whether to display suggestions
-            else if ((Focus=IdentifySuggestion(chr)) != Suggestion::None)
+            // TAB: Insert suggestion.  Prevent focus switch
+            if (State == InputState::Suggestions && chr == VK_TAB)
             {
-               Console << L"Identified focus: " << GetString(Focus) << L" from char " << chr << L" ID:" << (int)chr << ENDL;
-               ShowSuggestions();
+               InsertSuggestion();
+               *pResult = BLOCK_INPUT;
+            }
+            // ESCAPE: Close suggestions
+            else if (State == InputState::Suggestions && chr == VK_ESCAPE)
+            {
+               CloseSuggestions();
+               *pResult = BLOCK_INPUT;
             }
             break;
 
@@ -407,12 +398,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
             if (State == InputState::Suggestions)
                switch (chr)
                {
-               // LEFT/RIGHT/HOME/END: Update current match
-               case VK_LEFT:
-               case VK_RIGHT:
-               case VK_HOME:
-               case VK_END:
-                  UpdateSuggestions();
+               // TAB: Insert suggestion
+               case VK_TAB:
+                  InsertSuggestion();
+                  *pResult = BLOCK_INPUT;
+                  break;
+
+               // ESCAPE: Close suggestions
+               case VK_ESCAPE:
+                  CloseSuggestions();
+                  *pResult = BLOCK_INPUT;
                   break;
 
                // UP/DOWN/PAGEUP/PAGEDOWN: Navigate suggestions list
@@ -447,7 +442,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    
 
-
+   /// <summary>Closes the suggestion when focus lost</summary>
+   /// <param name="pNewWnd">New window.</param>
    void ScriptEdit::OnKillFocus(CWnd* pNewWnd)
    {
       // Close suggestions, unless they're gaining focus
@@ -534,7 +530,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       CRichEditCtrl::OnTimer(nIDEvent);
    }
+   
+   /// <summary>Matches a token type against the current suggestion type</summary>
+   /// <param name="t">The t.</param>
+   /// <returns></returns>
+   bool ScriptEdit::MatchSuggestionType(Compiler::TokenType t) const
+   {
+      switch (Focus)
+      {
+      case Suggestion::Variable:     return t == TokenType::Variable;
+      case Suggestion::GameObject:   return t == TokenType::GameObject;
+      case Suggestion::ScriptObject: return t == TokenType::ScriptObject;
+      case Suggestion::Label:        return t == TokenType::Label;
+      case Suggestion::Command:      return t == TokenType::Text;
+      }
 
+      return false;
+   }
+   
    /// <summary>Sets/resets/cancels the compiler timer.</summary>
    /// <param name="set">True to set/reset, false to cancel</param>
    void ScriptEdit::SetCompilerTimer(bool set)
@@ -554,10 +567,51 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CPoint diff = pt-now;
       LineScroll(diff.y, diff.x);
    }
+   
+   /// <summary>Shows the suggestion list</summary>
+   void ScriptEdit::ShowSuggestions()
+   {
+      // Ensure does not exist
+      if (Suggestions.GetSafeHwnd() != nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list already exists");
+
+      // Show list
+      if (!Suggestions.Create(this, GetCharPos(GetSelection().cpMin))) 
+         throw Win32Exception(HERE, L"Unable to create suggestion list");
+
+      // Update state
+      State = InputState::Suggestions;
+   }
+
+
+   /// <summary>Scrolls/closes the suggestion list in response to caret movement or character input</summary>
+   void ScriptEdit::UpdateSuggestions()
+   {
+      // Ensure exists
+      if (Suggestions.GetSafeHwnd() == nullptr)
+         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+
+      // Lex current line
+      CommandLexer lex(GetLineText(-1));
+      TokenIterator pos = lex.Find(GetCaretIndex());
+
+      //Console << L"Updating from token '" << (lex.Valid(pos)?pos->Text:L"<end>") << L"' at index " << GetCaretIndex() << ENDL;
+      
+      // Close suggestions if caret has left the token
+      if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
+      {
+         //Console << Colour::Red << L"Match failed" << ENDL;
+         CloseSuggestions();
+         return;
+      }
+
+      // Highlight best match
+      //Console << Colour::Green << L"Matching suggestion" << ENDL;
+      Suggestions.MatchSuggestion(pos->Text);
+   }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
 NAMESPACE_END2(GUI,Controls)
-
 

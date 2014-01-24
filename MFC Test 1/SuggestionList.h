@@ -33,6 +33,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
       ScriptEdit* GetParent() const;
+      wstring GetSuggestion() const;
 
       // ----------------------- MUTATORS ------------------------
    public:

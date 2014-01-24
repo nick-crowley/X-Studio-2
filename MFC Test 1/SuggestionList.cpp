@@ -60,6 +60,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return dynamic_cast<ScriptEdit*>(CListCtrl::GetParent());
    }
 
+   wstring SuggestionList::GetSuggestion() const
+   {
+      if (GetNextItem(-1, LVNI_SELECTED) == -1)
+         throw InvalidOperationException(HERE, L"No item selected");
+
+      return Content[GetNextItem(-1, LVNI_SELECTED)];
+   }
+
    void  SuggestionList::MatchSuggestion(const wstring& txt)
    {
       // Linear search for partial substring
