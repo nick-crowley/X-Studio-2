@@ -325,15 +325,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Process character
       CRichEditCtrl::OnChar(nChar, nRepCnt, nFlags);
 
-      // Update suggestions
-      if (State == InputState::Suggestions)
-         UpdateSuggestions();
-
-      // display suggestions if appropriate
-      else if ((Focus = IdentifySuggestion(nChar)) != Suggestion::None)
+      try
       {
-         //Console << L"Identified " << GetString(Focus) << L" from " << (wchar)nChar << ENDL;
-         ShowSuggestions();
+         // Update suggestions
+         if (State == InputState::Suggestions)
+            UpdateSuggestions();
+
+         // display suggestions if appropriate
+         else if ((Focus = IdentifySuggestion(nChar)) != Suggestion::None)
+         {
+            //Console << L"Identified " << GetString(Focus) << L" from " << (wchar)nChar << ENDL;
+            ShowSuggestions();
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console << e; 
       }
    }
 
@@ -347,18 +353,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Process caret movement
       CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 
-      switch (nChar)
+      try
       {
-      // LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
-      case VK_LEFT:
-      case VK_RIGHT:
-      case VK_HOME:
-      case VK_END:
-      case VK_DELETE:
-      case VK_BACK:
-         if (State == InputState::Suggestions)
-            UpdateSuggestions();
-         break;
+         switch (nChar)
+         {
+         // LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
+         case VK_LEFT:
+         case VK_RIGHT:
+         case VK_HOME:
+         case VK_END:
+         case VK_DELETE:
+         case VK_BACK:
+            if (State == InputState::Suggestions)
+               UpdateSuggestions();
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console << e; 
       }
    }
 
@@ -446,9 +458,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="pNewWnd">New window.</param>
    void ScriptEdit::OnKillFocus(CWnd* pNewWnd)
    {
-      // Close suggestions, unless they're gaining focus
-      if (State == InputState::Suggestions && (!pNewWnd || Suggestions != *pNewWnd))
-         CloseSuggestions();
+      try
+      {
+         // Close suggestions, unless they're gaining focus
+         if (State == InputState::Suggestions && (!pNewWnd || Suggestions != *pNewWnd))
+            CloseSuggestions();
+      }
+      catch (ExceptionBase& e) {
+         Console << e; 
+      }
 
       CRichEditCtrl::OnKillFocus(pNewWnd);
    }
@@ -607,7 +625,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Highlight best match
       //Console << Colour::Green << L"Matching suggestion" << ENDL;
-      Suggestions.MatchSuggestion(pos->Text);
+      Suggestions.MatchSuggestion(*pos);
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

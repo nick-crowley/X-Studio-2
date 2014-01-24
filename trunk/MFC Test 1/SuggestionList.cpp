@@ -13,7 +13,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    IMPLEMENT_DYNAMIC(SuggestionList, CListCtrl)
 
    BEGIN_MESSAGE_MAP(SuggestionList, CListCtrl)
-      ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_KILLFOCUS()
       ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &SuggestionList::OnRetrieveItem)
@@ -47,55 +46,70 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt)
    {
-      // Calc position
+      // Calculate position  (Offset rectangle above line)
       CRect rc(pt, DefaultSize);
       rc.OffsetRect(0, -DefaultSize.cy);
 
       // Create
-      return CListCtrl::Create(WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER, rc, parent, CTRL_ID);
+      DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
+      return CListCtrl::Create(style, rc, parent, CTRL_ID);
    }
 
+   /// <summary>Gets the script edit parent</summary>
+   /// <returns></returns>
    ScriptEdit* SuggestionList::GetParent() const
    {
       return dynamic_cast<ScriptEdit*>(CListCtrl::GetParent());
    }
 
+   /// <summary>Gets the text of the selected suggestion.</summary>
+   /// <returns></returns>
    wstring SuggestionList::GetSuggestion() const
    {
       if (GetNextItem(-1, LVNI_SELECTED) == -1)
          throw InvalidOperationException(HERE, L"No item selected");
 
+      // Get selected
       return Content[GetNextItem(-1, LVNI_SELECTED)];
    }
 
-   void  SuggestionList::MatchSuggestion(const wstring& txt)
+   /// <summary>Highlights the closest matching suggestion.</summary>
+   /// <param name="tok">Token to match</param>
+   void  SuggestionList::MatchSuggestion(const ScriptToken& tok)
    {
+      GuiString str(tok.Text);
+
+      // Format token text
+      switch (tok.Type)
+      {
+      case TokenType::GameObject:
+      case TokenType::ScriptObject:
+      case TokenType::Variable:
+         str = str.TrimLeft(L"${[");
+         str = str.TrimRight(L"}]");
+         break;
+      }
+
       // Linear search for partial substring
-      auto it = find_if(Content.begin(), Content.end(), [&txt](const wstring& s)->bool { return s.find(txt) != wstring::npos; });
+      auto it = find_if(Content.begin(), Content.end(), [&str](const wstring& s)->bool { return s.find(str) != wstring::npos; });
 
       // Select and display item
       if (it != Content.end())
       {
+         Console << L"Search for " << str << L" matched " << *it << ENDL;
          UINT item = it-Content.begin();
          SetItemState(item, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
          EnsureVisible(item, FALSE);
       }
+      else
+         Console << L"Search for " << str << L" provided no match" << ENDL;
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   void  SuggestionList::AdjustLayout()
-   {
-      // Destroyed/Minimised
-	   if (GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
-         return;
-         
-      CRect wnd;
-      GetClientRect(wnd);
-
-      // TODO: Layout code
-   }
-   
+   /// <summary>Initialises control and populates</summary>
+   /// <param name="lpCreateStruct">The create structure.</param>
+   /// <returns></returns>
    int SuggestionList::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       if (CListCtrl::OnCreate(lpCreateStruct) == -1)
@@ -112,6 +126,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return 0;
    }
 
+   /// <summary>Populates the list.</summary>
+   /// <returns></returns>
    int SuggestionList::Populate()
    {
       // Clear previous (if any)
@@ -130,13 +146,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Sort contents
       sort(Content.begin(), Content.end());
 
-      /*for (int i = 0; i < 50; ++i)
-         Content.push_back(GuiString(L"Variable #%03d", i));*/
-
       // Return count
       return Content.size();
    }
    
+   /// <summary>Supplies virtual list item</summary>
+   /// <param name="pNMHDR">notify NMHDR.</param>
+   /// <param name="pResult">notify result.</param>
    void SuggestionList::OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult)
    {
       LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
@@ -147,6 +163,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       *pResult = 0;
    }
 
+   /// <summary>Destroys self if focus to lost</summary>
+   /// <param name="pNewWnd">The new WND.</param>
    void SuggestionList::OnKillFocus(CWnd* pNewWnd)
    {
       CListCtrl::OnKillFocus(pNewWnd);
@@ -156,12 +174,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          GetParent()->CloseSuggestions();
    }
 
-   void SuggestionList::OnSize(UINT nType, int cx, int cy)
-   {
-      CListCtrl::OnSize(nType, cx, cy);
-      AdjustLayout();
-   }
-   
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
