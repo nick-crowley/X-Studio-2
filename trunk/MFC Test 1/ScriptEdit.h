@@ -6,9 +6,40 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
+/// <summary></summary>
+   struct CHARFORMAT3 : public CHARFORMAT2
+   {
+   public:
+      BYTE bUnderlineColor;   // Undocumented index into RTF colour table
+   };
+
+   /// <summary></summary>
+   class CharFormat : public CHARFORMAT3
+   {
+   public:
+      CharFormat()
+      {
+         Clear();
+      }
+      CharFormat(DWORD mask, DWORD effects)
+      {
+         Clear();
+         dwMask = mask;
+         dwEffects = effects;
+      }
+
+      void  Clear()
+      {
+         ZeroMemory((CHARFORMAT3*)this, sizeof(CHARFORMAT2));
+         cbSize = sizeof(CHARFORMAT2);
+      }
+   };
+
    /// <summary></summary>
    class ScriptEdit : public CRichEditCtrl
    {
+      friend class SuggestionList;
+
       // ------------------------ TYPES --------------------------
    private:
       class DisplayState
@@ -44,8 +75,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
+      int GetLineLength(int line = -1) const;
       wstring GetLineText(int line) const;
       CHARRANGE GetSelection() const;
+
+      int LineLength(int nChar = -1) const;
 
    protected:
       bool IsSuggestionInitiator(wchar ch) const;
@@ -56,6 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  SetRtf(const string& rtf);
 
    protected:
+      void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze);
       CPoint GetScrollCoordinates();
       void   SetScrollCoordinates(const CPoint& pt);
