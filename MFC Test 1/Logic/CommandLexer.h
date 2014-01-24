@@ -57,7 +57,11 @@ namespace Logic
             /// <returns></returns>
             TokenIterator Find(UINT index) const
             {
-               return find_if(Tokens.begin(), Tokens.end(), [index](const ScriptToken& t) {return t.Contains(index);} );
+               Console << Colour::Yellow << L"Searching for token @ " << index << ENDL;
+               return find_if(Tokens.begin(), Tokens.end(), [index](const ScriptToken& t) { 
+                  Console << Colour::Yellow << t.Text << ENDL;
+                  return index >= t.Start && index <= t.End;   // Match true if index follows last character
+               });
             }
 
             /// <summary>Validates the specified position.</summary>

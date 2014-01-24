@@ -12,6 +12,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    private:
+      typedef vector<wstring>  StringArray;
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -40,16 +41,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       void AdjustLayout();
+      int  Populate();
 	  
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
+      afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
       
    private:
-      const CSize DefaultSize = CSize(200,100);
+      const CSize DefaultSize = CSize(300,200);
       
+      StringArray  Content;
    };
    
 
