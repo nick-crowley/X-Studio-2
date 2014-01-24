@@ -5,6 +5,8 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
+   class ScriptEdit;
+
    /// <summary></summary>
    class SuggestionList : public CListCtrl
    {
@@ -29,21 +31,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
+      ScriptEdit* GetParent() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(CWnd* parent, CPoint& pt);
+      BOOL Create(ScriptEdit* parent, CPoint& pt);
 
    protected:
       void AdjustLayout();
 	  
-      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnKillFocus(CWnd* pNewWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
       
    private:
       const CSize DefaultSize = CSize(200,100);
-   
       
    };
    

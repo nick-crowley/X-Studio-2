@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SuggestionList.h"
+#include "ScriptEdit.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -13,6 +14,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    BEGIN_MESSAGE_MAP(SuggestionList, CListCtrl)
       ON_WM_SIZE()
       ON_WM_CREATE()
+      ON_WM_KILLFOCUS()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -41,7 +43,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
 
-   BOOL SuggestionList::Create(CWnd* parent, CPoint& pt)
+   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt)
    {
       // Calc position
       CRect rc(pt, DefaultSize);
@@ -49,6 +51,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Create
       return CListCtrl::Create(WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER, rc, parent, CTRL_ID);
+   }
+
+   ScriptEdit* SuggestionList::GetParent() const
+   {
+      return dynamic_cast<ScriptEdit*>(CListCtrl::GetParent());
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -80,8 +87,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Populate somehow
       for (int i = 0; i < 50; ++i)
          InsertItem(i, GuiString(L"Variable #%03d", i).c_str());
-
+      
+      // Select first item?
+      SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
       return 0;
+   }
+   
+   void SuggestionList::OnKillFocus(CWnd* pNewWnd)
+   {
+      CListCtrl::OnKillFocus(pNewWnd);
+
+      // Close if focus lost to anything but parent
+      if (pNewWnd != GetParent())
+         GetParent()->CloseSuggestions();
    }
 
    void SuggestionList::OnSize(UINT nType, int cx, int cy)
@@ -94,4 +112,5 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
+
 

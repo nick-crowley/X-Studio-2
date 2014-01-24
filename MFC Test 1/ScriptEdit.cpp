@@ -50,23 +50,32 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
 
+   
+   /// <summary>Gets the length of the line.</summary>
+   /// <param name="line">The zero-based line index, or -1 for current line</param>
+   /// <returns></returns>
+   int ScriptEdit::GetLineLength(int line) const
+   {
+      return CRichEditCtrl::LineLength(LineIndex(line));
+   }
+
    /// <summary>Get line text</summary>
    /// <param name="line">zero based line index, or -1 for current line</param>
    /// <returns></returns>
    wstring ScriptEdit::GetLineText(int line) const
    {
-      // Use line containing caret if unspecified
+      // Resolve line #  (-1 not supported by CRichEditCtrl::GetLine())
       line = (line == -1 ? LineFromChar(-1) : line);
 
       // Allocate buffer long enough to hold text + buffer length stored in first DWORD
-      int len = LineLength(LineIndex(line));
+      int len = GetLineLength(line);
       len = max(4, len);
       
       // Get text. 
       CharArrayPtr txt(new WCHAR[len+1]);
       len = CRichEditCtrl::GetLine(line, txt.get(), len);
 
-      // Strip \v if present
+      // Strip trailing \v if present
       if (txt.get()[max(0,len-1)] == '\v')
          --len;
 
@@ -75,33 +84,36 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return txt.get();
    }
 
+   /// <summary>Gets the length of the line by character index.</summary>
+   /// <param name="nChar">The zero-based character index, or -1 for current line</param>
+   /// <returns></returns>
+   int ScriptEdit::LineLength(int nChar) const
+   {
+      return CRichEditCtrl::LineLength(nChar);
+   }
+
    /// <summary>Highlights errors indicated by the compiler</summary>
    /// <param name="t">Script tree</param>
    void ScriptEdit::HighlightErrors(ScriptParser::ScriptTree& t)
    {
-      CHARFORMAT2 cf;
-
       // Freeze window
       FreezeWindow(true);
+
+      // Define underline
+      CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
+      cf.bUnderlineType = CFU_UNDERLINEWAVE;
 
       //Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
 
       // Examine errors
       for (const auto& err : t.GetErrors())
       {
-         // Define underline
-         cf.cbSize = sizeof(cf);
-         cf.dwMask = CFM_UNDERLINE | CFM_UNDERLINETYPE;
-         cf.dwEffects = CFE_UNDERLINE;
-         cf.bUnderlineType = CFU_UNDERLINEWAVE;
-
          // TEST: Undocumented underline colour
-         BYTE* colour = &cf.bRevAuthor + 1;
-         //cf.bUnderlineColor = 0x01;
-         *colour = 0x02;
+         //cf.bUnderlineColor = 0x02;
 
          // Format text
          UINT start = LineIndex(err.Line-1);
+         FormatToken(start, err, cf);
          SetSel(start+err.Start, start+err.End);
          SetSelectionCharFormat(cf);
 
@@ -122,6 +134,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Selects and formats a token.</summary>
+   /// <param name="offset">The character index of the line</param>
+   /// <param name="t">The token</param>
+   /// <param name="cf">The formatting characteristics</param>
+   void ScriptEdit::FormatToken(UINT offset, const TokenBase& t, CharFormat& cf)
+   {
+      SetSel(offset+t.Start, offset+t.End);
+      SetSelectionCharFormat(cf);
+   }
+
    /// <summary>Freezes or unfreezes the window.</summary>
    /// <param name="freeze">True to freeze, false to restore</param>
    void ScriptEdit::FreezeWindow(bool freeze)
@@ -218,7 +240,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (Suggestions.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
-      // TODO
+      // Lex current line
+      CommandLexer lex(GetLineText(-1));
+
+      // Close suggestions if caret has left the token
+
+      // TODO: Get token text
+
+      // TODO: Forward to list
+      Suggestions.MatchSuggestion(txt);
    }
 
    /// <summary>Setup control</summary>
@@ -278,11 +308,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   *pResult = BLOCK_INPUT;
                   break;
 
+               // LEFT/RIGHT/HOME/END: Update current match
+               case VK_LEFT:
+               case VK_RIGHT:
+               case VK_HOME:
+               case VK_END:
+                  UpdateSuggestions();
+                  break;
+
                // UP/DOWN/PAGEUP/PAGEDOWN: Navigate suggestions list
                case VK_UP:    
                case VK_DOWN:
                case VK_PRIOR: 
-               case VK_NEXT:   
+               case VK_NEXT:  
                   Suggestions.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
                   *pResult = BLOCK_INPUT;
                   return;
@@ -339,14 +377,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // Lex current line
          CommandLexer lex(GetLineText(-1));
+         
+         // Format tokens
+         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
          for (const auto& tok : lex.Tokens)
          {
-            CHARFORMAT2 cf;
-            cf.cbSize = sizeof(cf);
-            cf.dwMask = CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE;
-            cf.bUnderlineType = NULL;
-            cf.dwEffects = NULL;
-      
             // Set colour
             switch (tok.Type)
             {
@@ -361,9 +396,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             default:                      cf.crTextColor = RGB(255,255,255);  break;
             }
 
-            // Set char format
-            SetSel(start+tok.Start, start+tok.End);
-            SetSelectionCharFormat(cf);
+            // Set format
+            FormatToken(start, tok, cf);
          }
       }
       catch (ExceptionBase& e) { 

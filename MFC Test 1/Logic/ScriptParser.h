@@ -30,17 +30,15 @@ namespace Logic
             typedef shared_ptr<CommandNode>  CommandTree;
 
             /// <summary>Script error</summary>
-            class ErrorToken
+            class ErrorToken : public TokenBase
             {
             public:
                /*ErrorToken(const ScriptToken& t) : Start(t.Start), End(t.End), Text(t.Text)
                {}*/
-               ErrorToken(UINT line, UINT start, UINT end) : Line(line), Start(start), End(end)
+               ErrorToken(UINT line, UINT start, UINT end) : TokenBase(start,end), Line(line)
                {}
 
-               const UINT    Line,
-                             Start, 
-                             End;
+               const UINT    Line;
                //const wstring Text;
             };
 

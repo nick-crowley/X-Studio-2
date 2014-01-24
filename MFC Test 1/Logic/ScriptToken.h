@@ -11,8 +11,33 @@ namespace Logic
          /// <summary>Types of tokens produced by the script lexer</summary>
          enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, Operator, Comment, Whitespace };
 
+         /// <summary>Common base class for all token types</summary>
+         class TokenBase
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            TokenBase() : Start(0), End(0)
+            {}
+            TokenBase(UINT s, UINT e) : Start(s), End(e)
+            {}
+            virtual ~TokenBase()
+            {}
+
+            DEFAULT_COPY(TokenBase);	// Default copy semantics
+            DEFAULT_MOVE(TokenBase);	// Default move semantics
+            
+            // ---------------------- ACCESSORS ------------------------			
+         public:
+            UINT  Length() const  { return End - Start; }
+
+            // -------------------- REPRESENTATION ---------------------
+         public:
+            const UINT  Start, 
+                        End;
+         };
+
          /// <summary></summary>
-         class ScriptToken
+         class ScriptToken : public TokenBase
          {
             // ------------------------ TYPES --------------------------
          private:
@@ -20,9 +45,9 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptToken() : Type(TokenType::Whitespace), Start(0), End(0)
+            ScriptToken() : Type(TokenType::Whitespace)
             {}
-            ScriptToken(TokenType t, UINT s, UINT e, const wstring& txt) : Type(t), Start(s), End(e), Text(txt)
+            ScriptToken(TokenType t, UINT s, UINT e, const wstring& txt) : TokenBase(s, e), Type(t), Text(txt)
             {}
             virtual ~ScriptToken()
             {}
@@ -40,11 +65,6 @@ namespace Logic
             {
                return Type == t && (!matchCase ? Text == txt : StrCmpI(Text.c_str(), txt) == 0);
             }*/
-         public:
-            UINT  Length() const 
-            { 
-               return End - Start; 
-            }
 
             // ----------------------- MUTATORS ------------------------
 
@@ -52,10 +72,7 @@ namespace Logic
 
          public:
             const TokenType   Type;
-            const UINT        Start, End;
             const wstring     Text;
-
-         private:
          };
 
          /// <summary>Vector of script tokens</summary>
