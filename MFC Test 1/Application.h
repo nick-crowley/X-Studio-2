@@ -43,27 +43,16 @@ public:
    {
       return GameDataState;
    }
-
-   HICON  LoadIcon(UINT nResID, UINT iSize) const
-   {
-      return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
-   }
-
-   CBitmap*  LoadBitmap(UINT nResID, int x, int y, UINT flags)
-   {
-      CBitmap* bmp = new CBitmap();
-      HBITMAP h = (HBITMAP)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_BITMAP, x, y, flags);
-      bmp->Attach(h);
-      return bmp;
-   }
-
+   HICON     LoadIcon(UINT nResID, UINT iSize) const;
+   CBitmap*  LoadBitmap(UINT nResID, int x, int y, UINT flags) const;
+   
    // ----------------------- MUTATORS ------------------------
 public:
+   virtual int  ExitInstance();
 	virtual BOOL InitInstance();
-	virtual int  ExitInstance();
-
+   virtual void LoadCustomState();
+   BOOL         OpenStringLibrary();
 	virtual void PreLoadState();
-	virtual void LoadCustomState();
 	virtual void SaveCustomState();
 
    void  SetState(AppState s) 
