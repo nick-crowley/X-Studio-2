@@ -9,6 +9,8 @@ typedef unique_ptr<BYTE, default_delete<BYTE[]>>  ByteArrayPtr;
 /// <summary>A unique pointer to a wide char array</summary>
 typedef unique_ptr<WCHAR, default_delete<WCHAR[]>>  CharArrayPtr;
 
+/// <summary>Wide char</summary>
+typedef wchar_t wchar;
 
 namespace Logic
 {

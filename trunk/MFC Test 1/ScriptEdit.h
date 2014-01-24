@@ -10,6 +10,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    private:
+      class DisplayState
+      {
+      public:
+         DisplayState() : Selection({0,0}), EventMask(NULL)
+         {}
+         DisplayState(CHARRANGE sel, DWORD mask, CPoint pos) : Selection(sel), EventMask(mask), ScrollPos(pos)
+         {}
+         CHARRANGE Selection;
+         DWORD     EventMask;
+         CPoint    ScrollPos;
+      };
+
+      enum class InputState { Normal, Suggestions };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -31,6 +44,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
       wstring GetLineText(int line) const;
+      CHARRANGE GetSelection() const;
+
+   protected:
+      bool IsSuggestionInitiator(wchar ch) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -43,16 +60,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
 
+      // NEW:
+      void CloseSuggestions();
+      void ShowSuggestions();
+      void UpdateSuggestions();
+
+      afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
 	  
       // -------------------- REPRESENTATION ---------------------
    private:
-      CHARRANGE Selection;
-      DWORD     EventMask;
-      CPoint    ScrollPos;
-            
+      DisplayState  PrevState;
+      InputState    State;
+      CListCtrl     SuggestionList;
+      
+   public:
+      afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
    };
    
 
