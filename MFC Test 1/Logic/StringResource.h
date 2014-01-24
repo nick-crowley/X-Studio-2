@@ -49,6 +49,44 @@ namespace Logic
          va_list args;
          assign( StringResource::FormatV(format, va_start(args, format)) );
       }
+
+      /// <summary>Copy create from wstring.</summary>
+      /// <param name="sz">The string</param>
+      GuiString(const wstring& sz) : wstring(sz)
+      {}
+
+      /// <summary>Move create from wstring</summary>
+      /// <param name="sz">The string</param>
+      GuiString(const wstring&& sz) : wstring(move(sz))
+      {}
+
+      /// <summary>Trims leading characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
+      GuiString  TrimLeft(const WCHAR* chars) const
+      {
+         GuiString s(*this);
+
+         auto pos = s.find_first_not_of(chars);
+         // Strip chars
+         if (pos != 0 && pos != npos)
+            s.erase(0, pos);
+         return s;
+      }
+
+      /// <summary>Trims trailing characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
+      GuiString  TrimRight(const WCHAR* chars) const
+      {
+         GuiString s(*this);
+
+         auto pos = s.find_last_not_of(chars);
+         // Strip chars
+         if (pos != s.size()-1 && pos != npos)
+            s.erase(s.begin()+pos, s.end());
+         return s;
+      }
    };
 
 
