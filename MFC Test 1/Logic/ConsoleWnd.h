@@ -74,6 +74,14 @@ namespace Logic
          return *this;
       }
 
+      /// <summary>Writes a character to the console</summary>
+      /// <param name="ch">Character</param>
+      ConsoleWnd& operator<<(wchar ch)
+      {
+         wchar buf[2] = {ch, NULL};
+         return *this << buf;
+      }
+
       /// <summary>Writes signed integer to the console</summary>
       /// <param name="i">Number</param>
       ConsoleWnd& operator<<(int i)
