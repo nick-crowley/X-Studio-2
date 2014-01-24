@@ -90,10 +90,13 @@ NAMESPACE_BEGIN(GUI)
          Console << ENDL << Colour::Cyan << L"Parsing language file: " << szPathName << ENDL;
 
          // Parse file
-         if (GuiString(L"String Library") != szPathName)
+         if (GuiString(L"String Library") == szPathName)
+            Virtual = true;
+         else
          {
             StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
             Content = LanguageFileReader(fs2).ReadFile(Path(szPathName).FileName);
+            Virtual = false;
          }
 
          Console << Colour::Green << L"Language file loaded successfully" << ENDL;

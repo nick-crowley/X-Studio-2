@@ -81,7 +81,7 @@ namespace Logic
             {
                auto res = insert(value_type(p.ID, p));
 
-               // Merge strings if page already present
+               // Exists: Merge strings into existing page
                if (!res.second)
                {
                   LanguagePage& existing = res.first->second;

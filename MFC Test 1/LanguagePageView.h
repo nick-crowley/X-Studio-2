@@ -19,6 +19,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    private:
+      typedef LanguageFile::PageCollection PageCollection;
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
@@ -42,10 +43,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    #endif  
       LanguageDocument* GetDocument() const;
       LanguagePage*     GetSelectedPage() const;
+      PageCollection&   GetDataSource() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+      void GenerateLibrary();
+      void Populate();
 	  
       virtual void OnInitialUpdate();
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
@@ -54,7 +58,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // -------------------- REPRESENTATION ---------------------
    public:
       SelectionChangedEvent   SelectionChanged;
-
+      PageCollection          Library;
    private:
       
    };
