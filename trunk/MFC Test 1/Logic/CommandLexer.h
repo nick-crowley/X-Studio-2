@@ -75,6 +75,16 @@ namespace Logic
                return pos < Tokens.end() && pos->Type == t && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
             }
 
+            /// <summary>Determines if a character index immediately follows a token, ie. immediately follows</summary>
+            /// <param name="pos">The position.</param>
+            /// <param name="index">The index.</param>
+            /// <returns>true if index represents EOF, next whitespace or first char of next token.</returns>
+            bool Trails(const TokenIterator pos, UINT index) const
+            {
+               return Valid(pos) && pos->End <= index   
+                   && (!Valid(pos+1) || index <= (pos+1)->Start);
+            }
+
          private:
             bool  IsValidPosition() const  { return Position < LineEnd; }
             

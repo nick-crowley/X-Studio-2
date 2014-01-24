@@ -206,25 +206,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case ' ': 
        {  
          CommandLexer lex(GetLineText(-1));
+         TokenIterator pos = lex.begin();
          
          // Match: GoSub|Goto ' ' caret
-         if ((lex.Match(lex.begin(), TokenType::Keyword, L"gosub") || lex.Match(lex.begin(), TokenType::Keyword, L"goto"))
-          && GetCaretIndex() == lex.Tokens[0].End)
+         if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
+          && lex.Trails(pos-1, GetCaretIndex()))
             return Suggestion::Label;
          break;
        }
       default:  
-       {
+       { // Rule: <char>
+         // Rule: variable '=' <char>
+         // Rule: (variable '=')? constant/variable/null '->' <char>
          CommandLexer lex(GetLineText(-1));
          TokenIterator pos = lex.begin();
 
+         // Match: <char>
+         if (!lex.Valid(pos) || pos->Start <= (UINT)GetCaretIndex())
+            return Suggestion::Command;
+
          // Match: variable '=' <char>
-         if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && (pos-1)->End == GetCaretIndex())
+         if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && lex.Trails(pos-1, GetCaretIndex()))
              return Suggestion::Command;
 
-
          // Match: (variable '=')? constant/variable/null '->' <char>
-
          // Variable is ambiguous:   var '=' / var '->'
          if (lex.Match(pos=lex.begin(), TokenType::Variable))
          {
@@ -240,7 +245,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          
          // constant/variable/null '->' <char>
          if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-            if (lex.Match(pos, TokenType::Operator, L"->") && (pos-1)->End == GetCaretIndex())
+            if (lex.Match(pos, TokenType::Operator, L"->") && lex.Trails(pos-1, GetCaretIndex()))
                return Suggestion::Command;
        }
       }
@@ -335,26 +340,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          switch (pFilter->msg)
          {
-         // CHAR: Display/update suggestions
+         // CHAR: Close/Insert/Update/Display suggestions
          case WM_CHAR:
-            // Display in response to initiator
-            if (State == InputState::Normal && (Focus=IdentifySuggestion(chr)) != Suggestion::None)
-            {
-               Console << L"Identified focus: " << GetString(Focus) << ENDL;
-               ShowSuggestions();
-            }
-            // Update current match
-            else if (State == InputState::Suggestions)
-               UpdateSuggestions();
-            break;
-
-         // NON-CHAR: Close suggestions / Forward key
-         case WM_KEYDOWN:
+            // Suggestions: Close/Update/Insert 
             if (State == InputState::Suggestions)
                switch (chr)
                {
                // ESCAPE: Close suggestions
-               case VK_ESCAPE:   
+               case VK_ESCAPE: 
                   CloseSuggestions(); 
                   break;
 
@@ -364,6 +357,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   *pResult = BLOCK_INPUT;
                   break;
 
+               // CHAR: Update current match
+               default:
+                  UpdateSuggestions();
+                  break;
+               }
+            // Normal: Check whether to display suggestions
+            else if ((Focus=IdentifySuggestion(chr)) != Suggestion::None)
+            {
+               Console << L"Identified focus: " << GetString(Focus) << L" from char " << chr << L" ID:" << (int)chr << ENDL;
+               ShowSuggestions();
+            }
+            break;
+
+         // NAVIGATION: Update suggestions / Forward message
+         case WM_KEYDOWN:
+            if (State == InputState::Suggestions)
+               switch (chr)
+               {
                // LEFT/RIGHT/HOME/END: Update current match
                case VK_LEFT:
                case VK_RIGHT:
