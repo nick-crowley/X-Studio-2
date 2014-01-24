@@ -26,7 +26,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit()
+   ScriptEdit::ScriptEdit() : Focus(Suggestion::None)
    {
    }
 
@@ -35,6 +35,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    // ------------------------------- STATIC METHODS -------------------------------
+
+   const wchar*  ScriptEdit::GetString(Suggestion& s) 
+   {
+      static const wchar* str[] = { L"None", L"Variable", L"Command", L"GameObject", L"ScriptObject", L"Label" };
+      return str[(UINT)s];
+   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -185,10 +191,61 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(false);
    }
 
-   
-   bool ScriptEdit::IsSuggestionInitiator(wchar ch) const
+   int ScriptEdit::GetCaretIndex() const
    {
-      return ch == '$';
+      return GetSelection().cpMin - LineIndex(-1);
+   }
+   
+   ScriptEdit::Suggestion  ScriptEdit::IdentifySuggestion(wchar ch) const
+   {
+      switch (ch)
+      {
+      case '$': return Suggestion::Variable;
+      case '{': return Suggestion::GameObject;
+      case '[': return Suggestion::ScriptObject;
+      case ' ': 
+       {  
+         CommandLexer lex(GetLineText(-1));
+         
+         // Match: GoSub|Goto ' ' caret
+         if ((lex.Match(lex.begin(), TokenType::Keyword, L"gosub") || lex.Match(lex.begin(), TokenType::Keyword, L"goto"))
+          && GetCaretIndex() == lex.Tokens[0].End)
+            return Suggestion::Label;
+         break;
+       }
+      default:  
+       {
+         CommandLexer lex(GetLineText(-1));
+         TokenIterator pos = lex.begin();
+
+         // Match: variable '=' <char>
+         if (lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && (pos-1)->End == GetCaretIndex())
+             return Suggestion::Command;
+
+
+         // Match: (variable '=')? constant/variable/null '->' <char>
+
+         // Variable is ambiguous:   var '=' / var '->'
+         if (lex.Match(pos=lex.begin(), TokenType::Variable))
+         {
+            // (variable '=')?   
+            if (lex.Match(pos, TokenType::Operator, L"="))
+            {}
+            // Reset position if (variable '->')
+            else if (lex.Match(pos, TokenType::Operator, L"->"))
+               pos=lex.begin();
+            else
+               return Suggestion::None;
+         }
+         
+         // constant/variable/null '->' <char>
+         if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
+            if (lex.Match(pos, TokenType::Operator, L"->") && (pos-1)->End == GetCaretIndex())
+               return Suggestion::Command;
+       }
+      }
+
+      return Suggestion::None;
    }
 
    void ScriptEdit::CloseSuggestions()
@@ -245,7 +302,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // TODO: Get token text
 
       // TODO: Forward to list
-      Suggestions.MatchSuggestion(txt);
+      //Suggestions.MatchSuggestion(txt);
    }
 
    /// <summary>Setup control</summary>
@@ -281,9 +338,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // CHAR: Display/update suggestions
          case WM_CHAR:
             // Display in response to initiator
-            if (State == InputState::Normal && IsSuggestionInitiator(chr))
+            if (State == InputState::Normal && (Focus=IdentifySuggestion(chr)) != Suggestion::None)
+            {
+               Console << L"Identified focus: " << GetString(Focus) << ENDL;
                ShowSuggestions();
-
+            }
             // Update current match
             else if (State == InputState::Suggestions)
                UpdateSuggestions();

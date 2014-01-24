@@ -28,7 +28,8 @@ namespace Logic
             
             // ---------------------- ACCESSORS ------------------------			
          public:
-            UINT  Length() const  { return End - Start; }
+            bool  Contains(UINT pos) const  { return pos >= Start && pos < End; }
+            UINT  Length() const            { return End - Start; }
 
             // -------------------- REPRESENTATION ---------------------
          public:
