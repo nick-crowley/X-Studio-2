@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguagePageView.h"
 #include "ListView.h"
+#include "Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -52,9 +53,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    LanguagePage*   LanguagePageView::GetSelectedPage() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetDocument()->Content.Pages.FindByIndex(item) : nullptr;
+      return item != -1 ? &GetDataSource().FindByIndex(item) : nullptr;
    }
    
+   /// <summary>Retrieves page collection, either from document language file or static copy of library</summary>
+   /// <returns></returns>
+   LanguagePageView::PageCollection&   LanguagePageView::GetDataSource() const
+   {
+      return GetDocument()->Virtual ? const_cast<PageCollection&>(Library) : GetDocument()->Content.Pages;
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -67,18 +75,35 @@ NAMESPACE_BEGIN2(GUI,Views)
       CRect wnd;
       GetClientRect(wnd);
 
-      // TODO: Layout code
-      //GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
-      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+      // Stretch 2nd column over view
+      GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
    }
    
+   /// <summary>Builds a static copy of the string library.</summary>
+   void LanguagePageView::GenerateLibrary()
+   {
+      // Iterate thru all pages in all library files
+      for (auto& f : StringLib.Files)
+         for (auto& pair : f.Pages)
+         {
+            auto& p = pair.second;
+
+            // Create new page, if not already present
+            if (!Library.Contains(p.ID))
+               Library.insert(PageCollection::value_type(p.ID, LanguagePage(p.ID, p.Title, p.Description, p.Voiced)) );
+
+            // Copy strings into page
+            Library.Merge(const_cast<LanguagePage&>(p));
+         }
+   }
+
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
    {
       CListView::OnInitialUpdate();
 
       // Setup listView
-      GetListCtrl().ModifyStyle(WS_BORDER, NULL);
+      GetListCtrl().ModifyStyle(WS_BORDER, LVS_SINGLESEL);
       GetListCtrl().SetView(LV_VIEW_DETAILS);
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
@@ -93,8 +118,20 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
 
       // Populate pages
+      Populate();
+   }
+
+
+   void LanguagePageView::Populate()
+   {
+      // Generate static copy of string library
+      if (GetDocument()->Virtual)
+         GenerateLibrary();
+
+      // Populate pages
       int index = 0;
-      for (const auto& pair : GetDocument()->Content.Pages)
+      GetListCtrl().SetRedraw(FALSE);
+      for (const auto& pair : GetDataSource()) 
       {
          const LanguagePage& p = pair.second;
          
@@ -103,9 +140,12 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetListCtrl().InsertItem(&item);
          GetListCtrl().SetItemText(item.iItem, 1, p.Title.c_str());
       }
+
+      // Refresh
+      GetListCtrl().SetRedraw(TRUE);
+      GetListCtrl().UpdateWindow();
    }
 
-   
    /// <summary>Raise the PAGE SELECTION CHANGED event</summary>
    /// <param name="pNMHDR">Item data</param>
    /// <param name="pResult">Notify result.</param>

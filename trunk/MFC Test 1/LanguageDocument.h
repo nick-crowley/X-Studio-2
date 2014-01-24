@@ -59,6 +59,7 @@ NAMESPACE_BEGIN(GUI)
       // -------------------- REPRESENTATION ---------------------
    public:
       LanguageFile  Content;
+      bool          Virtual;
    };
 
 
