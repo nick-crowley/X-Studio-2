@@ -7,6 +7,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- CONSTANTS ----------------------------------
 
+   #define ALLOW_INPUT  FALSE
+   #define BLOCK_INPUT  TRUE
+
    #define COMPILE_TIMER      42
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -19,6 +22,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_TIMER()
       ON_WM_CHAR()
       ON_WM_KEYDOWN()
+      ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -206,19 +210,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    void ScriptEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      try
-      {
-         // Normal: Display suggestions if character is initiator
-         if (State == InputState::Normal && IsSuggestionInitiator(nChar))
-            ShowSuggestions();
+      //try
+      //{
+      //   // Normal: Display suggestions if character is initiator
+      //   if (State == InputState::Normal && IsSuggestionInitiator(nChar))
+      //      ShowSuggestions();
 
-         // Suggestions: Update match
-         else if (State == InputState::Suggestions)
-            UpdateSuggestions();
-      }
-      catch (ExceptionBase& e) { 
-         Console << e; 
-      }
+      //   // Suggestions: Update match
+      //   else if (State == InputState::Suggestions)
+      //      UpdateSuggestions();
+      //}
+      //catch (ExceptionBase& e) { 
+      //   Console << e; 
+      //}
 
       // Process char
       CRichEditCtrl::OnChar(nChar, nRepCnt, nFlags);
@@ -227,15 +231,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      try
-      {
-         // Suggestions: Close on escape
-         if (State == InputState::Suggestions && nChar == VK_ESCAPE)
-            CloseSuggestions();
-      }
-      catch (ExceptionBase& e) { 
-         Console << e; 
-      }
+      //try
+      //{
+      //   // Suggestions: Close on escape
+      //   if (State == InputState::Suggestions && nChar == VK_ESCAPE)
+      //      CloseSuggestions();
+      //}
+      //catch (ExceptionBase& e) { 
+      //   Console << e; 
+      //}
 
       // Process keypress
       CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
@@ -253,12 +257,48 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Set background colour
       SetBackgroundColor(FALSE, RGB(0,0,0));
 
-      // Notify on change
-      SetEventMask(GetEventMask() | ENM_UPDATE | ENM_CHANGE);
+      // Notify on change/scroll/input
+      SetEventMask(ENM_CHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS);
 
       return 0;
    }
    
+
+   void ScriptEdit::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
+      wchar chr = pFilter->wParam;
+   
+      try
+      {
+         switch (pFilter->msg)
+         {
+         case WM_CHAR:
+            // Normal mode: Display suggestions if character is initiator
+            if (State == InputState::Normal && IsSuggestionInitiator(chr))
+               ShowSuggestions();
+
+            // Suggestions mode: Update match
+            else if (State == InputState::Suggestions)
+               UpdateSuggestions();
+            break;
+
+         case WM_KEYDOWN:
+            // Suggestions mode: Close on escape
+            if (State == InputState::Suggestions && chr == VK_ESCAPE)
+               CloseSuggestions();
+            break;
+         }
+      }
+      catch (ExceptionBase& e) { 
+         Console << e; 
+      }
+
+      // Pass to base
+      *pResult = ALLOW_INPUT;
+   }
+
+
    /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
    {

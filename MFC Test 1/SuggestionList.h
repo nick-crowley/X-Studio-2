@@ -12,15 +12,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
-   protected:
-      SuggestionList();    // Protected constructor used by dynamic creation
    public:
+      SuggestionList();
       virtual ~SuggestionList();
        
       // ------------------------ STATIC -------------------------
-   public:
-      DECLARE_DYNCREATE(SuggestionList)
-   protected:
+   
+      DECLARE_DYNAMIC(SuggestionList)
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------

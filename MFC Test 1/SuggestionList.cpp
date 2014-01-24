@@ -8,7 +8,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNCREATE(SuggestionList, CListCtrl)
+   IMPLEMENT_DYNAMIC(SuggestionList, CListCtrl)
 
    BEGIN_MESSAGE_MAP(SuggestionList, CListCtrl)
       ON_WM_SIZE()
