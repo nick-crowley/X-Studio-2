@@ -60,7 +60,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       /// <summary>Defines suggestion categories</summary>
       enum class Suggestion : UINT { None, Variable, Command, GameObject, ScriptObject, Label };
-	  
+ 
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
@@ -91,6 +91,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       Suggestion IdentifySuggestion(wchar ch) const;
+      bool MatchSuggestionType(Compiler::TokenType t) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
