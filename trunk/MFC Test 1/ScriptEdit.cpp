@@ -2,6 +2,8 @@
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
 
+   
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
@@ -293,6 +295,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
       State = InputState::Suggestions;
    }
 
+   /*bool operator==(Logic::Scripts::Compiler::TokenType t, ScriptEdit::Suggestion s)
+   {
+      switch (t)
+      {
+      }
+      return false;
+   }*/
+
+   bool ScriptEdit::MatchSuggestionType(Compiler::TokenType t) const
+   {
+      switch (Focus)
+      {
+      case Suggestion::Variable:     return t == TokenType::Variable;
+      case Suggestion::GameObject:   return t == TokenType::GameObject;
+      case Suggestion::ScriptObject: return t == TokenType::ScriptObject;
+      case Suggestion::Label:        return t == TokenType::Label;
+      case Suggestion::Command:      return t == TokenType::Text;
+      }
+
+      return false;
+   }
+
    void ScriptEdit::UpdateSuggestions()
    {
       // Ensure exists
@@ -301,13 +325,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Lex current line
       CommandLexer lex(GetLineText(-1));
-
+      TokenIterator pos = lex.Find(GetCaretIndex());
+      
       // Close suggestions if caret has left the token
+      if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
+         CloseSuggestions();
 
-      // TODO: Get token text
-
-      // TODO: Forward to list
-      //Suggestions.MatchSuggestion(txt);
+      // Display best match
+      Suggestions.MatchSuggestion(pos->Text);
    }
 
    /// <summary>Setup control</summary>

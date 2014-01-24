@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "ScriptToken.h"
+#include <algorithm>
 
 namespace Logic
 {
@@ -51,6 +52,17 @@ namespace Logic
                return Tokens.size();
             }
 
+            /// <summary>Finds a token by character index.</summary>
+            /// <param name="index">character index</param>
+            /// <returns></returns>
+            TokenIterator Find(UINT index) const
+            {
+               return find_if(Tokens.begin(), Tokens.end(), [index](const ScriptToken& t) {return t.Contains(index);} );
+            }
+
+            /// <summary>Validates the specified position.</summary>
+            /// <param name="pos">The position.</param>
+            /// <returns></returns>
             bool  Valid(const TokenIterator& pos) const
             {
                return pos < Tokens.end();

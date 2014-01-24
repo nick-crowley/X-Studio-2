@@ -36,6 +36,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    public:
       BOOL Create(ScriptEdit* parent, CPoint& pt);
+      void MatchSuggestion(const wstring& txt);
 
    protected:
       void AdjustLayout();

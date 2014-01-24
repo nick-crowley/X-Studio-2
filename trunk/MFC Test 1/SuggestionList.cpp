@@ -57,6 +57,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       return dynamic_cast<ScriptEdit*>(CListCtrl::GetParent());
    }
+
+   void  SuggestionList::MatchSuggestion(const wstring& txt)
+   {
+   }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
