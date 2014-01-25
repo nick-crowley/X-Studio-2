@@ -15,6 +15,21 @@ namespace Logic
          class PageCollection : public map<UINT, LanguagePage, less<UINT>>
          {
          public:
+            /// <summary>Inserts a page and it's strings to the collection. Strings from lower versions are overwritten</summary>
+            /// <param name="p">The page</param>
+            void  Add(const LanguagePage& p)
+            {
+               auto it = insert(value_type(p.ID, p));
+
+               // Exists: Merge strings into existing page
+               if (!it.second)
+               {
+                  LanguagePage& page = it.first->second;
+                  for (auto pair : p.Strings)
+                     page.Strings.Add(pair.second);
+               }
+            }
+
             /// <summary>Query whether a page is present</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
@@ -75,21 +90,6 @@ namespace Logic
                throw IndexOutOfRangeException(HERE, index, size());
             }
 
-            /// <summary>Merges a page into the collection</summary>
-            /// <param name="p">The page</param>
-            void  Merge(LanguagePage& p)
-            {
-               auto res = insert(value_type(p.ID, p));
-
-               // Exists: Merge strings into existing page
-               if (!res.second)
-               {
-                  LanguagePage& existing = res.first->second;
-                  for (auto s : p.Strings)
-                     existing.Strings.Add(s.second);
-               }
-            }
-
             /// <summary>Finds the specified page.</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
@@ -115,7 +115,10 @@ namespace Logic
          /// <param name="page">The page id</param>
          /// <param name="id">The string id.</param>
          /// <returns></returns>
-         bool  Contains(UINT page, UINT id) const    { return Pages.Contains(page,id); }
+         bool  Contains(UINT page, UINT id) const
+         { 
+            return Pages.Contains(page,id); 
+         }
 
          /// <summary>Finds the specified string</summary>
          /// <param name="page">The page id</param>
@@ -123,7 +126,10 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         LanguageString  Find(UINT page, UINT id) const        { return Pages.Find(page,id);     }
+         LanguageString  Find(UINT page, UINT id) const
+         { 
+            return Pages.Find(page,id); 
+         }
 
 		   // ----------------------- MUTATORS ------------------------
 

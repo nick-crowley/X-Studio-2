@@ -6,7 +6,7 @@ namespace Logic
    namespace Language
    {
 
-
+      /// <summary>Language string with immutable ID</summary>
       class LanguageString
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -23,7 +23,7 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         UINT        ID;
+         const UINT  ID;
          wstring     Text;
          GameVersion Version;
       };

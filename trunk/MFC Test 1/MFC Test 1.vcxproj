@@ -135,6 +135,7 @@
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
+    <ClInclude Include="Logic\ScriptObjectLibrary.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
+    <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />

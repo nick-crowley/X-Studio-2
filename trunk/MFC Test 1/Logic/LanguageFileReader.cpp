@@ -154,7 +154,7 @@ namespace Logic
                XmlNodePtr n = languageNode->childNodes->item[i];
 
                if (n->nodeType == XML::NODE_ELEMENT)
-                  file.Pages.Merge( ReadPage(n) );
+                  file.Pages.Add( ReadPage(n) );
             }
 
             return file;

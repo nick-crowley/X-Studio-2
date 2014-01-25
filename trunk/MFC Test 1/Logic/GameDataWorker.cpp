@@ -6,6 +6,7 @@
 #include "XFileSystem.h"
 #include "SyntaxLibrary.h"
 #include "StringLibrary.h"
+#include "ScriptObjectLibrary.h"
 #include "LegacySyntaxReader.h"
 
 
@@ -44,8 +45,9 @@ namespace Logic
             // Build VFS. 
             vfs.Enumerate(data->GameFolder, data->Version, data);
 
-            // Enumerate language files
+            // Enumerate language files & script objects
             StringLib.Enumerate(vfs, GameLanguage::English, data);
+            ScriptObjectLib.Enumerate(data);
 
             // Load legacy syntax file
             SyntaxLib.Enumerate(data);

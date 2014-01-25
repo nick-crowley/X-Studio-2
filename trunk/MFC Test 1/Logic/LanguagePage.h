@@ -16,25 +16,26 @@ namespace Logic
       {
       public:
          /// <summary>Collection of language strings, sorted by ID</summary>
-         class StringCollection : public map<UINT, LanguageString>
+         class StringCollection : public map<UINT, LanguageString, less<UINT>>
          {
          public:
             StringCollection(UINT page) : PageID(page) {}
 
-            /// <summary>Adds a string to the collection, overwriting any with a lower version</summary>
+            /// <summary>Adds a string to the collection. If a lower version string exists, it is overwritten</summary>
             /// <param name="s">The string</param>
-            /// <returns>True if successful, false otherwise</returns>
+            /// <returns>True if inserted, otherwise false</returns>
             bool  Add(LanguageString& s)
             {
-               auto res = insert(value_type(s.ID, s));
-
-               if (res.second)
+               // Attempt to insert
+               auto it = insert(value_type(s.ID, s));
+               if (it.second)
                   return true;
 
-               // Overwrite if version is greater
-               if (!res.second && (UINT)s.Version > (UINT)(res.first->second).Version)
+               // Exists: Overwrite if version is greater
+               if ((UINT)s.Version > (UINT)(it.first->second).Version)
                {
-                  res.first->second = s;
+                  erase(it.first);
+                  insert(value_type(s.ID, s));
                   return true;
                }
 
@@ -106,13 +107,19 @@ namespace Logic
          /// <summary>Query whether a string is present</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
-         bool Contains(UINT  id) const                      { return Strings.Contains(id); }
+         bool Contains(UINT  id) const
+         { 
+            return Strings.Contains(id); 
+         }
 
          /// <summary>Finds the specified string.</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         const LanguageString&  Find(UINT  id) const        { return Strings.Find(id);     }
+         const LanguageString&  Find(UINT  id) const
+         { 
+            return Strings.Find(id);     
+         }
 
          /// <summary>Get category</summary>
          PageGroup  GetGroup() const;
@@ -121,13 +128,16 @@ namespace Logic
          /// <param name="id">The string id</param>
          /// <returns></returns>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         const LanguageString&  operator[](UINT  id) const  { return Strings.Find(id);     }
+         const LanguageString&  operator[](UINT  id) const
+         { 
+            return Strings.Find(id);     
+         }
 
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
 
-         UINT             ID;
+         const UINT       ID;
          wstring          Title,
                           Description;
          bool             Voiced;

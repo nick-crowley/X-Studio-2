@@ -53,6 +53,18 @@ namespace Logic
             MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
          }
 
+         /// <summary>Inform main window of progress and print message to console</summary>
+         void  SendFeedback(Colour c, ProgressType t, UINT indent, const wstring& sz)
+         {
+            // Output to console 
+            if (c == Colour::Cyan)
+               Console << ENDL;
+            Console << c << sz << ENDL;
+
+            // Output to GUI
+            MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
+         }
+
       private:
          Operation  Operation;
          CWnd*      MainWnd;

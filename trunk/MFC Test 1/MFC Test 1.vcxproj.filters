@@ -337,8 +337,11 @@
     <ClInclude Include="ScriptEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ScriptObjectLibrary.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
     <ClInclude Include="SuggestionList.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -534,8 +537,11 @@
     <ClCompile Include="ScriptEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\ScriptObjectLibrary.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
     <ClCompile Include="SuggestionList.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
