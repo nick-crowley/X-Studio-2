@@ -7,16 +7,60 @@ namespace Logic
 {
    namespace Types
    {
-      typedef shared_ptr<TObject>  TObjectPtr;
+      /// <summary>Non-generic TFile interface</summary>
+      interface ITFile
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         virtual ~ITFile() {}
 
-      /// <summary></summary>
+         // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(UINT,Count,GetCount);
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         virtual UINT  GetCount() const PURE;
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Finds at object by index</summary>
+         /// <typeparam name="OBJ">Object type</typeparam>
+         /// <param name="index">The index</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">OBJ does not match object type</exception>
+         template <typename OBJ>
+         OBJ* FindAt(UINT index)
+         {
+            // Find object and upcast
+            if (OBJ* obj = dynamic_cast<OBJ>(FindAt(index)))
+               return obj;
+
+            // Error: Wrong type
+            throw ArgumentException(HERE, L"OBJ", L"Invalid object type");
+         }
+
+         /// <summary>Finds at object by index</summary>
+         /// <param name="index">The index.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+         virtual TObject*  FindAt(UINT index) PURE;
+
+         /// <summary>Removes an object by index</summary>
+         /// <param name="index">The index.</param>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+         virtual void  RemoveAt(UINT index) PURE;
+      };
+
+      /// <summary>Unique type definition file smart pointer</summary>
+      typedef shared_ptr<ITFile>  TFilePtr;
+
+      /// <summary>Object type definition file</summary>
       template <typename OBJ>
-      class TFile
+      class TFile : public ITFile
       {
          // ------------------------ TYPES --------------------------
       public:
-         
-
          // --------------------- CONSTRUCTION ----------------------
 
       public:
@@ -35,9 +79,40 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Gets the object count.</summary>
+         /// <returns></returns>
+         UINT  GetCount() const
+         {
+            return Objects.size();
+         }
 
          // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Finds at object by index</summary>
+         /// <param name="index">The index.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+         TObject*  FindAt(UINT index)
+         {
+            // Validate index
+            if (index >= Objects.size())
+               throw IndexOutOfRangeException(HERE, index, Count);
 
+            return &Objects[index];
+         }
+
+         /// <summary>Removes an object by index</summary>
+         /// <param name="index">The index.</param>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+         void  RemoveAt(UINT index)
+         {
+            // Validate index
+            if (index >= Objects.size())
+               throw IndexOutOfRangeException(HERE, index, Count);
+
+            Objects.erase(Objects.begin() + index);
+         }
          // -------------------- REPRESENTATION ---------------------
 
       public:

@@ -8,7 +8,7 @@ namespace Logic
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      TObject::TObject() : rotation(0.0f,0.0f,0.0f)
+      TObject::TObject(MainType t) : Type(t), rotation(0.0f,0.0f,0.0f)
       {
       }
 

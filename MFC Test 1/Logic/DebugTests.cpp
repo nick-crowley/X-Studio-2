@@ -265,7 +265,7 @@ namespace Logic
          // Read TWareT
          Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto file = TWareReader(fs).ReadFile();
+         auto file = TWareReader(fs).ReadFile(MainType::TechWare, GameVersion::TerranConflict);
 
          // Print IDs/Names
          for (auto& obj : file.Objects)
@@ -278,7 +278,7 @@ namespace Logic
          path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TLaser.txt";
          Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto file2 = TLaserReader(fs2).ReadFile();
+         auto file2 = TLaserReader(fs2).ReadFile(MainType::Laser, GameVersion::TerranConflict);
 
          // Print IDs/Names
          for (auto& obj : file.Objects)

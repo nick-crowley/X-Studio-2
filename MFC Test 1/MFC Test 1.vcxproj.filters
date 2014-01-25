@@ -340,6 +340,9 @@
     <ClInclude Include="SuggestionList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\GameObjectLibrary.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -536,6 +539,9 @@
     </ClCompile>
     <ClCompile Include="SuggestionList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameObjectLibrary.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

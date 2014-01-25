@@ -7,6 +7,16 @@ namespace Logic
 {
    namespace Types
    {
+      /// <summary>Defines type definition categories</summary>
+      enum class MainType : UINT
+      { 
+         Bullet=0, Sector, Background, Sun, Planet, Dock, Factory, Ship, Laser,
+         Shield, Missile, EnergyWare, NaturalWare, BioWare, FoodWare, 
+         MineralWare, TechWare, Asteroid, Gate, Camera, Special, Nebula,
+         InStation, Dummy, Command, Cockpit, Datatype, Unknown, Debris,
+         DockWreck, FactoryWreck, ShipWreck
+      };
+
       /// <summary>Ware sizes</summary>
       enum class WareSize : UINT { Tiny, Small, Medium, Large, ExtraLarge, Station };
 
@@ -37,7 +47,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TObject();
+         TObject(MainType t);
          virtual ~TObject();
 
          DEFAULT_COPY(TObject);	// Default copy semantics
@@ -54,6 +64,8 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
+         MainType        Type;
+
          // Header
          wstring         id;
          Vector3<float>  rotation;

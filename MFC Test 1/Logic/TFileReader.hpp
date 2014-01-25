@@ -10,7 +10,7 @@ namespace Logic
    namespace IO
    {
    
-      /// <summary></summary>
+      /// <summary>Type definition file reader</summary>
       template <typename OBJ>
       class TFileReader : protected StringReader
       {
@@ -46,7 +46,7 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::FileFormatException">File contains a syntax error</exception>
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-         TFile<OBJ>  ReadFile()
+         TFilePtr  ReadFile(MainType t, GameVersion v)
          {
             // Skip comments
             while (ReadComment())
@@ -58,22 +58,26 @@ namespace Logic
 
             // TODO: Validate version
 
+            // Create file
+            TFile<OBJ>* file = new TFile<OBJ>(count);
+            TFilePtr output(file);
+
             // Parse objects
-            TFile<OBJ> file(count);
             for (int i = 0; i < count; ++i)
             {
-               OBJ obj;
+               OBJ obj(t);
 
                // Read header/contents/footer
                ReadHeader(obj);
-               ReadObject(obj, GameVersion::TerranConflict);
+               ReadObject(obj, v);
                ReadFooter(obj);
 
                // Add to file
-               file.Objects.push_back(obj);
+               file->Objects.push_back(obj);
             }
 
-            return file;
+            // Return non-generic file
+            return output;
          }
 
       protected:
