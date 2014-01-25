@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SuggestionList.h"
 #include "ScriptEdit.h"
+#include "Logic/ScriptObjectLibrary.h"
 #include <algorithm>
 
 /// <summary>User interface</summary>
@@ -44,11 +45,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
 
-   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt)
+   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type)
    {
       // Calculate position  (Offset rectangle above line)
       CRect rc(pt, DefaultSize);
       rc.OffsetRect(0, -DefaultSize.cy);
+
+      // Set type
+      SuggestionType = type;
 
       // Create
       DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
@@ -64,7 +68,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Gets the text of the selected suggestion.</summary>
    /// <returns></returns>
-   wstring SuggestionList::GetSuggestion() const
+   wstring SuggestionList::GetSelected() const
    {
       if (GetNextItem(-1, LVNI_SELECTED) == -1)
          throw InvalidOperationException(HERE, L"No item selected");
@@ -91,15 +95,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
 
       // Linear search for partial substring
-      auto it = find_if(Content.begin(), Content.end(), [&str](const wstring& s)->bool { return s.find(str) != wstring::npos; });
+      int index = 0;
+      auto it = find_if(Content.begin(), Content.end(), [&](const wstring& s)->bool { 
+         return s.find(str) != wstring::npos ? true : (++index, false); 
+      });
 
-      // Select and display item
+      // Search/display closest match
       if (it != Content.end())
       {
          Console << L"Search for " << str << L" matched " << *it << ENDL;
-         UINT item = it-Content.begin();
-         SetItemState(item, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
-         EnsureVisible(item, FALSE);
+         SetItemState(index, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
+         EnsureVisible(index, FALSE);
       }
       else
          Console << L"Search for " << str << L" provided no match" << ENDL;
@@ -107,6 +113,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Populates the list.</summary>
+   /// <returns></returns>
+   void SuggestionList::PopulateContent() 
+   {
+      Content.clear();
+      for (auto& it : ScriptObjectLib.Content)
+         Content.push_back(it.second.Text);
+   }
+
    /// <summary>Initialises control and populates</summary>
    /// <param name="lpCreateStruct">The create structure.</param>
    /// <returns></returns>
@@ -120,36 +135,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetColumnWidth(0, DefaultSize.cx - GetSystemMetrics(SM_CXVSCROLL));
       SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-      // Populate 
-      SetItemCountEx(Populate());
+      // Populate
+      PopulateContent();
+
+      // Display contents
+      SetItemCountEx(Content.size());
       SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
       return 0;
    }
-
-   /// <summary>Populates the list.</summary>
-   /// <returns></returns>
-   int SuggestionList::Populate()
-   {
-      // Clear previous (if any)
-      Content.clear();
-
-      // Populate with false data
-      Content.push_back(L"argon");
-      Content.push_back(L"boron");
-      Content.push_back(L"oxygen");
-      Content.push_back(L"calcium");
-      Content.push_back(L"sodium");
-      Content.push_back(L"monotonium");
-      Content.push_back(L"mercury");
-      Content.push_back(L"gold");
-
-      // Sort contents
-      sort(Content.begin(), Content.end());
-
-      // Return count
-      return Content.size();
-   }
    
+   /// <summary>Destroys self if focus to lost</summary>
+   /// <param name="pNewWnd">The new WND.</param>
+   void SuggestionList::OnKillFocus(CWnd* pNewWnd)
+   {
+      CListCtrl::OnKillFocus(pNewWnd);
+
+      // Close if focus lost to anything but parent
+      if (pNewWnd != GetParent())
+         GetParent()->CloseSuggestions();
+   }
+
    /// <summary>Supplies virtual list item</summary>
    /// <param name="pNMHDR">notify NMHDR.</param>
    /// <param name="pResult">notify result.</param>
@@ -161,17 +166,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       item.pszText = (WCHAR*)Content[item.iItem].c_str();
 
       *pResult = 0;
-   }
-
-   /// <summary>Destroys self if focus to lost</summary>
-   /// <param name="pNewWnd">The new WND.</param>
-   void SuggestionList::OnKillFocus(CWnd* pNewWnd)
-   {
-      CListCtrl::OnKillFocus(pNewWnd);
-
-      // Close if focus lost to anything but parent
-      if (pNewWnd != GetParent())
-         GetParent()->CloseSuggestions();
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

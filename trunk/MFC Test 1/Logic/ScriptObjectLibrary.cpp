@@ -10,7 +10,7 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptObjectLibrary::ScriptObjectLibrary()
+      ScriptObjectLibrary::ScriptObjectLibrary() : Content(Lookup)
       {
       }
 
@@ -22,6 +22,35 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+
+      ScriptObject&  ScriptObjectLibrary::FindAt(UINT index) 
+      {
+         // Validate index
+         if (index >= Count)
+            throw IndexOutOfRangeException(HERE, index, Count);
+
+         // Lookup item
+         auto it = Lookup.begin();
+         for (UINT i = 0; i < index; ++i)  
+            ++it;
+         return it->second;
+      }
+
+      UINT  ScriptObjectLibrary::FindMatch(const wstring& str) const
+      {
+         // Linear search for partial substring
+         int index = 0;
+         for (auto& it : Lookup)
+            if (it.second.Text.find(str) != wstring::npos ? true : (++index,false))
+               return index;
+
+         return -1;
+      }
+
+      UINT  ScriptObjectLibrary::GetCount() const
+      {
+         return Lookup.size();
+      }
 
       /// <summary>Clears all objects from the library.</summary>
       void  ScriptObjectLibrary::Clear()

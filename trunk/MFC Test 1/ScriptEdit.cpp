@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit() : Focus(Suggestion::None)
+   ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None)
    {
    }
 
@@ -132,14 +132,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::CloseSuggestions()
    {
       // Ensure exists
-      if (Suggestions.GetSafeHwnd() == nullptr)
+      if (SuggestionsList.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
       // Revert state
       State = InputState::Normal;
 
       // Destroy
-      if (!Suggestions.DestroyWindow())
+      if (!SuggestionsList.DestroyWindow())
          throw Win32Exception(HERE, L"Unable to destroy suggestion list");
    }
 
@@ -221,7 +221,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
    /// <param name="ch">The character just typed</param>
    /// <returns></returns>
-   ScriptEdit::Suggestion  ScriptEdit::IdentifySuggestion(wchar ch) const
+   Suggestion  ScriptEdit::IdentifySuggestion(wchar ch) const
    {
       switch (ch)
       {
@@ -288,11 +288,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::InsertSuggestion()
    {
       // Ensure exists
-      if (Suggestions.GetSafeHwnd() == nullptr)
+      if (SuggestionsList.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
       // TODO: insert
-      Console << Colour::Green << L"Inserting suggestion: " << Suggestions.GetSuggestion() << ENDL;
+      Console << Colour::Green << L"Inserting suggestion: " << SuggestionsList.GetSelected() << ENDL;
 
       // Close
       CloseSuggestions();
@@ -332,9 +332,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
             UpdateSuggestions();
 
          // display suggestions if appropriate
-         else if ((Focus = IdentifySuggestion(nChar)) != Suggestion::None)
+         else if ((SuggestionType = IdentifySuggestion(nChar)) != Suggestion::None)
          {
-            //Console << L"Identified " << GetString(Focus) << L" from " << (wchar)nChar << ENDL;
+            //Console << L"Identified " << GetString(SuggestionType) << L" from " << (wchar)nChar << ENDL;
             ShowSuggestions();
          }
       }
@@ -388,26 +388,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         switch (pFilter->msg)
-         {
-         case WM_CHAR:
-            // TAB: Insert suggestion.  Prevent focus switch
-            if (State == InputState::Suggestions && chr == VK_TAB)
+         if (State == InputState::Suggestions)
+            switch (pFilter->msg)
             {
-               InsertSuggestion();
-               *pResult = BLOCK_INPUT;
-            }
-            // ESCAPE: Close suggestions
-            else if (State == InputState::Suggestions && chr == VK_ESCAPE)
-            {
-               CloseSuggestions();
-               *pResult = BLOCK_INPUT;
-            }
-            break;
+            case WM_CHAR:
+               switch (chr)
+               {
+               // TAB: Insert suggestion.  Prevent focus switch
+               case VK_TAB:
+                  InsertSuggestion();
+                  *pResult = BLOCK_INPUT;
+                  break;
+            
+               // ESCAPE: Close suggestions
+               case VK_ESCAPE:
+                  CloseSuggestions();
+                  *pResult = BLOCK_INPUT;
+                  break;
+               }
+               break;
 
-         // NAVIGATION: Update suggestions / Forward message
-         case WM_KEYDOWN:
-            if (State == InputState::Suggestions)
+            // NAVIGATION: Update suggestions / Forward message
+            case WM_KEYDOWN:
                switch (chr)
                {
                // TAB: Insert suggestion
@@ -427,26 +429,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
                case VK_DOWN:
                case VK_PRIOR: 
                case VK_NEXT:  
-                  Suggestions.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
+                  SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
                   *pResult = BLOCK_INPUT;
                   return;
                }
-            break;
+               break;
 
-         // CLICK: Close Suggestions
-         case WM_LBUTTONDOWN:
-         case WM_RBUTTONDOWN:
-         case WM_MBUTTONDOWN:
-            if (State == InputState::Suggestions)
+            // CLICK: Close Suggestions
+            case WM_LBUTTONDOWN:
+            case WM_RBUTTONDOWN:
+            case WM_MBUTTONDOWN:
                CloseSuggestions();
-            break;
+               break;
 
-         // WHEEL: Forward to list
-         case WM_MOUSEWHEEL:
-            Suggestions.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
-            *pResult = BLOCK_INPUT;
-            break;
-         }
+            // WHEEL: Forward to list
+            case WM_MOUSEWHEEL:
+               SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
+               *pResult = BLOCK_INPUT;
+               break;
+            }
       }
       catch (ExceptionBase& e) { 
          Console << e; 
@@ -461,7 +462,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // Close suggestions, unless they're gaining focus
-         if (State == InputState::Suggestions && (!pNewWnd || Suggestions != *pNewWnd))
+         if (State == InputState::Suggestions && (!pNewWnd || SuggestionsList != *pNewWnd))
             CloseSuggestions();
       }
       catch (ExceptionBase& e) {
@@ -554,7 +555,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    bool ScriptEdit::MatchSuggestionType(Compiler::TokenType t) const
    {
-      switch (Focus)
+      switch (SuggestionType)
       {
       case Suggestion::Variable:     return t == TokenType::Variable;
       case Suggestion::GameObject:   return t == TokenType::GameObject;
@@ -590,11 +591,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::ShowSuggestions()
    {
       // Ensure does not exist
-      if (Suggestions.GetSafeHwnd() != nullptr)
+      if (SuggestionsList.GetSafeHwnd() != nullptr)
          throw InvalidOperationException(HERE, L"suggestion list already exists");
 
       // Show list
-      if (!Suggestions.Create(this, GetCharPos(GetSelection().cpMin))) 
+      if (!SuggestionsList.Create(this, GetCharPos(GetSelection().cpMin), SuggestionType)) 
          throw Win32Exception(HERE, L"Unable to create suggestion list");
 
       // Update state
@@ -606,7 +607,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::UpdateSuggestions()
    {
       // Ensure exists
-      if (Suggestions.GetSafeHwnd() == nullptr)
+      if (SuggestionsList.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
       // Lex current line
@@ -625,7 +626,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Highlight best match
       //Console << Colour::Green << L"Matching suggestion" << ENDL;
-      Suggestions.MatchSuggestion(*pos);
+      SuggestionsList.MatchSuggestion(*pos);
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
