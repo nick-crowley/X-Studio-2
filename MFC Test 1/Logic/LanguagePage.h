@@ -100,6 +100,11 @@ namespace Logic
          LanguagePage(UINT id, wstring title, wstring desc, bool voice);
          ~LanguagePage() {};
 
+         // ----------------------- STATIC ------------------------
+
+         /// <summary>Get category of a page id</summary>
+         static PageGroup  IdentifyGroup(UINT page);
+
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
@@ -121,7 +126,7 @@ namespace Logic
             return Strings.Find(id);     
          }
 
-         /// <summary>Get category</summary>
+         /// <summary>Get category of this page</summary>
          PageGroup  GetGroup() const;
 
          /// <summary>Finds the specified string.</summary>

@@ -20,34 +20,42 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Gets the group for a page id</summary>
+      /// <param name="page">The page ID</param>
+      /// <returns></returns>
+      PageGroup  LanguagePage::IdentifyGroup(UINT page) 
+      {
+         if (page >= 6000)
+            return PageGroup::USER;
+         else if (page >= 3800)
+            return PageGroup::NPC;
+         else if (page >= 3200)
+            return PageGroup::PLOT;
+         else if (page >= 2032)
+            return PageGroup::NEWS;
+         else if (page >= 1999)
+            return PageGroup::EDITOR;
+         else if (page >= 1701)
+            return PageGroup::MENU;
+         else if (page >= 1500)
+            return PageGroup::BONUS;
+         else if (page >= 1290)
+            return PageGroup::QUEST;
+         else if (page >= 1000)
+            return PageGroup::MISC;
+         else if (page >= 101)
+            return PageGroup::DIALOGUE;
+         else
+            return PageGroup::DATA;
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Gets the category/group.</summary>
       /// <returns></returns>
       PageGroup  LanguagePage::GetGroup() const
       {
-         if (ID >= 6000)
-            return PageGroup::USER;
-         else if (ID >= 3800)
-            return PageGroup::NPC;
-         else if (ID >= 3200)
-            return PageGroup::PLOT;
-         else if (ID >= 2032)
-            return PageGroup::NEWS;
-         else if (ID >= 1999)
-            return PageGroup::EDITOR;
-         else if (ID >= 1701)
-            return PageGroup::MENU;
-         else if (ID >= 1500)
-            return PageGroup::BONUS;
-         else if (ID >= 1290)
-            return PageGroup::QUEST;
-         else if (ID >= 1000)
-            return PageGroup::MISC;
-         else if (ID >= 101)
-            return PageGroup::DIALOGUE;
-         else
-            return PageGroup::DATA;
+         return IdentifyGroup(ID);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

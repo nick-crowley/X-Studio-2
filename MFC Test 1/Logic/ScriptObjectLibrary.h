@@ -10,12 +10,12 @@ namespace Logic
    namespace Scripts
    {
    
-      /// <summary></summary>
+      /// <summary>Provides access to script objects</summary>
       class ScriptObjectLibrary
       {
 		 // ------------------------ TYPES --------------------------
       private:
-         /// <summary></summary>
+         /// <summary>Defines a {KnownPage,ID} pair</summary>
          class ObjectID
          {
             // --------------------- CONSTRUCTION ----------------------
@@ -38,29 +38,93 @@ namespace Logic
             const UINT      ID;
          };
 
-         /// <summary></summary>
+         /// <summary>Represents a script object</summary>
          class ScriptObject : public LanguageString
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             ScriptObject(KnownPage p, const LanguageString& s) : Page(p), LanguageString(s)
             {}
+         private:
+            ScriptObject(const ScriptObject& obj, const wstring& newText) : Page(obj.Page), LanguageString(obj.ID, newText, obj.Version)
+            {}
+
+            // ---------------------- ACCESSORS ------------------------	
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Appends an object ID</summary>
+            /// <param name="id">The id</param>
+            /// <returns>New script object</returns>
+            ScriptObject operator+(UINT id)
+            {
+               return ScriptObject(*this, Text+GuiString(L" (%d)", id));
+            }
+
+            /// <summary>Appends a game version acronym</summary>
+            /// <param name="v">The version</param>
+            /// <returns>New script object</returns>
+            ScriptObject operator+(GameVersion v)
+            {
+               return ScriptObject(*this, Text+GuiString(L" (%s)", VersionString(v,true).c_str()));
+            }
+
+            /// <summary>Appends an page/category acronym</summary>
+            /// <param name="p">The page</param>
+            /// <returns>New script object</returns>
+            /// <exception cref="Logic::ArgumentException">Incompatible page</exception>
+            ScriptObject operator+(KnownPage p)
+            {
+               const wchar* acronym = nullptr;
+               switch (p)
+               {
+               case KnownPage::OBJECT_COMMANDS:
+               case KnownPage::WING_COMMANDS:  
+                  return ScriptObject(*this, Text+L" (CMD)");
+               case KnownPage::CONSTANTS:
+                  return ScriptObject(*this, Text+L" (CON)");
+               case KnownPage::DATA_TYPES:
+                  return ScriptObject(*this, Text+L" (DT)");
+               case KnownPage::FLIGHT_RETURNS:
+                  return ScriptObject(*this, Text+L" (FLRET)");
+               case KnownPage::OBJECT_CLASSES:
+                  return ScriptObject(*this, Text+L" (OC)");
+               case KnownPage::PARAMETER_TYPES:
+                  return ScriptObject(*this, Text+L" (TYPE)");               
+               case KnownPage::STATION_SERIALS:
+                  return ScriptObject(*this, Text+L" (SS)");
+               case KnownPage::TRANSPORT_CLASSES:
+                  return ScriptObject(*this, Text+L" (TC)");
+               case KnownPage::SECTORS:
+               {
+                  int x = _ttoi(Text.substr(3,2).c_str());
+                  int y = _ttoi(Text.substr(5,2).c_str());
+                  return ScriptObject(*this, Text+GuiString(L" (%d,%d)", x, y));
+               }
+               default: throw ArgumentException(HERE, L"operand", L"Incompatible language page ID");
+               }
+            }
 
             // -------------------- REPRESENTATION ---------------------
          public:
             const KnownPage Page;
          };
 
-         /// <summary></summary>
+         /// <summary>Collection of Script objects sorted by ID</summary>
          class ObjectCollection : public map<ObjectID, ScriptObject, less<ObjectID>>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             // ---------------------- ACCESSORS ------------------------			
 
-            ScriptObject  Find(KnownPage page, UINT id)
+            /// <summary>Finds a script object by ID</summary>
+            /// <param name="page">The page.</param>
+            /// <param name="id">The ID.</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::StringNotFoundException">Object not found</exception>
+            ScriptObject  Find(KnownPage page, UINT id) const
             {
-               iterator it;
+               const_iterator it;
                // Lookup and return string
                if ((it = find(ObjectID(page, id))) != end())
                   return it->second;
@@ -71,6 +135,10 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
+            /// <summary>Creates and adds a new object</summary>
+            /// <param name="page">The page</param>
+            /// <param name="str">The string to create the object from</param>
+            /// <returns>True if successful, false if ID already present</returns>
             bool  Add(KnownPage page, const LanguageString& str)
             {
                switch (page)
@@ -136,16 +204,28 @@ namespace Logic
             }
          };
 
-         /// <summary></summary>
+         /// <summary>Collection of script objects sorted by text</summary>
          class LookupCollection : public map<wstring, ScriptObject, less<wstring>>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             // ---------------------- ACCESSORS ------------------------			
 
-            ScriptObject  Find(const wstring& sz)
+            /// <summary>Check whether an object is present</summary>
+            /// <param name="sz">The text</param>
+            /// <returns></returns>
+            bool  Contains(const wstring& sz) const
             {
-               iterator it;
+               return find(sz) != end();
+            }
+
+            /// <summary>Finds an object by text<summary>
+            /// <param name="sz">The text</param>
+            /// <returns>Object</returns>
+            /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
+            ScriptObject  Find(const wstring& sz) const
+            {
+               const_iterator it;
                // Lookup and return string
                if ((it = find(sz)) != end())
                   return it->second;
@@ -156,9 +236,28 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
+            /// <summary>Adds an object</summary>
+            /// <param name="obj">The object.</param>
+            /// <returns>True if successful, false if key already present</returns>
+            bool  Add(const ScriptObject& obj)
+            {
+               return insert(value_type(obj.Text, obj)).second;
+            }
+
+            /// <summary>Creates a new script object and adds to the collection</summary>
+            /// <param name="page">The page.</param>
+            /// <param name="str">The language string to create object from</param>
+            /// <returns>True if successful, false if key already present</returns>
             bool  Add(KnownPage page, const LanguageString& str)
             {
                return insert(value_type(str.Text, ScriptObject(page, str))).second;
+            }
+
+            /// <summary>Removes an object from the collection</summary>
+            /// <param name="sz">The text</param>
+            void  Remove(const wstring& sz)
+            {
+               erase(sz);
             }
          };
 	  
@@ -181,9 +280,11 @@ namespace Logic
          void  Clear();
          UINT  Enumerate(WorkerData* data);
 
-         protected:
-         UINT  GenerateLookup(WorkerData* data);
-         UINT  GenerateObjects(WorkerData* data);
+      protected:
+         bool  InsertConflicts(ScriptObject a, ScriptObject b);
+         bool  MangleConflicts(ScriptObject a, ScriptObject b);
+         UINT  PopulateLookup(WorkerData* data);
+         UINT  PopulateObjects(WorkerData* data);
 
          // -------------------- REPRESENTATION ---------------------
       public:

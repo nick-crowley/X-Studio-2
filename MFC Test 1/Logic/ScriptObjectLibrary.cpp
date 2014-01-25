@@ -23,12 +23,17 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Clears all objects from the library.</summary>
       void  ScriptObjectLibrary::Clear()
       {
          Objects.clear();
          Lookup.clear();
       }
 
+      /// <summary>Populates the library from the string library</summary>
+      /// <param name="data">Feedback data</param>
+      /// <returns>Number of objects found</returns>
+      /// <exception cref="Logic::InvalidOperationException">String library is empty</exception>
       UINT  ScriptObjectLibrary::Enumerate(WorkerData* data)
       {
          // Ensure string library exists
@@ -42,8 +47,8 @@ namespace Logic
          Clear();
 
          // Build objects
-         GenerateObjects(data);
-         GenerateLookup(data);
+         PopulateObjects(data);
+         PopulateLookup(data);
          
          // Feedback number of conflicts
          if (Objects.size() - Lookup.size() > 0)
@@ -54,31 +59,87 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       
-      UINT  ScriptObjectLibrary::GenerateLookup(WorkerData* data)
+      /// <summary>Attempts to insert two conflicting object.</summary>
+      /// <param name="a">first</param>
+      /// <param name="b">second</param>
+      /// <returns>true if inserted, false if still conflicting  (Neither are inserted if false)</returns>
+      bool  ScriptObjectLibrary::InsertConflicts(ScriptObject a, ScriptObject b)
       {
-         list<ScriptObject> Conflicts;
+         // Check whether objects are still conflicting
+         if (a.Text == b.Text || Lookup.Contains(a.Text) || Lookup.Contains(b.Text))
+            return false;
 
+         // DEBUG: 
+         Console << Colour::Green << GuiString(L"Mangle success '%s' {%d:%d} and '%s' {%d:%d}", 
+                                               a.Text.c_str(), a.Page, a.ID, b.Text.c_str(), b.Page, b.ID) << ENDL;
+
+         // Insert unique
+         Lookup.Add(a);
+         Lookup.Add(b);
+         return true;
+      }
+
+      /// <summary>Performs name mangling on two conflicting objects.</summary>
+      /// <param name="a">first</param>
+      /// <param name="b">second</param>
+      /// <returns>true if mangled and inserted successfully, false if unable to resolve  (Neither are inserted if false)</returns>
+      bool  ScriptObjectLibrary::MangleConflicts(ScriptObject a, ScriptObject b)
+      {
+         // different pages: append category acronym
+         if (a.Page != b.Page)
+            return InsertConflicts(a+a.Page, b+b.Page);
+
+         // different games: append game acronym
+         else if (a.Version != b.Version) 
+            return InsertConflicts(a+a.Version, b+b.Version);
+
+         // Same group, same game: append ID
+         return InsertConflicts(a+a.ID, b+b.ID);
+      }
+
+
+      /// <summary>Generates the reverse lookup collection from the object collection</summary>
+      /// <param name="data">Feedback data</param>
+      /// <returns>Number of lookups generated</returns>
+      UINT  ScriptObjectLibrary::PopulateLookup(WorkerData* data)
+      {
          // Generate reverse lookup collection
          for (auto& pair : Objects)  
          {
             const ObjectID& id = pair.first;
             const ScriptObject& obj = pair.second;
 
-            // Insert string 
+            // Attempt to insert by text
             if (!Lookup.Add(id.Page, obj))
             {
-               // Identify conflict
+               // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
-                  
-               // Feedback
-               GuiString err(L"Unable to insert '%s' {%d:%d} due to conflict with '%s' {%d:%d}", obj.Text.c_str(), obj.Page, obj.ID, conf.Text.c_str(), conf.Page, conf.ID);
-               data->SendFeedback(Colour::Red, ProgressType::Error, 3, err);
+               Console << ENDL << GuiString(L"Conflict detected: '%s' {%d:%d} ~~~~~ '%s' {%d:%d}", 
+                                            obj.Text.c_str(), obj.Page, obj.ID, conf.Text.c_str(), conf.Page, conf.ID) << ENDL;
+
+               // Extract conflict
+               ScriptObject conflict = Lookup.Find(obj.Text);
+               Lookup.Remove(obj.Text);
+
+               // Mangle them
+               if (!MangleConflicts(obj, conflict))
+               {
+                  GuiString err(L"Unable to mangle '%s' {%d:%d} due to conflict with '%s' {%d:%d}", 
+                                obj.Text.c_str(), obj.Page, obj.ID, conflict.Text.c_str(), conflict.Page, conflict.ID);
+                  data->SendFeedback(Colour::Red, ProgressType::Error, 3, err);
+               }
             }
          }
+
+         // Return count
+         return Lookup.size();   
       }
 
-
-      UINT  ScriptObjectLibrary::GenerateObjects(WorkerData* data)
+      
+      /// <summary>Extracts strings used as script objects from the string library</summary>
+      /// <param name="data">Feedback data</param>
+      /// <returns>Number of strings extracted</returns>
+      UINT  ScriptObjectLibrary::PopulateObjects(WorkerData* data)
       {
          // Iterate thru all strings in library
          for (auto& f : StringLib.Files)       
@@ -108,7 +169,7 @@ namespace Logic
             }
          
          // Feedback
-         Console << L"Discovered " << (int)Objects.size() << " script objects..." << ENDL;
+         Console << "Discovered " << (int)Objects.size() << " script objects..." << ENDL;
          return Objects.size();
       }
 
