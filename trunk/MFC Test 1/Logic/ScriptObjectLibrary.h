@@ -277,8 +277,6 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         ScriptObject& FindAt(UINT index) ;
-         UINT  FindMatch(const wstring& str) const;
          UINT  GetCount() const;
 
          // ----------------------- MUTATORS ------------------------

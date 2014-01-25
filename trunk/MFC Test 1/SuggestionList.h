@@ -15,7 +15,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    private:
-      typedef vector<wstring>  StringArray;
+      /// <summary>Item in the list</summary>
+      struct SuggestionItem
+      {
+      public:
+         SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type)
+         {}
+         const wstring Text, Type;
+      };
+
+      /// <summary>Vector of items</summary>
+      typedef vector<SuggestionItem> ContentArray;
 
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -56,8 +66,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       const CSize DefaultSize = CSize(300,200);
       
-      Suggestion SuggestionType;
-      vector<wstring> Content;
+      Suggestion   SuggestionType;
+      ContentArray Content;
    };
    
 

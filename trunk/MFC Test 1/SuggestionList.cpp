@@ -68,13 +68,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Gets the text of the selected suggestion.</summary>
    /// <returns></returns>
+   /// <exception cref="Logic::InvalidOperationException">No item selected</exception>
    wstring SuggestionList::GetSelected() const
    {
       if (GetNextItem(-1, LVNI_SELECTED) == -1)
          throw InvalidOperationException(HERE, L"No item selected");
 
-      // Get selected
-      return Content[GetNextItem(-1, LVNI_SELECTED)];
+      // Get selected text
+      return Content[GetNextItem(-1, LVNI_SELECTED)].Text;
    }
 
    /// <summary>Highlights the closest matching suggestion.</summary>
@@ -96,14 +97,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Linear search for partial substring
       int index = 0;
-      auto it = find_if(Content.begin(), Content.end(), [&](const wstring& s)->bool { 
-         return s.find(str) != wstring::npos ? true : (++index, false); 
+      auto it = find_if(Content.begin(), Content.end(), [&](const SuggestionItem& item)->bool { 
+         return item.Text.find(str) != wstring::npos ? true : (++index, false); 
       });
 
       // Search/display closest match
       if (it != Content.end())
       {
-         Console << L"Search for " << str << L" matched " << *it << ENDL;
+         Console << L"Search for " << str << L" matched " << it->Text << ENDL;
          SetItemState(index, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
          EnsureVisible(index, FALSE);
       }
@@ -117,9 +118,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    void SuggestionList::PopulateContent() 
    {
+      // Clear previous
       Content.clear();
+      
+      // Populate
       for (auto& it : ScriptObjectLib.Content)
-         Content.push_back(it.second.Text);
+         Content.push_back(SuggestionItem(it.second.Text, L"TODO"));
    }
 
    /// <summary>Initialises control and populates</summary>
@@ -132,7 +136,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // Setup control
       InsertColumn(0, L"text");
-      SetColumnWidth(0, DefaultSize.cx - GetSystemMetrics(SM_CXVSCROLL));
+      InsertColumn(1, L"type", LVCFMT_RIGHT);
+      SetColumnWidth(0, DefaultSize.cx-GetSystemMetrics(SM_CXVSCROLL)-80);
+      SetColumnWidth(1, 80);
       SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Populate
@@ -162,8 +168,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
       
-      // Supply text
-      item.pszText = (WCHAR*)Content[item.iItem].c_str();
+      // Supply text/type
+      if (item.mask & LVIF_TEXT)
+      {
+         const wstring& txt = (item.iSubItem==0 ? Content[item.iItem].Text : Content[item.iItem].Type);
+         item.pszText = (WCHAR*)txt.c_str();
+      }
 
       *pResult = 0;
    }
