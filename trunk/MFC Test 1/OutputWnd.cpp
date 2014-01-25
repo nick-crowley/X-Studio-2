@@ -175,11 +175,9 @@ NAMESPACE_BEGIN(GUI)
 		      !m_wndOutputFind.CreateEx(LVS_EX_FULLROWSELECT, dwStyle, rectDummy, &m_wndTabs, 4))
             throw Win32Exception(HERE, L"Unable to create output window listview");
 	      
-         // Load view images:
-	      if (!Images.Create(IDB_OUTPUT_ICONS, 16, 0, RGB(255, 0, 255)))
-            throw Win32Exception(HERE, L"Unable to create output window image list");
+         // Setup ImageList:
+         Images.Create(IDB_OUTPUT_ICONS, 16, 6, RGB(255,0,255));
 	      m_wndOutputBuild.SetImageList(&Images, LVSIL_SMALL);
-
 
 	      // Attach list windows to tab:
 	      m_wndTabs.AddTab(&m_wndOutputBuild, GuiString(IDS_BUILD_TAB).c_str(), (UINT)0);

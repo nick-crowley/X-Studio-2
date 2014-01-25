@@ -343,6 +343,9 @@
     <ClInclude Include="Logic\GameObjectLibrary.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="ImageListEx.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -542,6 +545,9 @@
     </ClCompile>
     <ClCompile Include="Logic\GameObjectLibrary.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageListEx.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

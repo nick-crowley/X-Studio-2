@@ -86,27 +86,21 @@ NAMESPACE_BEGIN(GUI)
 
          // Insert columns
          ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
-         //ListView.InsertColumn(1, L"Group", LVCFMT_LEFT, 100, 1);
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          ListView.SetFont(&afxGlobalData.fontRegular);
          ListView.EnableGroupView(TRUE);
          
-         // ListView ImageList:
-	      //Images.Create(IDB_GAMEDATA_ICONS, 16, 0, RGB(255, 0, 255));
-         CBitmap* icons = theApp.LoadBitmapW(IDB_GAMEDATA_ICONS, 0, 0, LR_CREATEDIBSECTION | LR_LOADMAP3DCOLORS);
-         Images.Create(16, 16, ILC_COLOR24|ILC_MASK, 1, 5);
-         //Images.SetBkColor(RGB(255,0,255));
-         Images.Add(icons, RGB(255,0,255));
+         // Setup ImageList:
+         Images.Create(IDB_GAMEDATA_ICONS, 16, 1, RGB(255,0,255));
 	      ListView.SetImageList(&Images, LVSIL_SMALL);
-         delete icons;
 
-         // Edit
+         // create Search edit
 	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
             throw Win32Exception(HERE, L"Unable to create game data window edit control");
          Search.SetFont(&afxGlobalData.fontRegular);
          Search.SetCueBanner(L"Enter search term...");
 
-         // Combobox
+         // create Groups ComboBox
 	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, 3))
             throw Win32Exception(HERE, L"Unable to create game data window combo box");
          Groups.SetFont(&afxGlobalData.fontRegular);

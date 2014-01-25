@@ -1,6 +1,7 @@
 #pragma once
 #include "afxdockablepane.h"
 #include "Logic/SyntaxLibrary.h"
+#include "ImageListEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -44,7 +45,7 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
       CListCtrl  ListView;
-	   CImageList Images;
+	   ImageListEx Images;
       CComboBox  Groups;
       CEdit      Search;
 
