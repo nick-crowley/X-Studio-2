@@ -18,7 +18,9 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TLaser()
+         TLaser(MainType t) : TObject(MainType::Laser)
+         {}
+         TLaser() : TObject(MainType::Laser)
          {}
          virtual ~TLaser()
          {}

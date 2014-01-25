@@ -18,7 +18,9 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TShield()
+         TShield(MainType t) : TObject(MainType::Shield)
+         {}
+         TShield() : TObject(MainType::Shield)
          {}
          virtual ~TShield()
          {}
@@ -81,10 +83,10 @@ namespace Logic
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
 	      void  ReadObject(TShield& obj, GameVersion ver)
          {
-            obj.powerInput = ReadInt("powerDrain");
-		      obj.capacity   = ReadInt("strength");
-		      obj.hitEffect  = ReadInt("hitEffect");
-		      obj.efficiency = ReadFloat("efficiency");
+            obj.powerInput = ReadInt(L"powerDrain");
+		      obj.capacity   = ReadInt(L"strength");
+		      obj.hitEffect  = ReadInt(L"hitEffect");
+		      obj.efficiency = ReadFloat(L"efficiency");
          }
 
          // -------------------- REPRESENTATION ---------------------

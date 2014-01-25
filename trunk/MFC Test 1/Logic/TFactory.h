@@ -17,7 +17,9 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TFactory()
+         TFactory(MainType t) : TDock(MainType::Factory)
+         {}
+         TFactory() : TDock(MainType::Factory)
          {}
          virtual ~TFactory()
          {}
@@ -77,19 +79,19 @@ namespace Logic
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
 	      void  ReadObject(TFactory& obj, GameVersion ver)
          {
-            obj.flyBySound         = ReadInt("flyBySound");
-		      obj.dockingDistance    = ReadFloat("dockingDistance");
-		      obj.randezvousDistance = ReadFloat("randezvousDistance");
-		      obj.soundVolume        = ReadInt("soundVolume");
-		      obj.modelScene         = ReadString("modelScene");
-		      obj.internalScene      = ReadString("internalScene");
+            obj.flyBySound         = ReadInt(L"flyBySound");
+		      obj.dockingDistance    = ReadFloat(L"dockingDistance");
+		      obj.randezvousDistance = ReadFloat(L"randezvousDistance");
+		      obj.soundVolume        = ReadInt(L"soundVolume");
+		      obj.modelScene         = ReadString(L"modelScene");
+		      obj.internalScene      = ReadString(L"internalScene");
 		      obj.race               = LookupString(ReadInt(L"race"), KnownPage::RACES);
-		      obj.effectExplosion    = ReadInt("effectExplosion");
-		      obj.bodyExplosionDefinition = ReadInt("bodyExplosionDefinition");
-		      obj.shieldRechargeRate = ReadInt("shieldRechargeRate");
+		      obj.effectExplosion    = ReadInt(L"effectExplosion");
+		      obj.bodyExplosionDefinition = ReadInt(L"bodyExplosionDefinition");
+		      obj.shieldRechargeRate = ReadInt(L"shieldRechargeRate");
 
-            obj.factorySize        = ReadInt("factorySize");
-		      obj.icon               = ReadString("hudIcon");
+            obj.factorySize        = ReadInt(L"factorySize");
+		      obj.icon               = ReadString(L"hudIcon");
          }
 
          // -------------------- REPRESENTATION ---------------------

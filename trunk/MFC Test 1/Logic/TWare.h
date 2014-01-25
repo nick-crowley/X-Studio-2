@@ -18,7 +18,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TWare()
+         TWare(MainType t) : TObject(t)
          {}
          virtual ~TWare()
          {}
