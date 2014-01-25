@@ -9,12 +9,25 @@ namespace Logic
 {
    namespace IO
    {
-   
+      /// <summary>Non-generic interface for Tfile reader</summary>
+      interface ITFileReader
+      {
+      public:
+         /// <summary>Reads all objects in the file</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::FileFormatException">File contains a syntax error</exception>
+         /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+         virtual TFilePtr  ReadFile(MainType t, GameVersion v) PURE;
+      };
+
+      /// <summary>Shared TFile reader smart pointer</summary>
+      typedef shared_ptr<ITFileReader>  TFileReaderPtr;
+
       /// <summary>Type definition file reader</summary>
       template <typename OBJ>
-      class TFileReader : protected StringReader
+      class TFileReader : public ITFileReader, protected StringReader
       {
-		 // ------------------------ TYPES --------------------------
+		   // ------------------------ TYPES --------------------------
       private:
 	  
          // --------------------- CONSTRUCTION ----------------------

@@ -9,7 +9,7 @@ namespace Logic
    namespace FileSystem
    {
       /// <summary>Defines common subfolders</summary>
-      enum class XFolder { Language, Scripts, Director };
+      enum class XFolder { Language, Scripts, Director, Types };
 
       /// <summary>Contains enumerated catalogs and catalog-based files. Provides access to physical/catalog files</summary>
       class XFileSystem

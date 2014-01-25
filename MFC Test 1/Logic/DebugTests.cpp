@@ -268,11 +268,11 @@ namespace Logic
          auto file = TWareReader(fs).ReadFile(MainType::TechWare, GameVersion::TerranConflict);
 
          // Print IDs/Names
-         for (auto& obj : file.Objects)
+         /*for (auto& obj : file.Objects)
          {
             Console << Colour::Yellow << obj.id << Colour::White << L" : ";
             Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
-         }
+         }*/
 
          // Read TLaser
          path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TLaser.txt";
@@ -281,11 +281,11 @@ namespace Logic
          auto file2 = TLaserReader(fs2).ReadFile(MainType::Laser, GameVersion::TerranConflict);
 
          // Print IDs/Names
-         for (auto& obj : file.Objects)
+         /*for (auto& obj : file.Objects)
          {
             Console << Colour::Yellow << obj.id << Colour::White << L" : ";
             Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
-         }
+         }*/
       }
       catch (ExceptionBase&  e)
       {

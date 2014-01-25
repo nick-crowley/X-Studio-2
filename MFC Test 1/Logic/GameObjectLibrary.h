@@ -7,6 +7,45 @@ namespace Logic
 {
    namespace Scripts
    {
+      /// <summary></summary>
+      class TFilenameReader
+      {
+      public:
+         TFilenameReader(Path p) : Valid(true), Type(MainType::Unknown)
+         {
+            // Get lowercase filename without extension
+            wstring name = GuiString(p.RemoveExtension().FileName).ToLower();
+
+            // Identify file
+            if (name == L"tlasers")
+               Type = MainType::Laser;
+            /*else if (name == L"tmissiles")
+               Type = MainType::Missile;*/
+            /*else if (name == L"tships")
+               Type = MainType::Ship;*/
+            else if (name == L"tdocks")
+               Type = MainType::Dock;
+            else if (name == L"tfactories")
+               Type = MainType::Factory;
+            else if (name == L"twaret")
+               Type = MainType::TechWare;
+            else if (name == L"twareb")
+               Type = MainType::BioWare;
+            else if (name == L"twaree")
+               Type = MainType::EnergyWare;
+            else if (name == L"twarem")
+               Type = MainType::MineralWare;
+            else if (name == L"twaren")
+               Type = MainType::NaturalWare;
+            else if (name == L"twaref")
+               Type = MainType::FoodWare;
+            else
+               Valid = false;
+         }
+
+         bool      Valid;
+         MainType  Type;
+      };
       
       /// <summary></summary>
       class GameObjectLibrary
