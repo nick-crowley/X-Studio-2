@@ -126,7 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h" />
-    <ClInclude Include="EventLibrary.h" />
     <ClInclude Include="GameDataWnd.h" />
     <ClInclude Include="LanguageFrame.h" />
     <ClInclude Include="LanguagePageView.h" />
@@ -213,7 +212,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
-    <ClCompile Include="EventLibrary.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
     <ClCompile Include="LanguageFrame.cpp" />
     <ClCompile Include="LanguagePageView.cpp" />
