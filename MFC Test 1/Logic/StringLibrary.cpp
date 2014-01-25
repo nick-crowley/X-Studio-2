@@ -132,12 +132,12 @@ namespace Logic
          // Add 'Player' race
          LanguagePage p(KnownPage::RACES, L"", L"", true);
          p.Strings.Add(LanguageString(10, L"Player", GameVersion::AlbionPrelude));
-         f.Pages.Merge(p);
+         f.Pages.Add(p);
 
          // Add older '[THIS]' used by X2 scripts
-         p = LanguagePage(KnownPage::CONSTANTS, L"", L"", true);
-         p.Strings.Add(LanguageString(0, L"THIS", GameVersion::AlbionPrelude));
-         f.Pages.Merge(p);
+         LanguagePage p2(KnownPage::CONSTANTS, L"", L"", true);
+         p2.Strings.Add(LanguageString(0, L"THIS", GameVersion::AlbionPrelude));
+         f.Pages.Add(p2);
 
          return f;
       }

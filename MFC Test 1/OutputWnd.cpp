@@ -180,6 +180,7 @@ NAMESPACE_BEGIN(GUI)
             throw Win32Exception(HERE, L"Unable to create output window image list");
 	      m_wndOutputBuild.SetImageList(&Images, LVSIL_SMALL);
 
+
 	      // Attach list windows to tab:
 	      m_wndTabs.AddTab(&m_wndOutputBuild, GuiString(IDS_BUILD_TAB).c_str(), (UINT)0);
 	      m_wndTabs.AddTab(&m_wndOutputDebug, GuiString(IDS_DEBUG_TAB).c_str(), (UINT)1);

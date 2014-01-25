@@ -85,16 +85,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Iterate thru all pages in all library files
       for (auto& f : StringLib.Files)
          for (auto& pair : f.Pages)
-         {
-            auto& p = pair.second;
-
-            // Create new page, if not already present
-            if (!Library.Contains(p.ID))
-               Library.insert(PageCollection::value_type(p.ID, LanguagePage(p.ID, p.Title, p.Description, p.Voiced)) );
-
-            // Copy strings into page
-            Library.Merge(const_cast<LanguagePage&>(p));
-         }
+            // Copy page (and strings) into static snapshot
+            Library.Add(pair.second);
    }
 
    /// <summary>Initialise listView and populate pages</summary>
