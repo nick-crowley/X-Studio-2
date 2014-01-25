@@ -114,8 +114,8 @@ namespace Logic
             {
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
-               Console << ENDL << GuiString(L"Conflict detected: '%s' {%d:%d} ~~~~~ '%s' {%d:%d}", 
-                                            obj.Text.c_str(), obj.Page, obj.ID, conf.Text.c_str(), conf.Page, conf.ID) << ENDL;
+               Console << ENDL << GuiString(L"Conflict detected '%s' between {%d:%d} and {%d:%d}", 
+                                            obj.Text.c_str(), obj.Page, obj.ID, conf.Page, conf.ID) << ENDL;
 
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
