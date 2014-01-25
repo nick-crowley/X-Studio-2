@@ -74,6 +74,13 @@ namespace Logic
          return *this;
       }
 
+      /// <summary>Writes ansi text to the console</summary>
+      /// <param name="txt">Text</param>
+      ConsoleWnd& operator<<(const char* txt)
+      {
+         return *this << StringResource::Convert(txt, CP_ACP);
+      }
+
       /// <summary>Writes a character to the console</summary>
       /// <param name="ch">Character</param>
       ConsoleWnd& operator<<(wchar ch)
@@ -104,6 +111,13 @@ namespace Logic
       {
          WriteText(txt);
          return *this;
+      }
+
+      /// <summary>Writes ansi text to the console</summary>
+      /// <param name="txt">Text</param>
+      ConsoleWnd& operator<<(const string& txt)
+      {
+         return *this << StringResource::Convert(txt, CP_ACP);
       }
 
       /// <summary>Writes pointer to the console</summary>

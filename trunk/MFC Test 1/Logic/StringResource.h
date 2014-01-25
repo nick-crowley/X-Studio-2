@@ -105,6 +105,6 @@ namespace Logic
    class VersionString : public wstring
    {
    public:
-      VersionString(GameVersion v);
+      VersionString(GameVersion v, bool acronym = false);
    };
 }

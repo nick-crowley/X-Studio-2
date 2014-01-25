@@ -7,15 +7,15 @@ namespace Logic
 {
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   VersionString::VersionString(GameVersion v)
+   VersionString::VersionString(GameVersion v, bool acronym)
    {
       switch (v)
       {
-      case GameVersion::AlbionPrelude:  assign(L"Albion Prelude");  break;
-      case GameVersion::TerranConflict: assign(L"Terran Conflict"); break;
-      case GameVersion::Reunion:        assign(L"Reunion");         break;
-      case GameVersion::Threat:         assign(L"The Threat");      break;
-      case GameVersion::Rebirth:        assign(L"Rebirth");         break;
+      case GameVersion::AlbionPrelude:  assign(acronym ? L"X3AP" : L"Albion Prelude");  break;
+      case GameVersion::TerranConflict: assign(acronym ? L"X3TC" : L"Terran Conflict"); break;
+      case GameVersion::Reunion:        assign(acronym ? L"X3R"  : L"Reunion");         break;
+      case GameVersion::Threat:         assign(acronym ? L"X2"   : L"The Threat");      break;
+      case GameVersion::Rebirth:        assign(acronym ? L"X4R"  : L"Rebirth");         break;
       default: 
          throw ArgumentException(HERE, L"v", L"Unknown game version");
       }
