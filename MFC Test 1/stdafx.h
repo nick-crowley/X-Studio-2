@@ -62,9 +62,8 @@ using namespace std;
 // Common classes from Logic
 #include "Logic/Common.h"
 
-// Application + Global Events
+// Application 
 #include "Application.h"
-#include "EventLibrary.h"
 
 // Resource IDs
 #include "Resources.h"

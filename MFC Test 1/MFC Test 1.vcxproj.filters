@@ -307,9 +307,6 @@
     <ClInclude Include="Logic\Event.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="EventLibrary.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -508,9 +505,6 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\Event.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="EventLibrary.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
