@@ -133,6 +133,7 @@ namespace Logic
          case XFolder::Director:  return base + L"director\\";
          case XFolder::Language:  return base + L"t\\";
          case XFolder::Scripts:   return base + L"scripts\\";
+         case XFolder::Types:     return base + L"types\\";
          }
 
          throw ArgumentException(HERE, L"f", L"Unknown XFolder constant");

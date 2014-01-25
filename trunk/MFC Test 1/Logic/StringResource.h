@@ -87,6 +87,16 @@ namespace Logic
             s.erase(s.begin()+pos, s.end());
          return s;
       }
+
+      /// <summary>Convert string to lower case</summary>
+      /// <returns>Copy of string in lower case</returns>
+      GuiString  ToLower() const
+      {
+         GuiString s(*this);
+         for (auto& ch : s)
+            ch = towlower(ch);
+         return s;
+      }
    };
 
 
