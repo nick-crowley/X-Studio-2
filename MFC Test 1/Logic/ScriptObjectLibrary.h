@@ -181,6 +181,10 @@ namespace Logic
          void  Clear();
          UINT  Enumerate(WorkerData* data);
 
+         protected:
+         UINT  GenerateLookup(WorkerData* data);
+         UINT  GenerateObjects(WorkerData* data);
+
          // -------------------- REPRESENTATION ---------------------
       public:
          static ScriptObjectLibrary  Instance;

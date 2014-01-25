@@ -41,6 +41,45 @@ namespace Logic
          // Clear previous
          Clear();
 
+         // Build objects
+         GenerateObjects(data);
+         GenerateLookup(data);
+         
+         // Feedback number of conflicts
+         if (Objects.size() - Lookup.size() > 0)
+            data->SendFeedback(Colour::Red, ProgressType::Error, 3, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
+         
+         return Lookup.size();
+      }
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+      
+      UINT  ScriptObjectLibrary::GenerateLookup(WorkerData* data)
+      {
+         list<ScriptObject> Conflicts;
+
+         // Generate reverse lookup collection
+         for (auto& pair : Objects)  
+         {
+            const ObjectID& id = pair.first;
+            const ScriptObject& obj = pair.second;
+
+            // Insert string 
+            if (!Lookup.Add(id.Page, obj))
+            {
+               // Identify conflict
+               auto& conf = Lookup.Find(obj.Text);
+                  
+               // Feedback
+               GuiString err(L"Unable to insert '%s' {%d:%d} due to conflict with '%s' {%d:%d}", obj.Text.c_str(), obj.Page, obj.ID, conf.Text.c_str(), conf.Page, conf.ID);
+               data->SendFeedback(Colour::Red, ProgressType::Error, 3, err);
+            }
+         }
+      }
+
+
+      UINT  ScriptObjectLibrary::GenerateObjects(WorkerData* data)
+      {
          // Iterate thru all strings in library
          for (auto& f : StringLib.Files)       
             for (auto& p : f.Pages)            
@@ -70,35 +109,8 @@ namespace Logic
          
          // Feedback
          Console << L"Discovered " << (int)Objects.size() << " script objects..." << ENDL;
-
-         list<ScriptObject> Conflicts;
-
-         // Generate reverse lookup collection
-         for (auto& pair : Objects)  
-         {
-            const ObjectID& id = pair.first;
-            const ScriptObject& obj = pair.second;
-
-            // Insert string 
-            if (!Lookup.Add(id.Page, obj))
-            {
-               // Identify conflict
-               auto& conf = Lookup.Find(obj.Text);
-                  
-               // Feedback
-               GuiString err(L"Unable to insert '%s' {%d:%d} due to conflict with '%s' {%d:%d}", obj.Text.c_str(), obj.Page, obj.ID, conf.Text.c_str(), conf.Page, conf.ID);
-               data->SendFeedback(Colour::Red, ProgressType::Error, 3, err);
-            }
-         }
-
-         // Feedback number of conflicts
-         if (Objects.size() - Lookup.size() > 0)
-            data->SendFeedback(ProgressType::Error, 3, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
-         
-         return Lookup.size();
+         return Objects.size();
       }
-
-      // ------------------------------ PROTECTED METHODS -----------------------------
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
