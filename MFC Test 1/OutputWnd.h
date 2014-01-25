@@ -1,6 +1,7 @@
 
 #pragma once
 #include "Logic/WorkerFeedback.h"
+#include "ImageListEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -74,7 +75,7 @@ NAMESPACE_BEGIN(GUI)
 	   COutputList m_wndOutputBuild;
 	   COutputList m_wndOutputDebug;
 	   COutputList m_wndOutputFind;
-      CImageList  Images;
+      ImageListEx Images;
 
       FeedbackHandler fnGameDataFeedback;
    };

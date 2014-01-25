@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="GameDataWnd.h" />
+    <ClInclude Include="ImageListEx.h" />
     <ClInclude Include="LanguageFrame.h" />
     <ClInclude Include="LanguagePageView.h" />
     <ClInclude Include="LanguageStringView.h" />
@@ -214,6 +215,7 @@
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="ImageListEx.cpp" />
     <ClCompile Include="LanguageFrame.cpp" />
     <ClCompile Include="LanguagePageView.cpp" />
     <ClCompile Include="LanguageStringView.cpp" />
