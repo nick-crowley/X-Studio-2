@@ -7,13 +7,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    class ScriptEdit;
 
+   /// <summary>Defines suggestion categories</summary>
+   enum class Suggestion : UINT { None, Variable, Command, GameObject, ScriptObject, Label };
+
    /// <summary></summary>
    class SuggestionList : public CListCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
       typedef vector<wstring>  StringArray;
-	  
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       SuggestionList();
@@ -33,16 +36,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
       ScriptEdit* GetParent() const;
-      wstring GetSuggestion() const;
-
+      wstring GetSelected() const;
+   
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(ScriptEdit* parent, CPoint& pt);
+      BOOL Create(ScriptEdit* parent, CPoint& pt, Suggestion type);
       void MatchSuggestion(const ScriptToken& tok);
 
    protected:
       void AdjustLayout();
-      int  Populate();
+      void PopulateContent();
 	  
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
@@ -53,7 +56,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       const CSize DefaultSize = CSize(300,200);
       
-      StringArray  Content;
+      Suggestion SuggestionType;
+      vector<wstring> Content;
    };
    
 

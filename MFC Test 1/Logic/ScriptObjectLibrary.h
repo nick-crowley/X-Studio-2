@@ -9,11 +9,82 @@ namespace Logic
 {
    namespace Scripts
    {
-   
+      /// <summary>Represents a script object</summary>
+      class ScriptObject : public LanguageString
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         ScriptObject(KnownPage p, const LanguageString& s) : Page(p), LanguageString(s)
+         {}
+      private:
+         ScriptObject(const ScriptObject& obj, const wstring& newText) : Page(obj.Page), LanguageString(obj.ID, newText, obj.Version)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Appends an object ID</summary>
+         /// <param name="id">The id</param>
+         /// <returns>New script object</returns>
+         ScriptObject operator+(UINT id)
+         {
+            return ScriptObject(*this, Text+GuiString(L" (%d)", id));
+         }
+
+         /// <summary>Appends a game version acronym</summary>
+         /// <param name="v">The version</param>
+         /// <returns>New script object</returns>
+         ScriptObject operator+(GameVersion v)
+         {
+            return ScriptObject(*this, Text+GuiString(L" (%s)", VersionString(v,true).c_str()));
+         }
+
+         /// <summary>Appends an page/category acronym</summary>
+         /// <param name="p">The page</param>
+         /// <returns>New script object</returns>
+         /// <exception cref="Logic::ArgumentException">Incompatible page</exception>
+         ScriptObject operator+(KnownPage p)
+         {
+            const wchar* acronym = nullptr;
+            switch (p)
+            {
+            case KnownPage::OBJECT_COMMANDS:
+            case KnownPage::WING_COMMANDS:  
+               return ScriptObject(*this, Text+L" (CMD)");
+            case KnownPage::CONSTANTS:
+               return ScriptObject(*this, Text+L" (CON)");
+            case KnownPage::DATA_TYPES:
+               return ScriptObject(*this, Text+L" (DT)");
+            case KnownPage::FLIGHT_RETURNS:
+               return ScriptObject(*this, Text+L" (FLRET)");
+            case KnownPage::OBJECT_CLASSES:
+               return ScriptObject(*this, Text+L" (OC)");
+            case KnownPage::PARAMETER_TYPES:
+               return ScriptObject(*this, Text+L" (TYPE)");               
+            case KnownPage::STATION_SERIALS:
+               return ScriptObject(*this, Text+L" (SS)");
+            case KnownPage::TRANSPORT_CLASSES:
+               return ScriptObject(*this, Text+L" (TC)");
+            case KnownPage::SECTORS:
+            {
+               int x = _ttoi(Text.substr(3,2).c_str());
+               int y = _ttoi(Text.substr(5,2).c_str());
+               return ScriptObject(*this, Text+GuiString(L" (%d,%d)", x, y));
+            }
+            default: throw ArgumentException(HERE, L"operand", L"Incompatible language page ID");
+            }
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      public:
+         const KnownPage Page;
+      };
+
       /// <summary>Provides access to script objects</summary>
       class ScriptObjectLibrary
       {
-		 // ------------------------ TYPES --------------------------
+		   // ------------------------ TYPES --------------------------
       private:
          /// <summary>Defines a {KnownPage,ID} pair</summary>
          class ObjectID
@@ -36,78 +107,6 @@ namespace Logic
          public:
             const KnownPage Page;
             const UINT      ID;
-         };
-
-         /// <summary>Represents a script object</summary>
-         class ScriptObject : public LanguageString
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-            ScriptObject(KnownPage p, const LanguageString& s) : Page(p), LanguageString(s)
-            {}
-         private:
-            ScriptObject(const ScriptObject& obj, const wstring& newText) : Page(obj.Page), LanguageString(obj.ID, newText, obj.Version)
-            {}
-
-            // ---------------------- ACCESSORS ------------------------	
-
-            // ----------------------- MUTATORS ------------------------
-         public:
-            /// <summary>Appends an object ID</summary>
-            /// <param name="id">The id</param>
-            /// <returns>New script object</returns>
-            ScriptObject operator+(UINT id)
-            {
-               return ScriptObject(*this, Text+GuiString(L" (%d)", id));
-            }
-
-            /// <summary>Appends a game version acronym</summary>
-            /// <param name="v">The version</param>
-            /// <returns>New script object</returns>
-            ScriptObject operator+(GameVersion v)
-            {
-               return ScriptObject(*this, Text+GuiString(L" (%s)", VersionString(v,true).c_str()));
-            }
-
-            /// <summary>Appends an page/category acronym</summary>
-            /// <param name="p">The page</param>
-            /// <returns>New script object</returns>
-            /// <exception cref="Logic::ArgumentException">Incompatible page</exception>
-            ScriptObject operator+(KnownPage p)
-            {
-               const wchar* acronym = nullptr;
-               switch (p)
-               {
-               case KnownPage::OBJECT_COMMANDS:
-               case KnownPage::WING_COMMANDS:  
-                  return ScriptObject(*this, Text+L" (CMD)");
-               case KnownPage::CONSTANTS:
-                  return ScriptObject(*this, Text+L" (CON)");
-               case KnownPage::DATA_TYPES:
-                  return ScriptObject(*this, Text+L" (DT)");
-               case KnownPage::FLIGHT_RETURNS:
-                  return ScriptObject(*this, Text+L" (FLRET)");
-               case KnownPage::OBJECT_CLASSES:
-                  return ScriptObject(*this, Text+L" (OC)");
-               case KnownPage::PARAMETER_TYPES:
-                  return ScriptObject(*this, Text+L" (TYPE)");               
-               case KnownPage::STATION_SERIALS:
-                  return ScriptObject(*this, Text+L" (SS)");
-               case KnownPage::TRANSPORT_CLASSES:
-                  return ScriptObject(*this, Text+L" (TC)");
-               case KnownPage::SECTORS:
-               {
-                  int x = _ttoi(Text.substr(3,2).c_str());
-                  int y = _ttoi(Text.substr(5,2).c_str());
-                  return ScriptObject(*this, Text+GuiString(L" (%d,%d)", x, y));
-               }
-               default: throw ArgumentException(HERE, L"operand", L"Incompatible language page ID");
-               }
-            }
-
-            // -------------------- REPRESENTATION ---------------------
-         public:
-            const KnownPage Page;
          };
 
          /// <summary>Collection of Script objects sorted by ID</summary>
@@ -203,7 +202,8 @@ namespace Logic
                return insert(value_type(ObjectID(page,str.ID), ScriptObject(page, str))).second;
             }
          };
-
+      
+      public:
          /// <summary>Collection of script objects sorted by text</summary>
          class LookupCollection : public map<wstring, ScriptObject, less<wstring>>
          {
@@ -273,7 +273,13 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(UINT,Count,GetCount);
+
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         ScriptObject& FindAt(UINT index) ;
+         UINT  FindMatch(const wstring& str) const;
+         UINT  GetCount() const;
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -289,7 +295,8 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
       public:
          static ScriptObjectLibrary  Instance;
-
+         LookupCollection& Content;
+         
       private:
          ObjectCollection  Objects;
          LookupCollection  Lookup;

@@ -56,9 +56,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Defines whether suggestions visible</summary>
       enum class InputState : UINT { Normal, Suggestions };
 
-      /// <summary>Defines suggestion categories</summary>
-      enum class Suggestion : UINT { None, Variable, Command, GameObject, ScriptObject, Label };
- 
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
@@ -119,8 +116,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       DisplayState   PrevState;
       InputState     State;
-      Suggestion     Focus;
-      SuggestionList Suggestions;
+      Suggestion     SuggestionType;
+      SuggestionList SuggestionsList;
       
    public:
       
