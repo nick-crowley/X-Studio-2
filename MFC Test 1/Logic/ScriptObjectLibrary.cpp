@@ -23,35 +23,6 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      ScriptObject&  ScriptObjectLibrary::FindAt(UINT index) 
-      {
-         // Validate index
-         if (index >= Count)
-            throw IndexOutOfRangeException(HERE, index, Count);
-
-         // Lookup item
-         auto it = Lookup.begin();
-         for (UINT i = 0; i < index; ++i)  
-            ++it;
-         return it->second;
-      }
-
-      UINT  ScriptObjectLibrary::FindMatch(const wstring& str) const
-      {
-         // Linear search for partial substring
-         int index = 0;
-         for (auto& it : Lookup)
-            if (it.second.Text.find(str) != wstring::npos ? true : (++index,false))
-               return index;
-
-         return -1;
-      }
-
-      UINT  ScriptObjectLibrary::GetCount() const
-      {
-         return Lookup.size();
-      }
-
       /// <summary>Clears all objects from the library.</summary>
       void  ScriptObjectLibrary::Clear()
       {
@@ -83,6 +54,13 @@ namespace Logic
          if (Objects.size() - Lookup.size() > 0)
             data->SendFeedback(Colour::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
          
+         return Lookup.size();
+      }
+
+      /// <summary>Get number of objects in the library</summary>
+      /// <returns></returns>
+      UINT  ScriptObjectLibrary::GetCount() const
+      {
          return Lookup.size();
       }
 
