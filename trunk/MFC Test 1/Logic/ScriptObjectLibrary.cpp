@@ -41,7 +41,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"String library has not been enumerated");
 
          // Feedback
-         data->SendFeedback(Colour::Cyan, ProgressType::Info, 2, L"Generating script objects from language files");
+         data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating script objects from language files");
 
          // Clear previous
          Clear();
@@ -52,7 +52,7 @@ namespace Logic
          
          // Feedback number of conflicts
          if (Objects.size() - Lookup.size() > 0)
-            data->SendFeedback(Colour::Red, ProgressType::Error, 3, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
+            data->SendFeedback(Colour::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
          
          return Lookup.size();
       }
@@ -114,8 +114,8 @@ namespace Logic
             {
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
-               Console << ENDL << GuiString(L"Conflict detected '%s' between {%d:%d} and {%d:%d}", 
-                                            obj.Text.c_str(), obj.Page, obj.ID, conf.Page, conf.ID) << ENDL;
+               Console << GuiString(L"Conflict detected '%s' between {%d:%d} and {%d:%d}", 
+                                    obj.Text.c_str(), obj.Page, obj.ID, conf.Page, conf.ID) << ENDL;
 
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
@@ -126,7 +126,7 @@ namespace Logic
                {
                   GuiString err(L"Unable to mangle '%s' {%d:%d} due to conflict with '%s' {%d:%d}", 
                                 obj.Text.c_str(), obj.Page, obj.ID, conflict.Text.c_str(), conflict.Page, conflict.ID);
-                  data->SendFeedback(Colour::Red, ProgressType::Error, 3, err);
+                  data->SendFeedback(Colour::Red, ProgressType::Error, 2, err);
                }
             }
          }
