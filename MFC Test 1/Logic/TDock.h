@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "TObject.h"
 #include "TFileReader.hpp"
+#include "RaceLookup.h"
 
 namespace Logic
 {
@@ -33,6 +34,12 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
 
+         wstring  GetFullName() const
+         {
+            return race.Defined() && race.Exists() ? race.Text + L" " + TObject::FullName : TObject::FullName;
+            
+         }
+
          // ----------------------- MUTATORS ------------------------
 
          // -------------------- REPRESENTATION ---------------------
@@ -43,7 +50,7 @@ namespace Logic
 	      float            randezvousDistance;
 	      int              soundVolume;
 	      wstring          modelScene;
-         LookupString     race;
+         RaceLookup       race;
 	      wstring          internalScene;
 	      int              effectExplosion;
 	      int              bodyExplosionDefinition;
@@ -98,7 +105,7 @@ namespace Logic
 		      obj.soundVolume        = ReadInt(L"soundVolume");
 		      obj.modelScene         = ReadString(L"modelScene");
 		      obj.internalScene      = ReadString(L"internalScene");
-            obj.race               = LookupString(ReadInt(L"race"), KnownPage::RACES);
+            obj.race.ID            = ReadInt(L"race");
 		      obj.effectExplosion    = ReadInt(L"effectExplosion");
 		      obj.bodyExplosionDefinition = ReadInt(L"bodyExplosionDefinition");
 		      obj.shieldRechargeRate = ReadInt(L"shieldRechargeRate");

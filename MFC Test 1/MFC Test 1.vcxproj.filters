@@ -346,6 +346,9 @@
     <ClInclude Include="Logic\GameObjectLibrary.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\RaceLookup.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">

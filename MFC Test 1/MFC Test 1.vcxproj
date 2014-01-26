@@ -136,6 +136,7 @@
     <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
+    <ClInclude Include="Logic\RaceLookup.h" />
     <ClInclude Include="Logic\ScriptObjectLibrary.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
