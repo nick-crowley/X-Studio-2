@@ -17,7 +17,7 @@ namespace Logic
             wstring name = GuiString(p.RemoveExtension().FileName).ToLower();
 
             // Identify file
-            if (name == L"tlasers")
+            if (name == L"tlaser")
                Type = MainType::Laser;
             /*else if (name == L"tmissiles")
                Type = MainType::Missile;*/
@@ -52,31 +52,31 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
       private:
-         enum class KnownID : UINT { Undefined=0, UndefinedName=9999, UndefinedRace=34000, UnknownObject1=9001, UnknownObject2=9041, UnknownObject3=17206 };
+         //enum class KnownID : UINT { Undefined=0, UndefinedName=9999, UndefinedRace=34000, UnknownObject1=9001, UnknownObject2=9041, UnknownObject3=17206 };
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         GameObject(UINT id, TObject* obj) : Type(obj->Type), ID(id), Text(obj->FullName)
+         GameObject(UINT subtype, TObject* obj) : Type(obj->Type), SubType(subtype), ID(obj->id), Name(obj->FullName)
          {}
       private:
-         GameObject(const GameObject& r, const wstring& txt) : Type(r.Type), ID(r.ID), Text(txt)
+         GameObject(const GameObject& r, const wstring& txt) : Type(r.Type), SubType(r.SubType), ID(r.ID), Name(txt)
          {}
 
          // ---------------------- ACCESSORS ------------------------
       public:
-         /// <summary>Appends an object ID to name</summary>
-         /// <param name="id">The id</param>
-         /// <returns>New game object with ID appended</returns>
+         /// <summary>Appends an object id to name</summary>
+         /// <param name="id">object id</param>
+         /// <returns>New game object with id appended</returns>
          GameObject operator+(const wstring& id)
          {
-            return GameObject(*this, Text+GuiString(L" (%s)", id));
+            return GameObject(*this, Name+GuiString(L" (%s)", id));
          }
 
          // -------------------- REPRESENTATION ---------------------
       public:
          const MainType Type;
-         const UINT     ID;
-         const wstring  Text;
+         const UINT     SubType;
+         const wstring  ID, Name, Description;
       };
 
       /// <summary></summary>
@@ -84,65 +84,60 @@ namespace Logic
       {
 		   // ------------------------ TYPES --------------------------
       private:
-	      /// <summary>Defines a {MainType,ID} pair</summary>
+	      /// <summary>Defines a {MainType,SubType} pair</summary>
          class ObjectID
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ObjectID(MainType t, UINT id) : Type(t), ID(id)
+            ObjectID(MainType t, UINT subtype) : Type(t), SubType(subtype)
             {}
 
             // ---------------------- ACCESSORS ------------------------	
          public:
             bool operator==(const ObjectID& r) const {
-               return Type == r.Type && ID == r.ID;
+               return Type == r.Type && SubType == r.SubType;
             }
             bool operator<(const ObjectID& r) const {
-               return Type < r.Type || (Type == r.Type && ID < r.ID);
+               return Type < r.Type || (Type == r.Type && SubType < r.SubType);
             }
 
             // -------------------- REPRESENTATION ---------------------
          public:
             const MainType Type;
-            const UINT     ID;
+            const UINT     SubType;
          };
 
-         /// <summary>Collection of game objects sorted by ID</summary>
+         /// <summary>Collection of game objects sorted by SubType</summary>
          class ObjectCollection : public map<ObjectID, GameObject, less<ObjectID>>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             // ---------------------- ACCESSORS ------------------------			
 
-            /// <summary>Finds a game object by ID</summary>
-            /// <param name="type">The type.</param>
-            /// <param name="id">The ID.</param>
+            /// <summary>Finds a game object by SubType</summary>
+            /// <param name="type">Main type.</param>
+            /// <param name="subtype">SubType.</param>
             /// <returns></returns>
-            /// <exception cref="Logic::StringNotFoundException">Object not found</exception>
-            GameObject  Find(MainType type, UINT id) const
+            /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
+            GameObject  Find(MainType type, UINT subtype) const
             {
                const_iterator it;
                // Lookup and return string
-               if ((it = find(ObjectID(type, id))) != end())
+               if ((it = find(ObjectID(type, subtype))) != end())
                   return it->second;
 
                // Error: Not found
-               throw StringNotFoundException(HERE, (UINT)type, id);
+               throw GameObjectNotFoundException(HERE, (UINT)type, subtype);
             }
 
             // ----------------------- MUTATORS ------------------------
          public:
-            /// <summary>Creates and adds a new object</summary>
-            /// <param name="id">The id of the object</param>
-            /// <param name="obj">The TObject to create the GameObject from</param>
-            /// <returns>True if successful, false if MainType/ID combination already present</returns>
-            /*bool  Add(UINT id, const TObject* obj)
-            {
-               return insert( value_type(ObjectID(obj->Type,id), GameObject(obj->Type, id, obj->name.Text)) ).second;
-            }*/
+            /// <summary>Adds an object to the collection</summary>
+            /// <param name="obj">The object</param>
+            /// <returns>True if successful, false if MainType/SubType combination already present</returns>
             bool  Add(const GameObject& obj)
             {
-               return insert(value_type(ObjectID(obj.Type, obj.ID), obj)).second;
+               return insert(value_type(ObjectID(obj.Type, obj.SubType), obj)).second;
             }
          };
 
@@ -174,7 +169,7 @@ namespace Logic
                   return it->second;
 
                // Error: Not found
-               throw ScriptObjectNotFoundException(HERE, sz);
+               throw GameObjectNotFoundException(HERE, sz);
             }
 
             // ----------------------- MUTATORS ------------------------
@@ -184,17 +179,8 @@ namespace Logic
             /// <returns>True if successful, false if key already present</returns>
             bool  Add(const GameObject& obj)
             {
-               return insert(value_type(obj.Text, obj)).second;
+               return insert(value_type(obj.Name, obj)).second;
             }
-
-            /// <summary>Creates a new game object and adds to the collection</summary>
-            /// <param name="id">The object id</param>
-            /// <param name="obj">The object to create a game object from</param>
-            /// <returns>True if successful, false if key already present</returns>
-            /*bool  Add(UINT id, const TObject* obj)
-            {
-               return insert( value_type(obj->name.Text, GameObject(obj->Type, id, obj->name.Text)) ).second;
-            }*/
 
             /// <summary>Removes an object from the collection</summary>
             /// <param name="sz">The text</param>

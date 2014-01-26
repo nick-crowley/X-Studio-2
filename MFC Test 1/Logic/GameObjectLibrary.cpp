@@ -140,23 +140,31 @@ namespace Logic
          // Populate lookup
          for (auto& obj : Input)
          {
-            // Ensure unique
+            // Insert/Ensure unique
             if (!Lookup.Add(obj))
             {
-               wstring key = obj.Text;
+               wstring key = obj.Name;
                
-               // Conflict: Add both objects on first occurence
+               // Conflict: Add both objects on first occurence, but only conflict on subsequent occurences
                if (Conflicts.find(key) == Conflicts.end())
-                  Conflicts[key].push_back(Lookup[key]);
+                  Conflicts[key].push_back(Lookup.Find(key));
                
                Conflicts[key].push_back(obj);
             }
-            //Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Text << ENDL;
          }
 
-         // TODO: Mangle names
+         // Mangle names of conflicting objects
+         for (auto& list : Conflicts)
+            for (auto& obj : list.second)
+               // Append ID, then attempt to insert
+               if (!Lookup.Add(obj + obj.ID))
+               {  
+                  // Feedback: Failed
+                  data->SendFeedback(ProgressType::Error, 2, GuiString(L"Unable to add game object '%s'", obj.Name.c_str()) );
+                  Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Name << ENDL;
+               }
 
-         // Populate objects collection from lookup, thereby preserving the name mangling
+         // Populate objects collection from lookup (thereby preserving the name mangling)
          for (auto& pair : Lookup)
             Objects.Add(pair.second);
 
