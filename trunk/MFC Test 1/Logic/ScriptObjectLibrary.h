@@ -120,7 +120,7 @@ namespace Logic
             /// <param name="page">The page.</param>
             /// <param name="id">The ID.</param>
             /// <returns></returns>
-            /// <exception cref="Logic::StringNotFoundException">Object not found</exception>
+            /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
             ScriptObject  Find(KnownPage page, UINT id) const
             {
                const_iterator it;
@@ -129,7 +129,7 @@ namespace Logic
                   return it->second;
 
                // Error: Not found
-               throw StringNotFoundException(HERE, (UINT)page, id);
+               throw ScriptObjectNotFoundException(HERE, (UINT)page, id);
             }
 
             // ----------------------- MUTATORS ------------------------
