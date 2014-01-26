@@ -289,9 +289,6 @@
     <ClInclude Include="GameDataWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ListView.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\BackgroundWorker.h">
       <Filter>Header Files\Logic\Threads</Filter>
     </ClInclude>
@@ -348,6 +345,12 @@
     </ClInclude>
     <ClInclude Include="Logic\RaceLookup.h">
       <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandWnd.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -551,6 +554,9 @@
     </ClCompile>
     <ClCompile Include="Logic\GameObjectLibrary.cpp">
       <Filter>Source Files\Logic\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

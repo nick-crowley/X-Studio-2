@@ -180,14 +180,14 @@ NAMESPACE_BEGIN(GUI)
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
 
          // Game Data Window:
-	      if (!m_wndGameData.Create(GuiString(L"Game Data").c_str(), this, CRect(0, 0, 200, 200), TRUE, 420, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create GameData window");
+	      if (!m_wndCommands.Create(GuiString(L"Commands").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_COMMANDS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	         throw Win32Exception(HERE, L"Unable to create Commands window");
 
          // Set icons
          m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndGameData.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndCommands.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 	      UpdateMDITabbedBarsIcons();
 
          // Dock each window
@@ -200,8 +200,8 @@ NAMESPACE_BEGIN(GUI)
 	      m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
 	      DockPane(&m_wndProperties);
 
-         m_wndGameData.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndGameData);
+         m_wndCommands.EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(&m_wndCommands);
 
 
 	      // set the visual manager and style 

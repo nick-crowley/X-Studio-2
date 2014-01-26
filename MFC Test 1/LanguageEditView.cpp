@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "LanguageEditView.h"
-#include "ListView.h"
+#include "Helpers.h"
 #include "afxcview.h"
 
 /// <summary>User interface</summary>
