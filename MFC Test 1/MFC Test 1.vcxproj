@@ -128,6 +128,7 @@
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="GameDataWnd.h" />
+    <ClInclude Include="GameObjectWnd.h" />
     <ClInclude Include="ImageListEx.h" />
     <ClInclude Include="LanguageFrame.h" />
     <ClInclude Include="LanguagePageView.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="GameObjectWnd.cpp" />
     <ClCompile Include="ImageListEx.cpp" />
     <ClCompile Include="LanguageFrame.cpp" />
     <ClCompile Include="LanguagePageView.cpp" />

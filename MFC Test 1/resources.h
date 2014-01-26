@@ -48,6 +48,7 @@
 #define ID_CLASS_DEFINITION             141
 #define ID_CLASS_PROPERTIES             142
 #define ID_NEW_FOLDER                   143
+#define ID_VIEW_GAME_OBJECTS            147
 #define ID_VIEW_COMMANDS                148
 #define ID_VIEW_OUTPUTWND               149
 #define ID_VIEW_PROPERTIESWND           150
