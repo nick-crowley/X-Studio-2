@@ -67,7 +67,7 @@ NAMESPACE_BEGIN(GUI)
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert command '%s' (item %d, group %d)", item.pszText, i, GetString((CommandGroup)item.iGroupId)) );
+            throw Win32Exception(HERE, GuiString(L"Unable to insert %s command '%s' (item %d)", GetString(Content[i]->Group).c_str(), item.pszText, i) );
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------

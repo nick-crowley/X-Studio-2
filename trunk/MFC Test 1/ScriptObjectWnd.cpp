@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "GameObjectWnd.h"
+#include "ScriptObjectWnd.h"
+#include "Logic/ScriptObjectLibrary.h"
 #include <strsafe.h>
-#include "Logic/GameObjectLibrary.h"
 #include "Helpers.h"
 
 /// <summary>User interface</summary>
@@ -9,17 +9,17 @@ NAMESPACE_BEGIN(GUI)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   BEGIN_MESSAGE_MAP(CGameObjectWnd, CGameDataWnd)
+   BEGIN_MESSAGE_MAP(CScriptObjectWnd, CGameDataWnd)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CGameObjectWnd::CGameObjectWnd() 
+   CScriptObjectWnd::CScriptObjectWnd() 
    {
    }
 
 
-   CGameObjectWnd::~CGameObjectWnd()
+   CScriptObjectWnd::~CScriptObjectWnd()
    {
    }
 
@@ -30,13 +30,13 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Populates the group combo.</summary>
-   void  CGameObjectWnd::PopulateGroupCombo()
+   void  CScriptObjectWnd::PopulateGroupCombo()
    {
       Groups.AddString(L"All Groups");
 
       // Populate group names
-      for (MainType type = MainType::Dock; type <= MainType::TechWare; type++)
-         Groups.AddString(GetString(type).c_str());
+      for (ScriptObjectGroup g = ScriptObjectGroup::Constant; g <= ScriptObjectGroup::TransportClass; g++)
+         Groups.AddString(GetString(g).c_str());
 
       // Select 'unfiltered'
       Groups.SetCurSel(0);
@@ -45,30 +45,31 @@ NAMESPACE_BEGIN(GUI)
    /// <summary>Populates the items</summary>
    /// <param name="searchTerm">The search term.</param>
    /// <param name="selectedGroup">The selected group.</param>
-   void CGameObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
+   void CScriptObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
       // Lookup matches
-      auto Content = GameObjectLib.Query(searchTerm.c_str());
+      auto Content = ScriptObjectLib.Query(searchTerm.c_str());
       ListView.SetItemCount(Content.size());
       
       // Redefine groups
-      for (MainType type = MainType::Dock; type <= MainType::TechWare; type++) 
+      for (ScriptObjectGroup g = ScriptObjectGroup::Constant; g <= ScriptObjectGroup::TransportClass; g++)
       {
-         LVGroup grp(type - MainType::Dock, GetString(type));
+         LVGroup grp((UINT)g, GetString(g));
+         
          // Insert group
          if (ListView.InsertGroup(grp.iGroupId, (LVGROUP*)&grp) != grp.iGroupId)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert game object group ") + GetString(type));
+            throw Win32Exception(HERE, GuiString(L"Unable to insert script object group ") + GetString(g));
       }
 
       // Generate/insert display text for each command
       for (UINT i = 0; i < Content.size(); ++i)
       {
-         LVItem item(i, Content[i].Name, Content[i].Type - MainType::Dock, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+         LVItem item(i, Content[i].Text, Content[i].Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
          item.iImage = 0;
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert %s '%s' (item %d)", GetString(Content[i].Type).c_str(), item.pszText, i));
+            throw Win32Exception(HERE, GuiString(L"Unable to insert %s '%s' (item %d)", GetString(Content[i].Group).c_str(), item.pszText, i));
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------
