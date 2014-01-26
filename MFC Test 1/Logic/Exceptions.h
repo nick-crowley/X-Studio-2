@@ -294,7 +294,15 @@ namespace Logic
       /// <param name="src">Location of throw</param>
       /// <param name="txt">Desired object text</param>
       ScriptObjectNotFoundException(wstring  src, wstring txt) 
-         : ExceptionBase(src, GuiString(L"Cannot find '%s'", txt.c_str()))
+         : ExceptionBase(src, GuiString(L"Cannot find script object '%s'", txt.c_str()))
+      {}
+
+      /// <summary>Create a ScriptObjectNotFoundException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="page">page id</param>
+      /// <param name="id">string id</param>
+      ScriptObjectNotFoundException(wstring  src, UINT page, UINT id) 
+         : ExceptionBase(src, GuiString(L"Cannot find script object %d in page %d", id, page))
       {}
    };
 
