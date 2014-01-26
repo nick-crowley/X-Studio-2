@@ -97,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          --len;
 
       // Null terminate
-      txt.get()[len] = NULL;
+      txt.get()[len] = '\0';
       return txt.get();
    }
    
