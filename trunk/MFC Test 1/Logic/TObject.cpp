@@ -20,29 +20,26 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
       
-      const wchar* GetString(const MainType& m)
+      /// <summary>Get main type string</summary>
+      GuiString GetString(const MainType& m)
       {
-         static const wchar* str[] = 
-         {
-            L"", L"", L"", L"", L"", L"Dock", L"Factory", L"Ship", L"Laser",
-            L"Shield", L"Missile", L"Energy Ware", L"Natural Ware", L"Bio Ware", L"Food Ware", 
-            L"Mineral Ware", L"TechWare"
-         };
-
-         return str[(UINT)m];
+         return GuiString(IDS_MAIN_TYPE_DOCK - (UINT)MainType::Dock + (UINT)m);
       }
 
+      /// <summary>Increment main type</summary>
       MainType operator++(MainType& m, int)
       {
          MainType ret = m;
          return (++m, ret);
       }
 
+      /// <summary>Increment main type</summary>
       MainType& operator++(MainType& m)
       {
          return m = (MainType)((UINT)m + 1);
       }
 
+      /// <summary>Operator on main type as int</summary>
       UINT operator-(const MainType& a, const MainType& b)
       {
          return (UINT)a - (UINT)b;
@@ -50,6 +47,8 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Gets the object display name.</summary>
+      /// <returns></returns>
       wstring TObject::GetFullName() const
       {
          return !name.Defined() ? L"*** UNDEFINED ***"

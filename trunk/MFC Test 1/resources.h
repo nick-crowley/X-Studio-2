@@ -156,3 +156,19 @@
 
 #define IDS_FIRST_LANGUAGE_GROUP                           IDS_LANGUAGE_GROUP_DATA
 
+#define IDS_MAIN_TYPE_DOCK                       1020         // Dock
+#define IDS_MAIN_TYPE_FACTORY                    1021         // Factory
+#define IDS_MAIN_TYPE_LASER                      1022         // Laser
+#define IDS_MAIN_TYPE_MISSILE                    1023         // Missile
+#define IDS_MAIN_TYPE_SHIP                       1024         // Ship
+#define IDS_MAIN_TYPE_SHIELD                     1025         // Shield
+#define IDS_MAIN_TYPE_ENERGY                     1026         // Ware
+#define IDS_MAIN_TYPE_NATURAL                    1027         // Ware
+#define IDS_MAIN_TYPE_BIO                        1028         // Ware
+#define IDS_MAIN_TYPE_FOOD                       1029         // Ware
+#define IDS_MAIN_TYPE_MINERAL                    1030         // Ware
+#define IDS_MAIN_TYPE_TECH                       1031         // Ware
+
+#define IDS_FIRST_MAIN_TYPE                        IDS_MAIN_TYPE_DOCK
+
+

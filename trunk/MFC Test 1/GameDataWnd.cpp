@@ -199,7 +199,10 @@ NAMESPACE_BEGIN(GUI)
             Search.GetWindowTextW(searchTerm);
 
             // Populate items
+            ListView.SetRedraw(FALSE);
             PopulateItems((const WCHAR*)searchTerm, Groups.GetCurSel());
+            ListView.SetRedraw(TRUE);
+            ListView.UpdateWindow();
          }
       }
       catch (ExceptionBase& e)
