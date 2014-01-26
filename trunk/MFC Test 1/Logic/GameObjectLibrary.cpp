@@ -122,22 +122,43 @@ namespace Logic
 
       UINT  GameObjectLibrary::PopulateObjects(WorkerData* data)
       {
+         typedef list<GameObject> ObjectList;
+         typedef map<wstring, ObjectList> ConflictMap;
+         
+         ConflictMap Conflicts;
+         ObjectList Input;
+
          // Feedback
          data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating game objects from type definition files");
 
-         // Populate objects 
+         // Extract all objects from files
          for (auto& f : Files)
             if (f != nullptr)
                for (UINT id = 0; id < f->Count; ++id)
-                  Objects.Add( GameObject(id, f->FindAt(id)) );
+                  Input.push_back( GameObject(id, f->FindAt(id)) );
 
          // Populate lookup
-         for (auto& o : Objects)
+         for (auto& obj : Input)
          {
-            const GameObject& obj = o.second;
+            // Ensure unique
             if (!Lookup.Add(obj))
-               Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Text << ENDL;
+            {
+               wstring key = obj.Text;
+               
+               // Conflict: Add both objects on first occurence
+               if (Conflicts.find(key) == Conflicts.end())
+                  Conflicts[key].push_back(Lookup[key]);
+               
+               Conflicts[key].push_back(obj);
+            }
+            //Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Text << ENDL;
          }
+
+         // TODO: Mangle names
+
+         // Populate objects collection from lookup, thereby preserving the name mangling
+         for (auto& pair : Lookup)
+            Objects.Add(pair.second);
 
          // Return object count
          Console << "Generated " << Content.size() << " game objects" << ENDL;

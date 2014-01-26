@@ -33,12 +33,17 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
 
+         wstring  GetFullName() const
+         {
+            return factorySize.Defined() && factorySize.Exists() ? TDock::FullName + L" " + factorySize.Text : TDock::FullName;
+         }
+
          // ----------------------- MUTATORS ------------------------
 
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         int  factorySize;
+         StationSizeLookup  factorySize;
       };
 
       /// <summary></summary>
@@ -85,12 +90,12 @@ namespace Logic
 		      obj.soundVolume        = ReadInt(L"soundVolume");
 		      obj.modelScene         = ReadString(L"modelScene");
 		      obj.internalScene      = ReadString(L"internalScene");
-		      obj.race               = LookupString(ReadInt(L"race"), KnownPage::RACES);
+		      obj.race.ID            = ReadInt(L"race");
 		      obj.effectExplosion    = ReadInt(L"effectExplosion");
 		      obj.bodyExplosionDefinition = ReadInt(L"bodyExplosionDefinition");
 		      obj.shieldRechargeRate = ReadInt(L"shieldRechargeRate");
 
-            obj.factorySize        = ReadInt(L"factorySize");
+            obj.factorySize.ID     = ReadInt(L"factorySize");
 		      obj.icon               = ReadString(L"hudIcon");
          }
 
