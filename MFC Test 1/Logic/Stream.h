@@ -65,7 +65,7 @@ namespace Logic
             ByteArrayPtr buffer( new BYTE[length+1] );
             
             // Ensure null terminated
-            buffer.get()[length] = NULL;
+            buffer.get()[length] = '\0';
 
             do
             {  // Read all bytes until EOF

@@ -16,6 +16,7 @@
 #include "CommandLexer.h"
 #include "TWare.h"
 #include "TLaser.h"
+#include <regex>
 
 namespace Logic
 {
@@ -66,7 +67,8 @@ namespace Logic
       //Test_XmlWriter();
       //Test_SyntaxWriter();
       //Test_ExpressionParser();
-      Test_TFileReader();
+      //Test_TFileReader();
+      Text_RegEx();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -249,6 +251,13 @@ namespace Logic
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
       }
+   }
+   
+   void DebugTests::Text_RegEx()
+   {
+
+
+
    }
 
    void  DebugTests::Test_TFileReader()

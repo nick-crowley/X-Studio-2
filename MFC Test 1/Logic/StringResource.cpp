@@ -34,7 +34,7 @@ namespace Logic
       
       // Convert and null terminate buffer
       UINT len = MultiByteToWideChar(codepage, NULL, str.c_str(), str.length(), wide.get(), buflen);
-      wide.get()[min(len,buflen)] = NULL;
+      wide.get()[min(len,buflen)] = '\0';
 
       return wide.get();
    }
@@ -50,7 +50,7 @@ namespace Logic
 
       // Convert and null terminate buffer
       UINT len = WideCharToMultiByte(codepage, NULL, str.c_str(), str.length(), ansi.get(), buflen, NULL, NULL);
-      ansi.get()[min(len,buflen)] = NULL;
+      ansi.get()[min(len,buflen)] = '\0';
 
       return ansi.get();
    }

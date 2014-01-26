@@ -29,7 +29,7 @@ namespace Logic
 
          // Peek first 1024 bytes
          DWORD count = s->Read(buf.get(), 1024);
-         buf.get()[min(count,1023)] = NULL;
+         buf.get()[min(count,1023)] = '\0';
 
          // Check for unique XML document root elements
          if (StrStrIA((char*)buf.get(), "<script>") != nullptr)

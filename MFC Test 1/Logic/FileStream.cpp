@@ -91,7 +91,7 @@ namespace Logic
             throw IOException(HERE, SysErrorString());
 
          // Null terminate + return
-         output.get()[newLength] = NULL;
+         output.get()[newLength] = '\0';
          return output;
       }
 
