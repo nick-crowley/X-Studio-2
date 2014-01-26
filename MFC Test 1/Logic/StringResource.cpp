@@ -29,9 +29,13 @@ namespace Logic
    /// <returns>Wide char equivilent</returns>
    wstring  StringResource::Convert(const string& str, UINT codepage)
    {
-      unique_ptr<WCHAR> wide(new WCHAR[str.length()]);
+      UINT buflen = str.length();
+      unique_ptr<WCHAR> wide(new WCHAR[buflen+1]);
+      
       // Convert and null terminate buffer
-      wide.get()[ MultiByteToWideChar(codepage, NULL, str.c_str(), str.length(), wide.get(), str.length()) ] = NULL;
+      UINT len = MultiByteToWideChar(codepage, NULL, str.c_str(), str.length(), wide.get(), buflen);
+      wide.get()[min(len,buflen)] = NULL;
+
       return wide.get();
    }
 
@@ -41,9 +45,13 @@ namespace Logic
    /// <returns>Narrow char equivilent</returns>
    string  StringResource::Convert(const wstring& str, UINT codepage)
    {
-      unique_ptr<CHAR> ansi(new CHAR[4*str.length()]);
+      UINT buflen = 4*str.length();
+      unique_ptr<CHAR> ansi(new CHAR[buflen+1]);
+
       // Convert and null terminate buffer
-      ansi.get()[ WideCharToMultiByte(codepage, NULL, str.c_str(), str.length(), ansi.get(), 4*str.length(), NULL, NULL) ] = NULL;
+      UINT len = WideCharToMultiByte(codepage, NULL, str.c_str(), str.length(), ansi.get(), buflen, NULL, NULL);
+      ansi.get()[min(len,buflen)] = NULL;
+
       return ansi.get();
    }
 

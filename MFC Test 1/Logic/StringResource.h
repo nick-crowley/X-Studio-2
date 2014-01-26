@@ -32,6 +32,10 @@ namespace Logic
    class GuiString : public wstring
    {
    public:
+      /// <summary>Create empty string</summary>
+      GuiString()
+      {}
+
       /// <summary>Loads and formats a resource string</summary>
       /// <param name="id">Resource ID</param>
       /// <param name="">Arguments</param>
@@ -50,6 +54,12 @@ namespace Logic
          assign( StringResource::FormatV(format, va_start(args, format)) );
       }
 
+      /// <summary>Creates string from iterators</summary>
+      /// <param name="from">start</param>
+      /// <param name="to">end</param>
+      GuiString(const_iterator from, const_iterator to) : wstring(from, to)
+      {}
+
       /// <summary>Copy create from wstring.</summary>
       /// <param name="sz">The string</param>
       GuiString(const wstring& sz) : wstring(sz)
@@ -59,6 +69,50 @@ namespace Logic
       /// <param name="sz">The string</param>
       GuiString(const wstring&& sz) : wstring(move(sz))
       {}
+      
+      /// <summary>Perform case insensitive comparison</summary>
+      /// <param name="r">Other string</param>
+      /// <returns></returns>
+      bool Equals(const wstring& r) const
+      {
+         return StrCmpI(c_str(), r.c_str()) == 0;
+      }
+
+      /// <summary>Extracts n characters from start of the string</summary>
+      /// <param name="chars">Number of characters</param>
+      /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>
+      GuiString Left(UINT chars) const
+      {
+         return chars < length() ? GuiString(begin(),begin()+chars) : *this;
+      }
+      
+      /// <summary>Extracts n characters from end of the string</summary>
+      /// <param name="chars">Number of characters</param>
+      /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>
+      GuiString Right(UINT chars) const
+      {
+         return chars < length() ? GuiString(end()-chars,end()) : *this;
+      }
+      
+      /// <summary>Convert string to lower case</summary>
+      /// <returns>New string in lower case</returns>
+      GuiString  ToLower() const
+      {
+         GuiString s(*this);
+         for (auto& ch : s)
+            ch = towlower(ch);
+         return s;
+      }
+      
+      /// <summary>Convert string to upper case</summary>
+      /// <returns>New string in upper case</returns>
+      GuiString  ToUpper() const
+      {
+         GuiString s(*this);
+         for (auto& ch : s)
+            ch = towupper(ch);
+         return s;
+      }
 
       /// <summary>Trims leading characters</summary>
       /// <param name="chars">The chars.</param>
@@ -88,15 +142,6 @@ namespace Logic
          return s;
       }
 
-      /// <summary>Convert string to lower case</summary>
-      /// <returns>Copy of string in lower case</returns>
-      GuiString  ToLower() const
-      {
-         GuiString s(*this);
-         for (auto& ch : s)
-            ch = towlower(ch);
-         return s;
-      }
    };
 
 

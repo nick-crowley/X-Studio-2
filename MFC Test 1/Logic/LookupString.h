@@ -32,8 +32,9 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
 
-         bool    Exists() const;
-         wstring GetText() const;
+         virtual bool    Defined() const;
+         virtual bool    Exists() const;
+         virtual wstring GetText() const;
 
          // ----------------------- MUTATORS ------------------------
 
