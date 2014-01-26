@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePageView.h"
-#include "ListView.h"
+#include "Helpers.h"
 #include "Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>

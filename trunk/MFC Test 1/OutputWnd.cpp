@@ -3,7 +3,7 @@
 
 #include "OutputWnd.h"
 #include "MainWnd.h"
-#include "ListView.h"
+#include "Helpers.h"
 
 
 #ifdef _DEBUG

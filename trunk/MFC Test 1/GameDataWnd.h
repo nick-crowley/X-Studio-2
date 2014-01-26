@@ -1,6 +1,5 @@
 #pragma once
 #include "afxdockablepane.h"
-#include "Logic/SyntaxLibrary.h"
 #include "ImageListEx.h"
 
 /// <summary>User interface</summary>
@@ -28,6 +27,7 @@ NAMESPACE_BEGIN(GUI)
       
       // ----------------------- MUTATORS ------------------------
    protected:
+      void onAppStateChanged(AppState s);
       afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -35,7 +35,9 @@ NAMESPACE_BEGIN(GUI)
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSearchTermChanged();
       
-      void onAppStateChanged(AppState s);
+      virtual void Clear();
+      virtual void PopulateGroupCombo() PURE;
+      virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
 
    private:
       void  AdjustLayout();
@@ -44,13 +46,12 @@ NAMESPACE_BEGIN(GUI)
       // -------------------- REPRESENTATION ---------------------
 
    protected:
-      CListCtrl  ListView;
+      CListCtrl   ListView;
 	   ImageListEx Images;
-      CComboBox  Groups;
-      CEdit      Search;
+      CComboBox   Groups;
+      CEdit       Search;
 
-      SyntaxLibrary::ResultCollection Content;
-      AppStateChangedHandler          fnAppStateChanged;
+      AppStateChangedHandler  fnAppStateChanged;
    };
    
 NAMESPACE_END(GUI)

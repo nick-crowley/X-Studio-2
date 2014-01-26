@@ -6,7 +6,7 @@
 #include "ProjectWnd.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
-#include "GameDataWnd.h"
+#include "CommandWnd.h"
 #include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
 
@@ -70,7 +70,7 @@ NAMESPACE_BEGIN(GUI)
 	   CMFCToolBarImages m_UserImages;
 	   CProjectWnd       m_wndProject;
 	   COutputWnd        m_wndOutput;
-      CGameDataWnd      m_wndGameData;
+      CCommandWnd       m_wndCommands;
 	   CPropertiesWnd    m_wndProperties;
 
       GameDataWorker    GameDataThread;

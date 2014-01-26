@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameDataWnd.h"
 #include <strsafe.h>
-#include "ListView.h"
+#include "Helpers.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
@@ -33,6 +33,12 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   void  CGameDataWnd::Clear()
+   {
+      ListView.RemoveAllGroups();
+         ListView.DeleteAllItems();
+   }
 
    void CGameDataWnd::onAppStateChanged(AppState s)
    {
@@ -106,11 +112,8 @@ NAMESPACE_BEGIN(GUI)
          Groups.SetFont(&afxGlobalData.fontRegular);
 
          // Populate groups
-         Groups.AddString(L"All Groups");
-         for (UINT g = (UINT)CommandGroup::ARRAY; g < (UINT)CommandGroup::HIDDEN; ++g)
-            Groups.AddString(GuiString(IDS_FIRST_COMMAND_GROUP + g).c_str());
-         Groups.SetCurSel(0);
-
+         PopulateGroupCombo();
+         
 	      // Layout controls + Populate
 	      AdjustLayout();
          UpdateContent();
@@ -178,7 +181,7 @@ NAMESPACE_BEGIN(GUI)
       ListView.SetWindowPos(NULL, client.left, client.top+header, client.Width(), client.Height()-header, SWP_NOACTIVATE | SWP_NOZORDER);
 
       // Stretch ListView column
-      ListView.SetColumnWidth(0, client.Width());
+      ListView.SetColumnWidth(0, client.Width()-GetSystemMetrics(SM_CXVSCROLL));
    }
 
    void  CGameDataWnd::UpdateContent()
@@ -186,9 +189,7 @@ NAMESPACE_BEGIN(GUI)
       try
       {
          // Clear prev content
-         Content.clear();
-         ListView.RemoveAllGroups();
-         ListView.DeleteAllItems();
+         Clear();
 
          // Display nothing if no game data
          if (theApp.State == AppState::GameDataPresent)
@@ -197,32 +198,8 @@ NAMESPACE_BEGIN(GUI)
             CString searchTerm;
             Search.GetWindowTextW(searchTerm);
 
-            // Lookup matches
-            Content = SyntaxLib.Query((const WCHAR*)searchTerm, GameVersion::TerranConflict);
-            ListView.SetItemCount(Content.size());
-            
-            // Redefine groups
-            for (auto pair : SyntaxLib.GetGroups())
-            {
-               const wstring& name = pair.second;
-               UINT id = (UINT)pair.first;
-               
-               // Insert group
-               LVGroup g(id, name);
-               if (ListView.InsertGroup(g.iGroupId, (LVGROUP*)&g) != g.iGroupId)
-                  throw Win32Exception(HERE, GuiString(L"Unable to insert command group ") + name);
-            }
-
-            // Generate/insert display text for each command
-            for (UINT i = 0; i < Content.size(); ++i)
-            {
-               LVItem item(i, Content[i]->GetDisplayText(), (UINT)Content[i]->Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-               item.iImage = 0;
-
-               // Insert item
-               if (ListView.InsertItem((LVITEM*)&item) == -1)
-                  throw Win32Exception(HERE, GuiString(L"Unable to insert command '%s' (item %d, group %d)", item.pszText, i, item.iGroupId));
-            }
+            // Populate items
+            PopulateItems((const WCHAR*)searchTerm, Groups.GetCurSel());
          }
       }
       catch (ExceptionBase& e)
