@@ -21,6 +21,7 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Clears all objects from the library.</summary>

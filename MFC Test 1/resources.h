@@ -142,6 +142,7 @@
 
 #define IDS_FIRST_COMMAND_GROUP                           IDS_COMMAND_GROUP_ARRAY
 
+// Language page group names
 #define IDS_LANGUAGE_GROUP_DATA                             1430
 #define IDS_LANGUAGE_GROUP_DIALOGUE                         1431
 #define IDS_LANGUAGE_GROUP_MISC                             1432
@@ -156,6 +157,8 @@
 
 #define IDS_FIRST_LANGUAGE_GROUP                           IDS_LANGUAGE_GROUP_DATA
 
+
+// Maintype names
 #define IDS_MAIN_TYPE_DOCK                       1020         // Dock
 #define IDS_MAIN_TYPE_FACTORY                    1021         // Factory
 #define IDS_MAIN_TYPE_LASER                      1022         // Laser
@@ -170,5 +173,24 @@
 #define IDS_MAIN_TYPE_TECH                       1031         // Ware
 
 #define IDS_FIRST_MAIN_TYPE                        IDS_MAIN_TYPE_DOCK
+
+
+// ScriptObject Group names
+#define IDS_SCRIPT_OBJECT_GROUP_CONSTANT                 1040      // Script Constant
+#define IDS_SCRIPT_OBJECT_GROUP_DATA_TYPE                1041      // Variable Data Type
+#define IDS_SCRIPT_OBJECT_GROUP_FLIGHT_RETURN            1042      // Flight Return Code
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_CLASS             1043      // Object Class
+#define IDS_SCRIPT_OBJECT_GROUP_RACE                     1044      // Race
+#define IDS_SCRIPT_OBJECT_GROUP_RELATION                 1045      // Relation
+#define IDS_SCRIPT_OBJECT_GROUP_PARAMETER_TYPE           1046      // Parameter Syntax
+#define IDS_SCRIPT_OBJECT_GROUP_SECTOR                   1047      // Sector
+#define IDS_SCRIPT_OBJECT_GROUP_STATION_SERIAL           1048      // Station Serial
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_COMMAND           1049      // Object Command
+#define IDS_SCRIPT_OBJECT_GROUP_WING_COMMAND             1050      // Wing Command
+#define IDS_SCRIPT_OBJECT_GROUP_SIGNAL                   1051      // Signal
+#define IDS_SCRIPT_OBJECT_GROUP_TRANSPORT_CLASS          1052      // Transport Class
+#define IDS_SCRIPT_OBJECT_GROUP_OPERATOR                 1053      // Operator
+
+#define IDS_FIRST_SCRIPT_OBJECT_GROUP              IDS_SCRIPT_OBJECT_GROUP_CONSTANT
 
 

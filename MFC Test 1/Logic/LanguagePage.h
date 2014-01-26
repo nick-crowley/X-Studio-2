@@ -11,6 +11,29 @@ namespace Logic
       /// <summary>Categorises language page ID</summary>
       enum class PageGroup : UINT { DATA, DIALOGUE, MISC, QUEST, BONUS, MENU, EDITOR, NEWS, PLOT, NPC, USER };
 
+      /// <summary>Defines the game pages containing the definitions for the various game constants</summary>
+      enum KnownPage : UINT
+      {  
+         SECTORS              = 7,
+         STATION_SERIALS      = 12,
+         NAMES_DESCRIPTIONS   = 17,
+         RELATIONS            = 35,
+         RACES                = 1266,
+         TRANSPORT_CLASSES    = 1999,
+         PARAMETER_TYPES      = 2000,
+         OPERATORS            = 2001,
+         CONSTANTS            = 2002,
+         COMMAND_SYNTAX       = 2003,
+         OBJECT_CLASSES       = 2006,
+         CONDITIONALS         = 2007,
+         OBJECT_COMMANDS      = 2008,
+         FLIGHT_RETURNS       = 2009,
+         DATA_TYPES           = 2013,
+         WING_COMMANDS        = 2028 
+      };
+
+
+
       /// <summary>Represents a collection of language strings</summary>
       class LanguagePage
       {

@@ -139,6 +139,7 @@
     <ClInclude Include="Logic\GameDataWorker.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
     <ClInclude Include="Logic\RaceLookup.h" />
+    <ClInclude Include="Logic\ScriptObject.h" />
     <ClInclude Include="Logic\ScriptObjectLibrary.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="resources.h" />
     <ClInclude Include="ScriptDocument.h" />
     <ClInclude Include="ScriptEdit.h" />
+    <ClInclude Include="ScriptObjectWnd.h" />
     <ClInclude Include="ScriptView.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -227,6 +229,7 @@
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
+    <ClCompile Include="Logic\ScriptObject.cpp" />
     <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
@@ -279,6 +282,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ScriptDocument.cpp" />
     <ClCompile Include="ScriptEdit.cpp" />
+    <ClCompile Include="ScriptObjectWnd.cpp" />
     <ClCompile Include="ScriptView.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />

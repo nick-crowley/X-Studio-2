@@ -355,6 +355,12 @@
     <ClInclude Include="GameObjectWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptObjectWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ScriptObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -563,6 +569,12 @@
     </ClCompile>
     <ClCompile Include="GameObjectWnd.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptObjectWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
