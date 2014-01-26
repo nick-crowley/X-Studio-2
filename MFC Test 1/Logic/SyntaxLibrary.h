@@ -19,8 +19,8 @@ namespace Logic
          /// <summary>Command syntax array</summary>
          typedef vector<const CommandSyntax*>  ResultCollection;
 
-         /// <summary>Command group collection</summary>
-         typedef map<CommandGroup, wstring>  GroupCollection;
+         /// <summary>User customized Command group collection</summary>
+         typedef set<CommandGroup>  GroupCollection;
 
          /// <summary>Command syntax collection organised by ID</summary>
          class CommandCollection : public multimap<UINT, CommandSyntax>

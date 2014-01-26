@@ -76,8 +76,6 @@ namespace Logic
                                  URL;
       };
 
-
-      
       /// <summary>Defines the display group of a script command</summary>
       enum class CommandGroup : UINT
       {  
@@ -117,14 +115,18 @@ namespace Logic
          HIDDEN            = 32 
       };
 
-      // Number of Command groups
-      //
-      #define  COMMAND_GROUP_COUNT    33
+      /// <summary>Get command group name</summary>
+      GuiString  GetString(CommandGroup g);
+
+      /// <summary>Convenience command group global functions</summary>
+      CommandGroup operator++(CommandGroup& g, int);
+      CommandGroup& operator++(CommandGroup& g);
+      UINT operator-(const CommandGroup& a, const CommandGroup& b);
 
 
-      
-      // Define IDs of some important commands, for clarity
-      //
+
+
+      /// <summary>Define IDs of some important commands, for clarity</summary>
       #define    CMD_NONE                         0
       #define    CMD_COMMENT                      1
       #define    CMD_NOP                          2
