@@ -145,9 +145,10 @@ namespace Logic
 		      o.rotation.x = ReadFloat(L"rotation.x");
 		      o.rotation.y = ReadFloat(L"rotation.y");
 		      o.rotation.z = ReadFloat(L"rotation.z");
-
 		      o.subtype    = ReadString(L"subtype");		   
-            o.name       = LookupString(ReadInt(L"name"), KnownPage::NAMES_DESCRIPTIONS);
+            o.name.ID    = ReadInt(L"name");
+
+            o.description.ID = o.name.ID + 1;
 	      }
 
          /// <summary>Reads the properties unique to this type</summary>

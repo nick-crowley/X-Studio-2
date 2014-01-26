@@ -25,6 +25,13 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Queries whether string ID is defined</summary>
+      /// <returns></returns>
+      bool  LookupString::Defined() const
+      {
+         return ID != 0 && ID != 9999;
+      }
+
       /// <summary>Queries whether a string is present in the string library</summary>
       /// <returns></returns>
       bool  LookupString::Exists() const

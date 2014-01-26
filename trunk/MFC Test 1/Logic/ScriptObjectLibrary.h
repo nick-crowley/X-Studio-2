@@ -293,7 +293,8 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
       public:
          static ScriptObjectLibrary  Instance;
-         LookupCollection& Content;
+         
+         const LookupCollection& Content;
          
       private:
          ObjectCollection  Objects;

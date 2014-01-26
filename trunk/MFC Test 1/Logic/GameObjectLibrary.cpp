@@ -10,13 +10,13 @@
 
 namespace Logic
 {
-   namespace Scripts
+   namespace Types
    {
       GameObjectLibrary  GameObjectLibrary::Instance;
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      GameObjectLibrary::GameObjectLibrary()
+      GameObjectLibrary::GameObjectLibrary() : Content(Lookup)
       {
          Clear();
       }
@@ -33,8 +33,13 @@ namespace Logic
       /// <summary>Clears all loaded objects</summary>
       void GameObjectLibrary::Clear()
       {
+         // Clear files
          Files.clear();
-         Files.reserve(1+(UINT)MainType::TechWare);
+         Files.resize(1+(UINT)MainType::TechWare);
+
+         // Clear objects
+         Objects.clear();
+         Lookup.clear();
       }
 
       /// <summary>Enumerates available type files</summary>
@@ -43,8 +48,6 @@ namespace Logic
       /// <returns></returns>
       UINT GameObjectLibrary::Enumerate(const XFileSystem& vfs, WorkerData* data)
       {
-         UINT count=0;
-
          // Clear previous contents
          Clear();
 
@@ -83,7 +86,6 @@ namespace Logic
 
                // Read/store file directly 
                Files[(UINT)fn.Type] = reader->ReadFile(fn.Type, vfs.GetVersion());
-               count++;
 
                Console << Colour::Green << L"Success" << ENDL;
             }
@@ -93,7 +95,11 @@ namespace Logic
             }
          }
 
-         return count;
+         // Populate object collection
+         PopulateObjects(data);
+
+         // Return object count
+         return Content.size();
       }
 
       /// <summary>Finds an object</summary>
@@ -114,6 +120,29 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 
+      UINT  GameObjectLibrary::PopulateObjects(WorkerData* data)
+      {
+         // Feedback
+         data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating game objects from type definition files");
+
+         // Populate objects 
+         for (auto& f : Files)
+            if (f != nullptr)
+               for (UINT id = 0; id < f->Count; ++id)
+                  Objects.Add( GameObject(id, f->FindAt(id)) );
+
+         // Populate lookup
+         for (auto& o : Objects)
+         {
+            const GameObject& obj = o.second;
+            if (!Lookup.Add(obj))
+               Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Text << ENDL;
+         }
+
+         // Return object count
+         Console << "Generated " << Content.size() << " game objects" << ENDL;
+         return Content.size();
+      }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    

@@ -340,11 +340,11 @@
     <ClInclude Include="SuggestionList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\GameObjectLibrary.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="ImageListEx.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GameObjectLibrary.h">
+      <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -543,11 +543,11 @@
     <ClCompile Include="SuggestionList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\GameObjectLibrary.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="ImageListEx.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameObjectLibrary.cpp">
+      <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
