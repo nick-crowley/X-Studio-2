@@ -82,7 +82,7 @@ namespace Logic
          throw SyntaxNotFoundException(HERE, id, ver);
       }
 
-      /// <summary>Gets the groups collection</summary>
+      /// <summary>Get the collection of defined command groups</summary>
       /// <returns></returns>
       SyntaxLibrary::GroupCollection  SyntaxLibrary::GetGroups() const
       {
@@ -130,15 +130,15 @@ namespace Logic
       /// <param name="f">The file</param>
       void  SyntaxLibrary::Merge(SyntaxFile&& f)
       { 
-         // Merge commands arrays
+         // Merge commands with commands collection
          for (auto pair : f.Commands)
             Commands.Add(pair.second);
 
-         // Merge groups & lookup names
+         // Merge group IDs with groups set
          for (auto pair : f.Groups)
-            Groups[pair.second] = GuiString(IDS_FIRST_COMMAND_GROUP + (UINT)pair.second);
+            Groups.insert(pair.second); 
 
-         // Insert into syntax tree
+         // Add commands to syntax tree lookup
          for (auto& pair : Commands)
          {
             CommandSyntax& syntax = pair.second;

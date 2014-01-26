@@ -34,8 +34,8 @@ NAMESPACE_BEGIN(GUI)
       Groups.AddString(L"All Groups");
 
       // Populate group names
-      for (UINT g = (UINT)CommandGroup::ARRAY; g < (UINT)CommandGroup::HIDDEN; ++g)
-         Groups.AddString(GuiString(IDS_FIRST_COMMAND_GROUP + g).c_str());
+      for (CommandGroup g : SyntaxLib.GetGroups())
+         Groups.AddString(GetString(g).c_str());
 
       // Select 'unfiltered'
       Groups.SetCurSel(0);
@@ -50,16 +50,13 @@ NAMESPACE_BEGIN(GUI)
       auto Content = SyntaxLib.Query(searchTerm.c_str(), GameVersion::TerranConflict);
       ListView.SetItemCount(Content.size());
             
-      // Redefine groups
-      for (auto pair : SyntaxLib.GetGroups())
+      // Define groups
+      for (CommandGroup g : SyntaxLib.GetGroups())
       {
-         const wstring& name = pair.second;
-         UINT id = (UINT)pair.first;
-               
+         LVGroup grp((UINT)g, GetString(g));
          // Insert group
-         LVGroup g(id, name);
-         if (ListView.InsertGroup(g.iGroupId, (LVGROUP*)&g) != g.iGroupId)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert command group ") + name);
+         if (ListView.InsertGroup(grp.iGroupId, (LVGROUP*)&grp) != grp.iGroupId)
+            throw Win32Exception(HERE, GuiString(L"Unable to insert command group ") + GetString(g));
       }
 
       // Generate/insert display text for each command
@@ -70,7 +67,7 @@ NAMESPACE_BEGIN(GUI)
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert command '%s' (item %d, group %d)", item.pszText, i, item.iGroupId));
+            throw Win32Exception(HERE, GuiString(L"Unable to insert command '%s' (item %d, group %d)", item.pszText, i, GetString((CommandGroup)item.iGroupId)) );
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------

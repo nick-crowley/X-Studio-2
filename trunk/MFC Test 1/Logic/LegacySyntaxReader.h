@@ -7,7 +7,9 @@ namespace Logic
 {
    namespace IO
    {
-      
+      /// <summary>Number of Command groups hard-coded into the legacy file</summary>
+      #define  COMMAND_GROUP_COUNT    33
+
       /// <summary>Reads the XStudio syntax file</summary>
       class LegacySyntaxReader : protected StringReader
       {
