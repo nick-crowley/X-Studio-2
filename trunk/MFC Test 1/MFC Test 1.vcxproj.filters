@@ -352,6 +352,9 @@
     <ClInclude Include="Helpers.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="GameObjectWnd.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -556,6 +559,9 @@
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
     <ClCompile Include="CommandWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>

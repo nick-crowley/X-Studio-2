@@ -79,6 +79,9 @@ namespace Logic
          const wstring  ID, Name, Description;
       };
 
+      /// <summary>Vector of game objects</summary>
+      typedef vector<GameObject> GameObjectArray;
+
       /// <summary></summary>
       class GameObjectLibrary
       {
@@ -210,6 +213,7 @@ namespace Logic
          void  Clear();
          UINT  Enumerate(const XFileSystem& vfs, WorkerData* data);
          TObject*  Find(MainType main, UINT subtype);
+         GameObjectArray Query(const wstring& search);
 
       protected:
          UINT  PopulateObjects(WorkerData* data);

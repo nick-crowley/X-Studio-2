@@ -118,6 +118,18 @@ namespace Logic
          return Files[(UINT)main]->FindAt(subtype);
       }
 
+      GameObjectArray  GameObjectLibrary::Query(const wstring& search)
+      {
+         GameObjectArray Results;
+         
+         // Linear search for partial substring
+         for (auto& pair : Lookup)
+            if (search.length() == 0 || pair.first.find(search.c_str()) != wstring::npos)
+               Results.push_back(pair.second);
+
+         return Results;
+      }
+
       // ------------------------------ PROTECTED METHODS -----------------------------
 
       UINT  GameObjectLibrary::PopulateObjects(WorkerData* data)

@@ -17,6 +17,13 @@ namespace Logic
          DockWreck, FactoryWreck, ShipWreck
       };
 
+      MainType& operator++(MainType& m);
+      MainType operator++(MainType& m, int);
+      UINT operator-(const MainType& a, const MainType& b);
+      
+      /// <summary>Get main type name</summary>
+      const wchar* GetString(const MainType& m);
+
       /// <summary>Ware sizes</summary>
       enum class WareSize : UINT { Tiny, Small, Medium, Large, ExtraLarge, Station };
 
