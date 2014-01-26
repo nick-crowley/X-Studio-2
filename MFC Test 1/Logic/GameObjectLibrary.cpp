@@ -118,6 +118,9 @@ namespace Logic
          return Files[(UINT)main]->FindAt(subtype);
       }
 
+      /// <summary>Searches the library for objects containing a substring</summary>
+      /// <param name="search">substring</param>
+      /// <returns></returns>
       GameObjectArray  GameObjectLibrary::Query(const wstring& search)
       {
          GameObjectArray Results;

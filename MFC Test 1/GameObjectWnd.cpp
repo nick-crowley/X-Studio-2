@@ -36,7 +36,7 @@ NAMESPACE_BEGIN(GUI)
 
       // Populate group names
       for (MainType type = MainType::Dock; type <= MainType::TechWare; type++)
-         Groups.AddString(GetString(type));
+         Groups.AddString(GetString(type).c_str());
 
       // Select 'unfiltered'
       Groups.SetCurSel(0);
