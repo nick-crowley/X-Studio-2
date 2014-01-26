@@ -64,7 +64,7 @@ NAMESPACE_BEGIN(GUI)
       // Generate/insert display text for each command
       for (UINT i = 0; i < Content.size(); ++i)
       {
-         LVItem item(i, Content[i].Text, Content[i].Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+         LVItem item(i, Content[i].Text, (UINT)Content[i].Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
          item.iImage = 0;
 
          // Insert item

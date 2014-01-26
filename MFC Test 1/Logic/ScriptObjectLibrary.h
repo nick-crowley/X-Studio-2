@@ -11,6 +11,7 @@ namespace Logic
    namespace Scripts
    {
       
+
       /// <summary>Provides access to script objects</summary>
       class ScriptObjectLibrary
       {
@@ -213,6 +214,7 @@ namespace Logic
       public:
          void  Clear();
          UINT  Enumerate(WorkerData* data);
+         ScriptObjectArray Query(const wstring& str) const;
 
       protected:
          bool  InsertConflicts(ScriptObject a, ScriptObject b);

@@ -8,6 +8,7 @@
 #include "PropertiesWnd.h"
 #include "CommandWnd.h"
 #include "GameObjectWnd.h"
+#include "ScriptObjectWnd.h"
 #include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
 
@@ -73,6 +74,7 @@ NAMESPACE_BEGIN(GUI)
 	   COutputWnd        m_wndOutput;
       CCommandWnd       m_wndCommands;
       CGameObjectWnd    m_wndGameObjects;
+      CScriptObjectWnd  m_wndScriptObjects;
 	   CPropertiesWnd    m_wndProperties;
 
       GameDataWorker    GameDataThread;
