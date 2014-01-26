@@ -112,6 +112,9 @@ namespace Logic
          const ScriptObjectGroup Group;
       };
 
+
+      /// <summary>Vector of script objects</summary>
+      typedef vector<ScriptObject>  ScriptObjectArray;
    
    }
 }

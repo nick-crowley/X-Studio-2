@@ -186,14 +186,19 @@ NAMESPACE_BEGIN(GUI)
          // Game objects window:
          if (!m_wndGameObjects.Create(GuiString(L"Game Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_GAME_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Game objects window");
-         
 
+         // Game objects window:
+         if (!m_wndScriptObjects.Create(GuiString(L"Script Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SCRIPT_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	         throw Win32Exception(HERE, L"Unable to create Script objects window");
+         
+         
          // Set icons
          m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndCommands.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndScriptObjects.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 	      UpdateMDITabbedBarsIcons();
 
          // Dock each window
@@ -211,6 +216,9 @@ NAMESPACE_BEGIN(GUI)
 
          m_wndGameObjects.EnableDocking(CBRS_ALIGN_ANY);
          DockPane(&m_wndGameObjects);
+
+         m_wndScriptObjects.EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(&m_wndScriptObjects);
 
 
 	      // set the visual manager and style 

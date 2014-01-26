@@ -65,6 +65,21 @@ namespace Logic
          return Lookup.size();
       }
 
+      /// <summary>Find all script objects containing a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <returns></returns>
+      ScriptObjectArray  ScriptObjectLibrary::Query(const wstring& str) const
+      {
+         ScriptObjectArray Results;
+
+         // Linear search for partial substring
+         for (auto& pair : Lookup)
+            if (str.length() == 0 || pair.first.find(str.c_str()) != wstring::npos)
+               Results.push_back(pair.second);
+
+         return Results;
+      }
+
       // ------------------------------ PROTECTED METHODS -----------------------------
       
       /// <summary>Attempts to insert two conflicting object.</summary>
