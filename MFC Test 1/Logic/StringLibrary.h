@@ -42,6 +42,7 @@ namespace Logic
       public:
          bool            Contains(UINT page, UINT id) const;
          LanguageString  Find(UINT page, UINT id) const;
+         wstring         Resolve(UINT page, UINT id) const;
 
 		   // ----------------------- MUTATORS ------------------------
 
