@@ -39,6 +39,8 @@ namespace Logic
       /// <summary>Station size lookup string</summary>
       class StationSizeLookup : public LookupString
       {
+         enum StationSize { Small=2, Medium=5, Large=10, ExtraLarge=20 };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          StationSizeLookup() : LookupString(0, KnownPage::STATION_SERIALS)
@@ -50,6 +52,18 @@ namespace Logic
          DEFAULT_MOVE(StationSizeLookup);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
+         
+         static UINT  StationSizeToStringID(UINT id)
+         {
+            switch (id)
+            {
+            case StationSize::Small:      return 502;
+            case StationSize::Medium:     return 503;
+            case StationSize::Large:      return 504;
+            case StationSize::ExtraLarge: return 505;
+            default:                      return 0;
+            }
+         }
 
          // --------------------- PROPERTIES ------------------------
 
@@ -66,7 +80,7 @@ namespace Logic
          /// <returns></returns>
          bool  Exists() const
          {
-            return StringLib.Contains(Page, ID+501);
+            return StringLib.Contains(Page, StationSizeToStringID(ID));
          }
 
          /// <summary>Finds the station size text in the string library</summary>
@@ -75,7 +89,7 @@ namespace Logic
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          wstring  GetText() const
          {
-            return StringLib.Find(Page, ID+501).Text;
+            return StringLib.Resolve(Page, StationSizeToStringID(ID));
          }
 
          // ----------------------- MUTATORS ------------------------
@@ -122,7 +136,7 @@ namespace Logic
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          wstring  GetText() const
          {
-            return StringLib.Find(Page, ID+10000).Text;
+            return StringLib.Resolve(Page, ID+10000);
          }
 
          // ----------------------- MUTATORS ------------------------

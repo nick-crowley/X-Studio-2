@@ -45,7 +45,7 @@ namespace Logic
       /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
       wstring  LookupString::GetText() const
       {
-         return StringLib.Find(Page, ID).Text;
+         return StringLib.Resolve(Page, ID);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

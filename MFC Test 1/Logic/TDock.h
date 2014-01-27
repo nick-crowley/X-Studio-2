@@ -18,7 +18,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TDock(MainType t) : TObject(MainType::Dock)
+         TDock(MainType t) : TObject(t)
          {}
          TDock() : TObject(MainType::Dock)
          {}
@@ -33,11 +33,22 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
-
-         wstring  GetFullName() const
+      protected:
+         wstring  GetInternalName() const
          {
-            return race.Defined() && race.Exists() ? race.Text + L" " + TObject::FullName : TObject::FullName;
-            
+            wstring strRace, strName;
+
+            // Aldrin: special case
+            if (id.find(L"_LC_") != wstring::npos)
+               strRace = L"Aldrin";
+
+            // Lookup race
+            else if (race.Defined() && race.Exists())
+               strRace = race.Text;
+
+            // Prepend race, Except when name already contains race in some capacity
+            strName = TObject::GetInternalName();
+            return !strRace.length() || strName.find(strRace) != wstring::npos ? strName : strRace + L" " + strName;
          }
 
          // ----------------------- MUTATORS ------------------------
