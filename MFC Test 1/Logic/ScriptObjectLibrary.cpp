@@ -174,7 +174,7 @@ namespace Logic
 
                   // Insert subset of strings from known pages
                   if (str.IsScriptObject())
-                     Objects.Add(ScriptObject(str.ID, (KnownPage)str.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
+                     Objects.Add(ScriptObject(str.ID, (KnownPage)str.Page, StringLib.Resolve(page.ID, str.ID), str.Version));
                }
             }
          

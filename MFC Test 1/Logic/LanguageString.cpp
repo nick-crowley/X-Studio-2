@@ -28,37 +28,27 @@ namespace Logic
          case KnownPage::OBJECT_COMMANDS:
          case KnownPage::PARAMETER_TYPES:
          case KnownPage::WING_COMMANDS:
-            break;
+            return true;
 
          // Exclude 'old' [THIS] from lookup tree
          case KnownPage::CONSTANTS:
-            if (ID == 0)
-               return false;
-            break;
+            return ID != 0;
 
          // Skip 6 digit sector names with IDs 20xxx and 30xxx
          case KnownPage::SECTORS:
-            if (ID < 1020000)
-               return false;
-            break;
+            return ID >= 1020000;
 
          // Include names, exclude initials
          case KnownPage::RACES:
-            if (ID >= 200)
-               return false;
-            break;
+            return ID < 200;
 
          // Exclude the S,M,L,XL,XXL ship/station name modifiers
          case KnownPage::STATION_SERIALS:
-            if (ID >= 500)
-               return false;
-            break;
+            return ID < 500;
 
          // Only include the abbreviated versions
          case KnownPage::TRANSPORT_CLASSES:
-            if (ID >= 10)
-               return false;
-            break;
+            return ID < 10;
 
          // FRIEND/FOE/NEUTRAL
          case KnownPage::RELATIONS:
@@ -67,13 +57,11 @@ namespace Logic
             case 1102422:
             case 1102423:
             case 1102424: 
-               break;
+               return true;
             default:  
                return false;
             }
          }
-
-         return true;
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

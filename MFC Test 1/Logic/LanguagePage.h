@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "MapIterator.hpp"
 
 namespace Logic
 {
@@ -137,6 +138,9 @@ namespace Logic
             UINT  PageID;
          };
 
+         /// <summary>Provides constant access to the strings within a language page</summary>
+         typedef MapIterator<const LanguageString, StringCollection, StringCollection::const_iterator> const_iterator;
+
          // --------------------- CONSTRUCTION ----------------------
 
       public:
@@ -152,12 +156,26 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 
+         /// <summary>Get constant string iterator</summary>
+         /// <returns></returns>
+         const_iterator begin() const 
+         { 
+            return const_iterator(Strings, Strings.begin()); 
+         }
+
          /// <summary>Query whether a string is present</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          bool Contains(UINT  id) const
          { 
             return Strings.Contains(id); 
+         }
+
+         /// <summary>Get constant string iterator</summary>
+         /// <returns></returns>
+         const_iterator end() const 
+         { 
+            return const_iterator(Strings, Strings.end()); 
          }
 
          /// <summary>Finds the specified string.</summary>
@@ -169,7 +187,7 @@ namespace Logic
             return Strings.Find(id);     
          }
 
-         /// <summary>Get category of this page</summary>
+         /// <summary>Get display category of this page when used in the string library viewer</summary>
          PageGroup  GetGroup() const;
 
          /// <summary>Finds the specified string.</summary>

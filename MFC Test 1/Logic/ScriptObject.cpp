@@ -57,7 +57,7 @@ namespace Logic
          case KnownPage::TRANSPORT_CLASSES:  return ScriptObjectGroup::TransportClass;
          case KnownPage::WING_COMMANDS:      return ScriptObjectGroup::WingCommand;
          }
-         throw ArgumentException(HERE, L"p + id", L"Unrecognised page/id combination");
+         throw ArgumentException(HERE, L"page/id", GuiString(L"{%d:%d} is not a valid page/id combination", page, id));
       }
 
       /// <summary>Get script object group string</summary>

@@ -361,6 +361,9 @@
     <ClInclude Include="Logic\StringParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\MapIterator.hpp">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
