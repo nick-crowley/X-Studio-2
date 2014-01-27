@@ -122,8 +122,9 @@ namespace Logic
          case ScriptObjectGroup::TransportClass:  return ScriptObject(*this, Text+L" (TC)");
          case ScriptObjectGroup::Sector:
          {
-            int x = _ttoi(Text.substr(3,2).c_str());
-            int y = _ttoi(Text.substr(5,2).c_str());
+            GuiString id(L"%d", ID);
+            int x = _ttoi(id.substr(3,2).c_str());
+            int y = _ttoi(id.substr(5,2).c_str());
             return ScriptObject(*this, Text+GuiString(L" (%d,%d)", x, y));
          }
          default: 

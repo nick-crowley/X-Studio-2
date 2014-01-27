@@ -108,8 +108,8 @@ namespace Logic
       /// <returns>true if mangled and inserted successfully, false if unable to resolve  (Neither are inserted if false)</returns>
       bool  ScriptObjectLibrary::MangleConflicts(ScriptObject a, ScriptObject b)
       {
-         // different pages: append category acronym
-         if (a.Group != b.Group)
+         // different groups: append group acronym 
+         if (a.Group != b.Group || a.Group == ScriptObjectGroup::Sector)   // special case: append sector co-ordinates
             return InsertConflicts(a+a.Group, b+b.Group);
 
          // different games: append game acronym
