@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StringLibrary.h"
 #include "LanguageFileReader.h"
+#include "StringParser.h"
 
 namespace Logic
 {
@@ -116,6 +117,17 @@ namespace Logic
 
          // Not found
          throw StringNotFoundException(HERE, page, id);
+      }
+
+      /// <summary>Finds a string, resolves the substrings and removes the comments</summary>
+      /// <param name="page">The page id</param>
+      /// <param name="id">The string id</param>
+      /// <returns>Resolved text</returns>
+      /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+      /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+      wstring  StringLibrary::Resolve(UINT page, UINT id) const
+      {
+         return StringParser(Find(page,id), page).Text;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
