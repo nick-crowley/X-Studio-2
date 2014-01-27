@@ -164,19 +164,12 @@ namespace Logic
       UINT  ScriptObjectLibrary::PopulateObjects(WorkerData* data)
       {
          // Iterate thru all strings in library
-         for (auto& f : StringLib.Files)       
-            for (auto& p : f.Pages)            
-            {  
-               const LanguagePage& page = p.second;
-               for (auto& s : page.Strings)    
-               {
-                  const LanguageString& str = s.second;
-
+         for (auto& file : StringLib.Files)       
+            for (auto& page : file)
+               for (auto& str : page)
                   // Insert subset of strings from known pages
                   if (str.IsScriptObject())
-                     Objects.Add(ScriptObject(str.ID, (KnownPage)str.Page, StringLib.Resolve(page.ID, str.ID), str.Version));
-               }
-            }
+                     Objects.Add(ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
          
          // Feedback
          Console << "Discovered " << (int)Objects.size() << " script objects..." << ENDL;

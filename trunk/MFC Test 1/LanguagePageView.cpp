@@ -82,11 +82,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Builds a static copy of the string library.</summary>
    void LanguagePageView::GenerateLibrary()
    {
-      // Iterate thru all pages in all library files
-      for (auto& f : StringLib.Files)
-         for (auto& pair : f.Pages)
-            // Copy page (and strings) into static snapshot
-            Library.Add(pair.second);
+      // Copy each page (and strings) into from string library into static snapshot
+      for (auto& file : StringLib.Files)
+         for (auto& page : file)
+            Library.Add(page);
    }
 
    /// <summary>Initialise listView and populate pages</summary>
