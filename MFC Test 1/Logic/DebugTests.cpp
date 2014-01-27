@@ -255,9 +255,65 @@ namespace Logic
    
    void DebugTests::Text_RegEx()
    {
+      wstring txt = L"the quick brown {17,245} jumped over the lazy {24,111}";
+      Console << "Matching " << txt << " against \\{(\\d+),(\\d+)\\}" << ENDL;
 
+      try
+      {
+         
+         const wregex reg(L"\\{(\\d+),(\\d+)\\}");
+         wsmatch matches;
+ 
+         //vector<int> v;
+         //v.push_back(1);
+         //v.push_back(2);
+ 
+         //// Token iterator
+         //Console << "Using wsregex_token_iterator: " << ENDL;
+         //for (wsregex_token_iterator i(txt.begin(), txt.end(), reg, v), end; i != end;)
+         //{
+         //   int x = _wtoi(i->str().c_str()); ++i;
+         //   Console << "Matched: " << x << ENDL;
 
+         //   int y = _wtoi(i->str().c_str()); ++i;
+         //   Console << "Matched: " << y << ENDL;
+         //}
 
+         // Search
+         Console << ENDL << "Using regex_search: " << ENDL;
+         if (regex_search(txt, matches, reg))
+            for (auto m : matches)
+               Console << "Matched: " << m.str().c_str() << ENDL;
+            
+         // Iterator
+         Console << ENDL << "Using wsregex_iterator: " << ENDL;
+         for (wsregex_iterator it(txt.begin(), txt.end(), reg), eof; it != eof; ++it)
+         {
+            Console << "Matched: " << it->str().c_str() << ENDL;
+            for (auto m : *it)
+               Console << "  SubMatch: " << m.str().c_str() << ENDL;
+         }
+
+         ///////////////////////////////////
+
+#define open_bracket  L"\\("
+#define close_bracket  L"\\)"
+#define backslash      L"\\\\"
+
+         wstring txt2 = L"(comment boo)Hello captain, I have \\(twenty\\) seven bears \\(in my head\\). (throw down) Oops i've ( put a bracket here\\)";
+         auto expr = L"(?!" backslash L")" open_bracket L"[^" open_bracket close_bracket backslash L"]+" L"(?!" backslash close_bracket L")" close_bracket;
+
+         Console << ENDL << "Matching '" << Colour::Yellow << txt2 << Colour::White << "' against " << Colour::Yellow << expr << ENDL;
+
+         // Iterator
+         const wregex reg2(expr, wregex::ECMAScript); 
+         for (wsregex_iterator it(txt2.cbegin(), txt2.cend(), reg2), eof; it != eof; ++it)
+            Console << "Matched: " << Colour::Green << it->str().c_str() << ENDL;
+      }
+      catch (regex_error& e)
+      {
+         Console << e;
+      }
    }
 
    void  DebugTests::Test_TFileReader()

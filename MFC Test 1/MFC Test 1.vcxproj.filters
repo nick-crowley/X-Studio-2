@@ -355,10 +355,13 @@
     <ClInclude Include="GameObjectWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptObjectWnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\ScriptObject.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptObjectWnd.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\StringParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -570,10 +573,13 @@
     <ClCompile Include="GameObjectWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptObjectWnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ScriptObject.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptObjectWnd.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\StringParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

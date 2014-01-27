@@ -137,6 +137,14 @@ namespace Logic
          return *this;
       }
 
+      /// <summary>Writes an STL exception to the console</summary>
+      /// <param name="e">Exception</param>
+      ConsoleWnd& operator<<(const exception&  e)
+      {
+         *this << Colour::Red << L"STL EXCEPTION: " << Colour::Yellow << e.what() << ENDL;
+         return *this;
+      }
+
       /// <summary>Writes text to the console</summary>
       /// <param name="txt">Text</param>
       void  Write(const wstring& txt)

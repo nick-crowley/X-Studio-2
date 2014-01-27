@@ -53,7 +53,6 @@ NAMESPACE_BEGIN(GUI)
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-      afx_msg void OnRuntests();
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
 
       // -------------------- REPRESENTATION ---------------------

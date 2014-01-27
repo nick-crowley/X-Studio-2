@@ -56,6 +56,7 @@ NAMESPACE_BEGIN(GUI)
       void onGameDataFeedback(const WorkerProgress& wp);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnRunAllTests();
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
       afx_msg void OnViewCustomize();
