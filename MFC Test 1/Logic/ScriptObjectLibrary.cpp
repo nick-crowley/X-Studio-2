@@ -163,6 +163,10 @@ namespace Logic
       /// <returns>Number of strings extracted</returns>
       UINT  ScriptObjectLibrary::PopulateObjects(WorkerData* data)
       {
+         // TEST: iterator
+         /*for (LanguageString& x : StringLib)
+            Console << x.Text;*/
+
          // Iterate thru all strings in library
          for (auto& f : StringLib.Files)       
             for (auto& p : f.Pages)            

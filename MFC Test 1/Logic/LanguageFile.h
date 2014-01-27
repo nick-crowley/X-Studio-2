@@ -100,6 +100,87 @@ namespace Logic
             }
          };
 
+         /// <summary>Provides constant access to the strings within a language file</summary>
+         class const_iterator : public std::iterator<std::forward_iterator_tag, LanguageString>
+         {
+            // ------------------------ TYPES --------------------------
+         private:
+            typedef LanguagePage::StringCollection::const_iterator  StringIterator;
+            typedef PageCollection::const_iterator                  PageIterator;
+            
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            const_iterator(const PageCollection& c, PageIterator pos) : Collection(&c), Page(pos), String(STRING_END)
+            {
+               // Get first string in first non-empty page, if any
+               if (Page != Collection->end())
+               {
+                  String = GetStrings().begin();
+                  NextPage();
+               }
+            }
+
+            // --------------------- PROPERTIES ------------------------
+			
+		      // ---------------------- ACCESSORS ------------------------
+         public:
+            const LanguageString& operator*() 
+            {
+               return String->second;
+            }
+
+            bool operator==(const const_iterator& r) const { return Collection==r.Collection && Page==r.Page && String==r.String; }
+            bool operator!=(const const_iterator& r) const { return Collection!=r.Collection || Page!=r.Page || String!=r.String; }
+
+         private:
+            const LanguagePage::StringCollection& GetStrings()
+            {
+               return Page->second.Strings;
+            }
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            const_iterator& operator++() 
+            { 
+               // Advance string + Advance to next non-empty Page if necessary
+               ++String;
+               NextPage();
+               return *this;
+            }
+
+            const_iterator operator++(int) 
+            {
+               const_iterator tmp(*this); 
+               operator++(); 
+               return tmp;
+            }
+            
+         private:
+            void NextPage()
+            {
+               // End of Page
+               while (String == GetStrings().end())
+               {
+                  // Advance Page + reset string
+                  if (++Page != Collection->end())
+                     String = GetStrings().begin();
+                  else
+                  {  // End of pages
+                     String = STRING_END;
+                     break;
+                  }
+               }
+            }
+            
+            // -------------------- REPRESENTATION ---------------------
+         private:
+            const StringIterator  STRING_END;
+
+            const PageCollection* Collection;
+            PageIterator          Page;
+            StringIterator        String;
+         };
+
          // --------------------- CONSTRUCTION ----------------------
 
       public:
@@ -111,6 +192,13 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 
+         /// <summary>Get constant string iterator</summary>
+         /// <returns></returns>
+         const_iterator begin() const 
+         { 
+            return const_iterator(Pages, Pages.begin()); 
+         }
+
          /// <summary>Queries whether a string is present</summary>
          /// <param name="page">The page id</param>
          /// <param name="id">The string id.</param>
@@ -118,6 +206,13 @@ namespace Logic
          bool  Contains(UINT page, UINT id) const
          { 
             return Pages.Contains(page,id); 
+         }
+         
+         /// <summary>Get constant string iterator</summary>
+         /// <returns></returns>
+         const_iterator end() const
+         { 
+            return const_iterator(Pages, Pages.end());   
          }
 
          /// <summary>Finds the specified string</summary>

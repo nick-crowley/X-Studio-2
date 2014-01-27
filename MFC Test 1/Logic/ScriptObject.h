@@ -10,7 +10,8 @@ namespace Logic
       /// <summary>Defines script object group</summary>
       enum class ScriptObjectGroup
       {
-         Constant, DataType, FlightReturn, ObjectClass, Race, Relation, ParameterType, Sector, StationSerial, ObjectCommand, WingCommand, Signal, TransportClass, Operator
+         Constant, DataType, FlightReturn, ObjectClass, Race, Relation, ParameterType, 
+         Sector, StationSerial, ObjectCommand, WingCommand, Signal, TransportClass, Operator
       };
 
       /// <summary>Convenience script object group global functions</summary>
