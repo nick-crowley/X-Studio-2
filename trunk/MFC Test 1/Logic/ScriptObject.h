@@ -18,7 +18,7 @@ namespace Logic
       ScriptObjectGroup& operator++(ScriptObjectGroup& g);
       UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
       
-      /// <summary>Get script object group string</summary>
+      /// <summary>Get script object group name</summary>
       GuiString GetString(const ScriptObjectGroup& g);
 
       /// <summary>Represents a script object</summary>
@@ -26,18 +26,10 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Creates a script object from a language string</summary>
-         /// <param name="p">The source page</param>
-         /// <param name="s">The string</param>
-         /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
-         ScriptObject(KnownPage p, const LanguageString& s);
+         ScriptObject(UINT id, KnownPage page, const wstring& txt, GameVersion ver);
          ~ScriptObject();
 
       private:
-         /// <summary>Creates copy of object with alternative text</summary>
-         /// <param name="obj">The source object</param>
-         /// <param name="newText">The new text.</param>
-         /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
          ScriptObject(const ScriptObject& obj, const wstring& newText);
          
 
@@ -48,7 +40,7 @@ namespace Logic
          // ------------------------ STATIC -------------------------
 
          /// <summary>Identifies the script object group</summary>
-         static ScriptObjectGroup  IdentifyGroup(KnownPage p, UINT id);
+         static ScriptObjectGroup  IdentifyGroup(KnownPage page, UINT id);
 
          // ---------------------- ACCESSORS ------------------------	
 

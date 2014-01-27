@@ -65,72 +65,12 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
-            /// <summary>Creates and adds a new object</summary>
-            /// <param name="page">The page</param>
-            /// <param name="str">The string to create the object from</param>
+            /// <summary>Adds a script object</summary>
+            /// <param name="obj">The object</param>
             /// <returns>True if successful, false if ID already present</returns>
-            bool  Add(KnownPage page, const LanguageString& str)
+            bool  Add(const ScriptObject& obj)
             {
-               switch (page)
-               {
-               // Exclude all
-               default:
-                  return false;
-
-               // Include all
-               case KnownPage::DATA_TYPES:
-               case KnownPage::FLIGHT_RETURNS:
-               case KnownPage::OBJECT_CLASSES:
-               case KnownPage::OBJECT_COMMANDS:
-               case KnownPage::PARAMETER_TYPES:
-               case KnownPage::WING_COMMANDS:
-                  break;
-
-               // Exclude 'old' [THIS] from lookup tree
-               case KnownPage::CONSTANTS:
-                  if (str.ID == 0)
-                     return false;
-                  break;
-
-               // Skip 6 digit sector names with IDs 20xxx and 30xxx
-               case KnownPage::SECTORS:
-                  if (str.ID < 1020000)
-                     return false;
-                  break;
-
-               // Include names, exclude initials
-               case KnownPage::RACES:
-                  if (str.ID >= 200)
-                     return false;
-                  break;
-
-               // Exclude the S,M,L,XL,XXL ship/station name modifiers
-               case KnownPage::STATION_SERIALS:
-                  if (str.ID >= 500)
-                     return false;
-                  break;
-
-               // Only include the abbreviated versions
-               case KnownPage::TRANSPORT_CLASSES:
-                  if (str.ID >= 10)
-                     return false;
-                  break;
-
-               // FRIEND/FOE/NEUTRAL
-               case KnownPage::RELATIONS:
-                  switch (str.ID)
-                  {
-                  case 1102422:
-                  case 1102423:
-                  case 1102424: 
-                     break;
-                  default:  
-                     return false;
-                  }
-               }
-
-               // Insert
-               return insert(value_type(ObjectID(page,str.ID), ScriptObject(page, str))).second;
+               return insert(value_type(ObjectID(obj.Page,obj.ID), obj)).second;
             }
          };
       
@@ -175,15 +115,6 @@ namespace Logic
                return insert(value_type(obj.Text, obj)).second;
             }
 
-            /// <summary>Creates a new script object and adds to the collection</summary>
-            /// <param name="page">The page.</param>
-            /// <param name="str">The language string to create object from</param>
-            /// <returns>True if successful, false if key already present</returns>
-            bool  Add(KnownPage page, const LanguageString& str)
-            {
-               return insert(value_type(str.Text, ScriptObject(page, str))).second;
-            }
-
             /// <summary>Removes an object from the collection</summary>
             /// <param name="sz">The text</param>
             void  Remove(const wstring& sz)
@@ -209,6 +140,7 @@ namespace Logic
          // ---------------------- ACCESSORS ------------------------			
       public:
          UINT  GetCount() const;
+         bool  IsScriptObject(const LanguageString& str, UINT page) const;
 
          // ----------------------- MUTATORS ------------------------
       public:

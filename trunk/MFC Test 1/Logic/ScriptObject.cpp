@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptObject.h"
+#include "StringLibrary.h"
 
 namespace Logic
 {
@@ -7,11 +8,14 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Creates a script object from a language string</summary>
-      /// <param name="p">The source page</param>
-      /// <param name="s">The string</param>
+      /// <summary>Creates a script object</summary>
+      /// <param name="id">string ID</param>
+      /// <param name="page">page ID</param>
+      /// <param name="txt">resolved text</param>
+      /// <param name="ver">game version</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
-      ScriptObject::ScriptObject(KnownPage p, const LanguageString& s) : Page(p), Group(IdentifyGroup(p, s.ID)), LanguageString(s)
+      ScriptObject::ScriptObject(UINT id, KnownPage page, const wstring& txt, GameVersion ver) 
+         : LanguageString(id, txt, ver), Group(IdentifyGroup(page, id)), Page(page)
       {
       }
 
@@ -20,7 +24,9 @@ namespace Logic
       /// <param name="newText">The new text.</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
       ScriptObject::ScriptObject(const ScriptObject& obj, const wstring& newText)
-            : Page(obj.Page), Group(IdentifyGroup(obj.Page, obj.ID)), LanguageString(obj.ID, newText, obj.Version)
+            : LanguageString(obj.ID, newText, obj.Version),
+              Group(IdentifyGroup(obj.Page, obj.ID)),
+              Page(obj.Page)
       {
       }
 
@@ -32,13 +38,13 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
       
       /// <summary>Identifies the script object group</summary>
-      /// <param name="p">Language page</param>
+      /// <param name="page">Language page</param>
       /// <param name="id">String ID</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Unrecognised combination</exception>
-      ScriptObjectGroup  ScriptObject::IdentifyGroup(KnownPage p, UINT id)
+      ScriptObjectGroup  ScriptObject::IdentifyGroup(KnownPage page, UINT id)
       {
-         switch (p)
+         switch (page)
          {
          case KnownPage::CONSTANTS:          return ScriptObjectGroup::Constant;
          case KnownPage::DATA_TYPES:         return ScriptObjectGroup::DataType;
@@ -47,6 +53,8 @@ namespace Logic
          case KnownPage::OBJECT_COMMANDS:    return ScriptObjectGroup::ObjectCommand;
          case KnownPage::PARAMETER_TYPES:    return ScriptObjectGroup::ParameterType;
          case KnownPage::SECTORS:            return ScriptObjectGroup::Sector;
+         case KnownPage::RACES:              return ScriptObjectGroup::Race;
+         case KnownPage::RELATIONS:          return ScriptObjectGroup::Relation;
          case KnownPage::STATION_SERIALS:    return ScriptObjectGroup::StationSerial;
          case KnownPage::TRANSPORT_CLASSES:  return ScriptObjectGroup::TransportClass;
          case KnownPage::WING_COMMANDS:      return ScriptObjectGroup::WingCommand;
