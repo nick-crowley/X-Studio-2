@@ -129,11 +129,10 @@ namespace Logic
          // Generate reverse lookup collection
          for (auto& pair : Objects)  
          {
-            const ObjectID& id = pair.first;
             const ScriptObject& obj = pair.second;
 
-            // Attempt to insert by text
-            if (!Lookup.Add(id.Page, obj))
+            // Attempt to insert
+            if (!Lookup.Add(obj))
             {
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
@@ -171,23 +170,11 @@ namespace Logic
                const LanguagePage& page = p.second;
                for (auto& s : page.Strings)    
                {
-                  // Insert subset of strings from known pages
                   const LanguageString& str = s.second;
-                  switch (page.ID)
-                  {
-                  case KnownPage::CONSTANTS:
-                  case KnownPage::DATA_TYPES:
-                  case KnownPage::FLIGHT_RETURNS:
-                  case KnownPage::OBJECT_CLASSES:
-                  case KnownPage::OBJECT_COMMANDS:
-                  case KnownPage::PARAMETER_TYPES:
-                  case KnownPage::SECTORS:
-                  case KnownPage::STATION_SERIALS:
-                  case KnownPage::TRANSPORT_CLASSES:
-                  case KnownPage::WING_COMMANDS:
-                     Objects.Add((KnownPage)page.ID, str);
-                     break;
-                  }
+
+                  // Insert subset of strings from known pages
+                  if (IsScriptObject(str, page.ID))
+                     Objects.Add(ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
                }
             }
          
@@ -198,6 +185,72 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
+      /// <summary>Determines whether string is a script object</summary>
+      /// <param name="str">The string.</param>
+      /// <param name="page">The page.</param>
+      /// <returns></returns>
+      bool  ScriptObjectLibrary::IsScriptObject(const LanguageString& str, UINT page) const
+      {
+         switch (page)
+         {
+         // Exclude all
+         default:
+            return false;
+
+         // Include all
+         case KnownPage::DATA_TYPES:
+         case KnownPage::FLIGHT_RETURNS:
+         case KnownPage::OBJECT_CLASSES:
+         case KnownPage::OBJECT_COMMANDS:
+         case KnownPage::PARAMETER_TYPES:
+         case KnownPage::WING_COMMANDS:
+            break;
+
+         // Exclude 'old' [THIS] from lookup tree
+         case KnownPage::CONSTANTS:
+            if (str.ID == 0)
+               return false;
+            break;
+
+         // Skip 6 digit sector names with IDs 20xxx and 30xxx
+         case KnownPage::SECTORS:
+            if (str.ID < 1020000)
+               return false;
+            break;
+
+         // Include names, exclude initials
+         case KnownPage::RACES:
+            if (str.ID >= 200)
+               return false;
+            break;
+
+         // Exclude the S,M,L,XL,XXL ship/station name modifiers
+         case KnownPage::STATION_SERIALS:
+            if (str.ID >= 500)
+               return false;
+            break;
+
+         // Only include the abbreviated versions
+         case KnownPage::TRANSPORT_CLASSES:
+            if (str.ID >= 10)
+               return false;
+            break;
+
+         // FRIEND/FOE/NEUTRAL
+         case KnownPage::RELATIONS:
+            switch (str.ID)
+            {
+            case 1102422:
+            case 1102423:
+            case 1102424: 
+               break;
+            default:  
+               return false;
+            }
+         }
+
+         return true;
+      }
    }
 }
 
