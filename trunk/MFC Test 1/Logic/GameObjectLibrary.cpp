@@ -170,6 +170,9 @@ namespace Logic
 
          // Mangle names of conflicting objects
          for (auto& list : Conflicts)
+         {
+            Lookup.Remove(list.first);
+
             for (auto& obj : list.second)
                // Append ID, then attempt to insert
                if (!Lookup.Add(obj + obj.ID))
@@ -178,6 +181,7 @@ namespace Logic
                   data->SendFeedback(ProgressType::Error, 2, GuiString(L"Unable to add game object '%s'", obj.Name.c_str()) );
                   Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Name << ENDL;
                }
+         }
 
          // Populate objects collection from lookup (thereby preserving the name mangling)
          for (auto& pair : Lookup)

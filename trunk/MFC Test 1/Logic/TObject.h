@@ -75,7 +75,10 @@ namespace Logic
             return subtype.Right(2) == L"_P" || subtype.Right(4) == L"_P_1" || subtype.Right(4) == L"_P_2" || subtype.Right(4) == L"_P_3";
          }*/
 
-         virtual wstring GetFullName() const;
+         wstring GetFullName() const;
+      
+      protected:
+         virtual wstring GetInternalName() const;
 
          // ----------------------- MUTATORS ------------------------
 

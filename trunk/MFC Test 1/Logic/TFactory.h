@@ -32,10 +32,10 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
-
-         wstring  GetFullName() const
+      protected:
+         wstring  GetInternalName() const
          {
-            return factorySize.Defined() && factorySize.Exists() ? TDock::FullName + L" " + factorySize.Text : TDock::FullName;
+            return factorySize.Defined() && factorySize.Exists() ? TDock::GetInternalName()+L" "+factorySize.Text : TDock::GetInternalName();
          }
 
          // ----------------------- MUTATORS ------------------------

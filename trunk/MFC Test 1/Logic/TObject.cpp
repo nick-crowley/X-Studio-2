@@ -53,10 +53,17 @@ namespace Logic
       {
          return !name.Defined() ? L"*** UNDEFINED ***"
               : !name.Exists()  ? L"*** MISSING ***"
-                                : name.Text;
+                                : GetInternalName();
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
+
+      /// <summary>Gets the object display name.</summary>
+      /// <returns></returns>
+      wstring TObject::GetInternalName() const
+      {
+         return name.Text;
+      }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
