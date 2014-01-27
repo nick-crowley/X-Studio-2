@@ -226,6 +226,22 @@ namespace Logic
             return Pages.Find(page,id); 
          }
 
+         /// <summary>Compares precendence of two files</summary>
+         /// <param name="r">The other</param>
+         /// <returns></returns>
+         bool operator<(const LanguageFile& r) const
+         { 
+            return ID < r.ID; 
+         }
+
+         /// <summary>Compares precendence of two files</summary>
+         /// <param name="r">The other</param>
+         /// <returns></returns>
+         bool operator>(const LanguageFile& r) const
+         { 
+            return ID > r.ID; 
+         }
+
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
