@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "LanguagePage.h"
+#include "MapIterator.hpp"
 
 namespace Logic
 {
@@ -101,47 +102,8 @@ namespace Logic
          };
 
          /// <summary>Provides constant access to the pages within a language file</summary>
-         class const_iterator : public std::iterator<std::forward_iterator_tag, LanguagePage>
-         {
-            // ------------------------ TYPES --------------------------
-         private:
-            typedef PageCollection::const_iterator  PageIterator;
-            
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-            const_iterator(const PageCollection& c, PageIterator pos) : Collection(&c), Page(pos)
-            {
-            }
-
-            // --------------------- PROPERTIES ------------------------
-			
-		      // ---------------------- ACCESSORS ------------------------
-         public:
-            const LanguagePage& operator*() const          { return Page->second; }
-            bool operator==(const const_iterator& r) const { return Collection==r.Collection && Page==r.Page; }
-            bool operator!=(const const_iterator& r) const { return Collection!=r.Collection || Page!=r.Page; }
-
-            // ----------------------- MUTATORS ------------------------
-         public:
-            const_iterator& operator++() 
-            { 
-               ++Page;
-               return *this;
-            }
-
-            const_iterator operator++(int) 
-            {
-               const_iterator tmp(*this); 
-               operator++(); 
-               return tmp;
-            }
-            
-            // -------------------- REPRESENTATION ---------------------
-         private:
-            const PageCollection* Collection;
-            PageIterator          Page;
-         };
-
+         typedef MapIterator<const LanguagePage, PageCollection, PageCollection::const_iterator> const_iterator;
+         
          // --------------------- CONSTRUCTION ----------------------
 
       public:

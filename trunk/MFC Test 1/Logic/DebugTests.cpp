@@ -248,9 +248,8 @@ namespace Logic
          // Test iterator
          Console << ENDL << Colour::Cyan << "Testing Language file iterator..." << ENDL;
          for (const LanguagePage& page : langFile)
-         {}
-            /*for (const LanguageString& str : page)
-               Console << str.ID << " : " << str.Text << ENDL;*/
+            for (const LanguageString& str : page)
+               Console << GuiString(L"{%d:%d} %s", str.Page, str.ID, str.Text.c_str()) << ENDL;
       }
       catch (ExceptionBase&  e)
       {
