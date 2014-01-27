@@ -22,22 +22,22 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ObjectID(KnownPage p, UINT id) : Page(p), ID(id)
+            ObjectID(ScriptObjectGroup g, UINT id) : Group(g), ID(id)
             {}
 
             // ---------------------- ACCESSORS ------------------------	
          public:
             bool operator==(const ObjectID& r) const {
-               return Page == r.Page && ID == r.ID;
+               return Group == r.Group && ID == r.ID;
             }
             bool operator<(const ObjectID& r) const {
-               return Page < r.Page || (Page == r.Page && ID < r.ID);
+               return Group < r.Group || (Group == r.Group && ID < r.ID);
             }
 
             // -------------------- REPRESENTATION ---------------------
          public:
-            const KnownPage Page;
-            const UINT      ID;
+            const ScriptObjectGroup Group;
+            const UINT              ID;
          };
 
          /// <summary>Collection of Script objects sorted by ID</summary>
@@ -52,15 +52,15 @@ namespace Logic
             /// <param name="id">The ID.</param>
             /// <returns></returns>
             /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-            ScriptObject  Find(KnownPage page, UINT id) const
+            ScriptObject  Find(ScriptObjectGroup grp, UINT id) const
             {
                const_iterator it;
                // Lookup and return string
-               if ((it = find(ObjectID(page, id))) != end())
+               if ((it = find(ObjectID(grp, id))) != end())
                   return it->second;
 
                // Error: Not found
-               throw ScriptObjectNotFoundException(HERE, (UINT)page, id);
+               throw ScriptObjectNotFoundException(HERE, (UINT)grp, id);
             }
 
             // ----------------------- MUTATORS ------------------------
@@ -70,7 +70,7 @@ namespace Logic
             /// <returns>True if successful, false if ID already present</returns>
             bool  Add(const ScriptObject& obj)
             {
-               return insert(value_type(ObjectID(obj.Page,obj.ID), obj)).second;
+               return insert(value_type(ObjectID(obj.Group, obj.ID), obj)).second;
             }
          };
       
@@ -140,7 +140,6 @@ namespace Logic
          // ---------------------- ACCESSORS ------------------------			
       public:
          UINT  GetCount() const;
-         bool  IsScriptObject(const LanguageString& str, UINT page) const;
 
          // ----------------------- MUTATORS ------------------------
       public:

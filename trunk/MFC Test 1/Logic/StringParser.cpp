@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "StringParser.h"
-#include "LanguageString.h"
+#include "LanguagePage.h"
 #include "StringLibrary.h"
 
 // Define reg.ex characters that are difficult to understand using C-style escape codes

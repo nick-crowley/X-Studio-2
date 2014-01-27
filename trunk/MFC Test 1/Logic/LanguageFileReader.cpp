@@ -216,7 +216,7 @@ namespace Logic
             XmlNodePtr node = element->childNodes->item[i];
 
             if (node->nodeType == XML::NODE_ELEMENT)
-               page.Strings.Add( ReadString(node, ver) );
+               page.Strings.Add( ReadString(node, page, ver) );
          }
 
          // Return page
@@ -225,17 +225,18 @@ namespace Logic
 
       /// <summary>Reads a string tag</summary>
       /// <param name="element">String 't' element</param>
+      /// <param name="page">Containing page</param>
       /// <param name="v">Version of page</param>
       /// <returns>New language string</returns>
       /// <exception cref="Logic::FileFormatException">Missing element or attributes</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      LanguageString  LanguageFileReader::ReadString(XmlNodePtr&  element, GameVersion v)
+      LanguageString  LanguageFileReader::ReadString(XmlNodePtr&  element, LanguagePage& page, GameVersion v)
       {
          // Verify string tag
          ReadElement(element, L"t");
 
          // Read ID+text
-         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), (WCHAR*)element->text, v);
+         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), page.ID, (WCHAR*)element->text, v);
       }
    }
 }

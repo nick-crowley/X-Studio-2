@@ -1,8 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "LanguageString.h"
-
-using namespace Logic::Language;
 
 namespace Logic
 {
@@ -32,7 +29,30 @@ namespace Logic
          WING_COMMANDS        = 2028 
       };
 
+      /// <summary>Language string with immutable ID</summary>
+      class LanguageString
+      {
+         // --------------------- CONSTRUCTION ----------------------
 
+      public:
+         LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v) : ID(id), Page(page), Text(txt), Version(v) {};
+         ~LanguageString() {};
+
+         // --------------------- PROPERTIES ------------------------
+			
+		   // ---------------------- ACCESSORS ------------------------
+         
+         bool  IsScriptObject() const;
+
+		   // ----------------------- MUTATORS ------------------------
+
+		   // -------------------- REPRESENTATION ---------------------
+
+         const UINT   ID,
+                      Page;
+         wstring      Text;
+         GameVersion  Version;
+      };
 
       /// <summary>Represents a collection of language strings</summary>
       class LanguagePage
@@ -175,3 +195,5 @@ namespace Logic
       };
    }
 }
+
+using namespace Logic::Language;
