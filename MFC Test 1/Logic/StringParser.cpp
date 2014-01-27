@@ -45,7 +45,7 @@ namespace Logic
               page = _wtoi( match[1].str().c_str() );
 
          // Insert string if present, otherwise keep original marker
-         return StringLib.Contains(page, id) ? StringLib.Find(page, id).Text : match[0].str();
+         return StringLib.Contains(page, id) ? StringLib.Resolve(page, id) : match[0].str();
       }
 
       wstring  StringParser::OnDefaultMarker(wsmatch& match)
@@ -53,7 +53,7 @@ namespace Logic
          UINT id   = _wtoi( match[1].str().c_str() );
 
          // Insert string if present, otherwise keep original marker
-         return StringLib.Contains(Page, id) ? StringLib.Find(Page, id).Text : match[0].str();
+         return StringLib.Contains(Page, id) ? StringLib.Resolve(Page, id) : match[0].str();
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
