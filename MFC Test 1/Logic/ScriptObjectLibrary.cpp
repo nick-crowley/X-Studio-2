@@ -94,7 +94,7 @@ namespace Logic
 
          // DEBUG: 
          Console << Colour::Green << GuiString(L"Mangle success '%s' {%d:%d} and '%s' {%d:%d}", 
-                                               a.Text.c_str(), a.Page, a.ID, b.Text.c_str(), b.Page, b.ID) << ENDL;
+                                               a.Text.c_str(), a.Group, a.ID, b.Text.c_str(), b.Group, b.ID) << ENDL;
 
          // Insert unique
          Lookup.Add(a);
@@ -109,8 +109,8 @@ namespace Logic
       bool  ScriptObjectLibrary::MangleConflicts(ScriptObject a, ScriptObject b)
       {
          // different pages: append category acronym
-         if (a.Page != b.Page)
-            return InsertConflicts(a+a.Page, b+b.Page);
+         if (a.Group != b.Group)
+            return InsertConflicts(a+a.Group, b+b.Group);
 
          // different games: append game acronym
          else if (a.Version != b.Version) 
@@ -137,7 +137,7 @@ namespace Logic
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
                Console << GuiString(L"Conflict detected '%s' between {%d:%d} and {%d:%d}", 
-                                    obj.Text.c_str(), obj.Page, obj.ID, conf.Page, conf.ID) << ENDL;
+                                    obj.Text.c_str(), obj.Group, obj.ID, conf.Group, conf.ID) << ENDL;
 
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
@@ -147,7 +147,7 @@ namespace Logic
                if (!MangleConflicts(obj, conflict))
                {
                   GuiString err(L"Unable to mangle '%s' {%d:%d} due to conflict with '%s' {%d:%d}", 
-                                obj.Text.c_str(), obj.Page, obj.ID, conflict.Text.c_str(), conflict.Page, conflict.ID);
+                                obj.Text.c_str(), obj.Group, obj.ID, conflict.Text.c_str(), conflict.Group, conflict.ID);
                   data->SendFeedback(Colour::Red, ProgressType::Error, 2, err);
                }
             }
@@ -163,10 +163,6 @@ namespace Logic
       /// <returns>Number of strings extracted</returns>
       UINT  ScriptObjectLibrary::PopulateObjects(WorkerData* data)
       {
-         // TEST: iterator
-         /*for (LanguageString& x : StringLib)
-            Console << x.Text;*/
-
          // Iterate thru all strings in library
          for (auto& f : StringLib.Files)       
             for (auto& p : f.Pages)            
@@ -177,8 +173,8 @@ namespace Logic
                   const LanguageString& str = s.second;
 
                   // Insert subset of strings from known pages
-                  if (IsScriptObject(str, page.ID))
-                     Objects.Add(ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
+                  if (str.IsScriptObject())
+                     Objects.Add(ScriptObject(str.ID, (KnownPage)str.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
                }
             }
          
@@ -189,72 +185,6 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
-      /// <summary>Determines whether string is a script object</summary>
-      /// <param name="str">The string.</param>
-      /// <param name="page">The page.</param>
-      /// <returns></returns>
-      bool  ScriptObjectLibrary::IsScriptObject(const LanguageString& str, UINT page) const
-      {
-         switch (page)
-         {
-         // Exclude all
-         default:
-            return false;
-
-         // Include all
-         case KnownPage::DATA_TYPES:
-         case KnownPage::FLIGHT_RETURNS:
-         case KnownPage::OBJECT_CLASSES:
-         case KnownPage::OBJECT_COMMANDS:
-         case KnownPage::PARAMETER_TYPES:
-         case KnownPage::WING_COMMANDS:
-            break;
-
-         // Exclude 'old' [THIS] from lookup tree
-         case KnownPage::CONSTANTS:
-            if (str.ID == 0)
-               return false;
-            break;
-
-         // Skip 6 digit sector names with IDs 20xxx and 30xxx
-         case KnownPage::SECTORS:
-            if (str.ID < 1020000)
-               return false;
-            break;
-
-         // Include names, exclude initials
-         case KnownPage::RACES:
-            if (str.ID >= 200)
-               return false;
-            break;
-
-         // Exclude the S,M,L,XL,XXL ship/station name modifiers
-         case KnownPage::STATION_SERIALS:
-            if (str.ID >= 500)
-               return false;
-            break;
-
-         // Only include the abbreviated versions
-         case KnownPage::TRANSPORT_CLASSES:
-            if (str.ID >= 10)
-               return false;
-            break;
-
-         // FRIEND/FOE/NEUTRAL
-         case KnownPage::RELATIONS:
-            switch (str.ID)
-            {
-            case 1102422:
-            case 1102423:
-            case 1102424: 
-               break;
-            default:  
-               return false;
-            }
-         }
-
-         return true;
-      }
    }
 }
 

@@ -14,16 +14,23 @@ namespace Logic
          Sector, StationSerial, ObjectCommand, WingCommand, Signal, TransportClass, Operator
       };
 
-      /// <summary>Convenience script object group global functions</summary>
-      ScriptObjectGroup operator++(ScriptObjectGroup& g, int);
-      ScriptObjectGroup& operator++(ScriptObjectGroup& g);
-      UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
-      
       /// <summary>Get script object group name</summary>
       GuiString GetString(const ScriptObjectGroup& g);
 
+      /// <summary>Post-Increment script object group</summary>
+      ScriptObjectGroup operator++(ScriptObjectGroup& g, int);
+
+      /// <summary>Pre-Increment script object group</summary>
+      ScriptObjectGroup& operator++(ScriptObjectGroup& g);
+
+      /// <summary>Substract script object group as int</summary>
+      UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
+      
+      
+
+
       /// <summary>Represents a script object</summary>
-      class ScriptObject : public LanguageString
+      class ScriptObject 
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -49,60 +56,26 @@ namespace Logic
       public:
          /// <summary>Appends an object ID</summary>
          /// <param name="id">The id</param>
-         /// <returns>New script object</returns>
-         ScriptObject operator+(UINT id)
-         {
-            return ScriptObject(*this, Text+GuiString(L" (%d)", id));
-         }
+         /// <returns>script object with new text</returns>
+         ScriptObject operator+(UINT id);
 
          /// <summary>Appends a game version acronym</summary>
          /// <param name="v">The version</param>
-         /// <returns>New script object</returns>
-         ScriptObject operator+(GameVersion v)
-         {
-            return ScriptObject(*this, Text+GuiString(L" (%s)", VersionString(v,true).c_str()));
-         }
+         /// <returns>script object with new text</returns>
+         ScriptObject operator+(GameVersion v);
 
-         /// <summary>Appends an page/category acronym</summary>
-         /// <param name="p">The page</param>
-         /// <returns>New script object</returns>
+         /// <summary>Appends a group acronym</summary>
+         /// <param name="g">The group</param>
+         /// <returns>script object with new text</returns>
          /// <exception cref="Logic::ArgumentException">Incompatible page</exception>
-         ScriptObject operator+(KnownPage p)
-         {
-            const wchar* acronym = nullptr;
-            switch (p)
-            {
-            case KnownPage::OBJECT_COMMANDS:
-            case KnownPage::WING_COMMANDS:  
-               return ScriptObject(*this, Text+L" (CMD)");
-            case KnownPage::CONSTANTS:
-               return ScriptObject(*this, Text+L" (CON)");
-            case KnownPage::DATA_TYPES:
-               return ScriptObject(*this, Text+L" (DT)");
-            case KnownPage::FLIGHT_RETURNS:
-               return ScriptObject(*this, Text+L" (FLRET)");
-            case KnownPage::OBJECT_CLASSES:
-               return ScriptObject(*this, Text+L" (OC)");
-            case KnownPage::PARAMETER_TYPES:
-               return ScriptObject(*this, Text+L" (TYPE)");               
-            case KnownPage::STATION_SERIALS:
-               return ScriptObject(*this, Text+L" (SS)");
-            case KnownPage::TRANSPORT_CLASSES:
-               return ScriptObject(*this, Text+L" (TC)");
-            case KnownPage::SECTORS:
-            {
-               int x = _ttoi(Text.substr(3,2).c_str());
-               int y = _ttoi(Text.substr(5,2).c_str());
-               return ScriptObject(*this, Text+GuiString(L" (%d,%d)", x, y));
-            }
-            default: throw ArgumentException(HERE, L"operand", L"Incompatible language page ID");
-            }
-         }
+         ScriptObject operator+(ScriptObjectGroup g);
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         const KnownPage Page;
+         const UINT              ID;
          const ScriptObjectGroup Group;
+         wstring                 Text;
+         GameVersion             Version;
       };
 
 

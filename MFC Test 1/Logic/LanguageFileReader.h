@@ -58,9 +58,9 @@ namespace Logic
          LanguageFile   ReadFile(wstring filename);
 
       private:
-         GameLanguage   ReadLanguageTag(XmlNodePtr&  element);
-         LanguagePage   ReadPage(XmlNodePtr&  element);
-         LanguageString ReadString(XmlNodePtr&  element, GameVersion v);
+         GameLanguage   ReadLanguageTag(XmlNodePtr& element);
+         LanguagePage   ReadPage(XmlNodePtr& element);
+         LanguageString ReadString(XmlNodePtr& element, LanguagePage& page, GameVersion v);
 
          // -------------------- REPRESENTATION ---------------------
       };

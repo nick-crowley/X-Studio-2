@@ -115,9 +115,6 @@
     <ClInclude Include="Logic\LanguagePage.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\LanguageString.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\CommandSyntax.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
@@ -402,9 +399,6 @@
     <ClCompile Include="Logic\LanguagePage.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\LanguageString.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\FileStream.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
@@ -581,6 +575,9 @@
     </ClCompile>
     <ClCompile Include="Logic\StringParser.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LanguageString.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

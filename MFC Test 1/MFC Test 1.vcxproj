@@ -162,7 +162,6 @@
     <ClInclude Include="Logic\LanguageFile.h" />
     <ClInclude Include="Logic\LanguageFileReader.h" />
     <ClInclude Include="Logic\LanguagePage.h" />
-    <ClInclude Include="Logic\LanguageString.h" />
     <ClInclude Include="Logic\LegacySyntaxReader.h" />
     <ClInclude Include="Logic\LookupString.h" />
     <ClInclude Include="Logic\Macros.h" />
@@ -230,6 +229,7 @@
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
+    <ClCompile Include="Logic\LanguageString.cpp" />
     <ClCompile Include="Logic\ScriptObject.cpp" />
     <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
     <ClCompile Include="Logic\StringParser.cpp" />
@@ -250,7 +250,6 @@
     <ClCompile Include="Logic\LanguageFile.cpp" />
     <ClCompile Include="Logic\LanguageFileReader.cpp" />
     <ClCompile Include="Logic\LanguagePage.cpp" />
-    <ClCompile Include="Logic\LanguageString.cpp" />
     <ClCompile Include="Logic\LegacySyntaxReader.cpp" />
     <ClCompile Include="Logic\LookupString.cpp" />
     <ClCompile Include="Logic\MemoryStream.cpp" />
