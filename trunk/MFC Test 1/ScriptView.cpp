@@ -25,7 +25,6 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
-      ON_COMMAND(ID_TEST_RUN_ALL, &ScriptView::OnRuntests)
       ON_WM_ACTIVATE()
    END_MESSAGE_MAP()
 
@@ -131,12 +130,6 @@ NAMESPACE_BEGIN(GUI)
 	   OnContextMenu(this, point);
    }
    
-   void ScriptView::OnRuntests()
-   {
-      DebugTests::RunAll();
-      AfxMessageBox(L"Tests complete");
-   }
-
    void ScriptView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);

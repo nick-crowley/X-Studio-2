@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "MainWnd.h"
-
+#include "Logic/DebugTests.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +43,7 @@ NAMESPACE_BEGIN(GUI)
 	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnViewStringLibrary)
+      ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnRunAllTests)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
 	   ON_WM_SETTINGCHANGE()
@@ -296,6 +297,12 @@ NAMESPACE_BEGIN(GUI)
       }
    }
    
+   void MainWnd::OnRunAllTests()
+   {
+      DebugTests::RunAll();
+      AfxMessageBox(L"Tests complete");
+   }
+
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
 	   CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
