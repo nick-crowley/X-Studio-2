@@ -68,7 +68,8 @@ namespace Logic
       //Test_SyntaxWriter();
       //Test_ExpressionParser();
       //Test_TFileReader();
-      Text_RegEx();
+      //Text_RegEx();
+      Test_Iterator();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -225,6 +226,29 @@ namespace Logic
 
          while (reader.ReadLine(line))
             Console.WriteLnf(line);
+      }
+      catch (ExceptionBase&  e)
+      {
+         CString sz;
+         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         AfxMessageBox(sz);
+      }
+   }
+
+   void  DebugTests::Test_Iterator()
+   {
+      const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"; 
+   
+      try
+      {
+         // Read file
+         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
+
+         // Test iterator
+         Console << ENDL << Colour::Cyan << "Testing Language file iterator..." << ENDL;
+         for (LanguageString& str : langFile)
+            Console << str.ID << " : " << str.Text << ENDL;
       }
       catch (ExceptionBase&  e)
       {
