@@ -24,6 +24,7 @@ namespace Logic
 
       StringParser::StringParser(const LanguageString& str, UINT page) : Text(str.Text), Page(page)
       {
+         //Console << "Parsing " << Colour::Yellow << str.Text << ENDL;
          Parse();
       }
 
@@ -40,8 +41,8 @@ namespace Logic
       
       wstring  StringParser::OnFullMarker(wsmatch& match)
       {
-         UINT id   = _wtoi( match[1].str().c_str() ),
-              page = _wtoi( match[2].str().c_str() );
+         UINT id   = _wtoi( match[2].str().c_str() ),
+              page = _wtoi( match[1].str().c_str() );
 
          // Insert string if present, otherwise keep original marker
          return StringLib.Contains(page, id) ? StringLib.Find(page, id).Text : match[0].str();
@@ -66,6 +67,7 @@ namespace Logic
          for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, FullMarker); Position += r.length())
          {
             r = OnFullMarker(match);
+            //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
             Text.replace(match[0].first, match[0].second, r);
          }
 
@@ -73,12 +75,16 @@ namespace Logic
          for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, DefaultMarker); Position += r.length())
          {
             r = OnDefaultMarker(match);
+            //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
             Text.replace(match[0].first, match[0].second, r);
          }
 
          // Remove all (aaa) markers
-         while (regex_search(Text.cbegin(), Text.cend(), match, DefaultMarker))
+         while (regex_search(Text.cbegin(), Text.cend(), match, RemoveComment))
+         {
+            //Console << "  Remove: " << Colour::Red << match[0].str() << ENDL;
             Text.erase(match[0].first, match[0].second);
+         }
       }
    }
 }

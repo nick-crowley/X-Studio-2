@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
-
+#include "Logic/StringParser.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -94,7 +94,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       CListView::OnInitialUpdate();
 
       // Setup listView
-      GetListCtrl().ModifyStyle(WS_BORDER, LVS_SINGLESEL);
+      GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
       GetListCtrl().SetView(LV_VIEW_DETAILS);
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
@@ -120,11 +120,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Populates the strings for the currently selected page</summary>
    void LanguageStringView::onPageSelectionChanged()
    {
-      // Clear prev
-      GetListCtrl().DeleteAllItems();
-
       try
       {
+         CWaitCursor c;
+
+         // Clear prev
+         GetListCtrl().DeleteAllItems();
+
          // Get selection, if any
          if (LanguagePage* page = GetPageView()->GetSelectedPage())
          {
@@ -139,14 +141,15 @@ NAMESPACE_BEGIN2(GUI,Views)
 
                // Add item {ID,Text}
                GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
-               GetListCtrl().SetItemText(item, 1, str.Text.c_str());
+               GetListCtrl().SetItemText(item, 1, StringParser(str, page->ID).Text.c_str());
             }
             GetListCtrl().SetRedraw(TRUE);
             GetListCtrl().UpdateWindow();
          }
       }
-      catch (ExceptionBase& e)
-      { Console << e; }
+      catch (ExceptionBase& e) {
+         Console << e; 
+      }
    }
 
    
