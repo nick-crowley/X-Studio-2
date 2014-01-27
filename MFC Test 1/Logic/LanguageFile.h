@@ -100,51 +100,32 @@ namespace Logic
             }
          };
 
-         /// <summary>Provides constant access to the strings within a language file</summary>
-         class const_iterator : public std::iterator<std::forward_iterator_tag, LanguageString>
+         /// <summary>Provides constant access to the pages within a language file</summary>
+         class const_iterator : public std::iterator<std::forward_iterator_tag, LanguagePage>
          {
             // ------------------------ TYPES --------------------------
          private:
-            typedef LanguagePage::StringCollection::const_iterator  StringIterator;
-            typedef PageCollection::const_iterator                  PageIterator;
+            typedef PageCollection::const_iterator  PageIterator;
             
             // --------------------- CONSTRUCTION ----------------------
          public:
-            const_iterator(const PageCollection& c, PageIterator pos) : Collection(&c), Page(pos), String(STRING_END)
+            const_iterator(const PageCollection& c, PageIterator pos) : Collection(&c), Page(pos)
             {
-               // Get first string in first non-empty page, if any
-               if (Page != Collection->end())
-               {
-                  String = GetStrings().begin();
-                  NextPage();
-               }
             }
 
             // --------------------- PROPERTIES ------------------------
 			
 		      // ---------------------- ACCESSORS ------------------------
          public:
-            const LanguageString& operator*() 
-            {
-               return String->second;
-            }
-
-            bool operator==(const const_iterator& r) const { return Collection==r.Collection && Page==r.Page && String==r.String; }
-            bool operator!=(const const_iterator& r) const { return Collection!=r.Collection || Page!=r.Page || String!=r.String; }
-
-         private:
-            const LanguagePage::StringCollection& GetStrings()
-            {
-               return Page->second.Strings;
-            }
+            const LanguagePage& operator*() const          { return Page->second; }
+            bool operator==(const const_iterator& r) const { return Collection==r.Collection && Page==r.Page; }
+            bool operator!=(const const_iterator& r) const { return Collection!=r.Collection || Page!=r.Page; }
 
             // ----------------------- MUTATORS ------------------------
          public:
             const_iterator& operator++() 
             { 
-               // Advance string + Advance to next non-empty Page if necessary
-               ++String;
-               NextPage();
+               ++Page;
                return *this;
             }
 
@@ -155,30 +136,10 @@ namespace Logic
                return tmp;
             }
             
-         private:
-            void NextPage()
-            {
-               // End of Page
-               while (String == GetStrings().end())
-               {
-                  // Advance Page + reset string
-                  if (++Page != Collection->end())
-                     String = GetStrings().begin();
-                  else
-                  {  // End of pages
-                     String = STRING_END;
-                     break;
-                  }
-               }
-            }
-            
             // -------------------- REPRESENTATION ---------------------
          private:
-            const StringIterator  STRING_END;
-
             const PageCollection* Collection;
             PageIterator          Page;
-            StringIterator        String;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -192,7 +153,7 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 
-         /// <summary>Get constant string iterator</summary>
+         /// <summary>Get constant page iterator</summary>
          /// <returns></returns>
          const_iterator begin() const 
          { 
@@ -208,7 +169,7 @@ namespace Logic
             return Pages.Contains(page,id); 
          }
          
-         /// <summary>Get constant string iterator</summary>
+         /// <summary>Get constant page iterator</summary>
          /// <returns></returns>
          const_iterator end() const
          { 
