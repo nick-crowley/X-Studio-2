@@ -16,7 +16,7 @@ namespace Logic
 
       /// <summary>Creates sentinel value (private ctor)</summary>
       ScriptCommand::ScriptCommand()
-         : Syntax(SyntaxLib.Unknown), RefIndex(0)
+         : Syntax(CommandSyntax::Unknown), RefIndex(0)
       {
       }
 

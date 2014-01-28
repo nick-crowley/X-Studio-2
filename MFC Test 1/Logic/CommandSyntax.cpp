@@ -9,13 +9,15 @@ namespace Logic
 {
    namespace Scripts
    {
-      
+      /// <summary>'unknown' command syntax sentinel value</summary>
+      const CommandSyntax  CommandSyntax::Unknown;
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create the 'unknown' command syntax sentinel value</summary>
       /// <param name="d">Declaration</param>
       CommandSyntax::CommandSyntax() 
-         : ID(CMD_NONE), 
+         : ID(CMD_UNRECOGNISED), 
            Versions((UINT)GameVersion::Threat|(UINT)GameVersion::Reunion|(UINT)GameVersion::TerranConflict|(UINT)GameVersion::AlbionPrelude),
            Type(CommandType::Standard),
            Group(CommandGroup::HIDDEN)

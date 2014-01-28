@@ -36,14 +36,14 @@ namespace Logic
       {
          // EOF: Return of this node (if any)
          if (pos >= end)
-            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : SyntaxLib.Unknown;
+            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unknown;
 
          // Lookup next token
          auto pair = Children.find( GetKey(*pos) );
                
          // Not found: Return sentinel
          if (pair == Children.end())
-            return SyntaxLib.Unknown;
+            return CommandSyntax::Unknown;
 
          // Found: Search children
          return pair->second.Find(++pos, end, ver);
@@ -117,7 +117,7 @@ namespace Logic
       /// <returns></returns>
       CommandSyntax  SyntaxLibrary::SyntaxNode::GetSyntax() const
       {
-         return HasSyntax() ? *Syntax : SyntaxLib.Unknown;
+         return HasSyntax() ? *Syntax : CommandSyntax::Unknown;
       }
 
       /// <summary>Determine whether node has syntax</summary>

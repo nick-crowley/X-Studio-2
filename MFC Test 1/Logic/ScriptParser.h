@@ -33,8 +33,6 @@ namespace Logic
             class ErrorToken : public TokenBase
             {
             public:
-               /*ErrorToken(const ScriptToken& t) : Start(t.Start), End(t.End), Text(t.Text)
-               {}*/
                ErrorToken(UINT line, UINT start, UINT end) : TokenBase(start,end), Line(line)
                {}
 
@@ -47,8 +45,7 @@ namespace Logic
             public:
                ErrorArray()
                {}
-               ErrorArray(const ErrorToken& e)
-               {
+               ErrorArray(const ErrorToken& e) {
                   push_back(e);
                }
             };
@@ -69,7 +66,7 @@ namespace Logic
                UINT                 LineNumber,       // 1-based line number
                                     Index;            // 0-based standard codearray index
                ErrorArray           Errors;           // Compilation errors
-               ScriptCommand*       JumpTarget;       // Destination of jump
+               CommandNode*         JumpTarget;       // Destination of jump
                vector<CommandTree>  Children;         // Child commands
                
                /// <summary>Add child node</summary>
@@ -89,7 +86,7 @@ namespace Logic
 
                /// <summary>Get errors collection</summary>
                /// <param name="err">collection to populate</param>
-               void  GetErrors(ErrorArray& err)
+               void  GetErrors(ErrorArray& err) const
                {
                   // Copy errors
                   for (const auto& e : Errors)
@@ -107,7 +104,7 @@ namespace Logic
                   wstring tab(depth, (WCHAR)L' ');
 
                   Console.Writef(L"%03d: %s%s : ", LineNumber, tab.c_str(), GetString(Logic));
-                  Console.WriteLn(Command.Syntax == SyntaxLib.Unknown ? Command.Text : Command.Syntax.Text);
+                  Console.WriteLn(Command.Syntax == CommandSyntax::Unknown ? Command.Text : Command.Syntax.Text);
                   
                   for (auto c : Children)
                      c->Print(depth+1);
@@ -128,7 +125,7 @@ namespace Logic
 
                /// <summary>Gets the errors collection</summary>
                /// <returns></returns>
-               ErrorArray GetErrors()
+               ErrorArray GetErrors() const
                {
                   ErrorArray err;
                   for (const CommandTree& t : Commands)
@@ -151,8 +148,8 @@ namespace Logic
 
             // ------------------------ STATIC -------------------------
          private:
-            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line);
-            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok);
+            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line) const;
+            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok) const;
 
             // --------------------- PROPERTIES ------------------------
 
@@ -189,7 +186,7 @@ namespace Logic
 
          private:
             const LineArray&  Input;
-            GameVersion       Version;
+            const GameVersion Version;
          };
       }
    }
