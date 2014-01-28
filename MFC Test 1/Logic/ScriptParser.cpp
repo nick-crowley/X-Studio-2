@@ -15,6 +15,7 @@ namespace Logic
          /// <summary>Creates a script parser</summary>
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
+         /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
          ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v)
          {
             if (lines.size() == 0)
@@ -32,6 +33,9 @@ namespace Logic
 
          /// <summary>Reads all commands in the script</summary>
          /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          ScriptParser::ScriptTree  ScriptParser::ParseScript()
          {
             ScriptTree  script;
@@ -76,6 +80,9 @@ namespace Logic
          /// <summary>Parses the descendant commands of a branching command</summary>
          /// <param name="branch">Branching command</param>
          /// <param name="line">The line containing first descendant</param>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          void ScriptParser::ParseBranch(CommandTree& branch, LineIterator& line)
          {
             CommandTree node;
@@ -121,6 +128,9 @@ namespace Logic
          /// <summary>Parses a line into a command node</summary>
          /// <param name="line">The line.</param>
          /// <returns>Single command node</returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          /// <remarks>Grammar:
          /// 
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -442,6 +452,9 @@ namespace Logic
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>Expression command</returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    value = constant/variable/literal/null
