@@ -27,6 +27,27 @@ namespace Logic
       UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
       
       
+      /// <summary>Converts between sector IDs and co-ordinates</summary>
+      class SectorIDConverter
+      {
+      public:
+         /// <summary>Convert string ID to coordinates.</summary>
+         /// <param name="stringID">The string identifier.</param>
+         /// <returns></returns>
+         static pair<int, int>  ToCoordinates(UINT stringID)
+         {
+            GuiString id(L"%d", stringID);
+
+            // Ensure valid
+            if (id.length() != 7 || id.substr(0,3) != L"102")
+                throw ArgumentException(HERE, L"stringID", GuiString(L"%d is not a valid sector string ID", stringID));
+
+            // Extract '102xxyy'
+            int x = _ttoi(id.substr(3,2).c_str());
+            int y = _ttoi(id.substr(5,2).c_str());
+            return pair<int,int>(x,y);
+         }
+      };
 
 
       /// <summary>Represents a script object</summary>
