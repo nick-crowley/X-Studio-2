@@ -156,8 +156,11 @@ namespace Logic
             case ParameterType::INTERRUPT_RETURN_VALUE_IF:
             case ParameterType::RETURN_VALUE_IF_START:
             case ParameterType::RETURN_VALUE:
-            case ParameterType::RETURN_VALUE_IF:   return true;
-            default: return false;
+            case ParameterType::RETURN_VALUE_IF:   
+               return true;
+
+            default: 
+               return false;
             }
          }
 
