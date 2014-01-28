@@ -204,7 +204,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // TEST: Undocumented underline colour
       //cf.bUnderlineColor = 0x02;
 
-      //Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
+      Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
 
       // Format errors
       for (const auto& err : t.GetErrors())
@@ -310,6 +310,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Close
       CloseSuggestions();
+   }
+   
+   /// <summary>Compiles script to highlight errors</summary>
+   void ScriptEdit::OnBackgroundCompile()
+   {
+      CWaitCursor c;
+      //Console << L"Background compiler activated" << ENDL;
+
+      // End compiler timer
+      SetCompilerTimer(false);
+         
+      // Get array of line text
+      LineArray lines;
+      for (int i = 0; i < GetLineCount(); i++)
+         lines.push_back(GetLineText(i));
+         
+      // Parse script + highlight errors
+      try 
+      { 
+         HighlightErrors(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+      }
+      catch (ExceptionBase& e) 
+      { 
+         Console << e << ENDL; 
+      }
    }
 
    /// <summary>Setup control</summary>
@@ -537,30 +562,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="nIDEvent">The timer identifier.</param>
    void ScriptEdit::OnTimer(UINT_PTR nIDEvent)
    {
+      // Background compiler
       if (nIDEvent == COMPILE_TIMER)
-      {
-         CWaitCursor c;
-         //Console << L"Background compiler activated" << ENDL;
+         OnBackgroundCompile();
 
-         // End compiler timer
-         SetCompilerTimer(false);
-         
-         // Get array of line text
-         LineArray lines;
-         for (int i = 0; i < GetLineCount(); i++)
-            lines.push_back(GetLineText(i));
-         
-         // Parse script + highlight errors
-         try 
-         { 
-            HighlightErrors(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
-         }
-         catch (ExceptionBase& e) 
-         { 
-            Console << e << ENDL; 
-         }
-      }
-
+      // Used by RichEdit
       CRichEditCtrl::OnTimer(nIDEvent);
    }
    

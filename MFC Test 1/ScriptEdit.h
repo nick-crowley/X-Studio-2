@@ -104,6 +104,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   ShowSuggestions();
       void   UpdateSuggestions();
       
+      void         OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
