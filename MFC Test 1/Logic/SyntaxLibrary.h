@@ -16,9 +16,6 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
       public:
-         /// <summary>Command syntax array</summary>
-         typedef vector<const CommandSyntax*>  ResultCollection;
-
          /// <summary>User customized Command group collection</summary>
          typedef set<CommandGroup>  GroupCollection;
 
@@ -100,7 +97,7 @@ namespace Logic
          GroupCollection   GetGroups() const;
          CommandSyntax     Find(UINT id, GameVersion ver) const;
          CommandSyntax     Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
-         ResultCollection  Query(const wstring& str, GameVersion ver) const;
+         CmdSyntaxArray    Query(const wstring& str, GameVersion ver) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

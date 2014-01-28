@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SuggestionList.h"
 #include "ScriptEdit.h"
+#include "Logic/GameObjectLibrary.h"
 #include "Logic/ScriptObjectLibrary.h"
 #include <algorithm>
 
@@ -45,6 +46,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
 
+   /// <summary>Creates the specified parent.</summary>
+   /// <param name="parent">The script edit</param>
+   /// <param name="pt">The character position in script edit client co-ordinates</param>
+   /// <param name="type">suggestion type.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Suggestion type is None</exception>
    BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type)
    {
       // Validate type
@@ -73,6 +80,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Gets the text of the selected suggestion.</summary>
    /// <returns></returns>
    /// <exception cref="Logic::InvalidOperationException">No item selected</exception>
+   /// <exception cref="Logic::NotImplementedException">Command selected</exception>
    wstring SuggestionList::GetSelected() const
    {
       // Ensure exists
@@ -86,11 +94,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case Suggestion::ScriptObject: return GuiString(L"[%s]", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
       case Suggestion::Variable:     return GuiString(L"$%s", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
       case Suggestion::Label:        return GuiString(L"%s:", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
-      case Suggestion::Command: 
-         break;
+      case Suggestion::Command:      return Content[GetNextItem(-1, LVNI_SELECTED)].Text;
+      default:  return L"Error";
       }
-      
-      throw NotImplementedException(HERE, L"Command suggestions");
    }
 
    /// <summary>Highlights the closest matching suggestion.</summary>
@@ -104,11 +110,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
       case TokenType::GameObject:
       case TokenType::ScriptObject:
-      case TokenType::Variable:
-      case TokenType::Label:
-         str = str.TrimLeft(L"${[");
-         str = str.TrimRight(L"}]:");
+         str = str.TrimLeft(L"{[");
+         str = str.TrimRight(L"}]");
          break;
+
+      case TokenType::Variable:  str = str.TrimLeft(L"$");  break;
+      case TokenType::Label:     str = str.TrimRight(L":"); break;
       }
 
       // Linear search for partial substring
@@ -138,8 +145,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Content.clear();
       
       // Populate
-      for (auto& obj : ScriptObjectLib.Query(L""))
-         Content.push_back( SuggestionItem(obj.Text, GetString(obj.Group)) );
+      switch (SuggestionType)
+      {
+      case Suggestion::GameObject:  
+         for (auto& obj : GameObjectLib.Query(L""))
+            Content.push_back( SuggestionItem(obj.Name, GetString(obj.Type)) );
+         break;
+
+      case Suggestion::ScriptObject:
+         for (auto& obj : ScriptObjectLib.Query(L""))
+            Content.push_back( SuggestionItem(obj.Text, GetString(obj.Group)) );
+         break;
+
+      case Suggestion::Variable:    
+         for (UINT i = 1; i < 20; i++)
+            Content.push_back( SuggestionItem(GuiString(L"Variable.%d", i), L"Variable") );
+         break;
+
+      case Suggestion::Label:       
+         for (UINT i = 1; i < 5; i++)
+            Content.push_back( SuggestionItem(GuiString(L"Label.%d", i), L"Label") );
+         break;
+
+      case Suggestion::Command: 
+         for (auto& obj : SyntaxLib.Query(L"", GameVersion::TerranConflict))
+            Content.push_back( SuggestionItem(obj->GetDisplayText(), GetString(obj->Group)) );
+         break;
+      }
    }
 
    /// <summary>Initialises control and populates</summary>
@@ -153,8 +185,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Setup control
       InsertColumn(0, L"text");
       InsertColumn(1, L"type", LVCFMT_RIGHT);
-      SetColumnWidth(0, DefaultSize.cx-GetSystemMetrics(SM_CXVSCROLL)-80);
-      SetColumnWidth(1, 80);
+      SetColumnWidth(0, DefaultSize.cx-GetSystemMetrics(SM_CXVSCROLL)-120);
+      SetColumnWidth(1, 120);
       SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Populate

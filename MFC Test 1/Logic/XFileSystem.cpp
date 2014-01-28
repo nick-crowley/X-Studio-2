@@ -30,7 +30,7 @@ namespace Logic
       /// <param name="folder">Known folder</param>
       /// <returns>Results collection</returns>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      XFileSystem::ResultCollection  XFileSystem::Browse(XFolder folder) const
+      XFileList  XFileSystem::Browse(XFolder folder) const
       {
          return Browse(GetFolder(folder));
       }
@@ -39,9 +39,9 @@ namespace Logic
       /// <param name="folder">Full path of folder</param>
       /// <returns>Results collection</returns>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      XFileSystem::ResultCollection  XFileSystem::Browse(Path  folder) const
+      XFileList  XFileSystem::Browse(Path  folder) const
       {
-         ResultCollection results;
+         XFileList results;
 
          // Ensure trailing backslash
          folder = folder.AppendBackslash();

@@ -46,8 +46,6 @@ namespace Logic
 
 			// ----------------------- MUTATORS ------------------------
 
-      
-
 			// -------------------- REPRESENTATION ---------------------
 
       public:
@@ -61,6 +59,8 @@ namespace Logic
          const FileSource   Source;
       };
 
+      /// <summary>List of file descriptors</summary>
+      typedef list<XFileInfo>  XFileList;
    }
 }
 
