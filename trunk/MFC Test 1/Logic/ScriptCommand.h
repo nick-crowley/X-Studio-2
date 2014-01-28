@@ -21,9 +21,9 @@ namespace Logic
       class ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
-
-      public:
+      private:
          ScriptCommand();
+      public:
          ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params);
          ScriptCommand(const CommandSyntax& syntax, ParameterArray& params);
          ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params);
@@ -46,6 +46,9 @@ namespace Logic
          void  Translate(ScriptFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
+      public:
+         static ScriptCommand  Unknown;
+
       public:
          CommandSyntax  Syntax;
          ParameterArray Parameters;
