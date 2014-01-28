@@ -29,12 +29,12 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line) const
          {
             return ErrorToken(GetLineNumber(line), 0, line->length()-1);
          }
 
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok)
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok) const
          {
             return lex.Valid(tok) ? ErrorToken(GetLineNumber(line), tok->Start, tok->End) : MakeError(lex, line);
          }
@@ -351,6 +351,7 @@ namespace Logic
          /// <param name="pos">The start position.</param>
          /// <returns>Conditional</returns>
          /// <remarks>The iterator is advanced beyond last token read</remarks>
+         /// <exception cref="Logic::ScriptSyntaxException">Unrecognised conditional</exception>
          Conditional ScriptParser::ReadConditional(const CommandLexer& lex, TokenIterator& pos)
          {
             // 'if' 'not'?
@@ -426,24 +427,23 @@ namespace Logic
                           retVar = lex.end(),
                           pos = lex.begin();
 
-            // (assignment/conditional)? 
+            // Match: (assignment/conditional)? 
             if (MatchAssignment(lex, lex.begin()))
                 retVar = ReadAssignment(lex, pos);
 
-            // (assignment/conditional)? 
+            // Match: (assignment/conditional)? 
             else if (MatchConditional(lex, lex.begin()))
                 condition = ReadConditional(lex, pos);
 
-            // (constant/variable/null '->')?
-            TokenIterator dummy = pos;
-            if (MatchReferenceObject(lex, dummy))
+            // Match: (constant/variable/null '->')?
+            if (MatchReferenceObject(lex, TokenIterator(pos)))
                refObj = ReadReferenceObject(lex, pos);
 
             // Lookup command using remaining tokens
             CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
             
             // UNKNOWN:
-            if (syntax == SyntaxLib.Unknown)
+            if (syntax == CommandSyntax::Unknown)
                errors.push_back(MakeError(lex, line, pos));
 
             // TODO: Arrange parameters
@@ -452,7 +452,7 @@ namespace Logic
 
             // DEBUG:
             #ifdef PRINT_CONSOLE
-               if (syntax != SyntaxLib.Unknown)
+               if (syntax != CommandSyntax::Unknown)
                   Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
                else
                   Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
@@ -481,27 +481,36 @@ namespace Logic
             Conditional   condition = Conditional::NONE;
             TokenIterator retVar = lex.end(),
                           pos = lex.begin();
+            CommandSyntax syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
 
-            // (assignment/conditional)
+            // Match: (assignment/conditional)
             if (MatchAssignment(lex, lex.begin()))
                 retVar = ReadAssignment(lex, pos);
             else 
                 condition = ReadConditional(lex, pos);
-
-            // (unary_operator? value (operator value)*)
-            ExpressionParser exp(pos, lex.end());
-            exp.Parse();  // nb: may throw 
-            
-            // TODO: Arrange parameters?
-            //TokenArray params(hash.Parameters);
 
             // DEBUG:
             #ifdef PRINT_CONSOLE
                Console << Colour::Green << L"expression" << ENDL;
             #endif
 
-            // Create expression
-            return new CommandNode(ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams), GetLineNumber(line));
+            try
+            {
+               // Match: (unary_operator? value (operator value)*)
+               ExpressionParser expr(pos, lex.end());
+               expr.Parse();  
+               
+               // TODO: Arrange parameters?
+               //TokenArray params(hash.Parameters);
+
+               // Create expression
+               return new CommandNode(ScriptCommand(*line, syntax, expr.InfixParams), GetLineNumber(line));
+            }
+            catch (ScriptSyntaxException& )
+            {
+               // Expression syntax error
+               return new CommandNode(ScriptCommand(*line, syntax, lex.Tokens), GetLineNumber(line), MakeError(lex, line));
+            }
          }
 
          

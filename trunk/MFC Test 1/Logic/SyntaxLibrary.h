@@ -109,9 +109,6 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
 
-      public:
-         const CommandSyntax  Unknown;
-
       private:
          CommandCollection  Commands;
          GroupCollection    Groups;

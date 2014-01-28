@@ -35,9 +35,9 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-
-      public:
+      private:
          CommandSyntax();
+      public:
          CommandSyntax(const Declaration& d);
          virtual ~CommandSyntax();
 
@@ -55,7 +55,6 @@ namespace Logic
          bool  operator!=(const CommandSyntax& r) const   { return ID != r.ID || Versions != r.Versions; }
 
 		   // ---------------------- ACCESSORS ------------------------
-			
       public:
          /// <summary>Get populated display text</summary>
          wstring GetDisplayText() const;
@@ -69,6 +68,8 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
+         
+         static const CommandSyntax  Unknown;
 
       public:
          const CommandGroup      Group;
@@ -135,7 +136,7 @@ namespace Logic
 
 
       /// <summary>Define IDs of some important commands, for clarity</summary>
-      #define    CMD_NONE                         0
+      #define    CMD_UNRECOGNISED                 0
       #define    CMD_COMMENT                      1
       #define    CMD_NOP                          2
       #define    CMD_COMMAND_COMMENT              3
