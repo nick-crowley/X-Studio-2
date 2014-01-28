@@ -28,6 +28,16 @@ namespace Logic
          }
 
          // ------------------------------- STATIC METHODS -------------------------------
+         
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line)
+         {
+            return ErrorToken(GetLineNumber(line), 0, line->length()-1);
+         }
+
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok)
+         {
+            return lex.Valid(tok) ? ErrorToken(GetLineNumber(line), tok->Start, tok->End) : MakeError(lex, line);
+         }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -125,7 +135,7 @@ namespace Logic
          }
 
          
-         /// <summary>Parses a line into a command node</summary>
+         /// <summary>Parses a line into a command node, and advances the line iterator</summary>
          /// <param name="line">The line.</param>
          /// <returns>Single command node</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
@@ -146,6 +156,7 @@ namespace Logic
          {
             LineIterator  text = line++;  // consume line
             CommandLexer  lex(*text);
+            CommandNode*  node = nullptr;
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -155,28 +166,30 @@ namespace Logic
 
             // Comment/NOP:
             if (MatchComment(lex))
-               return CommandTree( new CommandNode(ReadComment(lex, text), GetLineNumber(text), ErrorArray()) );
+               node = ReadComment(lex, text);
 
             // Command:
             else if (MatchCommand(lex))
-               return ReadCommand(lex, text);
+               node = ReadCommand(lex, text);
 
             // Expression:
             else if (MatchExpression(lex))
-               return CommandTree( new CommandNode(ReadExpression(lex, text), GetLineNumber(text), ErrorArray()) );
+               node = ReadExpression(lex, text);
             
-            // * could potentially validate parameters at this point
+            else
+            {  // UNRECOGNISED: Generate empty node
+               node = new CommandNode(ScriptCommand::Unknown, GetLineNumber(text), MakeError(lex, line));
+            
+               // DEBUG:
+               #ifdef PRINT_CONSOLE
+                  Console << Colour::Yellow << L"FAILED" << ENDL;
+                  for (auto tok : lex.Tokens)
+                     Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
+               #endif
+            }
 
-            // DEBUG:
-            #ifdef PRINT_CONSOLE
-               Console << Colour::Yellow << L"FAILED" << ENDL;
-               for (auto tok : lex.Tokens)
-                  Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
-            #endif
-
-            // Generate node, advance line
-            return CommandTree( new CommandNode(ScriptCommand(), GetLineNumber(text), ErrorArray()) );
-
+            // Wrap node
+            return CommandTree(node);
          }
 
 
@@ -382,7 +395,7 @@ namespace Logic
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>NOP/Comment command</returns>
-         ScriptCommand  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
          {
             UINT id = (lex.count() == 0 ? CMD_NOP : CMD_COMMENT);
             
@@ -392,8 +405,9 @@ namespace Logic
             #endif
 
             // Return NOP/Comment
-            return ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens);
+            return new CommandNode(ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens), GetLineNumber(line));
          }
+
 
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
@@ -404,7 +418,7 @@ namespace Logic
          ///    assignment = variable '='
          ///    
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
-         ScriptParser::CommandTree  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
             ErrorArray    errors;
             Conditional   condition = Conditional::NONE;
@@ -428,6 +442,10 @@ namespace Logic
             // Lookup command using remaining tokens
             CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
             
+            // UNKNOWN:
+            if (syntax == SyntaxLib.Unknown)
+               errors.push_back(MakeError(lex, line, pos));
+
             // TODO: Arrange parameters
             // TokenArray params;
             ScriptCommand cmd(*line, syntax, TokenArray());
@@ -440,12 +458,8 @@ namespace Logic
                   Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
             #endif
 
-            // Unrecognised: Push error
-            if (syntax == SyntaxLib.Unknown && pos != lex.end())
-               errors.push_back(ErrorToken(GetLineNumber(line), pos->Start, pos->End));
-
             // Create node
-            return CommandTree( new CommandNode(cmd, GetLineNumber(line), errors) );
+            return new CommandNode(cmd, GetLineNumber(line), errors);
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -462,7 +476,7 @@ namespace Logic
          ///    unary_operator = '!'/'-'/'~'
          /// 
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptCommand  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
          {
             Conditional   condition = Conditional::NONE;
             TokenIterator retVar = lex.end(),
@@ -487,7 +501,7 @@ namespace Logic
             #endif
 
             // Create expression
-            return ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams);
+            return new CommandNode(ScriptCommand(*line, SyntaxLib.Find(CMD_EXPRESSION, Version), exp.InfixParams), GetLineNumber(line));
          }
 
          
