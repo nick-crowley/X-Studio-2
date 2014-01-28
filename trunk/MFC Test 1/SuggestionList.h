@@ -64,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // -------------------- REPRESENTATION ---------------------
       
    private:
-      const CSize DefaultSize = CSize(300,200);
+      const CSize DefaultSize = CSize(400,200);
       
       Suggestion   SuggestionType;
       ContentArray Content;

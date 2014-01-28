@@ -60,9 +60,6 @@ namespace Logic
          };
 
       public:
-         typedef list<XFileInfo>  ResultCollection;
-
-      public:
          // --------------------- CONSTRUCTION ----------------------
 
          XFileSystem();
@@ -76,10 +73,10 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------
 
-         ResultCollection Browse(XFolder  folder) const;
-         ResultCollection Browse(Path  folder) const;
-         bool             Contains(Path  path) const;
-         XFileInfo        Find(Path  path) const;
+         XFileList Browse(XFolder  folder) const;
+         XFileList Browse(Path  folder) const;
+         bool      Contains(Path  path) const;
+         XFileInfo Find(Path  path) const;
 
          Path         GetFolder(XFolder f) const;
          Path         GetFolder() const            { return Folder;  }

@@ -103,9 +103,9 @@ namespace Logic
       /// <param name="str">Search term</param>
       /// <param name="ver">Game version</param>
       /// <returns>Array of matching Syntax</returns>
-      SyntaxLibrary::ResultCollection  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
+      CmdSyntaxArray  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
       {
-         ResultCollection results;
+         CmdSyntaxArray results;
 
          // Search commands
          for (const auto& pair : Commands)

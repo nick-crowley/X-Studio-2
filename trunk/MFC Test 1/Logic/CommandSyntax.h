@@ -76,6 +76,9 @@ namespace Logic
                                  URL;
       };
 
+      /// <summary>Command syntax array</summary>
+      typedef vector<const CommandSyntax*>  CmdSyntaxArray;
+
       /// <summary>Defines the display group of a script command</summary>
       enum class CommandGroup : UINT
       {  
