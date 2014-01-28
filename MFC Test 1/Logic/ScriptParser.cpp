@@ -395,7 +395,7 @@ namespace Logic
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
-         /// <returns>NOP/Comment command</returns>
+         /// <returns>New NOP/Comment command node</returns>
          ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
          {
             UINT id = (lex.count() == 0 ? CMD_NOP : CMD_COMMENT);
@@ -413,7 +413,7 @@ namespace Logic
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
-         /// <returns>Non-expression command</returns>
+         /// <returns>New Non-expression command node</returns>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    assignment = variable '='
@@ -429,26 +429,29 @@ namespace Logic
 
             // Match: (assignment/conditional)? 
             if (MatchAssignment(lex, lex.begin()))
-                retVar = ReadAssignment(lex, pos);
+               retVar = ReadAssignment(lex, pos);
 
             // Match: (assignment/conditional)? 
             else if (MatchConditional(lex, lex.begin()))
-                condition = ReadConditional(lex, pos);
+               condition = ReadConditional(lex, pos);
 
             // Match: (constant/variable/null '->')?
             if (MatchReferenceObject(lex, TokenIterator(pos)))
                refObj = ReadReferenceObject(lex, pos);
 
             // Lookup command using remaining tokens
-            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
+            TokenIterator first = pos;
+            ScriptCommand cmd(SyntaxLib.Identify(pos, lex.end(), Version), *line);
             
-            // UNKNOWN:
-            if (syntax == CommandSyntax::Unknown)
+            // Ensure command was recognised
+            if (cmd.Syntax == CommandSyntax::Unknown)
                errors.push_back(MakeError(lex, line, pos));
+
+            // Unexpected follow
 
             // TODO: Arrange parameters
             // TokenArray params;
-            ScriptCommand cmd(*line, syntax, TokenArray());
+            
 
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -465,7 +468,7 @@ namespace Logic
          /// <summary>Reads an entire expression command</summary>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
-         /// <returns>Expression command</returns>
+         /// <returns>New Expression command node</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
