@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "ScriptParser.h"
 #include "ExpressionParser.h"
+#include "GameObjectLibrary.h"
+#include "ScriptObjectLibrary.h"
+#include "CommandHash.h"
 
 //#define PRINT_CONSOLE
 
@@ -409,6 +412,9 @@ namespace Logic
             return new CommandNode(ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens), GetLineNumber(line));
          }
 
+         /*ScriptCommand ScriptParser::CreateCommand(const CommandLexer& lex, const LineIterator& line, CommandSyntax& syntax, TokenArray& params)
+         {
+         }*/
 
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
@@ -422,7 +428,7 @@ namespace Logic
          ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
             ErrorArray    errors;
-            Conditional   condition = Conditional::NONE;
+            Conditional   condition = Conditional::DISCARD;
             TokenIterator refObj = lex.end(), 
                           retVar = lex.end(),
                           pos = lex.begin();
@@ -439,20 +445,42 @@ namespace Logic
             if (MatchReferenceObject(lex, TokenIterator(pos)))
                refObj = ReadReferenceObject(lex, pos);
 
-            // Lookup command using remaining tokens
-            TokenIterator first = pos;
+            // Get remaining parameter tokens
+            TokenArray params = CommandHash::SeparateParams(pos, lex.end());
+
+            // Verify GameObjects/ScriptObjects
+            for (const auto& tok : params)
+               if (tok.Type == TokenType::GameObject && !GameObjectLib.Contains(tok.Text))
+                  errors += MakeError(lex, line, tok);
+               else if (tok.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(tok.Text))
+                  errors += MakeError(lex, line, tok);
+            
+            // Lookup command (consumes iterator)
             ScriptCommand cmd(SyntaxLib.Identify(pos, lex.end(), Version), *line);
             
             // Ensure command was recognised
             if (cmd.Syntax == CommandSyntax::Unknown)
-               errors.push_back(MakeError(lex, line, pos));
+               errors += MakeError(lex, line, pos);
 
-            // Unexpected follow
-
-            // TODO: Arrange parameters
-            // TokenArray params;
+            // Verify parameters
+            for (const ParameterSyntax& ps : cmd.Syntax.Parameters)
+            {
+               // RetVar:
+               if (ps.IsRetVar())
+                  cmd.Parameters += (lex.Valid(retVar) ? ScriptParameter(ps, retVar) : ScriptParameter(ps, condition));
+               // RefObj:
+               else if (ps.IsRefObj())
+                  cmd.Parameters += ScriptParameter(ps, refObj);
+               // Param
+               else if (params.empty())
+                  errors += MakeError();
+               else
+               {
+                  cmd.Parameters += ScriptParameter(ps, params.front());
+                  params.pop_front();
+               }
+            }
             
-
             // DEBUG:
             #ifdef PRINT_CONSOLE
                if (syntax != CommandSyntax::Unknown)

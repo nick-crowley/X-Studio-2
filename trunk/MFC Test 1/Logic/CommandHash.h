@@ -19,8 +19,8 @@ namespace Logic
             {}
 
             // ------------------------ STATIC -------------------------
-         private:
-            static wstring  GenerateHash(TokenIterator begin, TokenIterator end) 
+         public:
+            static wstring  GenerateHash(const TokenIterator begin, const TokenIterator end) 
             {
                wstring h;
                // Assemble text into hash
@@ -38,7 +38,7 @@ namespace Logic
                return h;
             }
 
-            static TokenArray  SeparateParams(TokenIterator begin, TokenIterator end) 
+            static TokenArray  SeparateParams(const TokenIterator begin, const TokenIterator end) 
             {
                TokenArray arr;
                // Separate tokens
