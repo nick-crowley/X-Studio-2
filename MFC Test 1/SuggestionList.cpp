@@ -169,7 +169,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       case Suggestion::Command: 
          for (auto& obj : SyntaxLib.Query(L"", GameVersion::TerranConflict))
-            Content.push_back( SuggestionItem(obj->GetDisplayText(), GetString(obj->Group)) );
+            Content.push_back( SuggestionItem(obj->DisplayText, GetString(obj->Group), obj->Hash) );
          break;
       }
    }

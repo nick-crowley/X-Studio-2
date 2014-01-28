@@ -42,11 +42,14 @@ namespace Logic
          virtual ~CommandSyntax();
 
          // ------------------------ STATIC -------------------------
+      private:
+         wstring  GenerateHash(const wstring& syntax);
 
          // --------------------- PROPERTIES ------------------------
 		
       public:
          PROPERTY_GET(bool,Keyword,IsKeyword);
+         PROPERTY_GET(wstring,DisplayText,GetDisplayText);
 
          bool  operator==(const CommandSyntax& r) const   { return ID == r.ID && Versions == r.Versions; }
          bool  operator!=(const CommandSyntax& r) const   { return ID != r.ID || Versions != r.Versions; }
@@ -54,6 +57,7 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
       public:
+         /// <summary>Get populated display text</summary>
          wstring GetDisplayText() const;
 
          /// <summary>Query whether command is compatible with a version</summary>
@@ -72,7 +76,8 @@ namespace Logic
          const ParamSyntaxArray  Parameters;
          const UINT              Versions,
                                  ID;
-         const wstring           Text,
+         const wstring           Hash,
+                                 Text,
                                  URL;
       };
 
