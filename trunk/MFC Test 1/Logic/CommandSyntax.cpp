@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CommandSyntax.h"
 #include "CommandLexer.h"
+#include "CommandHash.h"
 #include "StringLibrary.h"
 #include <algorithm>
 
@@ -24,7 +25,7 @@ namespace Logic
       /// <summary>Create command syntax from a declaration</summary>
       /// <param name="d">Declaration</param>
       CommandSyntax::CommandSyntax(const Declaration& d)
-         : Group(d.Group), ID(d.ID), Versions(d.Versions), URL(d.URL), Text(d.Syntax), Type(d.Type), Parameters(d.Params)
+         : Group(d.Group), ID(d.ID), Versions(d.Versions), URL(d.URL), Text(d.Syntax), Type(d.Type), Parameters(d.Params), Hash(GenerateHash(d.Syntax))
       {
       }
 
@@ -33,6 +34,15 @@ namespace Logic
       }
 
       // -------------------------------- STATIC METHODS -------------------------------
+
+      /// <summary>Generates hash from syntax, used when sorting syntax for display</summary>
+      /// <param name="syntax">The syntax.</param>
+      /// <returns></returns>
+      wstring CommandSyntax::GenerateHash(const wstring& syntax)
+      {
+         CommandLexer lex(syntax, true);
+         return CommandHash(lex.begin(), lex.end()).Hash;
+      }
 
       /// <summary>Get command group name</summary>
       GuiString  GetString(CommandGroup g)

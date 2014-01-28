@@ -19,9 +19,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       struct SuggestionItem
       {
       public:
-         SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type)
+         SuggestionItem(const wstring& txt, const wstring& type, const wstring& sort) : Text(txt), Type(type), Key(sort)
          {}
-         const wstring Text, Type;
+         SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type), Key(txt)
+         {}
+         const wstring Text, // Item text
+                       Type, // Type/Group text
+                       Key;  // Sorting key
       };
 
       /// <summary>Vector of items</summary>
