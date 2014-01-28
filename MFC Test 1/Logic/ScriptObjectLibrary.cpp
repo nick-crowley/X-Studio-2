@@ -93,8 +93,7 @@ namespace Logic
             return false;
 
          // DEBUG: 
-         Console << Colour::Green << GuiString(L"Mangle success '%s' {%d:%d} and '%s' {%d:%d}", 
-                                               a.Text.c_str(), a.Group, a.ID, b.Text.c_str(), b.Group, b.ID) << ENDL;
+         Console << Colour::Green << L"Resolved: " << Colour::Yellow << a.Text.c_str() << Colour::White << L" and " << Colour::Yellow << b.Text.c_str() << ENDL;
 
          // Insert unique
          Lookup.Add(a);
@@ -136,8 +135,7 @@ namespace Logic
             {
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
-               Console << GuiString(L"Conflict detected '%s' between {%d:%d} and {%d:%d}", 
-                                    obj.Text.c_str(), obj.Group, obj.ID, conf.Group, conf.ID) << ENDL;
+               Console << L"Conflict " << Colour::Yellow << obj.Text << Colour::White << " : " << Colour::Yellow << GuiString(L"{%s:%d}",GetString(obj.Group).c_str(),obj.ID) << Colour::White << L" and " << Colour::Yellow << GuiString(L"{%s:%d}",GetString(conf.Group).c_str(),conf.ID) << Colour::White << "...";
 
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
@@ -146,9 +144,12 @@ namespace Logic
                // Mangle them
                if (!MangleConflicts(obj, conflict))
                {
-                  GuiString err(L"Unable to mangle '%s' {%d:%d} due to conflict with '%s' {%d:%d}", 
-                                obj.Text.c_str(), obj.Group, obj.ID, conflict.Text.c_str(), conflict.Group, conflict.ID);
-                  data->SendFeedback(Colour::Red, ProgressType::Error, 2, err);
+                  // Failed: Feedback
+                  GuiString err(L"Conflicting script objects '%s' detected: {%s:%d} and {%s:%d}", obj.Text.c_str(), GetString(obj.Group).c_str(), obj.ID, GetString(conflict.Group).c_str(), conflict.ID);
+                  data->SendFeedback(ProgressType::Error, 2, err);
+
+                  // DEBUG:
+                  Console << Colour::Red << L"Unable to resolve" << ENDL;
                }
             }
          }
