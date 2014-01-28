@@ -12,6 +12,9 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
+         /// <summary>Creates a script parser</summary>
+         /// <param name="lines">The lines to parse</param>
+         /// <param name="v">The game version</param>
          ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v)
          {
             if (lines.size() == 0)
@@ -70,6 +73,9 @@ namespace Logic
          }
 
 
+         /// <summary>Parses the descendant commands of a branching command</summary>
+         /// <param name="branch">Branching command</param>
+         /// <param name="line">The line containing first descendant</param>
          void ScriptParser::ParseBranch(CommandTree& branch, LineIterator& line)
          {
             CommandTree node;
@@ -112,51 +118,47 @@ namespace Logic
          }
 
          
+         /// <summary>Parses a line into a command node</summary>
+         /// <param name="line">The line.</param>
+         /// <returns>Single command node</returns>
+         /// <remarks>Grammar:
+         /// 
+         ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
+         ///    value = constant/variable/literal/null
+         ///    assignment = variable '='
+         ///    comment = '*' text?
+         ///    nop = ws*
+         /// 
+         ///    line = nop/comment/command/expression
+         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
+         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
          ScriptParser::CommandTree ScriptParser::ParseNode(LineIterator& line)
          {
             LineIterator  text = line++;  // consume line
             CommandLexer  lex(*text);
-            //ScriptCommand cmd;            // 'Unknown' syntax
-
-            /*
-            Grammar:
-
-            conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
-            value = constant/variable/literal/null
-            assignment = variable '='
-            comment = '*' text?
-            nop = ws*
-
-            line = nop/comment/command/expression
-            command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
-            expression = (assignment/conditional) unary_operator? value (operator value)*
-            */
-
+            
+            // DEBUG:
             #ifdef PRINT_CONSOLE
-               // DEBUG:
                Console << GetLineNumber(text) << L": " << *text << ENDL;
                auto num = GetLineNumber(text);
             #endif
 
             // Comment/NOP:
             if (MatchComment(lex))
-               //cmd = ReadComment(lex, text);
                return CommandTree( new CommandNode(ReadComment(lex, text), GetLineNumber(text), ErrorArray()) );
 
             // Command:
             else if (MatchCommand(lex))
-               //cmd = ReadCommand(lex, text);
                return ReadCommand(lex, text);
 
             // Expression:
             else if (MatchExpression(lex))
-               //cmd = ReadExpression(lex, text);
                return CommandTree( new CommandNode(ReadExpression(lex, text), GetLineNumber(text), ErrorArray()) );
             
             // * could potentially validate parameters at this point
 
+            // DEBUG:
             #ifdef PRINT_CONSOLE
-               // DEBUG:
                Console << Colour::Yellow << L"FAILED" << ENDL;
                for (auto tok : lex.Tokens)
                   Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
@@ -169,6 +171,11 @@ namespace Logic
 
 
          
+         /// <summary>Matches a return value and assignment operator</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
          bool  ScriptParser::MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const
          {
             TokenIterator start = pos;
@@ -177,6 +184,11 @@ namespace Logic
             return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") ? true : (pos=start, false);
          }
 
+         /// <summary>Matches a valid conditional</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
          bool  ScriptParser::MatchConditional(const CommandLexer& lex, TokenIterator& pos) const
          {
             TokenIterator start = pos;
@@ -207,6 +219,11 @@ namespace Logic
             return (pos=start, false);
          }
          
+         /// <summary>Matches a reference object and reference operator</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
          bool ScriptParser::MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const
          {
             TokenIterator start = pos;
@@ -216,7 +233,9 @@ namespace Logic
                  && lex.Match(pos, TokenType::Operator, L"->") ? true : (pos=start, false);
          }
 
-         
+         /// <summary>Matches a NOP or comment command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <returns></returns>
          bool  ScriptParser::MatchComment(const CommandLexer& lex) const
          {
             TokenIterator pos = lex.begin();
@@ -233,7 +252,9 @@ namespace Logic
             return false;
          }
 
-
+         /// <summary>Matches a non-expression command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <returns></returns>
          bool  ScriptParser::MatchCommand(const CommandLexer& lex) const
          {
             TokenIterator pos = lex.begin();
@@ -251,7 +272,9 @@ namespace Logic
             return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword) || lex.Match(pos, TokenType::Label);
          }
 
-
+         /// <summary>Matches an expression command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <returns></returns>
          bool ScriptParser::MatchExpression(const CommandLexer& lex) const
          {
             TokenIterator pos = lex.begin();
@@ -289,25 +312,22 @@ namespace Logic
 
 
 
-
-
-
-
-
-
-
-
-
-
-         
-
+         /// <summary>Reads the retVar and assignment operator tokens</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns>RetVar token</returns>
+         /// <remarks>The iterator is advanced beyond last token read</remarks>
          TokenIterator  ScriptParser::ReadAssignment(const CommandLexer& lex, TokenIterator& pos)
          {
             TokenIterator retVar = pos;
             return (pos += 2, retVar);
          }
 
-         
+         /// <summary>Reads the conditional keyword tokens</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns>Conditional</returns>
+         /// <remarks>The iterator is advanced beyond last token read</remarks>
          Conditional ScriptParser::ReadConditional(const CommandLexer& lex, TokenIterator& pos)
          {
             // 'if' 'not'?
@@ -333,6 +353,11 @@ namespace Logic
             throw ScriptSyntaxException(HERE, L"Invalid conditional - use sentinel syntax");
          }
          
+         /// <summary>Reads the reference object and reference operator tokens</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns>Reference Object token</returns>
+         /// <remarks>The iterator is advanced beyond last token read</remarks>
          TokenIterator ScriptParser::ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos)
          {
             // RefObj '->'
@@ -340,13 +365,19 @@ namespace Logic
             return (pos+=2, refObj);
          }
 
-         
+
+
+
+         /// <summary>Reads an entire NOP/comment command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="line">The line</param>
+         /// <returns>NOP/Comment command</returns>
          ScriptCommand  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
          {
             UINT id = (lex.count() == 0 ? CMD_NOP : CMD_COMMENT);
             
+            // DEBUG:
             #ifdef PRINT_CONSOLE
-               // DEBUG:
                Console << Colour::Green << (id == CMD_NOP ? L"nop" : L"comment") << ENDL;
             #endif
 
@@ -354,15 +385,17 @@ namespace Logic
             return ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens);
          }
 
-
+         /// <summary>Reads an entire non-expression command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="line">The line</param>
+         /// <returns>Non-expression command</returns>
+         /// <remarks>Grammar:
+         ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
+         ///    assignment = variable '='
+         ///    
+         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
          ScriptParser::CommandTree  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
-            /*
-            conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
-            assignment = variable '='
-            
-            command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
-            */
             ErrorArray    errors;
             Conditional   condition = Conditional::NONE;
             TokenIterator refObj = lex.end(), 
@@ -389,9 +422,8 @@ namespace Logic
             // TokenArray params;
             ScriptCommand cmd(*line, syntax, TokenArray());
 
-            
+            // DEBUG:
             #ifdef PRINT_CONSOLE
-               // DEBUG:
                if (syntax != SyntaxLib.Unknown)
                   Console << Colour::Green << L"MATCH: " << syntax.Text << ENDL;
                else
@@ -406,16 +438,19 @@ namespace Logic
             return CommandTree( new CommandNode(cmd, GetLineNumber(line), errors) );
          }
 
+         /// <summary>Reads an entire expression command</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="line">The line</param>
+         /// <returns>Expression command</returns>
+         /// <remarks>Grammar:
+         ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
+         ///    value = constant/variable/literal/null
+         ///    assignment = variable '='
+         ///    unary_operator = '!'/'-'/'~'
+         /// 
+         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
          ScriptCommand  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
          {
-            /*
-            conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
-            value = constant/variable/literal/null
-            assignment = variable '='
-            unary_operator = '!'/'-'/'~'
-
-            expression = (assignment/conditional) unary_operator? value (operator value)*
-            */
             Conditional   condition = Conditional::NONE;
             TokenIterator retVar = lex.end(),
                           pos = lex.begin();
@@ -433,8 +468,8 @@ namespace Logic
             // TODO: Arrange parameters?
             //TokenArray params(hash.Parameters);
 
+            // DEBUG:
             #ifdef PRINT_CONSOLE
-               // DEBUG:
                Console << Colour::Green << L"expression" << ENDL;
             #endif
 
