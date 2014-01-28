@@ -190,34 +190,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    
-   /// <summary>Highlights errors indicated by the compiler</summary>
-   /// <param name="t">Script tree</param>
-   void ScriptEdit::HighlightErrors(ScriptParser::ScriptTree& t)
-   {
-      // Freeze window
-      FreezeWindow(true);
-
-      // Define underline
-      CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
-      cf.bUnderlineType = CFU_UNDERLINEWAVE;
-
-      // TEST: Undocumented underline colour
-      //cf.bUnderlineColor = 0x02;
-
-      Console << L"Highlighting " << t.GetErrors().size() << L" errors" << ENDL;
-
-      // Format errors
-      for (const auto& err : t.GetErrors())
-      {
-         FormatToken(LineIndex(err.Line-1), err, cf);
-         //Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
-      }
-
-      // UnFreeze window
-      FreezeWindow(false);
-   }
-
-   
    /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
    /// <param name="ch">The character just typed</param>
    /// <returns></returns>
@@ -318,7 +290,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CWaitCursor c;
       //Console << L"Background compiler activated" << ENDL;
 
-      // End compiler timer
+      // Stop compiler timer
       SetCompilerTimer(false);
          
       // Get array of line text
@@ -326,15 +298,36 @@ NAMESPACE_BEGIN2(GUI,Controls)
       for (int i = 0; i < GetLineCount(); i++)
          lines.push_back(GetLineText(i));
          
-      // Parse script + highlight errors
+      // Freeze window
+      FreezeWindow(true);
+
       try 
       { 
-         HighlightErrors(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+         // Parse script 
+         ScriptParser::ScriptTree script(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+         
+         // DEBUG:
+         Console << L"Highlighting " << script.GetErrors().size() << L" errors" << ENDL;
+
+         // Define error underline
+         CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
+         cf.bUnderlineType = CFU_UNDERLINEWAVE;
+         //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
+
+         // Underline all errors
+         for (const auto& err : script.GetErrors())
+         {
+            FormatToken(LineIndex(err.Line-1), err, cf);
+            //Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
+         }
       }
       catch (ExceptionBase& e) 
       { 
          Console << e << ENDL; 
       }
+
+      // UnFreeze window
+      FreezeWindow(false);
    }
 
    /// <summary>Setup control</summary>

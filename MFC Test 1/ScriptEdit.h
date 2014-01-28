@@ -97,7 +97,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze);
-      void   HighlightErrors(ScriptParser::ScriptTree& t);
       void   InsertSuggestion();
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
