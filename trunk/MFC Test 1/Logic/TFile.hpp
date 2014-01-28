@@ -29,6 +29,7 @@ namespace Logic
          /// <param name="index">The index</param>
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">OBJ does not match object type</exception>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
          template <typename OBJ>
          OBJ* FindAt(UINT index)
          {
@@ -44,7 +45,7 @@ namespace Logic
          /// <param name="index">The index.</param>
          /// <returns></returns>
          /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-         virtual TObject*  FindAt(UINT index) PURE;
+         virtual const TObject*  FindAt(UINT index) const PURE;
 
          /// <summary>Removes an object by index</summary>
          /// <param name="index">The index.</param>
@@ -93,7 +94,7 @@ namespace Logic
          /// <param name="index">The index.</param>
          /// <returns></returns>
          /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-         TObject*  FindAt(UINT index)
+         const TObject*  FindAt(UINT index) const
          {
             // Validate index
             if (index >= Objects.size())

@@ -16,7 +16,7 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      GameObjectLibrary::GameObjectLibrary() : Content(Lookup)
+      GameObjectLibrary::GameObjectLibrary() 
       {
          Clear();
       }
@@ -99,7 +99,7 @@ namespace Logic
          PopulateObjects(data);
 
          // Return object count
-         return Content.size();
+         return Objects.size();
       }
 
       /// <summary>Finds an object</summary>
@@ -108,7 +108,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
       /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-      TObject*  GameObjectLibrary::Find(MainType main, UINT subtype)
+      const TObject*  GameObjectLibrary::Find(MainType main, UINT subtype) const
       {
          // Ensure types loaded
          if (Files[(UINT)main] == nullptr)
@@ -121,7 +121,7 @@ namespace Logic
       /// <summary>Searches the library for objects containing a substring</summary>
       /// <param name="search">substring</param>
       /// <returns></returns>
-      GameObjectArray  GameObjectLibrary::Query(const wstring& search)
+      GameObjectArray  GameObjectLibrary::Query(const wstring& search) const
       {
          GameObjectArray Results;
          
@@ -188,8 +188,8 @@ namespace Logic
             Objects.Add(pair.second);
 
          // Return object count
-         Console << "Generated " << Content.size() << " game objects" << ENDL;
-         return Content.size();
+         Console << "Generated " << Objects.size() << " game objects" << ENDL;
+         return Objects.size();
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------

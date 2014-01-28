@@ -364,6 +364,9 @@
     <ClInclude Include="Logic\MapIterator.hpp">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -581,6 +584,9 @@
     </ClCompile>
     <ClCompile Include="Logic\LanguageString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameObject.cpp">
+      <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

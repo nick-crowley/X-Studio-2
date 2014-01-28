@@ -291,8 +291,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (SuggestionsList.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
-      // TODO: insert
-      Console << Colour::Green << L"Inserting suggestion: " << SuggestionsList.GetSelected() << ENDL;
+      // DEBUG:
+      Console << L"Inserting suggestion: " << Colour::Yellow << SuggestionsList.GetSelected() << ENDL;
+
+      // Find token at caret
+      CommandLexer lex(GetLineText(-1));
+      TokenIterator pos = lex.Find(GetCaretIndex());
+
+      // Replace token with suggestion
+      if (pos != lex.end())
+      {
+         SetSel(LineIndex(-1)+pos->Start, LineIndex(-1)+pos->End);
+         ReplaceSel(SuggestionsList.GetSelected().c_str(), TRUE);
+      }
+      else 
+         // Error: Failed to identify token
+         Console << Colour::Red << "Cannot find suggestion token: " << Colour::White << " caret at " << GetCaretIndex() << " : " << Colour::Yellow << GetLineText(-1) << ENDL;
 
       // Close
       CloseSuggestions();
@@ -610,7 +624,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (SuggestionsList.GetSafeHwnd() == nullptr)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
-      // Lex current line
+      // Find token at caret
       CommandLexer lex(GetLineText(-1));
       TokenIterator pos = lex.Find(GetCaretIndex());
 
