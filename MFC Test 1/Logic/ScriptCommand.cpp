@@ -9,33 +9,38 @@ namespace Logic
 {
    namespace Scripts
    {
-      /// <summary>Unrecognised script command sentinel</summary>
+      /// <summary>Unrecognised script command sentinel value</summary>
       ScriptCommand  ScriptCommand::Unknown;
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Creates sentinel value (private ctor)</summary>
       ScriptCommand::ScriptCommand()
          : Syntax(SyntaxLib.Unknown), RefIndex(0)
       {
       }
 
+      /// <summary>Create ANY command PARSED FROM COMMAND TEXT</summary>
+      /// <param name="text">Entire command text</param>
+      /// <param name="syntax">Command syntax</param>
+      /// <param name="params">Parameters in DISPLAY ORDER</param>
       ScriptCommand::ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params)
          : Syntax(syntax), RefIndex(0), Text(text)
       {
       }
 
-      /// <summary>Create a standard command from syntax and parameters (ordered by display index)</summary>
-      /// <param name="syntax">The syntax.</param>
-      /// <param name="params">The parameters, if any (sorted by display index)</param>
+      /// <summary>Create a STANDARD command READ FROM A FILE</summary>
+      /// <param name="syntax">command syntax.</param>
+      /// <param name="params">Parameters in PHYSICAL ORDER</param>
       ScriptCommand::ScriptCommand(const CommandSyntax& syntax, ParameterArray& params)
          : Syntax(syntax), RefIndex(0), Parameters(params) 
       {
       }
 
-      /// <summary>Create an auxiliary command from syntax and parameters (ordered by display index)</summary>
-      /// <param name="syntax">The command syntax.</param>
-      /// <param name="ref">The index of the associated standard command</param>
-      /// <param name="params">The parameters, if any (sorted by display index)</param>
+      /// <summary>Create an AUXILIARY command READ FROM A FILE</summary>
+      /// <param name="syntax">command syntax.</param>
+      /// <param name="ref">Index of associated standard command</param>
+      /// <param name="params">Parameters in PHYSICAL ORDER</param>
       ScriptCommand::ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params)
          : Syntax(syntax), RefIndex(ref), Parameters(params) 
       {
@@ -106,6 +111,8 @@ namespace Logic
          }
       }
 
+      /// <summary>Translates the text of a command READ FROM FILE</summary>
+      /// <param name="f">Script used for variable names lookup</param>
       void ScriptCommand::Translate(ScriptFile& f)
       {
          CommandLexer lex(Syntax.Text, false);

@@ -12,12 +12,14 @@ namespace Logic
    {
       class ScriptFile;
 
-      /// <summary></summary>
+      /// <summary>Branching logic implemented by a script command</summary>
       enum BranchLogic   { None, NOP, If, While, SkipIf, Else, ElseIf, End, Break, Continue };
+
+      /// <summary>Get branch logic name</summary>
       const WCHAR* GetString(BranchLogic l);
 
 
-      /// <summary></summary>
+      /// <summary>An MSCI script command</summary>
       class ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -28,8 +30,6 @@ namespace Logic
          ScriptCommand(const CommandSyntax& syntax, ParameterArray& params);
          ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params);
          virtual ~ScriptCommand();
-
-         //ScriptCommand& operator=(const ScriptCommand& r) = default;
 
          // ------------------------ STATIC -------------------------
 
@@ -50,13 +50,14 @@ namespace Logic
          static ScriptCommand  Unknown;
 
       public:
-         CommandSyntax  Syntax;
-         ParameterArray Parameters;
-         wstring        Text;
-         UINT           RefIndex;
+         const CommandSyntax  Syntax;
+         ParameterArray       Parameters;
+         wstring              Text;
+         UINT                 RefIndex;
       };
 
-      typedef list<ScriptCommand>     CommandList;
+      /// <summary>List of script commands</summary>
+      typedef list<ScriptCommand>   CommandList;
    }
 }
 
