@@ -137,6 +137,7 @@
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
+    <ClInclude Include="Logic\GameObject.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
     <ClInclude Include="Logic\RaceLookup.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
+    <ClCompile Include="Logic\GameObject.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
     <ClCompile Include="Logic\LanguageString.cpp" />
     <ClCompile Include="Logic\ScriptObject.cpp" />

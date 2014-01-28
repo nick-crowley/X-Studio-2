@@ -85,7 +85,7 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         MainType        Type;
+         MainType  Type;
 
          // Header
          wstring         id;

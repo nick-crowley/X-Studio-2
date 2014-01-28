@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "TFile.hpp"
+#include "GameObject.h"
 
 namespace Logic
 {
@@ -47,41 +48,6 @@ namespace Logic
          MainType  Type;
       };
       
-      /// <summary></summary>
-      class GameObject
-      {
-         // ------------------------ TYPES --------------------------
-      private:
-         //enum class KnownID : UINT { Undefined=0, UndefinedName=9999, UndefinedRace=34000, UnknownObject1=9001, UnknownObject2=9041, UnknownObject3=17206 };
-
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         GameObject(UINT subtype, TObject* obj) : Type(obj->Type), SubType(subtype), ID(obj->id), Name(obj->FullName)
-         {}
-      private:
-         GameObject(const GameObject& r, const wstring& txt) : Type(r.Type), SubType(r.SubType), ID(r.ID), Name(txt)
-         {}
-
-         // ---------------------- ACCESSORS ------------------------
-      public:
-         /// <summary>Appends an object id to name</summary>
-         /// <param name="id">object id</param>
-         /// <returns>New game object with id appended</returns>
-         GameObject operator+(const wstring& id)
-         {
-            return GameObject(*this, Name+GuiString(L" (%s)", id));
-         }
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         const MainType Type;
-         const UINT     SubType;
-         const wstring  ID, Name, Description;
-      };
-
-      /// <summary>Vector of game objects</summary>
-      typedef vector<GameObject> GameObjectArray;
-
       /// <summary></summary>
       class GameObjectLibrary
       {
@@ -212,8 +178,8 @@ namespace Logic
       public:
          void  Clear();
          UINT  Enumerate(const XFileSystem& vfs, WorkerData* data);
-         TObject*  Find(MainType main, UINT subtype);
-         GameObjectArray Query(const wstring& search);
+         const TObject*  Find(MainType main, UINT subtype) const;
+         GameObjectArray Query(const wstring& search) const;
 
       protected:
          UINT  PopulateObjects(WorkerData* data);
@@ -221,8 +187,7 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
       public:
          static GameObjectLibrary  Instance;
-
-         const LookupCollection& Content;
+         
       private:
          vector<TFilePtr>  Files;
          ObjectCollection  Objects;

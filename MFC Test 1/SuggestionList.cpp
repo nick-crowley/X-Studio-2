@@ -47,6 +47,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type)
    {
+      // Validate type
+      if (type == Suggestion::None)
+         throw ArgumentException(HERE, L"type", L"Suggestion type cannot be 'None'");
+
       // Calculate position  (Offset rectangle above line)
       CRect rc(pt, DefaultSize);
       rc.OffsetRect(0, -DefaultSize.cy);
@@ -71,11 +75,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <exception cref="Logic::InvalidOperationException">No item selected</exception>
    wstring SuggestionList::GetSelected() const
    {
+      // Ensure exists
       if (GetNextItem(-1, LVNI_SELECTED) == -1)
          throw InvalidOperationException(HERE, L"No item selected");
 
-      // Get selected text
-      return Content[GetNextItem(-1, LVNI_SELECTED)].Text;
+      // Get selection and format
+      switch (SuggestionType)
+      {
+      case Suggestion::GameObject:   return GuiString(L"{%s}", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::ScriptObject: return GuiString(L"[%s]", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::Variable:     return GuiString(L"$%s", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::Label:        return GuiString(L"%s:", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::Command: 
+         break;
+      }
+      
+      throw NotImplementedException(HERE, L"Command suggestions");
    }
 
    /// <summary>Highlights the closest matching suggestion.</summary>
@@ -90,8 +105,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case TokenType::GameObject:
       case TokenType::ScriptObject:
       case TokenType::Variable:
+      case TokenType::Label:
          str = str.TrimLeft(L"${[");
-         str = str.TrimRight(L"}]");
+         str = str.TrimRight(L"}]:");
          break;
       }
 
@@ -122,8 +138,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Content.clear();
       
       // Populate
-      for (auto& it : ScriptObjectLib.Content)
-         Content.push_back(SuggestionItem(it.second.Text, L"TODO"));
+      for (auto& obj : ScriptObjectLib.Query(L""))
+         Content.push_back( SuggestionItem(obj.Text, GetString(obj.Group)) );
    }
 
    /// <summary>Initialises control and populates</summary>

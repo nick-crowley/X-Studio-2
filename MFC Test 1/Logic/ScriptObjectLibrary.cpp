@@ -10,7 +10,7 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptObjectLibrary::ScriptObjectLibrary() : Content(Lookup)
+      ScriptObjectLibrary::ScriptObjectLibrary()
       {
       }
 

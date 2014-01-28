@@ -157,8 +157,6 @@ namespace Logic
       public:
          static ScriptObjectLibrary  Instance;
          
-         const LookupCollection& Content;
-         
       private:
          ObjectCollection  Objects;
          LookupCollection  Lookup;
