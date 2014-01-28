@@ -12,7 +12,7 @@ namespace Logic
    {
       namespace Compiler
       {
-         /// <summary></summary>
+         /// <summary>Vector of strings</summary>
          typedef vector<wstring>  LineArray;
 
          /// <summary>Constant line iterator</summary>
@@ -38,49 +38,45 @@ namespace Logic
                ErrorToken(UINT line, UINT start, UINT end) : TokenBase(start,end), Line(line)
                {}
 
-               const UINT    Line;
-               //const wstring Text;
+               const UINT  Line;
             };
 
             /// <summary>Vector of error tokens</summary>
             typedef vector<ErrorToken>  ErrorArray;
 
-            /// <summary>Simple command or assignment expression</summary>
+            /// <summary>Represents a script command and its descendants, if any</summary>
             class CommandNode
             {
             public:
-               /*CommandNode() 
-                  : Logic(BranchLogic::None), LineNumber(1), Index(0), JumpTarget(nullptr), Command(SyntaxLib.Unknown, ParameterArray())
-               {}*/
                CommandNode(const ScriptCommand& cmd, UINT line, const ErrorArray& err) 
-                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Errors(err)
-               {
-                  Logic = Command.Logic;
-               }
-               /*virtual ~CommandNode()
-               {}*/
+                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Errors(err), Logic(cmd.Logic)
+               {}
 
                BranchLogic    Logic;            // logic type
                ScriptCommand  Command;          // Command
                UINT           LineNumber,       // 1-based line number
                               Index;            // 0-based standard codearray index
-               //bool           Valid;            // Successfully compiled flag
                ErrorArray     Errors;           // Compilation errors
-
-               // JumpNode
-               ScriptCommand* JumpTarget;    // Destination of jump
+               ScriptCommand* JumpTarget;       // Destination of jump
+               vector<CommandTree>  Children;    // Child commands
                
-               // BranchNode
+               /// <summary>Add child node</summary>
+               /// <param name="cmd">The command node</param>
                void  Add(const CommandTree& cmd)
                {
                   Children.push_back(cmd);
                }
 
+               /// <summary>Check children for presence of certain branch logic</summary>
+               /// <param name="l">logic</param>
+               /// <returns></returns>
                bool  Contains(BranchLogic l) const
                {
                   return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
                }
 
+               /// <summary>Get errors collection</summary>
+               /// <param name="err">collection to populate</param>
                void  GetErrors(ErrorArray& err)
                {
                   // Copy errors
@@ -92,6 +88,8 @@ namespace Logic
                      c->GetErrors(err);
                }
 
+               /// <summary>Debug print</summary>
+               /// <param name="depth">The depth.</param>
                void  Print(int depth = 0) const
                {
                   wstring tab(depth, (WCHAR)L' ');
@@ -102,19 +100,22 @@ namespace Logic
                   for (auto c : Children)
                      c->Print(depth+1);
                }
-
-               vector<CommandTree>  Children;    // Child commands
             };
 
          public:
+            /// <summary>Tree of command nodes</summary>
             class ScriptTree
             {
             public:
-               void  Add(CommandTree t)   
+               /// <summary>Add a command to the tree</summary>
+               /// <param name="t">command</param>
+               void  Add(CommandTree t)
                { 
                   Commands.push_back(t); 
                }
 
+               /// <summary>Gets the errors collection</summary>
+               /// <returns></returns>
                ErrorArray GetErrors()
                {
                   ErrorArray err;
@@ -166,7 +167,7 @@ namespace Logic
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
             ScriptCommand  ReadComment(const CommandLexer& lex, const LineIterator& line);
-            CommandTree  ReadCommand(const CommandLexer& lex, const LineIterator& line);
+            CommandTree    ReadCommand(const CommandLexer& lex, const LineIterator& line);
             ScriptCommand  ReadExpression(const CommandLexer& lex, const LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
