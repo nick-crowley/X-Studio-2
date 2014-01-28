@@ -32,7 +32,7 @@ namespace Logic
          // ------------------------------- PUBLIC METHODS -------------------------------
 
          /// <summary>Reads all commands in the script</summary>
-         /// <returns></returns>
+         /// <returns>Tree of command nodes</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
