@@ -49,6 +49,7 @@ namespace Logic
       /// <summary>Holds a union value of String/integer</summary>
       class ParameterValue
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          ParameterValue() : Type(ValueType::Int), Int(0) 
          {}
@@ -59,6 +60,25 @@ namespace Logic
             Int = val; 
          }
 
+         // --------------------- PROPERTIES ------------------------
+
+         PROPERTY_GET(int,HighWord,GetHighWord);
+         PROPERTY_GET(int,LowWord,GetLowWord);
+
+         // ---------------------- ACCESSORS ------------------------			
+
+         int  GetHighWord() const
+         {
+            return HIWORD(Int);
+         }
+         int  GetLowWord() const
+         {
+            return LOWORD(Int);
+         }
+
+		   // ----------------------- MUTATORS ------------------------
+
+         /// <summary>Integer assignment</summary>
          ParameterValue& operator=(int val)
          {
             Type = ValueType::Int;
@@ -66,12 +86,15 @@ namespace Logic
             return *this;
          }
 
+         /// <summary>String assignment</summary>
          ParameterValue& operator=(const wstring& sz)
          {
             Type = ValueType::String;
             String = sz;
             return *this;
          }
+
+         // -------------------- REPRESENTATION ---------------------
 
          ValueType Type;
          wstring   String;
@@ -106,7 +129,6 @@ namespace Logic
          void  Generate() {}
 
 		   // -------------------- REPRESENTATION ---------------------
-
       public:
          DataType        Type;
          ParameterValue  Value;
