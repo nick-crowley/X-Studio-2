@@ -63,7 +63,6 @@ $1 $2 call script $0 :
 Script Name
 RetVar/IF/START
 RefObj
-Expression
 -------------- END DEFINITION ---------------
 HIDDEN
 X2,X3R,X3TC,X3AP
