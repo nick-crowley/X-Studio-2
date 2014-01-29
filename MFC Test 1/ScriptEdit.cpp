@@ -305,7 +305,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       { 
          // Parse script 
          ScriptParser parser(lines, GameVersion::TerranConflict);
-         parser.ParseScript();
          
          // DEBUG:
          Console << L"Highlighting " << parser.Errors.size() << L" errors" << ENDL;
@@ -313,7 +312,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Define error underline
          CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
          cf.bUnderlineType = CFU_UNDERLINEWAVE;
-         //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
+         cf.bUnderlineColor = 0x02;     //Undocumented underline colour
 
          // Underline all errors
          for (const auto& err : parser.Errors)

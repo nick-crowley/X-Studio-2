@@ -19,10 +19,13 @@ namespace Logic
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
-         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v)
+         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v), Script(Errors)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
+
+            // Parse immediately
+            Parse();
          }
 
 
@@ -44,21 +47,33 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
 
+         // ------------------------------ PROTECTED METHODS -----------------------------
+
+         // ------------------------------- PRIVATE METHODS ------------------------------
+         
+         /// <summary>Get the one-based line number of a line</summary>
+         /// <param name="line">The line</param>
+         /// <returns>One based line number</returns>
+         UINT  ScriptParser::GetLineNumber(const LineIterator& line) const
+         {
+            return line - Input.begin() + 1;
+         }
+
+         
          /// <summary>Reads all commands in the script</summary>
          /// <returns>Tree of command nodes</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
-         ScriptParser::ScriptTree  ScriptParser::ParseScript()
+         void  ScriptParser::Parse()
          {
-            ScriptTree  script;
             CommandTree node;
             
             // Iterate over lines  (count >= 1)
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
                // Read command, add to script
-               script.Add(node = ParseNode(line));
+               Script.Add(node = ParseNode(line));
                
                // Examine command
                switch (node->Logic)
@@ -74,21 +89,9 @@ namespace Logic
                }
             }
 
-            return script;
+            // Verify
+            Script.Compile();
          }
-
-         // ------------------------------ PROTECTED METHODS -----------------------------
-
-         // ------------------------------- PRIVATE METHODS ------------------------------
-         
-         /// <summary>Get the one-based line number of a line</summary>
-         /// <param name="line">The line</param>
-         /// <returns>One based line number</returns>
-         UINT  ScriptParser::GetLineNumber(const LineIterator& line) const
-         {
-            return line - Input.begin() + 1;
-         }
-
 
          /// <summary>Parses the descendant commands of a branching command</summary>
          /// <param name="branch">Branching command</param>
@@ -159,7 +162,7 @@ namespace Logic
          {
             LineIterator  text = line++;  // consume line
             CommandLexer  lex(*text);
-            CommandNode*  node = nullptr;
+            CommandTree   node;
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -169,31 +172,26 @@ namespace Logic
 
             // Comment/NOP:
             if (MatchComment(lex))
-               node = ReadComment(lex, text);
+               return CommandTree(ReadComment(lex, text));
 
             // Command:
             else if (MatchCommand(lex))
-               node = ReadCommand(lex, text);
+               return CommandTree(ReadCommand(lex, text));
 
             // Expression:
             else if (MatchExpression(lex))
-               node = ReadExpression(lex, text);
+               return CommandTree(ReadExpression(lex, text));
             
-            else
-            {  // UNRECOGNISED: Generate empty node
-               Errors += MakeError(L"Unable to parse command", line);
-               node = new CommandNode(ScriptCommand::Unknown, GetLineNumber(text));
-            
-               // DEBUG:
-               #ifdef PRINT_CONSOLE
-                  Console << Colour::Yellow << L"FAILED" << ENDL;
-                  for (auto tok : lex.Tokens)
-                     Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
-               #endif
-            }
+            // DEBUG:
+            #ifdef PRINT_CONSOLE
+               Console << Colour::Yellow << L"FAILED" << ENDL;
+               for (auto tok : lex.Tokens)
+                  Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
+            #endif
 
-            // Wrap node
-            return CommandTree(node);
+            // UNRECOGNISED: Generate empty node
+            Errors += MakeError(L"Unable to parse command", line);
+            return CommandTree( new CommandNode(ScriptCommand::Unknown, GetLineNumber(text)) );
          }
 
 
@@ -455,16 +453,6 @@ namespace Logic
             if (syntax == CommandSyntax::Unknown)
                Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", line) : MakeError(L"Unexpected token in command", line, pos));
             
-            
-            // Recognise Game/ScriptObjects
-            for (const auto& tok : tokens)
-               if (tok.Type == TokenType::GameObject && !GameObjectLib.Contains(tok.Text))
-                  Errors += ErrorToken(L"Unrecognised game object", GetLineNumber(line), tok);
-
-               else if (tok.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(tok.Text))
-                  Errors += ErrorToken(L"Unrecognised script object", GetLineNumber(line), tok);
-            
-
             // DEBUG:
             #ifdef PRINT_CONSOLE
                if (syntax != CommandSyntax::Unknown)
