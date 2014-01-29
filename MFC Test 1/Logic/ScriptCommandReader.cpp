@@ -90,7 +90,7 @@ namespace Logic
          // Read arguments
          int count = ReadIntNode();
          for (int i = 0; i < count; i++)
-            params.push_back( ReadParameter(syntax.Parameters[3]) );
+            params.push_back( ReadParameter(ParameterSyntax::ScriptCallArgument) );
 
          // Return command
          return ScriptCommand(syntax, params);

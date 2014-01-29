@@ -135,7 +135,7 @@ namespace Logic
          }
 
          // Expressions: Print remaining syntax
-         if (Syntax.ID == CMD_EXPRESSION)
+         if (Syntax.ID == CMD_EXPRESSION || Syntax.ID == CMD_CALL_SCRIPT_VAR_ARGS)
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
       }

@@ -320,7 +320,6 @@ usage : (optional) Defines the meaning of the parameter
         <param displayIndex="2" usage="scriptname">Script Name</param>
         <param displayIndex="0">RetVar/IF/START</param>
         <param displayIndex="1">RefObj</param>
-        <param displayIndex="0">Expression</param>
       </params>
     </command>
 

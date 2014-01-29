@@ -132,7 +132,8 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-
+      private:
+         ParameterSyntax(ParameterType t, UINT physical, UINT display);
       public:
          ParameterSyntax(Declaration& d);
          virtual ~ParameterSyntax();
@@ -172,6 +173,8 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
+      public:
+         static const ParameterSyntax  ScriptCallArgument;
 
       public:
          const ParameterType  Type;
