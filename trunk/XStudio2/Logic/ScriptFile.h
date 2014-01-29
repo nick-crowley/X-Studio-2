@@ -64,8 +64,15 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(wstring,CommandName,GetCommandName);
+
 		   // ---------------------- ACCESSORS ------------------------
 			
+         /// <summary>Gets the name of the object command.</summary>
+         /// <returns>Name of command if any, otherwise empty string</returns>
+         /// <exception cref="Logic::ScriptObjectNotFoundException">Command matching ID is not present</exception>
+         wstring GetCommandName() const;
+
 		   // ----------------------- MUTATORS ------------------------
 
          void  Clear()
