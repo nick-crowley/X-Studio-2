@@ -103,7 +103,7 @@ namespace Logic
          case DataType::WINGCOMMAND:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::WING_COMMANDS, Value.Int).Text.c_str());  break;
          case DataType::RACE:             Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::RACES, Value.Int).Text.c_str());  break;
          case DataType::CONSTANT:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::CONSTANTS, Value.Int).Text.c_str());  break;
-         case DataType::WARE:             Text = StringResource::Format(L"{%s}", GameObjectLib.Find(Value.Int).Name);   break;
+         case DataType::WARE:             Text = StringResource::Format(L"{%s}", GameObjectLib.Find(Value.Int).Name.c_str());   break;
          }
 
          // RefObj: Append indirection operator
