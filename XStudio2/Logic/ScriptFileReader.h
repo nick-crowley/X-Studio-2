@@ -25,14 +25,15 @@ namespace Logic
             virtual ScriptCommand  ReadCommand() PURE;
 
          protected:
-            wstring         ReadStringNode() { return Reader.ReadString(ReadNode());   }
-            int             ReadIntNode()    { return Reader.ReadInt(ReadNode());      }
-            ParameterValue  ReadValueNode()  { return Reader.ReadValue(ReadNode());    }
-            DataType        ReadTypeNode()   { return (DataType)LOWORD(ReadIntNode()); }
+            wstring         ReadStringNode(const wchar* help) { return Reader.ReadString(ReadNode(), help);   }
+            int             ReadIntNode(const wchar* help)    { return Reader.ReadInt(ReadNode(), help);      }
+            ParameterValue  ReadValueNode(const wchar* help)  { return Reader.ReadValue(ReadNode(), help);    }
+            DataType        ReadTypeNode(const wchar* help)   { return (DataType)LOWORD(ReadIntNode(help));   }
 
-            ScriptParameter ReadParameter(ParameterSyntax s) { 
-               DataType dt = ReadTypeNode();
-               return ScriptParameter(s, dt, ReadValueNode()); 
+            ScriptParameter ReadParameter(ParameterSyntax s, const wchar* help) 
+            { 
+               DataType dt = ReadTypeNode(help);
+               return ScriptParameter(s, dt, ReadValueNode(help)); 
             }
 
          private:
@@ -40,7 +41,7 @@ namespace Logic
 
             // -------------------- REPRESENTATION ---------------------
          protected:
-            ScriptFileReader&         Reader;
+            ScriptFileReader&     Reader;
             ScriptFile&           Script;
             XmlNodePtr&           Command;
 
@@ -139,11 +140,11 @@ namespace Logic
       private:
          ReaderPtr      GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
 
-         int            ReadArray(XmlNodePtr& node);
+         int            ReadArray(XmlNodePtr& node, const WCHAR* help);
          GameVersion    ReadEngineVersion(XmlNodePtr& node);
-         int            ReadInt(XmlNodePtr& node);
-         wstring        ReadString(XmlNodePtr& node);
-         ParameterValue ReadValue(XmlNodePtr& node);
+         int            ReadInt(XmlNodePtr& node, const WCHAR* help);
+         wstring        ReadString(XmlNodePtr& node, const WCHAR* help);
+         ParameterValue ReadValue(XmlNodePtr& node, const WCHAR* help);
 
          void  ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch);
          void  ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);

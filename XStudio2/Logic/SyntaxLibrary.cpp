@@ -42,7 +42,7 @@ namespace Logic
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       UINT  SyntaxLibrary::Enumerate(WorkerData* data)
       {
-         const Path path(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt");
+         const Path path(L"D:\\My Projects\\XStudio2\\XStudio2\\Command Syntax.txt");
 
          // Clear previous contents
          Clear();
