@@ -405,15 +405,20 @@ namespace Logic
                Console << Colour::Green << (lex.count() == 0 ? L"nop" : L"comment") << ENDL;
             #endif
 
-            // NOP
+            // NOP: Create command
             if (lex.count() == 0)
                return new CommandNode(ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), GetLineNumber(line));
             
             // Comment
             CommandSyntax syntax(SyntaxLib.Find(CMD_COMMENT, Version));
-            ScriptParameter comment(syntax.Parameters[0], lex.Tokens[1]);
+            ParameterArray params;
 
-            return new CommandNode(ScriptCommand(syntax, *line, ParameterArray(comment)), GetLineNumber(line));
+            // Empty comments have no text token
+            if (lex.count() == 2)
+               params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
+
+            // Create command
+            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
          /// <summary>Reads an entire non-expression command</summary>
