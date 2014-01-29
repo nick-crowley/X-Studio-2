@@ -3,12 +3,14 @@
 #include "Common.h"
 #include "ParameterSyntax.h"
 #include "ReturnValue.h"
+#include "ScriptToken.h"
 
 namespace Logic
 {
    namespace Scripts
    {
       class ScriptFile;
+
 
       /// <summary>Modifiers added to various types or values</summary>
       #define   DTF_ENCODED           0x20000
@@ -64,6 +66,8 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         ScriptParameter(ParameterSyntax s, const ScriptToken& t);
+         ScriptParameter(ParameterSyntax s, Conditional c);
          ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val);
          ScriptParameter(ParameterSyntax s, DataType t, const wstring& val);
          ScriptParameter(ParameterSyntax s, DataType t, UINT val);
@@ -91,7 +95,21 @@ namespace Logic
       };
 
       /// <summary>Vector of script parameters</summary>
-      typedef vector<ScriptParameter> ParameterArray;
+      class ParameterArray : public vector<ScriptParameter> 
+      {
+      public:
+         ParameterArray()
+         {}
+         ParameterArray(const ScriptParameter& p)
+         {
+            push_back(p);
+         }
+         ParameterArray& operator +=(const ScriptParameter& p)
+         {
+            push_back(p);
+            return *this;
+         }
+      };
    }
 }
 

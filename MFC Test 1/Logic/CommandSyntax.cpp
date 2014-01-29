@@ -89,7 +89,7 @@ namespace Logic
             {
                // Lookup parameter name
                auto param = Parameters[tok->Text[1]-48];
-               GuiString name(L"<%s>", StringLib.Find(KnownPage::PARAMETER_TYPES, (UINT)param.Type).Text.c_str());
+               GuiString name(L"<%s>", GetString(param.Type).c_str());
 
                // Replace $n marker with parameter text
                output.replace(tok->Start, tok->Length(), name.c_str());
@@ -97,6 +97,27 @@ namespace Logic
          }
 
          return output;
+      }
+
+      /// <summary>Gets the parameter syntax sorted by display index</summary>
+      /// <returns></returns>
+      ParamSyntaxArray  CommandSyntax::GetParametersByDisplay() const
+      {
+         ParamSyntaxArray params;
+         vector<int>      order;
+         
+         //transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->int { return p.DisplayIndex; });
+         for (const auto& p : Parameters)
+            order.push_back(p.DisplayIndex);
+
+         // Sort by DisplayIndex (Ascending)
+         sort(order.begin(), order.end(), less<int>()); 
+         //sort(params.begin(), params.end(), [](const ParameterSyntax& a, const ParameterSyntax& b)->bool { return a.DisplayIndex < b.DisplayIndex; });
+         
+         for (int index : order)
+            params.push_back(Parameters[index]);
+
+         return params;
       }
 
       /// <summary>Determines whether the command is compatible with a game</summary>

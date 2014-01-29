@@ -24,6 +24,14 @@ namespace Logic
       
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Query whether an object is present</summary>
+      /// <param name="obj">The object text</param>
+      /// <returns></returns>
+      bool  ScriptObjectLibrary::Contains(const wstring& obj) const
+      {
+         return Lookup.Contains(obj);
+      }
+
       /// <summary>Clears all objects from the library.</summary>
       void  ScriptObjectLibrary::Clear()
       {

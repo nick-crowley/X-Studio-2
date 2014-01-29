@@ -50,6 +50,7 @@ namespace Logic
       public:
          PROPERTY_GET(bool,Keyword,IsKeyword);
          PROPERTY_GET(wstring,DisplayText,GetDisplayText);
+         PROPERTY_GET(ParamSyntaxArray,ParametersByDisplay,GetParametersByDisplay);
 
          bool  operator==(const CommandSyntax& r) const   { return ID == r.ID && Versions == r.Versions; }
          bool  operator!=(const CommandSyntax& r) const   { return ID != r.ID || Versions != r.Versions; }
@@ -58,6 +59,9 @@ namespace Logic
       public:
          /// <summary>Get populated display text</summary>
          wstring GetDisplayText() const;
+
+         /// <summary>Get parameter syntax in display order</summary>
+         ParamSyntaxArray  GetParametersByDisplay() const;
 
          /// <summary>Query whether command is compatible with a version</summary>
          bool  IsCompatible(GameVersion v) const;

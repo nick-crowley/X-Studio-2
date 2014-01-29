@@ -76,6 +76,9 @@ namespace Logic
             const wstring     Text;
          };
 
+         /// <summary>List of script tokens</summary>
+         typedef list<ScriptToken> TokenList;
+
          /// <summary>Vector of script tokens</summary>
          typedef vector<ScriptToken> TokenArray;
 
