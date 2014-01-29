@@ -116,14 +116,40 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
       /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-      const TObject*  GameObjectLibrary::Find(MainType main, UINT subtype) const
+      //const TObject*  GameObjectLibrary::Find(MainType main, UINT subtype) const
+      //{
+      //   // Ensure types loaded
+      //   if (Files[(UINT)main] == nullptr)
+      //      throw ArgumentException(HERE, L"main", GuiString(L"Object types for maintype %d not loaded", main));
+
+      //   // Lookup object
+      //   return Files[(UINT)main]->FindAt(subtype);
+      //}
+
+      /// <summary>Finds an object</summary>
+      /// <param name="main">Encoded main type and subtype</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
+      /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
+      GameObject  GameObjectLibrary::Find(UINT value) const
+      {
+         return Find((MainType)HIWORD(value), LOWORD(value));
+      }
+
+      /// <summary>Finds an object</summary>
+      /// <param name="main">The main type</param>
+      /// <param name="subtype">The subtype</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
+      /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
+      GameObject  GameObjectLibrary::Find(MainType main, UINT subtype) const
       {
          // Ensure types loaded
          if (Files[(UINT)main] == nullptr)
-            throw ArgumentException(HERE, L"main", GuiString(L"Object types for maintype %d not loaded", main));
+            throw ArgumentException(HERE, L"main", GuiString(L"%s file was not loaded", GetString(main).c_str()));
 
          // Lookup object
-         return Files[(UINT)main]->FindAt(subtype);
+         return Objects.Find(main, subtype);
       }
 
       /// <summary>Searches the library for objects containing a substring</summary>

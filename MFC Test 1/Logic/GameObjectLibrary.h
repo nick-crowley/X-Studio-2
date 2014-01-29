@@ -180,7 +180,9 @@ namespace Logic
       public:
          void            Clear();
          UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
-         const TObject*  Find(MainType main, UINT subtype) const;
+         //const TObject*  Find(MainType main, UINT subtype) const;
+         GameObject      Find(UINT value) const;
+         GameObject      Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const wstring& search) const;
 
       protected:

@@ -2,7 +2,7 @@
 #include "ScriptParameter.h"
 #include "ScriptFile.h"
 #include "StringLibrary.h"
-
+#include "GameObjectLibrary.h"
 
 namespace Logic
 {
@@ -103,10 +103,7 @@ namespace Logic
          case DataType::WINGCOMMAND:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::WING_COMMANDS, Value.Int).Text.c_str());  break;
          case DataType::RACE:             Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::RACES, Value.Int).Text.c_str());  break;
          case DataType::CONSTANT:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::CONSTANTS, Value.Int).Text.c_str());  break;
-
-         case DataType::WARE:
-            Text = StringResource::Format(L"{%d:%d}", HIWORD(Value.Int), LOWORD(Value.Int));
-            break;
+         case DataType::WARE:             Text = StringResource::Format(L"{%s}", GameObjectLib.Find(Value.Int).Name);   break;
          }
 
          // RefObj: Append indirection operator
