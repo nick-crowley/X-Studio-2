@@ -63,61 +63,31 @@ namespace Logic
             class CommandNode
             {
             public:
-               CommandNode(const ScriptCommand& cmd, UINT line) 
-                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
-               {}
-               /*CommandNode(const ScriptCommand& cmd, UINT line, const ErrorArray& err) 
-                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Errors(err), Logic(cmd.Logic)
-               {}*/
+               CommandNode(const ScriptCommand& cmd, UINT line);
+               ~CommandNode();
 
                BranchLogic          Logic;            // logic type
                ScriptCommand        Command;          // Command
                UINT                 LineNumber,       // 1-based line number
                                     Index;            // 0-based standard codearray index
-               //ErrorArray           Errors;           // Compilation errors
                CommandNode*         JumpTarget;       // Destination of jump
                vector<CommandTree>  Children;         // Child commands
                
                /// <summary>Add child node</summary>
                /// <param name="cmd">The command node</param>
-               void  Add(const CommandTree& cmd)
-               {
-                  Children.push_back(cmd);
-               }
+               void  Add(const CommandTree& cmd);
 
                /// <summary>Check children for presence of certain branch logic</summary>
                /// <param name="l">logic</param>
                /// <returns></returns>
-               bool  Contains(BranchLogic l) const
-               {
-                  return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
-               }
+               bool  Contains(BranchLogic l) const;
 
-               /// <summary>Get errors collection</summary>
-               /// <param name="err">collection to populate</param>
-               //void  GetErrors(ErrorArray& err) const
-               //{
-               //   // Copy errors
-               //   for (const auto& e : Errors)
-               //      err.push_back(e);
 
-               //   // Recurse into children
-               //   for (const auto& c : Children)
-               //      c->GetErrors(err);
-               //}
+               void  Verify(ErrorArray& err);
 
                /// <summary>Debug print</summary>
                /// <param name="depth">The depth.</param>
-               void  Print(int depth = 0) const
-               {
-                  wstring tab(depth, (WCHAR)L' ');
-
-                  Console.Writef(L"%03d: %s%s : ", LineNumber, tab.c_str(), GetString(Logic));
-                  Console.WriteLn(Command.Syntax == CommandSyntax::Unknown ? Command.Text : Command.Syntax.Text);
-                  
-                  for (auto c : Children)
-                     c->Print(depth+1);
-               }
+               void  Print(int depth = 0) const;
             };
 
          public:
@@ -125,25 +95,19 @@ namespace Logic
             class ScriptTree
             {
             public:
-               /// <summary>Add a command to the tree</summary>
-               /// <param name="t">command</param>
-               void  Add(CommandTree t)
-               { 
-                  Commands.push_back(t); 
-               }
+               ScriptTree(ErrorArray& err);
+               ~ScriptTree();
 
-               /// <summary>Gets the errors collection</summary>
-               /// <returns></returns>
-               /*ErrorArray GetErrors() const
-               {
-                  ErrorArray err;
-                  for (const CommandTree& t : Commands)
-                     t->GetErrors(err);
-                  return err;
-               }*/
+               /// <summary>Add a command to the tree</summary>
+               /// <param name="t">Command</param>
+               void  Add(CommandTree t);
+
+               /// <summary>Compile the parsed script</summary>
+               void  Compile();
 
             private:
                vector<CommandTree> Commands;
+               ErrorArray&         Errors;
             };
 
             // --------------------- CONSTRUCTION ----------------------
@@ -175,11 +139,8 @@ namespace Logic
             bool  MatchExpression(const CommandLexer& lex) const;
 
             // ----------------------- MUTATORS ------------------------
-         
-         public:
-            ScriptTree  ParseScript();
-
          private:
+            void           Parse();
             void           ParseBranch(CommandTree& branch, LineIterator& line);
             CommandTree    ParseNode(LineIterator& line);
 
@@ -194,7 +155,8 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            ErrorArray        Errors;           // Compilation errors
+            ErrorArray     Errors;     // Compilation errors
+            ScriptTree     Script;     // Compiled script tree
 
          private:
             const LineArray&  Input;

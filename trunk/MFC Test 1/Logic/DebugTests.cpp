@@ -32,7 +32,7 @@ namespace Logic
       Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
 
       ScriptParser p(lines, GameVersion::TerranConflict);
-      return p.ParseScript();
+      return p.Script;
    }
 
 

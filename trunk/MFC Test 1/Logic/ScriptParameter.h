@@ -50,8 +50,22 @@ namespace Logic
       class ParameterValue
       {
       public:
-         ParameterValue(wstring sz) : Type(ValueType::String) { String = sz; }
+         ParameterValue(const wstring& sz) : Type(ValueType::String) { String = sz; }
          ParameterValue(int val) : Type(ValueType::Int) { Int = val; }
+
+         ParameterValue& operator=(int val)
+         {
+            Type = ValueType::Int;
+            Int = val;
+            return *this;
+         }
+
+         ParameterValue& operator=(const wstring& sz)
+         {
+            Type = ValueType::String;
+            String = sz;
+            return *this;
+         }
 
          ValueType Type;
          wstring   String;
@@ -92,6 +106,7 @@ namespace Logic
          ParameterValue  Value;
          ParameterSyntax Syntax;
          wstring         Text;
+         ScriptToken     Token;
       };
 
       /// <summary>Vector of script parameters</summary>
