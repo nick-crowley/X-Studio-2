@@ -12,14 +12,14 @@ namespace Logic
       public:
          Path();
          Path(const WCHAR* path);
-         Path(wstring path);
+         Path(const wstring& path);
          Path(const Path& r);
          Path(Path&& r);
 
          // ------------------------ STATIC -------------------------
 
       private:
-         CharArrayPtr  Init(const WCHAR*  path);
+         static CharArrayPtr  Init(const WCHAR*  path);
 
          // --------------------- PROPERTIES ------------------------
 		
@@ -46,20 +46,20 @@ namespace Logic
          Path     RenameExtension(wstring  ext) const;
 
          Path& operator=(const WCHAR* path)     { return Assign(path);               }
-         Path& operator=(const wstring path)    { return Assign(path.c_str());       }
+         Path& operator=(const wstring& path)   { return Assign(path.c_str());       }
          Path& operator=(const Path& path)      { return Assign(path.Buffer.get());  }
          Path& operator=(Path&& r);
 
-         Path operator+(const WCHAR* path)      { return Append(path);               }
-         Path operator+(const wstring path)     { return Append(path);               }
-         Path operator+(const Path& path)       { return Append(path.Text);          }
+         Path operator+(const WCHAR* path) const      { return Append(path);               }
+         Path operator+(const wstring& path) const    { return Append(path);               }
+         Path operator+(const Path& path) const       { return Append(path.Text);          }
 
          bool operator==(const WCHAR* path) const     { return Compare(path) == 0;               }
-         bool operator==(const wstring path) const    { return Compare(path.c_str()) == 0;       }
+         bool operator==(const wstring& path) const   { return Compare(path.c_str()) == 0;       }
          bool operator==(const Path& path) const      { return Compare(path.Buffer.get()) == 0;  }
 
          bool operator!=(const WCHAR* path) const     { return Compare(path) != 0;               }
-         bool operator!=(const wstring path) const    { return Compare(path.c_str()) != 0;       }
+         bool operator!=(const wstring& path) const   { return Compare(path.c_str()) != 0;       }
          bool operator!=(const Path& path) const      { return Compare(path.Buffer.get()) != 0;  }
 
          bool operator<(const Path& path) const       { return Compare(path.Buffer.get()) < 0;   }
@@ -72,12 +72,12 @@ namespace Logic
 
       private:
          CharArrayPtr  Copy() const;
-         int      Compare(const WCHAR* path) const;
+         int  Compare(const WCHAR* path) const;
       
 		   // ----------------------- MUTATORS ------------------------
    
       private:
-         Path&    Assign(const WCHAR*  text);
+         Path&  Assign(const WCHAR*  text);
       
 		   // -------------------- REPRESENTATION ---------------------
 
