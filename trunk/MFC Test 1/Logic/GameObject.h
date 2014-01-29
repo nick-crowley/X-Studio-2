@@ -20,6 +20,7 @@ namespace Logic
 
       public:
          GameObject(UINT subtype, const TObject* obj);
+         GameObject(GameObject&& r);
          virtual ~GameObject();
       
          //DEFAULT_COPY(GameObject);	// Default copy semantics
