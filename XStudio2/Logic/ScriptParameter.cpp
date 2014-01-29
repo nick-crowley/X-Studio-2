@@ -3,6 +3,7 @@
 #include "ScriptFile.h"
 #include "StringLibrary.h"
 #include "GameObjectLibrary.h"
+#include "ScriptObjectLibrary.h"
 
 namespace Logic
 {
@@ -36,8 +37,16 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get datatype string</summary>
+      GuiString  GetString(DataType d)
+      {
+         return StringLib.Contains(KnownPage::DATA_TYPES, (UINT)d) ? StringLib.Find(KnownPage::DATA_TYPES, (UINT)d).Text : GuiString(L"Missing string %d", d);
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Translates the specified f.</summary>
+      /// <param name="f">The f.</param>
       void   ScriptParameter::Translate(ScriptFile& f)
       {
          const WCHAR* format;
@@ -78,33 +87,35 @@ namespace Logic
             Text = L"null";
             break;
 
+         // Various: Strip HIWORD, then lookup ID
          case DataType::OPERATOR:
-            switch (Operator op = (Operator)Value.LowWord)
-            {
-            case Operator::Add:           Text = L"+"; break;
-            case Operator::CloseBracket:  Text = StringResource::Format(L"%s ", StringLib.Find(KnownPage::OPERATORS, (UINT)op).Text.c_str());  break;
-            case Operator::Minus:
-            case Operator::LogicalNot:
-            case Operator::BitwiseNot:
-            case Operator::OpenBracket:   Text = StringResource::Format(L" %s", StringLib.Find(KnownPage::OPERATORS, (UINT)op).Text.c_str());   break;
-            default:                      Text = StringResource::Format(L" %s ", StringLib.Find(KnownPage::OPERATORS, (UINT)op).Text.c_str());  break;
-            }
+         case DataType::CONSTANT:
+         case DataType::DATATYPE:
+            Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), Value.LowWord).DisplayText;   
             break;
 
-         case DataType::CONSTANT:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::CONSTANTS, Value.LowWord).Text.c_str());  break;
-         case DataType::DATATYPE:         Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::DATA_TYPES, Value.LowWord).Text.c_str());  break;
+         // Various: Lookup ID
+         case DataType::FLIGHTRETURN:     
+         case DataType::OBJECTCLASS:      
+         case DataType::OBJECTCOMMAND:    
+         case DataType::RACE:             
+         case DataType::SCRIPTDEF:        
+         case DataType::SECTOR:   
+         case DataType::STATIONSERIAL:    
+         case DataType::TRANSPORTCLASS:   
+         case DataType::WINGCOMMAND:      
+            Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), Value.Int).DisplayText;   
+            break;
 
-         case DataType::SCRIPTDEF:        Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::PARAMETER_TYPES, Value.Int).Text.c_str());  break;
-         case DataType::STATIONSERIAL:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::STATION_SERIALS, Value.Int).Text.c_str());  break;
-         case DataType::TRANSPORTCLASS:   Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::TRANSPORT_CLASSES, Value.Int).Text.c_str());  break;
-         case DataType::FLIGHTRETURN:     Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::FLIGHT_RETURNS, Value.Int).Text.c_str());  break;
-         case DataType::OBJECTCLASS:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_CLASSES, Value.Int).Text.c_str());  break;
-         case DataType::OBJECTCOMMAND:    Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::OBJECT_COMMANDS, Value.Int).Text.c_str());  break;
-         case DataType::WINGCOMMAND:      Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::WING_COMMANDS, Value.Int).Text.c_str());  break;
-         case DataType::RACE:             Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::RACES, Value.Int).Text.c_str());  break;
-         case DataType::SECTOR:           Text = StringResource::Format(L"[%s]", StringLib.Find(KnownPage::SECTORS, Value.Int).Text.c_str());  break;
+         // Relation: Map ID then convert
+         case DataType::RELATION:
+            Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), RelationIDConverter::ToStringID((Relation)Value.Int)).DisplayText;   
+            break;
 
-         case DataType::WARE:             Text = StringResource::Format(L"{%s}", GameObjectLib.Find(Value.Int).Name.c_str());   break;
+         // Ware
+         case DataType::WARE:
+            Text = GameObjectLib.Find(Value.Int).DisplayText;
+            break;
          }
 
          // RefObj: Append indirection operator

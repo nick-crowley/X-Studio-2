@@ -367,6 +367,9 @@
     <ClInclude Include="Logic\StringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ParameterTypes.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">

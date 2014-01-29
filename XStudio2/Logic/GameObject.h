@@ -30,8 +30,16 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 
+         PROPERTY_GET(GuiString,DisplayText,GetDisplayText);
+
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Get name formatted for display</summary>
+         GuiString  GetDisplayText() const
+         {
+            return GuiString(L"{%s}", Name.c_str());
+         }
+
          /// <summary>Appends an object id to name</summary>
          /// <param name="id">object id</param>
          /// <returns>New game object with id appended</returns>

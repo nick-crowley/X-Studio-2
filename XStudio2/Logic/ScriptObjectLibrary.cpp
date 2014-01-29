@@ -66,6 +66,25 @@ namespace Logic
          return Lookup.size();
       }
 
+      /// <summary>Finds an object by text<summary>
+      /// <param name="sz">The text</param>
+      /// <returns>Object</returns>
+      /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
+      ScriptObject  ScriptObjectLibrary::Find(const wstring& sz) const
+      {
+         return Lookup.Find(sz);
+      }
+
+      /// <summary>Finds a script object by ID</summary>
+      /// <param name="page">The page.</param>
+      /// <param name="id">The ID.</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
+      ScriptObject  ScriptObjectLibrary::Find(ScriptObjectGroup grp, UINT id) const
+      {
+         return Objects.Find(grp, id);
+      }
+
       /// <summary>Get number of objects in the library</summary>
       /// <returns></returns>
       UINT  ScriptObjectLibrary::GetCount() const

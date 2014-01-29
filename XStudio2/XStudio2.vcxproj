@@ -141,6 +141,7 @@
     <ClInclude Include="Logic\GameObject.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
+    <ClInclude Include="Logic\ParameterTypes.h" />
     <ClInclude Include="Logic\RaceLookup.h" />
     <ClInclude Include="Logic\ScriptObject.h" />
     <ClInclude Include="Logic\ScriptObjectLibrary.h" />
