@@ -358,14 +358,14 @@
     <ClInclude Include="ScriptObjectWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\StringParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\MapIterator.hpp">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="Logic\GameObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\StringParser.h">
+      <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,9 +579,6 @@
     <ClCompile Include="ScriptObjectWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\StringParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\LanguageString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
@@ -593,6 +590,9 @@
     </ClCompile>
     <ClCompile Include="Logic\CommandNode.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\StringParser.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
