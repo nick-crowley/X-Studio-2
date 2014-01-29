@@ -155,8 +155,10 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         bool  Contains(const wstring& obj) const;
-         UINT  GetCount() const;
+         bool          Contains(const wstring& obj) const;
+         ScriptObject  Find(ScriptObjectGroup grp, UINT id) const;
+         ScriptObject  Find(const wstring& sz) const;
+         UINT          GetCount() const;
 
          // ----------------------- MUTATORS ------------------------
       public:
