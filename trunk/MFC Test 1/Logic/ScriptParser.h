@@ -95,19 +95,18 @@ namespace Logic
             class ScriptTree
             {
             public:
-               ScriptTree(ErrorArray& err);
+               ScriptTree();
                ~ScriptTree();
 
                /// <summary>Add a command to the tree</summary>
                /// <param name="t">Command</param>
                void  Add(CommandTree t);
 
-               /// <summary>Compile the parsed script</summary>
-               void  Compile();
+               /// <summary>Verify the parsed script</summary>
+               void  Verify(ErrorArray&);
 
             private:
                vector<CommandTree> Commands;
-               ErrorArray&         Errors;
             };
 
             // --------------------- CONSTRUCTION ----------------------

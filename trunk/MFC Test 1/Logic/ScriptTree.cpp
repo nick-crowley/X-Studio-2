@@ -9,7 +9,7 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptParser::ScriptTree::ScriptTree(ErrorArray& err) : Errors(err)
+         ScriptParser::ScriptTree::ScriptTree()
          {
          }
 
@@ -29,11 +29,11 @@ namespace Logic
             Commands.push_back(t); 
          }
 
-         /// <summary>Compiles commands</summary>
-         void  ScriptParser::ScriptTree::Compile()
+         /// <summary>Verifies the parsed commands</summary>
+         void  ScriptParser::ScriptTree::Verify(ErrorArray& err)
          {
             for (auto& cmd : Commands)
-               cmd->Verify(Errors);
+               cmd->Verify(err);
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
