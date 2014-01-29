@@ -9,6 +9,20 @@ namespace Logic
    {
       class LanguageString;
 
+      
+      /// <summary>Occurs when an invalid regular expression is detected</summary>
+      class RegularExpressionException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create a RegularExpressionException from an stl regex exception</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="err">regex error</param>
+         RegularExpressionException(wstring  src, const regex_error&  err) 
+            : ExceptionBase(src, GuiString(L"Regular expression error: ") + StringResource::Convert(err.what(), CP_ACP))
+         {}
+      };
+
+
       /// <summary></summary>
       class StringParser
       {

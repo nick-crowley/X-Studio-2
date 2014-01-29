@@ -65,7 +65,7 @@ namespace Logic
          {
             // Feedback
             data->SendFeedback(ProgressType::Error, 0, GuiString(L"Unable to load game data : ") + e.Message);
-            Console << e << ENDL;
+            Console.Log(HERE, e);
 
             // Cleanup
             CoUninitialize();

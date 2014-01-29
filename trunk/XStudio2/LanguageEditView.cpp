@@ -134,8 +134,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          if (LanguageString* str = GetStringView()->GetSelectedString())
             RichEdit.SetWindowTextW(str->Text.c_str());
       }
-      catch (ExceptionBase& e)
-      { Console << e; }
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e); 
+      }
    }
    
    /// <summary>Adjusts layout</summary>

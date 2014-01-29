@@ -83,7 +83,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
       catch (ExceptionBase& e)
       {
-         Console << e;
+         Console.Log(HERE, e);
          return FALSE;
       }
    }

@@ -276,7 +276,7 @@ NAMESPACE_BEGIN(GUI)
       }
       catch (ExceptionBase& e)
       {
-         Console << e << ENDL;
+         Console.Log(HERE, e);
          return -1;
       }
    }

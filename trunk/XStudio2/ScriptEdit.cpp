@@ -323,7 +323,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
       catch (ExceptionBase& e) 
       { 
-         Console << e << ENDL; 
+         Console.Log(HERE, e); 
       }
 
       // UnFreeze window
@@ -371,7 +371,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
       catch (ExceptionBase& e) {
-         Console << e; 
+         Console.Log(HERE, e, GuiString(L"Unable to process '%c' character", (wchar)nChar)); 
       }
    }
 
@@ -402,7 +402,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
       catch (ExceptionBase& e) {
-         Console << e; 
+         Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
       }
    }
 
@@ -482,7 +482,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
       }
       catch (ExceptionBase& e) { 
-         Console << e; 
+         Console.Log(HERE, e, GuiString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
       }
    }
    
@@ -498,7 +498,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             CloseSuggestions();
       }
       catch (ExceptionBase& e) {
-         Console << e; 
+         Console.Log(HERE, e); 
       }
 
       CRichEditCtrl::OnKillFocus(pNewWnd);
@@ -544,7 +544,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
       catch (ExceptionBase& e) { 
-         Console << e << ENDL; 
+         Console.Log(HERE, e); 
       }
 
       // Restore selection

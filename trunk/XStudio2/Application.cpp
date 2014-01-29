@@ -227,6 +227,17 @@ void Application::SaveCustomState()
 {
 }
 
+/// <summary>Displays and logs an exception</summary>
+/// <param name="src">The handler location</param>
+/// <param name="e">The exception</param>
+/// <param name="msg">The display message</param>
+/// <returns></returns>
+BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const
+{
+   Console.Log(src, e, msg);
+   return AfxMessageBox(GuiString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+}
+
 // ------------------------------ PROTECTED METHODS -----------------------------
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)

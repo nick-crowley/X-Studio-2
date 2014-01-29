@@ -106,10 +106,7 @@ NAMESPACE_BEGIN(GUI)
       }
       catch (ExceptionBase&  e)
       {
-         CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", lpszPathName, e.Message.c_str(), e.Source.c_str());
-         Console << e;
-         AfxMessageBox(sz);
+         theApp.ShowError(HERE, e, GuiString(L"Unable to load '%s'", lpszPathName));
          return FALSE;
       }
    }
