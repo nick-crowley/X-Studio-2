@@ -28,6 +28,26 @@ namespace Logic
       UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
       
       
+      /// <summary>Occurs when a MSCI script object is unrecognised</summary>
+      class ScriptObjectNotFoundException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create a ScriptObjectNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="txt">Desired object text</param>
+         ScriptObjectNotFoundException(wstring  src, wstring txt) 
+            : ExceptionBase(src, GuiString(L"Cannot find script object '%s'", txt.c_str()))
+         {}
+
+         /// <summary>Create a ScriptObjectNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="group">object group</param>
+         /// <param name="id">object id</param>
+         ScriptObjectNotFoundException(wstring  src, ScriptObjectGroup group, UINT id) 
+            : ExceptionBase(src, GuiString(L"Cannot find %s script object %d", GetString(group).c_str(), id))
+         {}
+      };
+
 
       /// <summary>Represents a script object</summary>
       class ScriptObject 

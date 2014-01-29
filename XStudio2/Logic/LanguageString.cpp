@@ -30,6 +30,7 @@ namespace Logic
          switch (Page)
          {
          // Exclude all
+         case KnownPage::OPERATORS:
          default:
             return false;
 
