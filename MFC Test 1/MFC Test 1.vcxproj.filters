@@ -642,6 +642,8 @@
   <ItemGroup>
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
     <Xml Include="Command Syntax.xml" />
+    <Xml Include="plugin.piracy.lib.logic.xml" />
+    <Xml Include="plugin.piracy.lib.ui.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoRes.rc">

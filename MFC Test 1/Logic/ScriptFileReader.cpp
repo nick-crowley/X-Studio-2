@@ -55,7 +55,7 @@ namespace Logic
             file.Game        = ReadEngineVersion(codeArray->childNodes->item[1]);
             file.Description = ReadString(codeArray->childNodes->item[2]);
             file.Version     = (UINT)ReadInt(codeArray->childNodes->item[3]);
-            // TODO: Live data flag
+            file.LiveData    = (UINT)ReadInt(codeArray->childNodes->item[4]) != 0;
 
             // Arguments/Variables
             ReadVariables(file, codeArray->childNodes->item[5], codeArray->childNodes->item[7]);
@@ -63,7 +63,10 @@ namespace Logic
             // Commands
             ReadCommands(file, codeArray->childNodes->item[6], codeArray->childNodes->item[8]);
 
-            // TODO: Command name
+            // Command ID
+            file.CommandID = ReadValue(codeArray->childNodes->item[9]);
+
+            // Return file
             return file;
          }
          catch (_com_error& ex) {
@@ -240,13 +243,21 @@ namespace Logic
          // Init
          script.Variables.clear();
 
-         // Iterate thru variables branch
+         // Read ScriptVariables from {name,id} pair
          for (int i = 0; i < varBranch->childNodes->length; i++)
          {
-            // Generate new ScriptVariable from {name,id} pair
             name = ReadString(varBranch->childNodes->item[i]);
-            script.Variables.push_back( ScriptVariable(name, i) );
+            script.Variables.push_back( ScriptVariable(VariableType::Variable, name, i+1) );
          }
+         
+         // Modify arguments with extra properties
+         for (int i = 0; i < argBranch->childNodes->length; i++)
+         {
+            script.Variables[i].Type        = VariableType::Argument;
+            script.Variables[i].ValueType   = (ParameterType)ReadInt(argBranch->childNodes->item[0]);
+            script.Variables[i].Description = ReadString(argBranch->childNodes->item[1]);
+         }
+
       }
 
    }

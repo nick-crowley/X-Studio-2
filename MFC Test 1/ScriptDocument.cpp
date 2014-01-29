@@ -108,6 +108,7 @@ NAMESPACE_BEGIN(GUI)
       {
          CString sz;
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", lpszPathName, e.Message.c_str(), e.Source.c_str());
+         Console << e;
          AfxMessageBox(sz);
          return FALSE;
       }

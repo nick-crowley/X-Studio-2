@@ -323,6 +323,8 @@
   <ItemGroup>
     <Xml Include="Command Syntax.xml" />
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
+    <Xml Include="plugin.piracy.lib.logic.xml" />
+    <Xml Include="plugin.piracy.lib.ui.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
