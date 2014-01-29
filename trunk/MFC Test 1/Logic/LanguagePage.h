@@ -34,10 +34,10 @@ namespace Logic
       class LanguageString
       {
          // --------------------- CONSTRUCTION ----------------------
-
       public:
-         LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v) : ID(id), Page(page), Text(txt), Version(v) {};
-         ~LanguageString() {};
+         LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v);
+         LanguageString(LanguageString&& r);
+         ~LanguageString();
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -62,30 +62,15 @@ namespace Logic
          /// <summary>Collection of language strings, sorted by ID</summary>
          class StringCollection : public map<UINT, LanguageString, less<UINT>>
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
-            StringCollection(UINT page) : PageID(page) {}
+            StringCollection(UINT page) : PageID(page) 
+            {}
+            StringCollection(StringCollection&& r) : map<UINT, LanguageString, less<UINT>>(move(r)), PageID(r.PageID)
+            {}
 
-            /// <summary>Adds a string to the collection. If a lower version string exists, it is overwritten</summary>
-            /// <param name="s">The string</param>
-            /// <returns>True if inserted, otherwise false</returns>
-            bool  Add(LanguageString& s)
-            {
-               // Attempt to insert
-               auto it = insert(value_type(s.ID, s));
-               if (it.second)
-                  return true;
-
-               // Exists: Overwrite if version is greater
-               if ((UINT)s.Version > (UINT)(it.first->second).Version)
-               {
-                  erase(it.first);
-                  insert(value_type(s.ID, s));
-                  return true;
-               }
-
-               return false;
-            }
-
+            // ---------------------- ACCESSORS ------------------------
+            
             /// <summary>Query whether a string is present</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>
@@ -107,6 +92,38 @@ namespace Logic
 
                return it->second;
             }
+            
+            /// <summary>Finds the specified string.</summary>
+            /// <param name="id">The string id</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+            const LanguageString&  operator[](UINT  id) const
+            {
+               return Find(id);
+            }
+
+            // ----------------------- MUTATORS ------------------------
+            
+            /// <summary>Adds a string to the collection. If a lower version string exists, it is overwritten</summary>
+            /// <param name="s">The string</param>
+            /// <returns>True if inserted, otherwise false</returns>
+            bool  Add(LanguageString& s)
+            {
+               // Attempt to insert
+               auto it = insert(value_type(s.ID, s));
+               if (it.second)
+                  return true;
+
+               // Exists: Overwrite if version is greater
+               if ((UINT)s.Version > (UINT)(it.first->second).Version)
+               {
+                  erase(it.first);
+                  insert(value_type(s.ID, s));
+                  return true;
+               }
+
+               return false;
+            }
 
             /// <summary>Finds a string by index</summary>
             /// <param name="index">The index</param>
@@ -125,15 +142,7 @@ namespace Logic
                throw IndexOutOfRangeException(HERE, index, size());
             }
 
-            /// <summary>Finds the specified string.</summary>
-            /// <param name="id">The string id</param>
-            /// <returns></returns>
-            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-            const LanguageString&  operator[](UINT  id) const
-            {
-               return Find(id);
-            }
-
+		      // -------------------- REPRESENTATION ---------------------
          private:
             UINT  PageID;
          };
@@ -145,7 +154,8 @@ namespace Logic
 
       public:
          LanguagePage(UINT id, wstring title, wstring desc, bool voice);
-         ~LanguagePage() {};
+         LanguagePage(LanguagePage&& r);
+         ~LanguagePage();
 
          // ----------------------- STATIC ------------------------
 

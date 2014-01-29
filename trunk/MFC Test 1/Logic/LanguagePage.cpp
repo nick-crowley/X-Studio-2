@@ -12,9 +12,16 @@ namespace Logic
       }*/
 
       LanguagePage::LanguagePage(UINT id, wstring title, wstring desc, bool voice) 
-         : ID(id), Title(title), Description(desc), Voiced(voice),
-           Strings(id)
+         : ID(id), Title(title), Description(desc), Voiced(voice), Strings(id)
+      {
+      }
 
+      LanguagePage::LanguagePage(LanguagePage&& r) 
+         : ID(r.ID), Title(move(r.Title)), Description(move(r.Description)), Voiced(r.Voiced), Strings(move(r.Strings))
+      {
+      }
+
+      LanguagePage::~LanguagePage()
       {
       }
 

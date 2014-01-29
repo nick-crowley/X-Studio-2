@@ -6,6 +6,18 @@ namespace Logic
    namespace Language
    {
       // -------------------------------- CONSTRUCTION --------------------------------
+      
+      LanguageString::LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v) : ID(id), Page(page), Text(txt), Version(v) 
+      {
+      }
+
+      LanguageString::LanguageString(LanguageString&& r) : ID(r.ID), Page(r.Page), Text(move(r.Text)), Version(r.Version) 
+      {
+      }
+
+      LanguageString::~LanguageString() 
+      {
+      }
 
       // ------------------------------- STATIC METHODS -------------------------------
 

@@ -15,22 +15,15 @@ namespace Logic
          /// <summary>Collection of language pages, sorted by ID</summary>
          class PageCollection : public map<UINT, LanguagePage, less<UINT>>
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
-            /// <summary>Inserts a page and it's strings to the collection. Strings from lower versions are overwritten</summary>
-            /// <param name="p">The page</param>
-            void  Add(const LanguagePage& p)
-            {
-               auto it = insert(value_type(p.ID, p));
+            PageCollection()
+            {}
+            PageCollection(PageCollection&& r) : map<UINT, LanguagePage, less<UINT>>(move(r))
+            {}
 
-               // Exists: Merge strings into existing page
-               if (!it.second)
-               {
-                  LanguagePage& page = it.first->second;
-                  for (auto pair : p.Strings)
-                     page.Strings.Add(pair.second);
-               }
-            }
-
+            // ---------------------- ACCESSORS ------------------------
+         
             /// <summary>Query whether a page is present</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
@@ -73,6 +66,32 @@ namespace Logic
             {
                return Find(page).Strings[id]; 
             }
+            
+            /// <summary>Finds the specified page.</summary>
+            /// <param name="page">The page id</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+            const LanguagePage&  operator[](UINT  page) const
+            {
+               return Find(page);
+            }
+
+		      // ----------------------- MUTATORS ------------------------
+            
+            /// <summary>Inserts a page and it's strings to the collection. Strings from lower versions are overwritten</summary>
+            /// <param name="p">The page</param>
+            void  Add(const LanguagePage& p)
+            {
+               auto it = insert(value_type(p.ID, p));
+
+               // Exists: Merge strings into existing page
+               if (!it.second)
+               {
+                  LanguagePage& page = it.first->second;
+                  for (auto pair : p.Strings)
+                     page.Strings.Add(pair.second);
+               }
+            }
 
             /// <summary>Finds a page by index</summary>
             /// <param name="index">The index</param>
@@ -91,14 +110,8 @@ namespace Logic
                throw IndexOutOfRangeException(HERE, index, size());
             }
 
-            /// <summary>Finds the specified page.</summary>
-            /// <param name="page">The page id</param>
-            /// <returns></returns>
-            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-            const LanguagePage&  operator[](UINT  page) const
-            {
-               return Find(page);
-            }
+		      // -------------------- REPRESENTATION ---------------------
+            
          };
 
          /// <summary>Provides constant access to the pages within a language file</summary>
@@ -108,7 +121,10 @@ namespace Logic
 
       public:
          LanguageFile();
-         LanguageFile(UINT id, GameLanguage l) : ID(id), Language(l) {}
+         LanguageFile(UINT id, GameLanguage l) : ID(id), Language(l) 
+         {}
+         LanguageFile(LanguageFile&& r) : ID(r.ID), Language(r.Language), Pages(move(r.Pages))
+         {}
          ~LanguageFile();
 
          // --------------------- PROPERTIES ------------------------
