@@ -50,8 +50,14 @@ namespace Logic
       class ParameterValue
       {
       public:
-         ParameterValue(const wstring& sz) : Type(ValueType::String) { String = sz; }
-         ParameterValue(int val) : Type(ValueType::Int) { Int = val; }
+         ParameterValue() : Type(ValueType::Int), Int(0) 
+         {}
+         ParameterValue(const wstring& sz) : Type(ValueType::String) { 
+            String = sz; 
+         }
+         ParameterValue(int val) : Type(ValueType::Int) { 
+            Int = val; 
+         }
 
          ParameterValue& operator=(int val)
          {
