@@ -41,15 +41,13 @@ namespace Logic
       /// <param name="msg">The MSG.</param>
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
-         *this << Colour::Red << L"ERROR: " 
+         *this << ENDL 
+               << Colour::Red << L"ERROR: " 
                << Colour::Yellow << msg 
-               << Colour::White  << L"... in " 
-               << Colour::Yellow << src << ENDL;
-         *this << Colour::Red << L"EXCEPTION: " 
-               << Colour::White << typeid(e).name() << L": " 
-               << Colour::Yellow << e.Message 
-               << Colour::White << L"... from " 
-               << Colour::Yellow << e.Source << ENDL;
+               << Colour::White << L"..." << src << ENDL;
+         *this << Colour::Red << L"Source: " 
+               << Colour::Yellow << e.Message.TrimRight(L"\r\n")
+               << Colour::White << L"..." << e.Source << ENDL;
       }
 
       /// <summary>Logs the specified source.</summary>
@@ -57,13 +55,12 @@ namespace Logic
       /// <param name="e">The e.</param>
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
-         *this << Colour::Red << L"EXCEPTION: " 
-               << Colour::White << typeid(e).name() << L": " 
-               << Colour::Yellow << e.Message 
-               << Colour::White << L"... in " 
-               << Colour::Yellow << src 
-               << Colour::White << L"... from " 
-               << Colour::Yellow << e.Source << ENDL;
+         *this << ENDL 
+               << Colour::Red << L"EXCEPTION: " 
+               << Colour::Yellow << e.Message.TrimRight(L"\r\n") 
+               << Colour::White << L"..." << src << ENDL;
+         *this << Colour::Red << L"Source: " 
+               << Colour::White << e.Source << ENDL;
       }
 
       /// <summary>Sets the text colour</summary>

@@ -25,9 +25,9 @@ namespace Logic
    public:
       virtual ~ExceptionBase()  {}
 
-      UINT     ErrorID;
-      wstring  Message,
-               Source;
+      UINT      ErrorID;
+      GuiString Message,
+                Source;
    };
    
    /// <summary>Occurs when a missing argument is detected</summary>
