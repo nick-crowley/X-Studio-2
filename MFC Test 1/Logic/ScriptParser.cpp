@@ -19,7 +19,7 @@ namespace Logic
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
-         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v), Script(Errors)
+         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
@@ -90,7 +90,7 @@ namespace Logic
             }
 
             // Verify
-            Script.Compile();
+            Script.Verify(Errors);
          }
 
          /// <summary>Parses the descendant commands of a branching command</summary>
