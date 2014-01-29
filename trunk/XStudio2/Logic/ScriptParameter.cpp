@@ -101,8 +101,8 @@ namespace Logic
             case Operator::Minus:
             case Operator::LogicalNot:
             case Operator::BitwiseNot:
-            case Operator::OpenBracket:   format = L" %s";  break; 
-            case Operator::CloseBracket:  format = L"%s ";  break; 
+            case Operator::OpenBracket:   //format = L" %s";  break; 
+            case Operator::CloseBracket:  format = L"%s";  break; 
             // Binary 
             default:                      format = L" %s "; break; 
             }
