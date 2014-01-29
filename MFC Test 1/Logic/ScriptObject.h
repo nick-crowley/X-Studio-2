@@ -56,6 +56,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
       public:
          ScriptObject(UINT id, KnownPage page, const wstring& txt, GameVersion ver);
+         ScriptObject(ScriptObject&& r);
          ~ScriptObject();
 
       private:

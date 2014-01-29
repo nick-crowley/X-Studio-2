@@ -19,6 +19,13 @@ namespace Logic
       {
       }
 
+      /// <summary>Copy move ctor</summary>
+      /// <param name="r">The source</param>
+      ScriptObject::ScriptObject(ScriptObject&& r)
+         : ID(r.ID), Group(r.Group), Text(move(r.Text)), Version(r.Version)
+      {
+      }
+
       /// <summary>Creates copy of object with alternative text</summary>
       /// <param name="obj">The source object</param>
       /// <param name="newText">The new text.</param>
