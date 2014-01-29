@@ -24,28 +24,34 @@ namespace Logic
       /// <returns>Filetype</returns>
       FileType  FileIdentifier::Identify(IO::Path  path)
       {
-         StreamPtr    s(XFileInfo(path).OpenRead());
-         ByteArrayPtr buf(new BYTE[1024]);
+         try
+         {
+            StreamPtr    s(XFileInfo(path).OpenRead());
+            ByteArrayPtr buf(new BYTE[1024]);
 
-         // Peek first 1024 bytes
-         DWORD count = s->Read(buf.get(), 1024);
-         buf.get()[min(count,1023)] = '\0';
+            // Peek first 1024 bytes
+            DWORD count = s->Read(buf.get(), 1024);
+            buf.get()[min(count,1023)] = '\0';
 
-         // Check for unique XML document root elements
-         if (StrStrIA((char*)buf.get(), "<script>") != nullptr)
-            return FileType::Script;
+            // Check for unique XML document root elements
+            if (StrStrIA((char*)buf.get(), "<script>") != nullptr)
+               return FileType::Script;
 
-         if (StrStrIA((char*)buf.get(), "<language") != nullptr)
-            return FileType::Language;
+            if (StrStrIA((char*)buf.get(), "<language") != nullptr)
+               return FileType::Language;
 
-         if (StrStrIA((char*)buf.get(), "<director>") != nullptr)
-            return FileType::Mission;
+            if (StrStrIA((char*)buf.get(), "<director>") != nullptr)
+               return FileType::Mission;
 
-         if (StrStrIA((char*)buf.get(), "<project>") != nullptr)
-            return FileType::Project;
+            if (StrStrIA((char*)buf.get(), "<project>") != nullptr)
+               return FileType::Project;
 
-         if (StrStrIA((char*)buf.get(), "<universe>") != nullptr)
-            return FileType::Universe;
+            if (StrStrIA((char*)buf.get(), "<universe>") != nullptr)
+               return FileType::Universe;
+         }
+         catch (ExceptionBase& e) {
+            Console << e;
+         }
 
          // Unknown
          return FileType::Unknown;
