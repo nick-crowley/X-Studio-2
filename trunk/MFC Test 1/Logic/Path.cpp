@@ -23,7 +23,7 @@ namespace Logic
 
       /// <summary>Create path from a string</summary>
       /// <param name="path">The path.</param>
-      Path::Path(wstring path) : Buffer(Init(path.c_str()))
+      Path::Path(const wstring& path) : Buffer(Init(path.c_str()))
       {
       }
 
@@ -49,7 +49,7 @@ namespace Logic
       {
          REQUIRED(path);
 
-         CharArrayPtr  ptr(new WCHAR[MAX_PATH]);
+         CharArrayPtr  ptr(new WCHAR[MAX_PATH+1]);
          StringCchCopy(ptr.get(), MAX_PATH, path);
          return ptr;
       }
@@ -163,10 +163,10 @@ namespace Logic
       Path& Path::operator=(Path&& r)
       {
          // Ensure not self-assignment
-         if (r != *this)
+         if (&r != this)
          {
-            Buffer.release();
-            Buffer = std::move(r.Buffer);
+            Buffer.reset(nullptr);
+            Buffer.swap(r.Buffer);
          }
          return *this;
       }
@@ -242,7 +242,7 @@ namespace Logic
       /// <returns></returns>
       CharArrayPtr  Path::Copy() const
       {
-         CharArrayPtr  ptr(new WCHAR[MAX_PATH]);
+         CharArrayPtr  ptr(new WCHAR[MAX_PATH+1]);
          StringCchCopy(ptr.get(), MAX_PATH, Buffer.get());
          return ptr;
       }
