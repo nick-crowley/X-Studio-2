@@ -102,6 +102,9 @@ namespace Logic
          SCRIPT_REFERENCE_TYPE          = 62
       };
 
+      /// <summary>Get parameter type string</summary>
+      GuiString GetString(ParameterType t);
+
       /// <summary>Defines the purpose of the parameter</summary>
       enum class ParameterUsage { None, PageID, StringID, ScriptName };
 

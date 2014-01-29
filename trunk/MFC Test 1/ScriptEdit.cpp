@@ -304,10 +304,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try 
       { 
          // Parse script 
-         ScriptParser::ScriptTree script(ScriptParser(lines, GameVersion::TerranConflict).ParseScript());
+         ScriptParser parser(lines, GameVersion::TerranConflict);
+         parser.ParseScript();
          
          // DEBUG:
-         Console << L"Highlighting " << script.GetErrors().size() << L" errors" << ENDL;
+         Console << L"Highlighting " << parser.Errors.size() << L" errors" << ENDL;
 
          // Define error underline
          CharFormat cf(CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
@@ -315,10 +316,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
 
          // Underline all errors
-         for (const auto& err : script.GetErrors())
+         for (const auto& err : parser.Errors)
          {
             FormatToken(LineIndex(err.Line-1), err, cf);
-            //Console << L"Syntax error on line " << err.Line << L": '" << (const WCHAR*)GetSelText() << ENDL;
+            Console << err.Line << L": " << Colour::Yellow << err.Error << Colour::White << L" : " << (const WCHAR*)GetSelText() << ENDL;
          }
       }
       catch (ExceptionBase& e) 

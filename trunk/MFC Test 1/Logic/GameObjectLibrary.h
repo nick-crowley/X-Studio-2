@@ -173,11 +173,13 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         bool  Contains(const wstring& name) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
-         void  Clear();
-         UINT  Enumerate(const XFileSystem& vfs, WorkerData* data);
+         void            Clear();
+         UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
          const TObject*  Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const wstring& search) const;
 

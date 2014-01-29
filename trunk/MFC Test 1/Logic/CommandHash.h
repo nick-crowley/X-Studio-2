@@ -38,9 +38,10 @@ namespace Logic
                return h;
             }
 
-            static TokenArray  SeparateParams(const TokenIterator begin, const TokenIterator end) 
+            static TokenList  SeparateParams(const TokenIterator begin, const TokenIterator end) 
             {
-               TokenArray arr;
+               TokenList list;
+
                // Separate tokens
                for (TokenIterator it = begin; it != end; ++it)
                   switch (it->Type)
@@ -53,10 +54,10 @@ namespace Logic
 
                   // Include literals
                   default: 
-                     arr.push_back(*it);
+                     list.push_back(*it);
                   }  
                      
-               return arr;
+               return list;
             }
 
             // ---------------------- ACCESSORS ------------------------	
@@ -68,8 +69,8 @@ namespace Logic
 
             // -------------------- REPRESENTATION ---------------------
          public:
-            const wstring     Hash;
-            const TokenArray  Parameters;
+            const wstring    Hash;
+            const TokenList  Parameters;
          };
       }
    }

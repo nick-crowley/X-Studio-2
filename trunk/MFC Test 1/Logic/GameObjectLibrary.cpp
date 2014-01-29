@@ -42,6 +42,14 @@ namespace Logic
          Lookup.clear();
       }
 
+      /// <summary>Query whether an object is present</summary>
+      /// <param name="name">The object name</param>
+      /// <returns></returns>
+      bool GameObjectLibrary::Contains(const wstring& name) const
+      {
+         return Lookup.Contains(name);
+      }
+
       /// <summary>Enumerates available type files</summary>
       /// <param name="vfs">The VFS.</param>
       /// <param name="data">Worker data.</param>

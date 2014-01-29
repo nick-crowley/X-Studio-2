@@ -33,10 +33,13 @@ namespace Logic
             class ErrorToken : public TokenBase
             {
             public:
-               ErrorToken(UINT line, UINT start, UINT end) : TokenBase(start,end), Line(line)
+               ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
+               {}
+               ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
                {}
 
-               const UINT  Line;
+               const wstring Error;
+               const UINT    Line;
             };
 
             /// <summary>Vector of error tokens</summary>
@@ -48,6 +51,12 @@ namespace Logic
                ErrorArray(const ErrorToken& e) {
                   push_back(e);
                }
+
+               ErrorArray& operator+=(const ErrorToken& t)
+               {
+                  push_back(t);
+                  return *this;
+               }
             };
 
             /// <summary>Represents a script command and its descendants, if any</summary>
@@ -57,15 +66,15 @@ namespace Logic
                CommandNode(const ScriptCommand& cmd, UINT line) 
                   : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
                {}
-               CommandNode(const ScriptCommand& cmd, UINT line, const ErrorArray& err) 
+               /*CommandNode(const ScriptCommand& cmd, UINT line, const ErrorArray& err) 
                   : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Errors(err), Logic(cmd.Logic)
-               {}
+               {}*/
 
                BranchLogic          Logic;            // logic type
                ScriptCommand        Command;          // Command
                UINT                 LineNumber,       // 1-based line number
                                     Index;            // 0-based standard codearray index
-               ErrorArray           Errors;           // Compilation errors
+               //ErrorArray           Errors;           // Compilation errors
                CommandNode*         JumpTarget;       // Destination of jump
                vector<CommandTree>  Children;         // Child commands
                
@@ -86,16 +95,16 @@ namespace Logic
 
                /// <summary>Get errors collection</summary>
                /// <param name="err">collection to populate</param>
-               void  GetErrors(ErrorArray& err) const
-               {
-                  // Copy errors
-                  for (const auto& e : Errors)
-                     err.push_back(e);
+               //void  GetErrors(ErrorArray& err) const
+               //{
+               //   // Copy errors
+               //   for (const auto& e : Errors)
+               //      err.push_back(e);
 
-                  // Recurse into children
-                  for (const auto& c : Children)
-                     c->GetErrors(err);
-               }
+               //   // Recurse into children
+               //   for (const auto& c : Children)
+               //      c->GetErrors(err);
+               //}
 
                /// <summary>Debug print</summary>
                /// <param name="depth">The depth.</param>
@@ -125,13 +134,13 @@ namespace Logic
 
                /// <summary>Gets the errors collection</summary>
                /// <returns></returns>
-               ErrorArray GetErrors() const
+               /*ErrorArray GetErrors() const
                {
                   ErrorArray err;
                   for (const CommandTree& t : Commands)
                      t->GetErrors(err);
                   return err;
-               }
+               }*/
 
             private:
                vector<CommandTree> Commands;
@@ -148,8 +157,8 @@ namespace Logic
 
             // ------------------------ STATIC -------------------------
          private:
-            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line) const;
-            ErrorToken  MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok) const;
+            ErrorToken  MakeError(const wstring& msg, const LineIterator& line) const;
+            ErrorToken  MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const;
 
             // --------------------- PROPERTIES ------------------------
 
@@ -183,6 +192,9 @@ namespace Logic
             CommandNode*   ReadExpression(const CommandLexer& lex, const LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
+
+         public:
+            ErrorArray        Errors;           // Compilation errors
 
          private:
             const LineArray&  Input;

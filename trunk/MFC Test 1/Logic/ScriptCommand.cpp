@@ -24,7 +24,7 @@ namespace Logic
       /// <param name="text">Entire command text</param>
       /// <param name="syntax">Command syntax</param>
       /// <param name="params">Parameters in DISPLAY ORDER</param>
-      ScriptCommand::ScriptCommand(const wstring& text, const CommandSyntax& syntax, const TokenArray& params)
+      ScriptCommand::ScriptCommand(const CommandSyntax& syntax, const wstring& text, ParameterArray& params)
          : Syntax(syntax), RefIndex(0), Text(text)
       {
       }

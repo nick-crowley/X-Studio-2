@@ -10,6 +10,11 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) : Syntax(s), Value(0) 
+      {}
+      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) : Syntax(s), Value(0) 
+      {}
+   
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val) 
       { 
          //Translate(); 

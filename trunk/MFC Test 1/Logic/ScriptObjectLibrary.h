@@ -139,6 +139,7 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         bool  Contains(const wstring& obj) const;
          UINT  GetCount() const;
 
          // ----------------------- MUTATORS ------------------------

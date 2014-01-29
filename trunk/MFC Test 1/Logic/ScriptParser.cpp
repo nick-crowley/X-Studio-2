@@ -32,14 +32,14 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line) const
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line) const
          {
-            return ErrorToken(GetLineNumber(line), 0, line->length()-1);
+            return ErrorToken(msg, GetLineNumber(line), 0, line->length()-1);
          }
 
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const CommandLexer& lex, const LineIterator& line, const TokenIterator& tok) const
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const
          {
-            return lex.Valid(tok) ? ErrorToken(GetLineNumber(line), tok->Start, tok->End) : MakeError(lex, line);
+            return ErrorToken(msg, GetLineNumber(line), tok->Start, tok->End);
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
@@ -181,7 +181,8 @@ namespace Logic
             
             else
             {  // UNRECOGNISED: Generate empty node
-               node = new CommandNode(ScriptCommand::Unknown, GetLineNumber(text), MakeError(lex, line));
+               Errors += MakeError(L"Unable to parse command", line);
+               node = new CommandNode(ScriptCommand::Unknown, GetLineNumber(text));
             
                // DEBUG:
                #ifdef PRINT_CONSOLE
@@ -401,20 +402,21 @@ namespace Logic
          /// <returns>New NOP/Comment command node</returns>
          ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
          {
-            UINT id = (lex.count() == 0 ? CMD_NOP : CMD_COMMENT);
-            
             // DEBUG:
             #ifdef PRINT_CONSOLE
-               Console << Colour::Green << (id == CMD_NOP ? L"nop" : L"comment") << ENDL;
+               Console << Colour::Green << (lex.count() == 0 ? L"nop" : L"comment") << ENDL;
             #endif
 
-            // Return NOP/Comment
-            return new CommandNode(ScriptCommand(*line, SyntaxLib.Find(id, Version), lex.Tokens), GetLineNumber(line));
-         }
+            // NOP
+            if (lex.count() == 0)
+               return new CommandNode(ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), GetLineNumber(line));
+            
+            // Comment
+            CommandSyntax syntax(SyntaxLib.Find(CMD_COMMENT, Version));
+            ScriptParameter comment(syntax.Parameters[0], lex.Tokens[1]);
 
-         /*ScriptCommand ScriptParser::CreateCommand(const CommandLexer& lex, const LineIterator& line, CommandSyntax& syntax, TokenArray& params)
-         {
-         }*/
+            return new CommandNode(ScriptCommand(syntax, *line, ParameterArray(comment)), GetLineNumber(line));
+         }
 
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
@@ -427,7 +429,6 @@ namespace Logic
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
          ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
          {
-            ErrorArray    errors;
             Conditional   condition = Conditional::DISCARD;
             TokenIterator refObj = lex.end(), 
                           retVar = lex.end(),
@@ -437,7 +438,6 @@ namespace Logic
             if (MatchAssignment(lex, lex.begin()))
                retVar = ReadAssignment(lex, pos);
 
-            // Match: (assignment/conditional)? 
             else if (MatchConditional(lex, lex.begin()))
                condition = ReadConditional(lex, pos);
 
@@ -446,41 +446,25 @@ namespace Logic
                refObj = ReadReferenceObject(lex, pos);
 
             // Get remaining parameter tokens
-            TokenArray params = CommandHash::SeparateParams(pos, lex.end());
+            TokenList tokens = CommandHash::SeparateParams(TokenIterator(pos), lex.end());
 
-            // Verify GameObjects/ScriptObjects
-            for (const auto& tok : params)
+            // Lookup command 
+            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
+            
+            // Unrecognised: error
+            if (syntax == CommandSyntax::Unknown)
+               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", line) : MakeError(L"Unexpected token in command", line, pos));
+            
+            
+            // Recognise Game/ScriptObjects
+            for (const auto& tok : tokens)
                if (tok.Type == TokenType::GameObject && !GameObjectLib.Contains(tok.Text))
-                  errors += MakeError(lex, line, tok);
-               else if (tok.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(tok.Text))
-                  errors += MakeError(lex, line, tok);
-            
-            // Lookup command (consumes iterator)
-            ScriptCommand cmd(SyntaxLib.Identify(pos, lex.end(), Version), *line);
-            
-            // Ensure command was recognised
-            if (cmd.Syntax == CommandSyntax::Unknown)
-               errors += MakeError(lex, line, pos);
+                  Errors += ErrorToken(L"Unrecognised game object", GetLineNumber(line), tok);
 
-            // Verify parameters
-            for (const ParameterSyntax& ps : cmd.Syntax.Parameters)
-            {
-               // RetVar:
-               if (ps.IsRetVar())
-                  cmd.Parameters += (lex.Valid(retVar) ? ScriptParameter(ps, retVar) : ScriptParameter(ps, condition));
-               // RefObj:
-               else if (ps.IsRefObj())
-                  cmd.Parameters += ScriptParameter(ps, refObj);
-               // Param
-               else if (params.empty())
-                  errors += MakeError();
-               else
-               {
-                  cmd.Parameters += ScriptParameter(ps, params.front());
-                  params.pop_front();
-               }
-            }
+               else if (tok.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(tok.Text))
+                  Errors += ErrorToken(L"Unrecognised script object", GetLineNumber(line), tok);
             
+
             // DEBUG:
             #ifdef PRINT_CONSOLE
                if (syntax != CommandSyntax::Unknown)
@@ -489,8 +473,39 @@ namespace Logic
                   Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
             #endif
 
+            // Generate parameters from tokens
+            ParameterArray params;
+            for (const ParameterSyntax& ps : syntax.ParametersByDisplay)
+            {
+               // RetVar:
+               if (ps.IsRetVar())
+                  params += (lex.Valid(retVar) ? ScriptParameter(ps, *retVar) : ScriptParameter(ps, condition));
+               
+               // RefObj:
+               else if (ps.IsRefObj())
+               {
+                  if (lex.Valid(refObj))
+                     params += ScriptParameter(ps, *refObj);
+                  else
+                     Errors += MakeError(L"Missing reference object", line);
+               }
+               // Parameter
+               else if (!tokens.empty())
+               {
+                  params += ScriptParameter(ps, tokens.front());
+                  tokens.pop_front();
+               }
+               else
+               {  // Missing parameter
+                  Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), line);
+                  break;
+               }
+            }
+
+            // TODO: Check for excess parameters?
+
             // Create node
-            return new CommandNode(cmd, GetLineNumber(line), errors);
+            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -509,16 +524,15 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
          ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
          {
-            Conditional   condition = Conditional::NONE;
-            TokenIterator retVar = lex.end(),
-                          pos = lex.begin();
-            CommandSyntax syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
+            TokenIterator  pos = lex.begin();
+            CommandSyntax  syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
+            ParameterArray params;
 
             // Match: (assignment/conditional)
             if (MatchAssignment(lex, lex.begin()))
-                retVar = ReadAssignment(lex, pos);
+                params += ScriptParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
             else 
-                condition = ReadConditional(lex, pos);
+                params += ScriptParameter(syntax.Parameters[0], ReadConditional(lex, pos));
 
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -527,24 +541,23 @@ namespace Logic
 
             try
             {
-               // Match: (unary_operator? value (operator value)*)
+               // Parse expression
                ExpressionParser expr(pos, lex.end());
                expr.Parse();  
                
-               // TODO: Arrange parameters?
-               //TokenArray params(hash.Parameters);
+               // Generate parameters from tokens
+               for (const ScriptToken& t : expr.InfixParams)
+                  params += ScriptParameter(syntax.Parameters[1], t);
+            }
+            catch (ScriptSyntaxException& ) {
+               // syntax error
+               Errors += MakeError(L"Syntax error in expression", line, pos);
+            }
 
-               // Create expression
-               return new CommandNode(ScriptCommand(*line, syntax, expr.InfixParams), GetLineNumber(line));
-            }
-            catch (ScriptSyntaxException& )
-            {
-               // Expression syntax error
-               return new CommandNode(ScriptCommand(*line, syntax, lex.Tokens), GetLineNumber(line), MakeError(lex, line));
-            }
+            // Create expression
+            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
-         
       }
    }
 }
