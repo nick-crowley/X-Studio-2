@@ -133,6 +133,7 @@ namespace Logic
       /// <returns>Number of lookups generated</returns>
       UINT  ScriptObjectLibrary::PopulateLookup(WorkerData* data)
       {
+         Console << "populating lookup" << ENDL;
          // Generate reverse lookup collection
          for (auto& pair : Objects)  
          {
