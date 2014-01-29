@@ -240,9 +240,6 @@ namespace Logic
       {
          wstring name;
 
-         // Init
-         script.Variables.clear();
-
          // Read ScriptVariables from {name,id} pair
          for (int i = 0; i < varBranch->childNodes->length; i++)
          {
@@ -253,9 +250,10 @@ namespace Logic
          // Modify arguments with extra properties
          for (int i = 0; i < argBranch->childNodes->length; i++)
          {
+            XmlNodePtr arg(argBranch->childNodes->item[i]);
             script.Variables[i].Type        = VariableType::Argument;
-            script.Variables[i].ValueType   = (ParameterType)ReadInt(argBranch->childNodes->item[0], L"script argument type");
-            script.Variables[i].Description = ReadString(argBranch->childNodes->item[1], L"script argument description");
+            script.Variables[i].ValueType   = (ParameterType)ReadInt(arg->childNodes->item[0], L"script argument type");
+            script.Variables[i].Description = ReadString(arg->childNodes->item[1], L"script argument description");
          }
 
       }
