@@ -5,6 +5,7 @@
 #include "WorkerFeedback.h"
 #include "LanguageFile.h"
 #include "StringLibrary.h"
+#include "MapIterator.hpp"
 
 namespace Logic
 {
@@ -138,6 +139,9 @@ namespace Logic
                erase(sz);
             }
          };
+
+         /// <summary>Provides constant access to the objects within a library</summary>
+         typedef MapIterator<const ScriptObject, LookupCollection, LookupCollection::const_iterator> const_iterator;
 	  
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -155,10 +159,12 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         bool          Contains(const wstring& obj) const;
-         ScriptObject  Find(ScriptObjectGroup grp, UINT id) const;
-         ScriptObject  Find(const wstring& sz) const;
-         UINT          GetCount() const;
+         const_iterator begin() const;
+         bool           Contains(const wstring& obj) const;
+         ScriptObject   Find(ScriptObjectGroup grp, UINT id) const;
+         ScriptObject   Find(const wstring& sz) const;
+         const_iterator end() const;
+         UINT           GetCount() const;
 
          // ----------------------- MUTATORS ------------------------
       public:

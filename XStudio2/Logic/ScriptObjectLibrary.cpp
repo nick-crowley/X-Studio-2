@@ -24,6 +24,13 @@ namespace Logic
       
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Get start iterator.</summary>
+      /// <returns></returns>
+      ScriptObjectLibrary::const_iterator  ScriptObjectLibrary::begin() const
+      {
+         return const_iterator(Lookup, Lookup.begin());
+      }
+
       /// <summary>Query whether an object is present</summary>
       /// <param name="obj">The object text</param>
       /// <returns></returns>
@@ -37,6 +44,13 @@ namespace Logic
       {
          Objects.clear();
          Lookup.clear();
+      }
+
+      /// <summary>Get finish iterator.</summary>
+      /// <returns></returns>
+      ScriptObjectLibrary::const_iterator  ScriptObjectLibrary::end() const
+      {
+         return const_iterator(Lookup, Lookup.end());
       }
 
       /// <summary>Populates the library from the string library</summary>

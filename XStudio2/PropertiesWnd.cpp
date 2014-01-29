@@ -2,6 +2,7 @@
 
 #include "PropertiesWnd.h"
 #include "ScriptView.h"
+#include "Logic/ScriptObjectLibrary.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -111,44 +112,64 @@ NAMESPACE_BEGIN(GUI)
 
    void CPropertiesWnd::OnDisplayProperties(CWnd* pWnd, PropertyTarget type)
    {
-      CMFCPropertyGridProperty* prop;
-      
-      // TODO: Examine document type
-      ScriptDocument* doc = dynamic_cast<ScriptView*>(pWnd)->GetDocument();
-      
+      list<ScriptObject> command_names, param_types;
+      wstring cmd;
+
       // Clear contents
       m_wndPropList.RemoveAll();
 
-      // Group: General
-      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("General"));
-      group->AddSubItem(new CMFCPropertyGridProperty(L"Name", doc->Script.Name.c_str(), L"How script is referenced throughout the game"));
-      group->AddSubItem(new CMFCPropertyGridProperty(L"Description", doc->Script.Description.c_str(), L"Short description of functionality"));
-      group->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)doc->Script.Version, L"Current version number"));
-      group->AddSubItem(new CMFCPropertyGridProperty(L"Command", L"TODO", L"ID of ship/station command implemented by the script"));
+      // TODO: Examine document type
+      ScriptDocument* doc = dynamic_cast<ScriptView*>(pWnd)->GetDocument();
+      
+      // Get script objects used in combo boxes
+      for (const ScriptObject& obj : ScriptObjectLib)
+         if (obj.Group == ScriptObjectGroup::ObjectCommand)
+            command_names.push_back(obj);
+         else if (obj.Group == ScriptObjectGroup::ParameterType)
+            param_types.push_back(obj);
 
-      // Property: EngineVersion comboBox
-      prop = new CMFCPropertyGridProperty(L"Game Required", VersionString(doc->Script.Game).c_str(),  L"Minimum version of game required");
-      prop->AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
-      prop->AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
-      prop->AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
-      prop->AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
-      group->AddSubItem(prop);
+      // GENERAL
+      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Name", doc->Script.Name.c_str(), L"How script is referenced throughout the game"));
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Description", doc->Script.Description.c_str(), L"Short description of functionality"));
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)doc->Script.Version, L"Current version number"));
 
-      // Property: Signed
-      group->AddSubItem(prop = new CMFCPropertyGridProperty(L"Signed", (_variant_t)false, L"Version number"));
-      prop->Enable(FALSE);
+      // Command ID
+      CMFCPropertyGridProperty* option = new CMFCPropertyGridProperty(L"Command", doc->Script.CommandName.c_str(), L"ID of ship/station command implemented by the script");
+      for (const ScriptObject& obj : command_names)
+         option->AddOption(obj.Text.c_str(), FALSE);
+      general->AddSubItem(option);
 
-      // Add group
-      m_wndPropList.AddProperty(group);
+      // EngineVersion
+      option = new CMFCPropertyGridProperty(L"Game Required", VersionString(doc->Script.Game).c_str(),  L"Minimum version of game required");
+      option->AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
+      option->AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
+      option->AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
+      option->AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
+      general->AddSubItem(option);
 
-      // Arguments
-      group = new CMFCPropertyGridProperty(_T("Arguments"));
+      // Signed:
+      general->AddSubItem(option = new CMFCPropertyGridProperty(L"Signed", (_variant_t)false, L"Version number"));
+      option->Enable(FALSE);
+
+
+
+      // ARGUMENTS
+      CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
+
       for (ScriptVariable& v : doc->Script.Variables)
-         group->AddSubItem(new CMFCPropertyGridProperty(v.Name.c_str(), L"TODO", v.Description.c_str()));
-      //group->AddSubItem(new CMFCPropertyGridProperty(L"arg2", L"Var/Number", L"I am an argument description"));
+         if (v.Type == VariableType::Argument)
+         {
+            option = new CMFCPropertyGridProperty(v.Name.c_str(), _variant_t(GetString(v.ValueType).c_str()), v.Description.c_str());
+            // Argument type
+            for (const ScriptObject& obj : param_types)
+               option->AddOption(obj.Text.c_str(), FALSE);
+            arguments->AddSubItem(option);
+         }
 
-      // Add group
-      m_wndPropList.AddProperty(group);
+      // Add nodes
+      m_wndPropList.AddProperty(general);
+      m_wndPropList.AddProperty(arguments);
    }
 
    void CPropertiesWnd::OnExpandAllProperties()
