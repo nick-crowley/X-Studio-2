@@ -16,7 +16,7 @@
 #include "CommandLexer.h"
 #include "TWare.h"
 #include "TLaser.h"
-#include <regex>
+#include "StringParser.h"
 
 namespace Logic
 {
@@ -337,7 +337,7 @@ namespace Logic
       }
       catch (regex_error& e)
       {
-         Console << e;
+         Console.Log(HERE, RegularExpressionException(HERE, e));
       }
    }
 
