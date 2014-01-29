@@ -72,6 +72,14 @@ namespace Logic
             {
                return insert(value_type(ObjectID(obj.Group, obj.ID), obj)).second;
             }
+
+            /// <summary>Adds a script object</summary>
+            /// <param name="obj">The object</param>
+            /// <returns>True if successful, false if ID already present</returns>
+            bool  Add(ScriptObject&& obj)
+            {
+               return insert(value_type(ObjectID(obj.Group, obj.ID), move(obj))).second;
+            }
          };
       
       public:
@@ -113,6 +121,14 @@ namespace Logic
             bool  Add(const ScriptObject& obj)
             {
                return insert(value_type(obj.Text, obj)).second;
+            }
+
+            /// <summary>Adds an object</summary>
+            /// <param name="obj">The object.</param>
+            /// <returns>True if successful, false if key already present</returns>
+            bool  Add(ScriptObject&& obj)
+            {
+               return insert(value_type(obj.Text, move(obj))).second;
             }
 
             /// <summary>Removes an object from the collection</summary>
