@@ -36,6 +36,14 @@ namespace Logic
       GuiString()
       {}
 
+      /// <summary>Copy move ctor</summary>
+      GuiString(GuiString&& r) : wstring(move(r))
+      {}
+
+      /// <summary>Copy move ctor</summary>
+      GuiString(wstring&& r) : wstring(move(r))
+      {}
+
       /// <summary>Loads and formats a resource string</summary>
       /// <param name="id">Resource ID</param>
       /// <param name="">Arguments</param>
