@@ -45,14 +45,15 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Translates the specified f.</summary>
-      /// <param name="f">The f.</param>
+      /// <summary>Populates text property from parameter value</summary>
+      /// <param name="f">Script used for variable name lookup</param>
       void   ScriptParameter::Translate(ScriptFile& f)
       {
          const WCHAR* format;
 
          switch (Type)
          {
+         // Variable: Conditional/RetVar/Variable
          case DataType::VARIABLE:
             format = (Syntax.IsRetVar() ? L"$%s =" : L"$%s");
 
@@ -72,6 +73,7 @@ namespace Logic
             }
             break;
 
+         // String: Comment/String
          case DataType::STRING:
             if (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME)
                Text = Value.String;
@@ -79,16 +81,36 @@ namespace Logic
                Text = StringResource::Format(L"'%s'", Value.String.c_str());
             break;
 
+         // Integer
          case DataType::INTEGER:
             Text = StringResource::Format(L"%d", Value.Int);
             break;
 
+         // Null
          case DataType::Null:
             Text = L"null";
             break;
 
-         // Various: Strip HIWORD, then lookup ID
+         // Operator: Format according to type
          case DataType::OPERATOR:
+            switch (Operator op = (Operator)Value.LowWord)
+            {
+            // HACK: Substitute for octal entity
+            case Operator::Add:           format = L"+";    break; 
+            // Unary
+            case Operator::Minus:
+            case Operator::LogicalNot:
+            case Operator::BitwiseNot:
+            case Operator::OpenBracket:   format = L" %s";  break; 
+            case Operator::CloseBracket:  format = L"%s ";  break; 
+            // Binary 
+            default:                      format = L" %s "; break; 
+            }
+            // Lookup text
+            Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
+            break;
+
+         // Various: Strip HIWORD, then lookup ID
          case DataType::CONSTANT:
          case DataType::DATATYPE:
             Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), Value.LowWord).DisplayText;   

@@ -127,30 +127,8 @@ namespace Logic
       {
          switch (Group)
          {
-         case ScriptObjectGroup::Operator:
-            switch (Operator op = (Operator)ID)
-            {
-            // HACK: Substitute for octal entity
-            case Operator::Add:
-               return L"+";
-
-            // Close bracket
-            case Operator::CloseBracket:  
-               return GuiString(L"%s ", Text.c_str());  
-
-            // Unary
-            case Operator::Minus:
-            case Operator::LogicalNot:
-            case Operator::BitwiseNot:
-            case Operator::OpenBracket: 
-               return GuiString(L" %s", Text.c_str());  
-
-            // Binary 
-            default:  
-               return GuiString(L" %s ", Text.c_str());  
-            }
-            break;
-
+         //case ScriptObjectGroup::Operator:    // Handled manually to prevent conflicts
+        
          case ScriptObjectGroup::Constant:       
          case ScriptObjectGroup::DataType:       
          case ScriptObjectGroup::ParameterType:  
@@ -166,7 +144,7 @@ namespace Logic
             return GuiString(L"[%s]", Text.c_str());
          }
 
-         throw ArgumentException(HERE, L"group", GuiString(L"'%s' (%d) is not a recognised script object group", GetString(Group).c_str(), Group) );
+         throw ArgumentException(HERE, L"group", GuiString(L"'%s' (%d) is not a supported script object group", GetString(Group).c_str(), Group) );
       }
 
       /// <summary>Appends an object ID</summary>

@@ -60,7 +60,7 @@ namespace Logic
                   return it->second;
 
                // Error: Not found
-               throw ScriptObjectNotFoundException(HERE, (UINT)grp, id);
+               throw ScriptObjectNotFoundException(HERE, grp, id);
             }
 
             // ----------------------- MUTATORS ------------------------

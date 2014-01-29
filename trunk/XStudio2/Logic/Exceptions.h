@@ -286,26 +286,6 @@ namespace Logic
       {}
    };
 
-   /// <summary>Occurs when a MSCI script object is unrecognised</summary>
-   class ScriptObjectNotFoundException : public ExceptionBase
-   {
-   public:
-      /// <summary>Create a ScriptObjectNotFoundException</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="txt">Desired object text</param>
-      ScriptObjectNotFoundException(wstring  src, wstring txt) 
-         : ExceptionBase(src, GuiString(L"Cannot find script object '%s'", txt.c_str()))
-      {}
-
-      /// <summary>Create a ScriptObjectNotFoundException</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="page">page id</param>
-      /// <param name="id">string id</param>
-      ScriptObjectNotFoundException(wstring  src, UINT page, UINT id) 
-         : ExceptionBase(src, GuiString(L"Cannot find script object %d in page %d", id, page))
-      {}
-   };
-
    /// <summary>Occurs when a language string is missing</summary>
    class StringNotFoundException : public ExceptionBase
    {
