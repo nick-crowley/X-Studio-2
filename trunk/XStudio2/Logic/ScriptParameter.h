@@ -20,11 +20,14 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create zero integer</summary>
          ParameterValue() : Type(ValueType::Int), Int(0) 
          {}
+         /// <summary>Create from integer value</summary>
          ParameterValue(const wstring& sz) : Type(ValueType::String) { 
             String = sz; 
          }
+         /// <summary>Create from string value</summary>
          ParameterValue(int val) : Type(ValueType::Int) { 
             Int = val; 
          }
@@ -36,10 +39,13 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
 
+         /// <summary>Get HO word of integer value</summary>
          int  GetHighWord() const
          {
             return HIWORD(Int);
          }
+
+         /// <summary>Get LO word of integer value</summary>
          int  GetLowWord() const
          {
             return LOWORD(Int);
@@ -47,7 +53,7 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
-         /// <summary>Integer assignment</summary>
+         /// <summary>Assign integer value</summary>
          ParameterValue& operator=(int val)
          {
             Type = ValueType::Int;
@@ -55,7 +61,7 @@ namespace Logic
             return *this;
          }
 
-         /// <summary>String assignment</summary>
+         /// <summary>Assign string value</summary>
          ParameterValue& operator=(const wstring& sz)
          {
             Type = ValueType::String;
@@ -93,7 +99,6 @@ namespace Logic
 
       public:
          void  Translate(ScriptFile& f);
-         void  Generate() {}
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
@@ -110,10 +115,13 @@ namespace Logic
       public:
          ParameterArray()
          {}
+         /// <summary>Create from single parameter</summary>
          ParameterArray(const ScriptParameter& p)
          {
             push_back(p);
          }
+
+         /// <summary>Append parameter</summary>
          ParameterArray& operator +=(const ScriptParameter& p)
          {
             push_back(p);
