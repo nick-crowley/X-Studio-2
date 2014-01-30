@@ -159,12 +159,24 @@ namespace Logic
             }
 
             // Insert standard command
-            script.Commands.push_back( std[i] );
+            if (std[i].Syntax.ID != CMD_HIDDEN_JUMP)
+               script.Commands.push_back( std[i] );
          }
 
          // Translate all commands/parameters
          for (ScriptCommand& cmd : script.Commands)
+         {
+            // Replace label number parameters with label name params
+            if (cmd.Syntax.ID == CMD_GOTO_LABEL || cmd.Syntax.ID == CMD_GOTO_SUB)
+            {
+               ScriptCommand& label = std[cmd.Parameters[0].Value.Int];
+               cmd.Parameters.clear();
+               cmd.Parameters.push_back(label.Parameters[0]);
+            }
+
+            // Translate
             cmd.Translate(script);
+         }
       }
 
 

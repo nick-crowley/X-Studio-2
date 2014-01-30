@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include <algorithm>
 
 namespace Logic
 {
@@ -40,7 +41,7 @@ namespace Logic
                         End;
          };
 
-         /// <summary></summary>
+         /// <summary>Token produced by MSCI script command lexer</summary>
          class ScriptToken : public TokenBase
          {
             // ------------------------ TYPES --------------------------
@@ -75,15 +76,25 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            const TokenType   Type;
-            const wstring     Text;
+            const TokenType  Type;
+            const wstring    Text;
          };
 
-         /// <summary>List of script tokens</summary>
-         typedef list<ScriptToken> TokenList;
 
          /// <summary>Vector of script tokens</summary>
-         typedef vector<ScriptToken> TokenArray;
+         class TokenArray : public vector<ScriptToken>
+         {
+         public:
+            TokenArray() 
+            {}
+
+            /// <summary>Get number of non-whitespace tokens</summary>
+            /// <returns></returns>
+            size_type count() const
+            {
+               return count_if(cbegin(), cend(), [](const ScriptToken& t) {return t.Type != TokenType::Whitespace;} );
+            }
+         };
 
          /// <summary>Script token array iterator</summary>
          typedef TokenArray::const_iterator  TokenIterator;

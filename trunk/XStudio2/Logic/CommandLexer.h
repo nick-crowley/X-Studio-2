@@ -37,19 +37,25 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
 
          public:
+            /// <summary>Get start token iterator</summary>
+            /// <returns></returns>
             TokenIterator begin() const 
             { 
                return Tokens.begin(); 
             }
 
+            /// <summary>Get end token iterator</summary>
+            /// <returns></returns>
             TokenIterator end() const 
             { 
                return Tokens.end(); 
             }
 
+            /// <summary>Get number of non-whitespace tokens</summary>
+            /// <returns></returns>
             TokenArray::size_type count() const
             {
-               return Tokens.size();
+               return 0; // return Tokens.count();
             }
 
             /// <summary>Finds a token by character index.</summary>
@@ -60,7 +66,7 @@ namespace Logic
                //Console << Colour::Yellow << L"Searching for token @ " << index << ENDL;
                return find_if(Tokens.begin(), Tokens.end(), [index](const ScriptToken& t) { 
                   //Console << Colour::Yellow << t.Text << ENDL;
-                  return index >= t.Start && index <= t.End;   // Match true if index follows last character
+                  return index >= t.Start && index <= t.End;   // Also match true for character position immediately following token
                });
             }
 
@@ -123,14 +129,14 @@ namespace Logic
          private:
             bool         ReadChar();
 
-            ScriptToken  ReadAmbiguous(CharIterator start);
+            ScriptToken  ReadAmbiguous(CharIterator start, const TokenArray& prev);
             ScriptToken  ReadConstant(CharIterator start);
             ScriptToken  ReadComment(CharIterator start);
             ScriptToken  ReadGameObject(CharIterator start);
             ScriptToken  ReadNumber(CharIterator start);
             ScriptToken  ReadOperator(CharIterator start);
             ScriptToken  ReadString(CharIterator start);
-            ScriptToken  ReadText(CharIterator start);
+            ScriptToken  ReadText(CharIterator start, const TokenArray& prev);
             ScriptToken  ReadVariable(CharIterator start);
             ScriptToken  ReadWhitespace(CharIterator start);
 

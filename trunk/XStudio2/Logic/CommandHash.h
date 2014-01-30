@@ -9,7 +9,9 @@ namespace Logic
    {
       namespace Compiler
       {
-         
+         /// <summary>List of script tokens</summary>
+         typedef list<ScriptToken>  TokenList;
+
          /// <summary></summary>
          class CommandHash 
          {
