@@ -166,6 +166,9 @@ namespace Logic
          const_iterator end() const;
          UINT           GetCount() const;
 
+      private:
+         ObjectCollection  GetSpecialCases() const;
+
          // ----------------------- MUTATORS ------------------------
       public:
          void  Clear();
@@ -175,8 +178,7 @@ namespace Logic
       protected:
          bool  InsertConflicts(ScriptObject a, ScriptObject b);
          bool  MangleConflicts(ScriptObject a, ScriptObject b);
-         UINT  PopulateLookup(WorkerData* data);
-         UINT  PopulateObjects(WorkerData* data);
+         UINT  Populate(WorkerData* data);
 
          // -------------------- REPRESENTATION ---------------------
       public:
