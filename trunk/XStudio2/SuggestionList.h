@@ -2,6 +2,12 @@
 #include "afxcmn.h"
 #include "Logic/ScriptToken.h"
 
+/// <summary>Forward declaration</summary>
+NAMESPACE_BEGIN2(Logic,Scripts)
+   class ScriptFile;
+NAMESPACE_END2(Logic,Scripts)
+
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
@@ -54,7 +60,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(ScriptEdit* parent, CPoint& pt, Suggestion type);
+      BOOL Create(ScriptEdit* parent, CPoint& pt, Suggestion type, const ScriptFile* script);
       void MatchSuggestion(const ScriptToken& tok);
 
    protected:
@@ -72,6 +78,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       Suggestion   SuggestionType;
       ContentArray Content;
+      const ScriptFile* Script;
    };
    
 
