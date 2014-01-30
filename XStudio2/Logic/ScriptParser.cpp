@@ -69,10 +69,8 @@ namespace Logic
             // Iterate over lines  (count >= 1)
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
-               CommandTree node;
-               
                // Read command, add to script
-               Script->Add(node = ParseNode(Script, line));    // Advances line iterator
+               CommandTree node = Script->Add(ParseNode(Script, line));    // Advances line iterator
                
                // Examine command
                switch (node->Logic)
@@ -103,10 +101,8 @@ namespace Logic
             // Read children
             while (line < Input.end())
             {
-               CommandTree node;
-
                // Read command, add to branch
-               branch->Add(node = ParseNode(branch, line));    // Advances line iterator
+               CommandTree node = branch->Add(ParseNode(branch, line));    // Advances line iterator
 
                // Examine command
                switch (node->Logic)
@@ -158,7 +154,7 @@ namespace Logic
          ///    line = nop/comment/command/expression
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandTree ScriptParser::ParseNode(const CommandTree& parent, LineIterator& line)
+         ScriptParser::CommandNode* ScriptParser::ParseNode(const CommandTree& parent, LineIterator& line)
          {
             LineIterator  text = line++;  // consume line
             CommandLexer  lex(*text);
@@ -172,15 +168,15 @@ namespace Logic
 
             // Comment/NOP:
             if (MatchComment(lex))
-               return CommandTree(ReadComment(parent, lex, text));
+               return ReadComment(parent, lex, text);
 
             // Command:
             else if (MatchCommand(lex))
-               return CommandTree(ReadCommand(parent, lex, text));
+               return ReadCommand(parent, lex, text);
 
             // Expression:
             else if (MatchExpression(lex))
-               return CommandTree(ReadExpression(parent, lex, text));
+               return ReadExpression(parent, lex, text);
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -191,7 +187,7 @@ namespace Logic
 
             // UNRECOGNISED: Generate empty node
             Errors += MakeError(L"Unable to parse command", text, lex);
-            return CommandTree( new CommandNode(parent, ScriptCommand::Unknown, lex, GetLineNumber(text)) );
+            return new CommandNode(parent, ScriptCommand::Unknown, lex, GetLineNumber(text));
          }
 
 
