@@ -61,8 +61,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw ArgumentException(HERE, L"type", L"Suggestion type cannot be 'None'");
 
       // Calculate position  (Offset rectangle above line)
-      CRect rc(pt, DefaultSize);
-      rc.OffsetRect(0, -DefaultSize.cy);
+      CSize sz = (type == Suggestion::Command ? CommandSize : DefaultSize);
+      CRect rc(pt, sz);
+      rc.OffsetRect(0, -sz.cy);
 
       // Set type
       SuggestionType = type;
@@ -124,7 +125,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Linear search for partial substring
       int index = 0;
       auto it = find_if(Content.begin(), Content.end(), [&](const SuggestionItem& item)->bool { 
-         return item.Text.find(str) != wstring::npos ? true : (++index, false); 
+         return item.Key.find(str) != wstring::npos ? true : (++index, false); 
       });
 
       // Search/display closest match
@@ -175,6 +176,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
             Content.push_back( SuggestionItem(obj->DisplayText, GetString(obj->Group), obj->Hash) );
          break;
       }
+
+      // Sort alphabetically
+      sort(Content.begin(), Content.end(), [](SuggestionItem& a, SuggestionItem& b) {return a.Key < b.Key;} );
    }
 
    /// <summary>Initialises control and populates</summary>
@@ -188,7 +192,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Setup control
       InsertColumn(0, L"text");
       InsertColumn(1, L"type", LVCFMT_RIGHT);
-      SetColumnWidth(0, DefaultSize.cx-GetSystemMetrics(SM_CXVSCROLL)-120);
+      SetColumnWidth(0, lpCreateStruct->cx-GetSystemMetrics(SM_CXVSCROLL)-120);
       SetColumnWidth(1, 120);
       SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
