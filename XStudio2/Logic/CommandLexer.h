@@ -55,7 +55,7 @@ namespace Logic
             /// <returns></returns>
             TokenArray::size_type count() const
             {
-               return 0; // return Tokens.count();
+               return Tokens.count();
             }
 
             /// <summary>Finds a token by character index.</summary>
