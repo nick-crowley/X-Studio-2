@@ -561,7 +561,7 @@ namespace Logic
 
                // DEBUG: print tokens
                for (auto it = lex.begin(); it != lex.end(); ++it)
-                  Console << (it==debugStart?L"  <*>":L"  ") << it->Text << ENDL;
+                  Console << (it==debugStart?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
             }
 
             // Create expression

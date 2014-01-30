@@ -173,7 +173,7 @@ namespace Logic
 
                // and/or/mod
                case L'A':  return MatchChars(L"AND");
-               case L'o':  return MatchChars(L"OR");
+               case L'O':  return MatchChars(L"OR");
                case L'M':  return MatchChars(L"MOD");
                }
 
