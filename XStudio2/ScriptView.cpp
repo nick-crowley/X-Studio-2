@@ -146,11 +146,10 @@ NAMESPACE_BEGIN(GUI)
       SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
       
       // Get caret position
-      UINT line = RichEdit.LineFromChar(-1)+1;
-      POINT pt = {0,0};
+      POINT pt = {RichEdit.GetCaretIndex(), 1+RichEdit.LineFromChar(-1)};
 
       // Raise 'CARET MOVED'
-      CaretMoved.Raise(pt, line);
+      CaretMoved.Raise(pt);
    }
 
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)

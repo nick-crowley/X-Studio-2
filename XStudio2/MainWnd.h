@@ -55,7 +55,7 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
       void onGameDataFeedback(const WorkerProgress& wp);
-      void onScriptViewCaretMoved(POINT pt, UINT line);
+      void onScriptViewCaretMoved(POINT pt);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnRunAllTests();
