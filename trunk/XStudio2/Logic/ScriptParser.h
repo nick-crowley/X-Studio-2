@@ -120,7 +120,7 @@ namespace Logic
 
             // ------------------------ STATIC -------------------------
          private:
-            ErrorToken  MakeError(const wstring& msg, const LineIterator& line) const;
+            ErrorToken  MakeError(const wstring& msg, const LineIterator& line, const CommandLexer& lex) const;
             ErrorToken  MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const;
 
             // --------------------- PROPERTIES ------------------------

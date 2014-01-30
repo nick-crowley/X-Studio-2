@@ -10,7 +10,7 @@ namespace Logic
          // -------------------------------- CONSTRUCTION --------------------------------
 
          CommandLexer::CommandLexer(const wstring& line, bool  skipWhitespace) 
-            : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), SkipWhitespace(skipWhitespace), Tokens(Parse())
+            : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), SkipWhitespace(skipWhitespace), Input(line), Tokens(Parse())
          {
             // DEBUG:
             /*Console.WriteLnf(L"\nLexing command: %s", line.c_str());

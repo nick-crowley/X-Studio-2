@@ -38,27 +38,19 @@ namespace Logic
                Console.Writef(L"%s ", it->Text.c_str());
             Console.WriteLnf(L"");*/
                          
-            try
-            {
-               // Produce parse tree
-               ExpressionTree tree = ReadExpression(InputBegin);
+            // Produce parse tree
+            ExpressionTree tree = ReadExpression(InputBegin);
 
-               // Extract tokens
-               tree->getTokenArray(Traversal::InOrder, InfixParams);
-               tree->getTokenArray(Traversal::PostOrder, PostfixParams);
+            // Extract tokens
+            tree->getTokenArray(Traversal::InOrder, InfixParams);
+            tree->getTokenArray(Traversal::PostOrder, PostfixParams);
 
-               // DEBUG: Print
-               //Console.WriteLnf(L"Output: %s", tree->debugPrint().c_str() );
-               ////Console.WriteLnf(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
-               //Console.WriteLnf(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
-               //Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
-               //Console.WriteLnf(L"");
-
-            }
-            catch (ScriptSyntaxException& e)
-            {
-               Console.WriteLnf(e.Message);
-            }
+            // DEBUG: Print
+            //Console.WriteLnf(L"Output: %s", tree->debugPrint().c_str() );
+            ////Console.WriteLnf(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
+            //Console.WriteLnf(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
+            //Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
+            //Console.WriteLnf(L"");
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------

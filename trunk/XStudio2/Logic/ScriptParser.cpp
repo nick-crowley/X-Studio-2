@@ -35,9 +35,9 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line) const
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line, const CommandLexer& lex) const
          {
-            return ErrorToken(msg, GetLineNumber(line), 0, line->length()-1);
+            return ErrorToken(msg, GetLineNumber(line), lex.count() ? lex.begin()->Start : 0, line->length()-1);
          }
 
          ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const
@@ -64,7 +64,6 @@ namespace Logic
          /// <returns>Tree of command nodes</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          void  ScriptParser::Parse()
          {
             CommandTree node;
@@ -190,7 +189,7 @@ namespace Logic
             #endif
 
             // UNRECOGNISED: Generate empty node
-            Errors += MakeError(L"Unable to parse command", line);
+            Errors += MakeError(L"Unable to parse command", line, lex);
             return CommandTree( new CommandNode(ScriptCommand::Unknown, GetLineNumber(text)) );
          }
 
@@ -353,7 +352,7 @@ namespace Logic
          /// <param name="pos">The start position.</param>
          /// <returns>Conditional</returns>
          /// <remarks>The iterator is advanced beyond last token read</remarks>
-         /// <exception cref="Logic::ScriptSyntaxException">Unrecognised conditional</exception>
+         /// <exception cref="Logic::ArgumentException">Unrecognised conditional</exception>
          Conditional ScriptParser::ReadConditional(const CommandLexer& lex, TokenIterator& pos)
          {
             // 'if' 'not'?
@@ -376,7 +375,7 @@ namespace Logic
             else if (lex.Match(pos, TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
                return lex.Match(pos, TokenType::Keyword, L"not") ? Conditional::SKIP_IF : Conditional::SKIP_IF_NOT;
                
-            throw ScriptSyntaxException(HERE, L"Invalid conditional - use sentinel syntax");
+            throw ArgumentException(HERE, L"pos", GuiString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
          }
          
          /// <summary>Reads the reference object and reference operator tokens</summary>
@@ -456,7 +455,8 @@ namespace Logic
             
             // Unrecognised: error
             if (syntax == CommandSyntax::Unknown)
-               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", line) : MakeError(L"Unexpected token in command", line, pos));
+               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", line, lex) 
+                                           : MakeError(L"Unexpected token in command", line, pos));
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -480,7 +480,7 @@ namespace Logic
                   if (lex.Valid(refObj))
                      params += ScriptParameter(ps, *refObj);
                   else
-                     Errors += MakeError(L"Missing reference object", line);
+                     Errors += MakeError(L"Missing reference object", line, lex);
                }
                // Parameter
                else if (!tokens.empty())
@@ -490,7 +490,7 @@ namespace Logic
                }
                else
                {  // Missing parameter
-                  Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), line);
+                  Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), line, lex);
                   break;
                }
             }
@@ -505,9 +505,8 @@ namespace Logic
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>New Expression command node</returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
+         /// <exception cref="Logic::ArgumentException">Error in expression parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in expression parsing algorithm</exception>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    value = constant/variable/literal/null
@@ -542,9 +541,9 @@ namespace Logic
                for (const ScriptToken& t : expr.InfixParams)
                   params += ScriptParameter(syntax.Parameters[1], t);
             }
-            catch (ScriptSyntaxException& ) {
+            catch (ScriptSyntaxException& e) {
                // syntax error
-               Errors += MakeError(L"Syntax error in expression", line, pos);
+               Errors += MakeError(e.Message, line, pos);
             }
 
             // Create expression
