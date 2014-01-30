@@ -13,7 +13,7 @@ namespace Logic
       {
       }
 
-      GameObject::GameObject(const GameObject& r, const wstring& txt) 
+      GameObject::GameObject(const GameObject& r, const GuiString& txt) 
          : Type(r.Type), SubType(r.SubType), ID(r.ID), Name(txt), Description(r.Description)
       {
       }

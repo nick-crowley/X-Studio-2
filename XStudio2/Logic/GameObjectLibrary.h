@@ -15,7 +15,7 @@ namespace Logic
          TFilenameReader(Path p) : Valid(true), Type(MainType::Unknown)
          {
             // Get lowercase filename without extension
-            wstring name = GuiString(p.RemoveExtension().FileName).ToLower();
+            GuiString name = GuiString(p.RemoveExtension().FileName).ToLower();
 
             // Identify file
             if (name == L"tlaser")
@@ -112,7 +112,7 @@ namespace Logic
 
       public:
          /// <summary>Collection of game objects sorted by text</summary>
-         class LookupCollection : public map<wstring, GameObject, less<wstring>>
+         class LookupCollection : public map<GuiString, GameObject, less<GuiString>>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -121,16 +121,16 @@ namespace Logic
             /// <summary>Check whether an object is present</summary>
             /// <param name="sz">The text</param>
             /// <returns></returns>
-            bool  Contains(const wstring& sz) const
+            bool  Contains(const GuiString& sz) const
             {
                return find(sz) != end();
             }
 
-            /// <summary>Finds an object by text<summary>
+            /// <summary>Finds an object by text (Search is case sensitive)<summary>
             /// <param name="sz">The text</param>
             /// <returns>Object</returns>
             /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-            GameObject  Find(const wstring& sz) const
+            GameObject  Find(const GuiString& sz) const
             {
                const_iterator it;
                // Lookup and return string
@@ -151,9 +151,9 @@ namespace Logic
                return insert(value_type(obj.Name, obj)).second;
             }
 
-            /// <summary>Removes an object from the collection</summary>
+            /// <summary>Removes an object from the collection  (Case sensitive)</summary>
             /// <param name="sz">The text</param>
-            void  Remove(const wstring& sz)
+            void  Remove(const GuiString& sz)
             {
                erase(sz);
             }
@@ -174,7 +174,7 @@ namespace Logic
 			
          // ---------------------- ACCESSORS ------------------------			
       public:
-         bool  Contains(const wstring& name) const;
+         bool  Contains(const GuiString& name) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -183,7 +183,7 @@ namespace Logic
          //const TObject*  Find(MainType main, UINT subtype) const;
          GameObject      Find(UINT value) const;
          GameObject      Find(MainType main, UINT subtype) const;
-         GameObjectArray Query(const wstring& search) const;
+         GameObjectArray Query(const GuiString& search) const;
 
       protected:
          UINT  PopulateObjects(WorkerData* data);
