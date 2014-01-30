@@ -111,6 +111,7 @@ namespace Logic
                CHARRANGE            LineText;         // Start/end character offsets
                CommandNode*         JumpTarget;       // Destination of jump
                vector<CommandTree>  Children;         // Child commands
+               wstring  Text;
             };
 
             /// <summary>Legacy typedef</summary>
