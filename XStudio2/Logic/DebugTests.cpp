@@ -27,33 +27,33 @@ namespace Logic
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    
-   ScriptParser::ScriptTree  DebugTests::CompileScript(const vector<wstring>& lines)
-   {
-      Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
+   //ScriptParser::ScriptTree  DebugTests::CompileScript(const vector<wstring>& lines)
+   //{
+   //   Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
 
-      ScriptParser p(lines, GameVersion::TerranConflict);
-      return p.Script;
-   }
+   //   ScriptParser p(lines, GameVersion::TerranConflict);
+   //   return p.Script;
+   //}
 
 
-   ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
-   {
-      XFileSystem vfs;
+   //ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
+   //{
+   //   XFileSystem vfs;
 
-      // Build VFS. Enumerate language files
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
-      StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
-      SyntaxLib.Enumerate(nullptr);
+   //   // Build VFS. Enumerate language files
+   //   vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
+   //   StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
+   //   SyntaxLib.Enumerate(nullptr);
 
-      // Parse script
-      Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
+   //   // Parse script
+   //   Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
 
-      StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-      ScriptFile script = ScriptFileReader(fs2).ReadFile();
+   //   StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+   //   ScriptFile script = ScriptFileReader(fs2).ReadFile();
 
-      Console << Colour::Green << L"Script loaded successfully" << ENDL;
-      return script;
-   }
+   //   Console << Colour::Green << L"Script loaded successfully" << ENDL;
+   //   return script;
+   //}
 
 
    void  DebugTests::RunAll()

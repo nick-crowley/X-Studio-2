@@ -11,8 +11,18 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line) 
-                  : Parent(parent.get()), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
+         /// <summary>Create root node</summary>
+         ScriptParser::CommandNode::CommandNode()
+            : Parent(nullptr), LineNumber(0), Index(0), JumpTarget(nullptr), Command(ScriptCommand::Unknown), Logic(BranchLogic::None)
+         {
+         }
+
+         /// <summary>Create node from a script command</summary>
+         /// <param name="parent">parent node</param>
+         /// <param name="cmd">script command.</param>
+         /// <param name="line">1-based line number</param>
+         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line)
+            : Parent(parent.get()), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
          {
          }
 
@@ -69,9 +79,12 @@ namespace Logic
             }
 
             // Check for END
-            /*switch (Logic)
+            switch (Logic)
             {
-            }*/
+            case BranchLogic::If:
+            case BranchLogic::While:
+               break;
+            }
 
             // Verify children
             for (const auto& cmd : Children)

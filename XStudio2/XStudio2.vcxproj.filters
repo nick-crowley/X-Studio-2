@@ -585,9 +585,6 @@
     <ClCompile Include="Logic\GameObject.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ScriptTree.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\CommandNode.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>

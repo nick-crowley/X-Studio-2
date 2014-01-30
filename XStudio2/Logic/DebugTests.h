@@ -20,8 +20,8 @@ namespace Logic
    public:
       static void  RunAll();
 
-      static ScriptParser::ScriptTree CompileScript(const vector<wstring>& lines);
-      static ScriptFile  LoadScript(const WCHAR* path);
+      //static ScriptParser::ScriptTree CompileScript(const vector<wstring>& lines);
+      //static ScriptFile  LoadScript(const WCHAR* path);
 
    private:
       static void  Test_CommandSyntax();
