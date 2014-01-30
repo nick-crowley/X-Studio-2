@@ -11,8 +11,8 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         ScriptParser::CommandNode::CommandNode(const ScriptCommand& cmd, UINT line) 
-                  : LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
+         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line) 
+                  : Parent(parent.get()), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
          {
          }
 
@@ -54,7 +54,7 @@ namespace Logic
 
          /// <summary>Verifies the node</summary>
          /// <param name="err">The error collection</param>
-         void  ScriptParser::CommandNode::Verify(ErrorArray& err)
+         void  ScriptParser::CommandNode::Verify(ErrorArray& err) const
          {
             // Recognise objects
             for (const auto& p : Command.Parameters)

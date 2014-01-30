@@ -30,7 +30,7 @@ namespace Logic
          }
 
          /// <summary>Verifies the parsed commands</summary>
-         void  ScriptParser::ScriptTree::Verify(ErrorArray& err)
+         void  ScriptParser::ScriptTree::Verify(ErrorArray& err) const
          {
             for (auto& cmd : Commands)
                cmd->Verify(err);

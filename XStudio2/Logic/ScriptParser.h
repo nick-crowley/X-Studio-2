@@ -63,9 +63,10 @@ namespace Logic
             class CommandNode
             {
             public:
-               CommandNode(const ScriptCommand& cmd, UINT line);
+               CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line);
                ~CommandNode();
 
+               const CommandNode*   Parent;           // Parent node
                BranchLogic          Logic;            // logic type
                ScriptCommand        Command;          // Command
                UINT                 LineNumber,       // 1-based line number
@@ -82,8 +83,9 @@ namespace Logic
                /// <returns></returns>
                bool  Contains(BranchLogic l) const;
 
-
-               void  Verify(ErrorArray& err);
+               /// <summary>Verify the parsed script</summary>
+               /// <param name="err">Error queue.</param>
+               void  Verify(ErrorArray& err) const;
 
                /// <summary>Debug print</summary>
                /// <param name="depth">The depth.</param>
@@ -103,7 +105,7 @@ namespace Logic
                void  Add(CommandTree t);
 
                /// <summary>Verify the parsed script</summary>
-               void  Verify(ErrorArray&);
+               void  Verify(ErrorArray&) const;
 
             private:
                vector<CommandTree> Commands;
@@ -142,15 +144,15 @@ namespace Logic
          private:
             void           Parse();
             void           ParseBranch(CommandTree& branch, LineIterator& line);
-            CommandTree    ParseNode(LineIterator& line);
+            CommandTree    ParseNode(const CommandTree& parent, LineIterator& line);
 
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandNode*   ReadComment(const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadCommand(const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadExpression(const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadComment(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadCommand(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadExpression(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
 
