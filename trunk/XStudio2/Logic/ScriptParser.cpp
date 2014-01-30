@@ -543,6 +543,7 @@ namespace Logic
             #ifdef PRINT_CONSOLE
                Console << Colour::Green << L"expression" << ENDL;
             #endif
+            TokenIterator debugStart = pos;
 
             try
             {
@@ -557,6 +558,10 @@ namespace Logic
             catch (ScriptSyntaxException& e) {
                // syntax error
                Errors += MakeError(e.Message, line, pos);
+
+               // DEBUG: print tokens
+               for (auto it = lex.begin(); it != lex.end(); ++it)
+                  Console << (it==debugStart?L"  <*>":L"  ") << it->Text << ENDL;
             }
 
             // Create expression
