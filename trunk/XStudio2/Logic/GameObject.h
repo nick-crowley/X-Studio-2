@@ -16,7 +16,7 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       private:
-         GameObject(const GameObject& r, const wstring& txt);
+         GameObject(const GameObject& r, const GuiString& txt);
 
       public:
          GameObject(UINT subtype, const TObject* obj);
@@ -43,7 +43,7 @@ namespace Logic
          /// <summary>Appends an object id to name</summary>
          /// <param name="id">object id</param>
          /// <returns>New game object with id appended</returns>
-         GameObject operator+(const wstring& id)
+         GameObject operator+(const GuiString& id)
          {
             return GameObject(*this, Name+GuiString(L" (%s)", id));
          }
@@ -52,11 +52,11 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         const MainType Type;
-         const UINT     SubType;
-         const wstring  ID, 
-                        Name, 
-                        Description;
+         const MainType  Type;
+         const UINT      SubType;
+         const GuiString ID, 
+                         Name, 
+                         Description;
       };
 
       /// <summary>Vector of game objects</summary>

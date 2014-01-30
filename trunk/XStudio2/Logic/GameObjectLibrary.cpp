@@ -45,7 +45,7 @@ namespace Logic
       /// <summary>Query whether an object is present</summary>
       /// <param name="name">The object name</param>
       /// <returns></returns>
-      bool GameObjectLibrary::Contains(const wstring& name) const
+      bool GameObjectLibrary::Contains(const GuiString& name) const
       {
          return Lookup.Contains(name);
       }
@@ -152,16 +152,17 @@ namespace Logic
          return Objects.Find(main, subtype);
       }
 
-      /// <summary>Searches the library for objects containing a substring</summary>
+      /// <summary>Searches the library for objects containing a substring (Case insensitive)</summary>
       /// <param name="search">substring</param>
       /// <returns></returns>
-      GameObjectArray  GameObjectLibrary::Query(const wstring& search) const
+      GameObjectArray  GameObjectLibrary::Query(const GuiString& search) const
       {
          GameObjectArray Results;
+         bool  FindAll = search.length() == 0;
          
          // Linear search for partial substring
          for (auto& pair : Lookup)
-            if (search.length() == 0 || pair.first.find(search.c_str()) != wstring::npos)
+            if (FindAll || pair.first.Contains(search, false))
                Results.push_back(pair.second);
 
          return Results;
@@ -169,10 +170,13 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 
+      /// <summary>Populates the objects and lookup collection</summary>
+      /// <param name="data">Feedback data.</param>
+      /// <returns></returns>
       UINT  GameObjectLibrary::PopulateObjects(WorkerData* data)
       {
-         typedef list<GameObject> ObjectList;
-         typedef map<wstring, ObjectList> ConflictMap;
+         typedef list<GameObject>            ObjectList;
+         typedef map<GuiString, ObjectList>  ConflictMap;
          
          ConflictMap Conflicts;
          ObjectList Input;
@@ -192,9 +196,9 @@ namespace Logic
             // Insert/Ensure unique
             if (!Lookup.Add(obj))
             {
-               wstring key = obj.Name;
+               GuiString key = obj.Name;
                
-               // Conflict: Add both objects on first occurence, but only conflict on subsequent occurences
+               // Conflict: Add conflict+object on first occurence, but only conflict on subsequent occurences
                if (Conflicts.find(key) == Conflicts.end())
                   Conflicts[key].push_back(Lookup.Find(key));
                
