@@ -88,6 +88,7 @@ namespace Logic
 
             protected:
                void  VerifyLogic(ErrorArray& err) const;
+               void  VerifyObjects(ErrorArray& err) const;
 
                // ----------------------- MUTATORS ------------------------
             public:

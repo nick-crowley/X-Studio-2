@@ -107,7 +107,7 @@ namespace Logic
                // Examine command
                switch (node->Logic)
                {
-               // Conditional: Read child commands into node
+               // Conditional: Read children of conditionals into node
                case BranchLogic::If:      
                case BranchLogic::While:  
                case BranchLogic::ElseIf:  

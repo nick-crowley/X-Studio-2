@@ -88,25 +88,11 @@ namespace Logic
          {
             if (!IsRoot())
             {
-               // Recognise objects
-               for (const auto& p : Command.Parameters)
-               {
-                  // Verify game object
-                  if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
-                     err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
+               // Recognise game/script objects
+               VerifyObjects(err);
 
-                  // Verify script object
-                  else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
-                     err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
-               }
-
-               // Check for END
-               switch (Logic)
-               {
-               case BranchLogic::If:
-               case BranchLogic::While:
-                  break;
-               }
+               // Verify branching logic
+               VerifyLogic(err);
             }
 
             // Verify children
@@ -116,7 +102,7 @@ namespace Logic
 
          // ------------------------------ PROTECTED METHODS -----------------------------
 
-         /// <summary>Verifies the node</summary>
+         /// <summary>Verifies the branching logic</summary>
          /// <param name="err">The error collection</param>
          void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& err) const
          {
@@ -125,6 +111,15 @@ namespace Logic
             {
             case BranchLogic::If:
             case BranchLogic::While:
+               // Ensure 'else-if' does not follow 'else'
+               if (Logic == BranchLogic::If)
+               {
+                  auto Else = Find(BranchLogic::Else);
+                  auto ElseIf = Find(BranchLogic::ElseIf);
+                  if (Else != Children.end() && ElseIf != Children.end() && ElseIf < Else)
+                     err += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->LineText);
+               }
+
                // Ensure 'end' is last command
                if (Find(BranchLogic::End) == Children.end())
                   err += ErrorToken(L"missing 'end' command", LineNumber, LineText);
@@ -163,6 +158,23 @@ namespace Logic
 
             default:
                return;
+            }
+         }
+         
+         /// <summary>Verifies the game and script objects</summary>
+         /// <param name="err">The error collection</param>
+         void  ScriptParser::CommandNode::VerifyObjects(ErrorArray& err) const
+         {
+            // Recognise objects
+            for (const auto& p : Command.Parameters)
+            {
+               // Verify game object
+               if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
+                  err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
+
+               // Verify script object
+               else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
+                  err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
             }
          }
 
