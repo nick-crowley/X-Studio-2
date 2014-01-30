@@ -229,12 +229,24 @@ namespace Logic
          coll.Add(ScriptObject(10, KnownPage::RACES, L"Player", GameVersion::Threat));
          
          // Distinguish NPC/Player HQ object class
-         coll.Add(ScriptObject(2045, KnownPage::OBJECT_CLASSES, L"Player Headerquarters", GameVersion::Reunion));
+         coll.Add(ScriptObject(2045, KnownPage::OBJECT_CLASSES, L"Player Headquarters", GameVersion::Reunion));
+
+         // Distinguish TS/PirateTS object class
+         coll.Add(ScriptObject(2035, KnownPage::OBJECT_CLASSES, L"Pirate TS", GameVersion::TerranConflict));
 
          // Fix ambiguous parameter types
          coll.Add(ScriptObject((UINT)ParameterType::INTERRUPT_RETURN_VALUE_IF, KnownPage::PARAMETER_TYPES, L"@RetVar/If", GameVersion::Threat));
          coll.Add(ScriptObject((UINT)ParameterType::LABEL_NAME, KnownPage::PARAMETER_TYPES, L"Label Name", GameVersion::Threat));
          coll.Add(ScriptObject((UINT)ParameterType::LABEL_NUMBER, KnownPage::PARAMETER_TYPES, L"Label Number", GameVersion::Threat));
+
+         // Add missing subtypes
+         coll.Add(ScriptObject(228, KnownPage::CONSTANTS, L"SSTYPE_DEBRIS", GameVersion::Threat));
+         coll.Add(ScriptObject(229, KnownPage::CONSTANTS, L"SSTYPE_WRECK_SHIP", GameVersion::Threat));
+         coll.Add(ScriptObject(230, KnownPage::CONSTANTS, L"SSTYPE_WRECK_DOCK", GameVersion::Threat));
+         coll.Add(ScriptObject(231, KnownPage::CONSTANTS, L"SSTYPE_WRECK_FACTORY", GameVersion::Threat));
+
+         // Distinguish Tiny ware from '-'
+         //coll.Add(ScriptObject(0, KnownPage::TRANSPORT_CLASSES, L"T", GameVersion::Threat));
          return coll;
       }
 
