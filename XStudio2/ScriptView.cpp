@@ -126,14 +126,17 @@ NAMESPACE_BEGIN(GUI)
       RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
 
       // Display script text
+      RichEdit.SetDocument(GetDocument());
       RichEdit.SetRtf(txt);
 
       // Populate variables
+      VariablesCombo.AddString(L"(Variables)");
       for (auto& var : GetDocument()->Script.Variables)
          VariablesCombo.AddString(var.Name.c_str());
       VariablesCombo.SetCurSel(0);
 
       // Populate labels
+      ScopeCombo.AddString(L"(Global scope)");
       for (auto& label : GetDocument()->Script.Labels)
          ScopeCombo.AddString(label.Name.c_str());
       ScopeCombo.SetCurSel(0);
@@ -155,11 +158,21 @@ NAMESPACE_BEGIN(GUI)
    {
       SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
       
-      // Get caret position
-      POINT pt = {RichEdit.GetCaretIndex(), 1+RichEdit.LineFromChar(-1)};
+      try
+      {
+         // Get caret position
+         POINT caret = {RichEdit.GetCaretIndex(), 1+RichEdit.LineFromChar(-1)};
+         //Console << "Caret moved to line " << caret.y << ENDL;
 
-      // Raise 'CARET MOVED'
-      CaretMoved.Raise(pt);
+         // Select/clear current scope
+         ScopeCombo.SetCurSel(1+GetDocument()->Script.FindScope(caret.y));
+
+         // Raise 'CARET MOVED'
+         CaretMoved.Raise(caret);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)

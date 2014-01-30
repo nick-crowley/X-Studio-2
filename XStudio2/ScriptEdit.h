@@ -3,10 +3,15 @@
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
 
+/// <summary>Forward declaration</summary>
+NAMESPACE_BEGIN(GUI)
+   class ScriptDocument;
+NAMESPACE_END(GUI)
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
-/// <summary>Character format helper</summary>
+   /// <summary>Character format helper</summary>
    struct CHARFORMAT3 : public CHARFORMAT2
    {
    public:
@@ -86,11 +91,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       CPoint     GetScrollCoordinates() const;
+      bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  SetDocument(ScriptDocument* doc);
       void  SetRtf(const string& rtf);
 
    protected:
@@ -118,6 +125,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       InputState     State;
       Suggestion     SuggestionType;
       SuggestionList SuggestionsList;
+      ScriptDocument* Document;
       
    public:
       
