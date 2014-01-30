@@ -167,7 +167,7 @@ namespace Logic
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadExpression(TokenIterator& pos)
          {
-            // Expression = Comparison
+            // Rule: Expression = Comparison
             return ReadBinaryExpression(pos, MIN_PRECEDENCE);
          }
 
@@ -182,10 +182,16 @@ namespace Logic
          {
             ExpressionTree expr = nullptr;
 
-            // Rule: BinaryExpr = Operand (operator Operand)*
-            //       Operand = Value / UnaryExpr / MultDivExpr / SumExpr / BitwiseExpr / LogicalExpr / ComparisonExpr
-            
-            // Read: expression-of-higher-precedence / Value
+            // Rule: Expr        = Comparison
+            // Rule: Comparison  = LogicalExpr (==/!=/<=/>=/</> LogicalExpr)*
+            // Rule: LogicalExpr = BitwiseExpr (AND/OR BitwiseExpr)*
+            // Rule: BitwiseExpr = SumExpr (&/|/^ SumExpr)*
+            // Rule: SumExpr     = ProductExpr (+/- ProductExpr)*
+            // Rule: ProductExpr = UnaryExpr (*/div UnaryExpr)*
+            // Rule: UnaryExpr   = (!/-/~)? Value
+            // Rule: Value       = literal / '(' expr ')'
+
+            // Read: BinaryExpr := higher-precedence-expr (input-precedence-operator  higher-precedence-expr)*
             expr = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));    // throws
 
             // Match: operator  
@@ -194,7 +200,7 @@ namespace Logic
                // Read: operator
                auto op = ReadOperator(pos);                                                        
 
-               // Read: expression-of-higher-precedence / Value
+               // Read: higher-precedence-expr / Value
                auto rhs = (precedence < MAX_PRECEDENCE ? ReadBinaryExpression(pos, precedence+1) : ReadUnaryExpression(pos));  // throws
                expr = ExpressionTree(new BinaryExpression(op, expr, rhs));     // throws
             }
