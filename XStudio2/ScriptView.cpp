@@ -132,6 +132,11 @@ NAMESPACE_BEGIN(GUI)
       for (auto& var : GetDocument()->Script.Variables)
          VariablesCombo.AddString(var.Name.c_str());
       VariablesCombo.SetCurSel(0);
+
+      // Populate labels
+      for (auto& label : GetDocument()->Script.Labels)
+         ScopeCombo.AddString(label.Name.c_str());
+      ScopeCombo.SetCurSel(0);
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)

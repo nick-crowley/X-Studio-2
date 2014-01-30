@@ -26,11 +26,13 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Reads the entire language file</summary>
-      /// <returns>New language file</returns>
+      /// <summary>Reads the entire script file</summary>
+      /// <returns>New script file</returns>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
-      /// <exception cref="Logic::InvalidDataException">Invalid language ID</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid script command</exception>
+      /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       ScriptFile ScriptFileReader::ReadFile()
       {
@@ -82,7 +84,10 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="type">The type of command</param>
       /// <param name="cmdBranch">The branch containing the command</param>
-      /// <returns>Varies</returns>
+      /// <returns>Appropriate command reader</returns>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       ScriptFileReader::ReaderPtr  ScriptFileReader::GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch)
       {
          // Verify node is an array
@@ -113,6 +118,9 @@ namespace Logic
       /// <summary>Reads the array size from an sval node</summary>
       /// <param name="node">The node</param>
       /// <returns>Size of the array</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Not an array sval node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       int  ScriptFileReader::ReadArray(XmlNodePtr& node, const WCHAR* help)
       {
          // Ensure node is script value
@@ -135,6 +143,11 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="stdBranch">The standard commands branch.</param>
       /// <param name="auxBranch">The auxiliary commands branch.</param>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
+      /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid goto/gosub command</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch)
       {
          vector<ScriptCommand>  std;
@@ -164,18 +177,26 @@ namespace Logic
          }
 
          // Translate all commands/parameters
+         UINT line = 1;
          for (ScriptCommand& cmd : script.Commands)
          {
-            // Replace label number parameters with label name params
+            // GOTO/GOSUB: Replace label number parameters with label name params
             if (cmd.Syntax.ID == CMD_GOTO_LABEL || cmd.Syntax.ID == CMD_GOTO_SUB)
             {
-               ScriptCommand& label = std[cmd.Parameters[0].Value.Int];
-               cmd.Parameters.clear();
-               cmd.Parameters.push_back(label.Parameters[0]);
+               // Validate line number
+               if (cmd.GetJumpDestination() >= std.size())
+                  throw InvalidValueException(HERE, GuiString(L"Command on line %d references an invalid jump destination %d", line, cmd.GetJumpDestination()));
+               
+               // Convert label number -> label name
+               cmd.SetLabelName( std[cmd.GetJumpDestination()].GetLabelName() );
             }
+            // LABEL: Store in script
+            else if (cmd.Syntax.ID == CMD_DEFINE_LABEL)
+               script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
 
             // Translate
             cmd.Translate(script);
+            ++line;
          }
       }
 
@@ -183,6 +204,9 @@ namespace Logic
       /// <summary>Reads the engine version</summary>
       /// <param name="node">The sval node.</param>
       /// <returns>Equivilent game version</returns>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       GameVersion ScriptFileReader::ReadEngineVersion(XmlNodePtr& node)
       {
          int val = ReadInt(node, L"script engine version");
@@ -194,6 +218,9 @@ namespace Logic
       /// <summary>Reads an integer value from a sval node</summary>
       /// <param name="node">The sval node</param>
       /// <returns>Integer value</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Not an integer sval node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       int  ScriptFileReader::ReadInt(XmlNodePtr& node, const WCHAR* help)
       {
          // Ensure node is script value
@@ -210,6 +237,9 @@ namespace Logic
       /// <summary>Reads the string value from a sval node</summary>
       /// <param name="node">The node.</param>
       /// <returns>String value</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Not a string sval node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       wstring  ScriptFileReader::ReadString(XmlNodePtr& node, const WCHAR* help)
       {
          // Ensure node is script value
@@ -226,6 +256,9 @@ namespace Logic
       /// <summary>Reads string or int value from a script value node</summary>
       /// <param name="node">The node.</param>
       /// <returns>String/Int value</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::FileFormatException">Not a string/integer sval node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       ParameterValue  ScriptFileReader::ReadValue(XmlNodePtr& node, const WCHAR* help)
       {
          // Ensure node is script value
@@ -248,6 +281,9 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="varBranch">The variable branch.</param>
       /// <param name="argBranch">The argument branch.</param>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
       void  ScriptFileReader::ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch)
       {
          wstring name;

@@ -40,9 +40,12 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------			
 
          BranchLogic  GetLogic() const;
+         wstring  GetLabelName() const;
+         UINT  GetJumpDestination() const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:
+         void  SetLabelName(const wstring& name);
          void  Translate(ScriptFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
