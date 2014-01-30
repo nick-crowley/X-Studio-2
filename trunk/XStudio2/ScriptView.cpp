@@ -125,8 +125,13 @@ NAMESPACE_BEGIN(GUI)
       RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
       RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
 
-      // Display text
+      // Display script text
       RichEdit.SetRtf(txt);
+
+      // Populate variables
+      for (auto& var : GetDocument()->Script.Variables)
+         VariablesCombo.AddString(var.Name.c_str());
+      VariablesCombo.SetCurSel(0);
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
