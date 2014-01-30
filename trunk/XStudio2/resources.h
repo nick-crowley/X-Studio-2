@@ -98,7 +98,7 @@
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
 
-#define IDS_STATUS_PANE1                122
+#define IDS_CARET_STATUS                122
 #define IDS_STATUS_PANE2                123
 #define IDS_TOOLBAR_STANDARD            124
 #define IDS_TOOLBAR_CUSTOMIZE           125

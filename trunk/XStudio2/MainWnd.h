@@ -9,6 +9,7 @@
 #include "CommandWnd.h"
 #include "GameObjectWnd.h"
 #include "ScriptObjectWnd.h"
+#include "ScriptView.h"
 #include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
 
@@ -54,6 +55,7 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
       void onGameDataFeedback(const WorkerProgress& wp);
+      void onScriptViewCaretMoved(POINT pt, UINT line);
 
 	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnRunAllTests();
@@ -79,7 +81,9 @@ NAMESPACE_BEGIN(GUI)
 	   CPropertiesWnd    m_wndProperties;
 
       GameDataWorker    GameDataThread;
+
       FeedbackHandler   fnGameDataFeedback;
+      CaretMovedHandler fnCaretMoved;
    };
 
 

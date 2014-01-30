@@ -7,6 +7,7 @@
 #include "MainWnd.h"
 #include "Logic/DebugTests.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -26,12 +27,15 @@ NAMESPACE_BEGIN(GUI)
    static UINT indicators[] =
    {
 	   ID_SEPARATOR,           // status line indicator
+      IDS_CARET_STATUS,
+      ID_INDICATOR_OVR,
 	   ID_INDICATOR_CAPS,
 	   ID_INDICATOR_NUM,
 	   ID_INDICATOR_SCRL,
    };
 
-   // Events
+   // ----------------------------------- EVENTS -----------------------------------
+
    FeedbackEvent   MainWnd::GameDataFeedback;
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -51,7 +55,8 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback))
+   MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptViewCaretMoved))
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -301,6 +306,14 @@ NAMESPACE_BEGIN(GUI)
    {
       DebugTests::RunAll();
       AfxMessageBox(L"Tests complete");
+   }
+
+   /// <summary>Display caret co-ordinates in status bar</summary>
+   /// <param name="pt">The caret position</param>
+   /// <param name="line">The caret line</param>
+   void MainWnd::onScriptViewCaretMoved(POINT pt, UINT line)
+   {
+      m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d", line).c_str());
    }
 
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
