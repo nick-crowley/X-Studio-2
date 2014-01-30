@@ -71,7 +71,7 @@ namespace Logic
                // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
-               CommandNode(const CommandTree& parent, const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
+               CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
@@ -149,15 +149,15 @@ namespace Logic
          private:
             void           Parse();
             void           ParseBranch(CommandTree& branch, LineIterator& line);
-            CommandNode*   ParseNode(const CommandTree& parent, LineIterator& line);
+            CommandNode*   ParseNode(LineIterator& line);
 
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandNode*   ReadComment(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadCommand(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadExpression(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadComment(const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadCommand(const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadExpression(const CommandLexer& lex, const LineIterator& line);
 
             // -------------------- REPRESENTATION ---------------------
 
