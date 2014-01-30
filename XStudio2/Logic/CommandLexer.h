@@ -31,7 +31,9 @@ namespace Logic
             TokenArray Parse();
 
             // --------------------- PROPERTIES ------------------------
-
+         public:
+            PROPERTY_GET(CHARRANGE,Extent,GetExtent);
+         private:
             PROPERTY_GET(bool,ValidPosition,IsValidPosition);
 
             // ---------------------- ACCESSORS ------------------------			
@@ -70,12 +72,18 @@ namespace Logic
                });
             }
 
-            /// <summary>Validates the specified position.</summary>
-            /// <param name="pos">The position.</param>
+            /// <summary>Gets character indicies of the first and last token</summary>
             /// <returns></returns>
-            bool  Valid(const TokenIterator& pos) const
+            CHARRANGE GetExtent() const
             {
-               return pos < Tokens.end();
+               CHARRANGE range = {0, LineEnd-LineStart};
+
+               if (Tokens.size() > 0)
+               {
+                  range.cpMin = Tokens[0].Start;
+                  range.cpMin = Tokens[Tokens.size()-1].End;
+               }
+               return range;
             }
 
             /// <summary>Matches a token at the specified position</summary>
@@ -96,16 +104,14 @@ namespace Logic
             {
                return pos < Tokens.end() && pos->Type == t && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
             }
-
-            /// <summary>Determines if a character index immediately follows a token, ie. immediately follows</summary>
+            
+            /// <summary>Validates the specified position.</summary>
             /// <param name="pos">The position.</param>
-            /// <param name="index">The index.</param>
-            /// <returns>true if index represents EOF, next whitespace or first char of next token.</returns>
-            /*bool Trails(const TokenIterator pos, UINT index) const
+            /// <returns></returns>
+            bool  Valid(const TokenIterator& pos) const
             {
-               return Valid(pos) && pos->End <= index   
-                   && (!Valid(pos+1) || index <= (pos+1)->Start);
-            }*/
+               return pos < Tokens.end();
+            }
 
          private:
             bool  IsValidPosition() const  { return Position < LineEnd; }
