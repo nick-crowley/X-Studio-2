@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None)
+   ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None), Document(nullptr)
    {
    }
 
@@ -118,10 +118,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CRichEditCtrl::LineLength(nChar);
    }
 
+   /// <summary>Sets the source document for this control</summary>
+   /// <param name="doc">The document.</param>
+   void  ScriptEdit::SetDocument(ScriptDocument* doc)
+   {
+      Document = doc;
+   }
+
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
+   /// <exception cref="Logic::InvalidOperationException">No document attached</exception>
    void ScriptEdit::SetRtf(const string& rtf)
    {
+      if (Document == nullptr)
+         throw InvalidOperationException(HERE, L"Must attach document prior to displaying text");
+
+      // Replace contents with RTF
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
       SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str());
    }
@@ -189,6 +201,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CPoint(pos-LineIndex(pos), LineFromChar(pos));
    }
 
+   /// <summary>Determines whether document is connected</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::HasDocument() const
+   {
+      return Document != nullptr;
+   }
    
    /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
    /// <param name="ch">The character just typed</param>

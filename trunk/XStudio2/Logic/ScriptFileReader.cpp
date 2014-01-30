@@ -192,7 +192,10 @@ namespace Logic
             }
             // LABEL: Store in script
             else if (cmd.Syntax.ID == CMD_DEFINE_LABEL)
+            {
                script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
+               Console << "Label " << cmd.GetLabelName() << " on line " << line << ENDL;
+            }
 
             // Translate
             cmd.Translate(script);

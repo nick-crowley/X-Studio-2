@@ -75,6 +75,7 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
+         /// <summary>Clears commands, labels and non-argument variables</summary>
          void  Clear()
          {
             // Clear labels & commands
@@ -84,6 +85,18 @@ namespace Logic
             // Clear variables, keep arguments
             auto var = find_if(Variables.begin(), Variables.end(), [](const ScriptVariable& v) { return v.Type == VariableType::Variable; });
             Variables.erase(var, Variables.end());
+         }
+
+         /// <summary>Finds the index of the label that represents the scope of a line number</summary>
+         /// <param name="line">The 1-based line number</param>
+         /// <returns>Index into the labels array, or -1 for global scope</returns>
+         int  FindScope(UINT line)
+         {
+            // Determine current scope
+            auto scope = find_if(Labels.rbegin(), Labels.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
+
+            // Convert to index
+            return distance(scope, Labels.rend()) - 1;
          }
 
 		   // -------------------- REPRESENTATION ---------------------
