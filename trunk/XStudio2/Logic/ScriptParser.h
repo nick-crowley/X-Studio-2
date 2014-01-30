@@ -63,6 +63,7 @@ namespace Logic
             class CommandNode
             {
             public:
+               CommandNode();
                CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line);
                ~CommandNode();
 
@@ -92,24 +93,8 @@ namespace Logic
                void  Print(int depth = 0) const;
             };
 
-         public:
-            /// <summary>Tree of command nodes</summary>
-            class ScriptTree
-            {
-            public:
-               ScriptTree();
-               ~ScriptTree();
-
-               /// <summary>Add a command to the tree</summary>
-               /// <param name="t">Command</param>
-               void  Add(CommandTree t);
-
-               /// <summary>Verify the parsed script</summary>
-               void  Verify(ErrorArray&) const;
-
-            private:
-               vector<CommandTree> Commands;
-            };
+            /// <summary>Legacy typedef</summary>
+            typedef CommandNode  ScriptTree;
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -157,8 +142,8 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            ErrorArray     Errors;     // Compilation errors
-            ScriptTree     Script;     // Compiled script tree
+            ErrorArray    Errors;     // Compilation errors
+            CommandTree   Script;     // Compiled script tree
 
          private:
             const LineArray&  Input;
