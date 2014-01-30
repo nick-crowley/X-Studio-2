@@ -13,21 +13,30 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   // ------------------ EVENTS AND DELEGATES -----------------
+
+   typedef Event<POINT, UINT>            CaretMovedEvent;
+   typedef CaretMovedEvent::DelegatePtr  CaretMovedHandler;
+
+   // ------------------------ CLASSES ------------------------
+
    /// <summary>Script view</summary>
    class ScriptView : public CFormView
    {
+      // ------------------------ TYPES --------------------------
    public:
 	   enum{ IDD = IDR_SCRIPTVIEW };
-      // ------------------------ TYPES --------------------------
-   protected: // create from serialization only
+      
+      // --------------------- CONSTRUCTION ----------------------
+   protected: 
 	   ScriptView();
 	public:
       virtual ~ScriptView();   
 	  
-      // --------------------- CONSTRUCTION ----------------------
-
       // ------------------------ STATIC -------------------------
-   protected: 
+   public:
+      static CaretMovedEvent   CaretMoved;
+   
       DECLARE_DYNCREATE(ScriptView)
       DECLARE_MESSAGE_MAP()
    
@@ -53,6 +62,7 @@ NAMESPACE_BEGIN(GUI)
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+      afx_msg void OnSelectionChange(NMHDR* pNMHDR, LRESULT* result);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
 
       // -------------------- REPRESENTATION ---------------------

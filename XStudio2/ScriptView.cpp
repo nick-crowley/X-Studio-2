@@ -17,12 +17,17 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN(GUI)
 
+   // --------------------------------- STATIC DATA --------------------------------
+
+   CaretMovedEvent   ScriptView::CaretMoved;
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(ScriptView, CFormView)
 
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
 	   ON_WM_CONTEXTMENU()
+      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnSelectionChange)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_ACTIVATE()
@@ -118,7 +123,7 @@ NAMESPACE_BEGIN(GUI)
 
       // Setup RichEdit
       RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      RichEdit.SetEventMask(ENM_CHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
+      RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
 
       // Display text
       RichEdit.SetRtf(txt);
@@ -134,6 +139,18 @@ NAMESPACE_BEGIN(GUI)
    {
       CFormView::OnSize(nType, cx, cy);
       AdjustLayout();
+   }
+
+   void ScriptView::OnSelectionChange(NMHDR* pNMHDR, LRESULT* result)
+   {
+      SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
+      
+      // Get caret position
+      UINT line = RichEdit.LineFromChar(-1)+1;
+      POINT pt = {0,0};
+
+      // Raise 'CARET MOVED'
+      CaretMoved.Raise(pt, line);
    }
 
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
