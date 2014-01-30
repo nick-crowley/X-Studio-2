@@ -229,9 +229,6 @@
     <ClInclude Include="Logic\StringResource.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\RtfScriptWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptDocument.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -370,6 +367,9 @@
     <ClInclude Include="Logic\ParameterTypes.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\RtfScriptTextWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -464,9 +464,6 @@
     </ClCompile>
     <ClCompile Include="Logic\ReturnValue.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\RtfScriptWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\XmlWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
@@ -596,6 +593,9 @@
     </ClCompile>
     <ClCompile Include="Logic\StringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RtfScriptTextWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

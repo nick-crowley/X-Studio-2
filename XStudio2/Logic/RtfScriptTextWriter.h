@@ -40,7 +40,7 @@ namespace Logic
      // };
 
       /// <summary>Writes entire scripts in RTF</summary>
-      class RtfScriptWriter
+      class RtfScriptTextWriter
       {
          /// <summary>Writes script commands in RTF</summary>
          class RtfCommandWriter : public RtfWriter
@@ -74,7 +74,7 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RtfScriptWriter(string&  out) : Output(out)
+         RtfScriptTextWriter(string&  out) : Output(out)
          {}
 
          // ------------------------ STATIC -------------------------

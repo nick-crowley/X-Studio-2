@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "RtfScriptWriter.h"
+#include "RtfScriptTextWriter.h"
 #include "CommandLexer.h"
 
 namespace Logic
@@ -11,7 +11,7 @@ namespace Logic
       /// <summary>Initializes an RtfCommandWriter</summary>
       /// <param name="font">Font name</param>
       /// <param name="size">Font size in points</param>
-      RtfScriptWriter::RtfCommandWriter::RtfCommandWriter(const wstring& font, UINT size) : RtfWriter(font, size, GetColours())
+      RtfScriptTextWriter::RtfCommandWriter::RtfCommandWriter(const wstring& font, UINT size) : RtfWriter(font, size, GetColours())
       {
          RtfWriter::SetColour(White);
       }
@@ -20,7 +20,7 @@ namespace Logic
 
       /// <summary>Populates the writer colour table</summary>
       /// <returns></returns>
-      list<COLORREF>  RtfScriptWriter::RtfCommandWriter::GetColours()
+      list<COLORREF>  RtfScriptTextWriter::RtfCommandWriter::GetColours()
       {
          list<COLORREF> col;
          col.push_back(Black);
@@ -38,13 +38,13 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the writer.</summary>
-      void  RtfScriptWriter::Close()
+      void  RtfScriptTextWriter::Close()
       {
       }
 
       /// <summary>Writes a script file to the output</summary>
       /// <param name="f">The script</param>
-      void RtfScriptWriter::Write(ScriptFile& f)
+      void RtfScriptTextWriter::Write(ScriptFile& f)
       {
          deque<BranchLogic> branch;
          RtfCommandWriter   w(L"Arial", 10);
@@ -105,7 +105,7 @@ namespace Logic
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
       /// <param name="indent">Indent in characters</param>
-      void  RtfScriptWriter::RtfCommandWriter::Write(const ScriptCommand& cmd, UINT  indent)
+      void  RtfScriptTextWriter::RtfCommandWriter::Write(const ScriptCommand& cmd, UINT  indent)
       {
          CommandLexer lex(cmd.Text, false);
 
@@ -126,7 +126,7 @@ namespace Logic
 
       /// <summary>Writes a token to the output.</summary>
       /// <param name="p">The token</param>
-      void  RtfScriptWriter::RtfCommandWriter::Write(const ScriptToken& tok)
+      void  RtfScriptTextWriter::RtfCommandWriter::Write(const ScriptToken& tok)
       {
          COLORREF col;
 
