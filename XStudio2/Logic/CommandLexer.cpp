@@ -124,15 +124,21 @@ namespace Logic
          bool  CommandLexer::MatchConstant() const
          {
             // Match: '[', alpha
-            return ValidPosition && MatchChar(L'[')
-                && Position+1 <= LineEnd && iswalpha(Position[1]);
+            return ValidPosition && MatchChar(L'[') && Position+1 <= LineEnd && iswalpha(Position[1]);
          }
 
-         /// <summary>Check if current character is a number</summary>
+         /// <summary>Check if current character is a digit</summary>
+         /// <returns></returns>
+         bool  CommandLexer::MatchDigit() const
+         {
+            return ValidPosition && iswdigit(*Position);
+         }
+
+         /// <summary>Check if current character is a +ve/-ve number</summary>
          /// <returns></returns>
          bool  CommandLexer::MatchNumber() const
          {
-            return ValidPosition && iswdigit(*Position);
+            return MatchDigit() || MatchChar(L'-') && Position+1 <= LineEnd && iswdigit(Position[1]);  // minus immediately preceeding digit
          }
 
          /// <summary>Check if current char is an operator</summary>
@@ -326,8 +332,11 @@ namespace Logic
 
          ScriptToken  CommandLexer::ReadNumber(CharIterator start)
          {
+            // Consume first digit or negative operator
+            ReadChar();
+
             // Consume digits
-            while (MatchNumber() && ReadChar())
+            while (MatchDigit() && ReadChar())
             {}
             
             // Return NUMBER
