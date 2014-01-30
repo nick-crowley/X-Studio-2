@@ -54,12 +54,12 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptObject(UINT id, KnownPage page, const wstring& txt, GameVersion ver);
+         ScriptObject(UINT id, KnownPage page, const GuiString& txt, GameVersion ver);
          ScriptObject(ScriptObject&& r);
          ~ScriptObject();
 
       private:
-         ScriptObject(const ScriptObject& obj, const wstring& newText);
+         ScriptObject(const ScriptObject& obj, const GuiString& newText);
          
 
       public:
@@ -103,7 +103,7 @@ namespace Logic
       public:
          const UINT              ID;
          const ScriptObjectGroup Group;
-         wstring                 Text;
+         GuiString               Text;
          GameVersion             Version;
       };
 

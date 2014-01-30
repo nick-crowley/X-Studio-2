@@ -34,7 +34,7 @@ namespace Logic
       /// <summary>Query whether an object is present</summary>
       /// <param name="obj">The object text</param>
       /// <returns></returns>
-      bool  ScriptObjectLibrary::Contains(const wstring& obj) const
+      bool  ScriptObjectLibrary::Contains(const GuiString& obj) const
       {
          return Lookup.Contains(obj);
       }
@@ -84,7 +84,7 @@ namespace Logic
       /// <param name="sz">The text</param>
       /// <returns>Object</returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-      ScriptObject  ScriptObjectLibrary::Find(const wstring& sz) const
+      ScriptObject  ScriptObjectLibrary::Find(const GuiString& sz) const
       {
          return Lookup.Find(sz);
       }
@@ -109,13 +109,14 @@ namespace Logic
       /// <summary>Find all script objects containing a substring</summary>
       /// <param name="str">The substring.</param>
       /// <returns></returns>
-      ScriptObjectArray  ScriptObjectLibrary::Query(const wstring& str) const
+      ScriptObjectArray  ScriptObjectLibrary::Query(const GuiString& str) const
       {
          ScriptObjectArray Results;
+         bool FindAll = (str.length() == 0);
 
          // Linear search for partial substring
          for (auto& pair : Lookup)
-            if (str.length() == 0 || pair.first.find(str.c_str()) != wstring::npos)
+            if (FindAll || pair.first.Contains(str, false))
                Results.push_back(pair.second);
 
          return Results;
