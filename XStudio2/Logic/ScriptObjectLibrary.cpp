@@ -115,9 +115,9 @@ namespace Logic
          bool FindAll = (str.length() == 0);
 
          // Linear search for partial substring
-         for (auto& pair : Lookup)
-            if (FindAll || pair.first.Contains(str, false))
-               Results.push_back(pair.second);
+         for (const auto& obj : *this)
+            if (!obj.IsHidden() && (FindAll || obj.Text.Contains(str, false)))
+               Results.push_back(obj);
 
          return Results;
       }

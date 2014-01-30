@@ -80,6 +80,9 @@ namespace Logic
       public:
          /// <summary>Get text formatted for display</summary>
          GuiString  GetDisplayText() const;
+         
+         /// <summary>Get whether object should be hidden from GUI</summary>
+         bool  IsHidden() const;
 
          // ----------------------- MUTATORS ------------------------
       public:
