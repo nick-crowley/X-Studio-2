@@ -89,14 +89,21 @@ namespace Logic
             protected:
                void  VerifyLogic(ErrorArray& err) const;
                void  VerifyObjects(ErrorArray& err) const;
-
+               void  VerifyScript(ErrorArray& err) const;
+               
                // ----------------------- MUTATORS ------------------------
             public:
                CommandTree  Add(CommandNode* node);
+               CommandTree  Pop()
+               {
+                  auto last = Children.end()[-1];
+                  Children.pop_back();
+                  return last;
+               }
 
                // -------------------- REPRESENTATION ---------------------
 
-               const CommandNode*   Parent;           // Parent node
+               CommandNode*   Parent;           // Parent node
                BranchLogic          Logic;            // logic type
                ScriptCommand        Command;          // Command
                UINT                 LineNumber,       // 1-based line number

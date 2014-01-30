@@ -86,6 +86,8 @@ namespace Logic
                }
             }
 
+            // DEBUG:
+            Script->Print(2);
             // Verify
             Script->Verify(Errors);
          }
@@ -120,10 +122,19 @@ namespace Logic
                case BranchLogic::NOP: 
                   break;
 
-               // End: Abort if branch == if/while
-               case BranchLogic::End:     
-                  if (branch->Logic == BranchLogic::If || branch->Logic == BranchLogic::While)
+               // End: Abort if branch == if/while/else/else-if
+               case BranchLogic::End: 
+                  switch (branch->Logic)
+                  {
+                  case BranchLogic::If:      
+                  case BranchLogic::While:  
                      return;
+
+                  case BranchLogic::ElseIf:  
+                  case BranchLogic::Else:  
+                     branch->Parent->Add(branch->Pop().get());
+                     return;
+                  }
                   break;
 
                // Command: Abort if branch == SkipIf

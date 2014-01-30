@@ -81,7 +81,7 @@ namespace Logic
                if (Tokens.size() > 0)
                {
                   range.cpMin = Tokens[0].Start;
-                  range.cpMin = Tokens[Tokens.size()-1].End;
+                  range.cpMax = Tokens[Tokens.size()-1].End;
                }
                return range;
             }

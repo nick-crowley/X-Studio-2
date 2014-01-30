@@ -42,6 +42,7 @@ namespace Logic
          BranchLogic  GetLogic() const;
          wstring  GetLabelName() const;
          UINT  GetJumpDestination() const;
+         bool  Is(UINT ID) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:
