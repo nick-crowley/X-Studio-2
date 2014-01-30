@@ -130,9 +130,8 @@ namespace Logic
          VARIABLE_DATATYPE              = 44,
          VARIABLE_ENVIRONMENT           = 43,
          EXPRESSION                     = 30,      // [TRANSLATION] A single node used by infix expressions
-                                                      // [GENERATION]  Every (non-ReturnObject) parameter in an expression
-         PARAMETER                      = 5,       // [TRANSLATION] A node-tuple used by script-call tuples and post-fix expression tuples
-                                                      // [GENERATION]  ScriptCall argument value
+         PARAMETER                      = 5,       // Used for varg ScriptCall argument sentinel syntax
+
          // Basic Types
          ARRAY                          = 45,
          NUMBER                         = 3,

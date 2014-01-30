@@ -135,9 +135,17 @@ namespace Logic
          }
 
          // Expressions: Print remaining syntax
-         if (Syntax.ID == CMD_EXPRESSION || Syntax.ID == CMD_CALL_SCRIPT_VAR_ARGS)
+         if (Syntax.ID == CMD_EXPRESSION)
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
+
+         // Script Calls: Print remaining syntax
+         else if (Syntax.ID == CMD_CALL_SCRIPT_VAR_ARGS)
+            for (UINT i = 3; i < Parameters.size(); ++i)
+            {
+               Text.append(GuiString(L" argument%d=", i-2));
+               Text.append(Parameters[i].Text);
+            }
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
