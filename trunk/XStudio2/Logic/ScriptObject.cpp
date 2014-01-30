@@ -147,6 +147,34 @@ namespace Logic
          throw ArgumentException(HERE, L"group", GuiString(L"'%s' (%d) is not a supported script object group", GetString(Group).c_str(), Group) );
       }
 
+      /// <summary>Get whether object should be hidden from GUI</summary>
+      bool  ScriptObject::IsHidden() const
+      {
+         switch (Group)
+         {
+         case ScriptObjectGroup::ParameterType:
+            switch ((ParameterType)ID)
+            {
+            case ParameterType::LABEL_NAME:
+            case ParameterType::LABEL_NUMBER:
+            case ParameterType::PARAMETER:
+            case ParameterType::CONDITION:
+            case ParameterType::EXPRESSION:
+            case ParameterType::COMMENT:
+            case ParameterType::VARIABLE:    // Var
+            case ParameterType::UNDETERMINED:
+            case ParameterType::RETURN_VALUE:
+            case ParameterType::RETURN_VALUE_IF:
+            case ParameterType::RETURN_VALUE_IF_START:
+            case ParameterType::INTERRUPT_RETURN_VALUE_IF:
+            case ParameterType::REFERENCE_OBJECT:
+               return true;
+            }
+         }
+
+         return false;
+      }
+
       /// <summary>Appends an object ID</summary>
       /// <param name="id">The id</param>
       /// <returns>script object with new text</returns>
