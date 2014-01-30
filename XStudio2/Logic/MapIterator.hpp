@@ -24,6 +24,7 @@ namespace Logic
 		// ---------------------- ACCESSORS ------------------------
    public:
       OBJ& operator*() const                      { return Position->second; }
+      OBJ* operator->() const                     { return &Position->second; }
       bool operator==(const MapIterator& r) const { return Collection==r.Collection && Position==r.Position; }
       bool operator!=(const MapIterator& r) const { return Collection!=r.Collection || Position!=r.Position; }
 
