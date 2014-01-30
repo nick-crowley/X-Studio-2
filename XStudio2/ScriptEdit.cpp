@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
-
+#include "ScriptDocument.h"
    
-
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
@@ -632,7 +631,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw InvalidOperationException(HERE, L"suggestion list already exists");
 
       // Show list
-      if (!SuggestionsList.Create(this, GetCharPos(GetSelection().cpMin), SuggestionType)) 
+      if (!SuggestionsList.Create(this, GetCharPos(GetSelection().cpMin), SuggestionType, &Document->Script)) 
          throw Win32Exception(HERE, L"Unable to create suggestion list");
 
       // Update state

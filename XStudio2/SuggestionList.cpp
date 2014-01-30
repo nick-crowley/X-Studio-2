@@ -3,6 +3,7 @@
 #include "ScriptEdit.h"
 #include "Logic/GameObjectLibrary.h"
 #include "Logic/ScriptObjectLibrary.h"
+#include "Logic/ScriptFile.h"
 #include <algorithm>
 
 /// <summary>User interface</summary>
@@ -50,9 +51,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="parent">The script edit</param>
    /// <param name="pt">The character position in script edit client co-ordinates</param>
    /// <param name="type">suggestion type.</param>
+   /// <param name="scr">Script file.</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentException">Suggestion type is None</exception>
-   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type)
+   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type, const ScriptFile* scr)
    {
       // Validate type
       if (type == Suggestion::None)
@@ -64,6 +66,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Set type
       SuggestionType = type;
+      Script = scr;
 
       // Create
       DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
@@ -158,13 +161,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
          break;
 
       case Suggestion::Variable:    
-         for (UINT i = 1; i < 20; i++)
-            Content.push_back( SuggestionItem(GuiString(L"Variable.%d", i), L"Variable") );
+         for (auto& var : Script->Variables)
+            Content.push_back( SuggestionItem(var.Name, var.Type==VariableType::Variable?L"Variable":L"Argument") );
          break;
 
       case Suggestion::Label:       
-         for (UINT i = 1; i < 5; i++)
-            Content.push_back( SuggestionItem(GuiString(L"Label.%d", i), L"Label") );
+         for (auto& lab : Script->Labels)
+            Content.push_back( SuggestionItem(lab.Name, GuiString(L"Line %d", lab.LineNumber)) );
          break;
 
       case Suggestion::Command: 
