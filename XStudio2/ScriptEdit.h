@@ -86,6 +86,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int       GetCaretIndex() const;
       int       GetLineLength(int line = -1) const;
       wstring   GetLineText(int line) const;
+      LineArray GetLines() const;
       CHARRANGE GetSelection() const;
       int       LineLength(int nChar = -1) const;
 

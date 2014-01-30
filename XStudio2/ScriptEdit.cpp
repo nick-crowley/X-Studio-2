@@ -100,6 +100,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       txt.get()[len] = '\0';
       return txt.get();
    }
+
+   /// <summary>Gets entire script as array of plain-text lines.</summary>
+   /// <returns></returns>
+   LineArray ScriptEdit::GetLines() const
+   {
+      LineArray lines; 
+      // Get lines
+      for (int i = 0; i < GetLineCount(); i++)
+         lines.push_back(GetLineText(i));
+      return lines;   
+   }
    
    /// <summary>Gets the co-ordinates of the current selection</summary>
    /// <returns></returns>
@@ -310,19 +321,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Stop compiler timer
       SetCompilerTimer(false);
-         
-      // Get array of line text
-      LineArray lines;
-      for (int i = 0; i < GetLineCount(); i++)
-         lines.push_back(GetLineText(i));
-         
+        
       // Freeze window
       FreezeWindow(true);
 
       try 
       { 
          // Parse script 
-         ScriptParser parser(lines, GameVersion::TerranConflict);
+         ScriptParser parser(GetLines(), GameVersion::TerranConflict);
          
          // DEBUG:
          Console << L"Highlighting " << parser.Errors.size() << L" errors" << ENDL;
