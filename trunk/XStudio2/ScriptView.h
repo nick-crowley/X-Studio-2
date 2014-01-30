@@ -15,7 +15,7 @@ NAMESPACE_BEGIN(GUI)
 
    // ------------------ EVENTS AND DELEGATES -----------------
 
-   typedef Event<POINT, UINT>            CaretMovedEvent;
+   typedef Event<POINT>                  CaretMovedEvent;
    typedef CaretMovedEvent::DelegatePtr  CaretMovedHandler;
 
    // ------------------------ CLASSES ------------------------

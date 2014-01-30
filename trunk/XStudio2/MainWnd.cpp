@@ -155,6 +155,7 @@ NAMESPACE_BEGIN(GUI)
 	      if (!m_wndStatusBar.Create(this))
             throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
 	      m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+         onScriptViewCaretMoved(POINT {0,0});
 
 
 	      // Make Toolbar/MenuBar dockable
@@ -310,10 +311,9 @@ NAMESPACE_BEGIN(GUI)
 
    /// <summary>Display caret co-ordinates in status bar</summary>
    /// <param name="pt">The caret position</param>
-   /// <param name="line">The caret line</param>
-   void MainWnd::onScriptViewCaretMoved(POINT pt, UINT line)
+   void MainWnd::onScriptViewCaretMoved(POINT pt)
    {
-      m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d", line).c_str());
+      m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
    }
 
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
