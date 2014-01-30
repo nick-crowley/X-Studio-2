@@ -173,7 +173,7 @@ namespace Logic
             for (auto& page : file)
                for (auto& str : page)
                   if (str.IsScriptObject())
-                     unmangled.Add( ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version) );
+                     unmangled.Add( ScriptObject(str.ID, (KnownPage)page.ID, str.ResolvedText, str.Version) );
          
 
          // Generate reverse lookup collection

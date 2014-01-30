@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
+#include "StringParser.h"
 
 namespace Logic
 {
@@ -22,6 +23,13 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Get fully resolved text</summary>
+      /// <returns></returns>
+      wstring  LanguageString::GetResolvedText() const
+      {
+         return StringParser(*this).Text;
+      }
 
       /// <summary>Determines whether string can be used as the source of a script object</summary>
       /// <returns></returns>
