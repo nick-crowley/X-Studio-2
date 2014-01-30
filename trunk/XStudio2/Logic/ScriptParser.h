@@ -91,7 +91,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void  Add(const CommandTree& cmd);
+               CommandTree  Add(CommandNode* node);
 
                // -------------------- REPRESENTATION ---------------------
 
@@ -141,7 +141,7 @@ namespace Logic
          private:
             void           Parse();
             void           ParseBranch(CommandTree& branch, LineIterator& line);
-            CommandTree    ParseNode(const CommandTree& parent, LineIterator& line);
+            CommandNode*   ParseNode(const CommandTree& parent, LineIterator& line);
 
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
