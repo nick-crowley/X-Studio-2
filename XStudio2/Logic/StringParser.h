@@ -31,13 +31,15 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         StringParser(const LanguageString& str, UINT page);
+         StringParser(const LanguageString& str);
          virtual ~StringParser();
 
          DEFAULT_COPY(StringParser);	// Default copy semantics
          DEFAULT_MOVE(StringParser);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
+      private:
+         static const wregex DefaultMarker, FullMarker, RemoveComment;
 
          // --------------------- PROPERTIES ------------------------
 
@@ -52,11 +54,6 @@ namespace Logic
          void  Parse();
 
          // -------------------- REPRESENTATION ---------------------
-      private:
-         static const wregex DefaultMarker, 
-                             FullMarker, 
-                             RemoveComment;
-
       public:
          const UINT  Page;
          wstring     Text;

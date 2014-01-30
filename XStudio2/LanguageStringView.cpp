@@ -141,7 +141,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
                // Add item {ID,Text}
                GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
-               GetListCtrl().SetItemText(item, 1, StringParser(str, page->ID).Text.c_str());
+               GetListCtrl().SetItemText(item, 1, str.ResolvedText.c_str());
             }
             GetListCtrl().SetRedraw(TRUE);
             GetListCtrl().UpdateWindow();

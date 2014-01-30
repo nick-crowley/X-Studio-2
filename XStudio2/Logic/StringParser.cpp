@@ -22,10 +22,15 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      StringParser::StringParser(const LanguageString& str, UINT page) : Text(str.Text), Page(page)
+      /// <summary>Create a parser for a language string</summary>
+      /// <param name="str">The string.</param>
+      StringParser::StringParser(const LanguageString& str) : Text(str.Text), Page(str.Page)
       {
          //Console << "Parsing " << Colour::Yellow << str.Text << ENDL;
-         Parse();
+
+         // Skip parsing if no brackets are present
+         if (Text.find_first_of(L"{(") != wstring::npos)
+            Parse();
       }
 
 
@@ -39,6 +44,9 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       
+      /// <summary>Called for each occurrence of {aaa,bbb} markers</summary>
+      /// <param name="match">The match.</param>
+      /// <returns>Replacement text</returns>
       wstring  StringParser::OnFullMarker(wsmatch& match)
       {
          UINT id   = _wtoi( match[2].str().c_str() ),
@@ -48,6 +56,9 @@ namespace Logic
          return StringLib.Contains(page, id) ? StringLib.Resolve(page, id) : match[0].str();
       }
 
+      /// <summary>Called for each occurrence of {aaa} markers</summary>
+      /// <param name="match">The match.</param>
+      /// <returns>Replacement text</returns>
       wstring  StringParser::OnDefaultMarker(wsmatch& match)
       {
          UINT id   = _wtoi( match[1].str().c_str() );
@@ -58,6 +69,7 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 
+      /// <summary>Parses the instance text.</summary>
       void  StringParser::Parse()
       {
          wsmatch match;

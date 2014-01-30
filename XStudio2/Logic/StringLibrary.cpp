@@ -124,7 +124,7 @@ namespace Logic
       /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
       wstring  StringLibrary::Resolve(UINT page, UINT id) const
       {
-         return StringParser(Find(page,id), page).Text;
+         return Find(page,id).ResolvedText;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

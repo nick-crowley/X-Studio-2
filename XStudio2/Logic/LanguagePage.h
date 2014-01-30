@@ -41,9 +41,12 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(wstring,ResolvedText,GetResolvedText);
+
 		   // ---------------------- ACCESSORS ------------------------
-         
-         bool  IsScriptObject() const;
+      public:
+         wstring GetResolvedText() const;
+         bool    IsScriptObject() const;
 
 		   // ----------------------- MUTATORS ------------------------
 
