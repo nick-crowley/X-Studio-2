@@ -85,7 +85,7 @@ namespace Logic
       
       public:
          /// <summary>Collection of script objects sorted by text</summary>
-         class LookupCollection : public map<wstring, ScriptObject, less<wstring>>
+         class LookupCollection : public map<GuiString, ScriptObject, less<GuiString>>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -94,16 +94,16 @@ namespace Logic
             /// <summary>Check whether an object is present</summary>
             /// <param name="sz">The text</param>
             /// <returns></returns>
-            bool  Contains(const wstring& sz) const
+            bool  Contains(const GuiString& sz) const
             {
                return find(sz) != end();
             }
 
             /// <summary>Finds an object by text<summary>
-            /// <param name="sz">The text</param>
+            /// <param name="sz">Object text</param>
             /// <returns>Object</returns>
             /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-            ScriptObject  Find(const wstring& sz) const
+            ScriptObject  Find(const GuiString& sz) const
             {
                const_iterator it;
                // Lookup and return string
@@ -134,7 +134,7 @@ namespace Logic
 
             /// <summary>Removes an object from the collection</summary>
             /// <param name="sz">The text</param>
-            void  Remove(const wstring& sz)
+            void  Remove(const GuiString& sz)
             {
                erase(sz);
             }
@@ -160,9 +160,9 @@ namespace Logic
          // ---------------------- ACCESSORS ------------------------			
       public:
          const_iterator begin() const;
-         bool           Contains(const wstring& obj) const;
+         bool           Contains(const GuiString& obj) const;
          ScriptObject   Find(ScriptObjectGroup grp, UINT id) const;
-         ScriptObject   Find(const wstring& sz) const;
+         ScriptObject   Find(const GuiString& sz) const;
          const_iterator end() const;
          UINT           GetCount() const;
 
@@ -170,7 +170,7 @@ namespace Logic
       public:
          void  Clear();
          UINT  Enumerate(WorkerData* data);
-         ScriptObjectArray Query(const wstring& str) const;
+         ScriptObjectArray Query(const GuiString& str) const;
 
       protected:
          bool  InsertConflicts(ScriptObject a, ScriptObject b);

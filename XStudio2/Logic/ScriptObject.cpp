@@ -15,7 +15,7 @@ namespace Logic
       /// <param name="txt">resolved text</param>
       /// <param name="ver">game version</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
-      ScriptObject::ScriptObject(UINT id, KnownPage page, const wstring& txt, GameVersion ver) 
+      ScriptObject::ScriptObject(UINT id, KnownPage page, const GuiString& txt, GameVersion ver) 
             : ID(id), Group(IdentifyGroup(page, id)), Text(txt), Version(ver)
       {
       }
@@ -31,7 +31,7 @@ namespace Logic
       /// <param name="obj">The source object</param>
       /// <param name="newText">The new text.</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised page/id combination</exception>
-      ScriptObject::ScriptObject(const ScriptObject& obj, const wstring& newText)
+      ScriptObject::ScriptObject(const ScriptObject& obj, const GuiString& newText)
             : ID(obj.ID), Group(obj.Group), Text(newText), Version(obj.Version)
       {
       }

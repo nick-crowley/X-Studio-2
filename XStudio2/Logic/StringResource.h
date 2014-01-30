@@ -77,6 +77,15 @@ namespace Logic
       /// <param name="sz">The string</param>
       GuiString(const wstring&& sz) : wstring(move(sz))
       {}
+
+      /// <summary>Test for presence of a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <param name="matchCase">Whether to perform case sensitive search</param>
+      /// <returns></returns>
+      bool Contains(const wstring& str, bool matchCase) const
+      {
+         return matchCase ? StrStrI(c_str(), str.c_str()) == 0 : find(str) != npos;
+      }
       
       /// <summary>Perform case insensitive comparison</summary>
       /// <param name="r">Other string</param>
