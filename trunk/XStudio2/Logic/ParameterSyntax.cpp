@@ -9,6 +9,9 @@ namespace Logic
       /// <summary>Variable argument script call argument syntax</summary>
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 
+      /// <summary>Goto/gosub label name syntax</summary>
+      const ParameterSyntax  ParameterSyntax::LabelDeclaration(ParameterType::LABEL_NAME, 0, 0);
+      
       // -------------------------------- CONSTRUCTION --------------------------------
       
       /// <summary>Private ctor used by sentinel values</summary>

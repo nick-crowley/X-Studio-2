@@ -62,6 +62,38 @@ namespace Logic
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Gets the jump destination of a goto/gosub command</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub -or- label number parameter is missing</exception>
+      UINT ScriptCommand::GetJumpDestination() const
+      {
+         // Validate command ID
+         if (Syntax.ID != CMD_GOTO_LABEL && Syntax.ID != CMD_GOTO_SUB)
+            throw InvalidOperationException(HERE, GuiString(L"Cannot get jump destination for a '%s' command", Syntax.Text.c_str()));
+
+         // Validate label name parameter
+         if (Parameters.size() == 0 || Parameters[0].Value.Type != ValueType::Int)
+            throw InvalidOperationException(HERE, GuiString(L"Missing jump destination parameter"));
+
+         return Parameters[0].Value.Int;
+      }
+      
+      /// <summary>Gets the name of the label.</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::InvalidOperationException">Command is not label name definition -or- name parameter is missing</exception>
+      wstring  ScriptCommand::GetLabelName() const
+      {
+         // Validate command ID
+         if (Syntax.ID != CMD_DEFINE_LABEL)
+            throw InvalidOperationException(HERE, GuiString(L"Cannot get label name for a '%s' command", Syntax.Text.c_str()));
+
+         // Validate label name parameter
+         if (Parameters.size() == 0 || Parameters[0].Value.Type != ValueType::String)
+            throw InvalidOperationException(HERE, GuiString(L"Missing label name parameter"));
+
+         return Parameters[0].Value.String;
+      }
 
       /// <summary>Identify the type of branching conditional used (if any)</summary>
       /// <returns></returns>
@@ -76,7 +108,8 @@ namespace Logic
 
          case CMD_COMMAND_COMMENT:
          case CMD_COMMENT: 
-         case CMD_NOP:      return BranchLogic::NOP;
+         case CMD_NOP:     
+            return BranchLogic::NOP;
          
          default:
             // Find Return parameter, if any
@@ -109,6 +142,20 @@ namespace Logic
                return BranchLogic::None;
             }
          }
+      }
+      
+      /// <summary>Replaces a label number parameter with a label name parameter.</summary>
+      /// <param name="name">The name of the label</param>
+      /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub</exception>
+      void  ScriptCommand::SetLabelName(const wstring& name)
+      {
+         // Validate command ID
+         if (Syntax.ID != CMD_GOTO_LABEL && Syntax.ID != CMD_GOTO_SUB)
+            throw InvalidOperationException(HERE, GuiString(L"Cannot set label name for a '%s' command", Syntax.Text.c_str()));
+
+         // Replace parameters
+         Parameters.clear();
+         Parameters.push_back( ScriptParameter(ParameterSyntax::LabelDeclaration, DataType::STRING, name) );
       }
 
       /// <summary>Translates the text of a command READ FROM FILE</summary>
