@@ -19,14 +19,13 @@ namespace Logic
          }
 
          /// <summary>Create node from a script command</summary>
-         /// <param name="parent">parent node</param>
          /// <param name="cmd">script command.</param>
+         /// <param name="lex">command lexer</param>
          /// <param name="line">1-based line number</param>
-         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, const CommandLexer& lex, UINT line)
-            : Parent(parent.get()), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic),
+         ScriptParser::CommandNode::CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line)
+            : Parent(nullptr), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic),
               Index(0), LineNumber(line), LineText(lex.Extent)
          {
-            REQUIRED(parent);
          }
 
          ScriptParser::CommandNode::~CommandNode()
