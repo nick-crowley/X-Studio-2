@@ -13,27 +13,21 @@ namespace Logic
 
       ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) : Syntax(s), Value(0), Token(t)
       {}
-      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) : Syntax(s), Value(0) 
+
+      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c).Value) 
       {}
    
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val) 
-      { 
-         //Translate(); 
-      }
+      {}
 
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, const wstring& val) : Syntax(s), Type(t), Value(val) 
-      { 
-         //Translate(); 
-      }
+      {}
 
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, UINT val) : Syntax(s), Type(t), Value(val) 
-      { 
-         //Translate(); 
-      }
+      {}
 
       ScriptParameter::~ScriptParameter()
-      {
-      }
+      {}
 
       // ------------------------------- STATIC METHODS -------------------------------
 

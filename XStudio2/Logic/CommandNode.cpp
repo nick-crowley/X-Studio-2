@@ -43,6 +43,7 @@ namespace Logic
          ScriptParser::CommandTree  ScriptParser::CommandNode::Add(CommandNode* node)
          {
             CommandTree t(node);
+            node->Parent = this;
             Children.push_back(t);
             return t;
          }
@@ -60,7 +61,7 @@ namespace Logic
          /// <returns>position if found, otherwise end</returns>
          ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
          {
-            return find_if(Children.begin(), Children.end(), [l](CommandTree& n) {return n->Logic == l;} );
+            return find_if(Children.begin(), Children.end(), [l](const CommandTree& n) {return n->Logic == l;} );
          }
 
          /// <summary>Query whether this node is the root</summary>
@@ -98,6 +99,12 @@ namespace Logic
             // Verify children
             for (const auto& cmd : Children)
                cmd->Verify(err);
+
+            // Verify root
+            if (IsRoot())
+               VerifyScript(err);
+
+            
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -106,6 +113,8 @@ namespace Logic
          /// <param name="err">The error collection</param>
          void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& err) const
          {
+            CommandTree cmd;
+
             // Check for END
             switch (Logic)
             {
@@ -120,18 +129,15 @@ namespace Logic
                      err += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->LineText);
                }
 
-               // Ensure 'end' is last command
+               // Ensure 'end' is present
                if (Find(BranchLogic::End) == Children.end())
                   err += ErrorToken(L"missing 'end' command", LineNumber, LineText);
                break;
 
             case BranchLogic::End:
                // Check for parent 'if'/'while' command
-               if (Parent->Logic == BranchLogic::While || Parent->Logic == BranchLogic::If)
-                  return;
-               
-               // Missing 
-               err += ErrorToken(L"unexpected 'end' command", LineNumber, LineText);
+               if (Parent->Logic != BranchLogic::While && Parent->Logic != BranchLogic::If)
+                  err += ErrorToken(L"unexpected 'end' command", LineNumber, LineText);
                break;
 
             case BranchLogic::Break:
@@ -147,17 +153,16 @@ namespace Logic
 
             case BranchLogic::Else:
             case BranchLogic::ElseIf:
-               // Check for a parent 'if' command
-               for (const CommandNode* n = Parent; n != nullptr; n = n->Parent)
-                  if (n->Logic == BranchLogic::If)
-                     return;
-               
-               // Missing 
-               err += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, LineText);
+               // Ensure within 'if' command
+               if (Parent->Logic != BranchLogic::If)
+                  err += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, LineText);
                break;
 
-            default:
-               return;
+            case BranchLogic::SkipIf:
+               // Ensure child is standard command
+               if (Children.size() != 0 && (cmd=Children.end()[-1])->Logic != BranchLogic::None)
+                  err += ErrorToken(L"not supported within 'skip if' conditional", cmd->LineNumber, cmd->LineText);
+               break;
             }
          }
          
@@ -176,6 +181,21 @@ namespace Logic
                else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
                   err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
             }
+         }
+         
+         /// <summary>Verifies the root node</summary>
+         /// <param name="err">The error collection</param>
+         void  ScriptParser::CommandNode::VerifyScript(ErrorArray& err) const
+         {
+            CommandTree ret;
+
+            // Ensure script has commands
+            if (Children.size() == 0)
+               err += ErrorToken(L"No commands found", LineNumber, LineText);
+
+            // Ensure last command is RETURN
+            else if ((ret = Children.end()[-1])->Command.Is(CMD_RETURN) == false)
+               err += ErrorToken(L"Last command in script must be 'return'", ret->LineNumber, ret->LineText);
          }
 
          // ------------------------------- PRIVATE METHODS ------------------------------

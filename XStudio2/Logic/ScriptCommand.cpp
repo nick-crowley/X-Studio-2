@@ -144,6 +144,14 @@ namespace Logic
          }
       }
       
+      /// <summary>Compare command ID</summary>
+      /// <param name="ID">command id.</param>
+      /// <returns></returns>
+      bool  ScriptCommand::Is(UINT ID) const
+      {
+         return Syntax.ID == ID;
+      }
+
       /// <summary>Replaces a label number parameter with a label name parameter.</summary>
       /// <param name="name">The name of the label</param>
       /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub</exception>

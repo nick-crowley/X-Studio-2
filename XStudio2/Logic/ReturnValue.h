@@ -49,12 +49,51 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         ReturnValue(int v)
+         /// <summary>Decode a return value</summary>
+         /// <param name="v">The v.</param>
+         ReturnValue(int v) : Value(v)
          {
             ReturnType = (Scripts::ReturnType)(BYTE)((v & 0xff000000) >> 24);
             Destination = (v & 0x00ffff00) >> 8;
             Conditional = (Scripts::Conditional)(BYTE)(v & 0x000000ff);
          }
+
+         /// <summary>Encode a return value from a conditional</summary>
+         /// <param name="v">The v.</param>
+         ReturnValue(Conditional c) : Conditional(c), Destination(0xffff)
+         {
+            switch (Conditional)
+            {
+            case Conditional::NONE:
+               ReturnType = ReturnType::ASSIGNMENT;
+               break;
+
+            case Conditional::START:
+            case Conditional::DISCARD:  
+               ReturnType = ReturnType::DISCARD;         
+               break;
+
+            case Conditional::IF:
+            case Conditional::WHILE:
+            case Conditional::ELSE_IF:
+            case Conditional::SKIP_IF_NOT:  
+               ReturnType = ReturnType::JUMP_IF_FALSE;   
+               break;
+            case Conditional::IF_NOT:
+            case Conditional::WHILE_NOT:
+            case Conditional::ELSE_IF_NOT:
+            case Conditional::SKIP_IF:      
+               ReturnType = ReturnType::JUMP_IF_TRUE;    
+               break;
+
+            default:
+               throw ArgumentException(HERE, L"c", GuiString(L"Invalid conditional: %d", c));
+            }
+
+            // Encode
+            Value = (INT)((BYTE)ReturnType << 24) | (INT)((WORD)Destination << 8) | (INT)(BYTE)Conditional;
+         }
+
          virtual ~ReturnValue()
          {}
 
@@ -67,12 +106,11 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
-
+      public:
          ReturnType    ReturnType;
          Conditional   Conditional;
-         int           Destination;
-
-      private:
+         int           Destination,
+                       Value;          // Encoded value
       };
 
    }
