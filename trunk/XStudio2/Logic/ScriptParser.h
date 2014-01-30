@@ -130,6 +130,7 @@ namespace Logic
          private:
             UINT  GetLineNumber(const LineIterator& line) const;
 
+            bool  MatchArrayIndex(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchConditional(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const;

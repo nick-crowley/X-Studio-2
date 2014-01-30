@@ -195,6 +195,19 @@ namespace Logic
 
 
          
+         /// <summary>Matches an array variable and opening index operator</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
+         bool ScriptParser::MatchArrayIndex(const CommandLexer& lex, TokenIterator& pos) const
+         {
+            TokenIterator start = pos;
+
+            // variable '['
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"[") ? true : (pos=start, false);
+         }
+         
          /// <summary>Matches a return value and assignment operator</summary>
          /// <param name="lex">The lexer</param>
          /// <param name="pos">The start position.</param>
@@ -242,7 +255,7 @@ namespace Logic
             // Failed
             return (pos=start, false);
          }
-         
+
          /// <summary>Matches a reference object and reference operator</summary>
          /// <param name="lex">The lexer</param>
          /// <param name="pos">The start position.</param>
@@ -292,8 +305,8 @@ namespace Logic
             // (constant/variable/null '->')?
             MatchReferenceObject(lex, pos);
 
-            // text/keyword/label
-            return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword) || lex.Match(pos, TokenType::Label);
+            // text/keyword/label/array-assignment
+            return lex.Match(pos, TokenType::Text) || lex.Match(pos, TokenType::Keyword) || lex.Match(pos, TokenType::Label) || MatchArrayIndex(lex,pos);
          }
 
          /// <summary>Matches an expression command</summary>
