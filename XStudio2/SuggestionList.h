@@ -29,9 +29,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {}
          SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type), Key(txt)
          {}
-         const wstring Text, // Item text
-                       Type, // Type/Group text
-                       Key;  // Sorting key
+         wstring Text, // Item text
+                 Type, // Type/Group text
+                 Key;  // Sorting key
       };
 
       /// <summary>Vector of items</summary>
@@ -74,7 +74,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // -------------------- REPRESENTATION ---------------------
       
    private:
-      const CSize DefaultSize = CSize(400,200);
+      const CSize DefaultSize = CSize(300,200),
+                  CommandSize = CSize(600,200);
       
       Suggestion   SuggestionType;
       ContentArray Content;

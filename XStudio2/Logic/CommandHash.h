@@ -24,20 +24,21 @@ namespace Logic
          public:
             static wstring  GenerateHash(const TokenIterator begin, const TokenIterator end) 
             {
-               wstring h;
+               GuiString h;
                // Assemble text into hash
                for (TokenIterator it = begin; it != end; ++it)
                   switch (it->Type)
                   {
                   // Include text/operators/keywords
                   case TokenType::Text:
+                  case TokenType::Label:
                   case TokenType::Operator:
                   case TokenType::Keyword:
                      h += it->Text;
 
                   // Exclude literals (during script parsing), and variables (during syntax parsing)
                   } 
-               return h;
+               return h.ToLower();
             }
 
             static TokenList  SeparateParams(const TokenIterator begin, const TokenIterator end) 
