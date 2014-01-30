@@ -87,7 +87,7 @@ namespace Logic
             }
 
             // DEBUG:
-            Script->Print(2);
+            Script->Print(0);
             // Verify
             Script->Verify(Errors);
          }
@@ -103,42 +103,50 @@ namespace Logic
             // Read children
             while (line < Input.end())
             {
-               // Read command, add to branch
-               CommandTree node = branch->Add(ParseNode(line));    // Advances line iterator
+               // Read command
+               CommandNode* node = ParseNode(line);    // Advances line iterator
 
                // Examine command
                switch (node->Logic)
                {
-               // Conditional: Read children of conditionals into node
+               // Conditional: Add to branch. 
                case BranchLogic::If:      
                case BranchLogic::While:  
+               case BranchLogic::SkipIf:  
+                  ParseBranch(branch->Add(node), line);  // Read children into new branch node
+                  break;
+
+               // Else/Else-if: Add to branch parent
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-               case BranchLogic::SkipIf:  
-                  ParseBranch(node, line);
+                  ParseBranch(branch->Parent->Add(node), line);  // Read children into new branch node
                   break;
 
                // Comment: Always valid, read any/all
                case BranchLogic::NOP: 
+                  branch->Add(node);
                   break;
 
-               // End: Abort if branch == if/while/else/else-if
+               // End: Add to branch or parent. Stop.
                case BranchLogic::End: 
                   switch (branch->Logic)
                   {
                   case BranchLogic::If:      
                   case BranchLogic::While:  
+                  case BranchLogic::SkipIf:  
+                     branch->Add(node);
                      return;
 
                   case BranchLogic::ElseIf:  
                   case BranchLogic::Else:  
-                     branch->Parent->Add(branch->Pop().get());
+                     branch->Parent->Add(node);
                      return;
                   }
                   break;
 
-               // Command: Abort if branch == SkipIf
+               // Command/Break/Continue: Add to branch.  (SkipIf: Stop)
                default: 
+                  branch->Add(node);
                   if (branch->Logic == BranchLogic::SkipIf)
                      return;
                   break;

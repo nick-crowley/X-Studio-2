@@ -24,7 +24,7 @@ namespace Logic
          /// <param name="line">1-based line number</param>
          ScriptParser::CommandNode::CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line)
             : Parent(nullptr), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic),
-              Index(0), LineNumber(line), LineText(lex.Extent)
+              Index(0), LineNumber(line), LineText(lex.Extent), Text(lex.Input)
          {
          }
 
@@ -75,8 +75,8 @@ namespace Logic
          {
             wstring tab(depth, (WCHAR)L' ');
 
-            Console.Writef(L"%03d: %s%s : ", LineNumber, tab.c_str(), GetString(Logic));
-            Console.WriteLn(Command.Syntax == CommandSyntax::Unknown ? Command.Text : Command.Syntax.Text);
+            Console << GuiString(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Text.c_str()) << ENDL;
+            //Console.WriteLn(Command.Syntax == CommandSyntax::Unknown ? Command.Text : Command.Syntax.Text);
                   
             for (auto c : Children)
                c->Print(depth+1);
