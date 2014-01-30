@@ -66,13 +66,13 @@ namespace Logic
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          void  ScriptParser::Parse()
          {
-            CommandTree node;
-            
             // Iterate over lines  (count >= 1)
             for (LineIterator line = Input.begin(); line < Input.end(); )
             {
+               CommandTree node;
+               
                // Read command, add to script
-               Script.Add(node = ParseNode(line));
+               Script.Add(node = ParseNode(nullptr, line));
                
                // Examine command
                switch (node->Logic)
@@ -100,13 +100,13 @@ namespace Logic
          /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
          void ScriptParser::ParseBranch(CommandTree& branch, LineIterator& line)
          {
-            CommandTree node;
-
             // Read children
             while (line < Input.end())
             {
+               CommandTree node;
+
                // Read command, add to branch
-               branch->Add(node = ParseNode(line));
+               branch->Add(node = ParseNode(branch, line));
 
                // Examine command
                switch (node->Logic)
@@ -141,6 +141,7 @@ namespace Logic
 
          
          /// <summary>Parses a line into a command node, and advances the line iterator</summary>
+         /// <param name="parent">Parent node</param>
          /// <param name="line">The line.</param>
          /// <returns>Single command node</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
@@ -157,7 +158,7 @@ namespace Logic
          ///    line = nop/comment/command/expression
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandTree ScriptParser::ParseNode(LineIterator& line)
+         ScriptParser::CommandTree ScriptParser::ParseNode(const CommandTree& parent, LineIterator& line)
          {
             LineIterator  text = line++;  // consume line
             CommandLexer  lex(*text);
@@ -171,15 +172,15 @@ namespace Logic
 
             // Comment/NOP:
             if (MatchComment(lex))
-               return CommandTree(ReadComment(lex, text));
+               return CommandTree(ReadComment(parent, lex, text));
 
             // Command:
             else if (MatchCommand(lex))
-               return CommandTree(ReadCommand(lex, text));
+               return CommandTree(ReadCommand(parent, lex, text));
 
             // Expression:
             else if (MatchExpression(lex))
-               return CommandTree(ReadExpression(lex, text));
+               return CommandTree(ReadExpression(parent, lex, text));
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -190,7 +191,7 @@ namespace Logic
 
             // UNRECOGNISED: Generate empty node
             Errors += MakeError(L"Unable to parse command", text, lex);
-            return CommandTree( new CommandNode(ScriptCommand::Unknown, GetLineNumber(text)) );
+            return CommandTree( new CommandNode(parent, ScriptCommand::Unknown, GetLineNumber(text)) );
          }
 
 
@@ -407,10 +408,11 @@ namespace Logic
 
 
          /// <summary>Reads an entire NOP/comment command</summary>
+         /// <param name="parent">Parent node</param>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>New NOP/Comment command node</returns>
-         ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line)
          {
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -419,7 +421,7 @@ namespace Logic
 
             // NOP: Create command
             if (lex.count() == 0)
-               return new CommandNode(ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), GetLineNumber(line));
+               return new CommandNode(parent, ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), GetLineNumber(line));
             
             // Comment
             CommandSyntax syntax(SyntaxLib.Find(CMD_COMMENT, Version));
@@ -430,10 +432,11 @@ namespace Logic
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
             // Create command
-            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
          /// <summary>Reads an entire non-expression command</summary>
+         /// <param name="parent">Parent node</param>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>New Non-expression command node</returns>
@@ -442,7 +445,7 @@ namespace Logic
          ///    assignment = variable '='
          ///    
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
-         ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line)
          {
             Conditional   condition = Conditional::DISCARD;
             TokenIterator refObj = lex.end(), 
@@ -511,10 +514,11 @@ namespace Logic
             // TODO: Check for excess parameters?
 
             // Create node
-            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
          /// <summary>Reads an entire expression command</summary>
+         /// <param name="parent">Parent node</param>
          /// <param name="lex">The lexer</param>
          /// <param name="line">The line</param>
          /// <returns>New Expression command node</returns>
@@ -527,7 +531,7 @@ namespace Logic
          ///    unary_operator = '!'/'-'/'~'
          /// 
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandTree& parent, const CommandLexer& lex, const LineIterator& line)
          {
             TokenIterator  pos = lex.begin();
             CommandSyntax  syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
@@ -565,7 +569,7 @@ namespace Logic
             }
 
             // Create expression
-            return new CommandNode(ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
          }
 
       }
