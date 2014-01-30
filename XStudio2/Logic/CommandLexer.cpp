@@ -30,7 +30,7 @@ namespace Logic
          /// <returns>Token array</returns>
          TokenArray CommandLexer::Parse()
          {
-            TokenArray output;
+            TokenArray tokens;
 
             // Read until EOL
             while (ValidPosition)
@@ -41,30 +41,30 @@ namespace Logic
 
                // Whitespace: Read
                else if (!SkipWhitespace && MatchWhitespace())
-                  output.push_back( ReadWhitespace(Position) );
+                  tokens.push_back( ReadWhitespace(Position) );
 
                // Comment: 
-               else if (output.size() >= 1 && output[0].Text == L"*")
-                  output.push_back( ReadComment(Position) );
+               else if (tokens.count() == 1 && tokens[0].Text == L"*")
+                  tokens.push_back( ReadComment(Position) );
 
                // Number:
                else if (MatchNumber())
-                  output.push_back( ReadNumber(Position) );      
+                  tokens.push_back( ReadNumber(Position) );      
 
                // Remainder: 
                else switch (*Position)
                {
-               case L'$':   output.push_back( ReadVariable(Position) );    break;
-               case L'{':   output.push_back( ReadGameObject(Position) );  break;
-               case L'\'':  output.push_back( ReadString(Position) );      break;
+               case L'$':   tokens.push_back( ReadVariable(Position) );    break;
+               case L'{':   tokens.push_back( ReadGameObject(Position) );  break;
+               case L'\'':  tokens.push_back( ReadString(Position) );      break;
 
                default: 
-                  output.push_back( ReadAmbiguous(Position) );   
+                  tokens.push_back( ReadAmbiguous(Position, tokens) );   
                   break;
                }
             }
 
-            return output;
+            return tokens;
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
@@ -249,8 +249,9 @@ namespace Logic
          
          /// <summary>Reads a ScriptObject, Operator or Text, some of which share first letters</summary>
          /// <param name="start">Current position (first character)</param>
+         /// <param name="prev">Tokens previously parsed</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadAmbiguous(CharIterator start)
+         ScriptToken  CommandLexer::ReadAmbiguous(CharIterator start, const TokenArray& prev)
          {
             // Constant: Avoid interpreting '[' as an operator
             if (MatchConstant())
@@ -261,10 +262,10 @@ namespace Logic
                return ReadOperator(start);
 
             // Text: anything else 
-            return ReadText(start);
+            return ReadText(start, prev);
          }
 
-         /// <summary>Reads the script object</summary>
+         /// <summary>Reads a script object</summary>
          /// <param name="start">Current position (opening bracket)</param>
          /// <returns></returns>
          ScriptToken  CommandLexer::ReadConstant(CharIterator start)
@@ -329,7 +330,9 @@ namespace Logic
             return MakeToken(start, TokenType::String);
          }
 
-
+         /// <summary>Reads the positive or negative number</summary>
+         /// <param name="start">Current position (leading digit or negative sign)</param>
+         /// <returns></returns>
          ScriptToken  CommandLexer::ReadNumber(CharIterator start)
          {
             // Consume first digit or negative operator
@@ -343,7 +346,9 @@ namespace Logic
             return MakeToken(start, TokenType::Number);
          }
 
-         
+         /// <summary>Reads an operator</summary>
+         /// <param name="start">Current position (first character)</param>
+         /// <returns></returns>
          ScriptToken  CommandLexer::ReadOperator(CharIterator start) 
          {
             // Read single char 
@@ -413,7 +418,11 @@ namespace Logic
 
 
          
-         ScriptToken  CommandLexer::ReadText(CharIterator start)
+         /// <summary>Reads a text/keyword/label/null token</summary>
+         /// <param name="start">Starting position (first character)</param>
+         /// <param name="prev">Tokens previously parsed</param>
+         /// <returns></returns>
+         ScriptToken  CommandLexer::ReadText(CharIterator start, const TokenArray& prev)
          {
             bool Keyword = false;
 
@@ -421,11 +430,15 @@ namespace Logic
             while (MatchText() && ReadChar())
             {}
 
-            // Return LABEL if initial token and next token is ':'
-            if (MatchChar(L':') && (count() == 0 || count() == 1 && Tokens[0].Type == TokenType::Whitespace))
+            // LABEL: first token, followed by ':'
+            if (MatchChar(L':') && prev.count() == 0)
                return MakeToken(start, TokenType::Label);
 
-            // Return NULL as own type
+            // GOTO LABEL: second token, preceeded by goto/gosub
+            if (prev.count() == 1 && (prev[0].Text == L"goto" || prev[0].Text == L"gosub"))
+               return MakeToken(start, TokenType::Label);
+
+            // NULL: 
             if (MatchChars(start, L"null"))
                return MakeToken(start, TokenType::Null);
 

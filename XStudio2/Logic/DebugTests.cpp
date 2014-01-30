@@ -122,29 +122,17 @@ namespace Logic
       }
    }
 
-   TokenArray  Tokenise(const wstring expr)
-   {
-      TokenArray tokens;
-
-      for (WCHAR ch : expr)
-         tokens.push_back(ScriptToken(iswdigit(ch) ? TokenType::Number : TokenType::Operator, 0, 0, wstring(1, ch)));
-
-      return tokens;
-   }
-
    void  DebugTests::Test_ExpressionParser()
    {
       try
       {
-         TokenArray tokens;
-         
          // Try Parse
-         tokens = Tokenise(L"4+5*3");
-         ExpressionParser(tokens.begin(), tokens.end()).Parse();
+         CommandLexer ex1(L"4+5*3");
+         ExpressionParser(ex1.Tokens.begin(), ex1.Tokens.end()).Parse();
 
          // Try Parse
-         tokens = Tokenise(L"1|2^3&4<5+6*-8");
-         ExpressionParser(tokens.begin(), tokens.end()).Parse();
+         CommandLexer ex2(L"1|2^3&4<5+6*-8");
+         ExpressionParser(ex2.Tokens.begin(), ex2.Tokens.end()).Parse();
 
          // Try Parse
          /*tokens = Tokenise(L"4+5*3");

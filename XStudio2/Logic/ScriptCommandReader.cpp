@@ -56,7 +56,6 @@ namespace Logic
          params.push_back( ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ReadIntNode(L"expression return value")) );
 
          // Read postfix tuples
-         //ParameterArray postfix(count = ReadIntNode());
          count = ReadIntNode(L"expression postfix parameter count");
          for (int i = 0; i < count; i++)
             postfix.push_back( ReadParameter(expr, L"expression postfix parameter") );
