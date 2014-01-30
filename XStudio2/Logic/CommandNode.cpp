@@ -60,11 +60,11 @@ namespace Logic
             for (const auto& p : Command.Parameters)
             {
                // Verify game object
-               if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.Text))
+               if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
                   err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
 
                // Verify script object
-               else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.Text))
+               else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
                   err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
             }
 

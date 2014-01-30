@@ -30,10 +30,14 @@ namespace Logic
             DEFAULT_COPY(TokenBase);	// Default copy semantics
             DEFAULT_MOVE(TokenBase);	// Default move semantics
             
+            // --------------------- PROPERTIES ------------------------
+
+            PROPERTY_GET(UINT,Length,GetLength);
+
             // ---------------------- ACCESSORS ------------------------			
          public:
             bool  Contains(UINT pos) const  { return pos >= Start && pos < End; }
-            UINT  Length() const            { return End - Start; }
+            UINT  GetLength() const         { return End - Start; }
 
             // -------------------- REPRESENTATION ---------------------
          public:
@@ -64,12 +68,37 @@ namespace Logic
 
             // --------------------- PROPERTIES ------------------------
 
+            PROPERTY_GET(wstring,ValueText,GetValueText);
+
             // ---------------------- ACCESSORS ------------------------			
 
-            /*bool  Match(TokenType t, const WCHAR* txt, bool matchCase = false) const
+            /// <summary>Gets the text without any formatting operators, eg. (,{,',$ etc.</summary>
+            /// <returns></returns>
+            wstring GetValueText() const
             {
-               return Type == t && (!matchCase ? Text == txt : StrCmpI(Text.c_str(), txt) == 0);
-            }*/
+               switch (Type)
+               {
+               case TokenType::GameObject:
+               case TokenType::ScriptObject:
+               case TokenType::String:
+                  return SubString(1, Length-2);
+
+               case TokenType::Variable:
+                  return SubString(1, Length-1);
+
+               default:
+                  return Text;
+               }
+            }
+
+            /// <summary>Get substring of text</summary>
+            /// <param name="offset">The starting offset.</param>
+            /// <param name="len">The length</param>
+            /// <returns></returns>
+            wstring SubString(UINT offset, UINT len) const
+            {
+               return Text.substr(offset, len);
+            }
 
             // ----------------------- MUTATORS ------------------------
 
