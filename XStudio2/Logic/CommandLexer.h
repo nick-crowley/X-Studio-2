@@ -137,12 +137,13 @@ namespace Logic
          
          private:
             const CharIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
-                                  LineEnd;
+                                LineEnd;
             CharIterator        Position;
-            const bool            SkipWhitespace;
+            const bool          SkipWhitespace;
 
          public:
-            const TokenArray      Tokens;
+            const wstring       Input;
+            const TokenArray    Tokens;
          };
       }
    }
