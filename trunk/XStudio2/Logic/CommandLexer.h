@@ -95,11 +95,11 @@ namespace Logic
             /// <param name="pos">The position.</param>
             /// <param name="index">The index.</param>
             /// <returns>true if index represents EOF, next whitespace or first char of next token.</returns>
-            bool Trails(const TokenIterator pos, UINT index) const
+            /*bool Trails(const TokenIterator pos, UINT index) const
             {
                return Valid(pos) && pos->End <= index   
                    && (!Valid(pos+1) || index <= (pos+1)->Start);
-            }
+            }*/
 
          private:
             bool  IsValidPosition() const  { return Position < LineEnd; }
@@ -109,6 +109,7 @@ namespace Logic
             bool  MatchChars(const CharIterator pos, const WCHAR* str) const;
 
             bool  MatchConstant() const;
+            bool  MatchDigit() const;
             bool  MatchNumber() const;
             bool  MatchOperator() const;
             bool  MatchText() const;

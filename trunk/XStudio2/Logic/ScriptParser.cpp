@@ -189,7 +189,7 @@ namespace Logic
             #endif
 
             // UNRECOGNISED: Generate empty node
-            Errors += MakeError(L"Unable to parse command", line, lex);
+            Errors += MakeError(L"Unable to parse command", text, lex);
             return CommandTree( new CommandNode(ScriptCommand::Unknown, GetLineNumber(text)) );
          }
 
