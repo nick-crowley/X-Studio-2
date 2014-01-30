@@ -421,8 +421,8 @@ namespace Logic
             while (MatchText() && ReadChar())
             {}
 
-            // Return LABEL if ':' immediately follows first word
-            if (MatchChar(L':') && start == LineStart)
+            // Return LABEL if initial token and next token is ':'
+            if (MatchChar(L':') && (count() == 0 || count() == 1 && Tokens[0].Type == TokenType::Whitespace))
                return MakeToken(start, TokenType::Label);
 
             // Return NULL as own type
