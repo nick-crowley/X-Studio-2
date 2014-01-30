@@ -11,6 +11,9 @@ namespace Logic
          /// <summary>Types of tokens produced by the script lexer</summary>
          enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, Operator, Comment, Whitespace };
 
+         /// <summary>Get token type string</summary>
+         GuiString  GetString(TokenType t);
+
          /// <summary>Common base class for all token types</summary>
          class TokenBase
          {

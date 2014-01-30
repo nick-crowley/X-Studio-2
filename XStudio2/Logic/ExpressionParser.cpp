@@ -182,10 +182,10 @@ namespace Logic
          {
             ExpressionTree expr = nullptr;
 
-            // Rule: Expr        = Comparison
-            // Rule: Comparison  = LogicalExpr (==/!=/<=/>=/</> LogicalExpr)*
+            // Rule: Expr        = LogicalExpr
             // Rule: LogicalExpr = BitwiseExpr (AND/OR BitwiseExpr)*
-            // Rule: BitwiseExpr = SumExpr (&/|/^ SumExpr)*
+            // Rule: BitwiseExpr = Comparison (&/|/^ Comparison)*
+            // Rule: Comparison  = SumExpr (==/!=/<=/>=/</> SumExpr)*
             // Rule: SumExpr     = ProductExpr (+/- ProductExpr)*
             // Rule: ProductExpr = UnaryExpr (*/div UnaryExpr)*
             // Rule: UnaryExpr   = (!/-/~)? Value
