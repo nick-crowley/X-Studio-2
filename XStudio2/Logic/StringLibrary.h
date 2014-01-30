@@ -46,9 +46,6 @@ namespace Logic
          void  Clear();
          UINT  Enumerate(XFileSystem& vfs, GameLanguage lang, WorkerData* data);
 
-      private:
-         LanguageFile  GetSpecialCases(GameLanguage lang);
-
 		   // -------------------- REPRESENTATION ---------------------
 
       public:

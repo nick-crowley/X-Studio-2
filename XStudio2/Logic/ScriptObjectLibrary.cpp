@@ -66,16 +66,16 @@ namespace Logic
          // Feedback
          data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating script objects from language files");
 
-         // Clear previous
+         // Populate
          Clear();
+         Populate(data);
 
-         // Build objects
-         PopulateObjects(data);
-         PopulateLookup(data);
+         // DEBUG:
+         Console << "Discovered " << (int)Objects.size() << " script objects..." << ENDL;
          
          // Feedback number of conflicts
-         if (Objects.size() - Lookup.size() > 0)
-            data->SendFeedback(Colour::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size() - Lookup.size()));
+         if (Objects.size() - Lookup.size() > 1)   // Always 1 less in lookup because old [THIS] intentionally removed
+            data->SendFeedback(Colour::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
          
          return Lookup.size();
       }
@@ -105,7 +105,7 @@ namespace Logic
       {
          return Lookup.size();
       }
-
+      
       /// <summary>Find all script objects containing a substring</summary>
       /// <param name="str">The substring.</param>
       /// <returns></returns>
@@ -161,14 +161,23 @@ namespace Logic
          return InsertConflicts(a+a.ID, b+b.ID);
       }
 
-
-      /// <summary>Generates the reverse lookup collection from the object collection</summary>
+      /// <summary>Generates the ID and reverse lookup collections from the string library</summary>
       /// <param name="data">Feedback data</param>
-      /// <returns>Number of lookups generated</returns>
-      UINT  ScriptObjectLibrary::PopulateLookup(WorkerData* data)
+      /// <returns>Number of objects generated</returns>
+      UINT  ScriptObjectLibrary::Populate(WorkerData* data)
       {
+         ObjectCollection unmangled(GetSpecialCases());
+
+         // Extract all script objects from library  [this loop correctly enforces string precedence]
+         for (auto& file : StringLib.Files)       
+            for (auto& page : file)
+               for (auto& str : page)
+                  if (str.IsScriptObject())
+                     unmangled.Add( ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version) );
+         
+
          // Generate reverse lookup collection
-         for (auto& pair : Objects)  
+         for (const auto& pair : unmangled) 
          {
             const ScriptObject& obj = pair.second;
 
@@ -196,31 +205,39 @@ namespace Logic
             }
          }
 
+         // Populate ID collection from lookup to preserve name mangling
+         for (const ScriptObject& obj : *this)
+            Objects.Add(obj);
+
+         // SpecialCase: Add old [THIS] to ID collection so older scripts can be parsed
+         Objects.Add(ScriptObject(0, KnownPage::CONSTANTS, L"THIS", GameVersion::Threat));
+
          // Return count
-         return Lookup.size();   
+         return Objects.size();   
       }
 
       
-      /// <summary>Extracts strings used as script objects from the string library</summary>
-      /// <param name="data">Feedback data</param>
-      /// <returns>Number of strings extracted</returns>
-      UINT  ScriptObjectLibrary::PopulateObjects(WorkerData* data)
-      {
-         // Iterate thru all strings in library
-         for (auto& file : StringLib.Files)       
-            for (auto& page : file)
-               for (auto& str : page)
-                  // Insert subset of strings from known pages
-                  if (str.IsScriptObject())
-                     Objects.Add(ScriptObject(str.ID, (KnownPage)page.ID, StringLib.Resolve(page.ID, str.ID), str.Version));
-         
-         // Feedback
-         Console << "Discovered " << (int)Objects.size() << " script objects..." << ENDL;
-         return Objects.size();
-      }
-
       // ------------------------------- PRIVATE METHODS ------------------------------
    
+      /// <summary>Gets collection of special cases</summary>
+      /// <returns></returns>
+      ScriptObjectLibrary::ObjectCollection  ScriptObjectLibrary::GetSpecialCases() const
+      {
+         ObjectCollection coll;
+
+         // Add 'Player' race
+         coll.Add(ScriptObject(10, KnownPage::RACES, L"Player", GameVersion::Threat));
+         
+         // Distinguish NPC/Player HQ object class
+         coll.Add(ScriptObject(2045, KnownPage::OBJECT_CLASSES, L"Player Headerquarters", GameVersion::Reunion));
+
+         // Fix ambiguous parameter types
+         coll.Add(ScriptObject((UINT)ParameterType::INTERRUPT_RETURN_VALUE_IF, KnownPage::PARAMETER_TYPES, L"@RetVar/If", GameVersion::Threat));
+         coll.Add(ScriptObject((UINT)ParameterType::LABEL_NAME, KnownPage::PARAMETER_TYPES, L"Label Name", GameVersion::Threat));
+         coll.Add(ScriptObject((UINT)ParameterType::LABEL_NUMBER, KnownPage::PARAMETER_TYPES, L"Label Number", GameVersion::Threat));
+         return coll;
+      }
+
    }
 }
 
