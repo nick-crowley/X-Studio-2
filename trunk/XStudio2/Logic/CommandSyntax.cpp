@@ -92,7 +92,7 @@ namespace Logic
                GuiString name(L"<%s>", GetString(param.Type).c_str());
 
                // Replace $n marker with parameter text
-               output.replace(tok->Start, tok->Length(), name.c_str());
+               output.replace(tok->Start, tok->Length, name.c_str());
             }
          }
 
