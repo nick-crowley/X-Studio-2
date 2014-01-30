@@ -35,6 +35,8 @@ namespace Logic
             public:
                ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
                {}
+               ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Error(msg), Line(line)
+               {}
                ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
                {}
 
@@ -62,35 +64,45 @@ namespace Logic
             /// <summary>Represents a script command and its descendants, if any</summary>
             class CommandNode
             {
+               // ------------------------ TYPES --------------------------
+            public:
+               typedef vector<CommandTree>::const_iterator  NodeIterator;
+
+               // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
-               CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line);
+               CommandNode(const CommandTree& parent, const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
                ~CommandNode();
+
+               // ------------------------ STATIC -------------------------
+
+               // --------------------- PROPERTIES ------------------------
+
+               // ---------------------- ACCESSORS ------------------------		
+            public:
+               bool  Contains(BranchLogic l) const;
+               NodeIterator  Find(BranchLogic l) const;
+               bool  IsRoot() const;
+               void  Print(int depth = 0) const;
+               void  Verify(ErrorArray& err) const;
+
+            protected:
+               void  VerifyLogic(ErrorArray& err) const;
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void  Add(const CommandTree& cmd);
+
+               // -------------------- REPRESENTATION ---------------------
 
                const CommandNode*   Parent;           // Parent node
                BranchLogic          Logic;            // logic type
                ScriptCommand        Command;          // Command
                UINT                 LineNumber,       // 1-based line number
                                     Index;            // 0-based standard codearray index
+               CHARRANGE            LineText;         // Start/end character offsets
                CommandNode*         JumpTarget;       // Destination of jump
                vector<CommandTree>  Children;         // Child commands
-               
-               /// <summary>Add child node</summary>
-               /// <param name="cmd">The command node</param>
-               void  Add(const CommandTree& cmd);
-
-               /// <summary>Check children for presence of certain branch logic</summary>
-               /// <param name="l">logic</param>
-               /// <returns></returns>
-               bool  Contains(BranchLogic l) const;
-
-               /// <summary>Verify the parsed script</summary>
-               /// <param name="err">Error queue.</param>
-               void  Verify(ErrorArray& err) const;
-
-               /// <summary>Debug print</summary>
-               /// <param name="depth">The depth.</param>
-               void  Print(int depth = 0) const;
             };
 
             /// <summary>Legacy typedef</summary>

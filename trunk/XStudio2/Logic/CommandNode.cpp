@@ -13,7 +13,8 @@ namespace Logic
 
          /// <summary>Create root node</summary>
          ScriptParser::CommandNode::CommandNode()
-            : Parent(nullptr), LineNumber(0), Index(0), JumpTarget(nullptr), Command(ScriptCommand::Unknown), Logic(BranchLogic::None)
+            : Parent(nullptr), JumpTarget(nullptr), Command(ScriptCommand::Unknown), Logic(BranchLogic::None),
+              Index(0), LineNumber(0), LineText({0,0})
          {
          }
 
@@ -21,9 +22,11 @@ namespace Logic
          /// <param name="parent">parent node</param>
          /// <param name="cmd">script command.</param>
          /// <param name="line">1-based line number</param>
-         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, UINT line)
-            : Parent(parent.get()), LineNumber(line), Index(0), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic)
+         ScriptParser::CommandNode::CommandNode(const CommandTree& parent, const ScriptCommand& cmd, const CommandLexer& lex, UINT line)
+            : Parent(parent.get()), JumpTarget(nullptr), Command(cmd), Logic(cmd.Logic),
+              Index(0), LineNumber(line), LineText(lex.Extent)
          {
+            REQUIRED(parent);
          }
 
          ScriptParser::CommandNode::~CommandNode()
@@ -49,6 +52,20 @@ namespace Logic
             return find_if(Children.begin(), Children.end(), [=](const CommandTree& t){ return t->Logic == l; }) != Children.end();
          }
 
+         /// <summary>Finds the first child with certain branch logic</summary>
+         /// <param name="l">desired logic</param>
+         /// <returns>position if found, otherwise end</returns>
+         ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
+         {
+            return find_if(Children.begin(), Children.end(), [l](CommandTree& n) {return n->Logic == l;} );
+         }
+
+         /// <summary>Query whether this node is the root</summary>
+         bool  ScriptParser::CommandNode::IsRoot() const
+         {
+            return Parent == nullptr;
+         }
+
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
          void  ScriptParser::CommandNode::Print(int depth) const
@@ -66,24 +83,27 @@ namespace Logic
          /// <param name="err">The error collection</param>
          void  ScriptParser::CommandNode::Verify(ErrorArray& err) const
          {
-            // Recognise objects
-            for (const auto& p : Command.Parameters)
+            if (!IsRoot())
             {
-               // Verify game object
-               if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
-                  err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
+               // Recognise objects
+               for (const auto& p : Command.Parameters)
+               {
+                  // Verify game object
+                  if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
+                     err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
 
-               // Verify script object
-               else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
-                  err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
-            }
+                  // Verify script object
+                  else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
+                     err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
+               }
 
-            // Check for END
-            switch (Logic)
-            {
-            case BranchLogic::If:
-            case BranchLogic::While:
-               break;
+               // Check for END
+               switch (Logic)
+               {
+               case BranchLogic::If:
+               case BranchLogic::While:
+                  break;
+               }
             }
 
             // Verify children
@@ -92,6 +112,56 @@ namespace Logic
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
+
+         /// <summary>Verifies the node</summary>
+         /// <param name="err">The error collection</param>
+         void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& err) const
+         {
+            // Check for END
+            switch (Logic)
+            {
+            case BranchLogic::If:
+            case BranchLogic::While:
+               // Ensure 'end' is last command
+               if (Find(BranchLogic::End) == Children.end())
+                  err += ErrorToken(L"missing 'end' command", LineNumber, LineText);
+               break;
+
+            case BranchLogic::End:
+               // Check for parent 'if'/'while' command
+               if (Parent->Logic == BranchLogic::While || Parent->Logic == BranchLogic::If)
+                  return;
+               
+               // Missing 
+               err += ErrorToken(L"unexpected 'end' command", LineNumber, LineText);
+               break;
+
+            case BranchLogic::Break:
+            case BranchLogic::Continue:
+               // Check for a parent 'while' command
+               for (const CommandNode* n = Parent; n != nullptr; n = n->Parent)
+                  if (n->Logic == BranchLogic::While)
+                     return;
+               
+               // Missing 
+               err += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, LineText);
+               break;
+
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+               // Check for a parent 'if' command
+               for (const CommandNode* n = Parent; n != nullptr; n = n->Parent)
+                  if (n->Logic == BranchLogic::If)
+                     return;
+               
+               // Missing 
+               err += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, LineText);
+               break;
+
+            default:
+               return;
+            }
+         }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
       }

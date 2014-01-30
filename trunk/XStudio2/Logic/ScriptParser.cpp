@@ -72,7 +72,7 @@ namespace Logic
                CommandTree node;
                
                // Read command, add to script
-               Script->Add(node = ParseNode(Script, line));
+               Script->Add(node = ParseNode(Script, line));    // Advances line iterator
                
                // Examine command
                switch (node->Logic)
@@ -106,7 +106,7 @@ namespace Logic
                CommandTree node;
 
                // Read command, add to branch
-               branch->Add(node = ParseNode(branch, line));
+               branch->Add(node = ParseNode(branch, line));    // Advances line iterator
 
                // Examine command
                switch (node->Logic)
@@ -191,7 +191,7 @@ namespace Logic
 
             // UNRECOGNISED: Generate empty node
             Errors += MakeError(L"Unable to parse command", text, lex);
-            return CommandTree( new CommandNode(parent, ScriptCommand::Unknown, GetLineNumber(text)) );
+            return CommandTree( new CommandNode(parent, ScriptCommand::Unknown, lex, GetLineNumber(text)) );
          }
 
 
@@ -421,7 +421,7 @@ namespace Logic
 
             // NOP: Create command
             if (lex.count() == 0)
-               return new CommandNode(parent, ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), GetLineNumber(line));
+               return new CommandNode(parent, ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), lex, GetLineNumber(line));
             
             // Comment
             CommandSyntax syntax(SyntaxLib.Find(CMD_COMMENT, Version));
@@ -432,7 +432,7 @@ namespace Logic
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
             // Create command
-            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
          }
 
          /// <summary>Reads an entire non-expression command</summary>
@@ -514,7 +514,7 @@ namespace Logic
             // TODO: Check for excess parameters?
 
             // Create node
-            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -569,7 +569,7 @@ namespace Logic
             }
 
             // Create expression
-            return new CommandNode(parent, ScriptCommand(syntax, *line, params), GetLineNumber(line));
+            return new CommandNode(parent, ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
          }
 
       }
