@@ -299,7 +299,8 @@ NAMESPACE_BEGIN(GUI)
 	      theApp.ParseCommandLine(cmdInfo);
 
 	      // Dispatch commands specified on the command line.
-	      theApp.ProcessShellCommand(cmdInfo);
+         if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
+	         theApp.ProcessShellCommand(cmdInfo);
       }
    }
    
