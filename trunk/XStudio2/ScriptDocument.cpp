@@ -97,7 +97,7 @@ NAMESPACE_BEGIN(GUI)
          Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;
 
          StreamPtr fs2( new FileStream(lpszPathName, FileMode::OpenExisting, FileAccess::Read) );
-         Script = ScriptFileReader(fs2).ReadFile();
+         Script = ScriptFileReader(fs2).ReadFile(lpszPathName, false);
 
          Console << Colour::Green << L"Script loaded successfully" << ENDL;
       

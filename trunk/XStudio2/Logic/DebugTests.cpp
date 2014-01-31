@@ -82,15 +82,15 @@ namespace Logic
 
       try
       {
-         // Test LegacySyntaxReader
-         SyntaxLib.Enumerate(nullptr);
+         //// Test LegacySyntaxReader
+         //SyntaxLib.Enumerate(nullptr);
 
-         // Test Lookup
-         SyntaxLib.Find(CMD_EXPRESSION, GameVersion::TerranConflict);
+         //// Test Lookup
+         //SyntaxLib.Find(CMD_EXPRESSION, GameVersion::TerranConflict);
 
-         // Test script reader
-         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto script = ScriptFileReader(fs2).ReadFile();
+         //// Test script reader
+         //StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         //auto script = ScriptFileReader(fs2).ReadFile();
       }
       catch (ExceptionBase&  e)
       {

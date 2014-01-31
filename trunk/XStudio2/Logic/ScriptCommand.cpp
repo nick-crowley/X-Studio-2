@@ -143,6 +143,26 @@ namespace Logic
             }
          }
       }
+
+      /// <summary>Gets the name of target script</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::InvalidOperationException">Command is not a script call -or- name parameter is missing</exception>
+      wstring  ScriptCommand::GetScriptCallName() const
+      {
+         // Lookup script-call parameter syntax
+         auto param = find_if(Syntax.Parameters.begin(), Syntax.Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} );
+
+         // Validate command ID
+         if (param == Syntax.Parameters.end())
+            throw InvalidOperationException(HERE, GuiString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
+
+         // Ensure present
+         if (Parameters.size() < param->PhysicalIndex+1 || Parameters[param->PhysicalIndex].Value.Type != ValueType::String)
+            throw InvalidOperationException(HERE, GuiString(L"Missing script name parameter"));
+
+         // Return name
+         return Parameters[param->PhysicalIndex].Value.String;
+      }
       
       /// <summary>Compare command ID</summary>
       /// <param name="ID">command id.</param>
@@ -198,17 +218,20 @@ namespace Logic
          }
 
          // Expressions: Print remaining syntax
-         if (Syntax.ID == CMD_EXPRESSION)
+         if (Is(CMD_EXPRESSION))
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
 
          // Script Calls: Print remaining syntax
-         else if (Syntax.ID == CMD_CALL_SCRIPT_VAR_ARGS)
+         else if (Is(CMD_CALL_SCRIPT_VAR_ARGS))
+         {
+            // Lookup previously loaded script call
+            auto& call = f.ScriptCalls.Find(GetScriptCallName());
+
+            // Populate argument name/value pairs
             for (UINT i = 3; i < Parameters.size(); ++i)
-            {
-               Text.append(GuiString(L" argument%d=", i-2));
-               Text.append(Parameters[i].Text);
-            }
+               Text.append(GuiString(L" %s=%s", call.Variables[i-3].Name.c_str(), Parameters[i].Text.c_str()));
+         }
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

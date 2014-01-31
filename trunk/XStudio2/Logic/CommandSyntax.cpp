@@ -146,6 +146,13 @@ namespace Logic
          }
       }
 
+      /// <summary>Determines whether command is a script call</summary>
+      /// <returns></returns>
+      bool  CommandSyntax::IsScriptCall() const
+      {
+         return find_if(Parameters.begin(), Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} ) != Parameters.end();
+      }      
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
