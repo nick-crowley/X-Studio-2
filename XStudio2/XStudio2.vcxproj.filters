@@ -600,6 +600,9 @@
     <ClCompile Include="Logic\RtfScriptTextWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\TShipReader.cpp">
+      <Filter>Source Files\Logic\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="UserImages.bmp">

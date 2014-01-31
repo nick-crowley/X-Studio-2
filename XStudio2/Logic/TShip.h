@@ -18,93 +18,57 @@ namespace Logic
          const int MAX_TURRET_COUNT = 7;
 
       public:
-         enum class TurretPosition : UINT { cockpit = 0, front = 1, rear, left, right, top, bottom }
+         enum class TurretPosition : UINT { cockpit = 0, front = 1, rear, left, right, top, bottom };
 
-      public:
+         /// <summary>Turret weapon</summary>
+	      class Weapon 
+	      {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            Weapon()
+            {}
+
+            // -------------------- REPRESENTATION ---------------------
+
+            int     numLasers;
+		      int     sceneNode1;
+            int     sceneNode2;
+            wstring modelName1;
+		      wstring modelName2;
+	      };
+
          /// <summary>Ship turret</summary>
 	      class Turret 
 	      {
-		      /// <summary>Special turret-like record used in some drone ships.</summary>
-		      bool special;
-   		
-		      int cockpitIndex;
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+		      Turret() 
+            {}
+		      Turret(int index, TurretPosition pos) : cockpitIndex(index), position(pos)
+            {}
+
+            // -------------------- REPRESENTATION ---------------------
+
+            bool           special;     // Special turret-like record used in some drone ships
+		      int            cockpitIndex;
 		      TurretPosition position;
-
-		      string modelFile;
-		      int sceneNodeIndex;
-   		
-		      List<Weapon> weapons = new List<Weapon>();
-   		
-            // -------------------------------- CONSTRUCTION --------------------------------
-
-		      Turret() {}
-
-		      Turret(int cockpitIndex, TurretPosition position) 
-		      { 
-			      this.cockpitIndex = cockpitIndex; 
-			      this.position = position; 
-               modelFile = string.Empty;
-		      }
-
-            // --------------------------------- INTERFACES ---------------------------------
-
-		      object ICloneable.Clone() { return Clone(); }
-   		
-            // ----------------------------- PROPERTIES ------------------------------
-
-            // ------------------------------- METHODS -------------------------------
-
-		      Turret Clone()
-		      {
-			      Turret copy = (Turret)MemberwiseClone();
-
-               // Clone weapons
-   			   copy.weapons = weapons.Select(u => u.Clone()).ToList();
-			      return copy;
-		      }
-	      } 
+		      wstring        modelFile;
+		      int            sceneNodeIndex;
+		      vector<Weapon> weapons;
+	      };
    	
-         /// <summary>Turret weapon</summary>
-	      public class Weapon : ICloneable
-	      {
-		      public int numLasers;
-		      public string modelName1;
-		      public int sceneNode1;
-		      public string modelName2;
-		      public int sceneNode2;
-
-            // -------------------------------- CONSTRUCTION --------------------------------
-
-            public Weapon()
-            {
-               modelName1 = modelName2 = string.Empty;
-            }
-
-            // --------------------------------- INTERFACES ---------------------------------
-
-		      object ICloneable.Clone() 
-            {
-			      return Clone();
-		      }
-
-            // ----------------------------- PUBLIC PROPERTIES ------------------------------
-
-            // ------------------------------- PUBLIC METHODS -------------------------------
-
-            public Weapon Clone()
-            {
-               return (Weapon)MemberwiseClone();
-            }
-	      } 
+         
          // --------------------- CONSTRUCTION ----------------------
 
       public:
          TShip(MainType t) : TObject(MainType::Ship)
-         {}
+         {
+            turrets.push_back(Turret(0, TurretPosition::cockpit));      // Add cockpit turret
+         }
          TShip() : TObject(MainType::Ship)
-         {}
-         virtual ~TShip()
-         {}
+         {
+            turrets.push_back(Turret(0, TurretPosition::cockpit));   // Add cockpit turret
+         }
 
          DEFAULT_COPY(TShip);	// Default copy semantics
          DEFAULT_MOVE(TShip);	// Default move semantics
@@ -120,43 +84,43 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-	      int speed;
-	      int acceleration;
-	      int engineSound;
-	      int averageReactionDelay;
-	      int engineEffect;
-	      int engineGlowEffect;
-	      int power;
-	      int soundVolumeMin;
-	      int soundVolumeMax;
-	      wstring modelScene;
-	      wstring cockpitScene;
+	      int      speed;
+	      int      acceleration;
+	      int      engineSound;
+	      int      averageReactionDelay;
+	      int      engineEffect;
+	      int      engineGlowEffect;
+	      int      power;
+	      int      soundVolumeMin;
+	      int      soundVolumeMax;
+	      wstring  modelScene;
+	      wstring  cockpitScene;
 
-	      UINT laserMask; // uint because it's bitmask with full 32 bit range
-	      int laserEnergy;
-	      float laserRechargeRate;
-	      int shieldType;
-	      int maxNumOfShileds;
-	      UINT missileMask;
-	      int maxMissileCountNPC;
-	      int extensionsSpeed;
-	      int extensionsSteering;
-	      int cargoMin;
-	      int cargoMax;
-	      int wareListID;
+	      UINT     laserMask;  // uint because it's bitmask with full 32 bit range
+	      int      laserEnergy;
+	      float    laserRechargeRate;
+	      int      shieldType;
+	      int      maxNumOfShileds;
+	      UINT     missileMask;
+	      int      maxMissileCountNPC;
+	      int      extensionsSpeed;
+	      int      extensionsSteering;
+	      int      cargoMin;
+	      int      cargoMax;
+	      int      wareListID;
    	
-	      List<TShip.Turret> turrets = new List<Turret>(MAX_TURRET_COUNT) { new Turret(0, TurretPosition.cockpit) }; //cockpit turret
+	      vector<Turret> turrets;
    	
-	      int numDockingSlots;
-	      WareSize maxCargoSize;
-         XStringResource  race;
-	      int hullStrength;
-	      int explosionDefinition;
-	      int explosionBodyDefinition;
-	      int particleEmitter;
-	      int rotationAcceleration;
-	      /// <summary>Ship class such as M1, M3. Not the same as <see cref="TObject.subtype"/>.</summary>
-	      wstring shipClass;
+	      int         numDockingSlots;
+	      WareSize    maxCargoSize;
+         RaceLookup  race;
+	      int         hullStrength;
+	      int         explosionDefinition;
+	      int         explosionBodyDefinition;
+	      int         particleEmitter;
+	      int         rotationAcceleration;
+
+	      wstring         shipClass;      // Ship class such as M1, M3
          VariationLookup variation;
       };
 
@@ -196,10 +160,21 @@ namespace Logic
          /// <param name="ver">File version</param>
          /// <exception cref="Logic::FileFormatException">File contains a syntax error</exception>
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-	      void  ReadObject(TShip& obj, GameVersion ver)
-         {
-            
-         }
+	      void  ReadObject(TShip& obj, GameVersion ver);
+
+      private:
+         /// <summary>Loads the gun groups.</summary>
+         /// <param name="ship">The ship.</param>
+         void LoadGunGroups(TShip ship);
+
+         /// <summary>Loads the turrets.</summary>
+         /// <param name="ship">The ship.</param>
+         void LoadTurrets(TShip ship);
+
+         /// <summary>Loads the turret weapons.</summary>
+         /// <param name="turret">The turret.</param>
+         /// <param name="count">The count.</param>
+         void LoadWeapons(TShip::Turret turret, UINT count);
 
          // -------------------- REPRESENTATION ---------------------
 
