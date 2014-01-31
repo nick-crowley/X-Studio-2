@@ -25,19 +25,15 @@ namespace Logic
             virtual ScriptCommand  ReadCommand() PURE;
 
          protected:
-            wstring         ReadStringNode(const wchar* help) { return Reader.ReadString(ReadNode(), help);   }
-            int             ReadIntNode(const wchar* help)    { return Reader.ReadInt(ReadNode(), help);      }
-            ParameterValue  ReadValueNode(const wchar* help)  { return Reader.ReadValue(ReadNode(), help);    }
-            DataType        ReadTypeNode(const wchar* help)   { return (DataType)LOWORD(ReadIntNode(help));   }
+            wstring         ReadStringNode(const wchar* help);
+            int             ReadIntNode(const wchar* help);
+            ParameterValue  ReadValueNode(const wchar* help);
+            DataType        ReadTypeNode(const wchar* help);
 
-            ScriptParameter ReadParameter(ParameterSyntax s, const wchar* help) 
-            { 
-               DataType dt = ReadTypeNode(help);
-               return ScriptParameter(s, dt, ReadValueNode(help)); 
-            }
+            ScriptParameter ReadParameter(ParameterSyntax s, const wchar* help) ;
 
          private:
-            XmlNodePtr     ReadNode()       { return Command->childNodes->item[NodeIndex++]; }
+            XmlNodePtr      ReadNode();
 
             // -------------------- REPRESENTATION ---------------------
          protected:

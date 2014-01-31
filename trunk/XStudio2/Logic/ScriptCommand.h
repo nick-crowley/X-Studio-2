@@ -27,8 +27,8 @@ namespace Logic
          ScriptCommand();
       public:
          ScriptCommand(const CommandSyntax& syntax, const wstring& text, ParameterArray& params);
-         ScriptCommand(const CommandSyntax& syntax, ParameterArray& params);
-         ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params);
+         ScriptCommand(const CommandSyntax& syntax, ParameterArray& params, bool comment = false);
+         ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params, bool comment = false);
          virtual ~ScriptCommand();
 
          // ------------------------ STATIC -------------------------
@@ -38,11 +38,12 @@ namespace Logic
          PROPERTY_GET(BranchLogic,Logic,GetLogic);
 
 		   // ---------------------- ACCESSORS ------------------------			
-
+      public:
          BranchLogic  GetLogic() const;
-         wstring  GetLabelName() const;
-         UINT  GetJumpDestination() const;
-         wstring GetScriptCallName() const;
+         wstring      GetLabelName() const;
+         UINT         GetJumpDestination() const;
+         wstring      GetScriptCallName() const;
+
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
 
@@ -57,6 +58,7 @@ namespace Logic
 
       public:
          const CommandSyntax  Syntax;
+         bool                 Commented;
          ParameterArray       Parameters;
          wstring              Text;
          UINT                 RefIndex;

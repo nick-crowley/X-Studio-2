@@ -28,7 +28,7 @@ namespace Logic
 
          // Comment: Read string
          if (id == CMD_COMMENT)
-            params.push_back( ScriptParameter(syntax.Parameters[0], DataType::STRING, ReadStringNode(L"comment")) );
+            params += ReadParameter(syntax.Parameters[0], L"comment");
 
          // Return command
          return ScriptCommand(syntax, index, params);
@@ -53,19 +53,19 @@ namespace Logic
          ParameterSyntax expr = syntax.Parameters[1];
 
          // Return value
-         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ReadIntNode(L"expression return value")) );
+         params += ReadParameter(syntax.Parameters[0], L"expression return value");
 
          // Read postfix tuples
          count = ReadIntNode(L"expression postfix parameter count");
          for (int i = 0; i < count; i++)
-            postfix.push_back( ReadParameter(expr, L"expression postfix parameter") );
+            postfix += ReadParameter(expr, L"expression postfix parameter");
 
          // Generate parameters
          count = ReadIntNode(L"expression infix parameter count");
          for (int i = 0; i < count; i++)
          {
             int value = ReadIntNode(L"expression infix index");    // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
-            params.push_back( value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::OPERATOR, value) );
+            params += (value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::OPERATOR, value));
          }
 
          // Return command
@@ -82,14 +82,14 @@ namespace Logic
          CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"script call ID"), Script.Game);
 
          // Read scriptname / RetVar / refObj
-         params.push_back( ScriptParameter(syntax.Parameters[0], DataType::STRING, ReadStringNode(L"script call target")) );
-         params.push_back( ScriptParameter(syntax.Parameters[1], DataType::VARIABLE, ReadIntNode(L"script call return value")) );
-         params.push_back( ReadParameter(syntax.Parameters[2], L"script call reference object") );
+         params += ReadParameter(syntax.Parameters[0], L"script call target");
+         params += ReadParameter(syntax.Parameters[1], L"script call return value");
+         params += ReadParameter(syntax.Parameters[2], L"script call reference object");
 
          // Read arguments
          int count = ReadIntNode(L"script call argument count");
          for (int i = 0; i < count; i++)
-            params.push_back( ReadParameter(ParameterSyntax::ScriptCallArgument, L"script call argument") );
+            params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"script call argument");
 
          // Return command
          return ScriptCommand(syntax, params);
@@ -104,48 +104,90 @@ namespace Logic
          // Read ID + syntax
          CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"standard command ID"), Script.Game);
 
-         // Iterate thru syntax
+         // Read parameters
          for (ParameterSyntax p : syntax.Parameters)
-         {
-            // TODO: Handle optional parameters here
-
-            // Read parameter
-            switch (p.Type)
-            {
-            case ParameterType::LABEL_NUMBER:   
-               params.push_back( ScriptParameter(p, DataType::INTEGER, ReadIntNode(L"standard label number")) ); 
-               break;
-
-            // Decode RetVar as DT_VARIABLE
-            case ParameterType::VARIABLE:       
-            case ParameterType::RETURN_VALUE:
-            case ParameterType::RETURN_VALUE_IF:
-            case ParameterType::RETURN_VALUE_IF_START:
-            case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
-               params.push_back( ScriptParameter(p, DataType::VARIABLE, ReadIntNode(L"standard retvar/variable")) ); 
-               break;
-            
-            // Single string node
-            case ParameterType::COMMENT:        
-            case ParameterType::SCRIPT_NAME:    
-            case ParameterType::LABEL_NAME:     
-               params.push_back( ScriptParameter(p, DataType::STRING, ReadStringNode(L"standard label/script/comment")) );
-               break;
-
-            // Parameter as {Type,Value} pair
-            default:
-               params.push_back( ReadParameter(p, L"standard parameter") );
-               break;
-            }
-         }
+            params += ReadParameter(p, L"standard parameter");
 
          // Return command
          return ScriptCommand(syntax, params);
       }
       
 		// ------------------------------ PROTECTED METHODS -----------------------------
+      
+      /// <summary>Reads a standard command</summary>
+      /// <returns></returns>
+      ScriptParameter ScriptFileReader::ScriptCommandReader::ReadParameter(ParameterSyntax s, const wchar* help)
+      {
+         DataType dt;
+
+         // Read parameter
+         switch (s.Type)
+         {
+         // Single int node
+         case ParameterType::LABEL_NUMBER:   
+            return ScriptParameter(s, DataType::INTEGER, ReadIntNode(help)); 
+
+         // Old 'var' parameter
+         case ParameterType::VARIABLE:
+         // Decode RetVar as DT_VARIABLE
+         case ParameterType::RETURN_VALUE:
+         case ParameterType::RETURN_VALUE_IF:
+         case ParameterType::RETURN_VALUE_IF_START:
+         case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
+            return ScriptParameter(s, DataType::VARIABLE, ReadValueNode(help));   // int by default, string if comment
+            
+         // Single string node
+         case ParameterType::COMMENT:        
+         case ParameterType::SCRIPT_NAME:    
+         case ParameterType::LABEL_NAME:     
+            return ScriptParameter(s, DataType::STRING, ReadStringNode(help));
+
+         // Parameter as {Type,Value} pair
+         default:
+            dt = ReadTypeNode(help);
+            return ScriptParameter(s, dt, ReadValueNode(help));
+         }
+      }
+
+      /// <summary>Reads the next node as a string.</summary>
+      /// <param name="help">error text</param>
+      /// <returns></returns>
+      wstring  ScriptFileReader::ScriptCommandReader::ReadStringNode(const wchar* help)
+      { 
+         return Reader.ReadString(ReadNode(), help);   
+      }
+
+      /// <summary>Reads the next node as an int.</summary>
+      /// <param name="help">error text</param>
+      /// <returns></returns>
+      int  ScriptFileReader::ScriptCommandReader::ReadIntNode(const wchar* help)
+      { 
+         return Reader.ReadInt(ReadNode(), help);
+      }
+
+      /// <summary>Reads the next node as an int/string.</summary>
+      /// <param name="help">error text</param>
+      /// <returns></returns>
+      ParameterValue  ScriptFileReader::ScriptCommandReader::ReadValueNode(const wchar* help)
+      { 
+         return Reader.ReadValue(ReadNode(), help);
+      }
+
+      /// <summary>Reads the next node as a datatype.</summary>
+      /// <param name="help">error text</param>
+      /// <returns></returns>
+      DataType  ScriptFileReader::ScriptCommandReader::ReadTypeNode(const wchar* help)
+      { 
+         return (DataType)LOWORD(ReadIntNode(help));
+      }
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
-
+      
+      /// <summary>Get the next node.</summary>
+      /// <returns></returns>
+      XmlNodePtr  ScriptFileReader::ScriptCommandReader::ReadNode()
+      { 
+         return Command->childNodes->item[NodeIndex++]; 
+      }
    }
 }
