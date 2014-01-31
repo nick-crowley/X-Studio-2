@@ -47,6 +47,8 @@ namespace Logic
          bool      Valid;
          MainType  Type;
       };
+
+      
       
       /// <summary></summary>
       class GameObjectLibrary
@@ -96,7 +98,7 @@ namespace Logic
                   return it->second;
 
                // Error: Not found
-               throw GameObjectNotFoundException(HERE, (UINT)type, subtype);
+               throw GameObjectNotFoundException(HERE, type, subtype);
             }
 
             // ----------------------- MUTATORS ------------------------

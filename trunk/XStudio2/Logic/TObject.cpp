@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TObject.h"
+#include "ScriptObjectLibrary.h"
 
 namespace Logic
 {
@@ -23,7 +24,7 @@ namespace Logic
       /// <summary>Get main type string</summary>
       GuiString GetString(const MainType& m)
       {
-         return GuiString(IDS_MAIN_TYPE_DOCK - (UINT)MainType::Dock + (UINT)m);
+         return GuiString(IDS_FIRST_MAIN_TYPE + (UINT)m);
       }
 
       /// <summary>Increment main type</summary>

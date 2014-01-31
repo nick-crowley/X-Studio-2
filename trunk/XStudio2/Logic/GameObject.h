@@ -7,6 +7,34 @@ namespace Logic
 {
    namespace Types
    {
+      
+      /// <summary>Occurs when a MSCI game object is unrecognised</summary>
+      class GameObjectNotFoundException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create a GameObjectNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="name">object name</param>
+         GameObjectNotFoundException(wstring  src, wstring name) 
+            : ExceptionBase(src, GuiString(L"Cannot find game object '%s'", name.c_str()))
+         {}
+
+         /// <summary>Create a GameObjectNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="maintype">maintype</param>
+         /// <param name="subtype">subtype</param>
+         GameObjectNotFoundException(wstring  src, MainType maintype, UINT subtype) 
+            : ExceptionBase(src, GuiString(L"Cannot find %s game object with id %d", GetString(maintype).c_str(), subtype))
+         {}
+
+         /// <summary>Create a GameObjectNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="maintype">maintype</param>
+         /// <param name="subtype">subtype</param>
+         GameObjectNotFoundException(wstring  src, MainType maintype) 
+            : ExceptionBase(src, GuiString(L"%s game objects have not been loaded", GetString(maintype).c_str()))
+         {}
+      };
 
       /// <summary></summary>
       class GameObject

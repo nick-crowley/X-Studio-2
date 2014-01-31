@@ -143,6 +143,63 @@
 
 #define IDS_FIRST_COMMAND_GROUP                           IDS_COMMAND_GROUP_ARRAY
 
+// Maintype names
+#define IDS_MAIN_TYPE_BULLET                     1015         
+#define IDS_MAIN_TYPE_SECTOR                     1016         
+#define IDS_MAIN_TYPE_BACKGROUND                 1017         
+#define IDS_MAIN_TYPE_SUN                        1018         
+#define IDS_MAIN_TYPE_PLANET                     1019         
+#define IDS_MAIN_TYPE_DOCK                       1020         
+#define IDS_MAIN_TYPE_FACTORY                    1021         // Factory
+#define IDS_MAIN_TYPE_SHIP                       1022         // Ship
+#define IDS_MAIN_TYPE_LASER                      1023         // Laser
+#define IDS_MAIN_TYPE_SHIELD                     1024         // Shield
+#define IDS_MAIN_TYPE_MISSILE                    1025         // Missile
+#define IDS_MAIN_TYPE_ENERGY                     1026         // Ware
+#define IDS_MAIN_TYPE_NATURAL                    1027         // Ware
+#define IDS_MAIN_TYPE_BIO                        1028         // Ware
+#define IDS_MAIN_TYPE_FOOD                       1029         // Ware
+#define IDS_MAIN_TYPE_MINERAL                    1030         // Ware
+#define IDS_MAIN_TYPE_TECH                       1031         // Ware
+#define IDS_MAIN_TYPE_ASTEROID                   1032
+#define IDS_MAIN_TYPE_GATE                       1033 
+#define IDS_MAIN_TYPE_CAMERA                     1034 
+#define IDS_MAIN_TYPE_SPECIAL                    1035 
+#define IDS_MAIN_TYPE_NEBULA                     1036 
+#define IDS_MAIN_TYPE_INSTATION                  1037 
+#define IDS_MAIN_TYPE_DUMMY                      1038 
+#define IDS_MAIN_TYPE_COMMAND                    1039 
+#define IDS_MAIN_TYPE_COCKPIT                    1040 
+#define IDS_MAIN_TYPE_DATATYPE                   1041 
+#define IDS_MAIN_TYPE_UNKNOWN                    1042 
+#define IDS_MAIN_TYPE_DEBRIS                     1043 
+#define IDS_MAIN_TYPE_DOCK_WRECK                 1044 
+#define IDS_MAIN_TYPE_FACTORY_WRECK              1045 
+#define IDS_MAIN_TYPE_SHIP_WRECK                 1046 
+
+#define IDS_FIRST_MAIN_TYPE                      IDS_MAIN_TYPE_BULLET
+
+
+// ScriptObject Group names
+#define IDS_SCRIPT_OBJECT_GROUP_CONSTANT                 1050      // Script Constant
+#define IDS_SCRIPT_OBJECT_GROUP_DATA_TYPE                1051      // Variable Data Type
+#define IDS_SCRIPT_OBJECT_GROUP_FLIGHT_RETURN            1052      // Flight Return Code
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_CLASS             1053      // Object Class
+#define IDS_SCRIPT_OBJECT_GROUP_RACE                     1054      // Race
+#define IDS_SCRIPT_OBJECT_GROUP_RELATION                 1055      // Relation
+#define IDS_SCRIPT_OBJECT_GROUP_PARAMETER_TYPE           1056      // Parameter Syntax
+#define IDS_SCRIPT_OBJECT_GROUP_SECTOR                   1057      // Sector
+#define IDS_SCRIPT_OBJECT_GROUP_STATION_SERIAL           1058      // Station Serial
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_COMMAND           1059      // Object Command
+#define IDS_SCRIPT_OBJECT_GROUP_WING_COMMAND             1060      // Wing Command
+#define IDS_SCRIPT_OBJECT_GROUP_SIGNAL                   1061      // Signal
+#define IDS_SCRIPT_OBJECT_GROUP_TRANSPORT_CLASS          1062      // Transport Class
+#define IDS_SCRIPT_OBJECT_GROUP_OPERATOR                 1063      // Operator
+
+#define IDS_FIRST_SCRIPT_OBJECT_GROUP              IDS_SCRIPT_OBJECT_GROUP_CONSTANT
+
+
+
 // Language page group names
 #define IDS_LANGUAGE_GROUP_DATA                             1430
 #define IDS_LANGUAGE_GROUP_DIALOGUE                         1431
@@ -157,41 +214,4 @@
 #define IDS_LANGUAGE_GROUP_USER                             1440
 
 #define IDS_FIRST_LANGUAGE_GROUP                           IDS_LANGUAGE_GROUP_DATA
-
-
-// Maintype names
-#define IDS_MAIN_TYPE_DOCK                       1020         // Dock
-#define IDS_MAIN_TYPE_FACTORY                    1021         // Factory
-#define IDS_MAIN_TYPE_LASER                      1022         // Laser
-#define IDS_MAIN_TYPE_MISSILE                    1023         // Missile
-#define IDS_MAIN_TYPE_SHIP                       1024         // Ship
-#define IDS_MAIN_TYPE_SHIELD                     1025         // Shield
-#define IDS_MAIN_TYPE_ENERGY                     1026         // Ware
-#define IDS_MAIN_TYPE_NATURAL                    1027         // Ware
-#define IDS_MAIN_TYPE_BIO                        1028         // Ware
-#define IDS_MAIN_TYPE_FOOD                       1029         // Ware
-#define IDS_MAIN_TYPE_MINERAL                    1030         // Ware
-#define IDS_MAIN_TYPE_TECH                       1031         // Ware
-
-#define IDS_FIRST_MAIN_TYPE                        IDS_MAIN_TYPE_DOCK
-
-
-// ScriptObject Group names
-#define IDS_SCRIPT_OBJECT_GROUP_CONSTANT                 1040      // Script Constant
-#define IDS_SCRIPT_OBJECT_GROUP_DATA_TYPE                1041      // Variable Data Type
-#define IDS_SCRIPT_OBJECT_GROUP_FLIGHT_RETURN            1042      // Flight Return Code
-#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_CLASS             1043      // Object Class
-#define IDS_SCRIPT_OBJECT_GROUP_RACE                     1044      // Race
-#define IDS_SCRIPT_OBJECT_GROUP_RELATION                 1045      // Relation
-#define IDS_SCRIPT_OBJECT_GROUP_PARAMETER_TYPE           1046      // Parameter Syntax
-#define IDS_SCRIPT_OBJECT_GROUP_SECTOR                   1047      // Sector
-#define IDS_SCRIPT_OBJECT_GROUP_STATION_SERIAL           1048      // Station Serial
-#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_COMMAND           1049      // Object Command
-#define IDS_SCRIPT_OBJECT_GROUP_WING_COMMAND             1050      // Wing Command
-#define IDS_SCRIPT_OBJECT_GROUP_SIGNAL                   1051      // Signal
-#define IDS_SCRIPT_OBJECT_GROUP_TRANSPORT_CLASS          1052      // Transport Class
-#define IDS_SCRIPT_OBJECT_GROUP_OPERATOR                 1053      // Operator
-
-#define IDS_FIRST_SCRIPT_OBJECT_GROUP              IDS_SCRIPT_OBJECT_GROUP_CONSTANT
-
 
