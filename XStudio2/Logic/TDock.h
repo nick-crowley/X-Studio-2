@@ -39,7 +39,7 @@ namespace Logic
             wstring strRace, strName;
 
             // Aldrin: special case
-            if (id.find(L"_LC_") != wstring::npos)
+            if (id.Contains(L"_LC_", true))
                strRace = L"Aldrin";
 
             // Lookup race

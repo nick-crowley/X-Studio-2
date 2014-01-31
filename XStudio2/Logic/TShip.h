@@ -15,7 +15,7 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
       private:
-         const int MAX_TURRET_COUNT = 7;
+         //const int MAX_TURRET_COUNT = 7;
 
       public:
          enum class TurretPosition : UINT { cockpit = 0, front = 1, rear, left, right, top, bottom };
@@ -78,6 +78,33 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      protected:
+         wstring  GetInternalName() const
+         {
+            GuiString strRace, strName;
+
+            // Pirate: special case
+            if (IsPirate())
+               strRace = L"Pirate";
+
+            // Lookup race
+            else if (race.Defined() && race.Exists())
+               strRace = race.Text;
+
+            // Prepend race, Except when name already contains race in some capacity
+            strName = TObject::GetInternalName();
+            strName = (!strRace.length() || strName.Contains(strRace, true) ? strName : strRace + L" " + strName);
+
+            // Append variable, if any
+            return variation.Defined() && variation.Exists() ? strName + L" " + variation.Text : strName;
+         }
+
+         /// <summary>Determines whether ship race is pirate</summary>
+         /// <returns></returns>
+         bool IsPirate() const
+         {
+            return id.Right(2) == L"_P" || id.Right(4) == L"_P_1" || id.Right(4) == L"_P_2" || id.Right(4) == L"_P_3";
+         }
 
          // ----------------------- MUTATORS ------------------------
 

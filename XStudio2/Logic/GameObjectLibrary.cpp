@@ -3,6 +3,8 @@
 #include "XFileSystem.h"
 #include "WorkerFeedback.h"
 #include "TLaser.h"
+#include "TMissile.h"
+#include "TShip.h"
 #include "TShield.h"
 #include "TFactory.h"
 #include "TDock.h"
@@ -55,6 +57,7 @@ namespace Logic
       /// <param name="data">Worker data.</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentNullException">Worker data is null</exception>
+      /// <exception cref="Logic::NotSupportedException">Unsupported file type identified, but reader not available</exception>
       UINT GameObjectLibrary::Enumerate(const XFileSystem& vfs, WorkerData* data)
       {
          REQUIRED(data);
@@ -83,6 +86,8 @@ namespace Logic
                TFileReaderPtr reader;
                switch (fn.Type)
                {
+               case MainType::Ship:        reader.reset(new TShipReader(f.OpenRead()));    break;
+               case MainType::Missile:     reader.reset(new TMissileReader(f.OpenRead())); break;
                case MainType::Laser:       reader.reset(new TLaserReader(f.OpenRead()));   break;
                case MainType::Shield:      reader.reset(new TShieldReader(f.OpenRead()));  break;
                case MainType::Dock:        reader.reset(new TDockReader(f.OpenRead()));    break;
@@ -93,6 +98,8 @@ namespace Logic
                case MainType::NaturalWare: reader.reset(new TWareReader(f.OpenRead()));    break;
                case MainType::MineralWare: reader.reset(new TWareReader(f.OpenRead()));    break;
                case MainType::TechWare:    reader.reset(new TWareReader(f.OpenRead()));    break;
+               default:
+                  throw NotSupportedException(HERE, GuiString(L"%s files are not supported", GetString(fn.Type).c_str()));
                }
 
                // Read/store file directly 
