@@ -35,14 +35,22 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line, const CommandLexer& lex) const
+         /// <summary>Generate an error for the entire line</summary>
+         /// <param name="msg">The message</param>
+         /// <param name="lex">The lexer</param>
+         /// <returns></returns>
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
          {
-            return ErrorToken(msg, GetLineNumber(line), lex.count() ? lex.begin()->Start : 0, line->length()-1);
+            return ErrorToken(msg, LineNumber, lex.count()?lex.begin()->Start:0, CurrentLine->length()-1);
          }
 
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const
+         /// <summary>Generate an error for a single token</summary>
+         /// <param name="msg">The message</param>
+         /// <param name="tok">The token</param>
+         /// <returns></returns>
+         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
          {
-            return ErrorToken(msg, GetLineNumber(line), tok->Start, tok->End);
+            return ErrorToken(msg, LineNumber, tok->Start, tok->End);
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
@@ -51,12 +59,20 @@ namespace Logic
 
          // ------------------------------- PRIVATE METHODS ------------------------------
          
-         /// <summary>Get the one-based line number of a line</summary>
-         /// <param name="line">The line</param>
-         /// <returns>One based line number</returns>
-         UINT  ScriptParser::GetLineNumber(const LineIterator& line) const
+         /// <summary>Reads the next node but returns the current node</summary>
+         /// <returns>Node that was current before call</returns>
+         ScriptParser::CommandNode*  ScriptParser::Advance()
          {
-            return line - Input.begin() + 1;
+            CommandNode* tmp = CurrentNode;
+            CurrentNode = ReadLine();
+            return tmp;
+         }
+         
+         /// <summary>Get the one-based line number of the current line</summary>
+         /// <returns>One based line number</returns>
+         UINT  ScriptParser::GetLineNumber() const
+         {
+            return CurrentLine - Input.begin() + 1;
          }
 
          
@@ -68,7 +84,7 @@ namespace Logic
          {
             // Read first command
             CurrentLine = Input.begin();
-            CurrentNode = ParseNode();
+            CurrentNode = ReadLine();
 
             while (CurrentNode)
             {  
@@ -104,13 +120,10 @@ namespace Logic
             Script->Verify(Errors);
          }
 
-         ScriptParser::CommandNode*  ScriptParser::Advance()
-         {
-            CommandNode* tmp = CurrentNode;
-            CurrentNode = ParseNode();
-            return tmp;
-         }
-         
+         /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          void ScriptParser::ParseIf(CommandTree& If)
          {
             while (CurrentNode)
@@ -148,6 +161,10 @@ namespace Logic
             }
          }
 
+         /// <summary>Reads current 'else' command and all descendants</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          void ScriptParser::ParseElse(CommandTree& Else)
          {
             while (CurrentNode)
@@ -180,6 +197,10 @@ namespace Logic
             }
          }
 
+         /// <summary>Reads current 'skip-if' command and all descendants</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          void ScriptParser::ParseSkipIf(CommandTree& SkipIf)
          {
             // Read children
@@ -222,66 +243,6 @@ namespace Logic
                }
             }
          }
-
-         
-         /// <summary>Parses a line into a command node, and advances the line iterator</summary>
-         /// <param name="parent">Parent node</param>
-         /// <param name="line">The line.</param>
-         /// <returns>Single command node</returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
-         /// <remarks>Grammar:
-         /// 
-         ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
-         ///    value = constant/variable/literal/null
-         ///    assignment = variable '='
-         ///    comment = '*' text?
-         ///    nop = ws*
-         /// 
-         ///    line = nop/comment/command/expression
-         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
-         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandNode* ScriptParser::ParseNode()
-         {
-            // EOF:
-            if (CurrentLine == Input.end())
-               return nullptr;
-
-            LineIterator  text = CurrentLine++;  // consume line
-            CommandLexer  lex(*text);
-            CommandTree   node;
-            
-            // DEBUG:
-            #ifdef PRINT_CONSOLE
-               Console << GetLineNumber(text) << L": " << *text << ENDL;
-               auto num = GetLineNumber(text);
-            #endif
-
-            // Comment/NOP:
-            if (MatchComment(lex))
-               return ReadComment(lex, text);
-
-            // Command:
-            else if (MatchCommand(lex))
-               return ReadCommand(lex, text);
-
-            // Expression:
-            else if (MatchExpression(lex))
-               return ReadExpression(lex, text);
-            
-            // DEBUG:
-            #ifdef PRINT_CONSOLE
-               Console << Colour::Yellow << L"FAILED" << ENDL;
-               for (auto tok : lex.Tokens)
-                  Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
-            #endif
-
-            // UNRECOGNISED: Generate empty node
-            Errors += MakeError(L"Unable to parse command", text, lex);
-            return new CommandNode(ScriptCommand::Unknown, lex, GetLineNumber(text));
-         }
-
 
          
          /// <summary>Matches an array variable and opening index operator</summary>
@@ -497,9 +458,8 @@ namespace Logic
 
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
-         /// <param name="line">The line</param>
          /// <returns>New NOP/Comment command node</returns>
-         ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadComment(const CommandLexer& lex)
          {
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -508,7 +468,7 @@ namespace Logic
 
             // NOP: Create command
             if (lex.count() == 0)
-               return new CommandNode(ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *line, ParameterArray()), lex, GetLineNumber(line));
+               return new CommandNode(ScriptCommand(SyntaxLib.Find(CMD_NOP, Version), *CurrentLine, ParameterArray()), lex, LineNumber);
             
             // Comment
             CommandSyntax syntax(SyntaxLib.Find(CMD_COMMENT, Version));
@@ -519,19 +479,18 @@ namespace Logic
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
             // Create command
-            return new CommandNode(ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
+            return new CommandNode(ScriptCommand(syntax, *CurrentLine, params), lex, LineNumber);
          }
 
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
-         /// <param name="line">The line</param>
          /// <returns>New Non-expression command node</returns>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    assignment = variable '='
          ///    
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
-         ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex)
          {
             Conditional   condition = Conditional::DISCARD;
             TokenIterator refObj = lex.end(), 
@@ -557,8 +516,8 @@ namespace Logic
             
             // Unrecognised: error
             if (syntax == CommandSyntax::Unknown)
-               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", line, lex) 
-                                           : MakeError(L"Unexpected token in command", line, pos));
+               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) 
+                                           : MakeError(L"Unexpected token in command", pos));
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -582,7 +541,7 @@ namespace Logic
                   if (lex.Valid(refObj))
                      params += ScriptParameter(ps, *refObj);
                   else
-                     Errors += MakeError(L"Missing reference object", line, lex);
+                     Errors += MakeError(L"Missing reference object", lex);
                }
                // Parameter
                else if (!tokens.empty())
@@ -592,7 +551,7 @@ namespace Logic
                }
                else
                {  // Missing parameter
-                  Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), line, lex);
+                  Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), lex);
                   break;
                }
             }
@@ -600,12 +559,11 @@ namespace Logic
             // TODO: Check for excess parameters?
 
             // Create node
-            return new CommandNode(ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
+            return new CommandNode(ScriptCommand(syntax, *CurrentLine, params), lex, LineNumber);
          }
 
          /// <summary>Reads an entire expression command</summary>
          /// <param name="lex">The lexer</param>
-         /// <param name="line">The line</param>
          /// <returns>New Expression command node</returns>
          /// <exception cref="Logic::ArgumentException">Error in expression parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in expression parsing algorithm</exception>
@@ -616,7 +574,7 @@ namespace Logic
          ///    unary_operator = '!'/'-'/'~'
          /// 
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex, const LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
             TokenIterator  pos = lex.begin();
             CommandSyntax  syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
@@ -646,7 +604,7 @@ namespace Logic
             }
             catch (ScriptSyntaxException& e) {
                // syntax error
-               Errors += MakeError(e.Message, line, pos);
+               Errors += MakeError(e.Message, pos);
 
                // DEBUG: print tokens
                for (auto it = lex.begin(); it != lex.end(); ++it)
@@ -654,9 +612,77 @@ namespace Logic
             }
 
             // Create expression
-            return new CommandNode(ScriptCommand(syntax, *line, params), lex, GetLineNumber(line));
+            return new CommandNode(ScriptCommand(syntax, *CurrentLine, params), lex, LineNumber);
+         }
+         
+
+         /// <summary>Parses a line into a command node, and advances the line iterator</summary>
+         /// <param name="parent">Parent node</param>
+         /// <param name="line">The line.</param>
+         /// <returns>Single command node, or nullptr if EOF</returns>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
+         /// <remarks>Grammar:
+         /// 
+         ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
+         ///    value = constant/variable/literal/null
+         ///    assignment = variable '='
+         ///    comment = '*' text?
+         ///    nop = ws*
+         /// 
+         ///    line = nop/comment/command/expression
+         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
+         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
+         ScriptParser::CommandNode* ScriptParser::ReadLine()
+         {
+            // EOF: Return
+            if (CurrentLine == Input.end())
+               return nullptr;
+
+            // Lex current line
+            CommandLexer  lex(*CurrentLine);
+            CommandNode*  node;
+            
+            // DEBUG:
+            #ifdef PRINT_CONSOLE
+               Console << GetLineNumber(text) << L": " << *text << ENDL;
+               auto num = GetLineNumber(text);
+            #endif
+
+            // Comment/NOP:
+            if (MatchComment(lex))
+               node = ReadComment(lex);
+
+            // Command:
+            else if (MatchCommand(lex))
+               node = ReadCommand(lex);
+
+            // Expression:
+            else if (MatchExpression(lex))
+               node = ReadExpression(lex);
+            
+            else
+            {
+               // DEBUG:
+               #ifdef PRINT_CONSOLE
+                  Console << Colour::Yellow << L"FAILED" << ENDL;
+                  for (auto tok : lex.Tokens)
+                     Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
+               #endif
+
+               // UNRECOGNISED: Generate empty node
+               Errors += MakeError(L"Unable to parse command", lex);
+               node = new CommandNode(ScriptCommand::Unknown, lex, LineNumber);
+            }
+
+            // Consume line + return node
+            ++CurrentLine;
+            return node;
          }
 
+
+         
       }
    }
 }

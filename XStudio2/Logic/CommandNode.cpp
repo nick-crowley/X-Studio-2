@@ -124,8 +124,6 @@ namespace Logic
             // Verify root
             if (IsRoot())
                VerifyScript(err);
-
-            
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -208,15 +206,22 @@ namespace Logic
          /// <param name="err">The error collection</param>
          void  ScriptParser::CommandNode::VerifyScript(ErrorArray& err) const
          {
-            CommandTree ret;
-
             // Ensure script has commands
             if (Children.size() == 0)
+            {
                err += ErrorToken(L"No commands found", LineNumber, LineText);
+               return;
+            }
 
             // Ensure last command is RETURN
-            else if ((ret = Children.end()[-1])->Command.Is(CMD_RETURN) == false)
-               err += ErrorToken(L"Last command in script must be 'return'", ret->LineNumber, ret->LineText);
+            for (auto cmd = Children.rbegin(); cmd != Children.rend(); ++cmd)
+            {
+               if (cmd[0]->Command.Is(CommandType::Auxiliary))
+                  continue;
+               else if (!cmd[0]->Command.Is(CMD_RETURN))
+                  err += ErrorToken(L"Last command in script must be 'return'", cmd[0]->LineNumber, cmd[0]->LineText);
+               break;
+            }
          }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
