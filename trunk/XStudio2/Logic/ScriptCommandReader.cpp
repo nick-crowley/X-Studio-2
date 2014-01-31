@@ -157,7 +157,7 @@ namespace Logic
          {
          // Single int node
          case ParameterType::LABEL_NUMBER:   
-            return ScriptParameter(s, DataType::INTEGER, ReadIntNode(help)); 
+            return ScriptParameter(s, DataType::STRING, ReadValueNode(help)); 
 
          // Old 'var' parameter
          case ParameterType::VARIABLE:

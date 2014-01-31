@@ -90,6 +90,10 @@ namespace Logic
       // Parse each script
       for (auto& v : vfs.Browse(XFolder::Scripts))
       {
+         // Ensure PCK/XML
+         if (!v.FullPath.HasExtension(L".pck") && !v.FullPath.HasExtension(L".xml"))
+            continue;
+
          try
          {
             // Feedback

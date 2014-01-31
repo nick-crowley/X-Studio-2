@@ -90,6 +90,21 @@ namespace Logic
                // Not found
                throw InvalidOperationException(HERE, GuiString(L"No properties loaded for external script '%s'", name.c_str()));
             }
+
+            /// <summary>Finds a name of script argument by index.</summary>
+            /// <param name="name">script name (without extension, case sensitive)</param>
+            /// <param name="index">Zero based index</param>
+            /// <returns>Argument name if found, otherwise placeholder</returns>
+            /// <exception cref="Logic::InvalidOperationException">Script not present</exception>
+            wstring  FindArgument(const wstring& name, UINT index)
+            {
+               // Lookup name + Validate index
+               if (Contains(name) && index < Find(name).Variables.size())
+                  return Find(name).Variables[index].Name;
+               
+               // Missing/Invalid: 
+               return GuiString(L"argument%d", index+1);
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
