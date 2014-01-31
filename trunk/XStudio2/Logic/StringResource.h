@@ -84,7 +84,7 @@ namespace Logic
       /// <returns></returns>
       bool Contains(const wstring& str, bool matchCase) const
       {
-         return matchCase ? StrStrI(c_str(), str.c_str()) == 0 : find(str) != npos;
+         return matchCase ? StrStrI(c_str(), str.c_str()) != nullptr : find(str) != npos;
       }
       
       /// <summary>Perform case insensitive comparison</summary>

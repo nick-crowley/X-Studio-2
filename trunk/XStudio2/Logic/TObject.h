@@ -69,12 +69,6 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         // MOVE TO TSHIP
-         /*bool IsPirate() const
-         {
-            return subtype.Right(2) == L"_P" || subtype.Right(4) == L"_P_1" || subtype.Right(4) == L"_P_2" || subtype.Right(4) == L"_P_3";
-         }*/
-
          wstring GetFullName() const;
       
       protected:
@@ -88,7 +82,7 @@ namespace Logic
          MainType  Type;
 
          // Header
-         wstring         id;
+         GuiString       id;
          Vector3<float>  rotation;
 	      wstring         bodyFile;
 	      int             pictureID;

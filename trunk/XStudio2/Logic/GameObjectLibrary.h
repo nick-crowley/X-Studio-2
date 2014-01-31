@@ -20,10 +20,10 @@ namespace Logic
             // Identify file
             if (name == L"tlaser")
                Type = MainType::Laser;
-            /*else if (name == L"tmissiles")
-               Type = MainType::Missile;*/
-            /*else if (name == L"tships")
-               Type = MainType::Ship;*/
+            else if (name == L"tmissiles")
+               Type = MainType::Missile;
+            else if (name == L"tships")
+               Type = MainType::Ship;
             else if (name == L"tdocks")
                Type = MainType::Dock;
             else if (name == L"tfactories")
