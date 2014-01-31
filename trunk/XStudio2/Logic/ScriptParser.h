@@ -16,7 +16,7 @@ namespace Logic
          typedef vector<wstring>  LineArray;
 
          /// <summary>Constant line iterator</summary>
-         typedef LineArray::const_iterator LineIterator;
+         typedef LineArray::const_iterator  LineIterator;
 
          /// <summary>Generates a parse tree from MSCI scripts</summary>
          /// <remarks>TODO: Handle the START keyword</remarks>
@@ -72,7 +72,8 @@ namespace Logic
             {
                // ------------------------ TYPES --------------------------
             public:
-               typedef vector<CommandTree>::const_iterator  NodeIterator;
+               typedef vector<CommandTree>        NodeArray;
+               typedef NodeArray::const_iterator  NodeIterator;
 
                // --------------------- CONSTRUCTION ----------------------
             public:
@@ -99,25 +100,19 @@ namespace Logic
                
                // ----------------------- MUTATORS ------------------------
             public:
-               CommandTree  Add(CommandNode* node);
-               CommandTree  Pop()
-               {
-                  auto last = Children.end()[-1];
-                  Children.pop_back();
-                  return last;
-               }
+               CommandTree  Add(CommandTree node);
 
                // -------------------- REPRESENTATION ---------------------
 
                CommandNode*   Parent;           // Parent node
-               BranchLogic          Logic;            // logic type
-               ScriptCommand        Command;          // Command
-               UINT                 LineNumber,       // 1-based line number
-                                    Index;            // 0-based standard codearray index
-               CHARRANGE            LineText;         // Start/end character offsets
-               CommandNode*         JumpTarget;       // Destination of jump
-               vector<CommandTree>  Children;         // Child commands
-               wstring  Text;
+               BranchLogic    Logic;            // logic type
+               ScriptCommand  Command;          // Command
+               UINT           LineNumber,       // 1-based line number
+                              Index;            // 0-based standard codearray index
+               CHARRANGE      LineText;         // Start/end character offsets
+               CommandNode*   JumpTarget;       // Destination of jump
+               NodeArray      Children;         // Child commands
+               wstring        Text;             // Debugging
             };
 
             /// <summary>Legacy typedef</summary>
@@ -154,7 +149,7 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          private:
-            CommandNode*   Advance();
+            CommandTree    Advance();
             void           ParseRoot();
             void           ParseIf(CommandTree& If);
             void           ParseElse(CommandTree& Else);
@@ -180,7 +175,7 @@ namespace Logic
             const GameVersion Version;
 
             LineIterator  CurrentLine;
-            CommandNode*  CurrentNode;
+            CommandTree   CurrentNode;
          };
       }
    }
