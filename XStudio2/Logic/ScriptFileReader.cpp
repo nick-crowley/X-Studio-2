@@ -141,7 +141,7 @@ namespace Logic
             return 0;
 
          // Error
-         throw FileFormatException(HERE, GuiString(L"Cannot read %s <sval> node", help));
+         throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
       }
 
       
@@ -188,7 +188,7 @@ namespace Logic
          for (ScriptCommand& cmd : script.Commands)
          {
             // GOTO/GOSUB: Replace label number parameters with label name params
-            if (cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB))
+            if (!cmd.Commented && (cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB)))
             {
                // Validate line number
                if (cmd.GetJumpDestination() >= std.size())
@@ -197,15 +197,20 @@ namespace Logic
                // Convert label number -> label name
                cmd.SetLabelName( std[cmd.GetJumpDestination()].GetLabelName() );
             }
-            // LABEL: Store in script
+            // LABEL: Store for later
             else if (cmd.Is(CMD_DEFINE_LABEL))
-            {
                script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
-               //Console << "Label " << cmd.GetLabelName() << " on line " << line << ENDL;
-            }
+
             // SCRIPT-CALL: Load script properties
             else if (cmd.Is(CMD_CALL_SCRIPT_VAR_ARGS) && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
-               script.ScriptCalls.Add(name, ReadExternalScript(name));
+            {
+               try {
+                  script.ScriptCalls.Add(name, ReadExternalScript(name));
+               }
+               catch (ExceptionBase& e ) {
+                  Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
+               }
+            }
 
             // Translate
             cmd.Translate(script);
@@ -226,7 +231,7 @@ namespace Logic
             throw FileNotFoundException(HERE, Folder+name);
 
          // Feedback
-         Console << ENDL << L"  Resolving script call: " << Colour::Yellow << path << Colour::White << L"...";
+         Console << ENDL << L"  Resolving script call: " << Colour::Yellow << name << Colour::White << L"...";
 
          // Read script
          XFileInfo f(path);
@@ -261,7 +266,7 @@ namespace Logic
 
          // Ensure type is int
          if (ReadAttribute(node, L"type") != L"int")
-            throw FileFormatException(HERE, GuiString(L"Cannot read %s <sval> node", help));
+            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
          // Read value
          return _wtoi(ReadAttribute(node, L"val").c_str());
@@ -280,7 +285,7 @@ namespace Logic
 
          // Ensure type is string
          if (ReadAttribute(node, L"type") != L"string")
-            throw FileFormatException(HERE, GuiString(L"Cannot read %s <sval> node", help));
+            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
          // Read value
          return ReadAttribute(node, L"val");
@@ -307,7 +312,7 @@ namespace Logic
             return _wtoi(ReadAttribute(node, L"val").c_str());
 
          // Unknown type
-         throw FileFormatException(HERE, GuiString(L"Cannot read %s <sval> node", help));
+         throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
       }
 
       /// <summary>Reads the variables codearray branch</summary>

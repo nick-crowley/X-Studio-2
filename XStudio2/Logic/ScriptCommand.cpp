@@ -225,12 +225,11 @@ namespace Logic
          // Script Calls: Print remaining syntax
          else if (Is(CMD_CALL_SCRIPT_VAR_ARGS))
          {
-            // Lookup previously loaded script call
-            auto& call = f.ScriptCalls.Find(GetScriptCallName());
+            wstring name = GetScriptCallName();
 
             // Populate argument name/value pairs
             for (UINT i = 3; i < Parameters.size(); ++i)
-               Text.append(GuiString(L" %s=%s", call.Variables[i-3].Name.c_str(), Parameters[i].Text.c_str()));
+               Text.append(GuiString(L" %s=%s", f.ScriptCalls.FindArgument(name, i-3).c_str(), Parameters[i].Text.c_str()));
          }
 
          // Commented: Insert comment operator

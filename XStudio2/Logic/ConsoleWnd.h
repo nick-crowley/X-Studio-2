@@ -42,12 +42,14 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
          *this << ENDL 
-               << Colour::Red << L"ERROR: " 
-               << Colour::Yellow << msg 
-               << Colour::White << L"..." << src << ENDL;
-         *this << Colour::Red << L"Source: " 
-               << Colour::Yellow << e.Message.TrimRight(L"\r\n")
-               << Colour::White << L"..." << e.Source << ENDL;
+               << Colour::Purple << L"ERROR: " 
+               << Colour::Red << msg 
+               << Colour::White << L"...     Source: " 
+               << Colour::Yellow << src << ENDL;
+         *this << Colour::Purple << L"CAUSE: " 
+               << Colour::Red << e.Message.TrimRight(L"\r\n")
+               << Colour::White << L"...     Source: " 
+               << Colour::Yellow << e.Source << ENDL;
       }
 
       /// <summary>Logs an exception to the console.</summary>
@@ -56,11 +58,12 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
          *this << ENDL 
-               << Colour::Red << L"EXCEPTION: " 
-               << Colour::Yellow << e.Message.TrimRight(L"\r\n") 
-               << Colour::White << L"..." << src << ENDL;
-         *this << Colour::Red << L"Source: " 
-               << Colour::White << e.Source << ENDL;
+               << Colour::Purple << L"EXCEPTION: " 
+               << Colour::Red << e.Message.TrimRight(L"\r\n") 
+               << Colour::White << L"...    Source: " 
+               << Colour::Yellow << src << ENDL;
+         *this << Colour::Purple << L"SOURCE: " 
+               << Colour::Yellow << e.Source << ENDL;
       }
 
       /// <summary>Logs an STL exception to the console.</summary>
@@ -69,9 +72,10 @@ namespace Logic
       void  Log(const GuiString& src, const exception&e)
       {
          *this << ENDL 
-               << Colour::Red << L"STL EXCEPTION: " 
-               << Colour::Yellow << e.what()
-               << Colour::White << L"..." << src << ENDL;
+               << Colour::Purple << L"STL EXCEPTION: " 
+               << Colour::Red << e.what()
+               << Colour::White << L"...    Source: " 
+               << Colour::Yellow << src << ENDL;
       }
 
       /// <summary>Sets the text colour</summary>
@@ -233,8 +237,11 @@ namespace Logic
       void WriteText(const wstring& txt)
       {
          DWORD written=0;
-         OutputDebugString(txt.c_str());
          WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), txt.c_str(), txt.length(), &written, NULL);
+
+#ifdef _DEBUG
+         OutputDebugString(txt.c_str());
+#endif
       }
 
       // -------------------- REPRESENTATION ---------------------
