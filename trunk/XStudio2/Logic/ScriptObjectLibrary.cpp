@@ -56,9 +56,12 @@ namespace Logic
       /// <summary>Populates the library from the string library</summary>
       /// <param name="data">Feedback data</param>
       /// <returns>Number of objects found</returns>
+      /// <exception cref="Logic::ArgumentNullException">Worker data is null</exception>
       /// <exception cref="Logic::InvalidOperationException">String library is empty</exception>
       UINT  ScriptObjectLibrary::Enumerate(WorkerData* data)
       {
+         REQUIRED(data);
+
          // Ensure string library exists
          if (StringLib.Files.empty())
             throw InvalidOperationException(HERE, L"String library has not been enumerated");

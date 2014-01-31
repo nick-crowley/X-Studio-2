@@ -85,11 +85,11 @@ namespace Logic
 			// ----------------------- MUTATORS ------------------------
 
       public:
-         DWORD   Enumerate(Path folder, GameVersion version, WorkerData* data);
+         DWORD   Enumerate(Path folder, GameVersion version, const WorkerData* data = &WorkerData::NoFeedback);
          
       private:
          DWORD   EnumerateCatalogs();
-         DWORD   EnumerateFiles(WorkerData* data);
+         DWORD   EnumerateFiles(const WorkerData* data);
          void    EnumerateFolder(Path  folder);
          
          // -------------------- REPRESENTATION ---------------------

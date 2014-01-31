@@ -15,6 +15,9 @@ namespace Logic
 {
    namespace Threads
    {
+      // -------------------------------- STATIC DATA  --------------------------------
+
+      const WorkerData   WorkerData::NoFeedback(Operation::Dummy);
 
       // -------------------------------- CONSTRUCTION --------------------------------
    

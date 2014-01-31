@@ -54,8 +54,11 @@ namespace Logic
       /// <param name="vfs">The VFS.</param>
       /// <param name="data">Worker data.</param>
       /// <returns></returns>
+      /// <exception cref="Logic::ArgumentNullException">Worker data is null</exception>
       UINT GameObjectLibrary::Enumerate(const XFileSystem& vfs, WorkerData* data)
       {
+         REQUIRED(data);
+
          // Clear previous contents
          Clear();
 
