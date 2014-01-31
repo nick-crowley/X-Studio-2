@@ -84,7 +84,7 @@ namespace Logic
             {
                const_iterator pos;
                // Lookup and return
-               if ((pos = find(name)) != end());
+               if ((pos = find(name)) != end())
                   return pos->second;
 
                // Not found

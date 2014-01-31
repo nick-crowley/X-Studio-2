@@ -35,10 +35,10 @@ namespace Logic
       // ----------------------- MUTATORS ------------------------
 
    public:
-      /// <summary>Logs the specified source.</summary>
-      /// <param name="src">The source.</param>
-      /// <param name="e">The e.</param>
-      /// <param name="msg">The MSG.</param>
+      /// <summary>Logs an exception to the console.</summary>
+      /// <param name="src">Handler location</param>
+      /// <param name="e">error</param>
+      /// <param name="msg">Handler error message</param>
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
          *this << ENDL 
@@ -50,9 +50,9 @@ namespace Logic
                << Colour::White << L"..." << e.Source << ENDL;
       }
 
-      /// <summary>Logs the specified source.</summary>
-      /// <param name="src">The source.</param>
-      /// <param name="e">The e.</param>
+      /// <summary>Logs an exception to the console.</summary>
+      /// <param name="src">Handler location</param>
+      /// <param name="e">error</param>
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
          *this << ENDL 
@@ -61,6 +61,17 @@ namespace Logic
                << Colour::White << L"..." << src << ENDL;
          *this << Colour::Red << L"Source: " 
                << Colour::White << e.Source << ENDL;
+      }
+
+      /// <summary>Logs an STL exception to the console.</summary>
+      /// <param name="src">Handler location</param>
+      /// <param name="e">error</param>
+      void  Log(const GuiString& src, const exception&e)
+      {
+         *this << ENDL 
+               << Colour::Red << L"STL EXCEPTION: " 
+               << Colour::Yellow << e.what()
+               << Colour::White << L"..." << src << ENDL;
       }
 
       /// <summary>Sets the text colour</summary>

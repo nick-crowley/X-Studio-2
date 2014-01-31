@@ -306,8 +306,14 @@ NAMESPACE_BEGIN(GUI)
    
    void MainWnd::OnRunAllTests()
    {
-      DebugTests::RunAll();
-      AfxMessageBox(L"Tests complete");
+      try
+      {
+         DebugTests::RunAll();
+         AfxMessageBox(L"Tests completed successfully");
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unhandled exception in debugging tests");
+      }
    }
 
    /// <summary>Display caret co-ordinates in status bar</summary>

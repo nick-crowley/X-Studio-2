@@ -69,13 +69,43 @@ namespace Logic
       //Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
-      Test_Iterator();
+      //Test_Iterator();
+      Test_BatchScriptCompile();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
+   void DebugTests::Test_BatchScriptCompile()
+   {
+      XFileSystem vfs;
+
+      // Parse script
+      Console << ENDL << Colour::Cyan << L"Performing MSCI script batch test: " << ENDL;
+
+      // Browse scripts in VFS
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      for (auto& v : vfs.Browse(XFolder::Scripts))
+      {
+         try
+         {
+            // Feedback
+            Console << L" Parsing MSCI script: " << v.FullPath.FileName << L"...";
+
+            // Parse script
+            ScriptFile script = ScriptFileReader(v.OpenRead()).ReadFile(v.FullPath.Folder, false);
+            Console << Colour::Green << L"Success" << ENDL;
+         }
+         catch (ExceptionBase& e) {
+            Console << Colour::Red << L"Failed" << ENDL;
+            Console.Log(HERE, e);
+            break;
+         }
+      }
+
+      
+   }
    void DebugTests::Test_CommandSyntax()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 

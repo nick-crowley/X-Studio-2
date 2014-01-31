@@ -67,12 +67,15 @@ namespace Logic
       /// <param name="version">Game version</param>
       /// <param name="data">Background worker data</param>
       /// <returns>Number of files found</returns>
+      /// <exception cref="Logic::ArgumentNullException">Worker data is null</exception>
       /// <exception cref="Logic::DirectoryNotFoundException">Folder does not exist</exception>
       /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version, WorkerData* data)
+      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version, const WorkerData* data)
       {
+         REQUIRED(data);
+
          // Clear previous
          Catalogs.clear();
          Files.clear();
@@ -181,7 +184,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::EnumerateFiles(WorkerData* data)
+      DWORD  XFileSystem::EnumerateFiles(const WorkerData* data)
       {
          // Iterate thru catalogs (Highest priority -> Lowest)
          for (const XCatalog& cat : Catalogs)

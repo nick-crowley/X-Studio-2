@@ -17,14 +17,17 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary></summary>
-      enum class Operation : UINT { LoadGameData };
+      enum class Operation : UINT { LoadGameData, Dummy };
 
       /// <summary></summary>
       class WorkerProgress
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          WorkerProgress(Operation op, ProgressType t, UINT indent, const wstring& sz) : Operation(op), Type(t), Text(sz), Indent(indent)
          {}
+
+         // -------------------- REPRESENTATION ---------------------
 
          const Operation     Operation;
          const ProgressType  Type;
@@ -35,12 +38,23 @@ namespace Logic
       /// <summary></summary>
       class WorkerData
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          WorkerData(Operation op) : Operation(op), MainWnd(AfxGetMainWnd()), Aborted(false)
          {}
          virtual ~WorkerData()
          {}
 
+         // ------------------------ STATIC -------------------------
+      public:
+         const static WorkerData   NoFeedback;
+
+         // --------------------- PROPERTIES ------------------------
+			
+         // ---------------------- ACCESSORS ------------------------			
+
+         // ----------------------- MUTATORS ------------------------
+         
          /// <summary>Command thread to stop</summary>
          void  Abort()
          {
@@ -48,14 +62,18 @@ namespace Logic
          }
 
          /// <summary>Inform main window of progress</summary>
-         void  SendFeedback(ProgressType t, UINT indent, const wstring& sz)
+         void  SendFeedback(ProgressType t, UINT indent, const wstring& sz) const
          {
-            MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
+            if (Operation != Operation::Dummy)
+               MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
          }
 
          /// <summary>Inform main window of progress and print message to console</summary>
-         void  SendFeedback(Colour c, ProgressType t, UINT indent, const wstring& sz)
+         void  SendFeedback(Colour c, ProgressType t, UINT indent, const wstring& sz) const
          {
+            if (Operation == Operation::Dummy)
+               return;
+
             // Output to console 
             if (c == Colour::Cyan)
                Console << ENDL;
@@ -64,6 +82,8 @@ namespace Logic
             // Output to GUI
             MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
          }
+
+         // -------------------- REPRESENTATION ---------------------
 
       private:
          Operation  Operation;

@@ -24,6 +24,7 @@ namespace Logic
       //static ScriptFile  LoadScript(const WCHAR* path);
 
    private:
+      static void  Test_BatchScriptCompile();
       static void  Test_CommandSyntax();
       static void  Test_LanguageFileReader();
       static void  Test_TFileReader();
