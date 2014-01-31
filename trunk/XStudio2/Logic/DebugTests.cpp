@@ -106,7 +106,6 @@ namespace Logic
          catch (ExceptionBase& e) {
             Console << Colour::Red << L"Failed" << ENDL;
             Console.Log(HERE, e);
-            break;
          }
       }
 

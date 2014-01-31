@@ -195,6 +195,7 @@ namespace Logic
       /// <param name="g">The group</param>
       /// <returns>script object with new text</returns>
       /// <exception cref="Logic::ArgumentException">Incompatible page</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid sector string ID</exception>
       ScriptObject  ScriptObject::operator+(ScriptObjectGroup g)
       {
          switch (g)

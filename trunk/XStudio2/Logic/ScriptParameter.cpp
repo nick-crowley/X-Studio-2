@@ -117,10 +117,14 @@ namespace Logic
          case DataType::RACE:             
          case DataType::SCRIPTDEF:        
          case DataType::SECTOR:   
-         case DataType::STATIONSERIAL:    
          case DataType::TRANSPORTCLASS:   
          case DataType::WINGCOMMAND:      
             Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), Value.Int).DisplayText;   
+            break;
+
+         // StationSerial: Map ID then convert
+         case DataType::STATIONSERIAL:    
+            Text = ScriptObjectLib.Find(ScriptObject::IdentifyGroup(Type), StationSerialConverter::ToStringID((Serial)Value.Int)).DisplayText;   
             break;
 
          // Relation: Map ID then convert
