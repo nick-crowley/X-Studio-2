@@ -87,6 +87,15 @@ namespace Logic
          public:
             // ---------------------- ACCESSORS ------------------------			
 
+            /// <summary>Query whether an object is present</summary>
+            /// <param name="main">The main type</param>
+            /// <param name="subtype">The subtype</param>
+            /// <returns></returns>
+            bool  Contains(MainType main, UINT subtype) const
+            {
+               return find(ObjectID(main, subtype)) != end();
+            }
+
             /// <summary>Finds a game object by SubType</summary>
             /// <param name="type">Main type.</param>
             /// <param name="subtype">SubType.</param>
@@ -178,7 +187,9 @@ namespace Logic
 			
          // ---------------------- ACCESSORS ------------------------			
       public:
+         bool  Contains(UINT value) const;
          bool  Contains(const GuiString& name) const;
+         bool  Contains(MainType main, UINT subtype) const;
 
          // ----------------------- MUTATORS ------------------------
       public:

@@ -45,11 +45,29 @@ namespace Logic
       }
 
       /// <summary>Query whether an object is present</summary>
+      /// <param name="main">Encoded main type and subtype</param>
+      /// <returns></returns>
+      bool  GameObjectLibrary::Contains(UINT value) const
+      {
+         return Objects.Contains((MainType)HIWORD(value), LOWORD(value));
+      }
+      
+      /// <summary>Query whether an object is present</summary>
       /// <param name="name">The object name</param>
       /// <returns></returns>
       bool GameObjectLibrary::Contains(const GuiString& name) const
       {
          return Lookup.Contains(name);
+      }
+
+      /// <summary>Query whether an object is present</summary>
+      /// <param name="main">The main type</param>
+      /// <param name="subtype">The subtype</param>
+      /// <returns></returns>
+      bool GameObjectLibrary::Contains(MainType main, UINT subtype) const
+      {
+         // Lookup object
+         return Objects.Contains(main, subtype);
       }
 
       /// <summary>Enumerates available type files</summary>

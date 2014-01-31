@@ -134,6 +134,17 @@ namespace Logic
          return Results;
       }
 
+      /// <summary>Finds a script object by ID</summary>
+      /// <param name="group">object group</param>
+      /// <param name="id">object id</param>
+      /// <param name="obj">object</param>
+      /// <returns>true if found, false otherwise</returns>
+      bool  ScriptObjectLibrary::TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const
+      {
+         obj = nullptr;
+         return Objects.TryFind(grp, id, obj);
+      }
+
       // ------------------------------ PROTECTED METHODS -----------------------------
       
       /// <summary>Attempts to insert two conflicting object.</summary>

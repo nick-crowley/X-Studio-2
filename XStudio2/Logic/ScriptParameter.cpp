@@ -130,7 +130,18 @@ namespace Logic
 
          // Ware
          case DataType::WARE:
-            Text = GameObjectLib.Find(Value.Int).DisplayText;
+            if (GameObjectLib.Contains(Value.Int))
+               Text = GameObjectLib.Find(Value.Int).DisplayText;
+            else  
+            {  
+               const ScriptObject* obj;
+
+               // Unrecognised placeholder:  {MAIN_TYPE@SUBTYPE}
+               if (ScriptObjectLib.TryFind(ScriptObjectGroup::Constant, 200+Value.HighWord, obj))
+                  Text = GuiString(L"{%s@%d}", obj->Text.c_str(), Value.LowWord);
+               else
+                  Text = GuiString(L"{%s@%d}", GetString((MainType)Value.HighWord).c_str(), Value.LowWord);
+            }
             break;
          }
 
