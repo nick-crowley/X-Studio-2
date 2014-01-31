@@ -146,6 +146,8 @@
     <ClInclude Include="Logic\ScriptObject.h" />
     <ClInclude Include="Logic\ScriptObjectLibrary.h" />
     <ClInclude Include="Logic\StringParser.h" />
+    <ClInclude Include="Logic\TMissile.h" />
+    <ClInclude Include="Logic\TShip.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
