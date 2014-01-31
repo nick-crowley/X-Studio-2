@@ -38,13 +38,13 @@ namespace Logic
          
          /// <summary>Add child node</summary>
          /// <param name="cmd">The command node</param>
-         /// <returns>Tree node</returns>
-         ScriptParser::CommandTree  ScriptParser::CommandNode::Add(CommandNode* node)
+         /// <returns>Command node</returns>
+         ScriptParser::CommandTree  ScriptParser::CommandNode::Add(CommandTree node)
          {
-            CommandTree t(node);
+            // Set parent and append
             node->Parent = this;
-            Children.push_back(t);
-            return t;
+            Children.push_back(node);
+            return node;
          }
 
          /// <summary>Check children for presence of certain branch logic</summary>

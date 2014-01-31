@@ -25,6 +25,7 @@ namespace Logic
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
 
             // Parse input
+            CurrentLine = Input.begin();
             ParseRoot();
          }
 
@@ -61,10 +62,10 @@ namespace Logic
          
          /// <summary>Reads the next node but returns the current node</summary>
          /// <returns>Node that was current before call</returns>
-         ScriptParser::CommandNode*  ScriptParser::Advance()
+         ScriptParser::CommandTree  ScriptParser::Advance()
          {
-            CommandNode* tmp = CurrentNode;
-            CurrentNode = ReadLine();
+            CommandTree tmp(CurrentNode);
+            CurrentNode = CommandTree(ReadLine());
             return tmp;
          }
          
@@ -75,16 +76,14 @@ namespace Logic
             return CurrentLine - Input.begin() + 1;
          }
 
-         
          /// <summary>Reads all commands in the script</summary>
-         /// <returns>Tree of command nodes</returns>
+         /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          void  ScriptParser::ParseRoot()
          {
             // Read first command
-            CurrentLine = Input.begin();
-            CurrentNode = ReadLine();
+            Advance();
 
             while (CurrentNode)
             {  
