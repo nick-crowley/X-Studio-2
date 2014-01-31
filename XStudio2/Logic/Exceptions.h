@@ -240,26 +240,6 @@ namespace Logic
    
    // ------------------------ USER TYPES --------------------------
 
-   /// <summary>Occurs when a MSCI game object is unrecognised</summary>
-   class GameObjectNotFoundException : public ExceptionBase
-   {
-   public:
-      /// <summary>Create a GameObjectNotFoundException</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="name">object name</param>
-      GameObjectNotFoundException(wstring  src, wstring name) 
-         : ExceptionBase(src, GuiString(L"Cannot find game object '%s'", name.c_str()))
-      {}
-
-      /// <summary>Create a GameObjectNotFoundException</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="maintype">maintype</param>
-      /// <param name="subtype">subtype</param>
-      GameObjectNotFoundException(wstring  src, UINT maintype, UINT subtype) 
-         : ExceptionBase(src, GuiString(L"Cannot find game object %d in maintype %d", subtype, maintype))
-      {}
-   };
-
 
    /// <summary>General exception for any circumstance</summary>
    class GenericException : public ExceptionBase

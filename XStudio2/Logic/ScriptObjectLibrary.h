@@ -48,6 +48,15 @@ namespace Logic
          public:
             // ---------------------- ACCESSORS ------------------------			
 
+            /// <summary>Queries whether a script object is present</summary>
+            /// <param name="grp">object group</param>
+            /// <param name="id">object id</param>
+            /// <returns></returns>
+            bool  Contains(ScriptObjectGroup grp, UINT id) const
+            {
+               return find(ObjectID(grp, id)) != end();
+            }
+
             /// <summary>Finds a script object by ID</summary>
             /// <param name="page">The page.</param>
             /// <param name="id">The ID.</param>
@@ -161,6 +170,7 @@ namespace Logic
       public:
          const_iterator begin() const;
          bool           Contains(const GuiString& obj) const;
+         bool           Contains(ScriptObjectGroup grp, UINT id) const;
          ScriptObject   Find(ScriptObjectGroup grp, UINT id) const;
          ScriptObject   Find(const GuiString& sz) const;
          const_iterator end() const;

@@ -39,6 +39,15 @@ namespace Logic
          return Lookup.Contains(obj);
       }
 
+      /// <summary>Queries whether a script object is present</summary>
+      /// <param name="grp">object group</param>
+      /// <param name="id">object id</param>
+      /// <returns></returns>
+      bool  ScriptObjectLibrary::Contains(ScriptObjectGroup grp, UINT id) const
+      {
+         return Objects.Contains(grp, id);
+      }
+
       /// <summary>Clears all objects from the library.</summary>
       void  ScriptObjectLibrary::Clear()
       {
@@ -93,8 +102,8 @@ namespace Logic
       }
 
       /// <summary>Finds a script object by ID</summary>
-      /// <param name="page">The page.</param>
-      /// <param name="id">The ID.</param>
+      /// <param name="group">object group</param>
+      /// <param name="id">object id</param>
       /// <returns></returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
       ScriptObject  ScriptObjectLibrary::Find(ScriptObjectGroup grp, UINT id) const

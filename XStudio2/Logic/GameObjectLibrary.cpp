@@ -149,7 +149,7 @@ namespace Logic
       {
          // Ensure types loaded
          if (Files[(UINT)main] == nullptr)
-            throw ArgumentException(HERE, L"main", GuiString(L"%s file was not loaded", GetString(main).c_str()));
+            throw GameObjectNotFoundException(HERE, main);
 
          // Lookup object
          return Objects.Find(main, subtype);
