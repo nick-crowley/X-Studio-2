@@ -26,6 +26,8 @@ namespace Logic
                Type = MainType::Ship;
             else if (name == L"tdocks")
                Type = MainType::Dock;
+            else if (name == L"tshields")
+               Type = MainType::Shield;
             else if (name == L"tfactories")
                Type = MainType::Factory;
             else if (name == L"twaret")
