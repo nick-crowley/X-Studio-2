@@ -75,9 +75,31 @@ namespace Logic
          {
             wstring tab(depth, (WCHAR)L' ');
 
-            Console << GuiString(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Text.c_str()) << ENDL;
-            //Console.WriteLn(Command.Syntax == CommandSyntax::Unknown ? Command.Text : Command.Syntax.Text);
-                  
+            //Console << GuiString(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Text.c_str()) << ENDL;
+            // Line/Indent
+            Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
+            
+            // Logic
+            switch (Logic)
+            {
+            case BranchLogic::If:
+            case BranchLogic::While:
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+            case BranchLogic::SkipIf:
+            case BranchLogic::End:  
+               Console << Colour::Yellow; 
+               break;
+            case BranchLogic::Break:
+            case BranchLogic::Continue:
+               Console << Colour::Green; 
+               break;
+            }
+            
+            // Text
+            Console << GetString(Logic) << Colour::White << L" : " << Text << ENDL;
+            
+            // Children
             for (auto c : Children)
                c->Print(depth+1);
          }
@@ -124,7 +146,7 @@ namespace Logic
                {
                   auto Else = Find(BranchLogic::Else);
                   auto ElseIf = Find(BranchLogic::ElseIf);
-                  if (Else != Children.end() && ElseIf != Children.end() && ElseIf < Else)
+                  if (Else != Children.end() && ElseIf != Children.end() && Else < ElseIf)
                      err += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->LineText);
                }
 

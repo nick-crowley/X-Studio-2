@@ -24,8 +24,8 @@ namespace Logic
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
 
-            // Parse immediately
-            Parse();
+            // Parse input
+            ParseRoot();
          }
 
 
@@ -64,92 +64,161 @@ namespace Logic
          /// <returns>Tree of command nodes</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         void  ScriptParser::Parse()
+         void  ScriptParser::ParseRoot()
          {
-            // Iterate over lines  (count >= 1)
-            for (LineIterator line = Input.begin(); line < Input.end(); )
-            {
-               // Read command, add to script
-               CommandTree node = Script->Add(ParseNode(line));    // Advances line iterator
-               
-               // Examine command
-               switch (node->Logic)
+            // Read first command
+            CurrentLine = Input.begin();
+            CurrentNode = ParseNode();
+
+            while (CurrentNode)
+            {  
+               // Examine logic
+               switch (CurrentNode->Logic)
                {
-               // Conditional: Read child commands into node
+               // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
+                  ParseIf(Script->Add(Advance()));
+                  break;
+               
+               // SkipIf: Add
+               case BranchLogic::SkipIf:  
+                  ParseSkipIf(Script->Add(Advance()));
+                  break;
+
+               // Else/Else-if: Add  (Invalid)
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-               case BranchLogic::SkipIf:  
-                  ParseBranch(node, line);
+                  ParseElse(Script->Add(Advance()));
+                  break;
+               
+               // Command/NOP/Break/Continue/End: Add 
+               default:
+                  Script->Add(Advance());
                   break;
                }
             }
-
-            // DEBUG:
+            
+            // Verify tree
             Script->Print(0);
-            // Verify
             Script->Verify(Errors);
          }
 
-         /// <summary>Parses the descendant commands of a branching command</summary>
-         /// <param name="branch">Branching command</param>
-         /// <param name="line">The line containing first descendant</param>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
-         void ScriptParser::ParseBranch(CommandTree& branch, LineIterator& line)
+         ScriptParser::CommandNode*  ScriptParser::Advance()
          {
-            // Read children
-            while (line < Input.end())
-            {
-               // Read command
-               CommandNode* node = ParseNode(line);    // Advances line iterator
-
+            CommandNode* tmp = CurrentNode;
+            CurrentNode = ParseNode();
+            return tmp;
+         }
+         
+         void ScriptParser::ParseIf(CommandTree& If)
+         {
+            while (CurrentNode)
+            {  
                // Examine command
-               switch (node->Logic)
+               switch (CurrentNode->Logic)
                {
-               // Conditional: Add to branch. 
+               // Command/NOP/Break/Continue: Add 
+               default: 
+                  If->Add(Advance());
+                  break;
+
+               // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
-               case BranchLogic::SkipIf:  
-                  ParseBranch(branch->Add(node), line);  // Read children into new branch node
+                  ParseIf(If->Add(Advance()));  
                   break;
 
-               // Else/Else-if: Add to branch parent
+               // SkipIf: Add
+               case BranchLogic::SkipIf:  
+                  ParseSkipIf(If->Add(Advance()));  
+                  break;
+
+               // Else/Else-if: Add
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-                  ParseBranch(branch->Parent->Add(node), line);  // Read children into new branch node
+                  ParseElse(If->Add(Advance()));  
                   break;
 
-               // Comment: Always valid, read any/all
-               case BranchLogic::NOP: 
-                  branch->Add(node);
-                  break;
-
-               // End: Add to branch or parent. Stop.
+               // End: Add/Stop
                case BranchLogic::End: 
-                  switch (branch->Logic)
-                  {
-                  case BranchLogic::If:      
-                  case BranchLogic::While:  
-                  case BranchLogic::SkipIf:  
-                     branch->Add(node);
-                     return;
+                  If->Add(Advance());
+                  return;
+               }
+            }
+         }
 
-                  case BranchLogic::ElseIf:  
-                  case BranchLogic::Else:  
-                     branch->Parent->Add(node);
-                     return;
-                  }
-                  break;
-
-               // Command/Break/Continue: Add to branch.  (SkipIf: Stop)
+         void ScriptParser::ParseElse(CommandTree& Else)
+         {
+            while (CurrentNode)
+            {  
+               // Examine command
+               switch (CurrentNode->Logic)
+               {
+               // Command/NOP/Break/Continue: Add 
                default: 
-                  branch->Add(node);
-                  if (branch->Logic == BranchLogic::SkipIf)
-                     return;
+                  Else->Add(Advance());
                   break;
+
+               // If: Add
+               case BranchLogic::If:      
+               case BranchLogic::While:  
+                  ParseIf(Else->Add(Advance()));  
+                  break;
+
+               // SkipIf: Add
+               case BranchLogic::SkipIf:  
+                  ParseSkipIf(Else->Add(Advance()));  
+                  break;
+
+               // End/Else/Else-if: Stop
+               case BranchLogic::ElseIf:  
+               case BranchLogic::Else:    
+               case BranchLogic::End: 
+                  return;
+               }
+            }
+         }
+
+         void ScriptParser::ParseSkipIf(CommandTree& SkipIf)
+         {
+            // Read children
+            while (CurrentNode)
+            {
+               // Examine command
+               switch (CurrentNode->Logic)
+               {
+               // NOP: Add
+               case BranchLogic::NOP:
+                  SkipIf->Add(Advance());
+                  break;
+
+               // Command/Break/Continue: Add/Stop
+               default: 
+                  SkipIf->Add(Advance());
+                  return;
+
+               // If: Add/Stop  (Invalid)
+               case BranchLogic::If:      
+               case BranchLogic::While:  
+                  ParseIf(SkipIf->Add(Advance()));  
+                  return;
+
+               // SkipIf: Add/Stop  (Invalid)
+               case BranchLogic::SkipIf:  
+                  ParseSkipIf(SkipIf->Add(Advance()));  
+                  return;
+
+               // Else/Else-if: Add/Stop (invalid)
+               case BranchLogic::ElseIf:  
+               case BranchLogic::Else:    
+                  ParseElse(SkipIf->Add(Advance()));  
+                  return;
+
+               // End: Add/Stop (Invalid)
+               case BranchLogic::End: 
+                  SkipIf->Add(Advance());
+                  return;
                }
             }
          }
@@ -173,9 +242,13 @@ namespace Logic
          ///    line = nop/comment/command/expression
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
-         ScriptParser::CommandNode* ScriptParser::ParseNode(LineIterator& line)
+         ScriptParser::CommandNode* ScriptParser::ParseNode()
          {
-            LineIterator  text = line++;  // consume line
+            // EOF:
+            if (CurrentLine == Input.end())
+               return nullptr;
+
+            LineIterator  text = CurrentLine++;  // consume line
             CommandLexer  lex(*text);
             CommandTree   node;
             

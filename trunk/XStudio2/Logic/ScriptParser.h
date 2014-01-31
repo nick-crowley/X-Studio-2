@@ -148,9 +148,12 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          private:
-            void           Parse();
-            void           ParseBranch(CommandTree& branch, LineIterator& line);
-            CommandNode*   ParseNode(LineIterator& line);
+            CommandNode*   Advance();
+            void           ParseRoot();
+            void           ParseIf(CommandTree& If);
+            void           ParseElse(CommandTree& Else);
+            void           ParseSkipIf(CommandTree& SkipIf);
+            CommandNode*   ParseNode();
 
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
@@ -169,6 +172,9 @@ namespace Logic
          private:
             const LineArray&  Input;
             const GameVersion Version;
+
+            LineIterator  CurrentLine;
+            CommandNode*  CurrentNode;
          };
       }
    }
