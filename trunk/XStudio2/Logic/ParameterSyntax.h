@@ -76,7 +76,8 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         static const ParameterSyntax  LabelDeclaration,
+         static const ParameterSyntax  ExpressionParameter,
+                                       LabelDeclaration,
                                        ScriptCallArgument;
 
       public:

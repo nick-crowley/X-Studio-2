@@ -6,6 +6,9 @@ namespace Logic
 {
    namespace Scripts
    {
+      /// <summary>Expression parameter syntax</summary>
+      const ParameterSyntax  ParameterSyntax::ExpressionParameter(ParameterType::EXPRESSION, 1, 1);
+
       /// <summary>Variable argument script call argument syntax</summary>
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 

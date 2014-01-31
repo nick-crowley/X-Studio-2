@@ -17,28 +17,64 @@ namespace Logic
       ScriptCommand  ScriptFileReader::AuxiliaryCommandReader::ReadCommand()
       {
          ParameterArray params;
-         wstring        str;
 
-         // Read ID & Index
-         int index = ReadIntNode(L"command reference index"),
-             id = ReadIntNode(L"auxiliary command ID");
+         // Read Index + ID
+         int index = ReadIntNode(L"command reference index");
+         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"auxiliary command ID"), Script.Game);
 
-         // Lookup syntax
-         CommandSyntax syntax = SyntaxLib.Find(id, Script.Game);
-
-         // Comment: Read string
-         if (id == CMD_COMMENT)
+         // Comment: Read text
+         if (syntax.ID == CMD_COMMENT)
             params += ReadParameter(syntax.Parameters[0], L"comment");
 
          // Return command
-         return ScriptCommand(syntax, index, params);
+         return ScriptCommand(syntax, index, params, false);
       }
 
       /// <summary>Reads a commented command</summary>
       /// <returns></returns>
       ScriptCommand  ScriptFileReader::CommentedCommandReader::ReadCommand()
       {
-         throw NotImplementedException(HERE, L"Commented command reader not implemented");
+         ParameterArray params;
+
+         // Read Index, ID
+         int index = ReadIntNode(L"commented reference index"),
+                id = ReadIntNode(L"commented ID");
+         
+         // Lookup syntax for underlying command 
+         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"commented command ID"), Script.Game);
+
+         // Read parameters
+         switch (syntax.ID)
+         {
+         case CMD_EXPRESSION:
+            // RetVar
+            params += ReadParameter(syntax.Parameters[0], L"commented expression retVar");
+
+            // Read parameters
+            for (int i = 0, count = ReadIntNode(L"commented expression parameter count"); i < count; i++)
+               params += ReadParameter(ParameterSyntax::ExpressionParameter, L"commented expression parameter");
+            break;
+
+         case CMD_CALL_SCRIPT_VAR_ARGS:
+            // scriptname / RetVar / refObj
+            params += ReadParameter(syntax.Parameters[0], L"commented scriptcall script-name");
+            params += ReadParameter(syntax.Parameters[1], L"commented scriptcall retVar");
+            params += ReadParameter(syntax.Parameters[2], L"commented scriptcall refObj");
+
+            // Read parameters
+            for (int i = 0, count = ReadIntNode(L"commented scriptcall argument count"); i < count; i++)
+               params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"commented scriptcall argument");
+            break;
+         
+         default:
+            // Read parameters by syntax
+            for (ParameterSyntax p : syntax.Parameters)
+               params += ReadParameter(p, L"commented parameter");
+            break;
+         }
+
+         // Return command
+         return ScriptCommand(syntax, index, params, true);
       }
 
       /// <summary>Reads an expression command</summary>
@@ -46,30 +82,26 @@ namespace Logic
       ScriptCommand  ScriptFileReader::ExpressionCommandReader::ReadCommand()
       {
          ParameterArray params, postfix;
-         int count;
          
          // Read ID + syntax
          CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"expression ID"), Script.Game);
-         ParameterSyntax expr = syntax.Parameters[1];
 
          // Return value
          params += ReadParameter(syntax.Parameters[0], L"expression return value");
 
-         // Read postfix tuples
-         count = ReadIntNode(L"expression postfix parameter count");
-         for (int i = 0; i < count; i++)
-            postfix += ReadParameter(expr, L"expression postfix parameter");
+         // Postfix tuples
+         for (int i = 0, count = ReadIntNode(L"expression postfix parameter count"); i < count; i++)
+            postfix += ReadParameter(ParameterSyntax::ExpressionParameter, L"expression postfix parameter");
 
-         // Generate parameters
-         count = ReadIntNode(L"expression infix parameter count");
-         for (int i = 0; i < count; i++)
+         // Interlace infix nodes with postfix tuples
+         for (int i = 0, count = ReadIntNode(L"expression infix parameter count"); i < count; i++)
          {
             int value = ReadIntNode(L"expression infix index");    // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
-            params += (value < 0 ? postfix[-value-1] : ScriptParameter(expr, DataType::OPERATOR, value));
+            params += (value < 0 ? postfix[-value-1] : ScriptParameter(ParameterSyntax::ExpressionParameter, DataType::OPERATOR, value));
          }
 
          // Return command
-         return ScriptCommand(syntax, params);
+         return ScriptCommand(syntax, params, false);
       }
 
       /// <summary>Reads a script-call command</summary>
@@ -92,7 +124,7 @@ namespace Logic
             params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"script call argument");
 
          // Return command
-         return ScriptCommand(syntax, params);
+         return ScriptCommand(syntax, params, false);
       }
 
       /// <summary>Reads a standard command</summary>
@@ -109,7 +141,7 @@ namespace Logic
             params += ReadParameter(p, L"standard parameter");
 
          // Return command
-         return ScriptCommand(syntax, params);
+         return ScriptCommand(syntax, params, false);
       }
       
 		// ------------------------------ PROTECTED METHODS -----------------------------
