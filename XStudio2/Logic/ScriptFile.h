@@ -55,6 +55,43 @@ namespace Logic
       /// <summary></summary>
       class ScriptFile
       {
+         // ------------------------ TYPES -------------------------
+      public:
+         class ScriptCallCollection : map<wstring, ScriptFile>
+         {
+         public:
+            /// <summary>Checks for presence of script (without extension, case sensitive)</summary>
+            /// <param name="name">script name.</param>
+            /// <returns></returns>
+            bool  Contains(const wstring& name) const
+            {
+               return find(name) != end();
+            }
+
+            /// <summary>Adds a script by name (without extension, case sensitive).</summary>
+            /// <param name="name">script name.</param>
+            /// <param name="f">script properties</param>
+            void  Add(const wstring& name, ScriptFile& f)
+            {
+               insert(value_type(name, f));
+            }
+
+            /// <summary>Finds a script by name (without extension, case sensitive).</summary>
+            /// <param name="name">script name</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::InvalidOperationException">Script not present</exception>
+            const ScriptFile&  Find(const wstring& name)
+            {
+               const_iterator pos;
+               // Lookup and return
+               if ((pos = find(name)) != end());
+                  return pos->second;
+
+               // Not found
+               throw InvalidOperationException(HERE, GuiString(L"No properties loaded for external script '%s'", name.c_str()));
+            }
+         };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          ScriptFile();
@@ -111,6 +148,7 @@ namespace Logic
          CommandList    Commands;
          LabelArray     Labels;
          VariableArray  Variables;
+         ScriptCallCollection ScriptCalls;
       private:
       };
 

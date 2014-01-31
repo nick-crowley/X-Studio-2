@@ -135,13 +135,14 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
       public:
-         ScriptFile     ReadFile();
+         ScriptFile     ReadFile(Path path, bool justProperties);
 
       private:
          ReaderPtr      GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
 
          int            ReadArray(XmlNodePtr& node, const WCHAR* help);
          GameVersion    ReadEngineVersion(XmlNodePtr& node);
+         ScriptFile     ReadExternalScript(const wstring& name);
          int            ReadInt(XmlNodePtr& node, const WCHAR* help);
          wstring        ReadString(XmlNodePtr& node, const WCHAR* help);
          ParameterValue ReadValue(XmlNodePtr& node, const WCHAR* help);
@@ -150,8 +151,8 @@ namespace Logic
          void  ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
 
 		   // -------------------- REPRESENTATION ---------------------
-
       private:
+         Path  Folder;
       };
 
       

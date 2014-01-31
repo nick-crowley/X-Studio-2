@@ -69,6 +69,9 @@ namespace Logic
          /// <summary>Query whether command is a keyword like break, continue etc.</summary>
          bool  IsKeyword() const;
 
+         /// <summary>Query whether command is a script call</summary>
+         bool  IsScriptCall() const;
+
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------

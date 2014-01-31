@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScriptFileReader.h"
 #include <algorithm>
+#include "FileStream.h"
 
 namespace Logic
 {
@@ -34,12 +35,16 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Invalid script command</exception>
       /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      ScriptFile ScriptFileReader::ReadFile()
+      ScriptFile ScriptFileReader::ReadFile(Path path, bool justProperties)
       {
          ScriptFile file;
+         
 
          try
          {
+            // Store folder
+            Folder = path.Folder;
+
             // Parse document
             LoadDocument();
 
@@ -63,7 +68,8 @@ namespace Logic
             ReadVariables(file, codeArray->childNodes->item[5], codeArray->childNodes->item[7]);
 
             // Commands
-            ReadCommands(file, codeArray->childNodes->item[6], codeArray->childNodes->item[8]);
+            if (!justProperties)
+               ReadCommands(file, codeArray->childNodes->item[6], codeArray->childNodes->item[8]);
 
             // Command ID
             file.CommandID = ReadValue(codeArray->childNodes->item[9], L"script command ID");
@@ -178,10 +184,11 @@ namespace Logic
 
          // Translate all commands/parameters
          UINT line = 1;
+         wstring name;
          for (ScriptCommand& cmd : script.Commands)
          {
             // GOTO/GOSUB: Replace label number parameters with label name params
-            if (cmd.Syntax.ID == CMD_GOTO_LABEL || cmd.Syntax.ID == CMD_GOTO_SUB)
+            if (cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB))
             {
                // Validate line number
                if (cmd.GetJumpDestination() >= std.size())
@@ -191,16 +198,39 @@ namespace Logic
                cmd.SetLabelName( std[cmd.GetJumpDestination()].GetLabelName() );
             }
             // LABEL: Store in script
-            else if (cmd.Syntax.ID == CMD_DEFINE_LABEL)
+            else if (cmd.Is(CMD_DEFINE_LABEL))
             {
                script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
                Console << "Label " << cmd.GetLabelName() << " on line " << line << ENDL;
             }
+            // SCRIPT-CALL: Load script properties
+            else if (cmd.Is(CMD_CALL_SCRIPT_VAR_ARGS) && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
+               script.ScriptCalls.Add(name, ReadExternalScript(name));
 
             // Translate
             cmd.Translate(script);
             ++line;
          }
+      }
+
+      /// <summary>Reads the properties of an external script in the same folder</summary>
+      /// <param name="name">script name</param>
+      /// <returns>ScriptFile containing properties only</returns>
+      ScriptFile  ScriptFileReader::ReadExternalScript(const wstring& name)
+      {
+         // Generate path
+         Path path(Folder + (name + L".pck"));
+
+         // Check for PCK and XML versions
+         if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
+            throw FileNotFoundException(HERE, Folder+name);
+
+         // Feedback
+         Console << ENDL << Colour::Cyan << L"Parsing properties of referenced MSCI script: " << path << ENDL;
+
+         // Read script
+         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+         return ScriptFileReader(fs2).ReadFile(path, true);
       }
 
 
