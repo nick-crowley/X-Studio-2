@@ -242,6 +242,7 @@
     <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
     <ClCompile Include="Logic\StringParser.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
+    <ClCompile Include="Logic\TShipReader.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />
     <ClCompile Include="LanguageEditView.cpp" />
