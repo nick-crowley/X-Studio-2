@@ -72,6 +72,20 @@ namespace Logic
                // Error: Not found
                throw ScriptObjectNotFoundException(HERE, grp, id);
             }
+            
+            /// <summary>Finds a script object by ID</summary>
+            /// <param name="group">object group</param>
+            /// <param name="id">object id</param>
+            /// <param name="obj">object</param>
+            /// <returns>true if found, false otherwise</returns>
+            bool  TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const
+            {
+               const_iterator it;
+
+               // Set/clear object ptr
+               obj = (it=find(ObjectID(grp, id))) != end() ? &it->second : nullptr;
+               return obj != nullptr;
+            }
 
             // ----------------------- MUTATORS ------------------------
          public:
@@ -184,6 +198,8 @@ namespace Logic
          void  Clear();
          UINT  Enumerate(WorkerData* data);
          ScriptObjectArray Query(const GuiString& str) const;
+         bool  TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const;
+      
 
       protected:
          bool  InsertConflicts(ScriptObject a, ScriptObject b);
