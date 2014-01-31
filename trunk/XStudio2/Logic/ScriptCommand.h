@@ -43,6 +43,7 @@ namespace Logic
          wstring  GetLabelName() const;
          UINT  GetJumpDestination() const;
          bool  Is(UINT ID) const;
+         bool  Is(CommandType t) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

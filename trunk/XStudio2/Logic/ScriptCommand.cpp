@@ -152,6 +152,14 @@ namespace Logic
          return Syntax.ID == ID;
       }
 
+      /// <summary>Compare command type</summary>
+      /// <param name="t">command type.</param>
+      /// <returns></returns>
+      bool  ScriptCommand::Is(CommandType t) const
+      {
+         return Syntax.Type == t;
+      }
+
       /// <summary>Replaces a label number parameter with a label name parameter.</summary>
       /// <param name="name">The name of the label</param>
       /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub</exception>

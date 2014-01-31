@@ -33,10 +33,13 @@ namespace Logic
             class ErrorToken : public TokenBase
             {
             public:
+               /// <summary>Create error for token</summary>
                ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
                {}
+               /// <summary>Create error for entire line</summary>
                ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Error(msg), Line(line)
                {}
+               /// <summary>Create error for character range</summary>
                ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
                {}
 
@@ -48,12 +51,15 @@ namespace Logic
             class ErrorArray : public vector<ErrorToken> 
             {
             public:
+               /// <summary>Create empty array</summary>
                ErrorArray()
                {}
+               /// <summary>Create array from single token</summary>
                ErrorArray(const ErrorToken& e) {
                   push_back(e);
                }
 
+               /// <summary>Add an error to the array</summary>
                ErrorArray& operator+=(const ErrorToken& t)
                {
                   push_back(t);
@@ -127,16 +133,16 @@ namespace Logic
             DEFAULT_MOVE(ScriptParser);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
-         private:
-            ErrorToken  MakeError(const wstring& msg, const LineIterator& line, const CommandLexer& lex) const;
-            ErrorToken  MakeError(const wstring& msg, const LineIterator& line, const TokenIterator& tok) const;
-
+         
             // --------------------- PROPERTIES ------------------------
+         private:
+            PROPERTY_GET(UINT,LineNumber,GetLineNumber);
 
             // ---------------------- ACCESSORS ------------------------			
-
          private:
-            UINT  GetLineNumber(const LineIterator& line) const;
+            UINT        GetLineNumber() const;
+            ErrorToken  MakeError(const wstring& msg, const CommandLexer& lex) const;
+            ErrorToken  MakeError(const wstring& msg, const TokenIterator& tok) const;
 
             bool  MatchArrayIndex(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const;
@@ -153,21 +159,21 @@ namespace Logic
             void           ParseIf(CommandTree& If);
             void           ParseElse(CommandTree& Else);
             void           ParseSkipIf(CommandTree& SkipIf);
-            CommandNode*   ParseNode();
-
+            
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandNode*   ReadComment(const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadCommand(const CommandLexer& lex, const LineIterator& line);
-            CommandNode*   ReadExpression(const CommandLexer& lex, const LineIterator& line);
+            CommandNode*   ReadComment(const CommandLexer& lex);
+            CommandNode*   ReadCommand(const CommandLexer& lex);
+            CommandNode*   ReadExpression(const CommandLexer& lex);
+            CommandNode*   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
 
          public:
             ErrorArray    Errors;     // Compilation errors
-            CommandTree   Script;     // Compiled script tree
+            CommandTree   Script;     // Script parse tree
 
          private:
             const LineArray&  Input;
