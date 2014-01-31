@@ -370,6 +370,12 @@
     <ClInclude Include="Logic\RtfScriptTextWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\TMissile.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\TShip.h">
+      <Filter>Header Files\Logic\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
