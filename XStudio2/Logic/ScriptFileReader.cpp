@@ -2,6 +2,7 @@
 #include "ScriptFileReader.h"
 #include <algorithm>
 #include "FileStream.h"
+#include "XFileInfo.h"
 
 namespace Logic
 {
@@ -39,7 +40,6 @@ namespace Logic
       {
          ScriptFile file;
          
-
          try
          {
             // Store folder
@@ -201,7 +201,7 @@ namespace Logic
             else if (cmd.Is(CMD_DEFINE_LABEL))
             {
                script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
-               Console << "Label " << cmd.GetLabelName() << " on line " << line << ENDL;
+               //Console << "Label " << cmd.GetLabelName() << " on line " << line << ENDL;
             }
             // SCRIPT-CALL: Load script properties
             else if (cmd.Is(CMD_CALL_SCRIPT_VAR_ARGS) && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
@@ -226,11 +226,11 @@ namespace Logic
             throw FileNotFoundException(HERE, Folder+name);
 
          // Feedback
-         Console << ENDL << Colour::Cyan << L"Parsing properties of referenced MSCI script: " << path << ENDL;
+         Console << ENDL << L"  Resolving script call: " << Colour::Yellow << path << Colour::White << L"...";
 
          // Read script
-         StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         return ScriptFileReader(fs2).ReadFile(path, true);
+         XFileInfo f(path);
+         return ScriptFileReader(f.OpenRead()).ReadFile(path, true);
       }
 
 

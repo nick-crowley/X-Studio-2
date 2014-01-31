@@ -81,17 +81,19 @@ namespace Logic
    {
       XFileSystem vfs;
 
-      // Parse script
-      Console << ENDL << Colour::Cyan << L"Performing MSCI script batch test: " << ENDL;
-
       // Browse scripts in VFS
       vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+
+      // Feedback
+      Console << ENDL << Colour::Cyan << L"Performing MSCI script batch test: " << ENDL;
+
+      // Parse each script
       for (auto& v : vfs.Browse(XFolder::Scripts))
       {
          try
          {
             // Feedback
-            Console << L" Parsing MSCI script: " << v.FullPath.FileName << L"...";
+            Console << L"Parsing MSCI script: " << Colour::Yellow << v.FullPath.FileName << Colour::White << L"...";
 
             // Parse script
             ScriptFile script = ScriptFileReader(v.OpenRead()).ReadFile(v.FullPath.Folder, false);
