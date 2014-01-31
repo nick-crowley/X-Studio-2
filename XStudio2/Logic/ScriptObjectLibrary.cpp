@@ -170,6 +170,7 @@ namespace Logic
       /// <param name="a">first</param>
       /// <param name="b">second</param>
       /// <returns>true if mangled and inserted successfully, false if unable to resolve  (Neither are inserted if false)</returns>
+      /// <exception cref="Logic::InvalidValueException">Invalid sector string ID</exception>
       bool  ScriptObjectLibrary::MangleConflicts(ScriptObject a, ScriptObject b)
       {
          // different groups: append group acronym 
@@ -187,6 +188,7 @@ namespace Logic
       /// <summary>Generates the ID and reverse lookup collections from the string library</summary>
       /// <param name="data">Feedback data</param>
       /// <returns>Number of objects generated</returns>
+      /// <exception cref="Logic::InvalidValueException">Invalid sector string ID</exception>
       UINT  ScriptObjectLibrary::Populate(WorkerData* data)
       {
          ObjectCollection unmangled(GetSpecialCases());

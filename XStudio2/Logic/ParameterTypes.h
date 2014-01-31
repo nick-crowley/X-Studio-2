@@ -46,6 +46,8 @@ namespace Logic
       /// <summary>Defines relation values</summary>
       enum class Relation : UINT { Foe=(UINT)-1, Neutral=0, Friend=1 };
 
+      /// <summary>Defines station serials</summary>
+      enum class Serial : UINT { alpha, beta, gamma, delta, epsilon, zeta, eta, theta, iota, kappa, lambda, mu, nu, xi, omicron, pi, rho, sigma, tau, upsilon, phi, chi, psi, omega1, omega2 };
       
       /// <summary>Converts between sector IDs and co-ordinates</summary>
       class SectorIDConverter
@@ -54,13 +56,14 @@ namespace Logic
          /// <summary>Convert string ID to coordinates.</summary>
          /// <param name="stringID">The string identifier.</param>
          /// <returns></returns>
+         /// <exception cref="Logic::InvalidValueException">Invalid string ID</exception>
          static pair<int, int>  ToCoordinates(UINT stringID)
          {
             GuiString id(L"%d", stringID);
 
             // Ensure valid
             if (id.length() != 7 || id.substr(0,3) != L"102")
-                throw ArgumentException(HERE, L"stringID", GuiString(L"%d is not a valid sector string ID", stringID));
+                throw InvalidValueException(HERE, GuiString(L"%d is not a valid sector string ID", stringID));
 
             // Extract '102xxyy'
             int x = _ttoi(id.substr(3,2).c_str());
@@ -69,7 +72,26 @@ namespace Logic
          }
       };
 
+      /// <summary>Converts between station serials and string IDs</summary>
+      class StationSerialConverter
+      {
+      public:
+         /// <summary>Convert string ID to station serial.</summary>
+         /// <param name="stringID">The string identifier.</param>
+         /// <returns></returns>
+         static Serial  ToSerial(UINT stringID)
+         {
+            return Serial(stringID - 100);
+         }
 
+         /// <summary>Convert station serial to string ID.</summary>
+         /// <param name="stringID">The station serial.</param>
+         /// <returns></returns>
+         static UINT  ToStringID(Serial serial)
+         {
+            return (UINT)serial + 100;
+         }
+      };
       
       /// <summary>Converts between relation enum and string IDs</summary>
       class RelationIDConverter
@@ -78,7 +100,7 @@ namespace Logic
          /// <summary>Convert string ID to relation.</summary>
          /// <param name="stringID">The string identifier.</param>
          /// <returns>Relation</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid string ID</exception>
+         /// <exception cref="Logic::InvalidValueException">Invalid string ID</exception>
          static Relation  ToRelation(UINT stringID)
          {
             switch (stringID)
@@ -87,14 +109,14 @@ namespace Logic
             case 1102424:  return Relation::Neutral;
             case 1102422:  return Relation::Friend;
             default:
-               throw ArgumentException(HERE, L"stringID", GuiString(L"%d is not a valid relation string ID", stringID));
+               throw InvalidValueException(HERE, GuiString(L"%d is not a valid relation string ID", stringID));
             }
          }
 
          /// <summary>Convert relation to string ID</summary>
          /// <param name="r">relation</param>
          /// <returns>The string identifier</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid relation</exception>
+         /// <exception cref="Logic::InvalidValueException">Invalid relation</exception>
          static UINT  ToStringID(Relation r)
          {
             switch (r)
@@ -103,7 +125,7 @@ namespace Logic
             case Relation::Neutral:  return 1102424; 
             case Relation::Friend:   return 1102422; 
             default:
-               throw ArgumentException(HERE, L"r", GuiString(L"%d is not a valid relation value", r));
+               throw InvalidValueException(HERE, GuiString(L"%d is not a valid relation value", r));
             }
          }
       };

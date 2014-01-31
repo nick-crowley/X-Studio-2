@@ -24,7 +24,7 @@ namespace Logic
          /// <param name="maintype">maintype</param>
          /// <param name="subtype">subtype</param>
          GameObjectNotFoundException(wstring  src, MainType maintype, UINT subtype) 
-            : ExceptionBase(src, GuiString(L"Cannot find %s game object with id %d", GetString(maintype).c_str(), subtype))
+            : ExceptionBase(src, GuiString(L"Cannot find %s with id %d", GetString(maintype).c_str(), subtype))
          {}
 
          /// <summary>Create a GameObjectNotFoundException</summary>

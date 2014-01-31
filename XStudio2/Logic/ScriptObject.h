@@ -44,7 +44,7 @@ namespace Logic
          /// <param name="group">object group</param>
          /// <param name="id">object id</param>
          ScriptObjectNotFoundException(wstring  src, ScriptObjectGroup group, UINT id) 
-            : ExceptionBase(src, GuiString(L"Cannot find %s script object %d", GetString(group).c_str(), id))
+            : ExceptionBase(src, GuiString(L"Cannot find %s with id %d", GetString(group).c_str(), id))
          {}
       };
 
