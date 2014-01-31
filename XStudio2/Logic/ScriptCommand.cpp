@@ -232,6 +232,10 @@ namespace Logic
             for (UINT i = 3; i < Parameters.size(); ++i)
                Text.append(GuiString(L" %s=%s", call.Variables[i-3].Name.c_str(), Parameters[i].Text.c_str()));
          }
+
+         // Commented: Insert comment operator
+         if (Commented)
+            Text.insert(0, L"* ");
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
