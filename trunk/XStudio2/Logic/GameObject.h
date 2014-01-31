@@ -73,7 +73,7 @@ namespace Logic
          /// <returns>New game object with id appended</returns>
          GameObject operator+(const GuiString& id)
          {
-            return GameObject(*this, Name+GuiString(L" (%s)", id));
+            return GameObject(*this, Name+GuiString(L" (%s)", id.c_str()));
          }
          // ----------------------- MUTATORS ------------------------
 

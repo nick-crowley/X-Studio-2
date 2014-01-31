@@ -96,7 +96,7 @@ namespace Logic
             strName = (!strRace.length() || strName.Contains(strRace, true) ? strName : strRace + L" " + strName);
 
             // Append variable, if any
-            return variation.Defined() && variation.Exists() ? strName + L" " + variation.Text : strName;
+            return variation.Defined() && variation.Exists() ? (strName + L" ") + variation.Text : strName;
          }
 
          /// <summary>Determines whether ship race is pirate</summary>
