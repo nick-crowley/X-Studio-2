@@ -34,9 +34,13 @@ namespace Logic
       /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
       CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
       {
-         // EOF: Return of this node (if any)
+         // EOF: Return syntax @ this node (if any)
          if (pos >= end)
             return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unknown;
+
+         // VARG SCRIPT-CALL: Terminate early to prevent analysing arguments
+         else if (HasSyntax() && Syntax->ID == CMD_CALL_SCRIPT_VAR_ARGS)
+            return *Syntax;
 
          // Lookup next token
          auto pair = Children.find( GetKey(*pos) );

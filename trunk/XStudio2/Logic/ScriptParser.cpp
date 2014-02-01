@@ -319,6 +319,26 @@ namespace Logic
                  && lex.Match(pos, TokenType::Operator, L"->") ? true : (pos=start, false);
          }
 
+         /// <summary>Matches a script argument {name,value} pair</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
+         bool ScriptParser::MatchScriptArgument(const CommandLexer& lex, TokenIterator& pos) const
+         {
+            TokenIterator start = pos;
+
+            // (text '=' constant/variable/null/string/number)?
+            return lex.Match(pos, TokenType::Text) && lex.Match(pos, TokenType::Operator, L"=") &&
+                   (lex.Match(pos, TokenType::ScriptObject) 
+                    || lex.Match(pos, TokenType::GameObject) 
+                    || lex.Match(pos, TokenType::Variable)
+                    || lex.Match(pos, TokenType::Number)
+                    || lex.Match(pos, TokenType::String)
+                    || lex.Match(pos, TokenType::Null))
+                   ? true : (pos=start, false);
+         }
+
          /// <summary>Matches a NOP or comment command</summary>
          /// <param name="lex">The lexer</param>
          /// <returns></returns>
@@ -488,9 +508,12 @@ namespace Logic
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    assignment = variable '='
          ///    
-         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label</remarks>
+         ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
+         ///
+         /// </remarks>
          ScriptParser::CommandNode*  ScriptParser::ReadCommand(const CommandLexer& lex)
          {
+            ParameterArray params;
             Conditional   condition = Conditional::DISCARD;
             TokenIterator refObj = lex.end(), 
                           retVar = lex.end(),
@@ -507,16 +530,11 @@ namespace Logic
             if (MatchReferenceObject(lex, TokenIterator(pos)))
                refObj = ReadReferenceObject(lex, pos);
 
-            // Get remaining parameter tokens
-            TokenList tokens = CommandHash::SeparateParams(TokenIterator(pos), lex.end());
+            // Get remaining parameter (var/null/obj/literal) tokens
+            TokenList tokens = CommandHash::SeparateParams(TokenIterator(pos), lex.end());   // doesn't adv iterator
 
             // Lookup command 
-            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);
-            
-            // Unrecognised: error
-            if (syntax == CommandSyntax::Unknown)
-               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) 
-                                           : MakeError(L"Unexpected token in command", pos));
+            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version);  // advances iterator
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -526,8 +544,22 @@ namespace Logic
                   Console << Colour::Red << L"UNRECOGNISED:" << ENDL;
             #endif
 
-            // Generate parameters from tokens
-            ParameterArray params;
+            // Unrecognised: 
+            if (syntax == CommandSyntax::Unknown)
+            {
+               // Highlight token/line
+               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) 
+                                           : MakeError(L"Unexpected token in command", pos));
+
+               // Store refObj + tokens so game/script objects can be verified
+               if (refObj != lex.end())
+                  params += ScriptParameter(ParameterSyntax::UnrecognisedCommand, *refObj);
+
+               for (const auto& tok : tokens)
+                  params += ScriptParameter(ParameterSyntax::UnrecognisedCommand, tok);
+            }
+
+            // Read/Match remaining tokens against parameter syntax
             for (const ParameterSyntax& ps : syntax.ParametersByDisplay)
             {
                // RetVar:
@@ -555,6 +587,10 @@ namespace Logic
                }
             }
 
+            // Script-Call: read argument/value pairs  [iterator positioned following ':' operator]
+            if (syntax.ID == CMD_CALL_SCRIPT_VAR_ARGS)
+               params += ReadScriptCallArguments(lex, pos);
+
             // TODO: Check for excess parameters?
 
             // Create node
@@ -572,7 +608,9 @@ namespace Logic
          ///    assignment = variable '='
          ///    unary_operator = '!'/'-'/'~'
          /// 
-         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
+         ///    expression = (assignment/conditional) unary_operator? value (operator value)*
+         ///
+         /// </remarks>
          ScriptParser::CommandNode*  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
             TokenIterator  pos = lex.begin();
@@ -614,6 +652,39 @@ namespace Logic
             return new CommandNode(ScriptCommand(syntax, *CurrentLine, params), lex, LineNumber);
          }
          
+         /// <summary>Reads the script call arguments.</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="start">position of first argument name</param>
+         /// <returns>Array of {name,value} pairs</returns>
+         /// <remarks>Grammar:
+         ///    
+         ///    argument = (text '=' constant/variable/literal/null)?
+         ///
+         /// </remarks>
+         ParameterArray ScriptParser::ReadScriptCallArguments(const CommandLexer& lex, TokenIterator start)
+         {
+            ParameterArray  params;
+
+            // Read arguments (if any)
+            for (TokenIterator pos = start; pos < lex.end(); pos += 3)
+            {
+               // Match {name, '=', value} triplet
+               if (MatchScriptArgument(lex, TokenIterator(pos)))
+               {
+                  params += ScriptParameter(ParameterSyntax::ScriptCallArgument, pos[0]);
+                  params += ScriptParameter(ParameterSyntax::ScriptCallArgument, pos[2]);
+               }
+               else 
+               {  // Error: Abort
+                  Errors += MakeError(L"Expected script-call argument", pos);
+                  break;
+               }
+            }
+
+            // Return parameters
+            return params;
+         }
+
 
          /// <summary>Parses a line into a command node, and advances the line iterator</summary>
          /// <param name="parent">Parent node</param>
@@ -632,7 +703,9 @@ namespace Logic
          /// 
          ///    line = nop/comment/command/expression
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
-         ///    expression = (assignment/conditional) unary_operator? value (operator value)*</remarks>
+         ///    expression = (assignment/conditional) unary_operator? value (operator value)*
+         ///
+         /// </remarks>
          ScriptParser::CommandNode* ScriptParser::ReadLine()
          {
             // EOF: Return
