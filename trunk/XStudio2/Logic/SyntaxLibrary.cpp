@@ -89,14 +89,16 @@ namespace Logic
          return Groups;
       }
 
-      /// <summary>Finds syntax by name</summary>
+      /// <summary>Identify syntax from tokens, and separate parameters</summary>
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
       /// <param name="v">Game version</param>
+      /// <param name="params">Parameter tokens</param>
       /// <returns>Syntax if found, otherwise sentinel syntax</returns>
-      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
+      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const
       {
-         return NameTree.Find(pos, end, ver);
+         params.clear();
+         return NameTree.Find(pos, end, ver, params);
       }
 
       /// <summary>Search for all syntax containing a given term</summary>

@@ -91,6 +91,22 @@ namespace Logic
                }
             }
 
+            /// <summary>Query whether token represents a parameter.</summary>
+            /// <returns></returns>
+            bool  IsParameter() const
+            {
+               switch (Type)
+               {
+               case TokenType::Operator:  
+               case TokenType::Keyword:  
+               case TokenType::Text:      
+                  return false;
+
+               default: 
+                  return true;
+               }
+            }
+
             /// <summary>Get substring of text</summary>
             /// <param name="offset">The starting offset.</param>
             /// <param name="len">The length</param>
@@ -122,6 +138,12 @@ namespace Logic
             size_type count() const
             {
                return count_if(cbegin(), cend(), [](const ScriptToken& t) {return t.Type != TokenType::Whitespace;} );
+            }
+
+            TokenArray& operator+=(const ScriptToken& tok)
+            {
+               push_back(tok);
+               return *this;
             }
          };
 

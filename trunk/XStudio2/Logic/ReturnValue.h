@@ -37,10 +37,10 @@ namespace Logic
          SKIP_IF   = 7,   SKIP_IF_NOT = 8,
          WHILE     = 9,   WHILE_NOT   = 10,
          // My custom IDs to represent auxiliary branching commands, jumps, gotos and labels.
-         BREAK     = 11,  CONTINUE    = 12,
+         /*BREAK     = 11,  CONTINUE    = 12,
          ELSE      = 13,  END         = 14,
          LABEL     = 15,  GOTO        = 16,
-         GOSUB     = 17,  ENDSUB      = 18  
+         GOSUB     = 17,  ENDSUB      = 18  */
       };
 
       /// <summary>Represents the encoded return value of a script command</summary>

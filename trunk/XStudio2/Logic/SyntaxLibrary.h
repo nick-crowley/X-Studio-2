@@ -56,7 +56,7 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
 
          public:
-            CommandSyntax  Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
+            CommandSyntax  Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const;
             void           Print(int depth = 1) const;
 
          private:
@@ -96,7 +96,7 @@ namespace Logic
       public:
          GroupCollection   GetGroups() const;
          CommandSyntax     Find(UINT id, GameVersion ver) const;
-         CommandSyntax     Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const;
+         CommandSyntax     Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const;
          CmdSyntaxArray    Query(const wstring& str, GameVersion ver) const;
 
 		   // ----------------------- MUTATORS ------------------------

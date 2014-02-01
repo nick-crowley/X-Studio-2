@@ -78,7 +78,8 @@ namespace Logic
                // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
-               CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
+               //CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
+               CommandNode(const CommandLexer& lex, UINT line);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
@@ -97,23 +98,32 @@ namespace Logic
                void  VerifyNode(ErrorArray& err);
                void  VerifyLogic(ErrorArray& err) const;
                void  VerifyParameters(ErrorArray& err);
-               void  VerifyRoot(ErrorArray& err) const;
                
                // ----------------------- MUTATORS ------------------------
             public:
                CommandTree  Add(CommandTree node);
+               void Assemble(ErrorArray& err);
 
                // -------------------- REPRESENTATION ---------------------
 
                CommandNode*   Parent;           // Parent node
-               BranchLogic    Logic;            // logic type
-               ScriptCommand  Command;          // Command
-               UINT           LineNumber,       // 1-based line number
-                              Index;            // 0-based standard codearray index
-               CHARRANGE      LineText;         // Start/end character offsets
-               CommandNode*   JumpTarget;       // Destination of jump
                NodeArray      Children;         // Child commands
-               wstring        Text;             // Debugging
+
+               BranchLogic    Logic;            // branching logic
+               ParameterArray Output;           // script parameters in physical order
+               const CommandSyntax& Syntax;
+               CommandNode*   JumpTarget;       // Destination of jump
+               UINT           Index;            // 0-based standard codearray index
+
+               CommandLexer   Lexer;
+               TokenArray     Arguments,
+                              Parameters,
+                              Postfix;
+               TokenIterator  RetVar,
+                              RefObj;
+               Conditional    Condition;
+               const UINT     LineNumber;       // 1-based line number
+               const CHARRANGE Extent;          // Start/end character offsets
             };
 
             /// <summary>Legacy typedef</summary>
@@ -161,11 +171,10 @@ namespace Logic
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandNode*   ReadComment(const CommandLexer& lex);
-            CommandNode*   ReadCommand(const CommandLexer& lex);
-            CommandNode*   ReadExpression(const CommandLexer& lex);
-            ParameterArray ReadScriptCallArguments(const CommandLexer& lex, TokenIterator pos);
-            CommandNode*   ReadLine();
+            CommandTree   ReadComment(const CommandLexer& lex);
+            CommandTree   ReadCommand(const CommandLexer& lex);
+            CommandTree   ReadExpression(const CommandLexer& lex);
+            CommandTree   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
 
