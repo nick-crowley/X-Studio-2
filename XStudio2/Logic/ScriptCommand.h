@@ -32,6 +32,8 @@ namespace Logic
          virtual ~ScriptCommand();
 
          // ------------------------ STATIC -------------------------
+      public:
+         static ScriptCommand  Unknown;
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -54,10 +56,7 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         static ScriptCommand  Unknown;
-
-      public:
-         const CommandSyntax  Syntax;
+         const CommandSyntax& Syntax;
          bool                 Commented;
          ParameterArray       Parameters;
          wstring              Text;

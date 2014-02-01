@@ -31,8 +31,9 @@ namespace Logic
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
       /// <param name="ver">Desired game version</param>
+      /// <param name="params">Parameter tokens</param>
       /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
-      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver) const
+      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const
       {
          // EOF: Return syntax @ this node (if any)
          if (pos >= end)
@@ -42,6 +43,10 @@ namespace Logic
          else if (HasSyntax() && Syntax->ID == CMD_CALL_SCRIPT_VAR_ARGS)
             return *Syntax;
 
+         // PARAM: Store token
+         if (pos->IsParameter())
+            params += *pos;
+
          // Lookup next token
          auto pair = Children.find( GetKey(*pos) );
                
@@ -50,7 +55,7 @@ namespace Logic
             return CommandSyntax::Unknown;
 
          // Found: Search children
-         return pair->second.Find(++pos, end, ver);
+         return pair->second.Find(++pos, end, ver, params);
       };
 
       /// <summary>Inserts new syntax into the tree</summary>
@@ -105,16 +110,7 @@ namespace Logic
       /// <returns></returns>
       const wstring&  SyntaxLibrary::SyntaxNode::GetKey(const ScriptToken& tok) const
       {
-         switch (tok.Type)
-         {
-         case TokenType::Operator:  
-         case TokenType::Keyword:  
-         case TokenType::Text:      
-            return tok.Text;
-
-         default: 
-            return VARIABLE;
-         }
+         return tok.IsParameter() ? tok.Text : VARIABLE;
       }
 
       /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
