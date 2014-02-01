@@ -37,6 +37,31 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      ScriptParameter  ScriptParameter::Generate(const ParameterSyntax& ps, const ScriptToken& tok)
+      {
+         switch (tok.Type)
+         {
+         case TokenType::Variable: return ScriptParameter(ps, DataType::LIVE_VARIABLE, tok.ValueText);
+         case TokenType::Null:     return ScriptParameter(ps, DataType::Null, 0);
+         case TokenType::Number:   return ScriptParameter(ps, DataType::INTEGER, _wtoi(tok.Text.c_str()));
+         case TokenType::String:   return ScriptParameter(ps, DataType::STRING, tok.ValueText);
+         }
+      }
+      ScriptParameter  ScriptParameter::Generate(const ParameterSyntax& ps, const GameObject& obj)
+      {
+         return ScriptParameter(ps, DataType::WARE, obj.EncodedValue);
+      }
+
+      ScriptParameter  ScriptParameter::Generate(const ParameterSyntax& ps, const ScriptObject& obj)
+      {
+         switch (DataType dt = obj.GetDataType())
+         {
+         case DataType::RELATION:   return ScriptParameter(ps, dt, (UINT)RelationIDConverter::ToRelation(obj.ID));
+         case DataType::SECTOR:     return ScriptParameter(ps, dt, obj.ID);
+         case DataType::STATIONSERIAL:
+         }
+      }
+
       /// <summary>Get datatype string</summary>
       GuiString  GetString(DataType d)
       {

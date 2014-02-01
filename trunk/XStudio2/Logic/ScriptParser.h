@@ -25,9 +25,13 @@ namespace Logic
             // ------------------------ TYPES --------------------------
          public:
             class CommandNode;
+            class ExpressionNode;
+            class StandardNode;
 
-            /// <summary>Shared pointer to a node in the script command tree</summary>
-            typedef shared_ptr<CommandNode>  CommandTree;
+            /// <summary>Shared pointer to a parse tree node</summary>
+            typedef shared_ptr<CommandNode>  CommandNodePtr;
+            typedef shared_ptr<StandardNode>  StandardNodePtr;
+            typedef shared_ptr<ExpressionNode>  ExpressionNodePtr;
 
             /// <summary>Script error</summary>
             class ErrorToken : public TokenBase
@@ -67,67 +71,107 @@ namespace Logic
                }
             };
 
+
             /// <summary>Represents a script command and its descendants, if any</summary>
-            class CommandNode
+            class CommandNode 
             {
                // ------------------------ TYPES --------------------------
             public:
-               typedef vector<CommandTree>        NodeArray;
+               typedef vector<CommandNodePtr>     NodeArray;
                typedef NodeArray::const_iterator  NodeIterator;
 
                // --------------------- CONSTRUCTION ----------------------
             public:
-               CommandNode();
-               //CommandNode(const ScriptCommand& cmd, const CommandLexer& lex, UINT line);
-               CommandNode(const CommandLexer& lex, UINT line);
+               CommandNode(const CommandLexer& lex, UINT line, ErrorArray& err);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
 
                // --------------------- PROPERTIES ------------------------
 
+               PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
+
                // ---------------------- ACCESSORS ------------------------		
             public:
-               bool  Contains(BranchLogic l) const;
-               NodeIterator  Find(BranchLogic l) const;
-               bool  IsRoot() const;
                void  Print(int depth = 0) const;
-               void  Verify(ErrorArray& err);
-
-            protected:
-               void  VerifyNode(ErrorArray& err);
-               void  VerifyLogic(ErrorArray& err) const;
-               void  VerifyParameters(ErrorArray& err);
                
+            private:
+               bool          Contains(BranchLogic l) const;
+               NodeIterator  Find(BranchLogic l) const;
+               BranchLogic   GetBranchLogic() const;
+
                // ----------------------- MUTATORS ------------------------
             public:
-               CommandTree  Add(CommandTree node);
-               void Assemble(ErrorArray& err);
+               CommandNodePtr  Add(CommandNodePtr node);
+               void         Verify();
 
+            protected:
+               ScriptParameter CreateParameter(const ParameterSyntax& ps, const ScriptToken& tok);
+               virtual void    AssembleParameters();
+               void            VerifyParameters();
+
+            protected:
+               void  VerifyLogic();
+               void  VerifyNode();
+               void  VerifyRoot();
+               
                // -------------------- REPRESENTATION ---------------------
-
+            public:
                CommandNode*   Parent;           // Parent node
                NodeArray      Children;         // Child commands
+               ErrorArray&    Errors;
 
-               BranchLogic    Logic;            // branching logic
-               ParameterArray Output;           // script parameters in physical order
+               ParameterArray Parameters;           // script parameters in physical order
                const CommandSyntax& Syntax;
                CommandNode*   JumpTarget;       // Destination of jump
                UINT           Index;            // 0-based standard codearray index
 
                CommandLexer   Lexer;
-               TokenArray     Arguments,
-                              Parameters,
-                              Postfix;
-               TokenIterator  RetVar,
-                              RefObj;
+               TokenArray     Tokens;
+               TokenIterator  RetVar;
                Conditional    Condition;
                const UINT     LineNumber;       // 1-based line number
                const CHARRANGE Extent;          // Start/end character offsets
             };
 
-            /// <summary>Legacy typedef</summary>
-            typedef CommandNode  ScriptTree;
+            /// <summary>Represents a script command and its descendants, if any</summary>
+            class StandardNode : public CommandNode
+            {
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               StandardNode(const CommandLexer& lex, UINT line, ErrorArray& err);
+               ~StandardNode();
+
+               // ---------------------- ACCESSORS ------------------------		
+               
+               // ----------------------- MUTATORS ------------------------
+            protected:
+               virtual void    AssembleParameters();
+               
+               // -------------------- REPRESENTATION ---------------------
+            public:
+               TokenArray     Arguments;
+               TokenIterator  RefObj;
+            };
+
+            /// <summary>Represents a script command and its descendants, if any</summary>
+            class ExpressionNode : public CommandNode
+            {
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               ExpressionNode(const CommandLexer& lex, UINT line, ErrorArray& err);
+
+               // ---------------------- ACCESSORS ------------------------	
+
+               // ----------------------- MUTATORS ------------------------
+            protected:
+               virtual void    AssembleParameters();
+
+               // -------------------- REPRESENTATION ---------------------
+
+               TokenArray     Postfix;
+            };
+
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -161,33 +205,33 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          private:
-            CommandTree    Advance();
+            CommandNodePtr    Advance();
             void           ParseRoot();
-            void           ParseIf(CommandTree& If);
-            void           ParseElse(CommandTree& Else);
-            void           ParseSkipIf(CommandTree& SkipIf);
+            void           ParseIf(CommandNodePtr& If);
+            void           ParseElse(CommandNodePtr& Else);
+            void           ParseSkipIf(CommandNodePtr& SkipIf);
             
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandTree   ReadComment(const CommandLexer& lex);
-            CommandTree   ReadCommand(const CommandLexer& lex);
-            CommandTree   ReadExpression(const CommandLexer& lex);
-            CommandTree   ReadLine();
+            CommandNodePtr   ReadComment(const CommandLexer& lex);
+            CommandNodePtr   ReadCommand(const CommandLexer& lex);
+            CommandNodePtr   ReadExpression(const CommandLexer& lex);
+            CommandNodePtr   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
 
          public:
             ErrorArray    Errors;     // Compilation errors
-            CommandTree   Script;     // Script parse tree
+            CommandNodePtr   Script;     // Script parse tree
 
          private:
             const LineArray&  Input;
             const GameVersion Version;
 
             LineIterator  CurrentLine;
-            CommandTree   CurrentNode;
+            CommandNodePtr   CurrentNode;
          };
       }
    }
