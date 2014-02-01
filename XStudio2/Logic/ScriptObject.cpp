@@ -148,26 +148,11 @@ namespace Logic
       /// <returns>script object formatted for display</returns>
       GuiString  ScriptObject::GetDisplayText() const
       {
-         switch (Group)
-         {
-         //case ScriptObjectGroup::Operator:    // Handled manually to prevent conflicts
-        
-         case ScriptObjectGroup::Constant:       
-         case ScriptObjectGroup::DataType:       
-         case ScriptObjectGroup::ParameterType:  
-         case ScriptObjectGroup::StationSerial:  
-         case ScriptObjectGroup::TransportClass: 
-         case ScriptObjectGroup::FlightReturn:   
-         case ScriptObjectGroup::ObjectClass:    
-         case ScriptObjectGroup::ObjectCommand:  
-         case ScriptObjectGroup::WingCommand:    
-         case ScriptObjectGroup::Race:           
-         case ScriptObjectGroup::Sector:         
-         case ScriptObjectGroup::Relation:
-            return GuiString(L"[%s]", Text.c_str());
-         }
-
-         throw ArgumentException(HERE, L"group", GuiString(L"'%s' (%d) is not a supported script object group", GetString(Group).c_str(), Group) );
+         // Operators are translated by parameter because of spacing issues
+         if (Group == ScriptObjectGroup::Operator)
+            throw InvalidOperationException(HERE, L"Cannot get the display Text for operators");
+         
+         return GuiString(L"[%s]", Text.c_str());
       }
 
       /// <summary>Get whether object should be hidden from GUI</summary>
@@ -176,6 +161,7 @@ namespace Logic
          switch (Group)
          {
          case ScriptObjectGroup::ParameterType:
+            // Hide internal parameter types
             switch ((ParameterType)ID)
             {
             case ParameterType::LABEL_NAME:

@@ -70,6 +70,9 @@ namespace Logic
             }
          }
 
+         /// <summary>Verifies a data-type against the syntax.</summary>
+         bool Verify(DataType t) const;
+
 		   // ------------------------ STATIC -------------------------
 
 		   // ----------------------- MUTATORS ------------------------

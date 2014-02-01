@@ -110,7 +110,7 @@ namespace Logic
          {
             // Verify children
             for (const auto& cmd : Children)
-               cmd->Verify(err);
+               cmd->VerifyNode(err);
 
             // Verify root
             VerifyRoot(err);
@@ -130,7 +130,7 @@ namespace Logic
 
             // Verify children
             for (const auto& cmd : Children)
-               cmd->Verify(err);
+               cmd->VerifyNode(err);
          }
 
          /// <summary>Verifies the branching logic</summary>
@@ -226,8 +226,8 @@ namespace Logic
                }
 
                // Match data-type against syntax
-               if (!p.Verify())
-                  err += ErrorToken(GuiString(L"Not a valid %s", GetString(p.Syntax.Type).c_str()), LineNumber, p.Token);
+               if (Command.Syntax != CommandSyntax::Unknown && !p.Syntax.Verify(p.Type))
+                  err += ErrorToken(GuiString(L"'%s' is not a valid %s", p.Value.String.c_str(), GetString(p.Syntax.Type).c_str()), LineNumber, p.Token);
             }
          }
          
