@@ -14,6 +14,9 @@ namespace Logic
 
       /// <summary>Goto/gosub label name syntax</summary>
       const ParameterSyntax  ParameterSyntax::LabelDeclaration(ParameterType::LABEL_NAME, 0, 0);
+
+      /// <summary>Syntax for parameters of an unrecognised command</summary>
+      const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNDETERMINED, 0, 0);
       
       // -------------------------------- CONSTRUCTION --------------------------------
       

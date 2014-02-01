@@ -127,6 +127,14 @@ namespace Logic
             push_back(p);
             return *this;
          }
+
+         /// <summary>Append parameter array</summary>
+         ParameterArray& operator +=(const ParameterArray& arr)
+         {
+            for (const ScriptParameter& p : arr)
+               push_back(p);
+            return *this;
+         }
       };
    }
 }

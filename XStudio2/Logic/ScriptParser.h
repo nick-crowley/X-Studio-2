@@ -143,6 +143,7 @@ namespace Logic
             bool  MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchConditional(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const;
+            bool  MatchScriptArgument(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchComment(const CommandLexer& lex) const;
             bool  MatchCommand(const CommandLexer& lex) const;
             bool  MatchExpression(const CommandLexer& lex) const;
@@ -162,6 +163,7 @@ namespace Logic
             CommandNode*   ReadComment(const CommandLexer& lex);
             CommandNode*   ReadCommand(const CommandLexer& lex);
             CommandNode*   ReadExpression(const CommandLexer& lex);
+            ParameterArray ReadScriptCallArguments(const CommandLexer& lex, TokenIterator pos);
             CommandNode*   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
