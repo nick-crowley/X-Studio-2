@@ -41,7 +41,7 @@ namespace Logic
       GuiString  GetString(DataType d)
       {
          const LanguageString* str;
-         return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : GuiString(L"Error: Missing string %d", d);
+         return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : StringResource::Missing((UINT)d);
       }
 
       /// <summary>Identify data-type from a token type</summary>

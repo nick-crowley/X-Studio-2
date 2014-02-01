@@ -46,7 +46,7 @@ namespace Logic
       GuiString  GetString(ParameterType t)
       {
          const LanguageString* str;
-         return StringLib.TryFind(KnownPage::PARAMETER_TYPES, (UINT)t, str) ? str->Text : GuiString(L"Error: Missing string %d", (UINT)t);
+         return StringLib.TryFind(KnownPage::PARAMETER_TYPES, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------

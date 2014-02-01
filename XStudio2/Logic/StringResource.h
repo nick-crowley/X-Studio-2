@@ -20,8 +20,8 @@ namespace Logic
       static wstring  FormatV(const WCHAR*  format, va_list  args);
       static wstring  Load(UINT  id, ...);
       static wstring  LoadV(UINT  id, va_list  pArgs);
-
       static wstring  FromSystem(UINT  id);
+      static wstring  Missing(UINT id);
 
       // ----------------------- MUTATORS ------------------------
 
