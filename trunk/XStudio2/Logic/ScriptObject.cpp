@@ -91,7 +91,7 @@ namespace Logic
          case DataType::TRANSPORTCLASS:   return ScriptObjectGroup::TransportClass;
          case DataType::WINGCOMMAND:      return ScriptObjectGroup::WingCommand;
          }
-         throw ArgumentException(HERE, L"type", GuiString(L"%s (%d) is not a valid script object datatype", GetString(type).c_str(), type));
+         throw ArgumentException(HERE, L"type", GuiString(L"Cannot make script object from datatype '%s' (%d)", GetString(type).c_str(), type));
       }
 
       /// <summary>Get script object group string</summary>

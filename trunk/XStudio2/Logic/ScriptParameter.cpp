@@ -47,7 +47,7 @@ namespace Logic
       /// <summary>Identify data-type from a token type</summary>
       /// <param name="type">token type.</param>
       /// <returns></returns>
-      /// <exception cref="Logic::ArgumentException">Unsupported token type</exception>
+      /// <exception cref="Logic::InvalidOperationException">Unsupported token type</exception>
       DataType  ScriptParameter::IdentifyDataType(Compiler::TokenType type)
       {
          switch (type)
@@ -79,7 +79,7 @@ namespace Logic
          default:
          case TokenType::Keyword:
          case TokenType::Whitespace:
-            throw ArgumentException(HERE, L"type", GuiString(L"%s is an invalid token type for a parameter", GetString(type).c_str()));
+            throw InvalidOperationException(HERE, GuiString(L"Cannot create parameters from '%s'", GetString(type).c_str()));
          }
       }
 
