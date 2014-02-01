@@ -82,7 +82,7 @@ namespace Logic
             {
                const_iterator it;
 
-               // Set/clear object ptr
+               // Lookup object, Set/clear result
                obj = (it=find(ObjectID(grp, id))) != end() ? &it->second : nullptr;
                return obj != nullptr;
             }
@@ -135,6 +135,19 @@ namespace Logic
 
                // Error: Not found
                throw ScriptObjectNotFoundException(HERE, sz);
+            }
+
+            /// <summary>Finds a script object by name</summary>
+            /// <param name="name">object name</param>
+            /// <param name="obj">object</param>
+            /// <returns>true if found, false otherwise</returns>
+            bool  TryFind(const GuiString& name, const ScriptObject* &obj) const
+            {
+               const_iterator it;
+
+               // Lookup object, Set/clear result
+               obj = (it=find(name)) != end() ? &it->second : nullptr;
+               return obj != nullptr;
             }
 
             // ----------------------- MUTATORS ------------------------
@@ -199,6 +212,7 @@ namespace Logic
          UINT  Enumerate(WorkerData* data);
          ScriptObjectArray Query(const GuiString& str) const;
          bool  TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const;
+         bool  TryFind(const GuiString& name, const ScriptObject* &obj) const;
       
 
       protected:

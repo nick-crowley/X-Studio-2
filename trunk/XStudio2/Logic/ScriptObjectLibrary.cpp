@@ -144,6 +144,16 @@ namespace Logic
          obj = nullptr;
          return Objects.TryFind(grp, id, obj);
       }
+      
+      /// <summary>Finds a script object by name</summary>
+      /// <param name="name">object name</param>
+      /// <param name="obj">object</param>
+      /// <returns>true if found, false otherwise</returns>
+      bool  ScriptObjectLibrary::TryFind(const GuiString& name, const ScriptObject* &obj) const
+      {
+         obj = nullptr;
+         return Lookup.TryFind(name, obj);
+      }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       

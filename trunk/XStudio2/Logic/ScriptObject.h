@@ -78,9 +78,12 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------	
       public:
+         /// <summary>Get data-type from group</summary>
+         DataType  GetDataType() const;
+
          /// <summary>Get text formatted for display</summary>
          GuiString  GetDisplayText() const;
-         
+
          /// <summary>Get whether object should be hidden from GUI</summary>
          bool  IsHidden() const;
 

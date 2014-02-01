@@ -153,6 +153,19 @@ namespace Logic
                // Error: Not found
                throw GameObjectNotFoundException(HERE, sz);
             }
+            
+            /// <summary>Finds a game object by name</summary>
+            /// <param name="name">object name</param>
+            /// <param name="obj">object</param>
+            /// <returns>true if found, false otherwise</returns>
+            bool  TryFind(const GuiString& name, const GameObject* &obj) const
+            {
+               const_iterator it;
+
+               // Lookup object, Set/clear result
+               obj = (it=find(name)) != end() ? &it->second : nullptr;
+               return obj != nullptr;
+            }
 
             // ----------------------- MUTATORS ------------------------
          public:
@@ -199,6 +212,7 @@ namespace Logic
          GameObject      Find(UINT value) const;
          GameObject      Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const GuiString& search) const;
+         bool            TryFind(const GuiString& name, const GameObject* &obj) const;
 
       protected:
          UINT  PopulateObjects(WorkerData* data);

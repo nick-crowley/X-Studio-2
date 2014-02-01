@@ -104,29 +104,34 @@ namespace Logic
                c->Print(depth+1);
          }
 
-         /// <summary>Verifies the node</summary>
+         /// <summary>Verifies the entire tree</summary>
          /// <param name="err">The error collection</param>
-         void  ScriptParser::CommandNode::Verify(ErrorArray& err) const
+         void  ScriptParser::CommandNode::Verify(ErrorArray& err) 
          {
-            if (!IsRoot())
-            {
-               // Recognise game/script objects
-               VerifyObjects(err);
-
-               // Verify branching logic
-               VerifyLogic(err);
-            }
-
             // Verify children
             for (const auto& cmd : Children)
                cmd->Verify(err);
 
             // Verify root
-            if (IsRoot())
-               VerifyScript(err);
+            VerifyRoot(err);
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
+
+         /// <summary>Verifies this node</summary>
+         /// <param name="err">The error collection</param>
+         void  ScriptParser::CommandNode::VerifyNode(ErrorArray& err) 
+         {
+            // Verify parameters
+            VerifyParameters(err);
+
+            // Verify branching logic
+            VerifyLogic(err);
+
+            // Verify children
+            for (const auto& cmd : Children)
+               cmd->Verify(err);
+         }
 
          /// <summary>Verifies the branching logic</summary>
          /// <param name="err">The error collection</param>
@@ -185,26 +190,50 @@ namespace Logic
             }
          }
          
-         /// <summary>Verifies the game and script objects</summary>
+         /// <summary>Performs static type checking on the parameter</summary>
          /// <param name="err">The error collection</param>
-         void  ScriptParser::CommandNode::VerifyObjects(ErrorArray& err) const
+         void  ScriptParser::CommandNode::VerifyParameters(ErrorArray& err) 
          {
-            // Recognise objects
-            for (const auto& p : Command.Parameters)
-            {
-               // Verify game object
-               if (p.Token.Type == TokenType::GameObject && !GameObjectLib.Contains(p.Token.ValueText))
-                  err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
+            const GameObject*   gameObj;
+            const ScriptObject* scriptObj;
 
-               // Verify script object
-               else if (p.Token.Type == TokenType::ScriptObject && !ScriptObjectLib.Contains(p.Token.ValueText))
-                  err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
+            // Match parameters against their syntax
+            for (ScriptParameter& p : Command.Parameters)
+            {
+               switch (p.Token.Type)
+               {
+               // GameObject: Ensure exists
+               case TokenType::GameObject:
+                  if (!GameObjectLib.TryFind(p.Token.ValueText, gameObj))
+                     err += ErrorToken(L"Unrecognised game object", LineNumber, p.Token);
+                  break;
+
+               // ScriptObject: Ensure exists + refine data-type
+               case TokenType::ScriptObject:
+                  if (ScriptObjectLib.TryFind(p.Token.ValueText, scriptObj))
+                     p.Type = scriptObj->GetDataType();
+                  else
+                     err += ErrorToken(L"Unrecognised script object", LineNumber, p.Token);
+                  break;
+
+               // Script argument: TODO: Lookup argument
+               case TokenType::Text:
+                  continue;
+
+               // Label name: TODO: Lookup label name?
+               case TokenType::Label:
+                  continue;
+               }
+
+               // Match data-type against syntax
+               if (!p.Verify())
+                  err += ErrorToken(GuiString(L"Not a valid %s", GetString(p.Syntax.Type).c_str()), LineNumber, p.Token);
             }
          }
          
          /// <summary>Verifies the root node</summary>
          /// <param name="err">The error collection</param>
-         void  ScriptParser::CommandNode::VerifyScript(ErrorArray& err) const
+         void  ScriptParser::CommandNode::VerifyRoot(ErrorArray& err) const
          {
             // Ensure script has commands
             if (Children.size() == 0)
