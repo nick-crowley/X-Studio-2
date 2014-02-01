@@ -97,14 +97,14 @@ namespace Logic
          try
          {
             // Feedback
-            Console << L"Parsing MSCI script: " << Colour::Yellow << v.FullPath.FileName << Colour::White << L"...";
+            Console << L"Parsing MSCI script: " << Colour::Yellow << v.FullPath.FileName << Colour::White << L"..." << ENDL;
 
             // Parse script
             ScriptFile script = ScriptFileReader(v.OpenRead()).ReadFile(v.FullPath.Folder, false);
-            Console << Colour::Green << L"Success" << ENDL;
+            //Console << Colour::Green << L"Success" << ENDL;
          }
          catch (ExceptionBase& e) {
-            Console << Colour::Red << L"Failed" << ENDL;
+            Console << Colour::Red << L"Failed to parse " << Colour::Yellow << v.FullPath.FileName << ENDL;
             Console.Log(HERE, e);
          }
       }
