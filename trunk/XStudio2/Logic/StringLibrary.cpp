@@ -127,6 +127,25 @@ namespace Logic
          return Find(page,id).ResolvedText;
       }
 
+      /// <summary>Attempts to find a string</summary>
+      /// <param name="page">The page id</param>
+      /// <param name="id">The string id</param>
+      /// <param name="str">The string</param>
+      /// <returns>true if found, false otherwise</returns>
+      bool  StringLibrary::TryFind(UINT page, UINT id, const LanguageString* &str) const
+      {
+         // Search files in descending file ID
+         for (const LanguageFile& f : Files)
+            if (f.Contains(page, id))
+            {
+               str = &f.Find(page, id);
+               return true;
+            }
+
+         // Not found
+         return false;
+      }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------

@@ -115,7 +115,7 @@ namespace Logic
             }
             
             // Verify tree
-            Script->Print(0);
+            //Script->Print(0);
             Script->Verify(Errors);
          }
 
