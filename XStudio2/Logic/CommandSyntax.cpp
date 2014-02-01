@@ -120,6 +120,18 @@ namespace Logic
          return params;
       }
 
+      /// <summary>Query command ID</summary>
+      bool  CommandSyntax::Is(UINT id) const
+      {
+         return ID == id;
+      }
+
+      /// <summary>Query command type</summary>
+      bool  CommandSyntax::Is(CommandType t) const
+      {
+         return Type == t;
+      }
+
       /// <summary>Determines whether the command is compatible with a game</summary>
       /// <param name="v">The game version</param>
       /// <returns></returns>

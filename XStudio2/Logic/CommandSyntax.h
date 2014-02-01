@@ -63,6 +63,12 @@ namespace Logic
          /// <summary>Get parameter syntax in display order</summary>
          ParamSyntaxArray  GetParametersByDisplay() const;
 
+         /// <summary>Query command ID</summary>
+         bool  Is(UINT ID) const;
+
+         /// <summary>Query command type</summary>
+         bool  Is(CommandType t) const;
+
          /// <summary>Query whether command is compatible with a version</summary>
          bool  IsCompatible(GameVersion v) const;
 

@@ -69,7 +69,7 @@ namespace Logic
       UINT ScriptCommand::GetJumpDestination() const
       {
          // Validate command ID
-         if (Syntax.ID != CMD_GOTO_LABEL && Syntax.ID != CMD_GOTO_SUB)
+         if (!Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
             throw InvalidOperationException(HERE, GuiString(L"Cannot get jump destination for a '%s' command", Syntax.Text.c_str()));
 
          // Validate label name parameter
@@ -85,7 +85,7 @@ namespace Logic
       wstring  ScriptCommand::GetLabelName() const
       {
          // Validate command ID
-         if (Syntax.ID != CMD_DEFINE_LABEL)
+         if (!Syntax.Is(CMD_DEFINE_LABEL))
             throw InvalidOperationException(HERE, GuiString(L"Cannot get label name for a '%s' command", Syntax.Text.c_str()));
 
          // Validate label name parameter
@@ -186,7 +186,7 @@ namespace Logic
       void  ScriptCommand::SetLabelName(const wstring& name)
       {
          // Validate command ID
-         if (Syntax.ID != CMD_GOTO_LABEL && Syntax.ID != CMD_GOTO_SUB)
+         if (!Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
             throw InvalidOperationException(HERE, GuiString(L"Cannot set label name for a '%s' command", Syntax.Text.c_str()));
 
          // Replace parameters
