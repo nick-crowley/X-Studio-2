@@ -19,7 +19,7 @@ namespace Logic
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
-         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v), Script(new CommandNode())
+         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v), Script(new CommandNode(Errors))
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
@@ -62,9 +62,9 @@ namespace Logic
          
          /// <summary>Reads the next node but returns the current node</summary>
          /// <returns>Node that was current before call</returns>
-         ScriptParser::CommandTree  ScriptParser::Advance()
+         ScriptParser::CommandNodePtr  ScriptParser::Advance()
          {
-            CommandTree tmp(CurrentNode);
+            CommandNodePtr tmp(CurrentNode);
             CurrentNode = ReadLine();
             return tmp;
          }
@@ -116,14 +116,14 @@ namespace Logic
             
             // Verify tree
             //Script->Print(0);
-            Script->Verify(Errors);
+            Script->Verify();
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         void ScriptParser::ParseIf(CommandTree& If)
+         void ScriptParser::ParseIf(CommandNodePtr& If)
          {
             while (CurrentNode)
             {  
@@ -164,7 +164,7 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         void ScriptParser::ParseElse(CommandTree& Else)
+         void ScriptParser::ParseElse(CommandNodePtr& Else)
          {
             while (CurrentNode)
             {  
@@ -200,7 +200,7 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         void ScriptParser::ParseSkipIf(CommandTree& SkipIf)
+         void ScriptParser::ParseSkipIf(CommandNodePtr& SkipIf)
          {
             // Read children
             while (CurrentNode)
@@ -478,16 +478,16 @@ namespace Logic
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
          /// <returns>New NOP/Comment command node</returns>
-         ScriptParser::CommandTree ScriptParser::ReadComment(const CommandLexer& input)
+         ScriptParser::CommandNodePtr ScriptParser::ReadComment(const CommandLexer& input)
          {
-            CommandTree   node(new CommandNode(input, LineNumber));
+            StandardNodePtr node(new StandardNode(input, LineNumber, Errors));
 
             // Identify syntax
             node->Syntax = SyntaxLib.Find(input.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
             
             // Store comment, if any
             if (input.count() == 2)
-               node->Parameters += input.Tokens[1];
+               node->Tokens += input.Tokens[1];
 
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -507,11 +507,11 @@ namespace Logic
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///
          /// </remarks>
-         ScriptParser::CommandTree  ScriptParser::ReadCommand(const CommandLexer& input)
+         ScriptParser::CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& input)
          {
-            CommandTree   node(new CommandNode(input, LineNumber));
-            CommandLexer& lex = node->Lexer;
-            TokenIterator pos = lex.begin();
+            StandardNodePtr node(new StandardNode(input, LineNumber, Errors));
+            CommandLexer&   lex = node->Lexer;
+            TokenIterator   pos = lex.begin();
 
             // Match: (assignment/conditional)? 
             if (MatchAssignment(lex, lex.begin()))
@@ -525,7 +525,7 @@ namespace Logic
                node->RefObj = ReadReferenceObject(lex, pos);
 
             // Match remaining tokens against a command
-            node->Syntax = SyntaxLib.Identify(pos, lex.end(), Version, node->Parameters);  
+            node->Syntax = SyntaxLib.Identify(pos, lex.end(), Version, node->Tokens);  
             
             // Unrecognised: Highlight offending token / entire line
             if (node->Syntax == CommandSyntax::Unknown)
@@ -546,8 +546,8 @@ namespace Logic
                   // Match {name, '=', value} triplet
                   if (MatchScriptArgument(lex, TokenIterator(pos)))
                   {
-                     node->Parameters += pos[0];
-                     node->Parameters += pos[2];
+                     node->Arguments += pos[0];
+                     node->Arguments += pos[2];
                   }
                   else 
                   {  // Error: Abort
@@ -572,11 +572,11 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
-         ScriptParser::CommandTree  ScriptParser::ReadExpression(const CommandLexer& input)
+         ScriptParser::CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& input)
          {
-            CommandTree   node(new CommandNode(input, LineNumber));
-            CommandLexer& lex = node->Lexer;
-            TokenIterator pos = lex.begin();
+            ExpressionNodePtr node = ExpressionNodePtr(new ExpressionNode(input, LineNumber, Errors));
+            CommandLexer&     lex = node->Lexer;
+            TokenIterator     pos = lex.begin();
 
             // Lookup syntax
             node->Syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
@@ -591,26 +591,10 @@ namespace Logic
             #ifdef PRINT_CONSOLE
                Console << Colour::Green << L"expression" << ENDL;
             #endif
-            TokenIterator debugStart = pos;
 
-            try
-            {
-               // Parse expression
-               ExpressionParser expr(pos, lex.end());
-               expr.Parse();  
-
-               // Store ordered parameters
-               node->Parameters = expr.InfixParams;
-               node->Postfix = expr.PostfixParams;
-            }
-            catch (ScriptSyntaxException& e) {
-               // syntax error
-               Errors += MakeError(e.Message, pos);
-
-               // DEBUG: print tokens
-               for (auto it = lex.begin(); it != lex.end(); ++it)
-                  Console << (it==debugStart?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
-            }
+            // Read remaining tokens
+            while (pos < lex.end())
+               node->Tokens.push_back(*pos);
 
             return node;
          }
@@ -636,15 +620,15 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
-         ScriptParser::CommandTree ScriptParser::ReadLine()
+         ScriptParser::CommandNodePtr ScriptParser::ReadLine()
          {
             // EOF: Return
             if (CurrentLine == Input.end())
                return nullptr;
 
             // Lex current line
-            CommandLexer  lex(*CurrentLine);
-            CommandTree   node;
+            CommandLexer   lex(*CurrentLine);
+            CommandNodePtr node;
             
             // DEBUG:
             #ifdef PRINT_CONSOLE
@@ -675,7 +659,7 @@ namespace Logic
 
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = CommandTree(new CommandNode(lex, LineNumber));
+               node = CommandNodePtr(new CommandNode(lex, LineNumber, Errors));
             }
 
             // Consume line + return node

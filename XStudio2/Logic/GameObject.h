@@ -59,6 +59,7 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          PROPERTY_GET(GuiString,DisplayText,GetDisplayText);
+         PROPERTY_GET(UINT,EncodedValue,GetEncodedValue);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
@@ -66,6 +67,13 @@ namespace Logic
          GuiString  GetDisplayText() const
          {
             return GuiString(L"{%s}", Name.c_str());
+         }
+
+         /// <summary>Gets the encoded value.</summary>
+         /// <returns></returns>
+         UINT  GetEncodedValue() const
+         {
+            return MAKELONG(Type, SubType);
          }
 
          /// <summary>Appends an object id to name</summary>
@@ -82,7 +90,7 @@ namespace Logic
       public:
          const MainType  Type;
          const UINT      SubType;
-         const GuiString ID, 
+         const GuiString ID,     // object ID. eg. SS_P_BUSTER
                          Name, 
                          Description;
       };
