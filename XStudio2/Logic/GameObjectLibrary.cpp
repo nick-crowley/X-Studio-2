@@ -195,6 +195,16 @@ namespace Logic
 
          return Results;
       }
+      
+      /// <summary>Finds a game object by name</summary>
+      /// <param name="name">object name</param>
+      /// <param name="obj">object</param>
+      /// <returns>true if found, false otherwise</returns>
+      bool  GameObjectLibrary::TryFind(const GuiString& name, const GameObject* &obj) const
+      {
+         obj = nullptr;
+         return Lookup.TryFind(name, obj);
+      }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 

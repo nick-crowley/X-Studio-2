@@ -91,12 +91,13 @@ namespace Logic
                NodeIterator  Find(BranchLogic l) const;
                bool  IsRoot() const;
                void  Print(int depth = 0) const;
-               void  Verify(ErrorArray& err) const;
+               void  Verify(ErrorArray& err);
 
             protected:
+               void  VerifyNode(ErrorArray& err);
                void  VerifyLogic(ErrorArray& err) const;
-               void  VerifyObjects(ErrorArray& err) const;
-               void  VerifyScript(ErrorArray& err) const;
+               void  VerifyParameters(ErrorArray& err);
+               void  VerifyRoot(ErrorArray& err) const;
                
                // ----------------------- MUTATORS ------------------------
             public:

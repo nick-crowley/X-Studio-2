@@ -90,11 +90,14 @@ namespace Logic
          virtual ~ScriptParameter();
 
          // ------------------------ STATIC -------------------------
+      protected:
+         static DataType  IdentifyDataType(Compiler::TokenType type);
 
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			
-
+      public:
+         bool  Verify() const;
 		   // ----------------------- MUTATORS ------------------------
 
       public:

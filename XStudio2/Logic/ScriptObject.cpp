@@ -121,6 +121,29 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      /// <summary>Get data-type from group</summary>
+      DataType  ScriptObject::GetDataType() const
+      {
+         switch (Group)
+         {
+         case ScriptObjectGroup::Constant:         return DataType::CONSTANT;
+         case ScriptObjectGroup::DataType:         return DataType::DATATYPE;
+         case ScriptObjectGroup::FlightReturn:     return DataType::FLIGHTRETURN;
+         case ScriptObjectGroup::ObjectClass:      return DataType::OBJECTCLASS;
+         case ScriptObjectGroup::ObjectCommand:    return DataType::OBJECTCOMMAND;
+         case ScriptObjectGroup::Operator:         return DataType::OPERATOR;
+         case ScriptObjectGroup::ParameterType:    return DataType::SCRIPTDEF;
+         case ScriptObjectGroup::Sector:           return DataType::SECTOR;
+         case ScriptObjectGroup::Race:             return DataType::RACE;
+         case ScriptObjectGroup::Relation:         return DataType::RELATION;
+         case ScriptObjectGroup::StationSerial:    return DataType::STATIONSERIAL;
+         case ScriptObjectGroup::TransportClass:   return DataType::TRANSPORTCLASS;
+         case ScriptObjectGroup::WingCommand:      return DataType::WINGCOMMAND;
+         }
+         throw ArgumentException(HERE, L"Group", GuiString(L"Unrecognised script object group %s", GetString(Group).c_str()));
+      }
+
+
       /// <summary>Get text formatted for display</summary>
       /// <returns>script object formatted for display</returns>
       GuiString  ScriptObject::GetDisplayText() const
