@@ -178,7 +178,7 @@ namespace Logic
             }
 
             // Insert standard command
-            if (std[i].Syntax.ID != CMD_HIDDEN_JUMP)
+            if (!std[i].Syntax.Is(CMD_HIDDEN_JUMP))
                script.Commands.push_back( std[i] );
          }
 
