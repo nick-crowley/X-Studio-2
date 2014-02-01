@@ -231,7 +231,7 @@ namespace Logic
             throw FileNotFoundException(HERE, Folder+name);
 
          // Feedback
-         Console << ENDL << L"  Resolving script call: " << Colour::Yellow << name << Colour::White << L"...";
+         Console << L"  Resolving script call: " << Colour::Yellow << name << Colour::White << L"..." << ENDL;
 
          // Read script
          XFileInfo f(path);
