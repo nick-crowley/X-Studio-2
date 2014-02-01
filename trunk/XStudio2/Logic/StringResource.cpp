@@ -97,13 +97,12 @@ namespace Logic
       WCHAR    szBuffer[512],
                szFormat[512];
       
-      // Load string + format
-      if (LoadString(theApp.m_hInstance, id, szFormat, 512))
-         StringCchVPrintf(szBuffer, 512, szFormat, pArgs);
-      else
-         StringCchPrintf(szBuffer, 512, L"Error: Missing string '%d'", id);
-
-      // Return
+      // Load string 
+      if (!LoadString(theApp.m_hInstance, id, szFormat, 512))
+         return Missing(id);
+         
+      // Format + Return
+      StringCchVPrintf(szBuffer, 512, szFormat, pArgs);
       return szBuffer;
    }
 
@@ -122,6 +121,14 @@ namespace Logic
       }
 
       return msg;
+   }
+
+   /// <summary>Get Missing string placeholder</summary>
+   /// <param name="id">The string identifier.</param>
+   /// <returns></returns>
+   wstring StringResource::Missing(UINT id)
+   {
+      return GuiString(L"{Missing string: %d}", id);
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
