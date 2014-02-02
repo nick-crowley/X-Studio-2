@@ -82,18 +82,18 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptParameter(ParameterSyntax s, const ScriptToken& t);
-         ScriptParameter(ParameterSyntax s, Conditional c);
-         ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val);
-         ScriptParameter(ParameterSyntax s, DataType t, const wstring& val);
-         ScriptParameter(ParameterSyntax s, DataType t, UINT val);
+         ScriptParameter(const ParameterSyntax& s, const ScriptToken& t);
+         ScriptParameter(const ParameterSyntax& s, Conditional c);
+         ScriptParameter(const ParameterSyntax& s, DataType t, ParameterValue val);
+         ScriptParameter(const ParameterSyntax& s, DataType t, const wstring& val);
+         ScriptParameter(const ParameterSyntax& s, DataType t, UINT val);
          virtual ~ScriptParameter();
 
          // ------------------------ STATIC -------------------------
       public:
 
       protected:
-         static DataType  IdentifyDataType(Compiler::TokenType type);
+         static DataType  IdentifyDataType(ScriptToken tok);
 
          // --------------------- PROPERTIES ------------------------
 			

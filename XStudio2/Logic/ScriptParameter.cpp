@@ -14,20 +14,16 @@ namespace Logic
       /// <summary>Create a retVar, refObj, standard, expression, or argument parameter from a PARSED SCRIPT TOKEN</summary>
       /// <param name="s">syntax</param>
       /// <param name="tok">script token</param>
-      ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) 
-         : Syntax(s), Token(t), Type(IdentifyDataType(t.Type)), Value(t.ValueText), Text(t.Text)
+      ScriptParameter::ScriptParameter(const ParameterSyntax& s, const ScriptToken& t) 
+         : Syntax(s), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
       {
-         const ScriptObject* obj = nullptr;
-
-         // Lookup script object to identify data-type
-         if (Type == DataType::CONSTANT && ScriptObjectLib.TryFind(Value.String, obj))
-            Type = obj->GetDataType();
+         
       }
 
       /// <summary>Create a conditional retVar parameter from a PARSED CONDITIONAL</summary>
       /// <param name="s">syntax</param>
       /// <param name="c">The conditional.</param>
-      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) 
+      ScriptParameter::ScriptParameter(const ParameterSyntax& s, Conditional c) 
          : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c).Value), Text(L"conditional")
       {}
    
@@ -35,21 +31,21 @@ namespace Logic
       /// <param name="s">syntax</param>
       /// <param name="t">data type</param>
       /// <param name="val">The value.</param>
-      ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val)
+      ScriptParameter::ScriptParameter(const ParameterSyntax& s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val)
       {}
 
       /// <summary>Create a parameter from a string value READ FROM FILE</summary>
       /// <param name="s">syntax</param>
       /// <param name="t">data type</param>
       /// <param name="val">The value.</param>
-      ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, const wstring& val) : Syntax(s), Type(t), Value(val) 
+      ScriptParameter::ScriptParameter(const ParameterSyntax& s, DataType t, const wstring& val) : Syntax(s), Type(t), Value(val) 
       {}
 
       /// <summary>Create a parameter from an int value READ FROM FILE</summary>
       /// <param name="s">syntax</param>
       /// <param name="t">data type</param>
       /// <param name="val">The value.</param>
-      ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, UINT val) : Syntax(s), Type(t), Value(val) 
+      ScriptParameter::ScriptParameter(const ParameterSyntax& s, DataType t, UINT val) : Syntax(s), Type(t), Value(val) 
       {}
 
       ScriptParameter::~ScriptParameter()
@@ -68,9 +64,12 @@ namespace Logic
       /// <param name="type">token type.</param>
       /// <returns></returns>
       /// <exception cref="Logic::InvalidOperationException">Unsupported token type</exception>
-      DataType  ScriptParameter::IdentifyDataType(Compiler::TokenType type)
+      DataType  ScriptParameter::IdentifyDataType(ScriptToken tok)
       {
-         switch (type)
+         const ScriptObject* obj = nullptr;
+
+         // Examine token
+         switch (tok.Type)
          {
          case TokenType::Comment:
          case TokenType::Label:
@@ -83,8 +82,9 @@ namespace Logic
          case TokenType::GameObject:
             return DataType::WARE;
 
+         // Lookup script object to identify data-type
          case TokenType::ScriptObject:
-            return DataType::CONSTANT;
+            return ScriptObjectLib.TryFind(tok.ValueText, obj) ? obj->GetDataType() : DataType::CONSTANT;
 
          case TokenType::Operator:
             return DataType::OPERATOR;
