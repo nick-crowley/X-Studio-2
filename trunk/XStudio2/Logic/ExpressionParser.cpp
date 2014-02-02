@@ -12,9 +12,13 @@ namespace Logic
          /// <summary>Creates a script expression parser</summary>
          /// <param name="begin">Position of first expression token</param>
          /// <param name="end">Position after last expression token</param>
+         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          ExpressionParser::ExpressionParser(TokenIterator& begin, TokenIterator& end)
             : InputBegin(begin), InputEnd(end)
          {
+            Parse();
          }
 
 
@@ -25,6 +29,8 @@ namespace Logic
          // ------------------------------- STATIC METHODS -------------------------------
 
          // ------------------------------- PUBLIC METHODS -------------------------------
+         
+         // ------------------------------ PROTECTED METHODS -----------------------------
          
          /// <summary>Parses the expression, ensures it is correct and produces infix/postfix tokens.</summary>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
@@ -37,9 +43,15 @@ namespace Logic
             for (auto it = InputBegin; it != InputEnd; ++it)
                Console.Writef(L"%s ", it->Text.c_str());
             Console.WriteLnf(L"");*/
-                         
+                      
+            TokenIterator pos = InputBegin;
+
             // Produce parse tree
-            ExpressionTree tree = ReadExpression(InputBegin);
+            ExpressionTree tree = ReadExpression(pos);
+
+            // Ensure all tokens parsed
+            if (pos != InputEnd)
+               throw ExpressionParserException(HERE, pos, L"Unexpected token");
 
             // Extract tokens
             tree->getTokenArray(Traversal::InOrder, InfixParams);
@@ -52,8 +64,6 @@ namespace Logic
             //Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
             //Console.WriteLnf(L"");
          }
-
-         // ------------------------------ PROTECTED METHODS -----------------------------
 
          // ------------------------------- PRIVATE METHODS ------------------------------
 
@@ -257,7 +267,7 @@ namespace Logic
                   throw ExpressionParserException(HERE, L"Missing operand");
 
                // Failed: Unexpected token
-               throw ExpressionParserException(HERE, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
+               throw ExpressionParserException(HERE, pos, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
             }
             
             // Read: Expression  (may throw)
@@ -269,7 +279,10 @@ namespace Logic
                return ExpressionTree( new BracketedExpression(open, expr, ReadOperator(pos)) );
             
             // Failure: Missing closing bracket
-            throw ExpressionParserException(HERE, L"Missing closing bracket");
+            if (pos >= InputEnd)
+               throw ExpressionParserException(HERE, L"Missing closing bracket");
+            else
+               throw ExpressionParserException(HERE, pos, L"Expected closing bracket");
          }
 
       }

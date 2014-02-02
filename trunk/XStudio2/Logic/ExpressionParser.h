@@ -17,12 +17,22 @@ namespace Logic
          class ExpressionParserException : public ExceptionBase
          {
          public:
-            /// <summary>Create an ExpressionParserException</summary>
+            /// <summary>Create an exception for an entire line</summary>
             /// <param name="src">Location of throw</param>
             /// <param name="msg">Message</param>
             ExpressionParserException(wstring  src, wstring msg) 
                : ExceptionBase(src, msg)
             {}
+
+            /// <summary>Create an exception for a specific token</summary>
+            /// <param name="src">Location of throw</param>
+            /// <param name="pos">Token position</param>
+            /// <param name="msg">Message</param>
+            ExpressionParserException(wstring  src, const TokenIterator& pos, wstring msg) 
+               : ExceptionBase(src, msg), Position(pos)
+            {}
+
+            TokenIterator Position;
          };
 
          /// <summary>Parses expression script commands</summary>
@@ -291,7 +301,7 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
 
-         public:
+         protected:
             void  Parse();
 
          private:
@@ -317,7 +327,7 @@ namespace Logic
             const UINT  MIN_PRECEDENCE = 0, 
                         MAX_PRECEDENCE = 9;
 
-            TokenIterator& InputBegin,
+            TokenIterator  InputBegin,
                            InputEnd;
          };
       }

@@ -163,11 +163,11 @@ namespace Logic
       {
          // Try Parse
          CommandLexer ex1(L"4+5*3");
-         ExpressionParser(ex1.Tokens.begin(), ex1.Tokens.end()).Parse();
+         ExpressionParser(ex1.Tokens.begin(), ex1.Tokens.end());
 
          // Try Parse
          CommandLexer ex2(L"1|2^3&4<5+6*-8");
-         ExpressionParser(ex2.Tokens.begin(), ex2.Tokens.end()).Parse();
+         ExpressionParser(ex2.Tokens.begin(), ex2.Tokens.end());
 
          // Try Parse
          /*tokens = Tokenise(L"4+5*3");
