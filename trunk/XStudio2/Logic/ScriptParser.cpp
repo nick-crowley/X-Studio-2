@@ -122,8 +122,9 @@ namespace Logic
             // DEBUG: Print tree
             //Commands->Print(0);
 
-            // Verify tree
-            Commands->Verify(Script, Errors);
+            // Enumerate+Verify tree
+            Commands->Enumerate(Script);
+            Commands->Verify(Errors);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>

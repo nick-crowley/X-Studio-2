@@ -35,7 +35,8 @@ NAMESPACE_BEGIN(GUI)
 
    // -------------------------------- CONSTRUCTION --------------------------------
    
-   ScriptView::ScriptView() : CFormView(ScriptView::IDD)
+   ScriptView::ScriptView() 
+             : CFormView(ScriptView::IDD), fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete))
    {
    }
 
@@ -110,6 +111,13 @@ NAMESPACE_BEGIN(GUI)
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    }
 
+   void ScriptView::OnCompileComplete()
+   {
+      // Re-Populate variables/scope
+      PopulateVariables();
+      PopulateScope();
+   }
+
    void ScriptView::OnInitialUpdate()
    {
 	   CFormView::OnInitialUpdate();
@@ -129,17 +137,9 @@ NAMESPACE_BEGIN(GUI)
       RichEdit.SetDocument(GetDocument());
       RichEdit.SetRtf(txt);
 
-      // Populate variables
-      VariablesCombo.AddString(L"(Variables)");
-      for (auto& var : GetDocument()->Script.Variables)
-         VariablesCombo.AddString(var.Name.c_str());
-      VariablesCombo.SetCurSel(0);
-
-      // Populate labels
-      ScopeCombo.AddString(L"(Global scope)");
-      for (auto& label : GetDocument()->Script.Labels)
-         ScopeCombo.AddString(label.Name.c_str());
-      ScopeCombo.SetCurSel(0);
+      // Populate variables/scope
+      PopulateVariables();
+      PopulateScope();
    }
 
    void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -160,19 +160,43 @@ NAMESPACE_BEGIN(GUI)
       
       try
       {
-         // Get caret position
-         POINT caret = {RichEdit.GetCaretIndex(), 1+RichEdit.LineFromChar(-1)};
-         //Console << "Caret moved to line " << caret.y << ENDL;
-
-         // Select/clear current scope
-         ScopeCombo.SetCurSel(1+GetDocument()->Script.FindScope(caret.y));
-
+         // Update current scope
+         UpdateScope();
+         
          // Raise 'CARET MOVED'
-         CaretMoved.Raise(caret);
+         CaretMoved.Raise(RichEdit.GetCaretLocation());
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
+   }
+   
+   void ScriptView::PopulateVariables()
+   {
+      // Clear
+      VariablesCombo.ResetContent();
+      VariablesCombo.AddString(L"(Variables)");
+
+      // Populate variables
+      for (auto& var : GetDocument()->Script.Variables)
+         VariablesCombo.AddString(var.Name.c_str());
+
+      // Select heading
+      VariablesCombo.SetCurSel(0);
+   }
+
+   void ScriptView::PopulateScope()
+   {
+      // Clear
+      ScopeCombo.ResetContent();
+      ScopeCombo.AddString(L"(Global scope)");
+
+      // Populate labels
+      for (auto& label : GetDocument()->Script.Labels)
+         ScopeCombo.AddString(label.Name.c_str());
+
+      // Select current scope
+      UpdateScope();
    }
 
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
@@ -181,6 +205,13 @@ NAMESPACE_BEGIN(GUI)
 	   //  the CREATESTRUCT cs
 
 	   return CFormView::PreCreateWindow(cs);
+   }
+   
+   void ScriptView::UpdateScope()
+   {
+      // Set/clear scope
+      UINT line = RichEdit.GetCaretLocation().y;
+      ScopeCombo.SetCurSel(1+GetDocument()->Script.FindScope(line));
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

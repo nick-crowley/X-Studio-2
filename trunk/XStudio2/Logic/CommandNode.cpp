@@ -110,24 +110,26 @@ namespace Logic
                c->Print(depth+1);
          }
 
-         void  ScriptParser::CommandNode::EnumLabels(ScriptFile& script) const
+         /// <summary>Enumerates the labels and variables in the script.</summary>
+         /// <param name="script">The script.</param>
+         void  ScriptParser::CommandNode::Enumerate(ScriptFile& script) const
          {
             // NODE: 
             if (Parent != nullptr)
             {
-               // Enum labels
+               // Add label definitions to script
                if (Syntax.Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
-                  script.Labels.Add(ScriptLabel(Parameters[0].Value.String, LineNumber));
+                  script.AddLabel(Parameters[0].Value.String, LineNumber);
 
-               // Enum variables
+               // Add variable names to script
                for (const auto& p : Parameters)
                   if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(ScriptVariable(VariableType::Variable, p.Value.String, ??));
+                     script.AddVariable(p.Value.String);
             }
 
             // Examine children
             for (const auto& cmd : Children)
-               cmd->EnumLabels(script);
+               cmd->Enumerate(script);
          }
          
          /// <summary>Verifies the entire tree</summary>

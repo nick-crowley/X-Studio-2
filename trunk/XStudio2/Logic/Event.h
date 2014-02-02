@@ -5,6 +5,8 @@
 
 namespace Logic
 {
+   /// <summary>Empty function declspec</summary>
+   #define handler       
 
    /// <summary>Forward declaration</summary>
    template<typename ...Args>
@@ -187,6 +189,11 @@ namespace Logic
       list<DelegateBase*> Listeners;
    };
 
+   /// <summary>Event with no arguments</summary>
+   typedef Event<>                   SimpleEvent;
+
+   /// <summary>Handler for event with no arguments</summary>
+   typedef SimpleEvent::DelegatePtr  EventHandler;
 }
 
 using namespace Logic;
