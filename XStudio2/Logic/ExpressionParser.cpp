@@ -29,7 +29,7 @@ namespace Logic
          /// <summary>Parses the expression, ensures it is correct and produces infix/postfix tokens.</summary>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          void  ExpressionParser::Parse()
          {
             // DEBUG: print input
@@ -163,7 +163,7 @@ namespace Logic
          /// <returns>Expression tree</returns>
          /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadExpression(TokenIterator& pos)
          {
@@ -176,7 +176,7 @@ namespace Logic
          /// <returns>Expression tree</returns>
          /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
          {
@@ -215,7 +215,7 @@ namespace Logic
          /// <returns>Expression tree</returns>
          /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadUnaryExpression(TokenIterator& pos)
          {
@@ -237,7 +237,7 @@ namespace Logic
          /// <returns>Expression tree</returns>
          /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
          /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the literal or sub-expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadValue(TokenIterator& pos)
          {
@@ -254,10 +254,10 @@ namespace Logic
             {
                // Failed: Unexpected EOF
                if (pos >= InputEnd)
-                  throw ScriptSyntaxException(HERE, L"Missing operand");
+                  throw ExpressionParserException(HERE, L"Missing operand");
 
                // Failed: Unexpected token
-               throw ScriptSyntaxException(HERE, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
+               throw ExpressionParserException(HERE, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
             }
             
             // Read: Expression  (may throw)
@@ -269,7 +269,7 @@ namespace Logic
                return ExpressionTree( new BracketedExpression(open, expr, ReadOperator(pos)) );
             
             // Failure: Missing closing bracket
-            throw ScriptSyntaxException(HERE, L"Missing closing bracket");
+            throw ExpressionParserException(HERE, L"Missing closing bracket");
          }
 
       }

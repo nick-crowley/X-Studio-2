@@ -292,16 +292,5 @@ namespace Logic
       {}
    };
 
-   /// <summary>Occurs when a syntax error in detected in a script</summary>
-   class ScriptSyntaxException : public ExceptionBase
-   {
-   public:
-      /// <summary>Create an ScriptSyntaxException</summary>
-      /// <param name="src">Location of throw</param>
-      /// <param name="msg">Message</param>
-      ScriptSyntaxException(wstring  src, wstring msg) 
-         : ExceptionBase(src, GuiString(L"Syntax error: %s", msg.c_str()))
-      {}
-   };
    
 }
