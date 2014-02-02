@@ -49,14 +49,20 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          ScriptParser::CommandNode::CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
-            : CommandNode(cnd, syntax, infix, lex, line)
-         {
-            Postfix = postfix;
-         }
+            : Syntax(syntax),
+              Condition(cnd),
+              Parameters(move(infix)),
+              Postfix(move(postfix)),
+              LineNumber(line), 
+              Extent(lex.Extent), 
+              LineText(lex.Input),
+              Parent(nullptr), 
+              JumpTarget(nullptr), 
+              Index(0)
+         {}
 
          ScriptParser::CommandNode::~CommandNode()
-         {
-         }
+         {}
 
          // ------------------------------- STATIC METHODS -------------------------------
 

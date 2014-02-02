@@ -25,13 +25,18 @@ namespace Logic
             // ------------------------ TYPES --------------------------
          public:
             class CommandNode;
-            class ExpressionNode;
-            class StandardNode;
+            
 
             /// <summary>Shared pointer to a parse tree node</summary>
-            typedef shared_ptr<CommandNode>  CommandNodePtr;
-            typedef shared_ptr<StandardNode>  StandardNodePtr;
-            typedef shared_ptr<ExpressionNode>  ExpressionNodePtr;
+            class CommandNodePtr : public shared_ptr<CommandNode> 
+            {
+            public:
+               CommandNodePtr() : shared_ptr<CommandNode>(nullptr)
+               {}
+               CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
+               {}
+            };
+            
 
             /// <summary>Script error</summary>
             class ErrorToken : public TokenBase
@@ -114,7 +119,7 @@ namespace Logic
                CommandNode*    Parent;           // Parent node
                NodeArray       Children;         // Child commands
 
-               ParameterArray  Parameters,           // script parameters in physical order
+               ParameterArray  Parameters,       // script parameters in display order
                                Postfix;
                const CommandSyntax& Syntax;
                CommandNode*    JumpTarget;       // Destination of jump

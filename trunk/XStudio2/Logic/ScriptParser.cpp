@@ -487,7 +487,7 @@ namespace Logic
             if (lex.count() == 2)
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
-            return CommandNodePtr(new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber));
+            return new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber);
          }
 
          /// <summary>Reads an entire non-expression command</summary>
@@ -530,18 +530,18 @@ namespace Logic
             else
             {
                // Allocate parameters
-               params.resize(syntax.Parameters.size());
+               //params.resize(syntax.Parameters.size());
             
                // Read/Match remaining tokens against parameter syntax
                for (const ParameterSyntax& ps : syntax.ParametersByDisplay)
                {
                   // RetVar: Use if present, otherwise condition. If neither, default to discard
                   if (ps.IsRetVar())
-                     params[ps.PhysicalIndex] = (lex.Valid(retVar) ? ReadParameter(ps, *retVar) : ScriptParameter(ps, condition));
+                     params += (lex.Valid(retVar) ? ReadParameter(ps, *retVar) : ScriptParameter(ps, condition));
                
                   // RefObj: Ensure present
                   else if (ps.IsRefObj() && lex.Valid(refObj))
-                     params[ps.PhysicalIndex] = ReadParameter(ps, *refObj);
+                     params += ReadParameter(ps, *refObj);
                
                   else if (ps.IsRefObj())
                      Errors += MakeError(L"Missing reference object", lex);
@@ -549,7 +549,7 @@ namespace Logic
                   // Parameter: ensure present
                   else if (!tokens.empty())
                   {
-                     params[ps.PhysicalIndex] = ReadParameter(ps, tokens.front());
+                     params += ReadParameter(ps, tokens.front());
                      tokens.pop_front();
                   }
                   else
@@ -576,7 +576,7 @@ namespace Logic
                }
             }
 
-            return CommandNodePtr(new CommandNode(condition, syntax, params, lex, LineNumber));
+            return new CommandNode(condition, syntax, params, lex, LineNumber);
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -631,7 +631,7 @@ namespace Logic
                   Console << (it==pos?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
             }
 
-            return CommandNodePtr(new CommandNode(condition, syntax, params, postfix, lex, LineNumber));
+            return new CommandNode(condition, syntax, params, postfix, lex, LineNumber);
          }
          
          
@@ -709,7 +709,7 @@ namespace Logic
             {
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = CommandNodePtr(new CommandNode());
+               node = new CommandNode();
             }
 
             // Consume line + return node

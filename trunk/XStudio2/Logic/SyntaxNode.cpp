@@ -110,7 +110,7 @@ namespace Logic
       /// <returns></returns>
       const wstring&  SyntaxLibrary::SyntaxNode::GetKey(const ScriptToken& tok) const
       {
-         return tok.IsParameter() ? tok.Text : VARIABLE;
+         return tok.IsParameter() ? VARIABLE : tok.Text;
       }
 
       /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
