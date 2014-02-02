@@ -14,7 +14,7 @@ namespace Logic
       ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) 
          : Syntax(s), Token(t), Type(IdentifyDataType(t.Type)), Value(t.ValueText), Text(t.Text)
       {
-         const ScriptObject* obj;
+         const ScriptObject* obj = nullptr;
 
          // Lookup script object to identify data-type
          if (Type == DataType::CONSTANT && ScriptObjectLib.TryFind(Value.String, obj))
