@@ -9,7 +9,21 @@ namespace Logic
    {
       namespace Compiler
       {
+         /// <summary>Expression tree traversals</summary>
          enum class Traversal  { InOrder, PostOrder };
+
+         
+         /// <summary>Occurs when a syntax error in detected in a script</summary>
+         class ExpressionParserException : public ExceptionBase
+         {
+         public:
+            /// <summary>Create an ExpressionParserException</summary>
+            /// <param name="src">Location of throw</param>
+            /// <param name="msg">Message</param>
+            ExpressionParserException(wstring  src, wstring msg) 
+               : ExceptionBase(src, msg)
+            {}
+         };
 
          /// <summary>Parses expression script commands</summary>
          class ExpressionParser

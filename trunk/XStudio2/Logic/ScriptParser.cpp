@@ -115,8 +115,8 @@ namespace Logic
             }
             
             // Verify tree
-            Script->Print(0);
-            //Script->Verify(Errors);
+            //Script->Print(0);
+            Script->Verify(Errors);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
@@ -537,11 +537,11 @@ namespace Logic
                {
                   // RetVar: Use if present, otherwise condition. If neither, default to discard
                   if (ps.IsRetVar())
-                     params += (lex.Valid(retVar) ? ReadParameter(ps, *retVar) : ScriptParameter(ps, condition));
+                     params += (lex.Valid(retVar) ? ScriptParameter(ps, *retVar) : ScriptParameter(ps, condition));
                
                   // RefObj: Ensure present
                   else if (ps.IsRefObj() && lex.Valid(refObj))
-                     params += ReadParameter(ps, *refObj);
+                     params += ScriptParameter(ps, *refObj);
                
                   else if (ps.IsRefObj())
                      Errors += MakeError(L"Missing reference object", lex);
@@ -549,7 +549,7 @@ namespace Logic
                   // Parameter: ensure present
                   else if (!tokens.empty())
                   {
-                     params += ReadParameter(ps, tokens.front());
+                     params += ScriptParameter(ps, tokens.front());
                      tokens.pop_front();
                   }
                   else
@@ -604,7 +604,7 @@ namespace Logic
             
             // Match: (assignment/conditional)
             if (MatchAssignment(lex, TokenIterator(pos)))
-                params += ReadParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
+                params += ScriptParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
             else 
                 params += ScriptParameter(syntax.Parameters[0], condition=ReadConditional(lex, pos));
 
@@ -621,7 +621,7 @@ namespace Logic
                for (const auto& tok : expr.PostfixParams)
                   postfix += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
             }
-            catch (ScriptSyntaxException& e) {
+            catch (ExpressionParserException& e) {
                // syntax error
                Errors += MakeError(e.Message, pos);
 
@@ -634,41 +634,13 @@ namespace Logic
          }
          
          
-         /// <summary>Creates a parameter from a token, verifying game/script objects</summary>
-         /// <param name="ps">parameter syntax</param>
-         /// <param name="tok">token</param>
-         /// <returns></returns>
-         ScriptParameter ScriptParser::ReadParameter(const ParameterSyntax& ps, const ScriptToken& tok)
-         {
-            const GameObject* gameObj;
-            const ScriptObject* scriptObj;
-
-            switch (tok.Type)
-            {
-            // GameObject: Ensure exists
-            case TokenType::GameObject:
-               if (!GameObjectLib.TryFind(tok.ValueText, gameObj))
-                  Errors += ErrorToken(L"Unrecognised game object", LineNumber, tok);
-               break;
-
-            // ScriptObject: Ensure exists 
-            case TokenType::ScriptObject:
-               if (!ScriptObjectLib.TryFind(tok.ValueText, scriptObj))
-                  Errors += ErrorToken(L"Unrecognised script object", LineNumber, tok);
-               break;
-            }
-
-            // Create parameter
-            return ScriptParameter(ps, tok);
-         }
-
          /// <summary>Parses a line into a command node, and advances the line iterator</summary>
          /// <param name="parent">Parent node</param>
          /// <param name="line">The line.</param>
          /// <returns>Single command node, or nullptr if EOF</returns>
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ScriptSyntaxException">Syntax error in expression</exception>
+         /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          /// <remarks>Grammar:
          /// 
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'

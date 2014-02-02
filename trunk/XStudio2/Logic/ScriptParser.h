@@ -177,7 +177,6 @@ namespace Logic
             CommandNodePtr   ReadComment(const CommandLexer& lex);
             CommandNodePtr   ReadCommand(const CommandLexer& lex);
             CommandNodePtr   ReadExpression(const CommandLexer& lex);
-            ScriptParameter  ReadParameter(const ParameterSyntax& ps, const ScriptToken& tok);
             CommandNodePtr   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
