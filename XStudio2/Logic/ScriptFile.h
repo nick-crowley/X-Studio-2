@@ -57,7 +57,7 @@ namespace Logic
       {
          // ------------------------ TYPES -------------------------
       public:
-         class ScriptCallCollection : map<wstring, ScriptFile>
+         class ScriptCallCollection : public map<wstring, ScriptFile>
          {
          public:
             /// <summary>Checks for presence of script (without extension, case sensitive)</summary>
@@ -133,6 +133,9 @@ namespace Logic
             // Clear labels & commands
             Commands.clear();
             Labels.clear();
+
+            // Clear script-calls
+            ScriptCalls.clear();
 
             // Clear variables, keep arguments
             auto var = find_if(Variables.begin(), Variables.end(), [](const ScriptVariable& v) { return v.Type == VariableType::Variable; });

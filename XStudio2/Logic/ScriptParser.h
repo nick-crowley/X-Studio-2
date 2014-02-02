@@ -99,10 +99,12 @@ namespace Logic
             public:
                BranchLogic GetBranchLogic() const;
                void        Print(int depth = 0) const;
+               void        EnumLabels(ScriptFile& script) const;
                void        Verify(ErrorArray& errors) const;
                
             private:
                bool         Contains(BranchLogic l) const;
+               void         EnumLabels(ErrorArray& errors) const;
                NodeIterator Find(BranchLogic l) const;
                void         VerifyLogic(ErrorArray& errors) const;
                void         VerifyParameters(ErrorArray& errors) const;
@@ -132,7 +134,7 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ScriptParser(const LineArray& lines, GameVersion  v);
+            ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v);
             virtual ~ScriptParser();
 
             DEFAULT_COPY(ScriptParser);	// Default copy semantics
@@ -180,7 +182,8 @@ namespace Logic
 
          public:
             ErrorArray     Errors;     // Compilation errors
-            CommandNodePtr Script;     // Script parse tree
+            CommandNodePtr Commands;   // Parse tree
+            ScriptFile&    Script;     // Script
 
          private:
             const LineArray&  Input;

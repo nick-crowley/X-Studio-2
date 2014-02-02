@@ -3,6 +3,7 @@
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
 #include "ExpressionParser.h"
+#include "ScriptFile.h"
 
 namespace Logic
 {
@@ -108,11 +109,31 @@ namespace Logic
             for (auto c : Children)
                c->Print(depth+1);
          }
+
+         void  ScriptParser::CommandNode::EnumLabels(ScriptFile& script) const
+         {
+            // NODE: 
+            if (Parent != nullptr)
+            {
+               // Enum labels
+               if (Syntax.Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
+                  script.Labels.Add(ScriptLabel(Parameters[0].Value.String, LineNumber));
+
+               // Enum variables
+               for (const auto& p : Parameters)
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                     script.Variables.Add(ScriptVariable(VariableType::Variable, p.Value.String, ??));
+            }
+
+            // Examine children
+            for (const auto& cmd : Children)
+               cmd->EnumLabels(script);
+         }
          
          /// <summary>Verifies the entire tree</summary>
          void  ScriptParser::CommandNode::Verify(ErrorArray& errors) const 
          {
-            // isNode
+            // NODE: Verify commands
             if (Parent != nullptr)
             {
                // Verify parameters
@@ -122,11 +143,11 @@ namespace Logic
                VerifyLogic(errors);
             }
 
-            // Verify children
+            // NODE/ROOT: Verify children
             for (const auto& cmd : Children)
                cmd->Verify(errors);
 
-            // isRoot
+            // ROOT: Verify unique
             if (Parent == nullptr)
             {
                // Ensure script has commands
