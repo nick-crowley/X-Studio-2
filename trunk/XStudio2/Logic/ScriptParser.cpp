@@ -116,7 +116,7 @@ namespace Logic
             
             // Verify tree
             //Script->Print(0);
-            Script->Verify();
+            Script->Verify(Errors);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
@@ -473,8 +473,6 @@ namespace Logic
          }
 
 
-
-
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
          /// <returns>New NOP/Comment command node</returns>
@@ -489,7 +487,7 @@ namespace Logic
             if (lex.count() == 2)
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
-            return CommandNodePtr(new CommandNode(lex, syntax, params, LineNumber));
+            return CommandNodePtr(new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber));
          }
 
          /// <summary>Reads an entire non-expression command</summary>
@@ -539,11 +537,11 @@ namespace Logic
                {
                   // RetVar: Use if present, otherwise condition. If neither, default to discard
                   if (ps.IsRetVar())
-                     params[ps.PhysicalIndex] = (lex.Valid(retVar) ? ScriptParameter(ps, *retVar) : ScriptParameter(ps, condition));
+                     params[ps.PhysicalIndex] = (lex.Valid(retVar) ? ReadParameter(ps, *retVar) : ScriptParameter(ps, condition));
                
                   // RefObj: Ensure present
                   else if (ps.IsRefObj() && lex.Valid(refObj))
-                     params[ps.PhysicalIndex] = ScriptParameter(ps, *refObj);
+                     params[ps.PhysicalIndex] = ReadParameter(ps, *refObj);
                
                   else if (ps.IsRefObj())
                      Errors += MakeError(L"Missing reference object", lex);
@@ -551,7 +549,7 @@ namespace Logic
                   // Parameter: ensure present
                   else if (!tokens.empty())
                   {
-                     params[ps.PhysicalIndex] = ScriptParameter(ps, tokens.front());
+                     params[ps.PhysicalIndex] = ReadParameter(ps, tokens.front());
                      tokens.pop_front();
                   }
                   else
@@ -578,7 +576,7 @@ namespace Logic
                }
             }
 
-            return CommandNodePtr(new CommandNode(lex, syntax, params, LineNumber));
+            return CommandNodePtr(new CommandNode(condition, syntax, params, lex, LineNumber));
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -597,17 +595,17 @@ namespace Logic
          /// </remarks>
          ScriptParser::CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
+            ParameterArray params, postfix;
+            Conditional    condition = Conditional::DISCARD;
             TokenIterator  pos = lex.begin(),
                            retVar = lex.end();
-            Conditional    condition = Conditional::DISCARD;
-            ParameterArray params, infix, postfix;
 
             // Lookup syntax
             CommandSyntax syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
             
             // Match: (assignment/conditional)
             if (MatchAssignment(lex, TokenIterator(pos)))
-                params += ScriptParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
+                params += ReadParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
             else 
                 params += ScriptParameter(syntax.Parameters[0], ReadConditional(lex, pos));
 
@@ -619,7 +617,7 @@ namespace Logic
 
                // Store ordered parameters
                for (const auto& tok : expr.InfixParams)
-                  infix += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
+                  params += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
 
                for (const auto& tok : expr.PostfixParams)
                   postfix += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
@@ -633,9 +631,37 @@ namespace Logic
                   Console << (it==pos?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
             }
 
-            return CommandNodePtr(new CommandNode(lex, syntax, params, infix, postfix, line));
+            return CommandNodePtr(new CommandNode(condition, syntax, params, postfix, lex, LineNumber));
          }
          
+         
+         /// <summary>Creates a parameter from a token, verifying game/script objects</summary>
+         /// <param name="ps">parameter syntax</param>
+         /// <param name="tok">token</param>
+         /// <returns></returns>
+         ScriptParameter ScriptParser::ReadParameter(const ParameterSyntax& ps, const ScriptToken& tok)
+         {
+            const GameObject* gameObj;
+            const ScriptObject* scriptObj;
+
+            switch (tok.Type)
+            {
+            // GameObject: Ensure exists
+            case TokenType::GameObject:
+               if (!GameObjectLib.TryFind(tok.ValueText, gameObj))
+                  Errors += ErrorToken(L"Unrecognised game object", LineNumber, tok);
+               break;
+
+            // ScriptObject: Ensure exists 
+            case TokenType::ScriptObject:
+               if (!ScriptObjectLib.TryFind(tok.ValueText, scriptObj))
+                  Errors += ErrorToken(L"Unrecognised script object", LineNumber, tok);
+               break;
+            }
+
+            // Create parameter
+            return ScriptParameter(ps, tok);
+         }
 
          /// <summary>Parses a line into a command node, and advances the line iterator</summary>
          /// <param name="parent">Parent node</param>
@@ -667,12 +693,6 @@ namespace Logic
             CommandLexer   lex(*CurrentLine);
             CommandNodePtr node;
             
-            // DEBUG:
-            #ifdef PRINT_CONSOLE
-               Console << GetLineNumber(text) << L": " << *text << ENDL;
-               auto num = GetLineNumber(text);
-            #endif
-
             // Comment/NOP:
             if (MatchComment(lex))
                node = ReadComment(lex);
@@ -687,16 +707,9 @@ namespace Logic
             
             else
             {
-               // DEBUG:
-               #ifdef PRINT_CONSOLE
-                  Console << Colour::Yellow << L"FAILED" << ENDL;
-                  for (auto tok : lex.Tokens)
-                     Console << Colour::Yellow << (UINT)tok.Type << L" : " << tok.Text << ENDL;
-               #endif
-
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = CommandNodePtr(new CommandNode(lex, LineNumber, Errors));
+               node = CommandNodePtr(new CommandNode());
             }
 
             // Consume line + return node

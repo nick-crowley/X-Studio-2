@@ -11,17 +11,19 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) : Syntax(s), Token(t)
+      ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) 
+         : Syntax(s), Token(t), Type(IdentifyDataType(t.Type)), Value(t.ValueText), Text(t.Text)
       {
-         Type = IdentifyDataType(t.Type);
-         Value = Token.ValueText;
+         const ScriptObject* obj;
+
+         // Lookup script object to identify data-type
+         if (Type == DataType::CONSTANT && ScriptObjectLib.TryFind(Value.String, obj))
+            Type = obj->GetDataType();
       }
 
-      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) : Syntax(s)
-      {
-         Type = DataType::VARIABLE;
-         Value = ReturnValue(c).Value;
-      }
+      ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) 
+         : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c).Value), Text(L"conditional")
+      {}
    
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val) 
       {}
@@ -61,8 +63,10 @@ namespace Logic
             return DataType::VARIABLE;
 
          case TokenType::GameObject:
-         case TokenType::ScriptObject:
             return DataType::WARE;
+
+         case TokenType::ScriptObject:
+            return DataType::CONSTANT;
 
          case TokenType::Operator:
             return DataType::OPERATOR;
@@ -73,10 +77,9 @@ namespace Logic
          case TokenType::Null:
             return DataType::Null;
 
-         case TokenType::Text:
-            return DataType::UNKNOWN;
-
+         
          default:
+         case TokenType::Text:
          case TokenType::Keyword:
          case TokenType::Whitespace:
             throw InvalidOperationException(HERE, GuiString(L"Cannot create parameters from '%s'", GetString(type).c_str()));

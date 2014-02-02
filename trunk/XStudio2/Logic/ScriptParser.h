@@ -83,7 +83,8 @@ namespace Logic
                // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
-               CommandNode(const CommandLexer& lex, const CommandSyntax& syntax, ParameterArray& params, UINT line);
+               CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
+               CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
@@ -94,29 +95,27 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------		
             public:
-               BranchLogic   GetBranchLogic() const;
-               void  Print(int depth = 0) const;
+               BranchLogic GetBranchLogic() const;
+               void        Print(int depth = 0) const;
+               void        Verify(ErrorArray& errors) const;
                
             private:
-               bool          Contains(BranchLogic l) const;
-               NodeIterator  Find(BranchLogic l) const;
-               bool          IsRoot() const  { return Parent == nullptr; }
+               bool         Contains(BranchLogic l) const;
+               NodeIterator Find(BranchLogic l) const;
+               void         VerifyLogic(ErrorArray& errors) const;
+               void         VerifyParameters(ErrorArray& errors) const;
                
                // ----------------------- MUTATORS ------------------------
             public:
                CommandNodePtr  Add(CommandNodePtr node);
-               void            Verify(ErrorArray& errors);
-
-            protected:
-               void  VerifyLogic(ErrorArray& errors);
-               void  VerifyParameters(ErrorArray& errors);
                
                // -------------------- REPRESENTATION ---------------------
             public:
                CommandNode*    Parent;           // Parent node
                NodeArray       Children;         // Child commands
 
-               ParameterArray  Parameters;           // script parameters in physical order
+               ParameterArray  Parameters,           // script parameters in physical order
+                               Postfix;
                const CommandSyntax& Syntax;
                CommandNode*    JumpTarget;       // Destination of jump
                UINT            Index;            // 0-based standard codearray index
@@ -127,7 +126,6 @@ namespace Logic
                // Debug
                wstring         LineText;
             };
-
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -174,6 +172,7 @@ namespace Logic
             CommandNodePtr   ReadComment(const CommandLexer& lex);
             CommandNodePtr   ReadCommand(const CommandLexer& lex);
             CommandNodePtr   ReadExpression(const CommandLexer& lex);
+            ScriptParameter  ReadParameter(const ParameterSyntax& ps, const ScriptToken& tok);
             CommandNodePtr   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
