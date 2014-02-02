@@ -18,6 +18,44 @@ namespace Logic
          /// <summary>Constant line iterator</summary>
          typedef LineArray::const_iterator  LineIterator;
 
+         /// <summary>Script error</summary>
+         class ErrorToken : public TokenBase
+         {
+         public:
+            /// <summary>Create error for token</summary>
+            ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
+            {}
+            /// <summary>Create error for entire line</summary>
+            ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Error(msg), Line(line)
+            {}
+            /// <summary>Create error for character range</summary>
+            ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
+            {}
+
+            const wstring Error;
+            const UINT    Line;
+         };
+
+         /// <summary>Vector of error tokens</summary>
+         class ErrorArray : public vector<ErrorToken> 
+         {
+         public:
+            /// <summary>Create empty array</summary>
+            ErrorArray()
+            {}
+            /// <summary>Create array from single token</summary>
+            ErrorArray(const ErrorToken& e) {
+               push_back(e);
+            }
+
+            /// <summary>Add an error to the array</summary>
+            ErrorArray& operator+=(const ErrorToken& t)
+            {
+               push_back(t);
+               return *this;
+            }
+         };
+
          /// <summary>Generates a parse tree from MSCI scripts</summary>
          /// <remarks>TODO: Handle the START keyword</remarks>
          class ScriptParser
@@ -26,7 +64,6 @@ namespace Logic
          public:
             class CommandNode;
             
-
             /// <summary>Shared pointer to a parse tree node</summary>
             class CommandNodePtr : public shared_ptr<CommandNode> 
             {
@@ -37,46 +74,6 @@ namespace Logic
                {}
             };
             
-
-            /// <summary>Script error</summary>
-            class ErrorToken : public TokenBase
-            {
-            public:
-               /// <summary>Create error for token</summary>
-               ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
-               {}
-               /// <summary>Create error for entire line</summary>
-               ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Error(msg), Line(line)
-               {}
-               /// <summary>Create error for character range</summary>
-               ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
-               {}
-
-               const wstring Error;
-               const UINT    Line;
-            };
-
-            /// <summary>Vector of error tokens</summary>
-            class ErrorArray : public vector<ErrorToken> 
-            {
-            public:
-               /// <summary>Create empty array</summary>
-               ErrorArray()
-               {}
-               /// <summary>Create array from single token</summary>
-               ErrorArray(const ErrorToken& e) {
-                  push_back(e);
-               }
-
-               /// <summary>Add an error to the array</summary>
-               ErrorArray& operator+=(const ErrorToken& t)
-               {
-                  push_back(t);
-                  return *this;
-               }
-            };
-
-
             /// <summary>Represents a script command and its descendants, if any</summary>
             class CommandNode 
             {

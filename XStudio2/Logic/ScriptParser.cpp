@@ -40,7 +40,7 @@ namespace Logic
          /// <param name="msg">The message</param>
          /// <param name="lex">The lexer</param>
          /// <returns></returns>
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
+         ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
          {
             return ErrorToken(msg, LineNumber, lex.count()?lex.begin()->Start:0, CurrentLine->length()-1);
          }
@@ -49,7 +49,7 @@ namespace Logic
          /// <param name="msg">The message</param>
          /// <param name="tok">The token</param>
          /// <returns></returns>
-         ScriptParser::ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
+         ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
          {
             return ErrorToken(msg, LineNumber, tok->Start, tok->End);
          }

@@ -271,9 +271,6 @@ namespace Logic
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
          void  ScriptParser::CommandNode::VerifyParameters(ErrorArray& errors) const
          {
-            const GameObject* gameObj;
-            const ScriptObject* scriptObj;
-
             // Skip for unrecognised commands
             if (Syntax == CommandSyntax::Unknown)
                return;
@@ -281,22 +278,18 @@ namespace Logic
             // Static type check
             for (const ScriptParameter& param : Parameters)
             {
-               // Skip for expressions/script-args
-               if (param.Syntax.Type == ParameterType::EXPRESSION || param.Syntax.Type == ParameterType::PARAMETER)
-                  continue;
-
                // Recognise game/script objects
                switch (param.Token.Type)
                {
                // GameObject: Ensure exists
                case TokenType::GameObject:
-                  if (!GameObjectLib.TryFind(param.Value.String, gameObj))
+                  if (!GameObjectLib.Contains(param.Value.String))
                      errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
                   break;
 
                // ScriptObject: Ensure exists 
                case TokenType::ScriptObject:
-                  if (!ScriptObjectLib.TryFind(param.Value.String, scriptObj))
+                  if (!ScriptObjectLib.Contains(param.Value.String))
                      errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
                   break;
                }
