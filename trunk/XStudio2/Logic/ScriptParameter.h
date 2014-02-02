@@ -91,9 +91,6 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
-         static ScriptParameter  Generate(const ParameterSyntax& ps, const ScriptToken& tok);
-         static ScriptParameter  Generate(const ParameterSyntax& ps, const GameObject& obj);
-         static ScriptParameter  Generate(const ParameterSyntax& ps, const ScriptObject& obj);
 
       protected:
          static DataType  IdentifyDataType(Compiler::TokenType type);

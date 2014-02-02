@@ -82,7 +82,8 @@ namespace Logic
 
                // --------------------- CONSTRUCTION ----------------------
             public:
-               CommandNode(const CommandLexer& lex, UINT line, ErrorArray& err);
+               CommandNode();
+               CommandNode(const CommandLexer& lex, const CommandSyntax& syntax, ParameterArray& params, UINT line);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
@@ -93,83 +94,38 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------		
             public:
+               BranchLogic   GetBranchLogic() const;
                void  Print(int depth = 0) const;
                
             private:
                bool          Contains(BranchLogic l) const;
                NodeIterator  Find(BranchLogic l) const;
-               BranchLogic   GetBranchLogic() const;
-
+               bool          IsRoot() const  { return Parent == nullptr; }
+               
                // ----------------------- MUTATORS ------------------------
             public:
                CommandNodePtr  Add(CommandNodePtr node);
-               void         Verify();
+               void            Verify(ErrorArray& errors);
 
             protected:
-               ScriptParameter CreateParameter(const ParameterSyntax& ps, const ScriptToken& tok);
-               virtual void    AssembleParameters();
-               void            VerifyParameters();
-
-            protected:
-               void  VerifyLogic();
-               void  VerifyNode();
-               void  VerifyRoot();
+               void  VerifyLogic(ErrorArray& errors);
+               void  VerifyParameters(ErrorArray& errors);
                
                // -------------------- REPRESENTATION ---------------------
             public:
-               CommandNode*   Parent;           // Parent node
-               NodeArray      Children;         // Child commands
-               ErrorArray&    Errors;
+               CommandNode*    Parent;           // Parent node
+               NodeArray       Children;         // Child commands
 
-               ParameterArray Parameters;           // script parameters in physical order
+               ParameterArray  Parameters;           // script parameters in physical order
                const CommandSyntax& Syntax;
-               CommandNode*   JumpTarget;       // Destination of jump
-               UINT           Index;            // 0-based standard codearray index
+               CommandNode*    JumpTarget;       // Destination of jump
+               UINT            Index;            // 0-based standard codearray index
 
-               CommandLexer   Lexer;
-               TokenArray     Tokens;
-               TokenIterator  RetVar;
-               Conditional    Condition;
-               const UINT     LineNumber;       // 1-based line number
+               Conditional     Condition;
+               const UINT      LineNumber;       // 1-based line number
                const CHARRANGE Extent;          // Start/end character offsets
-            };
-
-            /// <summary>Represents a script command and its descendants, if any</summary>
-            class StandardNode : public CommandNode
-            {
-               // --------------------- CONSTRUCTION ----------------------
-            public:
-               StandardNode(const CommandLexer& lex, UINT line, ErrorArray& err);
-               ~StandardNode();
-
-               // ---------------------- ACCESSORS ------------------------		
-               
-               // ----------------------- MUTATORS ------------------------
-            protected:
-               virtual void    AssembleParameters();
-               
-               // -------------------- REPRESENTATION ---------------------
-            public:
-               TokenArray     Arguments;
-               TokenIterator  RefObj;
-            };
-
-            /// <summary>Represents a script command and its descendants, if any</summary>
-            class ExpressionNode : public CommandNode
-            {
-               // --------------------- CONSTRUCTION ----------------------
-            public:
-               ExpressionNode(const CommandLexer& lex, UINT line, ErrorArray& err);
-
-               // ---------------------- ACCESSORS ------------------------	
-
-               // ----------------------- MUTATORS ------------------------
-            protected:
-               virtual void    AssembleParameters();
-
-               // -------------------- REPRESENTATION ---------------------
-
-               TokenArray     Postfix;
+               // Debug
+               wstring         LineText;
             };
 
 
@@ -223,15 +179,15 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          public:
-            ErrorArray    Errors;     // Compilation errors
-            CommandNodePtr   Script;     // Script parse tree
+            ErrorArray     Errors;     // Compilation errors
+            CommandNodePtr Script;     // Script parse tree
 
          private:
             const LineArray&  Input;
             const GameVersion Version;
 
-            LineIterator  CurrentLine;
-            CommandNodePtr   CurrentNode;
+            LineIterator    CurrentLine;
+            CommandNodePtr  CurrentNode;
          };
       }
    }
