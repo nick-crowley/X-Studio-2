@@ -41,9 +41,8 @@ namespace Logic
             /// <summary>Nodes keyed by token text</summary>
             typedef map<wstring, SyntaxNode> NodeMap;
 
-            /// <summary>Shared pointer to a command syntax</summary>
-            typedef shared_ptr<CommandSyntax> SyntaxPtr;
-         
+            typedef shared_ptr<CommandSyntax> CommandSyntaxPtr;
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             SyntaxNode();
@@ -56,25 +55,25 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
 
          public:
-            CommandSyntax  Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
-            void           Print(int depth = 1) const;
+            CommandSyntaxRef Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
+            void             Print(int depth = 1) const;
 
          private:
-            const wstring& GetKey(const ScriptToken& tok) const;
-            CommandSyntax  GetSyntax() const;
-            bool           HasSyntax() const;
+            const wstring&   GetKey(const ScriptToken& tok) const;
+            CommandSyntaxRef GetSyntax() const;
+            bool             HasSyntax() const;
 
             // ----------------------- MUTATORS ------------------------
 
          public:
             void  Clear();
-            void  Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end);
+            void  Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end);
 
             // -------------------- REPRESENTATION ---------------------
-
-            NodeMap      Children;
-            SyntaxPtr    Syntax;
-            ScriptToken  Token;
+         private:
+            NodeMap           Children;
+            CommandSyntaxPtr  Syntax;
+            ScriptToken       Token;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -95,8 +94,8 @@ namespace Logic
 
       public:
          GroupCollection   GetGroups() const;
-         CommandSyntax     Find(UINT id, GameVersion ver) const;
-         CommandSyntax     Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
+         CommandSyntaxRef  Find(UINT id, GameVersion ver) const;
+         CommandSyntaxRef  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
          CmdSyntaxArray    Query(const wstring& str, GameVersion ver) const;
 
 		   // ----------------------- MUTATORS ------------------------

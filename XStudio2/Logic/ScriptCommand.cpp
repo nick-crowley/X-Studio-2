@@ -24,7 +24,7 @@ namespace Logic
       /// <param name="text">Entire command text</param>
       /// <param name="syntax">Command syntax</param>
       /// <param name="params">Parameters in DISPLAY ORDER</param>
-      ScriptCommand::ScriptCommand(const CommandSyntax& syntax, const wstring& text, ParameterArray& params)
+      ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params)
          : Syntax(syntax), RefIndex(0), Text(text), Parameters(params) 
       {
       }
@@ -32,7 +32,7 @@ namespace Logic
       /// <summary>Create a STANDARD command READ FROM A FILE</summary>
       /// <param name="syntax">command syntax.</param>
       /// <param name="params">Parameters in PHYSICAL ORDER</param>
-      ScriptCommand::ScriptCommand(const CommandSyntax& syntax, ParameterArray& params, bool comment)
+      ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, ParameterArray& params, bool comment)
          : Syntax(syntax), RefIndex(0), Parameters(params), Commented(comment)
       {
       }
@@ -41,7 +41,7 @@ namespace Logic
       /// <param name="syntax">command syntax.</param>
       /// <param name="ref">Index of associated standard command</param>
       /// <param name="params">Parameters in PHYSICAL ORDER</param>
-      ScriptCommand::ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params, bool comment)
+      ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, UINT  ref, ParameterArray& params, bool comment)
          : Syntax(syntax), RefIndex(ref), Parameters(params), Commented(comment)
       {
       }

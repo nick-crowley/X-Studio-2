@@ -6,12 +6,21 @@ namespace Logic
 {
    namespace Scripts
    {
+      class CommandSyntax;
+
       /// <summary>Defines the display group of a script command</summary>
       enum class CommandGroup : UINT;
 
       /// <summary>Defines how script commands are stored</summary>
       enum class CommandType { Standard, Auxiliary, Macro };
       
+      
+      /// <summary>Constant command syntax reference</summary>
+      typedef const CommandSyntax&  CommandSyntaxRef;
+
+      /// <summary>Command syntax array</summary>
+      typedef vector<const CommandSyntax*>  CmdSyntaxArray;
+
       /// <summary>Defines the syntax of a script command</summary>
       class CommandSyntax
       {
@@ -42,6 +51,9 @@ namespace Logic
          virtual ~CommandSyntax();
 
          // ------------------------ STATIC -------------------------
+      public:
+         static const CommandSyntax  Unknown;
+
       private:
          wstring  GenerateHash(const wstring& syntax);
 
@@ -52,8 +64,8 @@ namespace Logic
          PROPERTY_GET(wstring,DisplayText,GetDisplayText);
          PROPERTY_GET(ParamSyntaxArray,ParametersByDisplay,GetParametersByDisplay);
 
-         bool  operator==(const CommandSyntax& r) const   { return ID == r.ID && Versions == r.Versions; }
-         bool  operator!=(const CommandSyntax& r) const   { return ID != r.ID || Versions != r.Versions; }
+         bool  operator==(CommandSyntaxRef r) const   { return ID == r.ID && Versions == r.Versions; }
+         bool  operator!=(CommandSyntaxRef r) const   { return ID != r.ID || Versions != r.Versions; }
 
 		   // ---------------------- ACCESSORS ------------------------
       public:
@@ -81,9 +93,6 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
-         
-         static const CommandSyntax  Unknown;
-
       public:
          const CommandGroup      Group;
          const CommandType       Type;
@@ -94,9 +103,6 @@ namespace Logic
                                  Text,
                                  URL;
       };
-
-      /// <summary>Command syntax array</summary>
-      typedef vector<const CommandSyntax*>  CmdSyntaxArray;
 
       /// <summary>Defines the display group of a script command</summary>
       enum class CommandGroup : UINT

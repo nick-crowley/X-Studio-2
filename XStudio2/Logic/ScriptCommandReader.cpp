@@ -20,7 +20,7 @@ namespace Logic
 
          // Read Index + ID
          int index = ReadIntNode(L"command reference index");
-         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"auxiliary command ID"), Script.Game);
+         CommandSyntaxRef syntax = SyntaxLib.Find(ReadIntNode(L"auxiliary command ID"), Script.Game);
 
          // Comment: Read text
          if (syntax.ID == CMD_COMMENT)
@@ -41,7 +41,7 @@ namespace Logic
                 id = ReadIntNode(L"commented ID");
          
          // Lookup syntax for underlying command 
-         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"commented command ID"), Script.Game);
+         CommandSyntaxRef syntax = SyntaxLib.Find(ReadIntNode(L"commented command ID"), Script.Game);
 
          // Read parameters
          switch (syntax.ID)
@@ -84,7 +84,7 @@ namespace Logic
          ParameterArray params, postfix;
          
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"expression ID"), Script.Game);
+         CommandSyntaxRef syntax = SyntaxLib.Find(ReadIntNode(L"expression ID"), Script.Game);
 
          // Return value
          params += ReadParameter(syntax.Parameters[0], L"expression return value");
@@ -111,7 +111,7 @@ namespace Logic
          ParameterArray params;
 
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"script call ID"), Script.Game);
+         CommandSyntaxRef syntax = SyntaxLib.Find(ReadIntNode(L"script call ID"), Script.Game);
 
          // Read scriptname / RetVar / refObj
          params += ReadParameter(syntax.Parameters[0], L"script call target");
@@ -134,7 +134,7 @@ namespace Logic
          ParameterArray params;
 
          // Read ID + syntax
-         CommandSyntax syntax = SyntaxLib.Find(ReadIntNode(L"standard command ID"), Script.Game);
+         CommandSyntaxRef syntax = SyntaxLib.Find(ReadIntNode(L"standard command ID"), Script.Game);
 
          // Read parameters
          for (ParameterSyntax p : syntax.Parameters)

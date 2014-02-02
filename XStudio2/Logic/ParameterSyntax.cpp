@@ -65,7 +65,6 @@ namespace Logic
          // [INVALID] Not used
 	      case ParameterType::UNDETERMINED:
          case ParameterType::CONDITION:  
-         case ParameterType::LABEL_NUMBER:
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
 
 
@@ -88,12 +87,14 @@ namespace Logic
          case ParameterType::PARAMETER: 
             return true;
 
+
          // [FLIGHT RETURN] Stored using their own datatypes
 	      case ParameterType::FLIGHTRETCODE:
             return t == DataType::FLIGHTRETURN || t == DataType::VARIABLE;
 
          // [LABEL NAME, SCRIPT NAME, STRING, COMMENT] Always held as strings
-	      case ParameterType::LABEL_NAME:
+         case ParameterType::LABEL_NUMBER: 
+         case ParameterType::LABEL_NAME:
 	      case ParameterType::SCRIPT_NAME:
          case ParameterType::COMMENT:
          case ParameterType::STRING:

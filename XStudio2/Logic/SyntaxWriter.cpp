@@ -72,7 +72,7 @@ namespace Logic
          auto commandSyntax = WriteElement(root, L"commands");
          for (const auto& pair : f.Commands)
          {
-            const CommandSyntax& cmd = pair.second;
+            CommandSyntaxRef cmd = pair.second;
             auto e = WriteElement(commandSyntax, L"command");
 
             // Id
