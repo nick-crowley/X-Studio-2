@@ -94,6 +94,7 @@ namespace Logic
 
       protected:
          static DataType  IdentifyDataType(ScriptToken tok);
+         static const ParameterSyntax&  ModifySyntax(const ParameterSyntax& s);
 
          // --------------------- PROPERTIES ------------------------
 			

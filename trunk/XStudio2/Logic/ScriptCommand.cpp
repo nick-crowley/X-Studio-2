@@ -191,7 +191,7 @@ namespace Logic
 
          // Replace parameters
          Parameters.clear();
-         Parameters.push_back( ScriptParameter(ParameterSyntax::LabelDeclaration, DataType::STRING, name) );
+         Parameters.push_back( ScriptParameter(ParameterSyntax::LabelNameParameter, DataType::STRING, name) );
       }
 
       /// <summary>Translates the text of a command READ FROM FILE</summary>

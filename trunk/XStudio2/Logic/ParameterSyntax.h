@@ -80,7 +80,7 @@ namespace Logic
 		   // -------------------- REPRESENTATION ---------------------
       public:
          static const ParameterSyntax  ExpressionParameter,
-                                       LabelDeclaration,
+                                       LabelNameParameter,
                                        ScriptCallArgument,
                                        UnrecognisedCommand;
 
