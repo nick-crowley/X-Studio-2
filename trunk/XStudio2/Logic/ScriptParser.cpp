@@ -4,6 +4,7 @@
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
 #include "CommandHash.h"
+#include "ScriptFile.h"
 
 //#define PRINT_CONSOLE
 
@@ -19,10 +20,14 @@ namespace Logic
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
-         ScriptParser::ScriptParser(const LineArray& lines, GameVersion  v) : Input(lines), Version(v), Script(new CommandNode())
+         ScriptParser::ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v) 
+            : Input(lines), Version(v), Commands(new CommandNode()), Script(file)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
+
+            // Clear script
+            Script.Clear();
 
             // Parse input
             CurrentLine = Input.begin();
@@ -93,30 +98,32 @@ namespace Logic
                // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
-                  ParseIf(Script->Add(Advance()));
+                  ParseIf(Commands->Add(Advance()));
                   break;
                
                // SkipIf: Add
                case BranchLogic::SkipIf:  
-                  ParseSkipIf(Script->Add(Advance()));
+                  ParseSkipIf(Commands->Add(Advance()));
                   break;
 
                // Else/Else-if: Add  (Invalid)
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-                  ParseElse(Script->Add(Advance()));
+                  ParseElse(Commands->Add(Advance()));
                   break;
                
                // Command/NOP/Break/Continue/End: Add 
                default:
-                  Script->Add(Advance());
+                  Commands->Add(Advance());
                   break;
                }
             }
             
+            // DEBUG: Print tree
+            //Commands->Print(0);
+
             // Verify tree
-            //Script->Print(0);
-            Script->Verify(Errors);
+            Commands->Verify(Script, Errors);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
