@@ -45,7 +45,7 @@ namespace Logic
       /// <summary>Get parameter type string</summary>
       GuiString  GetString(ParameterType t)
       {
-         const LanguageString* str;
+         const LanguageString* str=nullptr;
          return StringLib.TryFind(KnownPage::PARAMETER_TYPES, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
       }
 

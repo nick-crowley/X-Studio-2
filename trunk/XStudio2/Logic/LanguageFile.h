@@ -160,7 +160,7 @@ namespace Logic
          /// <returns></returns>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         LanguageString  Find(UINT page, UINT id) const
+         const LanguageString&  Find(UINT page, UINT id) const
          { 
             return Pages.Find(page,id); 
          }

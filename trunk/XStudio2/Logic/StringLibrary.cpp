@@ -105,7 +105,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
       /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-      LanguageString  StringLibrary::Find(UINT page, UINT id) const
+      const LanguageString&  StringLibrary::Find(UINT page, UINT id) const
       {
          // Search files in descending file ID
          for (const LanguageFile& f : Files)
@@ -134,6 +134,8 @@ namespace Logic
       /// <returns>true if found, false otherwise</returns>
       bool  StringLibrary::TryFind(UINT page, UINT id, const LanguageString* &str) const
       {
+         str = nullptr;
+
          // Search files in descending file ID
          for (const LanguageFile& f : Files)
             if (f.Contains(page, id))
