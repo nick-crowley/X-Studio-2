@@ -10,6 +10,7 @@ NAMESPACE_END(GUI)
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
+
    
    /// <summary>Character format helper</summary>
    struct CHARFORMAT3 : public CHARFORMAT2
@@ -84,6 +85,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    #endif  
    public:
       int       GetCaretIndex() const;
+      POINT     GetCaretLocation() const;
       int       GetLineLength(int line = -1) const;
       wstring   GetLineText(int line) const;
       LineArray GetLines() const;
@@ -111,7 +113,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   ShowSuggestions();
       void   UpdateSuggestions();
       
-      void         OnBackgroundCompile();
+      handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -121,15 +123,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnTimer(UINT_PTR nIDEvent);
 	  
       // -------------------- REPRESENTATION ---------------------
-   private:
-      DisplayState   PrevState;
-      InputState     State;
-      Suggestion     SuggestionType;
-      SuggestionList SuggestionsList;
-      ScriptDocument* Document;
-      
    public:
-      
+      SimpleEvent     CompileComplete;
+
+   private:
+      DisplayState    PrevState;
+      InputState      State;
+      Suggestion      SuggestionType;
+      SuggestionList  SuggestionsList;
+      ScriptDocument* Document;
       
    };
    

@@ -127,6 +127,24 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
+         /// <summary>Adds a label definition.</summary>
+         /// <param name="name">label name.</param>
+         /// <param name="name">line number.</param>
+         void  AddLabel(const wstring& name, UINT line)
+         {
+            // Add label
+            if (find_if(Labels.begin(), Labels.end(), [&name](const ScriptLabel& l){return l.Name==name;}) == Labels.end())
+               Labels.push_back(ScriptLabel(name, line));
+         }
+
+         /// <summary>Adds variable.</summary>
+         /// <param name="name">The name.</param>
+         void  AddVariable(const wstring& name)
+         {
+            if (find_if(Variables.begin(), Variables.end(), [&name](const ScriptVariable& v){return v.Name==name;}) == Variables.end())
+               Variables.push_back(ScriptVariable(VariableType::Variable, name, Variables.size()));
+         }
+
          /// <summary>Clears commands, labels and non-argument variables</summary>
          void  Clear()
          {

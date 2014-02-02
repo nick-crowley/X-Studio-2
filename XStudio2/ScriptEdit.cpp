@@ -67,6 +67,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return GetSelection().cpMin - LineIndex(-1);
    }
 
+   /// <summary>Gets the caret position.</summary>
+   /// <returns>Zero-based character index, 1-based line index</returns>
+   POINT ScriptEdit::GetCaretLocation() const
+   {
+      return POINT {GetCaretIndex(), 1+LineFromChar(-1)};
+   }
+
    /// <summary>Gets the length of the line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
@@ -343,6 +350,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
             FormatToken(LineIndex(err.Line-1), err, cf);
             Console << err.Line << L": " << Colour::Yellow << err.Error << Colour::White << L" : " << (const WCHAR*)GetSelText() << ENDL;
          }
+
+         // Raise 'Compile Complete'
+         CompileComplete.Raise();
       }
       catch (ExceptionBase& e) 
       { 

@@ -55,11 +55,15 @@ NAMESPACE_BEGIN(GUI)
 
    protected:
       void AdjustLayout();
+      void PopulateVariables();
+      void PopulateScope();
       virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+      void UpdateScope();
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      handler void OnCompileComplete();
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnSelectionChange(NMHDR* pNMHDR, LRESULT* result);
@@ -72,7 +76,7 @@ NAMESPACE_BEGIN(GUI)
       CComboBox  VariablesCombo;
 
    protected:
-
+      EventHandler fnCompileComplete;
    };
 
    #ifndef _DEBUG  
