@@ -147,6 +147,9 @@ namespace Logic
             }
          };
 
+         /// <summary>List of script tokens</summary>
+         typedef list<ScriptToken> TokenList;
+
          /// <summary>Script token array iterator</summary>
          typedef TokenArray::const_iterator  TokenIterator;
       }

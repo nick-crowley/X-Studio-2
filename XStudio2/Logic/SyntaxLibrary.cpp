@@ -95,7 +95,7 @@ namespace Logic
       /// <param name="v">Game version</param>
       /// <param name="params">Parameter tokens</param>
       /// <returns>Syntax if found, otherwise sentinel syntax</returns>
-      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const
+      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
       {
          params.clear();
          return NameTree.Find(pos, end, ver, params);

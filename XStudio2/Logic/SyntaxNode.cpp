@@ -33,7 +33,7 @@ namespace Logic
       /// <param name="ver">Desired game version</param>
       /// <param name="params">Parameter tokens</param>
       /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
-      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenArray& params) const
+      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
       {
          // EOF: Return syntax @ this node (if any)
          if (pos >= end)
@@ -45,7 +45,7 @@ namespace Logic
 
          // PARAM: Store token
          if (pos->IsParameter())
-            params += *pos;
+            params.push_back(*pos);
 
          // Lookup next token
          auto pair = Children.find( GetKey(*pos) );

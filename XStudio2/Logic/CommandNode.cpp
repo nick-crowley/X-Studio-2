@@ -14,10 +14,9 @@ namespace Logic
 
          /// <summary>Create root node</summary>
          /// <param name="err">Error collection</param>
-         ScriptParser::CommandNode::CommandNode(ErrorArray& err)
-            : Lexer(CommandLexer::Empty),
-              Syntax(CommandSyntax::Unknown), 
-              Errors(err),
+         ScriptParser::CommandNode::CommandNode()
+            : Syntax(CommandSyntax::Unknown), 
+              Condition(Conditional::NONE),
               Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(0), 
@@ -30,17 +29,14 @@ namespace Logic
          /// <param name="lex">command lexer</param>
          /// <param name="line">1-based line number</param>
          /// <param name="err">Error collection</param>
-         ScriptParser::CommandNode::CommandNode(const CommandLexer& lex, UINT line, ErrorArray& err)
-            : Lexer(lex), 
-              LineNumber(line), 
-              Errors(err),
-              Extent(lex.Extent), 
-              Syntax(CommandSyntax::Unknown),
+         ScriptParser::CommandNode::CommandNode(const CommandLexer& lex, const CommandSyntax& syntax, ParameterArray& params, UINT line)
+            : Syntax(CommandSyntax::Unknown),
               Condition(Conditional::DISCARD),
-              RetVar(Lexer.end()),
-              RefObj(Lexer.end()),
+              LineNumber(line), 
+              Extent(lex.Extent), 
               Parent(nullptr), 
               JumpTarget(nullptr), 
+              LineText(lex.Input),
               Index(0)
          {
          }
@@ -70,7 +66,6 @@ namespace Logic
          {
             wstring tab(depth, (WCHAR)L' ');
 
-            //Console << GuiString(L"%03d: %s%s : %s", LineNumber, tab.c_str(), GetString(Logic), Text.c_str()) << ENDL;
             // Line/Indent
             Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
             
@@ -83,42 +78,47 @@ namespace Logic
             case BranchLogic::ElseIf:
             case BranchLogic::SkipIf:
             case BranchLogic::End:  
-               Console << Colour::Yellow; 
+               Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
                break;
             case BranchLogic::Break:
             case BranchLogic::Continue:
-               Console << Colour::Green; 
+               Console << Colour::Green << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
                break;
             }
             
-            // Text
-            Console << GetString(Logic) << Colour::White << L" : " << Lexer.Input << ENDL;
-            
-            // Children
+            // Print Children
             for (auto c : Children)
                c->Print(depth+1);
          }
          
          /// <summary>Verifies the entire tree</summary>
-         void  ScriptParser::CommandNode::Verify() 
+         void  ScriptParser::CommandNode::Verify(ErrorArray& errors) 
          {
+            if (!IsRoot())
+            {
+               // verify branching logic
+               VerifyLogic(errors);
+            }
+
             // Verify children
             for (const auto& cmd : Children)
-               cmd->VerifyNode();
+               cmd->Verify(errors);
 
-
-            // Ensure script has commands
-            if (Children.size() == 0)
-               Errors += ErrorToken(L"No commands found", LineNumber, Extent);
-            
-            // Ensure last command is RETURN
-            else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
+            if (IsRoot())
             {
-               if (node[0]->Syntax.Is(CommandType::Auxiliary))
-                  continue;
-               else if (!node[0]->Syntax.Is(CMD_RETURN))
-                  Errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
-               break;
+               // Ensure script has commands
+               if (Children.size() == 0)
+                  errors += ErrorToken(L"No commands found", LineNumber, Extent);
+            
+               // Ensure last command is RETURN
+               else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
+               {
+                  if (node[0]->Syntax.Is(CommandType::Auxiliary))
+                     continue;
+                  else if (!node[0]->Syntax.Is(CMD_RETURN))
+                     errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
+                  break;
+               }
             }
          }
 
@@ -140,7 +140,7 @@ namespace Logic
                if (GameObjectLib.TryFind(tok.ValueText, gameObj))
                   return ScriptParameter::Generate(ps, *gameObj);
 
-               Errors += ErrorToken(L"Unrecognised game object", LineNumber, tok);
+               errors += ErrorToken(L"Unrecognised game object", LineNumber, tok);
                break;
 
             // ScriptObject: Ensure exists 
@@ -148,7 +148,7 @@ namespace Logic
                if (ScriptObjectLib.TryFind(tok.ValueText, scriptObj))
                   return ScriptParameter::Generate(ps, *scriptObj);
                
-               Errors += ErrorToken(L"Unrecognised script object", LineNumber, tok);
+               errors += ErrorToken(L"Unrecognised script object", LineNumber, tok);
                break;
             }
 
@@ -176,7 +176,7 @@ namespace Logic
 
                else if (ps.IsRefObj())
                {
-                  Errors += ErrorToken(L"Missing reference object", LineNumber, Extent);
+                  errors += ErrorToken(L"Missing reference object", LineNumber, Extent);
                   continue;
                }
                // Parameter
@@ -187,7 +187,7 @@ namespace Logic
                }
                else
                {  // Error: Missing parameter
-                  Errors += ErrorToken(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), LineNumber, Extent);
+                  errors += ErrorToken(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), LineNumber, Extent);
                   break;
                }
             }
@@ -198,35 +198,9 @@ namespace Logic
 
             // Excess parameter
             if (tok != Tokens.end())
-               Errors += ErrorToken(GuiString(L"Unexpected '%s'", tok->Text.c_str()), LineNumber, *tok);
+               errors += ErrorToken(GuiString(L"Unexpected '%s'", tok->Text.c_str()), LineNumber, *tok);
          }
 
-         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
-         void  ScriptParser::ExpressionNode::AssembleParameters() 
-         {
-            
-            try
-            {
-               TokenIterator debugStart = pos;
-
-               // Parse expression
-               ExpressionParser expr(Tokens.begin, Tokens.end());
-               expr.Parse();  
-
-               // Store ordered parameters
-               node->Tokens = expr.InfixParams;
-               node->Postfix = expr.PostfixParams;
-            }
-            catch (ScriptSyntaxException& e) {
-               // syntax error
-               Errors += MakeError(e.Message, pos);
-
-               // DEBUG: print tokens
-               for (auto it = lex.begin(); it != lex.end(); ++it)
-                  Console << (it==debugStart?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
-            }
-
-         }
          
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
          void  ScriptParser::CommandNode::VerifyParameters() 
@@ -236,7 +210,7 @@ namespace Logic
                // Static type check
                if (Syntax != CommandSyntax::Unknown)
                   if (!ps.Verify(Parameters[ps.PhysicalIndex].Type))
-                     Errors += ErrorToken(GuiString(L"'%s' is not a valid %s", tok->Text.c_str(), GetString(ps.Type).c_str()), LineNumber, *tok);
+                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", tok->Text.c_str(), GetString(ps.Type).c_str()), LineNumber, *tok);
             }
          }
 
@@ -299,40 +273,8 @@ namespace Logic
             }
          }
 
-         /// <summary>Verifies this node</summary>
-         void  ScriptParser::CommandNode::VerifyNode() 
-         {
-            // Verify tokens
-            AssembleParameters();
-
-            // verify branching logic
-            VerifyLogic();
-
-            // Verify children
-            for (const auto& cmd : Children)
-               cmd->VerifyNode();
-         }
-
-         /// <summary>Verifies the entire tree</summary>
-         void  ScriptParser::CommandNode::VerifyRoot() 
-         {
-            // Ensure script has commands
-            if (Children.size() == 0)
-               Errors += ErrorToken(L"No commands found", LineNumber, Extent);
-            
-            // Ensure last command is RETURN
-            else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
-            {
-               if (node[0]->Syntax.Is(CommandType::Auxiliary))
-                  continue;
-               else if (!node[0]->Syntax.Is(CMD_RETURN))
-                  Errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
-               break;
-            }
-         }
-
          /// <summary>Verifies the branching logic</summary>
-         void  ScriptParser::CommandNode::VerifyLogic() 
+         void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& errors) 
          {
             // Check for END
             switch (Logic)
@@ -346,18 +288,18 @@ namespace Logic
 
                   // Ensure 'else-if' does not follow 'else'
                   if (Else != Children.end() && ElseIf != Children.end() && Else < ElseIf)
-                     Errors += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->Extent);
+                     errors += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->Extent);
                }
 
                // Ensure 'end' is present
                if (Find(BranchLogic::End) == Children.end())
-                  Errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
                break;
 
             case BranchLogic::End:
                // Check for parent 'if'/'while' command
                if (Parent->Logic != BranchLogic::While && Parent->Logic != BranchLogic::If)
-                  Errors += ErrorToken(L"unexpected 'end' command", LineNumber, Extent);
+                  errors += ErrorToken(L"unexpected 'end' command", LineNumber, Extent);
                break;
 
             case BranchLogic::Break:
@@ -368,14 +310,14 @@ namespace Logic
                      return;
                
                // Missing 
-               Errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
+               errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
                break;
 
             case BranchLogic::Else:
             case BranchLogic::ElseIf:
                // Ensure within 'if' command
                if (Parent->Logic != BranchLogic::If)
-                  Errors += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, Extent);
+                  errors += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, Extent);
                break;
 
             case BranchLogic::SkipIf:
@@ -384,7 +326,7 @@ namespace Logic
                   if (node[0]->Syntax.Is(CommandType::Auxiliary))
                      continue;
                   else if (node[0]->Logic != BranchLogic::None)
-                     Errors += ErrorToken(L"not supported within 'skip if' conditional", node[0]->LineNumber, node[0]->Extent);
+                     errors += ErrorToken(L"not supported within 'skip if' conditional", node[0]->LineNumber, node[0]->Extent);
                   else
                      return;
                break;
