@@ -13,7 +13,7 @@ namespace Logic
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 
       /// <summary>Goto/gosub label name syntax</summary>
-      const ParameterSyntax  ParameterSyntax::LabelDeclaration(ParameterType::LABEL_NAME, 0, 0);
+      const ParameterSyntax  ParameterSyntax::LabelNameParameter(ParameterType::LABEL_NAME, 0, 0);
 
       /// <summary>Syntax for parameters of an unrecognised command</summary>
       const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNDETERMINED, 0, 0);
@@ -65,6 +65,7 @@ namespace Logic
          // [INVALID] Not used
 	      case ParameterType::UNDETERMINED:
          case ParameterType::CONDITION:  
+         case ParameterType::LABEL_NUMBER: 
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
 
 
@@ -93,7 +94,6 @@ namespace Logic
             return t == DataType::FLIGHTRETURN || t == DataType::VARIABLE;
 
          // [LABEL NAME, SCRIPT NAME, STRING, COMMENT] Always held as strings
-         case ParameterType::LABEL_NUMBER: 
          case ParameterType::LABEL_NAME:
 	      case ParameterType::SCRIPT_NAME:
          case ParameterType::COMMENT:

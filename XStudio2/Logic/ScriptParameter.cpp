@@ -15,7 +15,7 @@ namespace Logic
       /// <param name="s">syntax</param>
       /// <param name="tok">script token</param>
       ScriptParameter::ScriptParameter(const ParameterSyntax& s, const ScriptToken& t) 
-         : Syntax(s), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
+         : Syntax(ModifySyntax(s)), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
       {
          
       }
@@ -100,8 +100,17 @@ namespace Logic
          case TokenType::Text:
          case TokenType::Keyword:
          case TokenType::Whitespace:
-            throw InvalidOperationException(HERE, GuiString(L"Cannot create parameters from '%s'", GetString(type).c_str()));
+            throw InvalidOperationException(HERE, GuiString(L"Cannot create parameters from '%s'", tok.Text.c_str()));
          }
+      }
+
+      /// <summary>Tweaks the syntax of parsed parameters.</summary>
+      /// <param name="s">syntax</param>
+      /// <returns>syntax</returns>
+      const ParameterSyntax&  ScriptParameter::ModifySyntax(const ParameterSyntax& s)
+      {
+         // Convert label number (used by goto/gosub) into label name
+         return s.Type != ParameterType::LABEL_NUMBER ? s : ParameterSyntax::LabelNameParameter;
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
