@@ -595,10 +595,11 @@ namespace Logic
          /// </remarks>
          ScriptParser::CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
-            ParameterArray params, postfix;
             Conditional    condition = Conditional::DISCARD;
             TokenIterator  pos = lex.begin();
-
+            ParameterArray params, 
+                           postfix;
+            
             // Lookup syntax
             CommandSyntaxRef syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
             
@@ -612,7 +613,6 @@ namespace Logic
             {
                // Parse expression
                ExpressionParser expr(pos, lex.end());
-               expr.Parse();  
 
                // Store ordered parameters
                for (const auto& tok : expr.InfixParams)
@@ -622,8 +622,8 @@ namespace Logic
                   postfix += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
             }
             catch (ExpressionParserException& e) {
-               // syntax error
-               Errors += MakeError(e.Message, pos);
+               // Add to error collection
+               Errors += (lex.Valid(e.Position) ? MakeError(e.Message, e.Position) : MakeError(e.Message, lex));
 
                // DEBUG: print tokens
                for (auto it = lex.begin(); it != lex.end(); ++it)
