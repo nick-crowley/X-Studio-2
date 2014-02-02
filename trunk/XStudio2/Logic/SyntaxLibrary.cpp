@@ -71,7 +71,7 @@ namespace Logic
       /// <param name="ver">Game version</param>
       /// <returns></returns>
       /// <exception cref="Logic::SyntaxNotFoundException">Not found</exception>
-      CommandSyntax  SyntaxLibrary::Find(UINT id, GameVersion ver) const
+      CommandSyntaxRef  SyntaxLibrary::Find(UINT id, GameVersion ver) const
       { 
          // Search all syntax with matching ID for a compatible version
          for (auto it = Commands.find(id); it != Commands.end() && it->first == id; ++it)
@@ -95,7 +95,7 @@ namespace Logic
       /// <param name="v">Game version</param>
       /// <param name="params">Parameter tokens</param>
       /// <returns>Syntax if found, otherwise sentinel syntax</returns>
-      CommandSyntax  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
+      CommandSyntaxRef  SyntaxLibrary::Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
       {
          params.clear();
          return NameTree.Find(pos, end, ver, params);
@@ -112,12 +112,11 @@ namespace Logic
          // Search commands
          for (const auto& pair : Commands)
          {
-            const CommandSyntax& syntax = pair.second;
+            CommandSyntaxRef syntax = pair.second;
 
             // Check compatibility. Check search term (if any)
-            if (syntax.Group != CommandGroup::HIDDEN 
-             && syntax.IsCompatible(ver) 
-             && (!str.length() || syntax.Text.find(str) != wstring::npos))
+            if (syntax.Group != CommandGroup::HIDDEN && syntax.IsCompatible(ver) 
+                && (!str.length() || syntax.Text.find(str) != wstring::npos))
                results.push_back(&syntax);
          }
 
@@ -143,7 +142,7 @@ namespace Logic
          // Add commands to syntax tree lookup
          for (auto& pair : Commands)
          {
-            CommandSyntax& syntax = pair.second;
+            CommandSyntaxRef syntax = pair.second;
             
             try
             {
@@ -153,7 +152,7 @@ namespace Logic
 
                // Lex syntax string
                CommandLexer lex(syntax.Text);
-               TokenArray tokens;
+               TokenArray   tokens;
 
                // Duplicate token array WITHOUT RefObj & RetVar
                for (const ScriptToken& t : lex.Tokens)

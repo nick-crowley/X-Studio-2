@@ -26,9 +26,9 @@ namespace Logic
       private:
          ScriptCommand();
       public:
-         ScriptCommand(const CommandSyntax& syntax, const wstring& text, ParameterArray& params);
-         ScriptCommand(const CommandSyntax& syntax, ParameterArray& params, bool comment);
-         ScriptCommand(const CommandSyntax& syntax, UINT  ref, ParameterArray& params, bool comment);
+         ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params);
+         ScriptCommand(CommandSyntaxRef syntax, ParameterArray& params, bool comment);
+         ScriptCommand(CommandSyntaxRef syntax, UINT  ref, ParameterArray& params, bool comment);
          virtual ~ScriptCommand();
 
          // ------------------------ STATIC -------------------------
@@ -56,11 +56,11 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         const CommandSyntax& Syntax;
-         bool                 Commented;
-         ParameterArray       Parameters;
-         wstring              Text;
-         UINT                 RefIndex;
+         CommandSyntaxRef Syntax;
+         bool             Commented;
+         ParameterArray   Parameters;
+         wstring          Text;
+         UINT             RefIndex;
       };
 
       /// <summary>List of script commands</summary>

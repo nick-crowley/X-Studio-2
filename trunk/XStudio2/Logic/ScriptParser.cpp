@@ -481,7 +481,7 @@ namespace Logic
             ParameterArray params;
 
             // Identify syntax
-            CommandSyntax syntax = SyntaxLib.Find(lex.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
+            CommandSyntaxRef syntax = SyntaxLib.Find(lex.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
             
             // Store comment, if any
             if (lex.count() == 2)
@@ -520,7 +520,7 @@ namespace Logic
 
             // Match remaining tokens against a command
             TokenList tokens;
-            CommandSyntax syntax = SyntaxLib.Identify(pos, lex.end(), Version, tokens);  
+            CommandSyntaxRef syntax = SyntaxLib.Identify(pos, lex.end(), Version, tokens);  
             ParameterArray params;
             
             // Unrecognised: Highlight offending token / entire line
@@ -601,7 +601,7 @@ namespace Logic
                            retVar = lex.end();
 
             // Lookup syntax
-            CommandSyntax syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
+            CommandSyntaxRef syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
             
             // Match: (assignment/conditional)
             if (MatchAssignment(lex, TokenIterator(pos)))

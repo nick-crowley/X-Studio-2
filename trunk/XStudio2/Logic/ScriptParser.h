@@ -88,8 +88,8 @@ namespace Logic
                // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
-               CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
-               CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
+               CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
+               CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
                ~CommandNode();
 
                // ------------------------ STATIC -------------------------
@@ -121,7 +121,7 @@ namespace Logic
 
                ParameterArray  Parameters,       // script parameters in display order
                                Postfix;
-               const CommandSyntax& Syntax;
+               CommandSyntaxRef Syntax;
                CommandNode*    JumpTarget;       // Destination of jump
                UINT            Index;            // 0-based standard codearray index
 

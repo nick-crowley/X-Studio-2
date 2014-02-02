@@ -33,7 +33,7 @@ namespace Logic
       /// <param name="ver">Desired game version</param>
       /// <param name="params">Parameter tokens</param>
       /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
-      CommandSyntax SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
+      CommandSyntaxRef SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
       {
          // EOF: Return syntax @ this node (if any)
          if (pos >= end)
@@ -63,7 +63,7 @@ namespace Logic
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
       /// <exception cref="Logic::GenericException">Syntax conflicts with existing syntax</exception>
-      void  SyntaxLibrary::SyntaxNode::Insert(const CommandSyntax& s, TokenIterator& pos, const TokenIterator& end)
+      void  SyntaxLibrary::SyntaxNode::Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end)
       {
          if (pos < end)
          {
@@ -80,7 +80,7 @@ namespace Logic
                throw GenericException(HERE, GuiString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
 
             // EndOfInput: Store syntax here
-            Syntax = SyntaxPtr(new CommandSyntax(s));
+            Syntax = CommandSyntaxPtr(new CommandSyntax(s));
          }
       }
 
@@ -115,7 +115,7 @@ namespace Logic
 
       /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
       /// <returns></returns>
-      CommandSyntax  SyntaxLibrary::SyntaxNode::GetSyntax() const
+      CommandSyntaxRef  SyntaxLibrary::SyntaxNode::GetSyntax() const
       {
          return HasSyntax() ? *Syntax : CommandSyntax::Unknown;
       }

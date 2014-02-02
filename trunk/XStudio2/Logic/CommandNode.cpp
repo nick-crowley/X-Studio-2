@@ -29,7 +29,7 @@ namespace Logic
          /// <param name="params">parameters.</param>
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
-         ScriptParser::CommandNode::CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
+         ScriptParser::CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
             : Syntax(syntax),
               Condition(cnd),
               Parameters(move(params)),
@@ -48,7 +48,7 @@ namespace Logic
          /// <param name="params">postfix parameters.</param>
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
-         ScriptParser::CommandNode::CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
+         ScriptParser::CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
             : Syntax(syntax),
               Condition(cnd),
               Parameters(move(infix)),
