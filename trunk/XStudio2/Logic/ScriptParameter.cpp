@@ -11,6 +11,9 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Create a retVar, refObj, standard, expression, or argument parameter from a PARSED SCRIPT TOKEN</summary>
+      /// <param name="s">syntax</param>
+      /// <param name="tok">script token</param>
       ScriptParameter::ScriptParameter(ParameterSyntax s, const ScriptToken& t) 
          : Syntax(s), Token(t), Type(IdentifyDataType(t.Type)), Value(t.ValueText), Text(t.Text)
       {
@@ -21,16 +24,31 @@ namespace Logic
             Type = obj->GetDataType();
       }
 
+      /// <summary>Create a conditional retVar parameter from a PARSED CONDITIONAL</summary>
+      /// <param name="s">syntax</param>
+      /// <param name="c">The conditional.</param>
       ScriptParameter::ScriptParameter(ParameterSyntax s, Conditional c) 
          : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c).Value), Text(L"conditional")
       {}
    
-      ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val) 
+      /// <summary>Create a parameter from a string/int value READ FROM FILE</summary>
+      /// <param name="s">syntax</param>
+      /// <param name="t">data type</param>
+      /// <param name="val">The value.</param>
+      ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, ParameterValue val) : Syntax(s), Type(t), Value(val)
       {}
 
+      /// <summary>Create a parameter from a string value READ FROM FILE</summary>
+      /// <param name="s">syntax</param>
+      /// <param name="t">data type</param>
+      /// <param name="val">The value.</param>
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, const wstring& val) : Syntax(s), Type(t), Value(val) 
       {}
 
+      /// <summary>Create a parameter from an int value READ FROM FILE</summary>
+      /// <param name="s">syntax</param>
+      /// <param name="t">data type</param>
+      /// <param name="val">The value.</param>
       ScriptParameter::ScriptParameter(ParameterSyntax s, DataType t, UINT val) : Syntax(s), Type(t), Value(val) 
       {}
 
