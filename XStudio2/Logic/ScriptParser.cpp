@@ -115,8 +115,8 @@ namespace Logic
             }
             
             // Verify tree
-            //Script->Print(0);
-            Script->Verify(Errors);
+            Script->Print(0);
+            //Script->Verify(Errors);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
@@ -502,10 +502,10 @@ namespace Logic
          /// </remarks>
          ScriptParser::CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex)
          {
-            Conditional     condition = Conditional::DISCARD;
-            TokenIterator   pos = lex.begin(),
-                            retVar = lex.end(),
-                            refObj = lex.end();
+            Conditional   condition = Conditional::DISCARD;
+            TokenIterator pos = lex.begin(),
+                          retVar = lex.end(),
+                          refObj = lex.end();
 
             // Match: (assignment/conditional)? 
             if (MatchAssignment(lex, lex.begin()))
@@ -597,8 +597,7 @@ namespace Logic
          {
             ParameterArray params, postfix;
             Conditional    condition = Conditional::DISCARD;
-            TokenIterator  pos = lex.begin(),
-                           retVar = lex.end();
+            TokenIterator  pos = lex.begin();
 
             // Lookup syntax
             CommandSyntaxRef syntax = SyntaxLib.Find(CMD_EXPRESSION, Version);
@@ -607,7 +606,7 @@ namespace Logic
             if (MatchAssignment(lex, TokenIterator(pos)))
                 params += ReadParameter(syntax.Parameters[0], *ReadAssignment(lex, pos));
             else 
-                params += ScriptParameter(syntax.Parameters[0], ReadConditional(lex, pos));
+                params += ScriptParameter(syntax.Parameters[0], condition=ReadConditional(lex, pos));
 
             try
             {

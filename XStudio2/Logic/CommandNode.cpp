@@ -88,7 +88,7 @@ namespace Logic
             // Line/Indent
             Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
             
-            // Logic
+            // Colour
             switch (Logic)
             {
             case BranchLogic::If:
@@ -96,14 +96,13 @@ namespace Logic
             case BranchLogic::Else:
             case BranchLogic::ElseIf:
             case BranchLogic::SkipIf:
-            case BranchLogic::End:  
-               Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
-               break;
+            case BranchLogic::End:      Console << Colour::Yellow; break;
             case BranchLogic::Break:
-            case BranchLogic::Continue:
-               Console << Colour::Green << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
-               break;
+            case BranchLogic::Continue: Console << Colour::Green;  break;
+            default:                    Console << Colour::White;  break;
             }
+            // Logic
+            Console << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
             
             // Print Children
             for (auto c : Children)
