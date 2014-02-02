@@ -13,7 +13,6 @@ namespace Logic
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
-         /// <param name="err">Error collection</param>
          ScriptParser::CommandNode::CommandNode()
             : Syntax(CommandSyntax::Unknown), 
               Condition(Conditional::NONE),
@@ -22,23 +21,37 @@ namespace Logic
               Index(0), 
               LineNumber(0),
               Extent({0,0})
-         {
-         }
+         {}
 
-         /// <summary>Create node from a script command</summary>
-         /// <param name="lex">command lexer</param>
+         /// <summary>Create node for a script command</summary>
+         /// <param name="cnd">conditional.</param>
+         /// <param name="syntax">command syntax.</param>
+         /// <param name="params">parameters.</param>
+         /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
-         /// <param name="err">Error collection</param>
-         ScriptParser::CommandNode::CommandNode(const CommandLexer& lex, const CommandSyntax& syntax, ParameterArray& params, UINT line)
-            : Syntax(CommandSyntax::Unknown),
-              Condition(Conditional::DISCARD),
+         ScriptParser::CommandNode::CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
+            : Syntax(syntax),
+              Condition(cnd),
+              Parameters(move(params)),
               LineNumber(line), 
               Extent(lex.Extent), 
+              LineText(lex.Input),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              LineText(lex.Input),
               Index(0)
+         {}
+
+         /// <summary>Create node for an expression</summary>
+         /// <param name="cnd">conditional.</param>
+         /// <param name="syntax">command syntax.</param>
+         /// <param name="params">infix parameters and retVar</param>
+         /// <param name="params">postfix parameters.</param>
+         /// <param name="lex">lexer.</param>
+         /// <param name="line">1-based line number</param>
+         ScriptParser::CommandNode::CommandNode(Conditional cnd, const CommandSyntax& syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
+            : CommandNode(cnd, syntax, infix, lex, line)
          {
+            Postfix = postfix;
          }
 
          ScriptParser::CommandNode::~CommandNode()
@@ -92,10 +105,14 @@ namespace Logic
          }
          
          /// <summary>Verifies the entire tree</summary>
-         void  ScriptParser::CommandNode::Verify(ErrorArray& errors) 
+         void  ScriptParser::CommandNode::Verify(ErrorArray& errors) const 
          {
-            if (!IsRoot())
+            // isNode
+            if (Parent != nullptr)
             {
+               // Verify parameters
+               VerifyParameters(errors);
+
                // verify branching logic
                VerifyLogic(errors);
             }
@@ -104,13 +121,14 @@ namespace Logic
             for (const auto& cmd : Children)
                cmd->Verify(errors);
 
-            if (IsRoot())
+            // isRoot
+            if (Parent == nullptr)
             {
                // Ensure script has commands
                if (Children.size() == 0)
                   errors += ErrorToken(L"No commands found", LineNumber, Extent);
             
-               // Ensure last command is RETURN
+               // Ensure last std command is RETURN
                else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
                {
                   if (node[0]->Syntax.Is(CommandType::Auxiliary))
@@ -124,96 +142,6 @@ namespace Logic
 
          // ------------------------------ PROTECTED METHODS -----------------------------
          
-         /// <summary>Creates a parameter from a token</summary>
-         /// <param name="ps">parameter syntax</param>
-         /// <param name="tok">token</param>
-         /// <returns></returns>
-         ScriptParameter ScriptParser::CommandNode::CreateParameter(const ParameterSyntax& ps, const ScriptToken& tok)
-         {
-            const GameObject* gameObj;
-            const ScriptObject* scriptObj;
-
-            switch (tok.Type)
-            {
-            // GameObject: Ensure exists
-            case TokenType::GameObject:
-               if (GameObjectLib.TryFind(tok.ValueText, gameObj))
-                  return ScriptParameter::Generate(ps, *gameObj);
-
-               errors += ErrorToken(L"Unrecognised game object", LineNumber, tok);
-               break;
-
-            // ScriptObject: Ensure exists 
-            case TokenType::ScriptObject:
-               if (ScriptObjectLib.TryFind(tok.ValueText, scriptObj))
-                  return ScriptParameter::Generate(ps, *scriptObj);
-               
-               errors += ErrorToken(L"Unrecognised script object", LineNumber, tok);
-               break;
-            }
-
-            // Default: create parameter
-            return ScriptParameter::Generate(ps, tok);
-         }
-
-         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
-         void  ScriptParser::CommandNode::AssembleParameters() 
-         {
-            // Allocate space for parameters
-            Parameters.resize(Syntax.Parameters.size());
-
-            // Match parameter tokens against syntax
-            TokenIterator tok = Tokens.begin();
-            for (const ParameterSyntax& ps : Syntax.ParametersByDisplay)
-            {
-               // RetVar: Insert Revar/Conditional
-               if (ps.IsRetVar())
-                  Parameters[ps.PhysicalIndex] = (Lexer.Valid(RetVar) ? CreateParameter(ps, *RetVar) : ScriptParameter(ps, Condition));
-               
-               // RefObj:
-               else if (ps.IsRefObj() && Lexer.Valid(RefObj))
-                  Parameters[ps.PhysicalIndex] = CreateParameter(ps, *RefObj);
-
-               else if (ps.IsRefObj())
-               {
-                  errors += ErrorToken(L"Missing reference object", LineNumber, Extent);
-                  continue;
-               }
-               // Parameter
-               else if (tok != Tokens.end())
-               {
-                  Parameters[ps.PhysicalIndex] = CreateParameter(ps, *tok);
-                  ++tok;
-               }
-               else
-               {  // Error: Missing parameter
-                  errors += ErrorToken(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), LineNumber, Extent);
-                  break;
-               }
-            }
-
-            // ScriptCall: Convert arguments
-            for (TokenIterator arg = Arguments.begin(); arg < Arguments.end; arg += 2)
-               Parameters.push_back(CreateParameter(ParameterSyntax::ScriptCallArgument, arg[1]));
-
-            // Excess parameter
-            if (tok != Tokens.end())
-               errors += ErrorToken(GuiString(L"Unexpected '%s'", tok->Text.c_str()), LineNumber, *tok);
-         }
-
-         
-         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
-         void  ScriptParser::CommandNode::VerifyParameters() 
-         {
-            for (const ParameterSyntax& ps : Syntax.Parameters)
-            {
-               // Static type check
-               if (Syntax != CommandSyntax::Unknown)
-                  if (!ps.Verify(Parameters[ps.PhysicalIndex].Type))
-                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", tok->Text.c_str(), GetString(ps.Type).c_str()), LineNumber, *tok);
-            }
-         }
-
          // ------------------------------- PRIVATE METHODS ------------------------------
 
          /// <summary>Check children for presence of certain branch logic</summary>
@@ -235,6 +163,7 @@ namespace Logic
          /// <summary>Identifies branch logic</summary>
          BranchLogic  ScriptParser::CommandNode::GetBranchLogic() const
          {
+            // Command
             switch (Syntax.ID)
             {
             case CMD_END:      return BranchLogic::End;
@@ -274,7 +203,7 @@ namespace Logic
          }
 
          /// <summary>Verifies the branching logic</summary>
-         void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& errors) 
+         void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& errors) const
          {
             // Check for END
             switch (Logic)
@@ -333,6 +262,28 @@ namespace Logic
             }
          }
          
+         
+         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
+         void  ScriptParser::CommandNode::VerifyParameters(ErrorArray& errors) const
+         {
+            // Skip for unrecognised commands
+            if (Syntax == CommandSyntax::Unknown)
+               return;
+
+            //
+            for (const ScriptParameter& param : Parameters)
+            {
+               // Skip for expressions/script-args
+               if (param.Syntax.Type == ParameterType::EXPRESSION || param.Syntax.Type == ParameterType::PARAMETER)
+                  continue;
+               
+               // Static type check
+               if (!param.Syntax.Verify(param.Type))
+                  errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), GetString(param.Syntax.Type).c_str())
+                                                                          , LineNumber, param.Token);
+            }
+         }
+
       }
    }
 }
