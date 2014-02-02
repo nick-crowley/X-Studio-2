@@ -37,7 +37,7 @@ namespace Logic
          FileCollection::const_iterator end() const   { return Files.end(); }
 
          bool            Contains(UINT page, UINT id) const;
-         LanguageString  Find(UINT page, UINT id) const;
+         const LanguageString&  Find(UINT page, UINT id) const;
          wstring         Resolve(UINT page, UINT id) const;
          bool            TryFind(UINT page, UINT id, const LanguageString* &str) const;
 
