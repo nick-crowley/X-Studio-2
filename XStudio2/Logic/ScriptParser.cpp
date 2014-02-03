@@ -120,7 +120,7 @@ namespace Logic
             }
             
             // DEBUG: Print tree
-            //Commands->Print(0);
+            Commands->Print(0);
 
             // Populate script. Verify tree
             Commands->Populate(Script);

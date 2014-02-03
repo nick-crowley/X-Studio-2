@@ -79,8 +79,9 @@ namespace Logic
             {
                // ------------------------ TYPES --------------------------
             public:
-               typedef vector<CommandNodePtr>     NodeArray;
-               typedef NodeArray::const_iterator  NodeIterator;
+               typedef vector<CommandNodePtr>     NodeList;
+               typedef NodeList::const_iterator   ConstIterator;
+               typedef NodeList::iterator         NodeIterator;
 
                // --------------------- CONSTRUCTION ----------------------
             public:
@@ -97,17 +98,20 @@ namespace Logic
 
                // ---------------------- ACCESSORS ------------------------		
             public:
+               void        Compile(ScriptFile& script);
                BranchLogic GetBranchLogic() const;
                void        Print(int depth = 0) const;
                void        Populate(ScriptFile& script);
                void        Verify(const ScriptFile& script, ErrorArray& errors) const;
                
             private:
-               bool         Contains(BranchLogic l) const;
-               void         EnumLabels(ErrorArray& errors) const;
-               NodeIterator Find(BranchLogic l) const;
-               void         VerifyLogic(ErrorArray& errors) const;
-               void         VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
+               bool          Contains(BranchLogic l) const;
+               void          EnumLabels(ErrorArray& errors) const;
+               ConstIterator Find(BranchLogic l) const;
+               ConstIterator Find(const CommandNode* child) const;
+               CommandNode*  FindNextCommand() const;
+               void          VerifyLogic(ErrorArray& errors) const;
+               void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
                
                // ----------------------- MUTATORS ------------------------
             public:
@@ -116,7 +120,7 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
             public:
                CommandNode*    Parent;           // Parent node
-               NodeArray       Children;         // Child commands
+               NodeList        Children;         // Child commands
 
                ParameterArray  Parameters,       // script parameters in display order
                                Postfix;
