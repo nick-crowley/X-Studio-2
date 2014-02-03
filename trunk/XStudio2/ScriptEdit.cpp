@@ -640,6 +640,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             switch (tok.Type)
             {
             case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
+            case TokenType::Label:        cf.crTextColor = RGB(255,0,255);    break;
             case TokenType::Null:
             case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
             case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;

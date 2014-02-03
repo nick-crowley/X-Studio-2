@@ -131,7 +131,7 @@ namespace Logic
             /// <summary>Query presence of a label</summary>
             /// <param name="name">name.</param>
             /// <returns></returns>
-            bool Contains(const wstring& name)
+            bool Contains(const wstring& name) const
             {
                return find(name) != base::end();
             }
@@ -218,7 +218,7 @@ namespace Logic
 
             /// <summary>Query presence of a variable</summary>
             /// <param name="name">name without $ prefix</param>
-            bool Contains(const wstring& name)  
+            bool Contains(const wstring& name) const
             { 
                return find(name) != base::end(); 
             }

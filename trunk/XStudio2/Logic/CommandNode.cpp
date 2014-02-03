@@ -110,11 +110,11 @@ namespace Logic
                c->Print(depth+1);
          }
 
-         /// <summary>Enumerates the labels and variables in the script.</summary>
-         /// <param name="script">The script.</param>
-         void  ScriptParser::CommandNode::Enumerate(ScriptFile& script) 
+         /// <summary>Populates the script with label and variable names</summary>
+         /// <param name="script">script.</param>
+         void  ScriptParser::CommandNode::Populate(ScriptFile& script) 
          {
-            // NODE: 
+            // Skip root
             if (Parent != nullptr)
             {
                // Add label definitions to script
@@ -129,17 +129,19 @@ namespace Logic
 
             // Examine children
             for (const auto& cmd : Children)
-               cmd->Enumerate(script);
+               cmd->Populate(script);
          }
          
          /// <summary>Verifies the entire tree</summary>
-         void  ScriptParser::CommandNode::Verify(ErrorArray& errors) const 
+         /// <param name="script">script</param>
+         /// <param name="errors">errors collection</param>
+         void  ScriptParser::CommandNode::Verify(const ScriptFile& script, ErrorArray& errors) const 
          {
             // NODE: Verify commands
             if (Parent != nullptr)
             {
                // Verify parameters
-               VerifyParameters(errors);
+               VerifyParameters(script, errors);
 
                // verify branching logic
                VerifyLogic(errors);
@@ -147,7 +149,7 @@ namespace Logic
 
             // NODE/ROOT: Verify children
             for (const auto& cmd : Children)
-               cmd->Verify(errors);
+               cmd->Verify(script, errors);
 
             // ROOT: Verify unique
             if (Parent == nullptr)
@@ -292,7 +294,9 @@ namespace Logic
          
          
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
-         void  ScriptParser::CommandNode::VerifyParameters(ErrorArray& errors) const
+         /// <param name="script">script</param>
+         /// <param name="errors">errors collection</param>
+         void  ScriptParser::CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
          {
             // Skip for unrecognised commands
             if (Syntax == CommandSyntax::Unknown)
@@ -318,6 +322,8 @@ namespace Logic
 
                // Label: Ensure exists
                case TokenType::Label:
+                  if (!script.Labels.Contains(param.Value.String))
+                     errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
                   break;
                }
                
