@@ -239,8 +239,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // -------------------- REPRESENTATION ---------------------
       };
 
-      
-
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
