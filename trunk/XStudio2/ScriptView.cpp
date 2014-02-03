@@ -31,6 +31,7 @@ NAMESPACE_BEGIN(GUI)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_ACTIVATE()
+      ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -147,6 +148,15 @@ NAMESPACE_BEGIN(GUI)
 	   ClientToScreen(&point);
 	   OnContextMenu(this, point);
    }
+
+
+   void ScriptView::OnSetFocus(CWnd* pOldWnd)
+   {
+      CFormView::OnSetFocus(pOldWnd);
+
+      RichEdit.SetFocus();
+   }
+
    
    void ScriptView::OnSize(UINT nType, int cx, int cy)
    {
@@ -218,5 +228,4 @@ NAMESPACE_BEGIN(GUI)
 
 
 NAMESPACE_END(GUI)
-
 
