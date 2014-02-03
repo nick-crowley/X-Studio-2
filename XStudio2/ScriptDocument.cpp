@@ -1,5 +1,4 @@
-
-// MFC Test 1Doc.cpp : implementation of the ScriptDocument class
+// ScriptDocument.cpp : implementation 
 //
 
 #include "stdafx.h"

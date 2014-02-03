@@ -1,5 +1,3 @@
-// MFC Test 1Doc.h : interface of the ScriptDocument class
-//
 #pragma once
 #include "Logic/ScriptFile.h"
 
