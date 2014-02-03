@@ -99,15 +99,15 @@ namespace Logic
             public:
                BranchLogic GetBranchLogic() const;
                void        Print(int depth = 0) const;
-               void        Enumerate(ScriptFile& script);
-               void        Verify(ErrorArray& errors) const;
+               void        Populate(ScriptFile& script);
+               void        Verify(const ScriptFile& script, ErrorArray& errors) const;
                
             private:
                bool         Contains(BranchLogic l) const;
                void         EnumLabels(ErrorArray& errors) const;
                NodeIterator Find(BranchLogic l) const;
                void         VerifyLogic(ErrorArray& errors) const;
-               void         VerifyParameters(ErrorArray& errors) const;
+               void         VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
                
                // ----------------------- MUTATORS ------------------------
             public:
