@@ -41,11 +41,16 @@ namespace Logic
       /// <returns>Index into the labels array, or -1 for global scope</returns>
       int  ScriptFile::FindScope(UINT line)
       {
+         vector<ScriptLabel> coll(Labels.begin(), Labels.end());
+         sort(coll.begin(), coll.end());
+
+         // TODO: This function needs rewriting
+
          // Determine current scope
-         auto scope = find_if(Labels.rbegin(), Labels.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
+         auto scope = find_if(coll.rbegin(), coll.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
 
          // Convert to index
-         return distance(scope, Labels.rend()) - 1;
+         return distance(scope, coll.rend()) - 1;
       }
 
       /// <summary>Gets the name of the object command.</summary>

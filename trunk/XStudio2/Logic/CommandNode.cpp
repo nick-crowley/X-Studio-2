@@ -112,19 +112,19 @@ namespace Logic
 
          /// <summary>Enumerates the labels and variables in the script.</summary>
          /// <param name="script">The script.</param>
-         void  ScriptParser::CommandNode::Enumerate(ScriptFile& script) const
+         void  ScriptParser::CommandNode::Enumerate(ScriptFile& script) 
          {
             // NODE: 
             if (Parent != nullptr)
             {
                // Add label definitions to script
                if (Syntax.Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
-                  script.AddLabel(Parameters[0].Value.String, LineNumber);
+                  script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
                // Add variable names to script
                for (const auto& p : Parameters)
                   if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.AddVariable(p.Value.String);
+                     script.Variables.Add(p.Value.String);
             }
 
             // Examine children
