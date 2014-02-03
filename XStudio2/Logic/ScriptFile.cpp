@@ -36,21 +36,18 @@ namespace Logic
          Variables.clear();
       }
 
-      /// <summary>Finds the index of the label that represents the scope of a line number</summary>
+      /// <summary>Finds the name of the label that represents the scope of a line number</summary>
       /// <param name="line">The 1-based line number</param>
-      /// <returns>Index into the labels array, or -1 for global scope</returns>
-      int  ScriptFile::FindScope(UINT line)
+      /// <returns>Label name, or empty string if global</returns>
+      wstring  ScriptFile::FindScope(UINT line)
       {
+         // Sort labels into descending order
          vector<ScriptLabel> coll(Labels.begin(), Labels.end());
-         sort(coll.begin(), coll.end());
-
-         // TODO: This function needs rewriting
+         sort(coll.begin(), coll.end(), [](ScriptLabel& a, ScriptLabel&b){ return a.LineNumber > b.LineNumber; });
 
          // Determine current scope
-         auto scope = find_if(coll.rbegin(), coll.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
-
-         // Convert to index
-         return distance(scope, coll.rend()) - 1;
+         auto scope = find_if(coll.begin(), coll.end(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
+         return scope != coll.end() ? scope->Name : L"";
       }
 
       /// <summary>Gets the name of the object command.</summary>

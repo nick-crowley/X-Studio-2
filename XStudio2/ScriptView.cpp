@@ -283,8 +283,12 @@ NAMESPACE_BEGIN(GUI)
    void ScriptView::UpdateScope()
    {
       // Set/clear scope
-      UINT line = RichEdit.GetCaretLocation().y;
-      ScopeCombo.SetCurSel(1+GetDocument()->Script.FindScope(line));
+      wstring label = GetDocument()->Script.FindScope( RichEdit.GetCaretLocation().y );
+
+      if (!label.empty())
+         ScopeCombo.SelectString(-1, label.c_str());
+      else
+         ScopeCombo.SetCurSel(0);
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

@@ -339,7 +339,7 @@ namespace Logic
          {
             XmlNodePtr arg(argBranch->childNodes->item[i]);
 
-            ScriptVariable& var = script.Variables[i+1];
+            ScriptVariable& var = script.Variables[i];
             var.Type        = VariableType::Argument;
             var.ValueType   = (ParameterType)ReadInt(arg->childNodes->item[0], L"script argument type");
             var.Description = ReadString(arg->childNodes->item[1], L"script argument description");
