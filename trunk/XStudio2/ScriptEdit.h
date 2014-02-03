@@ -267,6 +267,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       wstring   GetLineText(int line) const;
       LineArray GetLines() const;
       CHARRANGE GetSelection() const;
+      wstring   GetTokenText(const ErrorToken& tok);
       bool      HasSelection() const;
       int       LineLength(int nChar = -1) const;
 
@@ -284,7 +285,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
-      void   FreezeWindow(bool freeze);
+      void   FreezeWindow(bool freeze, bool invalidate = true);
       void   InsertSuggestion();
       void   RefreshGutter();
       void   SetScrollCoordinates(const CPoint& pt);

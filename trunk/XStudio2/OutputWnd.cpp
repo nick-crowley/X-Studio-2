@@ -179,6 +179,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Setup ImageList:
          Images.Create(IDB_OUTPUT_ICONS, 16, 6, RGB(255,0,255));
 	      m_wndOutputBuild.SetImageList(&Images, LVSIL_SMALL);
+         m_wndOutputDebug.SetImageList(&Images, LVSIL_SMALL);
+         m_wndOutputFind.SetImageList(&Images, LVSIL_SMALL);
 
 	      // Attach list windows to tab:
 	      m_wndTabs.AddTab(&m_wndOutputBuild, GuiString(IDS_BUILD_TAB).c_str(), (UINT)0);
