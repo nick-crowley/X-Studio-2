@@ -9,6 +9,27 @@ namespace Logic
 {
    namespace Scripts
    {
+      
+      /// <summary></summary>
+      class ScriptLabel
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         ScriptLabel(wstring name, UINT line) : Name(name), LineNumber(line)
+         {}
+
+         // -------------------- REPRESENTATION ---------------------
+
+         wstring  Name;
+         UINT     LineNumber;    // 1-based line number
+      };
+
+      /// <summary>Vector of ScriptLabels</summary>
+      typedef vector<ScriptLabel>  LabelArray;
+
+
+
+
       /// <summary>Distinguishes variables from arguments</summary>
       enum class VariableType : UINT { Argument, Variable };
 
@@ -31,32 +52,123 @@ namespace Logic
       };
 
       /// <summary>Vector of ScriptVariables</summary>
-      typedef vector<ScriptVariable>  VariableArray;
+      //typedef vector<ScriptVariable>  VariableArray;
 
 
-      /// <summary></summary>
-      class ScriptLabel
+      /// <summary>Occurs when a script variable is missing</summary>
+      class VariableNotFoundException : public ExceptionBase
       {
-         // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptLabel(wstring name, UINT line) : Name(name), LineNumber(line)
+         /// <summary>Create from a variable name</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="name">Variable name</param>
+         VariableNotFoundException(wstring  src, const wstring& name) 
+            : ExceptionBase(src, GuiString(L"Cannot find variable '$%s'", name.c_str()))
          {}
 
-         // -------------------- REPRESENTATION ---------------------
-
-         wstring  Name;
-         UINT     LineNumber;    // 1-based line number
+         /// <summary>Create from a variable ID</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="id">Variable id</param>
+         VariableNotFoundException(wstring  src, UINT id) 
+            : ExceptionBase(src, GuiString(L"Cannot find variable with id=%d", id))
+         {}
       };
-
-      /// <summary>Vector of ScriptLabels</summary>
-      typedef vector<ScriptLabel>  LabelArray;
-
 
       /// <summary></summary>
       class ScriptFile
       {
          // ------------------------ TYPES -------------------------
       public:
+         /// <summary></summary>
+         class VariableCollection : protected std::map<wstring, ScriptVariable, less<wstring>>
+         {
+            // ------------------------ TYPES --------------------------
+         private:
+            typedef pair<const wstring,ScriptVariable>  element;
+
+            // --------------------- CONSTRUCTION ----------------------
+
+         public:
+            VariableCollection();
+            virtual ~VariableCollection();
+
+            DEFAULT_COPY(VariableCollection);	// Default copy semantics
+            DEFAULT_MOVE(VariableCollection);	// Default move semantics
+
+            // ------------------------ STATIC -------------------------
+
+            // --------------------- PROPERTIES ------------------------
+
+            // ---------------------- ACCESSORS ------------------------			
+         public:
+            /// <summary>Query presence of a variable</summary>
+            /// <param name="name">name.</param>
+            /// <returns></returns>
+            bool Contains(const wstring& name)
+            {
+               return find(name) != end();
+            }
+
+            /// <summary>Get variable by ID</summary>
+            /// <param name="id">id</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
+            ScriptVariable& operator[](UINT id)
+            {
+               // Lookup variable by ID
+               iterator v = find_if(begin(), end(), [id](element& pair) {return pair.second.ID == id;});
+               if (v != end())
+                  return v->second;
+
+               // Not found:
+               throw VariableNotFoundException(HERE, id);
+            }
+
+            /// <summary>Get variable by name</summary>
+            /// <param name="name">name without $ prefix</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
+            ScriptVariable& operator[](const wstring& name)
+            {
+               iterator v;
+
+               // Lookup variable by name
+               if ((v=find(name)) != end())
+                  return v->second;
+
+               // Not found:
+               throw VariableNotFoundException(HERE, name);
+            }
+
+         private:
+            /// <summary>Gets the next free variable identifier.</summary>
+            /// <returns>1-based variable ID</returns>
+            UINT  GetNextID() const
+            {
+               return 1+size();
+            }
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Adds a variable using the next available ID. If name already exists no changes are made</summary>
+            /// <param name="name">variable name (case sensitive)</param>
+            void  Add(const wstring& name)
+            {
+               if (!Contains(name))
+                  insert( value_type(name, ScriptVariable(VariableType::Variable, name, GetNextID())) );
+            }
+
+            /// <summary>Clears all variables, but leaves arguments</summary>
+            void  Clear()
+            {
+               remove_if(begin(), end(), [](element& pair) {return pair.second.Type == VariableType::Variable;} );
+            }
+
+            // -------------------- REPRESENTATION ---------------------
+
+         private:
+         };
+
          class ScriptCallCollection : public map<wstring, ScriptFile>
          {
          public:
@@ -139,38 +251,14 @@ namespace Logic
 
          /// <summary>Adds variable.</summary>
          /// <param name="name">The name.</param>
-         void  AddVariable(const wstring& name)
+         /*void  AddVariable(const wstring& name)
          {
             if (find_if(Variables.begin(), Variables.end(), [&name](const ScriptVariable& v){return v.Name==name;}) == Variables.end())
                Variables.push_back(ScriptVariable(VariableType::Variable, name, Variables.size()));
-         }
+         }*/
 
-         /// <summary>Clears commands, labels and non-argument variables</summary>
-         void  Clear()
-         {
-            // Clear labels & commands
-            Commands.clear();
-            Labels.clear();
-
-            // Clear script-calls
-            ScriptCalls.clear();
-
-            // Clear variables, keep arguments
-            auto var = find_if(Variables.begin(), Variables.end(), [](const ScriptVariable& v) { return v.Type == VariableType::Variable; });
-            Variables.erase(var, Variables.end());
-         }
-
-         /// <summary>Finds the index of the label that represents the scope of a line number</summary>
-         /// <param name="line">The 1-based line number</param>
-         /// <returns>Index into the labels array, or -1 for global scope</returns>
-         int  FindScope(UINT line)
-         {
-            // Determine current scope
-            auto scope = find_if(Labels.rbegin(), Labels.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
-
-            // Convert to index
-            return distance(scope, Labels.rend()) - 1;
-         }
+         void  Clear();
+         int   FindScope(UINT line);
 
 		   // -------------------- REPRESENTATION ---------------------
 
@@ -183,7 +271,7 @@ namespace Logic
 
          CommandList    Commands;
          LabelArray     Labels;
-         VariableArray  Variables;
+         VariableCollection   Variables;
          ScriptCallCollection ScriptCalls;
       private:
       };

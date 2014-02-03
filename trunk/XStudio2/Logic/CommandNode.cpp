@@ -315,6 +315,10 @@ namespace Logic
                   if (!ScriptObjectLib.Contains(param.Value.String))
                      errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
                   break;
+
+               // Label: Ensure exists
+               case TokenType::Label:
+                  break;
                }
                
                // Static type check
