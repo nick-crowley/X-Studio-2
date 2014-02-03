@@ -36,7 +36,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static FeedbackEvent    GameDataFeedback;
+      static FeedbackEvent    GameDataFeedback,
+                              LoadSaveFeedback;
 
       // --------------------- PROPERTIES ------------------------
 	  

@@ -36,7 +36,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ----------------------------------- EVENTS -----------------------------------
 
-   FeedbackEvent   MainWnd::GameDataFeedback;
+   FeedbackEvent   MainWnd::GameDataFeedback,
+                   MainWnd::LoadSaveFeedback;
 
    // --------------------------------- APP WIZARD ---------------------------------
 
@@ -369,7 +370,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Raise appropriate event
       switch (p->Operation)
       {
-      case Operation::LoadGameData:    GameDataFeedback.Raise(*p);    break;
+      case Operation::LoadGameData:       GameDataFeedback.Raise(*p);   break;
+      case Operation::LoadSaveDocument:   LoadSaveFeedback.Raise(*p);   break;
       // TODO: Add more operations
       }
       

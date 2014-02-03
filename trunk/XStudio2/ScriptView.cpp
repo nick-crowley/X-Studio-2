@@ -153,6 +153,9 @@ NAMESPACE_BEGIN(GUI)
 	   CFormView::OnInitialUpdate();
 	   ResizeParentToFit();
 
+      // Attach edit to document
+      GetDocument()->AttachEdit(RichEdit);
+
       // Convert script to RTF (ansi)
       string txt;
       RtfScriptTextWriter w(txt);

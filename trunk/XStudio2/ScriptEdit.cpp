@@ -363,7 +363,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          for (const auto& err : parser.Errors)
          {
             FormatToken(LineIndex(err.Line-1), err, cf);
-            Console << err.Line << L": " << Colour::Yellow << err.Error << Colour::White << L" : " << (const WCHAR*)GetSelText() << ENDL;
+            Console << err.Line << L": " << Colour::Yellow << err.Message << Colour::White << L" : " << (const WCHAR*)GetSelText() << ENDL;
          }
 
          // Raise 'Compile Complete'
