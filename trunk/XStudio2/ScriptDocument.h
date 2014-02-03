@@ -11,9 +11,7 @@ NAMESPACE_BEGIN(GUI)
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-      ScriptDocTemplate(UINT nIDResource, CRuntimeClass* pDocClass, CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass)
-         : CMultiDocTemplate(nIDResource, pDocClass, pFrameClass, pViewClass)
-      {}
+      ScriptDocTemplate();
 
       // ------------------------ STATIC -------------------------
 

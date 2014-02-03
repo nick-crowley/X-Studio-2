@@ -9,9 +9,7 @@ NAMESPACE_BEGIN(GUI)
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-      LanguageDocTemplate(UINT nIDResource, CRuntimeClass* pDocClass, CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass)
-         : CMultiDocTemplate(nIDResource, pDocClass, pFrameClass, pViewClass)
-      {}
+      LanguageDocTemplate();
 
       // ------------------------ STATIC -------------------------
 
