@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "afxcview.h"
 #include "Application.h"
+#include "AboutDlg.h"
 #include "MainWnd.h"
 
 #include "ScriptDocument.h"
@@ -25,22 +26,6 @@ Application theApp;
 
 // --------------------------------- TYPES ---------------------------------
 
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
 // --------------------------------- APP WIZARD ---------------------------------
   
 BEGIN_MESSAGE_MAP(Application, CWinAppEx)
@@ -49,14 +34,7 @@ BEGIN_MESSAGE_MAP(Application, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
 // -------------------------------- CONSTRUCTION --------------------------------
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-}
 
 Application::Application() : GameDataState(AppState::NoGameData)
 {
@@ -214,11 +192,6 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const 
 }
 
 // ------------------------------ PROTECTED METHODS -----------------------------
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
 
 // ------------------------------- PRIVATE METHODS ------------------------------
 
