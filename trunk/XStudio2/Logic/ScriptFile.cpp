@@ -33,8 +33,7 @@ namespace Logic
          ScriptCalls.clear();
 
          // Clear variables, keep arguments
-         auto var = find_if(Variables.begin(), Variables.end(), [](const ScriptVariable& v) { return v.Type == VariableType::Variable; });
-         Variables.erase(var, Variables.end());
+         Variables.clear();
       }
 
       /// <summary>Finds the index of the label that represents the scope of a line number</summary>

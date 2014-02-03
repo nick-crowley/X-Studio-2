@@ -3,6 +3,7 @@
 #include "CommandSyntax.h"
 #include "ParameterSyntax.h"
 #include "ScriptCommand.h"
+#include "MapIterator.hpp"
 #include <algorithm>
 
 namespace Logic
@@ -51,9 +52,6 @@ namespace Logic
          UINT           ID;       // 1-based index/ID
       };
 
-      /// <summary>Vector of ScriptVariables</summary>
-      //typedef vector<ScriptVariable>  VariableArray;
-
 
       /// <summary>Occurs when a script variable is missing</summary>
       class VariableNotFoundException : public ExceptionBase
@@ -80,11 +78,15 @@ namespace Logic
          // ------------------------ TYPES -------------------------
       public:
          /// <summary></summary>
-         class VariableCollection : protected std::map<wstring, ScriptVariable, less<wstring>>
+         class VariableCollection : private map<wstring, ScriptVariable, less<wstring>>
          {
             // ------------------------ TYPES --------------------------
          private:
             typedef pair<const wstring,ScriptVariable>  element;
+            typedef map<wstring, ScriptVariable, less<wstring>>  base;
+
+         public:
+            typedef MapIterator<ScriptVariable, VariableCollection, VariableCollection::iterator> VarIterator;
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -101,12 +103,31 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------			
          public:
+            /// <summary>Get start iterator</summary>
+            VarIterator begin()
+            {
+               return VarIterator(*this, base::begin());
+            }
+            
             /// <summary>Query presence of a variable</summary>
             /// <param name="name">name.</param>
             /// <returns></returns>
             bool Contains(const wstring& name)
             {
-               return find(name) != end();
+               return find(name) != base::end();
+            }
+
+            /// <summary>Get end iterator</summary>
+            VarIterator end() 
+            {
+               return VarIterator(*this, base::end());
+            }
+
+            /// <summary>Get number of variables and arguments</summary>
+            /// <returns></returns>
+            size_type  GetCount() const
+            {
+               return base::size();
             }
 
             /// <summary>Get variable by ID</summary>
@@ -116,8 +137,23 @@ namespace Logic
             ScriptVariable& operator[](UINT id)
             {
                // Lookup variable by ID
-               iterator v = find_if(begin(), end(), [id](element& pair) {return pair.second.ID == id;});
-               if (v != end())
+               iterator v = find_if(base::begin(), base::end(), [id](element& pair) {return pair.second.ID == id;});
+               if (v != base::end())
+                  return v->second;
+
+               // Not found:
+               throw VariableNotFoundException(HERE, id);
+            }
+
+            /// <summary>Get variable by ID</summary>
+            /// <param name="id">id</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
+            const ScriptVariable& operator[](UINT id) const
+            {
+               // Lookup variable by ID
+               const_iterator v = find_if(base::begin(), base::end(), [id](const element& pair) {return pair.second.ID == id;});
+               if (v != base::end())
                   return v->second;
 
                // Not found:
@@ -133,7 +169,7 @@ namespace Logic
                iterator v;
 
                // Lookup variable by name
-               if ((v=find(name)) != end())
+               if ((v=find(name)) != base::end())
                   return v->second;
 
                // Not found:
@@ -159,9 +195,14 @@ namespace Logic
             }
 
             /// <summary>Clears all variables, but leaves arguments</summary>
-            void  Clear()
+            void  clear()
             {
-               remove_if(begin(), end(), [](element& pair) {return pair.second.Type == VariableType::Variable;} );
+               // Remove all variables
+               for (iterator it = base::begin(); it != base::end(); )
+                  if (it->second.Type == VariableType::Variable)
+                     erase(it++);
+                  else
+                     ++it;
             }
 
             // -------------------- REPRESENTATION ---------------------
@@ -211,7 +252,7 @@ namespace Logic
             wstring  FindArgument(const wstring& name, UINT index)
             {
                // Lookup name + Validate index
-               if (Contains(name) && index < Find(name).Variables.size())
+               if (Contains(name) && index < Find(name).Variables.GetCount())
                   return Find(name).Variables[index].Name;
                
                // Missing/Invalid: 
