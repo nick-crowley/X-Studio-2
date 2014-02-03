@@ -22,6 +22,33 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
       
+      /// <summary>Clears commands, labels and non-argument variables</summary>
+      void  ScriptFile::Clear()
+      {
+         // Clear labels & commands
+         Commands.clear();
+         Labels.clear();
+
+         // Clear script-calls
+         ScriptCalls.clear();
+
+         // Clear variables, keep arguments
+         auto var = find_if(Variables.begin(), Variables.end(), [](const ScriptVariable& v) { return v.Type == VariableType::Variable; });
+         Variables.erase(var, Variables.end());
+      }
+
+      /// <summary>Finds the index of the label that represents the scope of a line number</summary>
+      /// <param name="line">The 1-based line number</param>
+      /// <returns>Index into the labels array, or -1 for global scope</returns>
+      int  ScriptFile::FindScope(UINT line)
+      {
+         // Determine current scope
+         auto scope = find_if(Labels.rbegin(), Labels.rend(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
+
+         // Convert to index
+         return distance(scope, Labels.rend()) - 1;
+      }
+
       /// <summary>Gets the name of the object command.</summary>
       /// <returns>Name of command if any, otherwise empty string</returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Command matching ID is not present</exception>

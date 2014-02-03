@@ -199,12 +199,13 @@ namespace Logic
             }
             // LABEL: Store for later
             else if (cmd.Is(CMD_DEFINE_LABEL))
-               script.Labels.push_back( ScriptLabel(cmd.GetLabelName(), line) );
+               script.Labels.Add(cmd.GetLabelName(), line);
 
             // SCRIPT-CALL: Load script properties
             else if (cmd.Is(CMD_CALL_SCRIPT_VAR_ARGS) && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
             {
-               try {
+               try 
+               {
                   script.ScriptCalls.Add(name, ReadExternalScript(name));
                }
                catch (ExceptionBase& e ) {
@@ -330,16 +331,18 @@ namespace Logic
          for (int i = 0; i < varBranch->childNodes->length; i++)
          {
             name = ReadString(varBranch->childNodes->item[i], L"script variable name");
-            script.Variables.push_back( ScriptVariable(VariableType::Variable, name, i+1) );
+            script.Variables.Add(name);
          }
          
-         // Modify arguments with extra properties
+         // Upgrade first N variables into arguments 
          for (int i = 0; i < argBranch->childNodes->length; i++)
          {
             XmlNodePtr arg(argBranch->childNodes->item[i]);
-            script.Variables[i].Type        = VariableType::Argument;
-            script.Variables[i].ValueType   = (ParameterType)ReadInt(arg->childNodes->item[0], L"script argument type");
-            script.Variables[i].Description = ReadString(arg->childNodes->item[1], L"script argument description");
+
+            ScriptVariable& var = script.Variables[i+1];
+            var.Type        = VariableType::Argument;
+            var.ValueType   = (ParameterType)ReadInt(arg->childNodes->item[0], L"script argument type");
+            var.Description = ReadString(arg->childNodes->item[1], L"script argument description");
          }
 
       }
