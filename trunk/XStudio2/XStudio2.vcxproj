@@ -222,6 +222,7 @@
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
