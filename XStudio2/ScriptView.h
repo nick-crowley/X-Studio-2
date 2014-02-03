@@ -63,9 +63,14 @@ NAMESPACE_BEGIN(GUI)
       
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      afx_msg void OnClipboardCopy();
+      afx_msg void OnClipboardCut();
+      afx_msg void OnClipboardPaste();
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       handler void OnCompileComplete();
 	   virtual void OnInitialUpdate(); 
+      afx_msg void OnQueryClipboardCut(CCmdUI *pCmdUI);
+      afx_msg void OnQueryClipboardPaste(CCmdUI *pCmdUI);
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnSelectionChange(NMHDR* pNMHDR, LRESULT* result);
       afx_msg void OnSetFocus(CWnd* pOldWnd);

@@ -90,6 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       wstring   GetLineText(int line) const;
       LineArray GetLines() const;
       CHARRANGE GetSelection() const;
+      bool      HasSelection() const;
       int       LineLength(int nChar = -1) const;
 
    protected:

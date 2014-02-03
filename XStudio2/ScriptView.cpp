@@ -32,6 +32,11 @@ NAMESPACE_BEGIN(GUI)
       ON_WM_SIZE()
       ON_WM_ACTIVATE()
       ON_WM_SETFOCUS()
+      ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
+      ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
+      ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryClipboardPaste)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -107,9 +112,32 @@ NAMESPACE_BEGIN(GUI)
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
-   void ScriptView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+   /// <summary>Copy text selection to clipboard</summary>
+   void ScriptView::OnClipboardCopy()
    {
-	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
+      RichEdit.Copy();
+   }
+
+   /// <summary>Cut text selection to clipboard</summary>
+   void ScriptView::OnClipboardCut()
+   {
+      RichEdit.Cut();
+   }
+
+   /// <summary>Paste clipboard contents</summary>
+   void ScriptView::OnClipboardPaste()
+   {
+      RichEdit.Paste();
+   }
+
+   /// <summary>Display script edit context window</summary>
+   /// <param name="pWnd">window clicked</param>
+   /// <param name="point">The point in screen co-ordinates</param>
+   void ScriptView::OnContextMenu(CWnd* pWnd, CPoint point)
+   {
+      // Ensure scriptEdit was clicked
+      if (pWnd && pWnd->m_hWnd == RichEdit.m_hWnd)
+	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    }
 
    void ScriptView::OnCompileComplete()
@@ -142,14 +170,33 @@ NAMESPACE_BEGIN(GUI)
       PopulateVariables();
       PopulateScope();
    }
+   
+   /// <summary>Query state of clipboard copy context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryClipboardCut(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.HasSelection());
+   }
 
-   void ScriptView::OnRButtonUp(UINT /* nFlags */, CPoint point)
+   /// <summary>Query state of clipboard paste context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryClipboardPaste(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.CanPaste());
+   }
+
+   /// <summary>Invoke context menu</summary>
+   /// <param name="nFlags">flags.</param>
+   /// <param name="point">point in client co-ords.</param>
+   void ScriptView::OnRButtonUp(UINT nFlags, CPoint point)
    {
 	   ClientToScreen(&point);
 	   OnContextMenu(this, point);
    }
 
 
+   /// <summary>Set the focus to the script Edit</summary>
+   /// <param name="pOldWnd">The old WND.</param>
    void ScriptView::OnSetFocus(CWnd* pOldWnd)
    {
       CFormView::OnSetFocus(pOldWnd);
@@ -158,22 +205,28 @@ NAMESPACE_BEGIN(GUI)
    }
 
    
+   /// <summary>Adjusts the layout</summary>
+   /// <param name="nType">Type of resize.</param>
+   /// <param name="cx">The width.</param>
+   /// <param name="cy">The height.</param>
    void ScriptView::OnSize(UINT nType, int cx, int cy)
    {
       CFormView::OnSize(nType, cx, cy);
       AdjustLayout();
    }
 
+   /// <summary>Called when text selection changes (ie. caret has moved)</summary>
+   /// <param name="pNMHDR">Message header</param>
+   /// <param name="result">The result.</param>
    void ScriptView::OnSelectionChange(NMHDR* pNMHDR, LRESULT* result)
    {
-      SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
+      //SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
+      *result = TRUE;
       
       try
       {
-         // Update current scope
+         // Update scope + Raise 'CARET MOVED'
          UpdateScope();
-         
-         // Raise 'CARET MOVED'
          CaretMoved.Raise(RichEdit.GetCaretLocation());
       }
       catch (ExceptionBase& e) {
@@ -181,6 +234,7 @@ NAMESPACE_BEGIN(GUI)
       }
    }
    
+   /// <summary>Populates the variables dropdown</summary>
    void ScriptView::PopulateVariables()
    {
       // Clear
@@ -195,6 +249,7 @@ NAMESPACE_BEGIN(GUI)
       VariablesCombo.SetCurSel(0);
    }
 
+   /// <summary>Populates the scope labels dropdown</summary>
    void ScriptView::PopulateScope()
    {
       // Clear
@@ -209,6 +264,9 @@ NAMESPACE_BEGIN(GUI)
       UpdateScope();
    }
 
+   /// <summary>Stub</summary>
+   /// <param name="cs">The cs.</param>
+   /// <returns></returns>
    BOOL ScriptView::PreCreateWindow(CREATESTRUCT& cs)
    {
 	   // TODO: Modify the Window class or styles here by modifying
@@ -217,6 +275,7 @@ NAMESPACE_BEGIN(GUI)
 	   return CFormView::PreCreateWindow(cs);
    }
    
+   /// <summary>Selects the current scope in the labels dropdown</summary>
    void ScriptView::UpdateScope()
    {
       // Set/clear scope
@@ -228,4 +287,5 @@ NAMESPACE_BEGIN(GUI)
 
 
 NAMESPACE_END(GUI)
+
 
