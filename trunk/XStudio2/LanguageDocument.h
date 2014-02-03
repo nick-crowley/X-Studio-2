@@ -2,7 +2,7 @@
 #include "Logic/LanguageFile.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Language document template</summary>
    class LanguageDocTemplate : public CMultiDocTemplate
@@ -61,5 +61,5 @@ NAMESPACE_BEGIN(GUI)
    };
 
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Documents)
 

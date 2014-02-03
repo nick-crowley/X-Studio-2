@@ -5,7 +5,7 @@
 #include "Helpers.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -74,4 +74,4 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)

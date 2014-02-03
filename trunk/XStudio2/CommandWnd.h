@@ -3,7 +3,7 @@
 #include "Logic/SyntaxLibrary.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary>Dockable game data window</summary>
    class CCommandWnd : public CGameDataWnd
@@ -35,5 +35,5 @@ NAMESPACE_BEGIN(GUI)
    protected:
    };
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)
 

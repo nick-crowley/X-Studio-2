@@ -1,7 +1,7 @@
 #pragma once
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>About dialog</summary>
    class CAboutDlg : public CDialogEx
@@ -25,5 +25,5 @@ NAMESPACE_BEGIN(GUI)
 	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
    };
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)
 

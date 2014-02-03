@@ -2,7 +2,7 @@
 #include "GameDataWnd.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary>Dockable game data window</summary>
    class CGameObjectWnd : public CGameDataWnd
@@ -34,5 +34,5 @@ NAMESPACE_BEGIN(GUI)
    protected:
    };
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)
 

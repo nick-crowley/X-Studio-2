@@ -12,7 +12,7 @@ static char THIS_FILE[]=__FILE__;
 
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
 
    // --------------------------------- APP WIZARD ---------------------------------
 
@@ -339,5 +339,5 @@ NAMESPACE_BEGIN(GUI)
 
    
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)
 
