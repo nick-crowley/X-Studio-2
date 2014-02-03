@@ -60,6 +60,7 @@ NAMESPACE_BEGIN(GUI)
       virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
       void UpdateScope();
+      
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -67,6 +68,7 @@ NAMESPACE_BEGIN(GUI)
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnSelectionChange(NMHDR* pNMHDR, LRESULT* result);
+      afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
 
       // -------------------- REPRESENTATION ---------------------
