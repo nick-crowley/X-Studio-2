@@ -97,25 +97,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BOOL ScriptDocument::OnOpenDocument(LPCTSTR lpszPathName)
    {
-      /*if (!CDocument::OnOpenDocument(lpszPathName))
-         return FALSE;*/
+      WorkerData data(Operation::LoadSaveDocument);
       
+      // Feedback
+      Console << ENDL << Colour::Cyan << "Loading script: " << lpszPathName << ENDL;
+      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading script '%s'", lpszPathName));
+
       try
       {
          // Parse script
-         Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << lpszPathName << ENDL;
-
          StreamPtr fs2( new FileStream(lpszPathName, FileMode::OpenExisting, FileAccess::Read) );
          Script = ScriptFileReader(fs2).ReadFile(lpszPathName, false);
 
-         Console << Colour::Green << L"Script loaded successfully" << ENDL;
-      
-         //UpdateAllViews(NULL);
+         // Feedback
+         data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
-         theApp.ShowError(HERE, e, GuiString(L"Unable to load '%s'", lpszPathName));
+         // Feedback/Display error
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load script");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", lpszPathName));
          return FALSE;
       }
    }
@@ -125,24 +127,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
    BOOL ScriptDocument::OnSaveDocument(LPCTSTR lpszPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
-      Console << "Saving document.." << ENDL;
-
+      
       // Feedback
+      Console << ENDL << Colour::Cyan << "Saving script: " << lpszPathName << ENDL;
       data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", lpszPathName));
 
-      // Parse script 
-      ScriptParser parser(Script, Edit->GetLines(), Script.Game);
+      try
+      {
+         // Parse script 
+         ScriptParser parser(Script, Edit->GetLines(), Script.Game);
 
-      // Print errors in debug window
-      for (const auto& err : parser.Errors)
-         data.SendFeedback(ProgressType::Error, 1, err.Message);
+         // Print errors in debug window
+         for (const auto& err : parser.Errors)
+         {
+            GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), Edit->GetTokenText(err).c_str());
+            data.SendFeedback(ProgressType::Error, 1, msg);
+         }
+
+         // Feedback
+         if (parser.Errors.size() == 0)
+         {
+            data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script saved successfully");
+            return TRUE;
+         }
+      }
+      catch (ExceptionBase&  e) {
+         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", lpszPathName));
+      }
 
       // Feedback
-      if (parser.Errors.size() == 0)
-         data.SendFeedback(ProgressType::Succcess, 0, L"Script saved successfully");
-      else
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to save script");
-      return TRUE;
+      data.SendFeedback(Colour::Red, ProgressType::Failure, 0, L"Failed to save script");
+      return FALSE;
    }
 
 
