@@ -99,7 +99,7 @@ namespace Logic
             public:
                BranchLogic GetBranchLogic() const;
                void        Print(int depth = 0) const;
-               void        Enumerate(ScriptFile& script) const;
+               void        Enumerate(ScriptFile& script);
                void        Verify(ErrorArray& errors) const;
                
             private:

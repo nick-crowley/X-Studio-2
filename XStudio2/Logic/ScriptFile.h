@@ -19,6 +19,14 @@ namespace Logic
          ScriptLabel(wstring name, UINT line) : Name(name), LineNumber(line)
          {}
 
+         // ---------------------- ACCESSORS ------------------------	
+
+         /// <summary>Sort by line number</summary>
+         bool operator<(const ScriptLabel& r)
+         {
+            return LineNumber < r.LineNumber;
+         }
+
          // -------------------- REPRESENTATION ---------------------
 
          wstring  Name;
@@ -39,8 +47,11 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptVariable(VariableType t, const wstring& name, UINT index) 
-            : Type(t), Name(name), ID(index), ValueType(ParameterType::UNDETERMINED)
+         /// <summary>Create a named variable</summary>
+         /// <param name="name">name.</param>
+         /// <param name="id">1-based ID.</param>
+         ScriptVariable(const wstring& name, UINT id)
+            : Type(VariableType::Variable), Name(name), ID(id), ValueType(ParameterType::UNDETERMINED)
          {}
 
          // -------------------- REPRESENTATION ---------------------
@@ -49,9 +60,21 @@ namespace Logic
                         Description;
          ParameterType  ValueType;
          VariableType   Type;
-         UINT           ID;       // 1-based index/ID
+         UINT           ID;       // 1-based ID
       };
 
+
+      /// <summary>Occurs when a script label is missing</summary>
+      class LabelNotFoundException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create from a label name</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="name">Label name</param>
+         LabelNotFoundException(wstring  src, const wstring& name) 
+            : ExceptionBase(src, GuiString(L"Cannot find label '$%s'", name.c_str()))
+         {}
+      };
 
       /// <summary>Occurs when a script variable is missing</summary>
       class VariableNotFoundException : public ExceptionBase
@@ -78,6 +101,96 @@ namespace Logic
          // ------------------------ TYPES -------------------------
       public:
          /// <summary></summary>
+         class LabelCollection : private map<wstring, ScriptLabel, less<wstring>>
+         {
+            // ------------------------ TYPES --------------------------
+         private:
+            typedef pair<const wstring,ScriptLabel>           element;
+            typedef map<wstring, ScriptLabel, less<wstring>>  base;
+
+         public:
+            typedef MapIterator<ScriptLabel, LabelCollection, LabelCollection::iterator> LabelIterator;
+            typedef MapIterator<const ScriptLabel, LabelCollection, LabelCollection::const_iterator> ConstIterator;
+
+            // --------------------- CONSTRUCTION ----------------------
+
+         public:
+            LabelCollection()
+            {}
+
+            DEFAULT_COPY(LabelCollection);	// Default copy semantics
+            DEFAULT_MOVE(LabelCollection);	// Default move semantics
+
+            // ------------------------ STATIC -------------------------
+
+            // --------------------- PROPERTIES ------------------------
+
+            // ---------------------- ACCESSORS ------------------------			
+            
+            /// <summary>Get start iterator</summary>
+            LabelIterator begin()       { return LabelIterator(*this, base::begin());  }
+            ConstIterator begin() const { return ConstIterator(*this, base::cbegin()); }
+            
+            /// <summary>Get end iterator</summary>
+            LabelIterator end()         { return LabelIterator(*this, base::end());  }
+            ConstIterator end() const   { return ConstIterator(*this, base::cend()); }
+            
+            /// <summary>Query presence of a label</summary>
+            /// <param name="name">name.</param>
+            /// <returns></returns>
+            bool Contains(const wstring& name)
+            {
+               return find(name) != base::end();
+            }
+
+            
+
+            /// <summary>Get number of labels</summary>
+            /// <returns></returns>
+            size_type  GetCount() const
+            {
+               return base::size();
+            }
+
+            /// <summary>Get label by name</summary>
+            /// <param name="name">name without : operator</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::LabelNotFoundException">Not found</exception>
+            ScriptLabel& operator[](const wstring& name)
+            {
+               iterator v;
+
+               // Lookup label by name
+               if ((v=find(name)) != base::end())
+                  return v->second;
+
+               // Not found:
+               throw LabelNotFoundException(HERE, name);
+            }
+
+            // ----------------------- MUTATORS ------------------------
+
+            /// <summary>Adds a variable using the next available ID. If name already exists no changes are made</summary>
+            /// <param name="name">label name</param>
+            /// <param name="line">1-based line number</param>
+            void  Add(const wstring& name, UINT line)
+            {
+               if (!Contains(name))
+                  insert( value_type(name, ScriptLabel(name, line)) );
+            }
+
+            /// <summary>Clears all labels</summary>
+            void  clear()
+            {
+               base::clear();
+            }
+
+            // -------------------- REPRESENTATION ---------------------
+
+         private:
+         };
+
+         /// <summary></summary>
          class VariableCollection : private map<wstring, ScriptVariable, less<wstring>>
          {
             // ------------------------ TYPES --------------------------
@@ -87,12 +200,13 @@ namespace Logic
 
          public:
             typedef MapIterator<ScriptVariable, VariableCollection, VariableCollection::iterator> VarIterator;
+            typedef MapIterator<const ScriptVariable, VariableCollection, VariableCollection::const_iterator> ConstIterator;
 
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            VariableCollection();
-            virtual ~VariableCollection();
+            VariableCollection()
+            {}
 
             DEFAULT_COPY(VariableCollection);	// Default copy semantics
             DEFAULT_MOVE(VariableCollection);	// Default move semantics
@@ -104,30 +218,24 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
          public:
             /// <summary>Get start iterator</summary>
-            VarIterator begin()
-            {
-               return VarIterator(*this, base::begin());
-            }
+            VarIterator begin()           { return VarIterator(*this, base::begin()); }
+            ConstIterator begin() const   { return ConstIterator(*this, base::cbegin()); }
             
-            /// <summary>Query presence of a variable</summary>
-            /// <param name="name">name.</param>
-            /// <returns></returns>
-            bool Contains(const wstring& name)
-            {
-               return find(name) != base::end();
-            }
-
             /// <summary>Get end iterator</summary>
-            VarIterator end() 
-            {
-               return VarIterator(*this, base::end());
+            VarIterator end()             { return VarIterator(*this, base::end()); }
+            ConstIterator end() const     { return ConstIterator(*this, base::cend()); }
+
+            /// <summary>Query presence of a variable</summary>
+            /// <param name="name">name without $ prefix</param>
+            bool Contains(const wstring& name)  
+            { 
+               return find(name) != base::end(); 
             }
 
             /// <summary>Get number of variables and arguments</summary>
-            /// <returns></returns>
-            size_type  GetCount() const
-            {
-               return base::size();
+            size_type  GetCount() const 
+            { 
+               return base::size(); 
             }
 
             /// <summary>Get variable by ID</summary>
@@ -191,7 +299,7 @@ namespace Logic
             void  Add(const wstring& name)
             {
                if (!Contains(name))
-                  insert( value_type(name, ScriptVariable(VariableType::Variable, name, GetNextID())) );
+                  insert( value_type(name, ScriptVariable(name, GetNextID())) );
             }
 
             /// <summary>Clears all variables, but leaves arguments</summary>
@@ -273,36 +381,16 @@ namespace Logic
 
 		   // ---------------------- ACCESSORS ------------------------
 			
-         /// <summary>Gets the name of the object command.</summary>
-         /// <returns>Name of command if any, otherwise empty string</returns>
-         /// <exception cref="Logic::ScriptObjectNotFoundException">Command matching ID is not present</exception>
          wstring GetCommandName() const;
 
 		   // ----------------------- MUTATORS ------------------------
-
-         /// <summary>Adds a label definition.</summary>
-         /// <param name="name">label name.</param>
-         /// <param name="name">line number.</param>
-         void  AddLabel(const wstring& name, UINT line)
-         {
-            // Add label
-            if (find_if(Labels.begin(), Labels.end(), [&name](const ScriptLabel& l){return l.Name==name;}) == Labels.end())
-               Labels.push_back(ScriptLabel(name, line));
-         }
-
-         /// <summary>Adds variable.</summary>
-         /// <param name="name">The name.</param>
-         /*void  AddVariable(const wstring& name)
-         {
-            if (find_if(Variables.begin(), Variables.end(), [&name](const ScriptVariable& v){return v.Name==name;}) == Variables.end())
-               Variables.push_back(ScriptVariable(VariableType::Variable, name, Variables.size()));
-         }*/
 
          void  Clear();
          int   FindScope(UINT line);
 
 		   // -------------------- REPRESENTATION ---------------------
 
+         // Properties
          wstring        Name,
                         Description;
          UINT           Version;
@@ -310,8 +398,9 @@ namespace Logic
          bool           LiveData;
          ParameterValue CommandID;
 
-         CommandList    Commands;
-         LabelArray     Labels;
+         // Collections
+         CommandList          Commands;
+         LabelCollection      Labels;
          VariableCollection   Variables;
          ScriptCallCollection ScriptCalls;
       private:
