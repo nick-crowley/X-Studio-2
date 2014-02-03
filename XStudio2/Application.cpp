@@ -9,11 +9,7 @@
 #include "Application.h"
 #include "MainWnd.h"
 
-#include "ChildFrm.h"
 #include "ScriptDocument.h"
-#include "ScriptView.h"
-#include "LanguageFrame.h"
-#include "LanguageEditView.h"
 #include "LanguageDocument.h"
 
 //#define _CRTDBG_MAP_ALLOC
@@ -88,16 +84,13 @@ BOOL Application::InitInstance()
    VLDDisable();
    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 
-	// InitCommonControlsEx() is required on Windows XP if an application
-	// manifest specifies use of ComCtl32.dll version 6 or later to enable
-	// visual styles.  Otherwise, any window creation will fail.
+	// Init common controls
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
-	// Set this to include all the common control classes you want to use
-	// in your application.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
+   // Initialise OLE/COM
 	CWinAppEx::InitInstance();
    AfxOleInit();
 
@@ -109,50 +102,32 @@ BOOL Application::InitInstance()
 
 	EnableTaskbarInteraction();
 
-	// AfxInitRichEdit2() is required to use RichEdit control	
+	// Initialise RichEdit
    AfxInitRichEdit2();
 	AfxInitRichEdit5();
 
 	
-	// Change the registry key under which our settings are stored
+	// Set app registry key 
 	SetRegistryKey(L"Bearware");
-	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(4);  // Load MRU
 
-
-   // Standard initialization
-	// If you are not using these features and wish to reduce the size
-	// of your final executable, you should remove from the following
-	// the specific initialization routines you do not need
+   // Menu manager
 	InitContextMenuManager();
 
+   // Keyboard manager
 	InitKeyboardManager();
 
+   // Tooltip manager
 	InitTooltipManager();
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
-	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
-		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
+	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
-	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new ScriptDocTemplate(IDR_SCRIPTVIEW,
-		RUNTIME_CLASS(GUI::ScriptDocument),
-		RUNTIME_CLASS(GUI::CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(GUI::ScriptView));
-	if (!pDocTemplate)
-		return FALSE;
-	AddDocTemplate(pDocTemplate);
+	// document templates
+	AddDocTemplate(new ScriptDocTemplate());
+	AddDocTemplate(new LanguageDocTemplate());
 
-   pDocTemplate = new LanguageDocTemplate(IDR_LANGUAGEVIEW,
-		RUNTIME_CLASS(GUI::LanguageDocument),
-		RUNTIME_CLASS(GUI::Views::LanguageFrame),
-		nullptr);
-   if (!pDocTemplate)
-		return FALSE;
-	AddDocTemplate(pDocTemplate);
-
-
-	// create main MDI Frame window
+	// Frame window
 	MainWnd* pMainFrame = new MainWnd;
 	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
 	{

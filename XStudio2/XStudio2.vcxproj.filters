@@ -91,9 +91,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="OutputWnd.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -381,9 +378,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ChildFrm.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="OutputWnd.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>

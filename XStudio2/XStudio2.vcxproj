@@ -126,7 +126,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="GameDataWnd.h" />
     <ClInclude Include="GameObjectWnd.h" />
@@ -225,7 +224,6 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
     <ClCompile Include="GameObjectWnd.cpp" />
