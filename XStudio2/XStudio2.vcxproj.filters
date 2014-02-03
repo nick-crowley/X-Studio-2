@@ -376,6 +376,9 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OutputWnd.cpp">
@@ -599,6 +602,9 @@
     </ClCompile>
     <ClCompile Include="Logic\TShipReader.cpp">
       <Filter>Source Files\Logic\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

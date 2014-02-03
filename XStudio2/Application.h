@@ -1,6 +1,3 @@
-
-// MFC Test 1.h : main header file for the MFC Test 1 application
-//
 #pragma once
 #include "Logic/Event.h"
 
@@ -14,6 +11,7 @@ enum class AppState  { NoGameData, GameDataPresent };
 /// <summary>Raise when application state changes</summary>
 typedef Event<AppState>                    AppStateChangedEvent;
 typedef AppStateChangedEvent::DelegatePtr  AppStateChangedHandler;
+
 
 /// <summary>Main thread</summary>
 class Application : public CWinAppEx
