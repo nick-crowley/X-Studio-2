@@ -100,12 +100,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
             SelectObject(OldFont);
          }
          
-         // --------------------- PROPERTIES ------------------------
-	  
-         // ---------------------- ACCESSORS ------------------------	
-
-         // ----------------------- MUTATORS ------------------------
-
          // -------------------- REPRESENTATION ---------------------
       protected:
          CFont Font;
@@ -115,6 +109,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Defines the logical co-ordinates of the line number gutter</summary>
       class GutterRect : public ClientRect
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          GutterRect(ScriptEdit* wnd) : ClientRect(wnd)
          {
@@ -201,16 +196,42 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <returns>Indicator rectangle in DEVICE co-ordinates</returns>
          LineRect GetLineRect(int line)
          {
-            LOGFONT lf;
+            ScriptEdit* wnd = dynamic_cast<ScriptEdit*>(GetWindow());
 
-            // Calculate height of first line
-            Font.GetLogFont(&lf);
-            Console << "Face=" << lf.lfFaceName << " height=" << lf.lfHeight << " width=" << lf.lfWidth << ENDL;
-            LineRect rc((ScriptEdit*)GetWindow(), line, 16); //lf.lfHeight);
+            // Get line height
+            CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
+            wnd->GetDefaultCharFormat(cf);
 
-            // Convert device co-ordinates    //  //-MulDiv(10, dc.GetDeviceCaps(LOGPIXELSY), 72);
+            // Get line rect in device co-ordinates  
+            LineRect rc(wnd, line, cf.yHeight/10); 
             LPtoDP(rc);
             return rc;
+         }
+
+         /// <summary>Convert pixels to twips.</summary>
+         /// <param name="pixels">pixels.</param>
+         /// <param name="direction">LOGPIXELSX or LOGPIXELSY</param>
+         /// <returns>Twips</returns>
+         /// <exception cref="ArgumentException">Invalid direction</exception>
+         int PixelsToTwips(int pixels, int direction) const
+         {
+            if (direction != LOGPIXELSX && direction != LOGPIXELSY)
+               throw ArgumentException(HERE, L"direction", L"Direction must be LOGPIXELSX or LOGPIXELSY");
+
+            return pixels * 1440 / GetDeviceCaps(direction);
+         }
+
+         /// <summary>Convert twips to pixels.</summary>
+         /// <param name="twips">twips</param>
+         /// <param name="direction">LOGPIXELSX or LOGPIXELSY</param>
+         /// <returns>Pixels</returns>
+         /// <exception cref="ArgumentException">Invalid direction</exception>
+         int TwipsToPixels(int twips, int direction) const
+         {
+            if (direction != LOGPIXELSX && direction != LOGPIXELSY)
+               throw ArgumentException(HERE, L"direction", L"Direction must be LOGPIXELSX or LOGPIXELSY");
+
+            return twips * GetDeviceCaps(direction) / 1440;
          }
 
          // ----------------------- MUTATORS ------------------------
@@ -270,7 +291,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   RefreshGutter();
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
-      void   SetGutterSize(UINT twips);
+      void   SetGutterWidth(UINT twips);
       void   ShowSuggestions();
       void   UpdateSuggestions();
       
