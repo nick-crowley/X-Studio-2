@@ -641,6 +641,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
          KillTimer(COMPILE_TIMER);
    }
 
+   /// <summary>Sets the size of the gutter.</summary>
+   /// <param name="twips">Size in twips.</param>
+   void ScriptEdit::SetGutterSize(UINT twips)
+   {
+      ParaFormat pf(PFM_OFFSET);
+      
+      // Freeze+select text
+      FreezeWindow(true);
+      SetSel(0, -1);
+
+      // Set paragraph formatting for entire text
+      pf.dxOffset = twips;
+      SetParaFormat(pf);
+      SetSel(0, 0);
+
+      // Restore
+      FreezeWindow(false);
+   }
+
    /// <summary>Scrolls window to the position of a character</summary>
    /// <param name="pt">Character co-orindates</param>
    void ScriptEdit::SetScrollCoordinates(const CPoint& pt)
