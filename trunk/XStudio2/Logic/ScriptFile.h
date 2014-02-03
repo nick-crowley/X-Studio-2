@@ -22,21 +22,14 @@ namespace Logic
          // ---------------------- ACCESSORS ------------------------	
 
          /// <summary>Sort by line number</summary>
-         bool operator<(const ScriptLabel& r)
-         {
-            return LineNumber < r.LineNumber;
-         }
+         bool operator<(const ScriptLabel& r)   { return LineNumber < r.LineNumber; }
+         bool operator>(const ScriptLabel& r)   { return LineNumber > r.LineNumber; }
 
          // -------------------- REPRESENTATION ---------------------
 
          wstring  Name;
          UINT     LineNumber;    // 1-based line number
       };
-
-      /// <summary>Vector of ScriptLabels</summary>
-      typedef vector<ScriptLabel>  LabelArray;
-
-
 
 
       /// <summary>Distinguishes variables from arguments</summary>
@@ -142,8 +135,6 @@ namespace Logic
             {
                return find(name) != base::end();
             }
-
-            
 
             /// <summary>Get number of labels</summary>
             /// <returns></returns>
@@ -286,10 +277,10 @@ namespace Logic
 
          private:
             /// <summary>Gets the next free variable identifier.</summary>
-            /// <returns>1-based variable ID</returns>
+            /// <returns>0-based variable ID</returns>
             UINT  GetNextID() const
             {
-               return 1+size();
+               return size();
             }
 
             // ----------------------- MUTATORS ------------------------
@@ -385,8 +376,8 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
 
-         void  Clear();
-         int   FindScope(UINT line);
+         void    Clear();
+         wstring FindScope(UINT line);
 
 		   // -------------------- REPRESENTATION ---------------------
 
