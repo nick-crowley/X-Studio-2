@@ -39,6 +39,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    };
 
+   // <summary>Character format helper</summary>
+   class ParaFormat : public PARAFORMAT
+   {
+   public:
+      ParaFormat() { Clear(); }
+      ParaFormat(DWORD mask) 
+      {
+         Clear();
+         dwMask = mask;
+      }
+
+      /// <summary>Clear formatting</summary>
+      void  Clear()
+      {
+         ZeroMemory((PARAFORMAT*)this, sizeof(PARAFORMAT));
+         cbSize = sizeof(PARAFORMAT);
+      }
+   };
+
+
    /// <summary>Script editing control</summary>
    class ScriptEdit : public CRichEditCtrl
    {
@@ -111,6 +131,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   InsertSuggestion();
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
+      void   SetGutterSize(UINT twips);
       void   ShowSuggestions();
       void   UpdateSuggestions();
       

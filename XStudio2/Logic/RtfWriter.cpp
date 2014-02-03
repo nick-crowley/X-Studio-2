@@ -186,7 +186,9 @@ namespace Logic
          // \saN == spacing after
          // \slN == space between lines
          // \smult == Line spacing multiple
-         Write("\\viewkind4\\uc1\\pard\\lang9\\cb1 ");   //\\sa200\\sl276\\slmult1
+         // \pard == reset paragraph formatting
+         // \liN == left indent
+         Write("\\viewkind4\\uc1\\pard\\li300\\lang9\\cb1 ");   //\\sa200\\sl276\\slmult1
       }
 
       /// <summary>Writes RTF footer</summary>

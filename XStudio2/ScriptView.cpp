@@ -127,7 +127,8 @@ NAMESPACE_BEGIN(GUI)
    /// <summary>Paste clipboard contents</summary>
    void ScriptView::OnClipboardPaste()
    {
-      RichEdit.Paste();
+      if (RichEdit.CanPaste(CF_UNICODETEXT))
+         RichEdit.PasteSpecial(CF_UNICODETEXT);
    }
 
    /// <summary>Display script edit context window</summary>
@@ -182,7 +183,7 @@ NAMESPACE_BEGIN(GUI)
    /// <param name="pCmdUI">UI object</param>
    void ScriptView::OnQueryClipboardPaste(CCmdUI *pCmdUI)
    {
-      pCmdUI->Enable(RichEdit.CanPaste());
+      pCmdUI->Enable(RichEdit.CanPaste(CF_UNICODETEXT));
    }
 
    /// <summary>Invoke context menu</summary>
