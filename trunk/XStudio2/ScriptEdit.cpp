@@ -127,6 +127,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return sel;
    }
 
+   /// <summary>Determines whether text selection exists</summary>
+   /// <returns></returns>
+   bool ScriptEdit::HasSelection() const
+   {
+      auto sel = GetSelection();
+      return sel.cpMin != sel.cpMax;
+   }
+
    /// <summary>Gets the length of the line by character index.</summary>
    /// <param name="nChar">The zero-based character index, or -1 for current line</param>
    /// <returns></returns>
@@ -688,5 +696,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
+
+
 
 
