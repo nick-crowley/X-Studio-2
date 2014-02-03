@@ -25,12 +25,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_KILLFOCUS()
       ON_WM_CHAR()
       ON_WM_KEYDOWN()
+      ON_WM_PAINT()
+      ON_WM_HSCROLL()
+      ON_WM_VSCROLL()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
    ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None), Document(nullptr)
    {
+      Font.CreatePointFont(10, L"Arial");
    }
 
    ScriptEdit::~ScriptEdit()
@@ -713,8 +717,95 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
+   void ScriptEdit::PrepareDC(CClientDC& dc) 
+   {
+      SCROLLINFO horz, vert;
+      
+      // Clip to client window
+      CRect rc;
+      GetClientRect(rc);
+      dc.IntersectClipRect(rc);
+
+      // ReDefine drawing origin
+      GetScrollInfo(SB_HORZ, &horz);
+      GetScrollInfo(SB_VERT, &vert);
+      dc.SetViewportOrg(-0.5f*horz.nPos, -0.5f*vert.nPos);
+
+      // Set colour
+      dc.SetBkColor(0);
+      dc.SetTextColor(0x00ffffff);
+   }
+   void ScriptEdit::OnPaint()
+   {
+      // Paint window
+      CRichEditCtrl::OnPaint();
+
+      // Prepare DC
+      CClientDC dc(this);
+      PrepareDC(dc);
+      //auto oldFont = dc.SelectObject(Font);
+
+      // Get first line number rectangle
+      CRect rc = GetGutterRect();
+      //rc.bottom = GetLineHeight();
+      rc.bottom = 16; //-MulDiv(10, dc.GetDeviceCaps(LOGPIXELSY), 72);
+      dc.LPtoDP(rc);
+
+      // Draw line numbers
+      for (UINT i = 0; i < 50; i++)
+      {
+         auto sz = GuiString(L"%04d", i);
+         dc.DrawText(sz.c_str(), sz.length(), rc, DT_LEFT);
+
+         // Move to next line
+         rc.OffsetRect(0, rc.Height());
+      }
+   
+      // Restore
+      //dc.SelectObject(oldFont);
+   
+   }
+
+
+   CRect  ScriptEdit::GetGutterRect() const
+   {
+      CRect rc;
+      GetClientRect(rc);
+      rc.left = 0;
+      rc.right = 40;
+      return rc;
+   }
+
+   void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   {
+      CRect rc = GetGutterRect();
+      rc.right = 80;
+      InvalidateRect(rc, TRUE);
+      UpdateWindow();
+      //Console << "OnEnHscroll" << ENDL;
+
+      CRichEditCtrl::OnHScroll(nSBCode, nPos, pScrollBar);
+
+   
+   }
+
+
+   void ScriptEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   {
+      CRect rc = GetGutterRect();
+      rc.right = 80;
+      InvalidateRect(rc, TRUE);
+      UpdateWindow();
+      //Console << "OnEnVscroll" << ENDL;
+
+      CRichEditCtrl::OnVScroll(nSBCode, nPos, pScrollBar);
+
+   
+   }
+
    
 NAMESPACE_END2(GUI,Controls)
+
 
 
 

@@ -156,6 +156,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
       
+   public:
+      CRect GetGutterRect() const;
+      void PrepareDC(CClientDC& dc);
+      afx_msg void OnPaint();
+      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+
+      CFont Font;
    };
    
 
