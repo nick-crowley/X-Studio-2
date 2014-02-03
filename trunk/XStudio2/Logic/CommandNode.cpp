@@ -80,6 +80,12 @@ namespace Logic
             return node;
          }
 
+         /// <summary>Compiles the script.</summary>
+         /// <param name="script">The script.</param>
+         void  ScriptParser::CommandNode::Compile(ScriptFile& script)
+         {
+         }
+
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
          void  ScriptParser::CommandNode::Print(int depth) const
@@ -185,9 +191,29 @@ namespace Logic
          /// <summary>Finds the first child with certain branch logic</summary>
          /// <param name="l">desired logic</param>
          /// <returns>position if found, otherwise end</returns>
-         ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
+         ScriptParser::CommandNode::ConstIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
          {
             return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
+         }
+
+         /// <summary>Find a child node by value</summary>
+         /// <returns></returns>
+         ScriptParser::CommandNode::ConstIterator ScriptParser::CommandNode::Find(const CommandNode* child) const
+         {
+            return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
+         }
+
+         /// <summary>Finds the first standard command following this node</summary>
+         /// <returns></returns>
+         ScriptParser::CommandNode* ScriptParser::CommandNode::FindNextCommand() const
+         {
+            // Find next sibling node containing a standard command
+            for (auto node = Parent->Find(this)+1; node < Parent->Children.end(); ++node)
+               if ((*node)->Syntax.Is(CommandType::Standard))
+                  return node->get();
+            
+            // No more siblings: continue search from grandparent
+            return Parent->FindNextCommand();
          }
          
          /// <summary>Identifies branch logic</summary>
