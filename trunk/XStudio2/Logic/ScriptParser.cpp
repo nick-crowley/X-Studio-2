@@ -415,9 +415,12 @@ namespace Logic
              || lex.Match(pos, TokenType::Null)
              || lex.Match(pos, TokenType::GameObject) 
              || lex.Match(pos, TokenType::ScriptObject) )
+               return true;   // Matching TRUE here to evaluate as expr provides better error messages.
+                              // Won't be confused with Command because that's already matched false
+
                // (operator value)*   
-               return pos == lex.end() 
-                  || (lex.Match(pos, TokenType::Operator) && (pos-1)->Text != L"->");  // any non-refObj operator
+               //return pos == lex.end() 
+               //   || (lex.Match(pos, TokenType::Operator) && (pos-1)->Text != L"->");  // any non-refObj operator
             
             // Failed
             return false;
