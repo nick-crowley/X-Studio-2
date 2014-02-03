@@ -164,6 +164,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Replace contents with RTF
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
       SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str());
+
+      // Adjust gutter
+      SetGutterWidth(GutterRect(this).Width()+10);
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -680,7 +683,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Invalidates the line number gutter.</summary>
    void ScriptEdit::RefreshGutter()
    {
-      InvalidateRect(GutterRect(this), TRUE);
+      GutterRect rc(this);
+      rc.right += 20;
+      InvalidateRect(rc, TRUE);
       UpdateWindow();
    }
 
@@ -695,9 +700,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          KillTimer(COMPILE_TIMER);
    }
 
-   /// <summary>Sets the size of the gutter.</summary>
-   /// <param name="twips">Size in twips.</param>
-   void ScriptEdit::SetGutterSize(UINT twips)
+   /// <summary>Sets the width of the line number gutter.</summary>
+   /// <param name="width">width in pixels</param>
+   void ScriptEdit::SetGutterWidth(UINT width)
    {
       ParaFormat pf(PFM_OFFSET);
       
@@ -705,8 +710,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(true);
       SetSel(0, -1);
 
+      // Calculate width in twips
+      ScriptEditDC dc(this);
+      pf.dxOffset = dc.TwipsToPixels(width, LOGPIXELSX);
+
       // Set paragraph formatting for entire text
-      pf.dxOffset = twips;
       SetParaFormat(pf);
       SetSel(0, 0);
 
