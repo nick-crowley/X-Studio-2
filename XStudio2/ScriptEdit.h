@@ -4,9 +4,9 @@
 #include "SuggestionList.h"
 
 /// <summary>Forward declaration</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Documents)
    class ScriptDocument;
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Documents)
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

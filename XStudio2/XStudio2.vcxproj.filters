@@ -82,6 +82,18 @@
     <Filter Include="Header Files\GUI\Views">
       <UniqueIdentifier>{2ee8dfd1-9ee4-4227-8edd-109fce1ffcbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Windows">
+      <UniqueIdentifier>{f42b7282-ec62-452b-acbb-58e47b8528c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Windows">
+      <UniqueIdentifier>{0c13970a-dc54-42fa-b4f9-337c707431e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Documents">
+      <UniqueIdentifier>{0993de96-55ce-488a-88b4-0bff6cf1e80f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Documents">
+      <UniqueIdentifier>{6627568b-9ef3-4ca3-9b3a-417ad6e3785f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -90,12 +102,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWnd.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertiesWnd.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Logic\Common.h">
       <Filter>Header Files\Logic</Filter>
@@ -226,12 +232,6 @@
     <ClInclude Include="Logic\StringResource.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptDocument.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="MainWnd.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\FileSearch.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -240,9 +240,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LanguageDocument.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Logic\TObject.h">
       <Filter>Header Files\Logic\Types</Filter>
@@ -271,14 +268,8 @@
     <ClInclude Include="Logic\LookupString.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectWnd.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
       <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDataWnd.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Logic\BackgroundWorker.h">
       <Filter>Header Files\Logic\Threads</Filter>
@@ -337,20 +328,11 @@
     <ClInclude Include="Logic\RaceLookup.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
-    <ClInclude Include="CommandWnd.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectWnd.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\ScriptObject.h">
       <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptObjectWnd.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Logic\MapIterator.hpp">
       <Filter>Header Files\Logic</Filter>
@@ -377,16 +359,40 @@
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="AboutDlg.h">
-      <Filter>Header Files\GUI</Filter>
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDataWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertiesWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptObjectWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptDocument.h">
+      <Filter>Header Files\GUI\Documents</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageDocument.h">
+      <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OutputWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\StringResource.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
@@ -495,20 +501,11 @@
     <ClCompile Include="Logic\ConsoleWnd.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptDocument.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MainWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\Path.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\FileSearch.cpp">
       <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="LanguageDocument.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\TObject.cpp">
       <Filter>Source Files\Logic\Types</Filter>
@@ -516,14 +513,8 @@
     <ClCompile Include="Logic\LookupString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="GameDataWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\SyntaxNode.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
@@ -573,17 +564,8 @@
     <ClCompile Include="Logic\GameObjectLibrary.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
-    <ClCompile Include="CommandWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\ScriptObject.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptObjectWnd.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LanguageString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
@@ -604,7 +586,37 @@
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
     <ClCompile Include="AboutDlg.cpp">
-      <Filter>Source Files\GUI</Filter>
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDataWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertiesWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptObjectWnd.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageDocument.cpp">
+      <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptDocument.cpp">
+      <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

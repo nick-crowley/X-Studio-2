@@ -4,7 +4,7 @@
 #include "FileTreeCtrl.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>Project explorer toolbar</summary>
    class CProjectToolBar : public CMFCToolBar
@@ -68,6 +68,6 @@ NAMESPACE_BEGIN(GUI)
    };
 
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)
 
 

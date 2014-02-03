@@ -4,7 +4,7 @@
 #include "Logic/ScriptFile.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>MSCI Script document template</summary>
    class ScriptDocTemplate : public CMultiDocTemplate
@@ -64,5 +64,5 @@ NAMESPACE_BEGIN(GUI)
    };
 
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Documents)
 

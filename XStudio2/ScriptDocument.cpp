@@ -20,7 +20,7 @@
 #endif
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Documents)
 
    // ---------------------------------- TEMPLATE ----------------------------------
 
@@ -139,5 +139,5 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Documents)
 
