@@ -82,6 +82,144 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Defines whether suggestions visible</summary>
       enum class InputState : UINT { Normal, Suggestions };
 
+   private:
+      
+      /// <summary>Device context containing same font as ScriptEdit</summary>
+      class FontDC : public CClientDC
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         FontDC(ScriptEdit* wnd) : CClientDC(wnd)
+         {
+            // Set font
+            Font.CreatePointFont(10*10, L"Arial");
+            OldFont = SelectObject(&Font);
+         }
+         ~FontDC()
+         {
+            SelectObject(OldFont);
+         }
+         
+         // --------------------- PROPERTIES ------------------------
+	  
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         CFont Font;
+         CFont* OldFont;
+      };
+
+      /// <summary>Defines the logical co-ordinates of the line number gutter</summary>
+      class GutterRect : public ClientRect
+      {
+      public:
+         GutterRect(ScriptEdit* wnd) : ClientRect(wnd)
+         {
+            FontDC dc(wnd);
+            right = dc.GetTextExtent(CString(L"0000")).cx;
+         }
+      };
+
+      /// <summary>Defines the logical co-ordinates of a single line number in the gutter</summary>
+      class LineRect : public GutterRect
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create a line number indicator rectangle</summary>
+         /// <param name="wnd">script edit.</param>
+         /// <param name="line">zero-based line number</param>
+         /// <param name="height">height in pixels</param>
+         LineRect(ScriptEdit* wnd, int line, int height) : GutterRect(wnd), Line(line), Height(height)
+         {
+            bottom = Height;
+            OffsetRect(0, Line*Height);
+         }
+
+         // --------------------- PROPERTIES ------------------------
+	  
+         PROPERTY_GET(int,LineNumber,GetLineNumber);
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         /// <summary>Get the 0-based line number</summary>
+         int  GetLineNumber() const
+         {
+            return Line;
+         }
+
+         // ----------------------- MUTATORS ------------------------
+
+         /// <summary>Advance to the next line</summary>
+         void  Advance()
+         {
+            OffsetRect(0, Height);
+            ++Line;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         int Line;
+         int Height;
+      };
+
+      /// <summary>Device context for drawing onto script edit</summary>
+      class ScriptEditDC : public FontDC
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         ScriptEditDC(ScriptEdit* wnd) : FontDC(wnd)
+         {
+            SCROLLINFO horz, vert;
+      
+            // Clip to client window
+            ClientRect rc(wnd);
+            IntersectClipRect(rc);
+
+            // Get scroll-bar info
+            wnd->GetScrollInfo(SB_HORZ, &horz);
+            wnd->GetScrollInfo(SB_VERT, &vert);
+
+            // Define drawing origin
+            horz.nPos = (horz.nTrackPos ? horz.nTrackPos : horz.nPos);
+            vert.nPos = (vert.nTrackPos ? vert.nTrackPos : vert.nPos);
+            SetViewportOrg(static_cast<int>(-0.5f*horz.nPos), static_cast<int>(-0.5f*vert.nPos));
+
+            // Set colour
+            SetBkColor(0);
+            SetTextColor(0x00ffffff);
+         }
+
+         // --------------------- PROPERTIES ------------------------
+	  
+         // ---------------------- ACCESSORS ------------------------	
+
+         /// <summary>Gets the indicator rectangle for a line</summary>
+         /// <param name="line">Zero-based line number</param>
+         /// <returns>Indicator rectangle in DEVICE co-ordinates</returns>
+         LineRect GetLineRect(int line)
+         {
+            LOGFONT lf;
+
+            // Calculate height of first line
+            Font.GetLogFont(&lf);
+            Console << "Face=" << lf.lfFaceName << " height=" << lf.lfHeight << " width=" << lf.lfWidth << ENDL;
+            LineRect rc((ScriptEdit*)GetWindow(), line, 16); //lf.lfHeight);
+
+            // Convert device co-ordinates    //  //-MulDiv(10, dc.GetDeviceCaps(LOGPIXELSY), 72);
+            LPtoDP(rc);
+            return rc;
+         }
+
+         // ----------------------- MUTATORS ------------------------
+
+         // -------------------- REPRESENTATION ---------------------
+      };
+
+      
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
@@ -121,14 +259,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  SetDocument(ScriptDocument* doc);
-      void  SetRtf(const string& rtf);
+      void   SetDocument(ScriptDocument* doc);
+      void   SetRtf(const string& rtf);
 
    protected:
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze);
       void   InsertSuggestion();
+      void   RefreshGutter();
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
       void   SetGutterSize(UINT twips);
@@ -138,12 +277,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
-      afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void OnPaint();
       handler void OnTabKeyDown(bool shift);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
+      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
@@ -155,15 +297,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
-      
-   public:
-      CRect GetGutterRect() const;
-      void PrepareDC(CClientDC& dc);
-      afx_msg void OnPaint();
-      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-
-      CFont Font;
    };
    
 

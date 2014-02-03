@@ -59,8 +59,9 @@
 
 using namespace std;
 
-// Common classes from Logic
+// Common Logic + Utils
 #include "Logic/Common.h"
+#include "Utils.h"
 
 // Application 
 #include "Application.h"

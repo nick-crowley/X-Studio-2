@@ -34,7 +34,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None), Document(nullptr)
    {
-      Font.CreatePointFont(10, L"Arial");
    }
 
    ScriptEdit::~ScriptEdit()
@@ -420,41 +419,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
-   /// <summary>Updates the suggestion list in response to caret movement</summary>
-   /// <param name="nChar">The character.</param>
-   /// <param name="nRepCnt">The repeat count.</param>
-   /// <param name="nFlags">The flags.</param>
-   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+   /// <summary>Refreshes the line numbers after a scroll</summary>
+   void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
    {
-      // Trap Tab/Shift+Tab (but not ctrl+Tab)
-      if (nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
-         OnTabKeyDown(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
-      else
-         CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
-      
-      // Suggestions: Update in response to caret movement
-      if (State == InputState::Suggestions)
-         try 
-         {  
-            switch (nChar)
-            {
-            // TAB/LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
-            case VK_TAB:
-            case VK_LEFT:
-            case VK_RIGHT:
-            case VK_HOME:
-            case VK_END:
-            case VK_DELETE:
-            case VK_BACK:
-               UpdateSuggestions();
-               break;
-            }
-         } 
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
-         }
-   }
+      // Redraw the line numbers after a scroll or drag
+      if (nSBCode == SB_ENDSCROLL)
+         RefreshGutter();
 
+      CRichEditCtrl::OnHScroll(nSBCode, nPos, pScrollBar);
+   }
+   
    /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
    /// <param name="pNMHDR">The notify header</param>
    /// <param name="pResult">message result</param>
@@ -533,7 +507,41 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console.Log(HERE, e, GuiString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
       }
    }
-   
+
+   /// <summary>Updates the suggestion list in response to caret movement</summary>
+   /// <param name="nChar">The character.</param>
+   /// <param name="nRepCnt">The repeat count.</param>
+   /// <param name="nFlags">The flags.</param>
+   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      // Trap Tab/Shift+Tab (but not ctrl+Tab)
+      if (nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
+         OnTabKeyDown(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
+      else
+         CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+      
+      // Suggestions: Update in response to caret movement
+      if (State == InputState::Suggestions)
+         try 
+         {  
+            switch (nChar)
+            {
+            // TAB/LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
+            case VK_TAB:
+            case VK_LEFT:
+            case VK_RIGHT:
+            case VK_HOME:
+            case VK_END:
+            case VK_DELETE:
+            case VK_BACK:
+               UpdateSuggestions();
+               break;
+            }
+         } 
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
+         }
+   }
 
    /// <summary>Closes the suggestion when focus lost</summary>
    /// <param name="pNewWnd">New window.</param>
@@ -550,6 +558,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
 
       CRichEditCtrl::OnKillFocus(pNewWnd);
+   }
+   
+   /// <summary>Draws the line number gutter</summary>
+   void ScriptEdit::OnPaint()
+   {
+      // Paint window
+      CRichEditCtrl::OnPaint();
+
+      // Get drawing dc
+      ScriptEditDC dc(this);
+
+      // Get first line number rectangle
+      LineRect rect = dc.GetLineRect(GetFirstVisibleLine());
+
+      // Draw all visible line numbers
+      while (dc.RectVisible(rect))
+      {
+         // Draw 1-based line number
+         auto s = GuiString(L"%d", 1+rect.LineNumber);
+         dc.DrawText(s.c_str(), s.length(), rect, DT_RIGHT);
+
+         // Move to next line
+         rect.Advance();
+      }
+   
    }
    
    /// <summary>Called when tab key pressed.</summary>
@@ -617,6 +650,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::OnTimer(nIDEvent);
    }
    
+   /// <summary>Refreshes the line numbers after a scroll</summary>
+   void ScriptEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   {
+      // Redraw the line numbers after a scroll or drag
+      if (nSBCode == SB_ENDSCROLL)
+         RefreshGutter();
+
+      CRichEditCtrl::OnVScroll(nSBCode, nPos, pScrollBar);
+   }
+
    /// <summary>Matches a token type against the current suggestion type</summary>
    /// <param name="t">The t.</param>
    /// <returns></returns>
@@ -634,6 +677,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return false;
    }
    
+   /// <summary>Invalidates the line number gutter.</summary>
+   void ScriptEdit::RefreshGutter()
+   {
+      InvalidateRect(GutterRect(this), TRUE);
+      UpdateWindow();
+   }
+
    /// <summary>Sets/resets/cancels the compiler timer.</summary>
    /// <param name="set">True to set/reset, false to cancel</param>
    void ScriptEdit::SetCompilerTimer(bool set)
@@ -717,91 +767,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
-   void ScriptEdit::PrepareDC(CClientDC& dc) 
-   {
-      SCROLLINFO horz, vert;
-      
-      // Clip to client window
-      CRect rc;
-      GetClientRect(rc);
-      dc.IntersectClipRect(rc);
 
-      // ReDefine drawing origin
-      GetScrollInfo(SB_HORZ, &horz);
-      GetScrollInfo(SB_VERT, &vert);
-      dc.SetViewportOrg(-0.5f*horz.nPos, -0.5f*vert.nPos);
-
-      // Set colour
-      dc.SetBkColor(0);
-      dc.SetTextColor(0x00ffffff);
-   }
-   void ScriptEdit::OnPaint()
-   {
-      // Paint window
-      CRichEditCtrl::OnPaint();
-
-      // Prepare DC
-      CClientDC dc(this);
-      PrepareDC(dc);
-      //auto oldFont = dc.SelectObject(Font);
-
-      // Get first line number rectangle
-      CRect rc = GetGutterRect();
-      //rc.bottom = GetLineHeight();
-      rc.bottom = 16; //-MulDiv(10, dc.GetDeviceCaps(LOGPIXELSY), 72);
-      dc.LPtoDP(rc);
-
-      // Draw line numbers
-      for (UINT i = 0; i < 50; i++)
-      {
-         auto sz = GuiString(L"%04d", i);
-         dc.DrawText(sz.c_str(), sz.length(), rc, DT_LEFT);
-
-         // Move to next line
-         rc.OffsetRect(0, rc.Height());
-      }
-   
-      // Restore
-      //dc.SelectObject(oldFont);
-   
-   }
-
-
-   CRect  ScriptEdit::GetGutterRect() const
-   {
-      CRect rc;
-      GetClientRect(rc);
-      rc.left = 0;
-      rc.right = 40;
-      return rc;
-   }
-
-   void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-   {
-      CRect rc = GetGutterRect();
-      rc.right = 80;
-      InvalidateRect(rc, TRUE);
-      UpdateWindow();
-      //Console << "OnEnHscroll" << ENDL;
-
-      CRichEditCtrl::OnHScroll(nSBCode, nPos, pScrollBar);
-
-   
-   }
-
-
-   void ScriptEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-   {
-      CRect rc = GetGutterRect();
-      rc.right = 80;
-      InvalidateRect(rc, TRUE);
-      UpdateWindow();
-      //Console << "OnEnVscroll" << ENDL;
-
-      CRichEditCtrl::OnVScroll(nSBCode, nPos, pScrollBar);
-
-   
-   }
 
    
 NAMESPACE_END2(GUI,Controls)
