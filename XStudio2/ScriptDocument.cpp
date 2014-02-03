@@ -119,6 +119,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
+   
+
+   BOOL ScriptDocument::OnSaveDocument(LPCTSTR lpszPathName)
+   {
+      Console << "Saving document.." << ENDL;
+      return TRUE;
+
+      //return CDocument::OnSaveDocument(lpszPathName);
+   }
 
 
    void ScriptDocument::Serialize(CArchive& ar)
