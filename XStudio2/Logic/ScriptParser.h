@@ -23,16 +23,16 @@ namespace Logic
          {
          public:
             /// <summary>Create error for token</summary>
-            ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Error(msg), Line(line)
+            ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Message(msg), Line(line)
             {}
             /// <summary>Create error for entire line</summary>
-            ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Error(msg), Line(line)
+            ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Message(msg), Line(line)
             {}
             /// <summary>Create error for character range</summary>
-            ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Error(msg), Line(line)
+            ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Message(msg), Line(line)
             {}
 
-            const wstring Error;
+            const wstring Message;
             const UINT    Line;
          };
 

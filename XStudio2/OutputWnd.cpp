@@ -42,7 +42,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
    }
 
-   COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::onGameDataFeedback))
+   COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::onGameDataFeedback)),
+                              fnLoadSaveFeedback(MainWnd::LoadSaveFeedback.Register(this, &COutputWnd::onLoadSaveFeedback))
    {
       
    }
@@ -204,6 +205,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndOutputBuild.EnsureVisible(m_wndOutputBuild.GetItemCount()-1, FALSE);
    }
 
+   void COutputWnd::onLoadSaveFeedback(const WorkerProgress& wp)
+   {
+      // Create item
+      LVItem item(m_wndOutputDebug.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
+      item.iImage = (UINT)wp.Type;
+      item.iIndent = wp.Indent;
+
+      // Insert/display
+      m_wndOutputDebug.InsertItem(&item);
+      m_wndOutputDebug.EnsureVisible(m_wndOutputDebug.GetItemCount()-1, FALSE);
+   }
 
    void COutputWnd::OnSize(UINT nType, int cx, int cy)
    {

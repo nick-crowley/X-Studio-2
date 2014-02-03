@@ -1,7 +1,13 @@
 #pragma once
 #include "Logic/ScriptFile.h"
 
-/// <summary>User interface</summary>
+/// <summary>Forward declaration</summary>
+NAMESPACE_BEGIN2(GUI,Controls)
+   class ScriptEdit;
+NAMESPACE_END2(GUI,Controls)
+
+
+/// <summary>Documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>MSCI Script document template</summary>
@@ -48,6 +54,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
+      void  AttachEdit(ScriptEdit& edit);
 
 	   virtual BOOL OnNewDocument();
       virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
@@ -57,6 +64,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // -------------------- REPRESENTATION ---------------------
    public:
       ScriptFile  Script;
+
+   private:
+      ScriptEdit* Edit;
    };
 
 

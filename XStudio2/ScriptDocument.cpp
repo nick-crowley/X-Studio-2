@@ -6,13 +6,9 @@
 #include "ScriptView.h"
 #include <propkey.h>
 #include "Logic/FileStream.h"
-#include "Logic/GZipStream.h"
-#include "Logic/XFileSystem.h"
-#include "Logic/LegacySyntaxReader.h"
-#include "Logic/SyntaxLibrary.h"
 #include "Logic/ScriptFileReader.h"
-#include "Logic/StringLibrary.h"
 #include "Logic/FileIdentifier.h"
+#include "Logic/WorkerFeedback.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -82,6 +78,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
    #endif //_DEBUG
 
+   void  ScriptDocument::AttachEdit(ScriptEdit& edit)
+   {
+      Edit = &edit;
+   }
+
    BOOL ScriptDocument::OnNewDocument()
    {
 	   if (!CDocument::OnNewDocument())
@@ -123,10 +124,25 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BOOL ScriptDocument::OnSaveDocument(LPCTSTR lpszPathName)
    {
+      WorkerData data(Operation::LoadSaveDocument);
       Console << "Saving document.." << ENDL;
-      return TRUE;
 
-      //return CDocument::OnSaveDocument(lpszPathName);
+      // Feedback
+      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", lpszPathName));
+
+      // Parse script 
+      ScriptParser parser(Script, Edit->GetLines(), Script.Game);
+
+      // Print errors in debug window
+      for (const auto& err : parser.Errors)
+         data.SendFeedback(ProgressType::Error, 1, err.Message);
+
+      // Feedback
+      if (parser.Errors.size() == 0)
+         data.SendFeedback(ProgressType::Succcess, 0, L"Script saved successfully");
+      else
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to save script");
+      return TRUE;
    }
 
 
