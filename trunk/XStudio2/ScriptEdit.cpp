@@ -408,37 +408,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
-
    /// <summary>Updates the suggestion list in response to caret movement</summary>
    /// <param name="nChar">The character.</param>
    /// <param name="nRepCnt">The repeat count.</param>
    /// <param name="nFlags">The flags.</param>
    void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      // Process caret movement
-      CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
-
-      try
-      {
-         switch (nChar)
-         {
-         // LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
-         case VK_LEFT:
-         case VK_RIGHT:
-         case VK_HOME:
-         case VK_END:
-         case VK_DELETE:
-         case VK_BACK:
-            if (State == InputState::Suggestions)
+      // Trap Tab/Shift+Tab (but not ctrl+Tab)
+      if (nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
+         OnTabKeyDown(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
+      else
+         CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+      
+      // Suggestions: Update in response to caret movement
+      if (State == InputState::Suggestions)
+         try 
+         {  
+            switch (nChar)
+            {
+            // TAB/LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
+            case VK_TAB:
+            case VK_LEFT:
+            case VK_RIGHT:
+            case VK_HOME:
+            case VK_END:
+            case VK_DELETE:
+            case VK_BACK:
                UpdateSuggestions();
-            break;
+               break;
+            }
+         } 
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
          }
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
-      }
    }
-
 
    /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
    /// <param name="pNMHDR">The notify header</param>
@@ -536,7 +539,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       CRichEditCtrl::OnKillFocus(pNewWnd);
    }
-
+   
+   /// <summary>Called when tab key pressed.</summary>
+   /// <param name="shift">whether SHIFT key is pressed</param>
+   void ScriptEdit::OnTabKeyDown(bool shift)
+   {
+      ReplaceSel(L"    ", TRUE);
+   }
 
    /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
@@ -679,4 +688,5 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
+
 
