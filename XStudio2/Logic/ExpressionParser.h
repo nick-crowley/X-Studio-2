@@ -285,7 +285,7 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            ExpressionParser(TokenIterator& begin, TokenIterator& end);
+            ExpressionParser(TokenIterator& begin, const TokenIterator end);
             virtual ~ExpressionParser();
 
             // Default copy semantics
@@ -302,7 +302,7 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
 
          protected:
-            void  Parse();
+            void  Parse(TokenIterator& start);
 
          private:
             bool  MatchLiteral(const TokenIterator& pos);
@@ -327,8 +327,8 @@ namespace Logic
             const UINT  MIN_PRECEDENCE = 0, 
                         MAX_PRECEDENCE = 9;
 
-            TokenIterator  InputBegin,
-                           InputEnd;
+            const TokenIterator  InputBegin,
+                                 InputEnd;
          };
       }
    }

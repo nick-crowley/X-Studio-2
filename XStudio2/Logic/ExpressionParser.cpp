@@ -15,10 +15,10 @@ namespace Logic
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
-         ExpressionParser::ExpressionParser(TokenIterator& begin, TokenIterator& end)
+         ExpressionParser::ExpressionParser(TokenIterator& begin, const TokenIterator end)
             : InputBegin(begin), InputEnd(end)
          {
-            Parse();
+            Parse(begin);
          }
 
 
@@ -36,7 +36,7 @@ namespace Logic
          /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
-         void  ExpressionParser::Parse()
+         void  ExpressionParser::Parse(TokenIterator& start)
          {
             // DEBUG: print input
             /*Console.Writef(L"Input: ");
@@ -264,7 +264,7 @@ namespace Logic
             {
                // Failed: Unexpected EOF
                if (pos >= InputEnd)
-                  throw ExpressionParserException(HERE, L"Missing operand");
+                  throw ExpressionParserException(HERE, --pos, L"Missing operand");
 
                // Failed: Unexpected token
                throw ExpressionParserException(HERE, pos, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
@@ -280,7 +280,7 @@ namespace Logic
             
             // Failure: Missing closing bracket
             if (pos >= InputEnd)
-               throw ExpressionParserException(HERE, L"Missing closing bracket");
+               throw ExpressionParserException(HERE, --pos, L"Missing closing bracket");
             else
                throw ExpressionParserException(HERE, pos, L"Expected closing bracket");
          }
