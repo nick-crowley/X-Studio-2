@@ -6,6 +6,7 @@
 #include "ScriptFile.h"
 
 #undef min
+#undef max
 
 namespace Logic
 {
@@ -103,27 +104,51 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  ScriptParser::CommandNode::Compile(ScriptFile& script)
          {
+            // Perform linking
+            for (auto c : Children)
+               c->LinkCommands();
          }
 
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
          void  ScriptParser::CommandNode::Print(int depth) const
          {
-            wstring tab(depth, (WCHAR)L' ');
-
             // Line/Indent
-            if (Logic != BranchLogic::NOP)
-            {
-               Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
+            wstring   tab(depth, (WCHAR)L' ');
+            GuiString line(L"%03d: %s", LineNumber, tab.c_str()),
+                      logic(GetString(Logic)),
+                      txt; //(LineText);
+            Colour    colour(Colour::White);
             
-               // Colour
-               switch (Logic)
+            // Logic
+            switch (Logic)
+            {
+            // Conditional:
+            default: 
+               colour = Colour::White;
+               if (JumpTarget)
+                  txt = GuiString(L"Jump-if-false: %d", JumpTarget->LineNumber);
+               break;
+
+            // NOP:
+            case BranchLogic::NOP:
+               colour = Colour::Yellow;
+               break;
+
+            // Command:
+            case BranchLogic::None:
+               colour = Colour::Yellow;
+               if (Syntax.Is(CMD_HIDDEN_JUMP))
                {
-               default:                Console << Colour::White  << GetString(Logic) << Colour::White << L" : " << Colour::White  << LineText << ENDL;  break;
-               case BranchLogic::None: Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << Colour::Yellow << LineText << ENDL;  break;
-               //case BranchLogic::NOP:  Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << Colour::Yellow << LineText << ENDL;  break;
+                  colour = Colour::Green;
+                  logic = L"JMP";
+                  txt = GuiString(L"Unconditional Jump: %d", JumpTarget->LineNumber);
                }
+               break;
             }
+
+            // Print
+            Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
 
             // Print Children
             for (auto c : Children)
@@ -324,7 +349,7 @@ namespace Logic
                if (ElseIf != Children.end())
                {  
                   JumpTarget = ElseIf->get();
-                  InsertJump(ElseIf-1, FindNextSibling());  // JMP: next-sibling
+                  InsertJump(std::max(Children.begin(), Children.end()-1), FindNextSibling());  // JMP: next-sibling
                }
                else
                   JumpTarget = FindNextSibling();  // JMP: next-sibling
@@ -336,7 +361,7 @@ namespace Logic
                if (ElseIf != Parent->Children.end() && ((*ElseIf)->Logic == BranchLogic::Else || (*ElseIf)->Logic == BranchLogic::ElseIf))
                {  
                   JumpTarget = ElseIf->get();
-                  InsertJump(ElseIf-1, Parent->FindNextSibling());  // JMP: next-sibling(IF)
+                  InsertJump(std::max(Children.begin(), Children.end()-1), Parent->FindNextSibling());  // JMP: next-sibling(IF)
                }
                else
                   JumpTarget = Parent->FindNextSibling();  // JMP: next-sibling(IF)

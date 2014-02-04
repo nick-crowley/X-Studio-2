@@ -120,11 +120,15 @@ namespace Logic
             }
             
             // DEBUG: Print tree
-            Commands->Print(0);
+            //Commands->Print(0);
 
             // Populate script. Verify tree
             Commands->Populate(Script);
             Commands->Verify(Script, Errors);
+            Commands->Compile(Script);
+
+            // DEBUG: Print tree
+            Commands->Print(0);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
