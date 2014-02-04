@@ -50,8 +50,6 @@ namespace Logic
          MainType  Type;
       };
 
-      
-      
       /// <summary></summary>
       class GameObjectLibrary
       {
@@ -210,6 +208,7 @@ namespace Logic
          UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
          //const TObject*  Find(MainType main, UINT subtype) const;
          GameObject      Find(UINT value) const;
+         GameObject      Find(const GuiString& sz) const;
          GameObject      Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const GuiString& search) const;
          bool            TryFind(const GuiString& name, const GameObject* &obj) const;

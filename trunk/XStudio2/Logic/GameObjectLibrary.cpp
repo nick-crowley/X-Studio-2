@@ -164,6 +164,15 @@ namespace Logic
          return Find((MainType)HIWORD(value), LOWORD(value));
       }
 
+      /// <summary>Finds an object by text (Search is case sensitive)<summary>
+      /// <param name="sz">The text</param>
+      /// <returns>Object</returns>
+      /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
+      GameObject  GameObjectLibrary::Find(const GuiString& sz) const
+      {
+         return Lookup.Find(sz);
+      }
+
       /// <summary>Finds an object</summary>
       /// <param name="main">The main type</param>
       /// <param name="subtype">The subtype</param>
