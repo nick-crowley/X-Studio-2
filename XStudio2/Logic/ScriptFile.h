@@ -378,8 +378,10 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
 
          public:
-            CommandCollection();
-            virtual ~CommandCollection();
+            CommandCollection()
+            {}
+            virtual ~CommandCollection()
+            {}
 
             DEFAULT_COPY(CommandCollection);	// Default copy semantics
             DEFAULT_MOVE(CommandCollection);	// Default move semantics
