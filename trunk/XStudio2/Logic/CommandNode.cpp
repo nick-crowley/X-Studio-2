@@ -250,15 +250,7 @@ namespace Logic
          /// <summary>Finds the first child with certain branch logic</summary>
          /// <param name="l">desired logic</param>
          /// <returns>position if found, otherwise end</returns>
-         ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) 
-         {
-            return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
-         }
-
-         /// <summary>Finds the first child with certain branch logic</summary>
-         /// <param name="l">desired logic</param>
-         /// <returns>position if found, otherwise end</returns>
-         ScriptParser::CommandNode::ConstIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
+         ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
          {
             return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
          }
@@ -266,15 +258,7 @@ namespace Logic
          /// <summary>Find a child node by value</summary>
          /// <param name="child">desired child</param>
          /// <returns></returns>
-         ScriptParser::CommandNode::NodeIterator ScriptParser::CommandNode::Find(const CommandNode* child)
-         {
-            return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
-         }
-
-         /// <summary>Find a child node by value</summary>
-         /// <param name="child">desired child</param>
-         /// <returns></returns>
-         ScriptParser::CommandNode::ConstIterator ScriptParser::CommandNode::Find(const CommandNode* child) const
+         ScriptParser::CommandNode::NodeIterator ScriptParser::CommandNode::Find(const CommandNode* child) const
          {
             return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
          }
@@ -294,7 +278,7 @@ namespace Logic
 
          /// <summary>Finds an ancestor with a given branch logic</summary>
          /// <returns>Parent if found, otherwise nullptr</returns>
-         ScriptParser::CommandNode*  ScriptParser::CommandNode::FindParent(BranchLogic l) const
+         ScriptParser::CommandNode*  ScriptParser::CommandNode::FindAncestor(BranchLogic l) const
          {
             // Check for a parent 'while' command
             for (CommandNode* n = Parent; n != nullptr; n = n->Parent)
@@ -356,13 +340,6 @@ namespace Logic
             Children.insert(pos, new CommandNode(this, target));
          }
 
-         /// <summary>Get position of last child</summary>
-         ScriptParser::CommandNode::ConstIterator  ScriptParser::CommandNode::GetLastChild() const
-         {
-            return Children.begin() == Children.end() ? Children.begin() : Children.end()-1;
-         }
-
-
          /// <summary>Perform command linking</summary>
          void  ScriptParser::CommandNode::LinkCommands() 
          {
@@ -414,12 +391,12 @@ namespace Logic
 
             // JMP: next-sibling(WHILE)
             case BranchLogic::Break:
-               JumpTarget = FindParent(BranchLogic::While)->FindNextSibling();
+               JumpTarget = FindAncestor(BranchLogic::While)->FindNextSibling();
                break;
 
             // JMP: WHILE
             case BranchLogic::Continue:
-               JumpTarget = FindParent(BranchLogic::While);
+               JumpTarget = FindAncestor(BranchLogic::While);
                break;
             }
          }
@@ -456,7 +433,7 @@ namespace Logic
             case BranchLogic::Break:
             case BranchLogic::Continue:
                // Check for a parent 'while' command
-               if (!FindParent(BranchLogic::While))
+               if (!FindAncestor(BranchLogic::While))
                   errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
                break;
 
@@ -475,7 +452,7 @@ namespace Logic
                // Ensure command is standard
                else 
                {
-                  auto cmd = *LastChild;
+                  auto cmd = Children.end()[-1];
                   if (!cmd->Syntax.Is(CommandType::Standard) && !cmd->Syntax.Is(CMD_CONTINUE) && !cmd->Syntax.Is(CMD_BREAK))
                      errors += ErrorToken(L"incompatible with 'skip if' conditional", cmd->LineNumber, cmd->Extent);
                }

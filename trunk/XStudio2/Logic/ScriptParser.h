@@ -80,8 +80,7 @@ namespace Logic
                // ------------------------ TYPES --------------------------
             public:
                typedef vector<CommandNodePtr>     NodeList;
-               typedef NodeList::const_iterator   ConstIterator;
-               typedef NodeList::iterator         NodeIterator;
+               typedef NodeList::const_iterator   NodeIterator;
 
                // --------------------- CONSTRUCTION ----------------------
             public:
@@ -96,7 +95,6 @@ namespace Logic
                // --------------------- PROPERTIES ------------------------
 
                PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
-               PROPERTY_GET(ConstIterator,LastChild,GetLastChild);
 
                // ---------------------- ACCESSORS ------------------------		
             public:
@@ -110,13 +108,10 @@ namespace Logic
                void          CompileParameters(ScriptFile& script);
                bool          Contains(BranchLogic l) const;
                void          EnumLabels(ErrorArray& errors) const;
-               NodeIterator  Find(BranchLogic l);
-               ConstIterator Find(BranchLogic l) const;
-               NodeIterator  Find(const CommandNode* child);
-               ConstIterator Find(const CommandNode* child) const;
+               NodeIterator  Find(BranchLogic l) const;
+               NodeIterator  Find(const CommandNode* child) const;
                CommandNode*  FindNextSibling() const;
-               CommandNode*  FindParent(BranchLogic l) const;
-               ConstIterator GetLastChild() const;
+               CommandNode*  FindAncestor(BranchLogic l) const;
                void          InsertJump(NodeIterator pos, CommandNode* target);
                void          LinkCommands();
                void          VerifyLogic(ErrorArray& errors) const;
@@ -131,11 +126,11 @@ namespace Logic
                CommandNode*    Parent;           // Parent node
                NodeList        Children;         // Child commands
 
-               ParameterArray  Parameters,       // script parameters in display order
-                               Postfix;
-               CommandSyntaxRef Syntax;
-               CommandNode*    JumpTarget;       // Destination of jump
-               UINT            Index;            // 0-based standard codearray index
+               ParameterArray     Parameters,       // script parameters in display order
+                                  Postfix;
+               CommandSyntaxRef   Syntax;
+               const CommandNode* JumpTarget;       // Destination of jump
+               UINT               Index;            // 0-based standard codearray index
 
                Conditional     Condition;
                const UINT      LineNumber;       // 1-based line number
