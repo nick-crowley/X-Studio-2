@@ -144,6 +144,11 @@ namespace Logic
                   logic = L"JMP";
                   txt = GuiString(L"Unconditional Jump: %d", JumpTarget->LineNumber);
                }
+               else
+               {
+                  colour = Colour::Cyan;
+                  logic = L"Cmd";
+               }
                break;
             }
 
@@ -327,14 +332,20 @@ namespace Logic
             }
          }
 
-         /// <summary>Inserts an unconditional jump command</summary>
-         /// <param name="pos">Position to insert</param>
+         /// <summary>Inserts an unconditional jump command as the last child</summary>
          /// <param name="target">Command to target</param>
          /// <returns></returns>
-         void  ScriptParser::CommandNode::InsertJump(NodeIterator pos, CommandNode* target)
+         void  ScriptParser::CommandNode::InsertJump(CommandNode* target)
          {
-            Children.insert(pos, new CommandNode(this, target));
+            Console << "DEBUG: ChildCount=" << Children.size() << ENDL;
+            Children.insert(Children.end(), new CommandNode(this, target));
          }
+
+         /// <summary>Get position of last child</summary>
+         /*ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::GetLastChild()
+         {
+            return Children.begin() == Children.end() ? Children.begin() : Children.end()-1;
+         }*/
 
          /// <summary>Perform command linking</summary>
          void  ScriptParser::CommandNode::LinkCommands() 
@@ -349,7 +360,7 @@ namespace Logic
                if (ElseIf != Children.end())
                {  
                   JumpTarget = ElseIf->get();
-                  InsertJump(std::max(Children.begin(), Children.end()-1), FindNextSibling());  // JMP: next-sibling
+                  (*ElseIf)->InsertJump(FindNextSibling());  // JMP: next-sibling
                }
                else
                   JumpTarget = FindNextSibling();  // JMP: next-sibling
@@ -361,7 +372,7 @@ namespace Logic
                if (ElseIf != Parent->Children.end() && ((*ElseIf)->Logic == BranchLogic::Else || (*ElseIf)->Logic == BranchLogic::ElseIf))
                {  
                   JumpTarget = ElseIf->get();
-                  InsertJump(std::max(Children.begin(), Children.end()-1), Parent->FindNextSibling());  // JMP: next-sibling(IF)
+                  (*ElseIf)->InsertJump(Parent->FindNextSibling());  // JMP: next-sibling(IF)
                }
                else
                   JumpTarget = Parent->FindNextSibling();  // JMP: next-sibling(IF)
@@ -380,7 +391,7 @@ namespace Logic
             // Jump-if-false: next-sibling. 
             case BranchLogic::While:
                JumpTarget = FindNextSibling();
-               InsertJump(Children.end()-1, this); // JMP: SELF (to create loop)
+               InsertJump(this); // JMP: SELF (to create loop)
                break;
 
             // JMP: next-sibling(WHILE)

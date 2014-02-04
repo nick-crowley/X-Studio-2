@@ -114,7 +114,8 @@ namespace Logic
                ConstIterator Find(const CommandNode* child) const;
                CommandNode*  FindNextSibling() const;
                CommandNode*  FindParent(BranchLogic l) const;
-               void          InsertJump(NodeIterator pos, CommandNode* target);
+               //NodeIterator  GetLastChild();
+               void          InsertJump(CommandNode* target);
                void          LinkCommands();
                void          VerifyLogic(ErrorArray& errors) const;
                void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
