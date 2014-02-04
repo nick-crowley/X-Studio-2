@@ -148,10 +148,10 @@ namespace Logic
             // Command:
             case BranchLogic::None:
                colour = Colour::Yellow;
-               if (Is(CMD_HIDDEN_JUMP))
+               if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                {
                   colour = Colour::Green;
-                  logic = L"JMP";
+                  logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
                   txt = GuiString(L"Unconditional Jump: %d", JumpTarget->LineNumber);
                }
                else
@@ -256,35 +256,6 @@ namespace Logic
             return find_if(Children.begin(), Children.end(), [=](const CommandNodePtr& t){ return t->Logic == l; }) != Children.end();
          }
          
-         /// <summary>Finds the first child with certain branch logic</summary>
-         /// <param name="l">desired logic</param>
-         /// <returns>position if found, otherwise end</returns>
-         CommandNode::NodeIterator  CommandNode::Find(BranchLogic l) const
-         {
-            return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
-         }
-
-         /// <summary>Find a child node by value</summary>
-         /// <param name="child">desired child</param>
-         /// <returns></returns>
-         CommandNode::NodeIterator CommandNode::Find(const CommandNode* child) const
-         {
-            return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
-         }
-
-         /// <summary>Finds the first standard command following this node</summary>
-         /// <returns></returns>
-         CommandNode* CommandNode::FindNextSibling() const
-         {
-            // Find next sibling node containing a standard command
-            for (auto node = Parent->Find(this)+1; node < Parent->Children.end(); ++node)
-               if ((*node)->Is(CommandType::Standard))
-                  return node->get();
-            
-            // No more siblings: continue search from grandparent
-            return Parent->FindNextSibling();
-         }
-
          /// <summary>Finds an ancestor with a given branch logic</summary>
          /// <returns>Parent if found, otherwise nullptr</returns>
          CommandNode*  CommandNode::FindAncestor(BranchLogic l) const
@@ -296,6 +267,63 @@ namespace Logic
 
             // Not found
             return nullptr;
+         }
+
+         /// <summary>Finds the first child with certain branch logic</summary>
+         /// <param name="l">desired logic</param>
+         /// <returns>position if found, otherwise end</returns>
+         CommandNode::NodeIterator  CommandNode::FindChild(BranchLogic l) const
+         {
+            return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
+         }
+
+         /// <summary>Find a child node by value</summary>
+         /// <param name="child">desired child</param>
+         /// <returns></returns>
+         CommandNode::NodeIterator CommandNode::FindChild(const CommandNode* child) const
+         {
+            return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
+         }
+
+         /// <summary>Find label definition</summary>
+         /// <param name="name">Label name</param>
+         /// <returns></returns>
+         CommandNode*  CommandNode::FindLabel(const wstring& name) const
+         {
+            // Check node
+            if (Is(CMD_DEFINE_LABEL) && Parameters[0].Value.String == name)
+               return const_cast<CommandNode*>(this);
+            
+            // Check children
+            for (const auto& c : Children)
+               if (CommandNode* label = c->FindLabel(name))
+                  return label;
+
+            // Should never reach here
+            return nullptr;
+         }
+
+         /// <summary>Finds the first standard command following this node</summary>
+         /// <returns></returns>
+         CommandNode* CommandNode::FindNextSibling() const
+         {
+            // Find next sibling node containing a standard command
+            for (auto node = Parent->FindChild(this)+1; node < Parent->Children.end(); ++node)
+               if ((*node)->Is(CommandType::Standard))
+                  return node->get();
+            
+            // No more siblings: continue search from grandparent
+            return Parent->FindNextSibling();
+         }
+
+         /// <summary>Finds the root node</summary>
+         /// <returns>Root</returns>
+         CommandNode*  CommandNode::FindRoot() const
+         {
+            CommandNode* n;
+            for (n = const_cast<CommandNode*>(this); n->Parent != nullptr; n = n->Parent)
+            {}
+            return n;
          }
 
          /// <summary>Query command syntax ID</summary>
@@ -363,7 +391,6 @@ namespace Logic
          /// <returns></returns>
          void  CommandNode::InsertJump(NodeIterator pos, CommandNode* target)
          {
-            Console << "DEBUG: ChildCount=" << Children.size() << ENDL;
             Children.insert(pos, new CommandNode(this, target));
          }
 
@@ -376,7 +403,7 @@ namespace Logic
             {
             // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
             case BranchLogic::If: 
-               ElseIf = std::min(Find(BranchLogic::ElseIf), Find(BranchLogic::Else));
+               ElseIf = std::min(FindChild(BranchLogic::ElseIf), FindChild(BranchLogic::Else));
                // if has else/else-if
                if (ElseIf != Children.end())
                {  
@@ -389,7 +416,7 @@ namespace Logic
 
             // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
             case BranchLogic::ElseIf:
-               ElseIf = Parent->Find(this)+1;
+               ElseIf = Parent->FindChild(this)+1;
                // if not final else/else-if
                if (ElseIf != Parent->Children.end() && ((*ElseIf)->Logic == BranchLogic::Else || (*ElseIf)->Logic == BranchLogic::ElseIf))
                {  
@@ -425,6 +452,12 @@ namespace Logic
             case BranchLogic::Continue:
                JumpTarget = FindAncestor(BranchLogic::While);
                break;
+
+            // JMP: LABEL
+            case BranchLogic::None:
+               if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
+                  JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);
+               break;
             }
          }
 
@@ -438,8 +471,8 @@ namespace Logic
             case BranchLogic::While:
                if (Logic == BranchLogic::If)
                {
-                  auto Else = Find(BranchLogic::Else);
-                  auto ElseIf = Find(BranchLogic::ElseIf);
+                  auto Else = FindChild(BranchLogic::Else);
+                  auto ElseIf = FindChild(BranchLogic::ElseIf);
 
                   // Ensure 'else-if' does not follow 'else'
                   if (Else != Children.end() && ElseIf != Children.end() && Else < ElseIf)
@@ -447,7 +480,7 @@ namespace Logic
                }
 
                // Ensure 'end' is present
-               if (Find(BranchLogic::End) == Children.end())
+               if (FindChild(BranchLogic::End) == Children.end())
                   errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
                break;
 
