@@ -43,6 +43,9 @@ namespace Logic
          {
             REQUIRED(parent);
             REQUIRED(target);
+
+            // Add empty jump parameter
+            Parameters += ScriptParameter(ParameterSyntax::LabelNumberParameter, DataType::INTEGER, 0xffff);
          }
 
          /// <summary>Create node for a script command</summary>
@@ -326,24 +329,6 @@ namespace Logic
             return n;
          }
 
-         /// <summary>Query command syntax ID</summary>
-         bool  CommandNode::Is(UINT ID) const
-         {
-            return Syntax.Is(ID);
-         }
-
-         /// <summary>Query command syntax type</summary>
-         bool  CommandNode::Is(CommandType t) const
-         {
-            return Syntax.Is(t);
-         }
-
-         /// <summary>Query whether node is rood</summary>
-         bool  CommandNode::IsRoot() const
-         {
-            return Parent == nullptr;
-         }
-         
          /// <summary>Identifies branch logic</summary>
          BranchLogic  CommandNode::GetBranchLogic() const
          {
@@ -393,7 +378,25 @@ namespace Logic
          {
             Children.insert(pos, new CommandNode(this, target));
          }
+         
+         /// <summary>Query command syntax ID</summary>
+         bool  CommandNode::Is(UINT ID) const
+         {
+            return Syntax.Is(ID);
+         }
 
+         /// <summary>Query command syntax type</summary>
+         bool  CommandNode::Is(CommandType t) const
+         {
+            return Syntax.Is(t);
+         }
+
+         /// <summary>Query whether node is rood</summary>
+         bool  CommandNode::IsRoot() const
+         {
+            return Parent == nullptr;
+         }
+         
          /// <summary>Perform command linking</summary>
          void  CommandNode::LinkCommands() 
          {
