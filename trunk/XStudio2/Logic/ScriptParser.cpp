@@ -545,9 +545,6 @@ namespace Logic
                
             else
             {
-               // Allocate parameters
-               //params.resize(syntax.Parameters.size());
-            
                // Read/Match remaining tokens against parameter syntax
                for (const ParameterSyntax& ps : syntax.ParametersByDisplay)
                {

@@ -115,8 +115,8 @@ namespace Logic
             UINT index = 0;
             IndexCommands(index);
             
-            // Compile parameters
-            CompileParameters(script);
+            // Compile commands
+            GenerateCommands(script);
          }
 
          /// <summary>Debug print</summary>
@@ -226,17 +226,31 @@ namespace Logic
          
          // ------------------------------- PRIVATE METHODS ------------------------------
 
-         /// <summary>Compiles the parameters.</summary>
+         /// <summary>Compiles the parameters/commands into the script</summary>
          /// <param name="script">The script.</param>
-         void  CommandNode::CompileParameters(ScriptFile& script)
+         void  CommandNode::GenerateCommands(ScriptFile& script)
          {
-            // Compile parameters
-            for (auto& p : Parameters)
-               p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
+            if (!IsRoot())
+            {
+               // Compile parameters
+               for (auto& p : Parameters)
+                  p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
+
+               // Re-order: display -> physical
+               ParameterArray params;
+               for (auto& ps : Syntax.Parameters)
+                  params += Parameters[ps.DisplayIndex];
+
+               // Append command
+               if (Is(CommandType::Standard))
+                  script.Commands.AddOutput(ScriptCommand(Syntax, params, false));
+               else
+                  script.Commands.AddOutput(ScriptCommand(Syntax, Index, params, false));
+            }
 
             // Recurse into children
             for (auto& c : Children)
-               c->CompileParameters(script);
+               c->GenerateCommands(script);
          }
 
          /// <summary>Check children for presence of certain branch logic</summary>
