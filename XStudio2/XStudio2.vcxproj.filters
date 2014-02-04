@@ -621,6 +621,9 @@
     <ClCompile Include="ScriptDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\RootNode.cpp">
+      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="UserImages.bmp">
