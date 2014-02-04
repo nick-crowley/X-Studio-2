@@ -5,12 +5,15 @@
 #include "ExpressionParser.h"
 #include "ScriptFile.h"
 
+#undef min
+
 namespace Logic
 {
    namespace Scripts
    {
       namespace Compiler
       {
+         
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
@@ -23,6 +26,22 @@ namespace Logic
               LineNumber(0),
               Extent({0,0})
          {}
+
+         /// <summary>Create node for a hidden jump command</summary>
+         /// <param name="parent">parent node</param>
+         /// <param name="target">target node</param>
+         ScriptParser::CommandNode::CommandNode(CommandNode* parent, CommandNode* target)
+            : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
+              Condition(Conditional::NONE),
+              JumpTarget(target),
+              Parent(parent),
+              LineNumber(0),
+              Extent({0,0}),
+              Index(0)
+         {
+            REQUIRED(parent);
+            REQUIRED(target);
+         }
 
          /// <summary>Create node for a script command</summary>
          /// <param name="cnd">conditional.</param>
@@ -93,24 +112,19 @@ namespace Logic
             wstring tab(depth, (WCHAR)L' ');
 
             // Line/Indent
-            Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
-            
-            // Colour
-            switch (Logic)
+            if (Logic != BranchLogic::NOP)
             {
-            case BranchLogic::If:
-            case BranchLogic::While:
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-            case BranchLogic::SkipIf:
-            case BranchLogic::End:      Console << Colour::Yellow; break;
-            case BranchLogic::Break:
-            case BranchLogic::Continue: Console << Colour::Green;  break;
-            default:                    Console << Colour::White;  break;
-            }
-            // Logic
-            Console << GetString(Logic) << Colour::White << L" : " << LineText << ENDL;
+               Console << GuiString(L"%03d: %s", LineNumber, tab.c_str());
             
+               // Colour
+               switch (Logic)
+               {
+               default:                Console << Colour::White  << GetString(Logic) << Colour::White << L" : " << Colour::White  << LineText << ENDL;  break;
+               case BranchLogic::None: Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << Colour::Yellow << LineText << ENDL;  break;
+               //case BranchLogic::NOP:  Console << Colour::Yellow << GetString(Logic) << Colour::White << L" : " << Colour::Yellow << LineText << ENDL;  break;
+               }
+            }
+
             // Print Children
             for (auto c : Children)
                c->Print(depth+1);
@@ -191,12 +205,29 @@ namespace Logic
          /// <summary>Finds the first child with certain branch logic</summary>
          /// <param name="l">desired logic</param>
          /// <returns>position if found, otherwise end</returns>
+         ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::Find(BranchLogic l) 
+         {
+            return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
+         }
+
+         /// <summary>Finds the first child with certain branch logic</summary>
+         /// <param name="l">desired logic</param>
+         /// <returns>position if found, otherwise end</returns>
          ScriptParser::CommandNode::ConstIterator  ScriptParser::CommandNode::Find(BranchLogic l) const
          {
             return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
          }
 
          /// <summary>Find a child node by value</summary>
+         /// <param name="child">desired child</param>
+         /// <returns></returns>
+         ScriptParser::CommandNode::NodeIterator ScriptParser::CommandNode::Find(const CommandNode* child)
+         {
+            return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
+         }
+
+         /// <summary>Find a child node by value</summary>
+         /// <param name="child">desired child</param>
          /// <returns></returns>
          ScriptParser::CommandNode::ConstIterator ScriptParser::CommandNode::Find(const CommandNode* child) const
          {
@@ -205,7 +236,7 @@ namespace Logic
 
          /// <summary>Finds the first standard command following this node</summary>
          /// <returns></returns>
-         ScriptParser::CommandNode* ScriptParser::CommandNode::FindNextCommand() const
+         ScriptParser::CommandNode* ScriptParser::CommandNode::FindNextSibling() const
          {
             // Find next sibling node containing a standard command
             for (auto node = Parent->Find(this)+1; node < Parent->Children.end(); ++node)
@@ -213,7 +244,20 @@ namespace Logic
                   return node->get();
             
             // No more siblings: continue search from grandparent
-            return Parent->FindNextCommand();
+            return Parent->FindNextSibling();
+         }
+
+         /// <summary>Finds an ancestor with a given branch logic</summary>
+         /// <returns>Parent if found, otherwise nullptr</returns>
+         ScriptParser::CommandNode*  ScriptParser::CommandNode::FindParent(BranchLogic l) const
+         {
+            // Check for a parent 'while' command
+            for (CommandNode* n = Parent; n != nullptr; n = n->Parent)
+               if (n->Logic == l)
+                  return n;
+
+            // Not found
+            return nullptr;
          }
          
          /// <summary>Identifies branch logic</summary>
@@ -258,6 +302,78 @@ namespace Logic
             }
          }
 
+         /// <summary>Inserts an unconditional jump command</summary>
+         /// <param name="pos">Position to insert</param>
+         /// <param name="target">Command to target</param>
+         /// <returns></returns>
+         void  ScriptParser::CommandNode::InsertJump(NodeIterator pos, CommandNode* target)
+         {
+            Children.insert(pos, new CommandNode(this, target));
+         }
+
+         /// <summary>Perform command linking</summary>
+         void  ScriptParser::CommandNode::LinkCommands() 
+         {
+            NodeIterator ElseIf;
+
+            switch (Logic)
+            {
+            // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
+            case BranchLogic::If: 
+               ElseIf = std::min(Find(BranchLogic::ElseIf), Find(BranchLogic::Else));
+               if (ElseIf != Children.end())
+               {  
+                  JumpTarget = ElseIf->get();
+                  InsertJump(ElseIf-1, FindNextSibling());  // JMP: next-sibling
+               }
+               else
+                  JumpTarget = FindNextSibling();  // JMP: next-sibling
+               break;
+
+            // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
+            case BranchLogic::ElseIf:
+               ElseIf = Parent->Find(this)+1;
+               if (ElseIf != Parent->Children.end() && ((*ElseIf)->Logic == BranchLogic::Else || (*ElseIf)->Logic == BranchLogic::ElseIf))
+               {  
+                  JumpTarget = ElseIf->get();
+                  InsertJump(ElseIf-1, Parent->FindNextSibling());  // JMP: next-sibling(IF)
+               }
+               else
+                  JumpTarget = Parent->FindNextSibling();  // JMP: next-sibling(IF)
+               break;
+            
+            // Jump-if-false: next-sibling(IF)
+            case BranchLogic::Else:
+               JumpTarget = Parent->FindNextSibling();
+               break;               
+
+            // Jump-if-false: next-sibling
+            case BranchLogic::SkipIf:
+               JumpTarget = FindNextSibling();
+               break;
+
+            // Jump-if-false: next-sibling. 
+            case BranchLogic::While:
+               JumpTarget = FindNextSibling();
+               InsertJump(Children.end()-1, this); // JMP: SELF (to create loop)
+               break;
+
+            // JMP: next-sibling(WHILE)
+            case BranchLogic::Break:
+               JumpTarget = FindParent(BranchLogic::While)->FindNextSibling();
+               break;
+
+            // JMP: WHILE
+            case BranchLogic::Continue:
+               JumpTarget = FindParent(BranchLogic::While);
+               break;
+            }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->LinkCommands();
+         }
+
          /// <summary>Verifies the branching logic</summary>
          void  ScriptParser::CommandNode::VerifyLogic(ErrorArray& errors) const
          {
@@ -290,12 +406,8 @@ namespace Logic
             case BranchLogic::Break:
             case BranchLogic::Continue:
                // Check for a parent 'while' command
-               for (const CommandNode* n = Parent; n != nullptr; n = n->Parent)
-                  if (n->Logic == BranchLogic::While)
-                     return;
-               
-               // Missing 
-               errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
+               if (!FindParent(BranchLogic::While))
+                  errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
                break;
 
             case BranchLogic::Else:
@@ -317,7 +429,6 @@ namespace Logic
                break;
             }
          }
-         
          
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
          /// <param name="script">script</param>
