@@ -81,6 +81,7 @@ namespace Logic
       public:
          static const ParameterSyntax  ExpressionParameter,
                                        LabelNameParameter,
+                                       LabelNumberParameter,
                                        ScriptCallArgument,
                                        UnrecognisedCommand;
 
