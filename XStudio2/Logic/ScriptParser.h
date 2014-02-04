@@ -86,6 +86,7 @@ namespace Logic
                // --------------------- CONSTRUCTION ----------------------
             public:
                CommandNode();
+               CommandNode(CommandNode* parent, CommandNode* target);
                CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
                CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
                ~CommandNode();
@@ -107,9 +108,14 @@ namespace Logic
             private:
                bool          Contains(BranchLogic l) const;
                void          EnumLabels(ErrorArray& errors) const;
+               NodeIterator  Find(BranchLogic l);
                ConstIterator Find(BranchLogic l) const;
+               NodeIterator  Find(const CommandNode* child);
                ConstIterator Find(const CommandNode* child) const;
-               CommandNode*  FindNextCommand() const;
+               CommandNode*  FindNextSibling() const;
+               CommandNode*  FindParent(BranchLogic l) const;
+               void          InsertJump(NodeIterator pos, CommandNode* target);
+               void          LinkCommands();
                void          VerifyLogic(ErrorArray& errors) const;
                void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
                
