@@ -96,6 +96,7 @@ namespace Logic
                // --------------------- PROPERTIES ------------------------
 
                PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
+               PROPERTY_GET(ConstIterator,LastChild,GetLastChild);
 
                // ---------------------- ACCESSORS ------------------------		
             public:
@@ -114,8 +115,8 @@ namespace Logic
                ConstIterator Find(const CommandNode* child) const;
                CommandNode*  FindNextSibling() const;
                CommandNode*  FindParent(BranchLogic l) const;
-               //NodeIterator  GetLastChild();
-               void          InsertJump(CommandNode* target);
+               ConstIterator GetLastChild() const;
+               void          InsertJump(NodeIterator pos, CommandNode* target);
                void          LinkCommands();
                void          VerifyLogic(ErrorArray& errors) const;
                void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;

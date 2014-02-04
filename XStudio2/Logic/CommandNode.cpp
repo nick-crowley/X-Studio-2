@@ -335,17 +335,17 @@ namespace Logic
          /// <summary>Inserts an unconditional jump command as the last child</summary>
          /// <param name="target">Command to target</param>
          /// <returns></returns>
-         void  ScriptParser::CommandNode::InsertJump(CommandNode* target)
+         void  ScriptParser::CommandNode::InsertJump(NodeIterator pos, CommandNode* target)
          {
             Console << "DEBUG: ChildCount=" << Children.size() << ENDL;
-            Children.insert(Children.end(), new CommandNode(this, target));
+            Children.insert(pos, new CommandNode(this, target));
          }
 
          /// <summary>Get position of last child</summary>
-         /*ScriptParser::CommandNode::NodeIterator  ScriptParser::CommandNode::GetLastChild()
+         ScriptParser::CommandNode::ConstIterator  ScriptParser::CommandNode::GetLastChild() const
          {
             return Children.begin() == Children.end() ? Children.begin() : Children.end()-1;
-         }*/
+         }
 
          /// <summary>Perform command linking</summary>
          void  ScriptParser::CommandNode::LinkCommands() 
@@ -357,10 +357,11 @@ namespace Logic
             // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
             case BranchLogic::If: 
                ElseIf = std::min(Find(BranchLogic::ElseIf), Find(BranchLogic::Else));
+               // if has else/else-if
                if (ElseIf != Children.end())
                {  
-                  JumpTarget = ElseIf->get();
-                  (*ElseIf)->InsertJump(FindNextSibling());  // JMP: next-sibling
+                  JumpTarget = ElseIf->get();     // JIF: Else/ElseIf 
+                  InsertJump(ElseIf, FindNextSibling());  // JMP: next-sibling
                }
                else
                   JumpTarget = FindNextSibling();  // JMP: next-sibling
@@ -369,10 +370,11 @@ namespace Logic
             // Jump-if-false: ELSE-IF/ELSE/next-sibling. 
             case BranchLogic::ElseIf:
                ElseIf = Parent->Find(this)+1;
+               // if not final else/else-if
                if (ElseIf != Parent->Children.end() && ((*ElseIf)->Logic == BranchLogic::Else || (*ElseIf)->Logic == BranchLogic::ElseIf))
                {  
-                  JumpTarget = ElseIf->get();
-                  (*ElseIf)->InsertJump(Parent->FindNextSibling());  // JMP: next-sibling(IF)
+                  JumpTarget = ElseIf->get();             // JIF: Else/ElseIf
+                  InsertJump(Children.end(), Parent->FindNextSibling());  // JMP: next-sibling(IF)
                }
                else
                   JumpTarget = Parent->FindNextSibling();  // JMP: next-sibling(IF)
@@ -391,7 +393,7 @@ namespace Logic
             // Jump-if-false: next-sibling. 
             case BranchLogic::While:
                JumpTarget = FindNextSibling();
-               InsertJump(this); // JMP: SELF (to create loop)
+               InsertJump(Children.end(), this); // JMP: SELF (to create loop)
                break;
 
             // JMP: next-sibling(WHILE)
@@ -454,14 +456,13 @@ namespace Logic
                break;
 
             case BranchLogic::SkipIf:
-               // Ensure standard command present
-               for (auto node = Children.begin(); node != Children.end(); ++node)
-                  if (node[0]->Syntax.Is(CommandType::Auxiliary))
-                     continue;
-                  else if (node[0]->Logic != BranchLogic::None)
-                     errors += ErrorToken(L"not supported within 'skip if' conditional", node[0]->LineNumber, node[0]->Extent);
-                  else
-                     return;
+               // Ensure command present
+               if (Children.size() == 0)
+                  errors += ErrorToken(L"missing command from 'skip if' conditional", Children[0]->LineNumber, Children[0]->Extent);
+
+               // Ensure command is standard
+               else if (!(*LastChild)->Syntax.Is(CommandType::Standard))
+                  errors += ErrorToken(L"incompatible with 'skip if' conditional", (*LastChild)->LineNumber, (*LastChild)->Extent);
                break;
             }
          }
