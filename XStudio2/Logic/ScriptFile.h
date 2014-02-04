@@ -309,8 +309,10 @@ namespace Logic
          private:
          };
 
-         class ScriptCallCollection : public map<wstring, ScriptFile>
+         /// <summary></summary>
+         class ScriptCallCollection : private map<wstring, ScriptFile>
          {
+            // ---------------------- ACCESSORS ------------------------
          public:
             /// <summary>Checks for presence of script (without extension, case sensitive)</summary>
             /// <param name="name">script name.</param>
@@ -320,12 +322,20 @@ namespace Logic
                return find(name) != end();
             }
 
+            // ----------------------- MUTATORS ------------------------
+         public:
             /// <summary>Adds a script by name (without extension, case sensitive).</summary>
             /// <param name="name">script name.</param>
             /// <param name="f">script properties</param>
             void  Add(const wstring& name, ScriptFile& f)
             {
                insert(value_type(name, f));
+            }
+
+            /// <summary>Clears collection</summary>
+            void  Clear()
+            {
+               clear();
             }
 
             /// <summary>Finds a script by name (without extension, case sensitive).</summary>
@@ -359,6 +369,60 @@ namespace Logic
             }
          };
 
+         /// <summary></summary>
+         class CommandCollection
+         {
+            // ------------------------ TYPES --------------------------
+         private:
+
+            // --------------------- CONSTRUCTION ----------------------
+
+         public:
+            CommandCollection();
+            virtual ~CommandCollection();
+
+            DEFAULT_COPY(CommandCollection);	// Default copy semantics
+            DEFAULT_MOVE(CommandCollection);	// Default move semantics
+
+            // ------------------------ STATIC -------------------------
+
+            // --------------------- PROPERTIES ------------------------
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Adds a command to the input list.</summary>
+            /// <param name="cmd">The command.</param>
+            void  AddInput(ScriptCommand& cmd)
+            {
+               Input.push_back(cmd);
+            }
+
+            /// <summary>Adds a command to the appropriate output list</summary>
+            /// <param name="cmd">The command.</param>
+            void  AddOutput(ScriptCommand& cmd)
+            {
+               CommandList& list = (cmd.Is(CommandType::Standard) ? StdOutput : AuxOutput);
+               list.push_back(cmd);
+            }
+
+            /// <summary>Clears all commands</summary>
+            void  Clear()
+            {
+               Input.clear();
+               StdOutput.clear();
+               AuxOutput.clear();
+            }
+
+            // -------------------- REPRESENTATION ---------------------
+
+         public:
+            CommandList  Input,
+                         StdOutput,
+                         AuxOutput;
+         };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          ScriptFile();
@@ -390,7 +454,7 @@ namespace Logic
          ParameterValue CommandID;
 
          // Collections
-         CommandList          Commands;
+         CommandCollection    Commands;
          LabelCollection      Labels;
          VariableCollection   Variables;
          ScriptCallCollection ScriptCalls;
