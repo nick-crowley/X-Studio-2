@@ -68,14 +68,17 @@ namespace Logic
          // [INVALID] Not used
 	      case ParameterType::UNDETERMINED:
          case ParameterType::CONDITION:  
-         case ParameterType::LABEL_NUMBER: 
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
-
 
          // [USER CUSTOMIZED] Unable to determine, allow anything
          default:
             return true;
 
+         // [UNIVERSAL] These can be any datatype
+         case ParameterType::VALUE:
+         case ParameterType::EXPRESSION:
+         case ParameterType::PARAMETER: 
+            return true;
 
          // [RETURN VALUE] Always held as variables
 	      case ParameterType::RETURN_VALUE:
@@ -84,17 +87,13 @@ namespace Logic
 	      case ParameterType::INTERRUPT_RETURN_VALUE_IF:
             return t == DataType::VARIABLE;
 
-
-         // [UNIVERSAL] These can be any datatype
-         case ParameterType::VALUE:
-         case ParameterType::EXPRESSION:
-         case ParameterType::PARAMETER: 
-            return true;
-
-
          // [FLIGHT RETURN] Stored using their own datatypes
 	      case ParameterType::FLIGHTRETCODE:
             return t == DataType::FLIGHTRETURN || t == DataType::VARIABLE;
+
+         // [LABEL NUMBER] Goto/gosub - displayed as string
+         case ParameterType::LABEL_NUMBER: 
+            return t == DataType::STRING;
 
          // [LABEL NAME, SCRIPT NAME, STRING, COMMENT] Always held as strings
          case ParameterType::LABEL_NAME:

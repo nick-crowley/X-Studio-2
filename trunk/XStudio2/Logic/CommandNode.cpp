@@ -108,28 +108,15 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  CommandNode::Compile(ScriptFile& script)
          {
-            for (auto& n : *this)
-               n.Print();
-            //if (!IsRoot())
-            //{
-            //   // Perform linking
-            //   LinkCommands();
+            // Perform linking
+            LinkCommands();
 
-            //   // Compile parameters
-            //   for (auto& p : Parameters)
-            //      p.Generate(script);
-            //}
-
-            //// Recurse into children
-            //for (auto c : Children)
-            //   c->Compile(script);
-
-            //// Root: Index entire tree
-            //if (IsRoot())
-            //{
-            //   UINT index = 0;
-            //   IndexCommands(index);
-            //}
+            // Index commands
+            UINT index = 0;
+            IndexCommands(index);
+            
+            // Compile parameters
+            CompileParameters(script);
          }
 
          /// <summary>Debug print</summary>
@@ -180,26 +167,22 @@ namespace Logic
                Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
 
             // Print Children
-            /*for (auto c : Children)
-               c->Print(depth+1);*/
+            for (auto c : Children)
+               c->Print(depth+1);
          }
 
          /// <summary>Populates the script with label and variable names</summary>
          /// <param name="script">script.</param>
          void  CommandNode::Populate(ScriptFile& script) 
          {
-            // Skip root
-            if (!IsRoot())
-            {
-               // Add label definitions to script
-               if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
-                  script.Labels.Add(Parameters[0].Value.String, LineNumber);
+            // Add label definitions to script
+            if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0) 
+               script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
-               // Add variable names to script
-               for (const auto& p : Parameters)
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String);
-            }
+            // Add variable names to script
+            for (const auto& p : Parameters)
+               if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                  script.Variables.Add(p.Value.String);
 
             // Examine children
             for (const auto& cmd : Children)
@@ -211,43 +194,32 @@ namespace Logic
          /// <param name="errors">errors collection</param>
          void  CommandNode::Verify(const ScriptFile& script, ErrorArray& errors) const 
          {
-            if (!IsRoot())
-            {
-               // parameters
-               VerifyParameters(script, errors);
+            // parameters
+            VerifyParameters(script, errors);
 
-               // branching logic
-               VerifyLogic(errors);
-            }
+            // branching logic
+            VerifyLogic(errors);
 
-            // children
-            for (const auto& cmd : Children)
-               cmd->Verify(script, errors);
-
-            // script
-            if (IsRoot())
-            {
-               // Ensure script has commands
-               if (Children.size() == 0)
-                  errors += ErrorToken(L"No commands found", LineNumber, Extent);
+            // Ensure script has commands
+            if (Children.size() == 0)
+               errors += ErrorToken(L"No commands found", LineNumber, Extent);
             
-               // Ensure last std command is RETURN
-               else //if (find_if(Children.rbegin(), Children.rend(), [](CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
-               {
-                  auto last = Children.end()[-1];
-                  if (!last->Is(CMD_RETURN))
-                     errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
-               }
-
-               /*else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
-               {
-                  if (node[0]->Is(CommandType::Auxiliary))
-                     continue;
-                  else if (!node[0]->Is(CMD_RETURN))
-                     errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
-                  break;
-               }*/
+            // Ensure last std command is RETURN
+            else //if (find_if(Children.rbegin(), Children.rend(), [](CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
+            {
+               auto last = Children.end()[-1];
+               if (!last->Is(CMD_RETURN))
+                  errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
             }
+
+            /*else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
+            {
+               if (node[0]->Is(CommandType::Auxiliary))
+                  continue;
+               else if (!node[0]->Is(CMD_RETURN))
+                  errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
+               break;
+            }*/
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -258,6 +230,13 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  CommandNode::CompileParameters(ScriptFile& script)
          {
+            // Compile parameters
+            for (auto& p : Parameters)
+               p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->CompileParameters(script);
          }
 
          /// <summary>Check children for presence of certain branch logic</summary>
@@ -486,6 +465,10 @@ namespace Logic
                   JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);
                break;
             }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->LinkCommands();
          }
 
          /// <summary>Verifies the branching logic</summary>
@@ -545,6 +528,10 @@ namespace Logic
                }
                break;
             }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->VerifyLogic(errors);
          }
          
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
@@ -553,39 +540,41 @@ namespace Logic
          void  CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
          {
             // Skip for unrecognised commands
-            if (Syntax == CommandSyntax::Unknown)
-               return;
-
-            // Static type check
-            for (const ScriptParameter& param : Parameters)
-            {
-               // Recognise game/script objects
-               switch (param.Token.Type)
-               {
-               // GameObject: Ensure exists
-               case TokenType::GameObject:
-                  if (!GameObjectLib.Contains(param.Value.String))
-                     errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
-                  break;
-
-               // ScriptObject: Ensure exists 
-               case TokenType::ScriptObject:
-                  if (!ScriptObjectLib.Contains(param.Value.String))
-                     errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
-                  break;
-
-               // Label: Ensure exists
-               case TokenType::Label:
-                  if (!script.Labels.Contains(param.Value.String))
-                     errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
-                  break;
-               }
-               
+            if (Syntax != CommandSyntax::Unknown)
                // Static type check
-               if (!param.Syntax.Verify(param.Type))
-                  errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), GetString(param.Syntax.Type).c_str())
-                                                                          , LineNumber, param.Token);
-            }
+               for (const ScriptParameter& param : Parameters)
+               {
+                  // Recognise game/script objects
+                  switch (param.Token.Type)
+                  {
+                  // GameObject: Ensure exists
+                  case TokenType::GameObject:
+                     if (!GameObjectLib.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
+                     break;
+
+                  // ScriptObject: Ensure exists 
+                  case TokenType::ScriptObject:
+                     if (!ScriptObjectLib.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
+                     break;
+
+                  // Label: Ensure exists
+                  case TokenType::Label:
+                     if (!script.Labels.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
+                     break;
+                  }
+               
+                  // Static type check
+                  if (!param.Syntax.Verify(param.Type))
+                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), GetString(param.Syntax.Type).c_str())
+                                                                             , LineNumber, param.Token);
+               }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->VerifyParameters(script, errors);
          }
 
       }
