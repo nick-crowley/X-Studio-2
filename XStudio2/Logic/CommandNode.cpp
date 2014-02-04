@@ -108,23 +108,26 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  CommandNode::Compile(ScriptFile& script)
          {
-            if (IsRoot())
-            {
-               UINT index = 0;
-               IndexCommands(index);
-            }
-            else
+            if (!IsRoot())
             {
                // Perform linking
                LinkCommands();
 
                // Compile parameters
-               CompileParameters(script);
+               for (auto& p : Parameters)
+                  p.Generate(script);
             }
 
             // Recurse into children
             for (auto c : Children)
                c->Compile(script);
+
+            // Root: Index entire tree
+            if (IsRoot())
+            {
+               UINT index = 0;
+               IndexCommands(index);
+            }
          }
 
          /// <summary>Debug print</summary>

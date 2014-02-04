@@ -199,6 +199,8 @@ namespace Logic
          bool           Contains(const GuiString& obj) const;
          bool           Contains(ScriptObjectGroup grp, UINT id) const;
          ScriptObject   Find(ScriptObjectGroup grp, UINT id) const;
+         ScriptObject   Find(KnownPage page, UINT id) const;
+         ScriptObject   Find(DataType type, UINT id) const;
          ScriptObject   Find(const GuiString& sz) const;
          const_iterator end() const;
          UINT           GetCount() const;

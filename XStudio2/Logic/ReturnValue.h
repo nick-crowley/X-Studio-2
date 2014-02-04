@@ -35,12 +35,7 @@ namespace Logic
          IF        = 3,   IF_NOT      = 4, 
          ELSE_IF   = 5,   ELSE_IF_NOT = 6, 
          SKIP_IF   = 7,   SKIP_IF_NOT = 8,
-         WHILE     = 9,   WHILE_NOT   = 10,
-         // My custom IDs to represent auxiliary branching commands, jumps, gotos and labels.
-         /*BREAK     = 11,  CONTINUE    = 12,
-         ELSE      = 13,  END         = 14,
-         LABEL     = 15,  GOTO        = 16,
-         GOSUB     = 17,  ENDSUB      = 18  */
+         WHILE     = 9,   WHILE_NOT   = 10
       };
 
       /// <summary>Represents the encoded return value of a script command</summary>
@@ -50,17 +45,18 @@ namespace Logic
 
       public:
          /// <summary>Decode a return value</summary>
-         /// <param name="v">The v.</param>
-         ReturnValue(int v) : Value(v)
+         /// <param name="v">encoded value</param>
+         ReturnValue(int v) 
          {
             ReturnType = (Scripts::ReturnType)(BYTE)((v & 0xff000000) >> 24);
             Destination = (v & 0x00ffff00) >> 8;
             Conditional = (Scripts::Conditional)(BYTE)(v & 0x000000ff);
          }
 
-         /// <summary>Encode a return value from a conditional</summary>
-         /// <param name="v">The v.</param>
-         ReturnValue(Conditional c) : Conditional(c), Destination(0xffff)
+         /// <summary>Encode a conditional retVar</summary>
+         /// <param name="c">conditional</param>
+         /// <param name="jump">jump destination</param>
+         ReturnValue(Conditional c, UINT jump) : Conditional(c), Destination(jump)
          {
             switch (Conditional)
             {
@@ -89,9 +85,13 @@ namespace Logic
             default:
                throw ArgumentException(HERE, L"c", GuiString(L"Invalid conditional: %d", c));
             }
+         }
 
-            // Encode
-            Value = (INT)((BYTE)ReturnType << 24) | (INT)((WORD)Destination << 8) | (INT)(BYTE)Conditional;
+         /// <summary>Encode a return variable</summary>
+         /// <param name="r">return type</param>
+         /// <param name="var">variable ID</param>
+         ReturnValue(ReturnType r, UINT var) : ReturnType(r), Conditional((Scripts::Conditional)var), Destination(0)
+         {
          }
 
          virtual ~ReturnValue()
@@ -101,16 +101,24 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
 			
+         PROPERTY_GET(int,EncodedValue,GetEncodedValue);
+
 		   // ---------------------- ACCESSORS ------------------------			
+
+         /// <summary>Gets the encoded value.</summary>
+         /// <returns></returns>
+         int  GetEncodedValue() const
+         {
+            return (INT)((BYTE)ReturnType << 24) | (INT)((WORD)Destination << 8) | (INT)(BYTE)Conditional;
+         }
 
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         ReturnType    ReturnType;
-         Conditional   Conditional;
-         int           Destination,
-                       Value;          // Encoded value
+         ReturnType   ReturnType;
+         Conditional  Conditional;
+         int          Destination;
       };
 
    }

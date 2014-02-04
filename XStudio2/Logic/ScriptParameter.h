@@ -103,7 +103,8 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
       public:
-         void  Translate(ScriptFile& f);
+         void  Generate(ScriptFile& script);
+         void  Translate(ScriptFile& script);
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
