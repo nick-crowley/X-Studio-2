@@ -136,6 +136,7 @@
     <ClInclude Include="LanguageStringView.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
+    <ClInclude Include="Logic\CommandNode.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
     <ClInclude Include="Logic\GameObject.h" />

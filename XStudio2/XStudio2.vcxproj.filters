@@ -391,6 +391,9 @@
     <ClInclude Include="LanguageDocument.h">
       <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\CommandNode.h">
+      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
