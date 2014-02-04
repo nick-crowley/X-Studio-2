@@ -205,7 +205,7 @@ namespace Logic
                errors += ErrorToken(L"No commands found", LineNumber, Extent);
             
             // Ensure last std command is RETURN
-            else //if (find_if(Children.rbegin(), Children.rend(), [](CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
+            else if (find_if(Children.rbegin(), Children.rend(), [](const CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
             {
                auto last = Children.end()[-1];
                if (!last->Is(CMD_RETURN))
