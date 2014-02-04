@@ -32,7 +32,7 @@ namespace Logic
          /// <summary>Create node for a hidden jump command</summary>
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
-         CommandNode::CommandNode(CommandNode* parent, CommandNode* target)
+         CommandNode::CommandNode(CommandNode* parent, const CommandNode* target)
             : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
@@ -150,7 +150,7 @@ namespace Logic
                colour = Colour::Yellow;
                if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                {
-                  colour = Colour::Green;
+                  colour = Is(CMD_HIDDEN_JUMP) ? Colour::Green : Colour::Yellow;
                   logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
                   txt = GuiString(L"Unconditional Jump: %d", JumpTarget->LineNumber);
                }
@@ -389,7 +389,7 @@ namespace Logic
          /// <summary>Inserts an unconditional jump command as the last child</summary>
          /// <param name="target">Command to target</param>
          /// <returns></returns>
-         void  CommandNode::InsertJump(NodeIterator pos, CommandNode* target)
+         void  CommandNode::InsertJump(NodeIterator pos, const CommandNode* target)
          {
             Children.insert(pos, new CommandNode(this, target));
          }
@@ -446,11 +446,13 @@ namespace Logic
             // JMP: next-sibling(WHILE)
             case BranchLogic::Break:
                JumpTarget = FindAncestor(BranchLogic::While)->FindNextSibling();
+               InsertJump(Children.begin(), JumpTarget);
                break;
 
             // JMP: WHILE
             case BranchLogic::Continue:
                JumpTarget = FindAncestor(BranchLogic::While);
+               InsertJump(Children.begin(), JumpTarget);
                break;
 
             // JMP: LABEL

@@ -75,7 +75,7 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();
-            CommandNode(CommandNode* parent, CommandNode* target);
+            CommandNode(CommandNode* parent, const CommandNode* target);
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
             ~CommandNode();
@@ -115,7 +115,7 @@ namespace Logic
             
          private:
             void           CompileParameters(ScriptFile& script);
-            void           InsertJump(NodeIterator pos, CommandNode* target);
+            void           InsertJump(NodeIterator pos, const CommandNode* target);
             void           LinkCommands();
             
             // -------------------- REPRESENTATION ---------------------
