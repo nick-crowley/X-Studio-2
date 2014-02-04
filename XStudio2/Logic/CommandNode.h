@@ -114,7 +114,7 @@ namespace Logic
             void           Populate(ScriptFile& script);
             
          private:
-            void           CompileParameters(ScriptFile& script);
+            void           GenerateCommands(ScriptFile& script);
             void           IndexCommands(UINT& next);
             void           InsertJump(NodeIterator pos, const CommandNode* target);
             void           LinkCommands();
