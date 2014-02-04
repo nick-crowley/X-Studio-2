@@ -17,12 +17,12 @@ namespace Logic
       {
          
          // -------------------------------- CONSTRUCTION --------------------------------
-
+         
          /// <summary>Create root node</summary>
          CommandNode::CommandNode()
             : Syntax(CommandSyntax::Unknown), 
               Condition(Conditional::NONE),
-              Parent(nullptr), 
+              //Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(0), 
               LineNumber(0),
@@ -36,7 +36,7 @@ namespace Logic
             : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
-              Parent(parent),
+              RootNode(parent),
               LineNumber(0),
               Extent({0,0}),
               Index(0)
@@ -61,7 +61,7 @@ namespace Logic
               LineNumber(line), 
               Extent(lex.Extent), 
               LineText(lex.Input),
-              Parent(nullptr), 
+              //Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(0)
          {}
@@ -81,7 +81,7 @@ namespace Logic
               LineNumber(line), 
               Extent(lex.Extent), 
               LineText(lex.Input),
-              Parent(nullptr), 
+              //Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(0)
          {}
@@ -93,29 +93,15 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
          
-         /// <summary>Add child node</summary>
-         /// <param name="cmd">The command node</param>
-         /// <returns>Command node</returns>
-         CommandNodePtr  CommandNode::Add(CommandNodePtr node)
-         {
-            // Set parent and append
-            node->Parent = this;
-            Children.push_back(node);
-            return node;
-         }
-
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
          void  CommandNode::Compile(ScriptFile& script)
          {
-            if (!IsRoot())
-            {
-               // Perform linking
-               LinkCommands();
+            // Perform linking
+            LinkCommands();
 
-               // Compile parameters
-               CompileParameters(script);
-            }
+            // Compile parameters
+            CompileParameters(script);
 
             // Recurse into children
             for (auto c : Children)
@@ -178,18 +164,14 @@ namespace Logic
          /// <param name="script">script.</param>
          void  CommandNode::Populate(ScriptFile& script) 
          {
-            // Skip root
-            if (!IsRoot())
-            {
-               // Add label definitions to script
-               if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
-                  script.Labels.Add(Parameters[0].Value.String, LineNumber);
+            // Add label definitions to script
+            if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
+               script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
-               // Add variable names to script
-               for (const auto& p : Parameters)
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String);
-            }
+            // Add variable names to script
+            for (const auto& p : Parameters)
+               if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                  script.Variables.Add(p.Value.String);
 
             // Examine children
             for (const auto& cmd : Children)
@@ -201,44 +183,15 @@ namespace Logic
          /// <param name="errors">errors collection</param>
          void  CommandNode::Verify(const ScriptFile& script, ErrorArray& errors) const 
          {
-            // NODE: Verify commands
-            if (!IsRoot())
-            {
-               // Verify parameters
-               VerifyParameters(script, errors);
+            // Verify parameters
+            VerifyParameters(script, errors);
 
-               // verify branching logic
-               VerifyLogic(errors);
-            }
+            // verify branching logic
+            VerifyLogic(errors);
 
             // NODE/ROOT: Verify children
             for (const auto& cmd : Children)
                cmd->Verify(script, errors);
-
-            // ROOT: Verify unique
-            if (IsRoot())
-            {
-               // Ensure script has commands
-               if (Children.size() == 0)
-                  errors += ErrorToken(L"No commands found", LineNumber, Extent);
-            
-               // Ensure last std command is RETURN
-               else //if (find_if(Children.rbegin(), Children.rend(), [](CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
-               {
-                  auto last = Children.end()[-1];
-                  if (!last->Is(CMD_RETURN))
-                     errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
-               }
-
-               /*else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
-               {
-                  if (node[0]->Is(CommandType::Auxiliary))
-                     continue;
-                  else if (!node[0]->Is(CMD_RETURN))
-                     errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
-                  break;
-               }*/
-            }
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
