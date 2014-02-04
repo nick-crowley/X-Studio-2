@@ -3,6 +3,7 @@
 #include "ScriptEdit.h"
 #include "Logic/GameObjectLibrary.h"
 #include "Logic/ScriptObjectLibrary.h"
+#include "Logic/SyntaxLibrary.h"
 #include "Logic/ScriptFile.h"
 #include <algorithm>
 
