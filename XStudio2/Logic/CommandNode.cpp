@@ -20,7 +20,7 @@ namespace Logic
 
          /// <summary>Create root node</summary>
          CommandNode::CommandNode()
-            : Syntax(CommandSyntax::Unknown), 
+            : Syntax(&CommandSyntax::Unknown), 
               Condition(Conditional::NONE),
               Parent(nullptr), 
               JumpTarget(nullptr), 
@@ -33,7 +33,7 @@ namespace Logic
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
          CommandNode::CommandNode(CommandNode* parent, CommandNode* target)
-            : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
+            : Syntax(&SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
               Parent(parent),
@@ -52,7 +52,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
-            : Syntax(syntax),
+            : Syntax(&syntax),
               Condition(cnd),
               Parameters(move(params)),
               LineNumber(line), 
@@ -71,7 +71,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
-            : Syntax(syntax),
+            : Syntax(&syntax),
               Condition(cnd),
               Parameters(move(infix)),
               Postfix(move(postfix)),
@@ -105,7 +105,7 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  CommandNode::Compile(ScriptFile& script)
          {
-            if (Parent != nullptr)
+            if (!IsRoot())
             {
                // Perform linking
                LinkCommands();
@@ -148,7 +148,7 @@ namespace Logic
             // Command:
             case BranchLogic::None:
                colour = Colour::Yellow;
-               if (Syntax.Is(CMD_HIDDEN_JUMP))
+               if (Is(CMD_HIDDEN_JUMP))
                {
                   colour = Colour::Green;
                   logic = L"JMP";
@@ -175,10 +175,10 @@ namespace Logic
          void  CommandNode::Populate(ScriptFile& script) 
          {
             // Skip root
-            if (Parent != nullptr)
+            if (!IsRoot())
             {
                // Add label definitions to script
-               if (Syntax.Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
+               if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0 && Parameters[0].Syntax.Type == ParameterType::LABEL_NAME)
                   script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
                // Add variable names to script
@@ -198,7 +198,7 @@ namespace Logic
          void  CommandNode::Verify(const ScriptFile& script, ErrorArray& errors) const 
          {
             // NODE: Verify commands
-            if (Parent != nullptr)
+            if (!IsRoot())
             {
                // Verify parameters
                VerifyParameters(script, errors);
@@ -212,21 +212,28 @@ namespace Logic
                cmd->Verify(script, errors);
 
             // ROOT: Verify unique
-            if (Parent == nullptr)
+            if (IsRoot())
             {
                // Ensure script has commands
                if (Children.size() == 0)
                   errors += ErrorToken(L"No commands found", LineNumber, Extent);
             
                // Ensure last std command is RETURN
-               else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
+               else //if (find_if(Children.rbegin(), Children.rend(), [](CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
                {
-                  if (node[0]->Syntax.Is(CommandType::Auxiliary))
+                  auto last = Children.end()[-1];
+                  if (!last->Is(CMD_RETURN))
+                     errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
+               }
+
+               /*else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
+               {
+                  if (node[0]->Is(CommandType::Auxiliary))
                      continue;
-                  else if (!node[0]->Syntax.Is(CMD_RETURN))
+                  else if (!node[0]->Is(CMD_RETURN))
                      errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
                   break;
-               }
+               }*/
             }
          }
 
@@ -270,7 +277,7 @@ namespace Logic
          {
             // Find next sibling node containing a standard command
             for (auto node = Parent->Find(this)+1; node < Parent->Children.end(); ++node)
-               if ((*node)->Syntax.Is(CommandType::Standard))
+               if ((*node)->Is(CommandType::Standard))
                   return node->get();
             
             // No more siblings: continue search from grandparent
@@ -289,12 +296,30 @@ namespace Logic
             // Not found
             return nullptr;
          }
+
+         /// <summary>Query command syntax ID</summary>
+         bool  CommandNode::Is(UINT ID) const
+         {
+            return Syntax->Is(ID);
+         }
+
+         /// <summary>Query command syntax type</summary>
+         bool  CommandNode::Is(CommandType t) const
+         {
+            return Syntax->Is(t);
+         }
+
+         /// <summary>Query whether node is rood</summary>
+         bool  CommandNode::IsRoot() const
+         {
+            return Parent == nullptr;
+         }
          
          /// <summary>Identifies branch logic</summary>
          BranchLogic  CommandNode::GetBranchLogic() const
          {
             // Command
-            switch (Syntax.ID)
+            switch (Syntax->ID)
             {
             case CMD_END:      return BranchLogic::End;
             case CMD_ELSE:     return BranchLogic::Else;
@@ -393,11 +418,13 @@ namespace Logic
             // JMP: next-sibling(WHILE)
             case BranchLogic::Break:
                JumpTarget = FindAncestor(BranchLogic::While)->FindNextSibling();
+               Syntax = &SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat);      // Convert to JMP
                break;
 
             // JMP: WHILE
             case BranchLogic::Continue:
                JumpTarget = FindAncestor(BranchLogic::While);
+               Syntax = &SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat);      // Convert to JMP
                break;
             }
          }
@@ -454,7 +481,7 @@ namespace Logic
                else 
                {
                   auto cmd = Children.end()[-1];
-                  if (!cmd->Syntax.Is(CommandType::Standard) && !cmd->Syntax.Is(CMD_CONTINUE) && !cmd->Syntax.Is(CMD_BREAK))
+                  if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
                      errors += ErrorToken(L"incompatible with 'skip if' conditional", cmd->LineNumber, cmd->Extent);
                }
                break;
@@ -467,7 +494,7 @@ namespace Logic
          void  CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
          {
             // Skip for unrecognised commands
-            if (Syntax == CommandSyntax::Unknown)
+            if (*Syntax == CommandSyntax::Unknown)
                return;
 
             // Static type check

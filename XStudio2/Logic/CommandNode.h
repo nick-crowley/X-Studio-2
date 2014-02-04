@@ -99,6 +99,9 @@ namespace Logic
             NodeIterator  Find(const CommandNode* child) const;
             CommandNode*  FindNextSibling() const;
             CommandNode*  FindAncestor(BranchLogic l) const;
+            bool          Is(UINT ID) const;
+            bool          Is(CommandType t) const;
+            bool          IsRoot() const;
             void          VerifyLogic(ErrorArray& errors) const;
             void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
                
@@ -118,11 +121,11 @@ namespace Logic
             CommandNode*    Parent;           // Parent node
             NodeList        Children;         // Child commands
 
-            ParameterArray     Parameters,    // script parameters in display order
-                               Postfix;       // expression parameters in postfix order
-            CommandSyntaxRef   Syntax;        // command syntax
-            const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
-            UINT               Index;         // 0-based standard codearray index
+            ParameterArray       Parameters,    // script parameters in display order
+                                 Postfix;       // expression parameters in postfix order
+            const CommandSyntax* Syntax;        // command syntax
+            const CommandNode*   JumpTarget;    // Destination of unconditional-jmp or jump-if-false
+            UINT                 Index;         // 0-based standard codearray index
 
             Conditional     Condition;        // Conditional
             const UINT      LineNumber;       // 1-based line number
