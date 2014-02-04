@@ -65,6 +65,9 @@ namespace Logic
 
       /// <summary>List of script commands</summary>
       typedef list<ScriptCommand>   CommandList;
+
+      /// <summary>Vector of script commands</summary>
+      typedef vector<ScriptCommand> CommandArray;
    }
 }
 

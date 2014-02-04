@@ -50,7 +50,7 @@ namespace Logic
          RtfCommandWriter   w(L"Arial", 10);
 
          // Examine commands
-         for (ScriptCommand& cmd : f.Commands)
+         for (ScriptCommand& cmd : f.Commands.Input)
          {
             BranchLogic logic = cmd.Logic;
 

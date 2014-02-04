@@ -156,8 +156,8 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch)
       {
-         vector<ScriptCommand>  std;
-         list<ScriptCommand>    aux; 
+         CommandArray  std;
+         CommandList   aux; 
 
          // Read standard commands
          for (int i = 0; i < stdBranch->childNodes->length; i++)
@@ -173,19 +173,19 @@ namespace Logic
             // Insert any/all auxiliary commands preceeding next standard command
             while (!aux.empty() && aux.front().RefIndex <= i)
             {
-               script.Commands.push_back( aux.front() );
+               script.Commands.AddInput(aux.front());
                aux.pop_front();
             }
 
             // Insert standard command
             if (!std[i].Syntax.Is(CMD_HIDDEN_JUMP))
-               script.Commands.push_back( std[i] );
+               script.Commands.AddInput(std[i]);
          }
 
          // Translate all commands/parameters
          UINT line = 1;
          wstring name;
-         for (ScriptCommand& cmd : script.Commands)
+         for (ScriptCommand& cmd : script.Commands.Input)
          {
             // GOTO/GOSUB: Replace label number parameters with label name params
             if (!cmd.Commented && (cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB)))

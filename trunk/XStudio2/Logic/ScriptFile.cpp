@@ -26,11 +26,11 @@ namespace Logic
       void  ScriptFile::Clear()
       {
          // Clear labels & commands
-         Commands.clear();
+         Commands.Clear();
          Labels.clear();
 
          // Clear script-calls
-         ScriptCalls.clear();
+         ScriptCalls.Clear();
 
          // Clear variables, keep arguments
          Variables.clear();
