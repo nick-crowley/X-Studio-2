@@ -72,6 +72,75 @@ namespace Logic
             typedef vector<CommandNodePtr>     NodeList;
             typedef NodeList::const_iterator   NodeIterator;
 
+            class TreeIterator
+            {
+            private:
+               struct Position
+               {
+                  Position(CommandNodePtr p, NodeIterator c) : Parent(p), Child(c)
+                  {}
+                  CommandNodePtr Parent;
+                  NodeIterator   Child;
+               };
+               //typedef pair<CommandNodePtr, NodeIterator> Position;
+
+            public:
+               TreeIterator(CommandNodePtr root, NodeIterator pos)
+               {
+                  History.push_back(Position(root,pos));
+               }
+
+               TreeIterator& operator++() 
+               { 
+                  // Children: Adv to first child
+                  if ((*Current().Child)->Children.size())
+                  {
+                     CommandNodePtr firstChild = (*Current().Child)->Children[0];
+                     History.push_back( Position(firstChild, firstChild->Children.begin()) );
+                  }
+                  // No Children: Advance to next sibling
+                  else while (++Current().Child == Current().Parent->Children.end())
+                  {
+                     // End of children: Advance to next uncle
+                     if (History.size() > 1)
+                        History.pop_back();
+                     else
+                        break; // End of tree: Stop
+                  }
+
+                  return *this;
+               }
+
+               TreeIterator operator++(int) 
+               {
+                  TreeIterator tmp(*this); 
+                  operator++(); 
+                  return tmp;
+               }
+
+               CommandNode& operator*()   { return *Current().Child->get();  }
+               CommandNode* operator->()  { return Current().Child->get();   }
+
+               bool operator==(const TreeIterator& r) const { return Current().Parent==r.Current().Parent && Current().Child==r.Current().Child; }
+               bool operator!=(const TreeIterator& r) const { return Current().Parent!=r.Current().Parent || Current().Child!=r.Current().Child; }
+
+            private:
+               /*PROPERTY_GET(CommandNode&,CurrentParent,GetCurrentParent);
+               PROPERTY_GET(NodeIterator&,CurrentPosition,GetCurrentPosition);*/
+
+            private:
+               Position Current() const { return History.back(); }
+               /*CommandNode&  GetCurrentParent()   { return *History.back().first; }
+               NodeIterator& GetCurrentPosition() { return History.back().second; }*/
+
+            private:
+               deque<Position>  History;
+            };
+
+         public:
+            TreeIterator begin() { return TreeIterator(this, Children.begin()); }
+            TreeIterator end()   { return TreeIterator(this, Children.end());   }
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();

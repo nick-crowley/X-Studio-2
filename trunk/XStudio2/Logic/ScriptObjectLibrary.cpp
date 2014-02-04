@@ -133,16 +133,6 @@ namespace Logic
          return Objects.Find(ScriptObject::IdentifyGroup(type), id);
       }
 
-      /// <summary>Finds a script object by ID</summary>
-      /// <param name="group">object group</param>
-      /// <param name="id">object id</param>
-      /// <returns></returns>
-      /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-      ScriptObject  ScriptObjectLibrary::Find(ScriptObjectGroup grp, UINT id) const
-      {
-         return Objects.Find(grp, id);
-      }
-
       /// <summary>Get number of objects in the library</summary>
       /// <returns></returns>
       UINT  ScriptObjectLibrary::GetCount() const
