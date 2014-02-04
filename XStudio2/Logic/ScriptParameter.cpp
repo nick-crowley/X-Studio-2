@@ -152,23 +152,23 @@ namespace Logic
             break;
 
          // Operator: Format according to type
-         case DataType::OPERATOR:
-            switch (Operator op = (Operator)Value.LowWord)
-            {
-            // HACK: Substitute for octal entity
-            case Operator::Add:           format = L"+";    break; 
-            // Unary
-            case Operator::Minus:
-            case Operator::LogicalNot:
-            case Operator::BitwiseNot:
-            case Operator::OpenBracket:   //format = L" %s";  break; 
-            case Operator::CloseBracket:  format = L"%s";  break; 
-            // Binary 
-            default:                      format = L" %s "; break; 
-            }
-            // Lookup text
-            Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
-            break;
+         //case DataType::OPERATOR:
+         //   switch (Operator op = (Operator)Value.LowWord)
+         //   {
+         //   // HACK: Substitute for octal entity
+         //   case Operator::Add:           format = L"+";    break; 
+         //   // Unary
+         //   case Operator::Minus:
+         //   case Operator::LogicalNot:
+         //   case Operator::BitwiseNot:
+         //   case Operator::OpenBracket:   //format = L" %s";  break; 
+         //   case Operator::CloseBracket:  format = L"%s";  break; 
+         //   // Binary 
+         //   default:                      format = L" %s "; break; 
+         //   }
+         //   // Lookup text
+         //   Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
+         //   break;
 
          // Various: Add HIWORD?
          case DataType::CONSTANT:

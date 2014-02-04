@@ -108,26 +108,28 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  CommandNode::Compile(ScriptFile& script)
          {
-            if (!IsRoot())
-            {
-               // Perform linking
-               LinkCommands();
+            for (auto& n : *this)
+               n.Print();
+            //if (!IsRoot())
+            //{
+            //   // Perform linking
+            //   LinkCommands();
 
-               // Compile parameters
-               for (auto& p : Parameters)
-                  p.Generate(script);
-            }
+            //   // Compile parameters
+            //   for (auto& p : Parameters)
+            //      p.Generate(script);
+            //}
 
-            // Recurse into children
-            for (auto c : Children)
-               c->Compile(script);
+            //// Recurse into children
+            //for (auto c : Children)
+            //   c->Compile(script);
 
-            // Root: Index entire tree
-            if (IsRoot())
-            {
-               UINT index = 0;
-               IndexCommands(index);
-            }
+            //// Root: Index entire tree
+            //if (IsRoot())
+            //{
+            //   UINT index = 0;
+            //   IndexCommands(index);
+            //}
          }
 
          /// <summary>Debug print</summary>
@@ -178,8 +180,8 @@ namespace Logic
                Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
 
             // Print Children
-            for (auto c : Children)
-               c->Print(depth+1);
+            /*for (auto c : Children)
+               c->Print(depth+1);*/
          }
 
          /// <summary>Populates the script with label and variable names</summary>
