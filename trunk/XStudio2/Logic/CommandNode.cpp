@@ -163,7 +163,8 @@ namespace Logic
             }
 
             // Print
-            Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
+            if (Logic != BranchLogic::NOP)
+               Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
 
             // Print Children
             for (auto c : Children)
