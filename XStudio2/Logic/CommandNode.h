@@ -123,7 +123,7 @@ namespace Logic
 
             ParameterArray       Parameters,    // script parameters in display order
                                  Postfix;       // expression parameters in postfix order
-            const CommandSyntax* Syntax;        // command syntax
+            CommandSyntaxRef     Syntax;        // command syntax
             const CommandNode*   JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT                 Index;         // 0-based standard codearray index
 

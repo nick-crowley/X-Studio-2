@@ -20,7 +20,7 @@ namespace Logic
 
          /// <summary>Create root node</summary>
          CommandNode::CommandNode()
-            : Syntax(&CommandSyntax::Unknown), 
+            : Syntax(CommandSyntax::Unknown), 
               Condition(Conditional::NONE),
               Parent(nullptr), 
               JumpTarget(nullptr), 
@@ -33,7 +33,7 @@ namespace Logic
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
          CommandNode::CommandNode(CommandNode* parent, CommandNode* target)
-            : Syntax(&SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
+            : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
               Parent(parent),
@@ -52,7 +52,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
-            : Syntax(&syntax),
+            : Syntax(syntax),
               Condition(cnd),
               Parameters(move(params)),
               LineNumber(line), 
@@ -71,7 +71,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
-            : Syntax(&syntax),
+            : Syntax(syntax),
               Condition(cnd),
               Parameters(move(infix)),
               Postfix(move(postfix)),
@@ -300,13 +300,13 @@ namespace Logic
          /// <summary>Query command syntax ID</summary>
          bool  CommandNode::Is(UINT ID) const
          {
-            return Syntax->Is(ID);
+            return Syntax.Is(ID);
          }
 
          /// <summary>Query command syntax type</summary>
          bool  CommandNode::Is(CommandType t) const
          {
-            return Syntax->Is(t);
+            return Syntax.Is(t);
          }
 
          /// <summary>Query whether node is rood</summary>
@@ -319,7 +319,7 @@ namespace Logic
          BranchLogic  CommandNode::GetBranchLogic() const
          {
             // Command
-            switch (Syntax->ID)
+            switch (Syntax.ID)
             {
             case CMD_END:      return BranchLogic::End;
             case CMD_ELSE:     return BranchLogic::Else;
@@ -418,13 +418,11 @@ namespace Logic
             // JMP: next-sibling(WHILE)
             case BranchLogic::Break:
                JumpTarget = FindAncestor(BranchLogic::While)->FindNextSibling();
-               Syntax = &SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat);      // Convert to JMP
                break;
 
             // JMP: WHILE
             case BranchLogic::Continue:
                JumpTarget = FindAncestor(BranchLogic::While);
-               Syntax = &SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat);      // Convert to JMP
                break;
             }
          }
@@ -494,7 +492,7 @@ namespace Logic
          void  CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
          {
             // Skip for unrecognised commands
-            if (*Syntax == CommandSyntax::Unknown)
+            if (Syntax == CommandSyntax::Unknown)
                return;
 
             // Static type check
