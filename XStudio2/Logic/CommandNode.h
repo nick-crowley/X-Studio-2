@@ -63,47 +63,14 @@ namespace Logic
             CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
             {}
          };
-
-         class RootNode
-         {
-            // ------------------------ TYPES --------------------------
-         public:
-            typedef vector<CommandNodePtr>     NodeArray;
-            typedef NodeArray::const_iterator  NodeIterator;
-
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-            RootNode();
-            RootNode(CommandNode* parent);
-            virtual ~RootNode();
-
-            // ------------------------ STATIC -------------------------
-
-            // --------------------- PROPERTIES ------------------------
-
-            // ---------------------- ACCESSORS ------------------------	
-         public:
-            virtual void  Print(int depth = 0) const;
-            virtual void  Verify(const ScriptFile& script, ErrorArray& errors) const;
-
-            // ----------------------- MUTATORS ------------------------
-         public:
-            CommandNodePtr Add(CommandNodePtr node);
-            virtual void   Compile(ScriptFile& script);
-            virtual void   Populate(ScriptFile& script);
-
-            // -------------------- REPRESENTATION ---------------------
-         public:
-            CommandNode*   Parent;           // Parent node
-            NodeArray      Children;         // Child commands
-         };
             
          /// <summary>Represents a script command and its descendants, if any</summary>
-         class CommandNode : public RootNode
+         class CommandNode 
          {
             // ------------------------ TYPES --------------------------
          public:
-            
+            typedef vector<CommandNodePtr>     NodeList;
+            typedef NodeList::const_iterator   NodeIterator;
 
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -142,16 +109,21 @@ namespace Logic
                
             // ----------------------- MUTATORS ------------------------
          public:
-            void  Compile(ScriptFile& script);
-            void  Populate(ScriptFile& script);
+            CommandNodePtr Add(CommandNodePtr node);
+            void           Compile(ScriptFile& script);
+            void           Populate(ScriptFile& script);
             
          private:
-            void  CompileParameters(ScriptFile& script);
-            void  InsertJump(NodeIterator pos, const CommandNode* target);
-            void  LinkCommands();
+            void           CompileParameters(ScriptFile& script);
+            void           IndexCommands(UINT& next);
+            void           InsertJump(NodeIterator pos, const CommandNode* target);
+            void           LinkCommands();
             
             // -------------------- REPRESENTATION ---------------------
          public:
+            CommandNode*    Parent;           // Parent node
+            NodeList        Children;         // Child commands
+
             ParameterArray       Parameters,    // script parameters in display order
                                  Postfix;       // expression parameters in postfix order
             CommandSyntaxRef     Syntax;        // command syntax
