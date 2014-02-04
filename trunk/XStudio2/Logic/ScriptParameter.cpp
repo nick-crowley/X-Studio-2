@@ -136,11 +136,11 @@ namespace Logic
                Value = ReturnValue(ReturnValue(Value.Int).Conditional, 0xffff).EncodedValue;
             break;
 
-         // String: Label/Comment/String
+         // String: LabelDeclaration/Comment/String
          case DataType::STRING:
             break;
 
-         // Integer: LabelNumber/Int
+         // Integer: LabelNumber/Number
          case DataType::INTEGER:
             if (Syntax.Type != ParameterType::LABEL_NUMBER)
                Value = _wtoi(Value.String.c_str());
