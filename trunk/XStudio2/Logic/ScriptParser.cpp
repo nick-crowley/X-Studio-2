@@ -3,6 +3,7 @@
 #include "ExpressionParser.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
+#include "SyntaxLibrary.h"
 #include "CommandHash.h"
 #include "ScriptFile.h"
 
@@ -67,7 +68,7 @@ namespace Logic
          
          /// <summary>Reads the next node but returns the current node</summary>
          /// <returns>Node that was current before call</returns>
-         ScriptParser::CommandNodePtr  ScriptParser::Advance()
+         CommandNodePtr  ScriptParser::Advance()
          {
             CommandNodePtr tmp(CurrentNode);
             CurrentNode = ReadLine();
@@ -491,7 +492,7 @@ namespace Logic
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
          /// <returns>New NOP/Comment command node</returns>
-         ScriptParser::CommandNodePtr ScriptParser::ReadComment(const CommandLexer& lex)
+         CommandNodePtr ScriptParser::ReadComment(const CommandLexer& lex)
          {
             ParameterArray params;
 
@@ -515,7 +516,7 @@ namespace Logic
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///
          /// </remarks>
-         ScriptParser::CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex)
+         CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex)
          {
             Conditional   condition = Conditional::DISCARD;
             TokenIterator pos = lex.begin(),
@@ -608,7 +609,7 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
-         ScriptParser::CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
+         CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
             Conditional    condition = Conditional::DISCARD;
             TokenIterator  pos = lex.begin();
@@ -669,7 +670,7 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
-         ScriptParser::CommandNodePtr ScriptParser::ReadLine()
+         CommandNodePtr ScriptParser::ReadLine()
          {
             // EOF: Return
             if (CurrentLine == Input.end())
