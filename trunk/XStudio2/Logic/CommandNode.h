@@ -95,10 +95,12 @@ namespace Logic
          private:
             bool          Contains(BranchLogic l) const;
             void          EnumLabels(ErrorArray& errors) const;
-            NodeIterator  Find(BranchLogic l) const;
-            NodeIterator  Find(const CommandNode* child) const;
-            CommandNode*  FindNextSibling() const;
             CommandNode*  FindAncestor(BranchLogic l) const;
+            NodeIterator  FindChild(BranchLogic l) const;
+            NodeIterator  FindChild(const CommandNode* child) const;
+            CommandNode*  FindLabel(const wstring& name) const;
+            CommandNode*  FindNextSibling() const;
+            CommandNode*  FindRoot() const;
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;
             bool          IsRoot() const;
