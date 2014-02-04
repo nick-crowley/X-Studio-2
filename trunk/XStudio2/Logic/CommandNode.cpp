@@ -104,9 +104,18 @@ namespace Logic
          /// <param name="script">The script.</param>
          void  ScriptParser::CommandNode::Compile(ScriptFile& script)
          {
-            // Perform linking
+            if (Parent != nullptr)
+            {
+               // Perform linking
+               LinkCommands();
+
+               // Compile parameters
+               CompileParameters(script);
+            }
+
+            // Recurse into children
             for (auto c : Children)
-               c->LinkCommands();
+               c->Compile(script);
          }
 
          /// <summary>Debug print</summary>
@@ -223,6 +232,12 @@ namespace Logic
          // ------------------------------ PROTECTED METHODS -----------------------------
          
          // ------------------------------- PRIVATE METHODS ------------------------------
+
+         /// <summary>Compiles the parameters.</summary>
+         /// <param name="script">The script.</param>
+         void  ScriptParser::CommandNode::CompileParameters(ScriptFile& script)
+         {
+         }
 
          /// <summary>Check children for presence of certain branch logic</summary>
          /// <param name="l">logic</param>
@@ -347,6 +362,7 @@ namespace Logic
             return Children.begin() == Children.end() ? Children.begin() : Children.end()-1;
          }
 
+
          /// <summary>Perform command linking</summary>
          void  ScriptParser::CommandNode::LinkCommands() 
          {
@@ -406,10 +422,6 @@ namespace Logic
                JumpTarget = FindParent(BranchLogic::While);
                break;
             }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->LinkCommands();
          }
 
          /// <summary>Verifies the branching logic</summary>
@@ -461,8 +473,12 @@ namespace Logic
                   errors += ErrorToken(L"missing command from 'skip if' conditional", Children[0]->LineNumber, Children[0]->Extent);
 
                // Ensure command is standard
-               else if (!(*LastChild)->Syntax.Is(CommandType::Standard))
-                  errors += ErrorToken(L"incompatible with 'skip if' conditional", (*LastChild)->LineNumber, (*LastChild)->Extent);
+               else 
+               {
+                  auto cmd = *LastChild;
+                  if (!cmd->Syntax.Is(CommandType::Standard) && !cmd->Syntax.Is(CMD_CONTINUE) && !cmd->Syntax.Is(CMD_BREAK))
+                     errors += ErrorToken(L"incompatible with 'skip if' conditional", cmd->LineNumber, cmd->Extent);
+               }
                break;
             }
          }

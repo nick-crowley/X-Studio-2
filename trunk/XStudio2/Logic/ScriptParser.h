@@ -107,6 +107,7 @@ namespace Logic
                void        Verify(const ScriptFile& script, ErrorArray& errors) const;
                
             private:
+               void          CompileParameters(ScriptFile& script);
                bool          Contains(BranchLogic l) const;
                void          EnumLabels(ErrorArray& errors) const;
                NodeIterator  Find(BranchLogic l);
