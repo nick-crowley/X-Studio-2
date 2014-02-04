@@ -94,7 +94,6 @@ namespace Logic
 
       protected:
          static DataType  IdentifyDataType(ScriptToken tok);
-         static const ParameterSyntax&  ModifySyntax(const ParameterSyntax& s);
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -103,7 +102,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
       public:
-         void  Generate(ScriptFile& script);
+         void  Generate(ScriptFile& script, UINT jumpDestination);
          void  Translate(ScriptFile& script);
 
 		   // -------------------- REPRESENTATION ---------------------

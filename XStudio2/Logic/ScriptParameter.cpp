@@ -15,7 +15,7 @@ namespace Logic
       /// <param name="s">syntax</param>
       /// <param name="tok">script token</param>
       ScriptParameter::ScriptParameter(const ParameterSyntax& s, const ScriptToken& t) 
-         : Syntax(ModifySyntax(s)), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
+         : Syntax(s), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
       {}
 
       /// <summary>Create a conditional retVar parameter from a PARSED CONDITIONAL</summary>
@@ -102,20 +102,11 @@ namespace Logic
          }
       }
 
-      /// <summary>Tweaks the syntax of parsed parameters.</summary>
-      /// <param name="s">syntax</param>
-      /// <returns>syntax</returns>
-      const ParameterSyntax&  ScriptParameter::ModifySyntax(const ParameterSyntax& s)
-      {
-         // Convert label number (used by goto/gosub) into label name
-         return s.Type != ParameterType::LABEL_NUMBER ? s : ParameterSyntax::LabelNameParameter;
-      }
-
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Generates value from text</summary>
       /// <param name="script">script used for variable ID lookup</param>
-      void  ScriptParameter::Generate(ScriptFile& script)
+      void  ScriptParameter::Generate(ScriptFile& script, UINT jumpDestination)
       {
          const ScriptObject* obj = nullptr;
 
@@ -125,15 +116,19 @@ namespace Logic
          case DataType::VARIABLE:
             // Variable: Resolve ID
             if (!Syntax.IsRetVar())
+            {
+               Type = DataType::LIVE_VARIABLE;
                Value = script.Variables[Value.String].ID;
-            
+            }
             // RetVar/Discard: Resolve/Encode ID
-            else if (Value.Type == ValueType::String || ReturnValue(Value.Int).Conditional == Conditional::DISCARD)
+            else if (Value.Type == ValueType::String)
                Value = ReturnValue(ReturnType::ASSIGNMENT, script.Variables[Value.String].ID).EncodedValue;
+            else if (ReturnValue(Value.Int).Conditional == Conditional::DISCARD)
+               Value = ReturnValue(ReturnType::DISCARD, 0).EncodedValue;
             
             // Conditional: Encode conditional + jump destination
             else
-               Value = ReturnValue(ReturnValue(Value.Int).Conditional, 0xffff).EncodedValue;
+               Value = ReturnValue(ReturnValue(Value.Int).Conditional, jumpDestination).EncodedValue;
             break;
 
          // String: LabelDeclaration/Comment/String
@@ -144,6 +139,8 @@ namespace Logic
          case DataType::INTEGER:
             if (Syntax.Type != ParameterType::LABEL_NUMBER)
                Value = _wtoi(Value.String.c_str());
+            else
+               Value = jumpDestination;
             break;
 
          // Null: Zero
@@ -170,13 +167,14 @@ namespace Logic
          //   Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
          //   break;
 
-         // Various: Add HIWORD?
+         // Constant: Lookup + modify type
          case DataType::CONSTANT:
-         case DataType::DATATYPE:
+            Type = DataType::LIVE_CONSTANT;
             Value = (int)ScriptObjectLib.Find(Value.String).ID; 
             break;
 
          // Various: Lookup
+         case DataType::DATATYPE:
          case DataType::FLIGHTRETURN:     
          case DataType::OBJECTCLASS:      
          case DataType::OBJECTCOMMAND:    
