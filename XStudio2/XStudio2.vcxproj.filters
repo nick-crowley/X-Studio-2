@@ -678,6 +678,7 @@
     <Xml Include="plugin.piracy.lib.logic.xml" />
     <Xml Include="plugin.piracy.lib.ui.xml" />
     <Xml Include="output.xml" />
+    <Xml Include="plugin.piracy.astronaut.cmd.repair.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoRes.rc">
