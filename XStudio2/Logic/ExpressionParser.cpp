@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ExpressionParser.h"
 
-#define  PRINT_DEBUG
+//#define  PRINT_DEBUG
 
 namespace Logic
 {
