@@ -149,24 +149,20 @@ namespace Logic
             Value = 0;
             break;
 
-         // Operator: Format according to type
-         //case DataType::OPERATOR:
-         //   switch (Operator op = (Operator)Value.LowWord)
-         //   {
-         //   // HACK: Substitute for octal entity
-         //   case Operator::Add:           format = L"+";    break; 
-         //   // Unary
-         //   case Operator::Minus:
-         //   case Operator::LogicalNot:
-         //   case Operator::BitwiseNot:
-         //   case Operator::OpenBracket:   //format = L" %s";  break; 
-         //   case Operator::CloseBracket:  format = L"%s";  break; 
-         //   // Binary 
-         //   default:                      format = L" %s "; break; 
-         //   }
-         //   // Lookup text
-         //   Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
-         //   break;
+         // Operator: 
+         case DataType::OPERATOR:
+            // ADD/MINUS/SUBTRACT: identify manually
+            if (Token.Text == L"-")
+               Value = (Token.Type == TokenType::BinaryOp ? (int)Operator::Subtract : (int)Operator::Minus);
+            else if (Token.Text == L"+")
+               Value = (int)Operator::Add;
+            else
+               Value = ScriptObjectLib.Find(Value.String).ID; 
+
+            // Unary: Add HIWORD
+            if (Token.Type == TokenType::UnaryOp)
+               Type = DataType::UNARY_OPERATOR;
+            break;
 
          // Constant: Lookup + modify type
          case DataType::CONSTANT:
@@ -254,19 +250,16 @@ namespace Logic
          case DataType::OPERATOR:
             switch (Operator op = (Operator)Value.LowWord)
             {
-            // HACK: Substitute for octal entity
-            case Operator::Add:           format = L"+";    break; 
-            // Unary
+            case Operator::Add:           format = L"+";    break;   // HACK: Substitute for octal entity
             case Operator::Minus:
             case Operator::LogicalNot:
             case Operator::BitwiseNot:
-            case Operator::OpenBracket:   //format = L" %s";  break; 
-            case Operator::CloseBracket:  format = L"%s";  break; 
-            // Binary 
-            default:                      format = L" %s "; break; 
+            case Operator::OpenBracket:   
+            case Operator::CloseBracket:  format = L"%s";   break;   // Unary
+            default:                      format = L" %s "; break;   // Binary 
             }
             // Lookup text
-            Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str());  
+            Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str()); 
             break;
 
          // Various: Strip HIWORD, then lookup ID

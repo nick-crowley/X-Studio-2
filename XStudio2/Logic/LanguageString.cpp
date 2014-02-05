@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
 #include "StringParser.h"
+#include "ParameterTypes.h"
 
 namespace Logic
 {
@@ -38,11 +39,11 @@ namespace Logic
          switch (Page)
          {
          // Exclude all
-         case KnownPage::OPERATORS:
          default:
             return false;
 
          // Include all
+         case KnownPage::OPERATORS:
          case KnownPage::DATA_TYPES:
          case KnownPage::FLIGHT_RETURNS:
          case KnownPage::OBJECT_CLASSES:

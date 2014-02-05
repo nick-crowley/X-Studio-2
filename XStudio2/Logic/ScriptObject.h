@@ -87,6 +87,9 @@ namespace Logic
          /// <summary>Get whether object should be hidden from GUI</summary>
          bool  IsHidden() const;
 
+         /// <summary>Get whether object cannot be resolved by lookup</summary>
+         bool  CanLookup() const;
+
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Appends an object ID</summary>

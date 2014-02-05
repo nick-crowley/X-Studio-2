@@ -160,8 +160,12 @@ namespace Logic
       {
          switch (Group)
          {
+         // Hide operators
+         case ScriptObjectGroup::Operator:
+            return true;
+
+         // Hide internal parameter types
          case ScriptObjectGroup::ParameterType:
-            // Hide internal parameter types
             switch ((ParameterType)ID)
             {
             case ParameterType::LABEL_NAME:
@@ -181,6 +185,22 @@ namespace Logic
          }
 
          return false;
+      }
+
+      /// <summary>Get whether object cannot be resolved by lookup</summary>
+      bool  ScriptObject::CanLookup() const
+      {
+         // Exclude Add, Substract, Minus from lookup
+         if (Group == ScriptObjectGroup::Operator)
+            switch ((Operator)ID)
+            {
+            case Operator::Add:        // Stored as octal entity, resolved manually
+            case Operator::Subtract:   // Conflicts with minus, resolved manually
+            case Operator::Minus:      // Conflicts with subtract, resolved manually
+               return false;
+            }
+
+         return true;
       }
 
       /// <summary>Appends an object ID</summary>

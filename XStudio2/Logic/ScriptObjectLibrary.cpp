@@ -238,7 +238,11 @@ namespace Logic
          {
             const ScriptObject& obj = pair.second;
 
-            // Attempt to insert
+            // Special Case: Exclude Add,Substract,Minus from lookup
+            if (!obj.CanLookup())
+               continue;
+
+            // Attempt to insert 
             if (!Lookup.Add(obj))
             {
                // DEBUG: 
