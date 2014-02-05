@@ -26,7 +26,7 @@ namespace Logic
       private:
          ScriptCommand();
       public:
-         ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params);
+         //ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params);
          ScriptCommand(CommandSyntaxRef syntax, ParameterArray& params, bool comment);
          ScriptCommand(CommandSyntaxRef syntax, UINT  ref, ParameterArray& params, bool comment);
          virtual ~ScriptCommand();

@@ -51,6 +51,12 @@ namespace Logic
             return LOWORD(Int);
          }
 
+         /// <summary>Compare two values</summary>
+         bool operator==(const ParameterValue& v) const
+         {
+            return Type==v.Type && (Type==ValueType::String ? String==v.String : Int==v.Int);
+         }
+
 		   // ----------------------- MUTATORS ------------------------
 
          /// <summary>Assign integer value</summary>
@@ -98,7 +104,12 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			
-      
+      public:
+         /// <summary>Compare two parameters</summary>
+         bool operator==(const ScriptParameter& r) const
+         {
+            return Type==r.Type && Value==r.Value && Syntax==r.Syntax && Text==r.Text && Token==r.Token;
+         }
 		   // ----------------------- MUTATORS ------------------------
 
       public:
@@ -113,6 +124,7 @@ namespace Logic
          wstring         Text;
          ScriptToken     Token;
       };
+
 
       /// <summary>Vector of script parameters</summary>
       class ParameterArray : public vector<ScriptParameter> 
