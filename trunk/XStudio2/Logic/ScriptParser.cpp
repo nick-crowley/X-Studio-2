@@ -631,10 +631,11 @@ namespace Logic
                // Parse expression
                ExpressionParser expr(pos, lex.end());
 
-               // Store ordered parameters
+               // Store infix 
                for (const auto& tok : expr.InfixParams)
                   params += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
 
+               // Store postfix
                for (const auto& tok : expr.PostfixParams)
                   postfix += ScriptParameter(ParameterSyntax::ExpressionParameter, tok);
             }

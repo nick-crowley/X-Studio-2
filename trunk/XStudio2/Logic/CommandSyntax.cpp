@@ -103,19 +103,27 @@ namespace Logic
       /// <returns></returns>
       ParamSyntaxArray  CommandSyntax::GetParametersByDisplay() const
       {
-         ParamSyntaxArray params;
-         vector<int>      order;
-         
-         //transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->int { return p.DisplayIndex; });
-         for (const auto& p : Parameters)
-            order.push_back(p.DisplayIndex);
+         typedef pair<UINT,UINT> Index;   // {Physical,Display}
 
-         // Sort by DisplayIndex (Ascending)
-         sort(order.begin(), order.end(), less<int>()); 
-         //sort(params.begin(), params.end(), [](const ParameterSyntax& a, const ParameterSyntax& b)->bool { return a.DisplayIndex < b.DisplayIndex; });
+         ParamSyntaxArray params;
+         vector<Index>    order;
          
-         for (int index : order)
-            params.push_back(Parameters[index]);
+         // Build array of {Physical,Display} tuples sorted by physical index
+         transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->Index 
+         { 
+            return Index(p.PhysicalIndex, p.DisplayIndex); 
+         });
+
+         // Build array by display index
+         for (const ParameterSyntax& ps : Parameters)
+            params.push_back( Parameters[order[ps.PhysicalIndex].second] );
+
+         // Re-order by display index (ascending)
+         /*for (UINT i = 0; i < Parameters.size(); ++i)
+         {
+            auto p = find_if(Parameters.begin(), Parameters.end(), [i](const ParameterSyntax& ps) {return ps.DisplayIndex == i;});
+            params.push_back(*p);
+         }*/
 
          return params;
       }

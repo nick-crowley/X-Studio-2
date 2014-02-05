@@ -85,9 +85,9 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         static const ParameterSyntax  ExpressionIndex,     ExpressionParameter,
+         static const ParameterSyntax  InfixParameter,     ExpressionParameter,
                                        LabelNameParameter,  LabelNumberParameter,
-                                       ParameterCount,      ScriptCallArgument,
+                                       StructuralCount,      ScriptCallArgument,
                                        UnrecognisedCommand;
 
       public:

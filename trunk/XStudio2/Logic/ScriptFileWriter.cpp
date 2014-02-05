@@ -129,7 +129,7 @@ namespace Logic
             case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
             case ParameterType::LABEL_NUMBER:  
             case ParameterType::STRUCTURAL_COUNT:
-            case ParameterType::STRUCTURAL_INDEX:
+            case ParameterType::EXPRESSION_INFIX:
                ++count;
                continue;
             }
@@ -211,7 +211,7 @@ namespace Logic
          case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
          case ParameterType::LABEL_NUMBER:  
          case ParameterType::STRUCTURAL_COUNT:
-         case ParameterType::STRUCTURAL_INDEX:
+         case ParameterType::EXPRESSION_INFIX:
             WriteInt(parent, p.Value.Int);
             break;
 

@@ -136,7 +136,7 @@ namespace Logic
       {   
          // Special
          UNRECOGNISED                   = 128,     // Added by me for use instead of NULL
-         STRUCTURAL_INDEX               = 127,
+         EXPRESSION_INFIX               = 127,
          STRUCTURAL_COUNT               = 126,
          CONDITION                      = 4,       // Unused
 

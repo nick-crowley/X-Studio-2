@@ -7,25 +7,25 @@ namespace Logic
    namespace Scripts
    {
       
-      /// <summary>JMP label number syntax</summary>
-      const ParameterSyntax  ParameterSyntax::ExpressionIndex(ParameterType::STRUCTURAL_INDEX, 0, 0);
+      /// <summary>Infix expression parameter. [OUTPUT]</summary>
+      const ParameterSyntax  ParameterSyntax::InfixParameter(ParameterType::EXPRESSION_INFIX, 0, 0);
 
-      /// <summary>Expression parameter syntax</summary>
+      /// <summary>Expression parameter, immune from static type checking. [INPUT/OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::ExpressionParameter(ParameterType::EXPRESSION, 1, 1);
 
-      /// <summary>Goto/gosub label name syntax</summary>
+      /// <summary>Goto/gosub label name syntax. [INPUT]</summary>
       const ParameterSyntax  ParameterSyntax::LabelNameParameter(ParameterType::LABEL_NAME, 0, 0);
 
-      /// <summary>JMP label number syntax</summary>
+      /// <summary>Unconditional jump destination syntax. [OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::LabelNumberParameter(ParameterType::LABEL_NUMBER, 0, 0);
 
-      /// <summary>JMP label number syntax</summary>
-      const ParameterSyntax  ParameterSyntax::ParameterCount(ParameterType::STRUCTURAL_COUNT, 0, 0);
+      /// <summary>Expression parameter count or script-call argument count. [OUTPUT]</summary>
+      const ParameterSyntax  ParameterSyntax::StructuralCount(ParameterType::STRUCTURAL_COUNT, 0, 0);
       
-      /// <summary>Variable argument script call argument syntax</summary>
+      /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 
-      /// <summary>Syntax for parameters of an unrecognised command</summary>
+      /// <summary>Syntax for parameters of an unrecognised command. [UNUSED]</summary>
       const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNRECOGNISED, 0, 0);
       
       // -------------------------------- CONSTRUCTION --------------------------------
@@ -75,7 +75,7 @@ namespace Logic
          // [INVALID] Not used
 	      case ParameterType::UNRECOGNISED:
          case ParameterType::STRUCTURAL_COUNT:
-         case ParameterType::STRUCTURAL_INDEX:
+         case ParameterType::EXPRESSION_INFIX:
          case ParameterType::CONDITION:  
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
 

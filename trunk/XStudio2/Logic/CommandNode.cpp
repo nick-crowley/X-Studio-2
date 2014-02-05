@@ -237,50 +237,19 @@ namespace Logic
                // Compile parameters
                for (auto& p : Parameters)
                   p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
-               
-               // DEFAULT: Re-order from displayIndex -> physicalIndex
-               if (!Syntax.Is(CMD_EXPRESSION))
-               {
-                  // Append Parameters
-                  for (auto& ps : Syntax.Parameters)
-                     params += Parameters[ps.DisplayIndex];
 
-                  // SCRIPT-CALL: Append arguments
-                  if (Syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
-                  {
-                     params += ScriptParameter(ParameterSyntax::ParameterCount, DataType::INTEGER, Parameters.size()-3);
-                     for (UINT i = 3; i < Parameters.size(); ++i)
-                        params += Parameters[i];
-                  }
-               }
-               // EXPRESSION: Append postfix + infix
-               else 
-               {  
-                  // Compile postfix
+               // Generate & insert command
+               if (!Syntax.Is(CMD_EXPRESSION))
+                  script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters));
+               else
+               {
+                  // Compile postfix parameters
                   for (auto& p : Postfix)
                      p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
 
-                  // RetVar
-                  params += Parameters[0];
-
-                  // Postfix: Append verbatim
-                  params += ScriptParameter(ParameterSyntax::ParameterCount, DataType::INTEGER, Postfix.size());
-                  params += Postfix;
-                     
-                  // Infix: 
-                  params += ScriptParameter(ParameterSyntax::ParameterCount, DataType::INTEGER, Parameters.size()-1);
-                  for (UINT i = 1; i < Parameters.size(); ++i)
-                     if (Parameters[i].Type == DataType::OPERATOR)
-                        params += Parameters[i];
-                     else
-                     {
-                        int index = find(Postfix.begin(), Postfix.end(), Parameters[i]) - Postfix.begin() + 1;
-                        params += ScriptParameter(ParameterSyntax::ExpressionIndex, DataType::INTEGER, -index);
-                     }
+                  // Generate & insert command
+                  script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix));
                }
-
-               // Append command
-               script.Commands.AddOutput(ScriptCommand(Syntax, params, false));
             }
 
             // Recurse into children
