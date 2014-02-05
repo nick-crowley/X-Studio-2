@@ -124,10 +124,10 @@ namespace Logic
          void  CommandNode::Print(int depth) const
          {
             // Line/Indent
-            wstring   tab(depth, (WCHAR)L' ');
-            GuiString line(L"%03d: %s", Index, tab.c_str()),
+            wstring   tab(depth, L' ');
+            GuiString line(Is(CommandType::Standard) ? L"%03d: " : L"   : ", Index),      // Line#: <index> 
                       logic(GetString(Logic)),
-                      txt; //(LineText);
+                      txt(LineText);
             Colour    colour(Colour::White);
             
             // Logic
@@ -135,7 +135,7 @@ namespace Logic
             {
             // Conditional:
             default: 
-               colour = Colour::White;
+               colour = Colour::Cyan;
                if (JumpTarget)
                   txt = GuiString(L"Jump-if-false: %d", JumpTarget->Index);
                break;
@@ -147,24 +147,24 @@ namespace Logic
 
             // Command:
             case BranchLogic::None:
-               colour = Colour::Yellow;
                if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                {
-                  colour = Is(CMD_HIDDEN_JUMP) ? Colour::Green : Colour::Yellow;
+                  colour = Colour::Green; //Is(CMD_HIDDEN_JUMP) ? Colour::Green : Colour::Yellow;
                   logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
-                  txt = GuiString(L"Unconditional Jump: %d", JumpTarget->Index);
+                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: %d" : L"Goto label %d", JumpTarget->Index);
+               }
+               else if (Is(CMD_DEFINE_LABEL))
+               {
+                  colour = Colour::Red;
+                  logic = L"PROC";
                }
                else
-               {
-                  colour = Colour::Cyan;
                   logic = L"Cmd";
-               }
                break;
             }
 
             // Print
-            if (Logic != BranchLogic::NOP)
-               Console << line << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
+            Console << line+tab << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
 
             // Print Children
             for (auto c : Children)
