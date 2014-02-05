@@ -129,19 +129,27 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       int  ScriptFileReader::ReadArray(XmlNodePtr& node, const WCHAR* help)
       {
+         int size;
+
          // Ensure node is script value
          ReadElement(node, L"sval");
 
          // Array: read size
          if (ReadAttribute(node, L"type") == L"array")
-            return _wtoi(ReadAttribute(node, L"size").c_str());
+            size = _wtoi(ReadAttribute(node, L"size").c_str());
 
          // Int: Permit iff zero
          else if (ReadAttribute(node, L"type") == L"int" && ReadAttribute(node, L"val") == L"0")
-            return 0;
+            size = 0;
+         
+         else // Not an array
+            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
-         // Error
-         throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
+         // Check size
+         if (size != node->childNodes->length)
+            throw FileFormatException(HERE, GuiString(L"Array <sval> node has %d children instead of %d", node->childNodes->length, size));
+
+         return size;
       }
 
       
