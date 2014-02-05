@@ -44,7 +44,7 @@ namespace Logic
          /// <param name="name">name.</param>
          /// <param name="id">1-based ID.</param>
          ScriptVariable(const wstring& name, UINT id)
-            : Type(VariableType::Variable), Name(name), ID(id), ValueType(ParameterType::UNDETERMINED)
+            : Type(VariableType::Variable), Name(name), ID(id), ValueType(ParameterType::UNRECOGNISED)
          {}
 
          // -------------------- REPRESENTATION ---------------------
@@ -405,8 +405,14 @@ namespace Logic
             /// <param name="cmd">The command.</param>
             void  AddOutput(ScriptCommand& cmd)
             {
-               CommandList& list = (cmd.Is(CommandType::Standard) ? StdOutput : AuxOutput);
-               list.push_back(cmd);
+               // Standard: Append
+               if (cmd.Is(CommandType::Standard))
+                  StdOutput.push_back(cmd);
+               else
+               {  // Auxiliary: Set reference index + Append
+                  cmd.RefIndex = StdOutput.size();
+                  AuxOutput.push_back(cmd);
+               }
             }
 
             /// <summary>Clears all commands</summary>
