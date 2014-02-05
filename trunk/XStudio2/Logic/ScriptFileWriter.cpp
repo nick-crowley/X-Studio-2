@@ -181,6 +181,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       void  ScriptFileWriter::WriteCommand(XmlElementPtr parent, const ScriptCommand& cmd)
       {
+         // array
          auto node = WriteArray(parent, CalculateSize(cmd));
 
          // Index+ID
@@ -190,7 +191,7 @@ namespace Logic
 
          // Parameters
          for (const ScriptParameter& p : cmd.Parameters)
-            WriteParameter(parent, p);
+            WriteParameter(node, p);
       }
 
       /// <summary>Writes a command parameter</summary>
