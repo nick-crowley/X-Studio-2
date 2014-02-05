@@ -6,11 +6,12 @@ namespace Logic
 {
    namespace Scripts
    {
+      
+      /// <summary>JMP label number syntax</summary>
+      const ParameterSyntax  ParameterSyntax::ExpressionIndex(ParameterType::STRUCTURAL, 0, 0);
+
       /// <summary>Expression parameter syntax</summary>
       const ParameterSyntax  ParameterSyntax::ExpressionParameter(ParameterType::EXPRESSION, 1, 1);
-
-      /// <summary>Variable argument script call argument syntax</summary>
-      const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 
       /// <summary>Goto/gosub label name syntax</summary>
       const ParameterSyntax  ParameterSyntax::LabelNameParameter(ParameterType::LABEL_NAME, 0, 0);
@@ -18,8 +19,14 @@ namespace Logic
       /// <summary>JMP label number syntax</summary>
       const ParameterSyntax  ParameterSyntax::LabelNumberParameter(ParameterType::LABEL_NUMBER, 0, 0);
 
+      /// <summary>JMP label number syntax</summary>
+      const ParameterSyntax  ParameterSyntax::ParameterCount(ParameterType::STRUCTURAL, 0, 0);
+      
+      /// <summary>Variable argument script call argument syntax</summary>
+      const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
+
       /// <summary>Syntax for parameters of an unrecognised command</summary>
-      const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNDETERMINED, 0, 0);
+      const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNRECOGNISED, 0, 0);
       
       // -------------------------------- CONSTRUCTION --------------------------------
       
@@ -66,7 +73,8 @@ namespace Logic
          switch (Type)
          {
          // [INVALID] Not used
-	      case ParameterType::UNDETERMINED:
+	      case ParameterType::UNRECOGNISED:
+         case ParameterType::STRUCTURAL:
          case ParameterType::CONDITION:  
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
 

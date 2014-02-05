@@ -79,10 +79,9 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         static const ParameterSyntax  ExpressionParameter,
-                                       LabelNameParameter,
-                                       LabelNumberParameter,
-                                       ScriptCallArgument,
+         static const ParameterSyntax  ExpressionIndex,     ExpressionParameter,
+                                       LabelNameParameter,  LabelNumberParameter,
+                                       ParameterCount,      ScriptCallArgument,
                                        UnrecognisedCommand;
 
       public:

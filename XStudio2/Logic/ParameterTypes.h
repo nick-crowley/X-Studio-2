@@ -135,7 +135,8 @@ namespace Logic
       enum class ParameterType : UINT
       {   
          // Special
-         UNDETERMINED                   = 128,     // Added by me for use instead of NULL
+         UNRECOGNISED                   = 128,     // Added by me for use instead of NULL
+         STRUCTURAL                     = 127,
          CONDITION                      = 4,       // Unused
 
          // Scripting
