@@ -42,8 +42,8 @@ namespace Logic
          void  WriteArgument(XmlElementPtr parent, UINT index, const ScriptVariable& var);
          void  WriteCommand(XmlElementPtr parent, const ScriptCommand& cmd);
          void  WriteParameter(XmlElementPtr parent, const ScriptParameter& p);
-         void  WriteValue(XmlElementPtr parent, int val);
-         void  WriteValue(XmlElementPtr parent, const wstring& val);
+         void  WriteInt(XmlElementPtr parent, int val);
+         void  WriteString(XmlElementPtr parent, const wstring& val);
          void  WriteValue(XmlElementPtr parent, const ParameterValue& val);
 
          // -------------------- REPRESENTATION ---------------------
