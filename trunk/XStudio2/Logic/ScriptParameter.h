@@ -24,13 +24,11 @@ namespace Logic
          ParameterValue() : Type(ValueType::Int), Int(0) 
          {}
          /// <summary>Create from integer value</summary>
-         ParameterValue(const wstring& sz) : Type(ValueType::String) { 
-            String = sz; 
-         }
+         ParameterValue(const wstring& sz) : Type(ValueType::String), Int(0), String(sz)
+         {}
          /// <summary>Create from string value</summary>
-         ParameterValue(int val) : Type(ValueType::Int) { 
-            Int = val; 
-         }
+         ParameterValue(int val) : Type(ValueType::Int), Int(val)
+         {}
 
          // --------------------- PROPERTIES ------------------------
 
@@ -108,7 +106,7 @@ namespace Logic
          /// <summary>Compare two parameters</summary>
          bool operator==(const ScriptParameter& r) const
          {
-            return Type==r.Type && Value==r.Value && Syntax==r.Syntax && Text==r.Text && Token==r.Token;
+            return Type==r.Type && Value==r.Value; // && Syntax==r.Syntax && Text==r.Text && Token==r.Token;
          }
 		   // ----------------------- MUTATORS ------------------------
 

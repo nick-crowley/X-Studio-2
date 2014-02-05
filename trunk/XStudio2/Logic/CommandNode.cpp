@@ -237,7 +237,7 @@ namespace Logic
                // Compile parameters
                for (auto& p : Parameters)
                   p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
-
+               
                // DEFAULT: Re-order from displayIndex -> physicalIndex
                if (!Syntax.Is(CMD_EXPRESSION))
                {
@@ -255,7 +255,11 @@ namespace Logic
                }
                // EXPRESSION: Append postfix + infix
                else 
-               {
+               {  
+                  // Compile postfix
+                  for (auto& p : Postfix)
+                     p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
+
                   // RetVar
                   params += Parameters[0];
 

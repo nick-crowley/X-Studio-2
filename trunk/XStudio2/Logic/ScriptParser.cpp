@@ -499,10 +499,14 @@ namespace Logic
             // Identify syntax
             CommandSyntaxRef syntax = SyntaxLib.Find(lex.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
             
-            // Store comment, if any
-            if (lex.count() == 2)
+            // Add comment, or insert placeholder
+            if (syntax.Is(CMD_COMMENT) && lex.count()==2)
                params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
 
+            else if (syntax.Is(CMD_COMMENT))
+               params += ScriptParameter(syntax.Parameters[0], ScriptToken(TokenType::Comment, 1,1, L""));
+
+            // 
             return new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber);
          }
 

@@ -8,7 +8,7 @@ namespace Logic
    {
       
       /// <summary>JMP label number syntax</summary>
-      const ParameterSyntax  ParameterSyntax::ExpressionIndex(ParameterType::STRUCTURAL, 0, 0);
+      const ParameterSyntax  ParameterSyntax::ExpressionIndex(ParameterType::STRUCTURAL_INDEX, 0, 0);
 
       /// <summary>Expression parameter syntax</summary>
       const ParameterSyntax  ParameterSyntax::ExpressionParameter(ParameterType::EXPRESSION, 1, 1);
@@ -20,7 +20,7 @@ namespace Logic
       const ParameterSyntax  ParameterSyntax::LabelNumberParameter(ParameterType::LABEL_NUMBER, 0, 0);
 
       /// <summary>JMP label number syntax</summary>
-      const ParameterSyntax  ParameterSyntax::ParameterCount(ParameterType::STRUCTURAL, 0, 0);
+      const ParameterSyntax  ParameterSyntax::ParameterCount(ParameterType::STRUCTURAL_COUNT, 0, 0);
       
       /// <summary>Variable argument script call argument syntax</summary>
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
@@ -74,7 +74,8 @@ namespace Logic
          {
          // [INVALID] Not used
 	      case ParameterType::UNRECOGNISED:
-         case ParameterType::STRUCTURAL:
+         case ParameterType::STRUCTURAL_COUNT:
+         case ParameterType::STRUCTURAL_INDEX:
          case ParameterType::CONDITION:  
             throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
 
