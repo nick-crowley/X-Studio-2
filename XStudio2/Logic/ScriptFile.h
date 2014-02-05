@@ -56,6 +56,9 @@ namespace Logic
          UINT           ID;       // 1-based ID
       };
 
+      /// <summary>Vector of script variables</summary>
+      typedef vector<ScriptVariable>  VariableArray;
+
 
       /// <summary>Occurs when a script label is missing</summary>
       class LabelNotFoundException : public ExceptionBase
@@ -206,6 +209,9 @@ namespace Logic
 
             // --------------------- PROPERTIES ------------------------
 
+            PROPERTY_GET(VariableArray,Arguments,GetArguments);
+            PROPERTY_GET(size_type,Count,GetCount);
+
             // ---------------------- ACCESSORS ------------------------			
          public:
             /// <summary>Get start iterator</summary>
@@ -215,6 +221,20 @@ namespace Logic
             /// <summary>Get end iterator</summary>
             VarIterator end()             { return VarIterator(*this, base::end()); }
             ConstIterator end() const     { return ConstIterator(*this, base::cend()); }
+
+            /// <summary>Get arguments sorted by ID</summary>
+            /// <returns></returns>
+            VariableArray GetArguments() const
+            {
+               VariableArray args;
+
+               copy_if(begin(), end(), back_inserter(args), [](const ScriptVariable& v){return v.Type == VariableType::Argument;} );
+               /*for (const ScriptVariable& v : *this)
+                  if (v.Type == VariableType::Argument)
+                     args.push_back(v);*/
+
+               return args;
+            }
 
             /// <summary>Query presence of a variable</summary>
             /// <param name="name">name without $ prefix</param>
@@ -445,6 +465,7 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
          wstring GetCommandName() const;
+         bool    HasCommandName() const;
 
 		   // ----------------------- MUTATORS ------------------------
 

@@ -394,6 +394,9 @@
     <ClInclude Include="Logic\CommandNode.h">
       <Filter>Header Files\Logic\Scripts\Compiler</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ScriptFileWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -620,6 +623,9 @@
     </ClCompile>
     <ClCompile Include="ScriptDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ScriptFileWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
