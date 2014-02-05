@@ -32,7 +32,8 @@ namespace Logic
                   // Include text/operators/keywords
                   case TokenType::Text:
                   case TokenType::Label:
-                  case TokenType::Operator:
+                  case TokenType::BinaryOp:
+                  case TokenType::UnaryOp:
                   case TokenType::Keyword:
                      h += it->Text;
 
@@ -51,7 +52,8 @@ namespace Logic
                   {
                   // Exclude text/operators/keywords
                   case TokenType::Text:
-                  case TokenType::Operator:
+                  case TokenType::BinaryOp:
+                  case TokenType::UnaryOp:
                   case TokenType::Keyword:
                      break;
 

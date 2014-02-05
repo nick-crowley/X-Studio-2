@@ -128,7 +128,7 @@ namespace Logic
                /// <summary>Prints contents to the console</summary>
                wstring  debugPrint() const
                {
-                  return StringResource::Format(L"{Bracketed: ( %s ) }", Expression->debugPrint().c_str());
+                  return StringResource::Format(L"{Bracketed: %s}", Expression->debugPrint().c_str());
                }
                
                /// <summary>Prints contents to the console</summary>

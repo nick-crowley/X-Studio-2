@@ -66,11 +66,11 @@ namespace Logic
       //Test_StringLibrary();
       //Test_XmlWriter();
       //Test_SyntaxWriter();
-      //Test_ExpressionParser();
+      Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      Test_BatchScriptCompile();
+      //Test_BatchScriptCompile();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -161,41 +161,54 @@ namespace Logic
    {
       try
       {
-         // Try Parse
-         CommandLexer ex1(L"4+5*3");
-         ExpressionParser(ex1.Tokens.begin(), ex1.Tokens.end());
+         const wchar* expressions[] = { L"4-5",       // correctly identify subtraction/Minus 
+                                        L"4 - 5",     // simple Subtraction
+                                        L"-$a",       // Minus variable
+                                        L"4 + -$a",   // Minus variable in expression
+                                        L"4+-$a",     // Minus variable in expression without spacing
+                                        L"-(4+5)",    // Minus sub-expression
+                                        L"4--5",      // Subtraction vs Minus
+                                        L"4 + 5 - -(1+2)"}; 
+         
+         // Parse
+         for (int i = 0; i < sizeof(expressions)/sizeof(wchar*); ++i)
+         {
+            Console << ENDL << "Parsing " << expressions[i] << ENDL;
+            CommandLexer lex(expressions[i]);
 
-         // Try Parse
-         CommandLexer ex2(L"1|2^3&4<5+6*-8");
-         ExpressionParser(ex2.Tokens.begin(), ex2.Tokens.end());
-
-         // Try Parse
-         /*tokens = Tokenise(L"4+5*3");
-         ExpressionParser(tokens.begin(), tokens.end(), TokenArray()).Parse();*/
+            try
+            {
+               ExpressionParser(lex.Tokens.begin(), lex.Tokens.end());
+            }
+            catch (ExpressionParserException& e)
+            {
+               Console << Colour::Red << "Failed: " << e.Message << L" " << (lex.Valid(e.Position) ? e.Position->Text : L"") << ENDL;
+            }
+         }
 
          // Test Lexer
-         const WCHAR* cmd = L"$szTemp = sprintf: fmt='iMaximumDistance = %s   iAttackTimeout = %s', $iMaximumDistance, $iAttackTimeout, null, null, null";
-         CommandLexer lex(cmd);
+         //const WCHAR* cmd = L"$szTemp = sprintf: fmt='iMaximumDistance = %s   iAttackTimeout = %s', $iMaximumDistance, $iAttackTimeout, null, null, null";
+         //CommandLexer lex(cmd);
 
-         // Test lexer
-         cmd = L"= [PLAYERSHIP]-> add $iPassengersEnslaved units of {Slaves}";
-         CommandLexer lex2(cmd);
+         //// Test lexer
+         //cmd = L"= [PLAYERSHIP]-> add $iPassengersEnslaved units of {Slaves}";
+         //CommandLexer lex2(cmd);
 
-         // Test lexer
-         cmd = L"* INFO: `WARNING: The %s have revoked your police license.`";
-         CommandLexer lex3(cmd);
-         
-         // Test lexer
-         cmd = L"do if $szItemChosen == 'Option.Quit' OR $szItemChosen == -1";
-         CommandLexer lex4(cmd);
+         //// Test lexer
+         //cmd = L"* INFO: `WARNING: The %s have revoked your police license.`";
+         //CommandLexer lex3(cmd);
+         //
+         //// Test lexer
+         //cmd = L"do if $szItemChosen == 'Option.Quit' OR $szItemChosen == -1";
+         //CommandLexer lex4(cmd);
 
-         // Test lexer
-         cmd = L"$oWeapon = $oRequirement[2]";
-         CommandLexer lex5(cmd);
-         
-         // Test lexer
-         cmd = L"$bMatch = ($BONUS.MARINES.COUNT >= $iActorCount) AND ($BONUS.SIDEARMS.COUNT >= $iActorCount + 1)";
-         CommandLexer lex6(cmd);
+         //// Test lexer
+         //cmd = L"$oWeapon = $oRequirement[2]";
+         //CommandLexer lex5(cmd);
+         //
+         //// Test lexer
+         //cmd = L"$bMatch = ($BONUS.MARINES.COUNT >= $iActorCount) AND ($BONUS.SIDEARMS.COUNT >= $iActorCount + 1)";
+         //CommandLexer lex6(cmd);
       }
       catch (...)
       {

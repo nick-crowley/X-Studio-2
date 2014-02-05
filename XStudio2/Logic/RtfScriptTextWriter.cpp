@@ -144,7 +144,8 @@ namespace Logic
          case TokenType::String:       col = Red;     break;    
          case TokenType::GameObject:   col = Cyan;    break;    
          case TokenType::ScriptObject: col = Yellow;  break;        
-         case TokenType::Operator:     
+         case TokenType::BinaryOp: 
+         case TokenType::UnaryOp: 
          case TokenType::Text:         col = White;   break;
 
          throw ArgumentException(HERE, L"tok", GuiString(L"Unknown token type: %s", tok.Text.c_str()));
