@@ -2,6 +2,7 @@
 #include "StringParser.h"
 #include "LanguagePage.h"
 #include "StringLibrary.h"
+#include <initializer_list>
 
 // Define reg.ex characters that are difficult to understand using C-style escape codes
 #define open_bracket   L"\\("
@@ -29,7 +30,7 @@ namespace Logic
          //Console << "Parsing " << Colour::Yellow << str.Text << ENDL;
 
          // Skip parsing if no brackets are present
-         if (Text.find_first_of(L"{(") != wstring::npos)
+         if (Text.find_first_of(L"{()}") != wstring::npos)
             Parse();
       }
 
@@ -97,6 +98,11 @@ namespace Logic
             //Console << "  Remove: " << Colour::Red << match[0].str() << ENDL;
             Text.erase(match[0].first, match[0].second);
          }
+
+         // De-escape brackets
+         for (auto chr : {L"\\(", L"\\)", L"\\{", L"\\}"})
+            for (int pos = Text.find(chr); pos != wstring::npos; pos = Text.find(chr))
+               Text.erase(pos, 1);
       }
    }
 }

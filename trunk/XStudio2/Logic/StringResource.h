@@ -131,6 +131,15 @@ namespace Logic
          return s;
       }
 
+      /// <summary>Trims leading and trailing characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
+      GuiString  Trim(const WCHAR* chars) const
+      {
+         TrimLeft(chars);
+         TrimRight(chars);
+      }
+
       /// <summary>Trims leading characters</summary>
       /// <param name="chars">The chars.</param>
       /// <returns>Copy of string with characters removed</returns>
