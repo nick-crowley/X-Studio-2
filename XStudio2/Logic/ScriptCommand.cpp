@@ -20,14 +20,65 @@ namespace Logic
       {
       }
 
-      /// <summary>Create ANY command PARSED FROM COMMAND TEXT</summary>
+      /// <summary>Create a command PARSED FROM COMMAND TEXT</summary>
       /// <param name="text">Entire command text</param>
       /// <param name="syntax">Command syntax</param>
       /// <param name="params">Parameters in DISPLAY ORDER</param>
-      /*ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params)
-         : Syntax(syntax), RefIndex(0), Text(text), Parameters(params) 
+      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& params)
+         : Syntax(syntax), RefIndex(0), Text(text)
       {
-      }*/
+         // Re-order parameters by physical index
+         for (auto& ps : Syntax.Parameters)
+            Parameters += params[ps.DisplayIndex];
+
+         // SCRIPT-CALL: Append arguments
+         if (Syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
+         {
+            // Count
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, Parameters.size()-3);
+
+            // Arguments  (Syntax is 'ScriptCallArgument')
+            for (UINT i = 3; i < params.size(); ++i)
+               Parameters += params[i];
+         }
+      }
+
+      /// <summary>Create an expression PARSED FROM COMMAND TEXT</summary>
+      /// <param name="text">Entire command text</param>
+      /// <param name="syntax">Command syntax</param>
+      /// <param name="infix">RetVar + Parameters in INFIX ORDER</param>
+      /// <param name="postfix">Parameters in POSTFIX ORDER</param>
+      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix)
+         : Syntax(syntax), RefIndex(0), Text(text)
+      {
+         // RetVar
+         Parameters += infix[0];
+
+         // Postfix Count:
+         Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, postfix.size());
+
+         // Postfix: Append verbatim   (Syntax is 'ExpressionParameter')
+         Parameters += postfix;
+                     
+         // Infix Count:  (minus RetVar)
+         Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, infix.size()-1);
+
+         // Infix: Use 'InfixParameter' syntax to define single nodes.  +ve == operator, -ve == 1-based index into postfix array
+         for (UINT i = 1; i < infix.size(); ++i)
+            if (infix[i].Type == DataType::OPERATOR || infix[i].Type == DataType::UNARY_OPERATOR)
+               // Operator: Preserve type/value, change syntax
+               Parameters += ScriptParameter(ParameterSyntax::InfixParameter, infix[i].Type, infix[i].Value);
+            else
+            {
+               // Lookup postfix param
+               if (find(postfix.begin(), postfix.end(), infix[i]) == postfix.end())
+                  throw AlgorithmException(HERE, L"Unable to find postfix parameter");
+
+               // Operand: Calculate Negative 1-based array index 
+               int index = find(postfix.begin(), postfix.end(), infix[i]) - postfix.begin();
+               Parameters += ScriptParameter(ParameterSyntax::InfixParameter, DataType::INTEGER, -(index+1));
+            }
+      }
 
       /// <summary>Create a STANDARD command READ FROM A FILE</summary>
       /// <param name="syntax">command syntax.</param>

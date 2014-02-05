@@ -30,6 +30,19 @@ namespace Logic
                 Source;
    };
    
+   /// <summary>Occurs when an algorithm fails or an invariant is violated</summary>
+   class AlgorithmException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an AlgorithmException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Message</param>
+      AlgorithmException(wstring  src, wstring  msg) 
+         : ExceptionBase(src, wstring(L"Invariant violated: ") + msg)
+      {}
+   };
+   
+
    /// <summary>Occurs when a missing argument is detected</summary>
    class ArgumentNullException : public ExceptionBase
    {

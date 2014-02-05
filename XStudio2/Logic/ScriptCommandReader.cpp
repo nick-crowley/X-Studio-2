@@ -96,8 +96,21 @@ namespace Logic
          // Interlace infix nodes with postfix tuples
          for (int i = 0, count = ReadIntNode(L"expression infix parameter count"); i < count; i++)
          {
-            int value = ReadIntNode(L"expression infix index");    // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
-            params += (value < 0 ? postfix[-value-1] : ScriptParameter(ParameterSyntax::ExpressionParameter, DataType::OPERATOR, value));
+            // +ve indicies are operators.  -ve indicies are a one-based index into the postfix array
+            int value = ReadIntNode(L"expression infix index");
+            
+            // Insert operator
+            if (value >= 0)
+               params += ScriptParameter(ParameterSyntax::ExpressionParameter, DataType::OPERATOR, value);
+            else 
+            {  
+               // Validate index
+               if ((value = -value-1) >= (int)postfix.size())
+                  throw FileFormatException(HERE, GuiString(L"Invalid infix expression parameter index %d, only %d available", value, postfix.size()));
+               
+               // Insert parameter
+               params += postfix[value];
+            }
          }
 
          // Return command
