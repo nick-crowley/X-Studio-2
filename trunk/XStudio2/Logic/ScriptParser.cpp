@@ -267,7 +267,7 @@ namespace Logic
             TokenIterator start = pos;
 
             // variable '['
-            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"[") ? true : (pos=start, false);
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::UnaryOp, L"[") ? true : (pos=start, false);
          }
          
          /// <summary>Matches a return value and assignment operator</summary>
@@ -280,7 +280,7 @@ namespace Logic
             TokenIterator start = pos;
 
             // Assignment: variable '='
-            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") ? true : (pos=start, false);
+            return lex.Match(pos, TokenType::Variable) && lex.Match(pos, TokenType::BinaryOp, L"=") ? true : (pos=start, false);
          }
 
          /// <summary>Matches a valid conditional</summary>
@@ -329,7 +329,7 @@ namespace Logic
 
             // (constant/variable/null '->')?
             return (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-                 && lex.Match(pos, TokenType::Operator, L"->") ? true : (pos=start, false);
+                 && lex.Match(pos, TokenType::BinaryOp, L"->") ? true : (pos=start, false);
          }
 
          /// <summary>Matches a script argument {name,value} pair</summary>
@@ -342,7 +342,7 @@ namespace Logic
             TokenIterator start = pos;
 
             // (text '=' constant/variable/null/string/number)?
-            return lex.Match(pos, TokenType::Text) && lex.Match(pos, TokenType::Operator, L"=") &&
+            return lex.Match(pos, TokenType::Text) && lex.Match(pos, TokenType::BinaryOp, L"=") &&
                    (lex.Match(pos, TokenType::ScriptObject) 
                     || lex.Match(pos, TokenType::GameObject) 
                     || lex.Match(pos, TokenType::Variable)
@@ -364,7 +364,7 @@ namespace Logic
                return true;
 
             // Comment: '*' text?
-            if (lex.Match(pos, TokenType::Operator, L"*"))
+            if (lex.Match(pos, TokenType::BinaryOp, L"*"))
                return lex.count() == 1 || (lex.Match(pos, TokenType::Comment) && lex.count() == 2);
 
             // Failed
@@ -407,10 +407,10 @@ namespace Logic
 
             // Unary_operator?
             TokenIterator dummy = pos;
-            if (lex.Match(dummy, TokenType::Operator, L"!") 
-             || lex.Match(dummy, TokenType::Operator, L"-") 
-             || lex.Match(dummy, TokenType::Operator, L"~")
-             || lex.Match(dummy, TokenType::Operator, L"("))      // allow open bracket
+            if (lex.Match(dummy, TokenType::UnaryOp, L"!") 
+             || lex.Match(dummy, TokenType::UnaryOp, L"-") 
+             || lex.Match(dummy, TokenType::UnaryOp, L"~")
+             || lex.Match(dummy, TokenType::UnaryOp, L"("))      // allow open bracket
                ++pos;
 
             // Value        

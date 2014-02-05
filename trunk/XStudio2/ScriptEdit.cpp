@@ -295,7 +295,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return Suggestion::Command;
 
          // Rule: variable '=' char <caret>  { 3 tokens: variable, equals, text. caret on 2nd letter }
-         if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::Operator, L"=") && lex.Match(pos, TokenType::Text)
+         if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::BinaryOp, L"=") && lex.Match(pos, TokenType::Text)
              && GetCaretIndex() == (pos-1)->Start+1)
              return Suggestion::Command;
 
@@ -305,10 +305,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          if (lex.Match(pos=lex.begin(), TokenType::Variable))
          {
             // (variable '=')?   
-            if (lex.Match(pos, TokenType::Operator, L"="))
+            if (lex.Match(pos, TokenType::BinaryOp, L"="))
             {}
             // Reset position if (variable '->')
-            else if (lex.Match(pos, TokenType::Operator, L"->"))
+            else if (lex.Match(pos, TokenType::BinaryOp, L"->"))
                pos=lex.begin();
             else
                return Suggestion::None;
@@ -317,7 +317,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // constant/variable/null 
          if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
             // '->' char <caret>  { caret on 2nd letter }
-            if (lex.Match(pos, TokenType::Operator, L"->") && lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
+            if (lex.Match(pos, TokenType::BinaryOp, L"->") && lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
                return Suggestion::Command;
        }
       }

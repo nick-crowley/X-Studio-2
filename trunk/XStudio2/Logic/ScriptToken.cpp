@@ -23,7 +23,7 @@ namespace Logic
          /// <summary>Get token type string</summary>
          GuiString  GetString(TokenType t)
          {
-            static const wchar* str[] = { L"Text", L"Number", L"String", L"GameObject", L"ScriptObject", L"Keyword", L"Variable", L"Null", L"Label", L"Operator", L"Comment", L"Whitespace" };
+            static const wchar* str[] = { L"Text", L"Number", L"String", L"GameObject", L"ScriptObject", L"Keyword", L"Variable", L"Null", L"Label", L"BinaryOp", L"UnaryOp", L"Comment", L"Whitespace" };
             return str[(UINT)t];
          }
 

@@ -10,7 +10,7 @@ namespace Logic
       namespace Compiler
       {
          /// <summary>Types of tokens produced by the script lexer</summary>
-         enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, Operator, Comment, Whitespace };
+         enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, BinaryOp, UnaryOp, Comment, Whitespace };
 
          /// <summary>Get token type string</summary>
          GuiString  GetString(TokenType t);
@@ -97,7 +97,8 @@ namespace Logic
             {
                switch (Type)
                {
-               case TokenType::Operator:  
+               case TokenType::BinaryOp:  
+               case TokenType::UnaryOp:  
                case TokenType::Keyword:  
                case TokenType::Text:      
                   return false;

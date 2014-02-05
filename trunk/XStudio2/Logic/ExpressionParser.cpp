@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ExpressionParser.h"
 
+#define  PRINT_DEBUG
+
 namespace Logic
 {
    namespace Scripts
@@ -38,12 +40,6 @@ namespace Logic
          /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          void  ExpressionParser::Parse(TokenIterator& start)
          {
-            // DEBUG: print input
-            /*Console.Writef(L"Input: ");
-            for (auto it = InputBegin; it != InputEnd; ++it)
-               Console.Writef(L"%s ", it->Text.c_str());
-            Console.WriteLnf(L"");*/
-                      
             TokenIterator pos = InputBegin;
 
             // Produce parse tree
@@ -57,12 +53,11 @@ namespace Logic
             tree->getTokenArray(Traversal::InOrder, InfixParams);
             tree->getTokenArray(Traversal::PostOrder, PostfixParams);
 
-            // DEBUG: Print
-            //Console.WriteLnf(L"Output: %s", tree->debugPrint().c_str() );
-            ////Console.WriteLnf(L"PreOrder (Not Used): %s", tree->debugPrintTraversal(Traversal::PreOrder).c_str());
-            //Console.WriteLnf(L"Infix: %s", tree->debugPrintTraversal(Traversal::InOrder).c_str());
-            //Console.WriteLnf(L"Postfix: %s", tree->debugPrintTraversal(Traversal::PostOrder).c_str());
-            //Console.WriteLnf(L"");
+#ifdef PRINT_DEBUG
+            Console << L"Output: " << tree->debugPrint() << ENDL;
+            //Console << L"Infix: " << tree->debugPrintTraversal(Traversal::InOrder) << ENDL;
+            //Console << L"Postfix: " << tree->debugPrintTraversal(Traversal::PostOrder) << ENDL;
+#endif
          }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
@@ -95,7 +90,7 @@ namespace Logic
          bool ExpressionParser::MatchOperator(const TokenIterator& pos, const WCHAR* op)
          {
             // Validate position and compare operator
-            return pos < InputEnd && pos->Type == TokenType::Operator && pos->Text == op;
+            return pos < InputEnd && (pos->Type == TokenType::BinaryOp || pos->Type == TokenType::UnaryOp) && pos->Text == op;
          }
 
          /// <summary>Attempts to matches any operator of a given precedence</summary>
@@ -105,7 +100,7 @@ namespace Logic
          bool ExpressionParser::MatchOperator(const TokenIterator& pos, UINT precedence)
          {
             // Validate position. Ensure operator
-            if (pos >= InputEnd || pos->Type != TokenType::Operator)
+            if (pos >= InputEnd || (pos->Type != TokenType::BinaryOp && pos->Type != TokenType::UnaryOp))
                return false;
 
             // Precedence table taken from X2 scripting manual
@@ -118,9 +113,9 @@ namespace Logic
             case 4: return pos->Text == L"&";
             case 5: return pos->Text == L"==" || pos->Text == L"!=";
             case 6: return pos->Text == L"<" || pos->Text == L">" || pos->Text == L"<=" || pos->Text == L">=";
-            case 7: return pos->Text == L"+" || pos->Text == L"-";
+            case 7: return pos->Text == L"+" || pos->Text == L"-"; 
             case 8: return pos->Text == L"*" || pos->Text == L"/" || pos->Text == L"mod";
-            case 9: return pos->Text == L"~" || pos->Text == L"-" || pos->Text == L"!";
+            case 9: return pos->Text == L"~" || pos->Text == L"!" || pos->Text == L"-"; 
             }
 
             throw ArgumentException(HERE, L"precedence", GuiString(L"Invalid precedence %d", precedence));
@@ -160,7 +155,7 @@ namespace Logic
          const ScriptToken&  ExpressionParser::ReadOperator(TokenIterator& pos)
          {
             // Verify operator
-            if (pos >= InputEnd || pos->Type != TokenType::Operator)
+            if (pos >= InputEnd || (pos->Type != TokenType::BinaryOp && pos->Type != TokenType::UnaryOp))
                throw InvalidOperationException(HERE, L"Not an operator");
 
             // Read operator. Advance position
@@ -233,9 +228,15 @@ namespace Logic
 
             // Match: Operator  
             if (MatchOperator(pos, MAX_PRECEDENCE)) 
-            {   // Read: operator, Value  (may throw)
+            {  
+               // Read: operator  (may throw)
                const ScriptToken& op = ReadOperator(pos);
-               return ExpressionTree(new UnaryExpression(op, ReadValue(pos)));
+               
+               // Manually convert binary-substract to unary-minus
+               ScriptToken unary = (op.Text != L"-" ? op : ScriptToken(TokenType::UnaryOp, op.Start, op.End, op.Text));
+
+               // Read: Value  (may throw)
+               return ExpressionTree(new UnaryExpression(unary, ReadValue(pos)));
             }
 
             // Read: Value  (may throw)

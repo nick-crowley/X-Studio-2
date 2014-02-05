@@ -354,34 +354,40 @@ namespace Logic
             // Read single char 
             switch (*Position)
             {
-            // (for Expressions)
-            case L'~':
+            // BINARY
             case L'+':
             case L'*':
             case L'/':
             case L'&':
             case L'^':
             case L'|':
+               ReadChar();
+               return MakeToken(start, TokenType::BinaryOp);
+
+            // UNARY
             case L'(':
             case L')':  
-            // (for Commands)
-            case L',':
+            case L'~': 
+            // Used by commands, class as unary
+            case L',': 
             case L':':
             case L'[':
             case L']':
                ReadChar();
-               break;
+               return MakeToken(start, TokenType::UnaryOp);
 
-            // Read multi-char operators
+            // BINARY: Read multi-char operators
             default:
                switch (*Position)
                {
-               // RefObj
-               case L'-':  // - or ->
-                  ReadChar();
-                  // Read RefObj if present
-                  if (MatchChar('>'))
+               // RefObj/Subtract/Minus
+               case L'-':  
+                  ReadChar();               
+                  // Dereference operator
+                  if (MatchChar('>'))  
                      ReadChar();
+                  //else // Resolve subtract/minus
+                  //   return MakeToken(start, MatchChar(' ') ? TokenType::BinaryOp : TokenType::UnaryOp);
                   break;
 
                // Comparisons
@@ -390,7 +396,7 @@ namespace Logic
                case L'!':  // ! or !=
                case L'=':  // = or ==
                   ReadChar();
-                  // Read double-char if a comparison
+                  // Read comparison if present
                   if (MatchChar('='))
                      ReadChar();
                   break;
@@ -412,8 +418,8 @@ namespace Logic
                }
             }
 
-            // Return OPERATOR
-            return MakeToken(start, TokenType::Operator);
+            // Return BINARY
+            return MakeToken(start, TokenType::BinaryOp);
          }
 
 
@@ -468,7 +474,7 @@ namespace Logic
             {}
 
             // Return as OPERATOR if name is missing, otherwise VARIABLE
-            return MakeToken(start, Position-start > 0 ? TokenType::Variable : TokenType::Operator);
+            return MakeToken(start, Position-start > 0 ? TokenType::Variable : TokenType::UnaryOp);
          }
 
 

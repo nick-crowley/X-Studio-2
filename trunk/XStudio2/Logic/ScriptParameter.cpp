@@ -84,7 +84,8 @@ namespace Logic
          case TokenType::ScriptObject:
             return ScriptObjectLib.TryFind(tok.ValueText, obj) ? obj->GetDataType() : DataType::CONSTANT;
 
-         case TokenType::Operator:
+         case TokenType::BinaryOp:
+         case TokenType::UnaryOp:
             return DataType::OPERATOR;
 
          case TokenType::Number:
