@@ -64,6 +64,12 @@ namespace Logic
          return wstring();
       }
 
+      /// <summary>Gets whether script implements an object command.</summary>
+      bool  ScriptFile::HasCommandName() const
+      {
+         return CommandID.Type != ValueType::Int || CommandID.Int > 0;
+      }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------

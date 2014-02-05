@@ -23,7 +23,7 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Writes the syntax file to the output stream</summary>
+      /// <summary>Closes and flushes the output stream</summary>
       void  SyntaxWriter::Close()
       {
          XmlWriter::Close();
