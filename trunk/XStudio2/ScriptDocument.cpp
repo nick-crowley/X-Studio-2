@@ -7,6 +7,7 @@
 #include <propkey.h>
 #include "Logic/FileStream.h"
 #include "Logic/ScriptFileReader.h"
+#include "Logic/ScriptFileWriter.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/WorkerFeedback.h"
 
@@ -144,9 +145,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
             data.SendFeedback(ProgressType::Error, 1, msg);
          }
 
-         // Feedback
+         // Success: Write
          if (parser.Errors.size() == 0)
          {
+            // Write
+            StreamPtr fs(new FileStream(L"D:\\My Projects\\XStudio2\\XStudio2\\output.xml", FileMode::CreateAlways, FileAccess::Write));
+            ScriptFileWriter w(fs);
+            w.Write(Script);
+            w.Close();
+
+            // Feedback
             data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script saved successfully");
             return TRUE;
          }

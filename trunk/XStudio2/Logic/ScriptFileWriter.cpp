@@ -43,7 +43,7 @@ namespace Logic
 
          // Header
          WriteInstruction(L"version='1.0' encoding='utf-8'");
-         WriteInstruction(L"-stylesheet href='x2script.xsl' type='text/xsl'");
+         //WriteInstruction(L"-stylesheet href='x2script.xsl' type='text/xsl'");
          WriteComment(L"Written by X-Studio II");
          auto root = WriteRoot(L"script");
 
@@ -87,7 +87,7 @@ namespace Logic
             WriteArgument(arguments, var);
 
          // Commands (aux)
-         auto commands = WriteArray(codearray, sf.Commands.AuxOutput.size());
+         commands = WriteArray(codearray, sf.Commands.AuxOutput.size());
          for (const ScriptCommand& c : sf.Commands.AuxOutput)
             WriteCommand(commands, c);
 
@@ -147,6 +147,7 @@ namespace Logic
          auto node = WriteElement(parent, L"sval");
          WriteAttribute(node, L"type", L"array");
          WriteAttribute(node, L"size", size);
+         return node;
       }
       
       /// <summary>Writes a codearray argument node</summary>
