@@ -65,16 +65,16 @@ namespace Logic
          codearray = WriteArray(codearray, 10);
 
          // Properties 
-         WriteValue(codearray, sf.Name);
-         WriteValue(codearray, 44);
-         WriteValue(codearray, sf.Description);
-         WriteValue(codearray, sf.Version);
-         WriteValue(codearray, sf.LiveData ? 1 : 0);
+         WriteString(codearray, sf.Name);
+         WriteInt(codearray, 44);
+         WriteString(codearray, sf.Description);
+         WriteInt(codearray, sf.Version);
+         WriteInt(codearray, sf.LiveData ? 1 : 0);
 
          // Variables
          auto variables = WriteArray(codearray, sf.Variables.Count);
          for (const ScriptVariable& var : sf.Variables.All.SortByID)
-            WriteValue(variables, var.Name);
+            WriteString(variables, var.Name);
 
          // Commands (std)
          auto commands = WriteArray(codearray, sf.Commands.StdOutput.size());
@@ -93,9 +93,9 @@ namespace Logic
 
          // Command ID
          if (sf.HasCommandName())
-            WriteValue(codearray, sf.CommandName);
+            WriteString(codearray, sf.CommandName);
          else
-            WriteValue(codearray, 0);
+            WriteInt(codearray, 0);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
@@ -107,7 +107,7 @@ namespace Logic
       UINT ScriptFileWriter::CalculateSize(const ScriptCommand& cmd)
       {
          // ID [+Index]
-         UINT count = cmd.Is(CommandType::Standard) ? 2 : 1;
+         UINT count = cmd.Is(CommandType::Standard) ? 1 : 2;
 
          // Parameters
          for (const ScriptParameter& p : cmd.Parameters)
@@ -157,8 +157,8 @@ namespace Logic
       void  ScriptFileWriter::WriteArgument(XmlElementPtr parent, const ScriptVariable& var)
       {
          auto arg = WriteArray(parent, 2);
-         WriteValue(arg, (int)var.Type);
-         WriteValue(arg, var.Description);
+         WriteInt(arg, (int)var.Type);
+         WriteString(arg, var.Description);
       }
 
       /// <summary>Writes an argument node</summary>
@@ -186,8 +186,8 @@ namespace Logic
 
          // Index+ID
          if (cmd.Is(CommandType::Auxiliary))
-            WriteValue(node, cmd.RefIndex);
-         WriteValue(node, cmd.Syntax.ID);
+            WriteInt(node, cmd.RefIndex);
+         WriteInt(node, cmd.Syntax.ID);
 
          // Parameters
          for (const ScriptParameter& p : cmd.Parameters)
@@ -212,19 +212,19 @@ namespace Logic
          case ParameterType::LABEL_NUMBER:  
          case ParameterType::STRUCTURAL_COUNT:
          case ParameterType::STRUCTURAL_INDEX:
-            WriteValue(parent, p.Value.Int);
+            WriteInt(parent, p.Value.Int);
             break;
 
          // Single string node
          case ParameterType::COMMENT:        
          case ParameterType::SCRIPT_NAME:    
          case ParameterType::LABEL_NAME:     
-            WriteValue(parent, p.Value.String);
+            WriteString(parent, p.Value.String);
             break;
 
          // {Type,Value} pair
          default:
-            WriteValue(parent, (int)p.Type);
+            WriteInt(parent, (int)p.Type);
             WriteValue(parent, p.Value);
             break;
          }
@@ -234,7 +234,7 @@ namespace Logic
       /// <param name="parent">parent node</param>
       /// <param name="val">value.</param>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  ScriptFileWriter::WriteValue(XmlElementPtr parent, int val)
+      void  ScriptFileWriter::WriteInt(XmlElementPtr parent, int val)
       {
          auto node = WriteElement(parent, L"sval");
          WriteAttribute(node, L"type", L"int");
@@ -245,7 +245,7 @@ namespace Logic
       /// <param name="parent">parent node</param>
       /// <param name="val">value.</param>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  ScriptFileWriter::WriteValue(XmlElementPtr parent, const wstring& val)
+      void  ScriptFileWriter::WriteString(XmlElementPtr parent, const wstring& val)
       {
          auto node = WriteElement(parent, L"sval");
          WriteAttribute(node, L"type", L"string");
@@ -259,9 +259,9 @@ namespace Logic
       void  ScriptFileWriter::WriteValue(XmlElementPtr parent, const ParameterValue& val)
       {
          if (val.Type == ValueType::String)
-            WriteValue(parent, val.String);
+            WriteString(parent, val.String);
          else
-            WriteValue(parent, val.Int);
+            WriteInt(parent, val.Int);
       }
 
    }
