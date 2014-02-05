@@ -55,7 +55,7 @@ namespace Logic
 
          // Arguments
          auto arguments = WriteElement(root, L"arguments");
-         for (const ScriptVariable& var : sf.Variables.Arguments)
+         for (const ScriptVariable& var : sf.Variables.Arguments.SortByID)
             WriteArgument(arguments, index++, var);
 
          // TODO: SourceText
@@ -73,7 +73,7 @@ namespace Logic
 
          // Variables
          auto variables = WriteArray(codearray, sf.Variables.Count);
-         for (const ScriptVariable& var : sf.Variables)
+         for (const ScriptVariable& var : sf.Variables.All.SortByID)
             WriteValue(variables, var.Name);
 
          // Commands (std)
@@ -83,7 +83,7 @@ namespace Logic
 
          // Arguments
          arguments = WriteArray(codearray, sf.Variables.Arguments.size());
-         for (const ScriptVariable& var : sf.Variables.Arguments)
+         for (const ScriptVariable& var : sf.Variables.Arguments.SortByID)
             WriteArgument(arguments, var);
 
          // Commands (aux)

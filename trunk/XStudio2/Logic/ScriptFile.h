@@ -57,7 +57,27 @@ namespace Logic
       };
 
       /// <summary>Vector of script variables</summary>
-      typedef vector<ScriptVariable>  VariableArray;
+      class VariableArray : public vector<ScriptVariable>
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         // --------------------- PROPERTIES ------------------------
+
+         PROPERTY_GET(VariableArray,SortByID,GetSortByID);
+
+         // ---------------------- ACCESSORS ------------------------	
+      public:
+         VariableArray GetSortByID() const
+         {
+            VariableArray vars;
+            // Copy all, sort by ID
+            copy(begin(), end(), back_inserter(vars));
+            sort(vars.begin(), vars.end(), [](const ScriptVariable& a,const ScriptVariable& b) {return a.ID < b.ID;} );
+            return vars;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      };
 
 
       /// <summary>Occurs when a script label is missing</summary>
@@ -209,9 +229,10 @@ namespace Logic
 
             // --------------------- PROPERTIES ------------------------
 
+            PROPERTY_GET(VariableArray,All,GetAll);
             PROPERTY_GET(VariableArray,Arguments,GetArguments);
             PROPERTY_GET(size_type,Count,GetCount);
-
+            
             // ---------------------- ACCESSORS ------------------------			
          public:
             /// <summary>Get start iterator</summary>
@@ -222,25 +243,21 @@ namespace Logic
             VarIterator end()             { return VarIterator(*this, base::end()); }
             ConstIterator end() const     { return ConstIterator(*this, base::cend()); }
 
-            /// <summary>Get arguments sorted by ID</summary>
-            /// <returns></returns>
-            VariableArray GetArguments() const
-            {
-               VariableArray args;
-
-               copy_if(begin(), end(), back_inserter(args), [](const ScriptVariable& v){return v.Type == VariableType::Argument;} );
-               /*for (const ScriptVariable& v : *this)
-                  if (v.Type == VariableType::Argument)
-                     args.push_back(v);*/
-
-               return args;
-            }
-
             /// <summary>Query presence of a variable</summary>
             /// <param name="name">name without $ prefix</param>
             bool Contains(const wstring& name) const
             { 
                return find(name) != base::end(); 
+            }
+            
+            /// <summary>Get arguments only</summary>
+            /// <returns></returns>
+            VariableArray GetArguments() const
+            {
+               // Copy arguments
+               VariableArray args;
+               copy_if(begin(), end(), back_inserter(args), [](const ScriptVariable& v) {return v.Type == VariableType::Argument;} );
+               return args;
             }
 
             /// <summary>Get number of variables and arguments</summary>
@@ -248,8 +265,18 @@ namespace Logic
             { 
                return base::size(); 
             }
+            
+            /// <summary>Get arguments and variables</summary>
+            /// <returns></returns>
+            VariableArray GetAll() const
+            {
+               // Copy all
+               VariableArray vars;
+               copy(begin(), end(), back_inserter(vars));
+               return vars;
+            }
 
-            /// <summary>Get variable by ID</summary>
+            /// <summary>Get argument/variable by ID</summary>
             /// <param name="id">id</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
@@ -264,7 +291,7 @@ namespace Logic
                throw VariableNotFoundException(HERE, id);
             }
 
-            /// <summary>Get variable by ID</summary>
+            /// <summary>Get argument/variable by ID</summary>
             /// <param name="id">id</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
@@ -279,7 +306,7 @@ namespace Logic
                throw VariableNotFoundException(HERE, id);
             }
 
-            /// <summary>Get variable by name</summary>
+            /// <summary>Get argument/variable by name</summary>
             /// <param name="name">name without $ prefix</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
