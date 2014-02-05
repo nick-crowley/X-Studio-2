@@ -116,6 +116,11 @@ namespace Logic
                return Text.substr(offset, len);
             }
 
+            /// <summary>Compare two tokens</summary>
+            bool operator==(const ScriptToken& r) const
+            {
+               return Type==r.Type && Text==r.Text && Start==r.Start && End==r.End;
+            }
             // ----------------------- MUTATORS ------------------------
 
             // -------------------- REPRESENTATION ---------------------

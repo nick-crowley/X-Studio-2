@@ -73,6 +73,12 @@ namespace Logic
          /// <summary>Verifies a data-type against the syntax.</summary>
          bool Verify(DataType t) const;
 
+         /// <summary>Compare two syntax</summary>
+         bool operator==(const ParameterSyntax& r) const
+         {
+            return Type==r.Type && Usage==r.Usage && DisplayIndex==r.DisplayIndex && PhysicalIndex==r.PhysicalIndex && Ordinal==r.Ordinal;
+         }
+
 		   // ------------------------ STATIC -------------------------
 
 		   // ----------------------- MUTATORS ------------------------

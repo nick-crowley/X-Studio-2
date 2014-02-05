@@ -171,7 +171,6 @@ namespace Logic
             case ParameterType::EXPRESSION:
             case ParameterType::COMMENT:
             case ParameterType::VARIABLE:    // Var
-            case ParameterType::UNDETERMINED:
             case ParameterType::RETURN_VALUE:
             case ParameterType::RETURN_VALUE_IF:
             case ParameterType::RETURN_VALUE_IF_START:

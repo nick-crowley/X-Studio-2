@@ -24,10 +24,10 @@ namespace Logic
       /// <param name="text">Entire command text</param>
       /// <param name="syntax">Command syntax</param>
       /// <param name="params">Parameters in DISPLAY ORDER</param>
-      ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params)
+      /*ScriptCommand::ScriptCommand(CommandSyntaxRef syntax, const wstring& text, ParameterArray& params)
          : Syntax(syntax), RefIndex(0), Text(text), Parameters(params) 
       {
-      }
+      }*/
 
       /// <summary>Create a STANDARD command READ FROM A FILE</summary>
       /// <param name="syntax">command syntax.</param>
