@@ -15,6 +15,7 @@ namespace Logic
          Path(const wstring& path);
          Path(const Path& r);
          Path(Path&& r);
+         virtual ~Path();
 
          // ------------------------ STATIC -------------------------
 
@@ -75,13 +76,20 @@ namespace Logic
       
 		   // ----------------------- MUTATORS ------------------------
    
-      private:
+      protected:
          Path&  Assign(const WCHAR*  text);
       
 		   // -------------------- REPRESENTATION ---------------------
 
-      private:
+      protected:
          CharArrayPtr  Buffer;
+      };
+
+      /// <summary>Represents the path of a temporary file</summary>
+      class TempPath : public Path
+      {
+      public:
+         TempPath(const wchar* prefix = L"tmp");
       };
 
    }
