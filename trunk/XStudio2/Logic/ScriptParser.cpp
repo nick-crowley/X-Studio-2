@@ -126,7 +126,7 @@ namespace Logic
             // Populate script. Verify tree
             Commands->Populate(Script);
             Commands->Verify(Script, Errors);
-            Commands->Compile(Script);
+            //Commands->Compile(Script);
 
             // DEBUG: Print tree
             Commands->Print(0);

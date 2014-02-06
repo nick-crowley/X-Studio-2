@@ -153,7 +153,7 @@ namespace Logic
                {
                   colour = Colour::Green; //Is(CMD_HIDDEN_JUMP) ? Colour::Green : Colour::Yellow;
                   logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
-                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: %d" : L"Goto label %d", JumpTarget->Index);
+                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: %d" : L"Goto label %d", JumpTarget?JumpTarget->Index:0xffff);
                }
                else if (Is(CMD_DEFINE_LABEL))
                {
