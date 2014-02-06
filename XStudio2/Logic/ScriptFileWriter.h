@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary></summary>
-      class ScriptFileWriter : public XmlWriter
+      class ScriptFileWriter : private XmlWriter
       {
          // ------------------------ TYPES --------------------------
       private:

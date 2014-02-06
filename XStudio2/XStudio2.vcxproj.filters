@@ -94,6 +94,12 @@
     <Filter Include="Header Files\GUI\Documents">
       <UniqueIdentifier>{6627568b-9ef3-4ca3-9b3a-417ad6e3785f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Testing">
+      <UniqueIdentifier>{d5733860-e872-4e1e-93b6-6a3a3ee998cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Testing">
+      <UniqueIdentifier>{1eb985a9-6293-421c-892e-8c09ed1a7041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -397,6 +403,9 @@
     <ClInclude Include="Logic\ScriptFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Testing\ScriptTextValidator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -626,6 +635,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ScriptFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing\ScriptTextValidator.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
