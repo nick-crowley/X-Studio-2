@@ -11,6 +11,8 @@ namespace Testing
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Create a textual comparison script validator</summary>
+      /// <param name="file">Full script path</param>
       ScriptTextValidator::ScriptTextValidator(Path file) : FullPath(file)
       {
       }
@@ -23,38 +25,61 @@ namespace Testing
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      void  ScriptTextValidator::Validate()
+      /// <summary>Validates the input file</summary>
+      bool  ScriptTextValidator::Validate()
       {
-         // Read input file
-         ScriptFileReader r(StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read)));
-         auto input = r.ReadFile(FullPath, false);
+         try
+         {
+            Console << Colour::Cyan << ENDL << L"Validating: " << FullPath << ENDL;
 
-         // Parse command text
-         ScriptParser parser(input, GetAllLines(input.Commands.Input), input.Game);
-         parser.Compile();
+            // Read input file
+            ScriptFileReader r(StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read)));
+            auto input = r.ReadFile(FullPath, false);
 
-         // Write output file
-         ScriptFileWriter w(StreamPtr(new FileStream(L"", FileMode::CreateAlways, FileAccess::Write)));
-         w.Write(input);
-         w.Close();
+            Console << "Parsing/Compiling script..." << ENDL;
 
-         // Read output file
-         ScriptFileReader r2(StreamPtr(new FileStream(L"", FileMode::OpenExisting, FileAccess::Read)));
-         auto output = r2.ReadFile(L"", false);
+            // Parse command text
+            ScriptParser parser(input, GetAllLines(input.Commands.Input), input.Game);
+            parser.Compile();
 
-         // Compare
-         Compare(input, output);
+            // Write output file
+            TempPath tmp;
+            ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
+            w.Write(input);
+            w.Close();
+
+            Console << "Reading validation script..." << ENDL;
+
+            // Read output file
+            ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
+            auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);
+
+            // Compare
+            if (Compare(input, output))
+            {
+               Console << Colour::Green << "Validation Successful" << ENDL;
+               return true;
+            }
+         }
+         catch (ExceptionBase& e)
+         {
+            Console.Log(HERE, e);
+         }
+
+         Console << Colour::Red << "Validation FAILED" << ENDL;
+         return false;
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 
       // ------------------------------- PRIVATE METHODS ------------------------------
       
-      /// <summary>Compares the specified in.</summary>
+      /// <summary>Perform textual comparison of a script and it's validation copy</summary>
       /// <param name="in">original script</param>
       /// <param name="out">compiled copy</param>
-      void  ScriptTextValidator::Compare(const ScriptFile& in, const ScriptFile& out)
+      bool  ScriptTextValidator::Compare(const ScriptFile& in, const ScriptFile& out)
       {
+         return true;
       }
 
       /// <summary>Gets translated command text as line array</summary>

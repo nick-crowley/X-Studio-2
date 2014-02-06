@@ -30,10 +30,10 @@ namespace Testing
 
          // ----------------------- MUTATORS ------------------------
       public:
-         void  Validate();
+         bool  Validate();
 
       private:
-         void       Compare(const ScriptFile& in, const ScriptFile& out);
+         bool       Compare(const ScriptFile& in, const ScriptFile& out);
          LineArray  GetAllLines(const CommandList& commands);
 
          // -------------------- REPRESENTATION ---------------------
