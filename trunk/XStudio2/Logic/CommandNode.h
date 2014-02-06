@@ -72,6 +72,9 @@ namespace Logic
             typedef vector<CommandNodePtr>     NodeList;
             typedef NodeList::const_iterator   NodeIterator;
 
+         private:
+            typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();
@@ -135,6 +138,10 @@ namespace Logic
             const CHARRANGE Extent;           // Start/end character offsets
             // Debug
             wstring         LineText;         // Debug: line text
+
+         private:
+            static NodeDelegate  isStandardCommand,
+                                 isSkipIfCompatible;
          };
       }
    }
