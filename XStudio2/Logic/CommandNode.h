@@ -104,13 +104,14 @@ namespace Logic
          private:
             CommandNode*  FindAncestor(BranchLogic l) const;
             NodeIterator  FindChild(const CommandNode* child) const;
+            CommandNode*  FindConditionalAlternate() const;
             CommandNode*  FindConditionalEnd() const;
             CommandNode*  FindLabel(const wstring& name) const;
-            CommandNode*  FindNextConditional() const;
             CommandNode*  FindNextCommand() const;
             CommandNode*  FindNextSibling() const;
             CommandNode*  FindPrevSibling() const;
             CommandNode*  FindRoot() const;
+            CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
             bool          IsRoot() const;
             void          VerifyLogic(ErrorArray& errors) const;
             void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
