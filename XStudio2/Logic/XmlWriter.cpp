@@ -90,6 +90,9 @@ namespace Logic
             else
                // If header already correct, output verbatim
                Output->Write((BYTE*)utf.c_str(), utf.length());
+
+            // Close stream
+            Output->Close();
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

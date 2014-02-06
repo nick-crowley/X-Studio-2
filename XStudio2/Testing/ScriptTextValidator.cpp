@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScriptTextValidator.h"
 #include "../Logic/FileStream.h"
+#include "../Logic/XFileSystem.h"
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
 
@@ -30,13 +31,13 @@ namespace Testing
       {
          try
          {
-            Console << Colour::Cyan << ENDL << L"Validating: " << FullPath << ENDL;
+            Console << Colour::Cyan << ENDL << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
             // Read input file
-            ScriptFileReader r(StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read)));
+            ScriptFileReader r(XFileInfo(FullPath).OpenRead());
             auto input = r.ReadFile(FullPath, false);
 
-            Console << "Parsing/Compiling script..." << ENDL;
+            Console << "Parsing, compiling and writing..." << ENDL;
 
             // Parse command text
             ScriptParser parser(input, GetAllLines(input.Commands.Input), input.Game);
@@ -48,13 +49,15 @@ namespace Testing
             w.Write(input);
             w.Close();
 
-            Console << "Reading validation script..." << ENDL;
+
+            Console << "Reading validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
 
             // Read output file
             ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
             auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
 
             // Compare
+            Console << "Performing textual comparison..." << ENDL;
             if (Compare(input, output))
             {
                Console << Colour::Green << "Validation Successful" << ENDL;

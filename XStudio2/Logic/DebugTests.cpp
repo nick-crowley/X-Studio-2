@@ -17,6 +17,7 @@
 #include "TWare.h"
 #include "TLaser.h"
 #include "StringParser.h"
+#include "../Testing/ScriptTextValidator.h"
 
 namespace Logic
 {
@@ -66,11 +67,11 @@ namespace Logic
       //Test_StringLibrary();
       //Test_XmlWriter();
       //Test_SyntaxWriter();
-      Test_ExpressionParser();
+      //Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      //Test_BatchScriptCompile();
+      Test_BatchScriptCompile();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -87,30 +88,21 @@ namespace Logic
       // Feedback
       Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
 
-      // Parse each script
-      for (auto& v : vfs.Browse(XFolder::Scripts))
+      // Browse scripts
+      for (auto& f : vfs.Browse(XFolder::Scripts))
       {
          // Ensure PCK/XML
-         if (!v.FullPath.HasExtension(L".pck") && !v.FullPath.HasExtension(L".xml"))
+         if (!f.FullPath.HasExtension(L".pck") && !f.FullPath.HasExtension(L".xml"))
             continue;
 
-         try
-         {
-            // Feedback
-            Console << L"Parsing MSCI script: " << Colour::Yellow << v.FullPath.FileName << Colour::White << L"..." << ENDL;
-
-            // Parse script
-            ScriptFile script = ScriptFileReader(v.OpenRead()).ReadFile(v.FullPath.Folder, false);
-            //Console << Colour::Green << L"Success" << ENDL;
-         }
-         catch (ExceptionBase& e) {
-            Console << Colour::Red << L"Failed to parse " << Colour::Yellow << v.FullPath.FileName << ENDL;
-            Console.Log(HERE, e);
-         }
+         // Validate
+         ScriptTextValidator script(f.FullPath);
+         if (!script.Validate())
+            break;
       }
-
-      
    }
+
+
    void DebugTests::Test_CommandSyntax()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
