@@ -14,8 +14,7 @@ namespace Logic
          /// <summary>Creates a script expression parser</summary>
          /// <param name="begin">Position of first expression token</param>
          /// <param name="end">Position after last expression token</param>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          ExpressionParser::ExpressionParser(TokenIterator& begin, const TokenIterator end)
             : InputBegin(begin), InputEnd(end)
@@ -35,8 +34,7 @@ namespace Logic
          // ------------------------------ PROTECTED METHODS -----------------------------
          
          /// <summary>Parses the expression, ensures it is correct and produces infix/postfix tokens.</summary>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          void  ExpressionParser::Parse(TokenIterator& start)
          {
@@ -96,7 +94,7 @@ namespace Logic
          /// <summary>Attempts to matches any operator of a given precedence</summary>
          /// <param name="pos">Position of operator</param>
          /// <returns></returns>
-         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
+         /// <exception cref="Logic::AlgorithmException">Invalid precendence detected</exception>
          bool ExpressionParser::MatchOperator(const TokenIterator& pos, UINT precedence)
          {
             // Validate position. Ensure operator
@@ -118,13 +116,13 @@ namespace Logic
             case 9: return pos->Text == L"~" || pos->Text == L"!" || pos->Text == L"-"; 
             }
 
-            throw ArgumentException(HERE, L"precedence", GuiString(L"Invalid precedence %d", precedence));
+            throw AlgorithmException(HERE, GuiString(L"Invalid precedence %d", precedence));
          }
 
          /// <summary>Reads the current token as a literal</summary>
          /// <param name="pos">Current position</param>
          /// <returns>Token</returns>
-         /// <exception cref="Logic::InvalidOperationException">Token is not a literal</exception>
+         /// <exception cref="Logic::AlgorithmException">Token is not a literal</exception>
          /// <remarks>Advances the iterator to beyond the literal</remarks>
          const ScriptToken&  ExpressionParser::ReadLiteral(TokenIterator& pos)
          {
@@ -144,19 +142,19 @@ namespace Logic
                }
           
             // Error:
-            throw InvalidOperationException(HERE, L"Not a literal");
+            throw AlgorithmException(HERE, GuiString(L"'%s' is not a literal", pos < InputEnd ? pos->Text : L"<eof>"));
          }
 
          /// <summary>Reads the current token as an operator</summary>
          /// <param name="pos">Current position</param>
          /// <returns>Token</returns>
-         /// <exception cref="Logic::InvalidOperationException">Token is not a operator</exception>
+         /// <exception cref="Logic::AlgorithmException">Token is not a operator</exception>
          /// <remarks>Advances the iterator to beyond the operator</remarks>
          const ScriptToken&  ExpressionParser::ReadOperator(TokenIterator& pos)
          {
             // Verify operator
             if (pos >= InputEnd || (pos->Type != TokenType::BinaryOp && pos->Type != TokenType::UnaryOp))
-               throw InvalidOperationException(HERE, L"Not an operator");
+               throw AlgorithmException(HERE, L"Not an operator");
 
             // Read operator. Advance position
             return *(pos++);
@@ -166,8 +164,7 @@ namespace Logic
          /// <summary>Reads an entire expression</summary>
          /// <param name="pos">Position of first token of expression</param>
          /// <returns>Expression tree</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
-         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::AlgorithmException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadExpression(TokenIterator& pos)
@@ -179,8 +176,7 @@ namespace Logic
          /// <summary>Reads a binary expression, unary expression, sub-expression, or literal</summary>
          /// <param name="pos">Position of first token of expression</param>
          /// <returns>Expression tree</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
-         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::AlgorithmException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadBinaryExpression(TokenIterator& pos, UINT precedence)
@@ -218,8 +214,7 @@ namespace Logic
          /// <summary>Reads a unary expression, sub-expression, or literal</summary>
          /// <param name="pos">Position of first token of expression</param>
          /// <returns>Expression tree</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
-         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::AlgorithmException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadUnaryExpression(TokenIterator& pos)
@@ -246,8 +241,7 @@ namespace Logic
          /// <summary>Reads a literal or sub-expression</summary>
          /// <param name="pos">Position of literal or first token of sub-expression</param>
          /// <returns>Expression tree</returns>
-         /// <exception cref="Logic::ArgumentException">Invalid precendence detected</exception>
-         /// <exception cref="Logic::InvalidOperationException">Attempted to read incorrect type of Token</exception>
+         /// <exception cref="Logic::AlgorithmException">Attempted to read incorrect type of Token</exception>
          /// <exception cref="Logic::ExpressionParserException">Syntax error</exception>
          /// <remarks>Advances the iterator to beyond the end of the literal or sub-expression</remarks>
          ExpressionParser::ExpressionTree  ExpressionParser::ReadValue(TokenIterator& pos)

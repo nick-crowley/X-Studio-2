@@ -74,13 +74,13 @@ namespace Logic
 
          public:
             ErrorArray     Errors;     // Compilation errors
-            CommandNodePtr Commands;   // Parse tree
             ScriptFile&    Script;     // Script
 
          private:
             const LineArray&  Input;
             const GameVersion Version;
 
+            CommandNodePtr  Root;       // Parse tree
             LineIterator    CurrentLine;
             CommandNodePtr  CurrentNode;
          };
