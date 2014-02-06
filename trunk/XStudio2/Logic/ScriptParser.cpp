@@ -120,7 +120,7 @@ namespace Logic
             //Commands->Print(0);
 
             // Populate script. Verify tree
-            //Root->Populate(Script);
+            Root->Populate(Script);
             //Root->Verify(Script, Errors);
             //Commands->Compile(Script);
 
