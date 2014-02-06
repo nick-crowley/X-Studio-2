@@ -116,14 +116,12 @@ namespace Logic
                }
             }
             
-            // DEBUG: Print tree
-            //Commands->Print(0);
-
             // Verify tree
             Root->Verify(Script, Errors);
-            //Commands->Compile(Script);
+            Root->Print(0);
 
-            // DEBUG: Print tree
+            // Compile tree
+            Root->Compile(Script);
             Root->Print(0);
          }
 

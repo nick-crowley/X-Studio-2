@@ -15,52 +15,7 @@ namespace Logic
    {
       namespace Compiler
       {
-         /// <summary>Checks whether commands are standard</summary>
-         CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
-         { 
-            return n->Is(CommandType::Standard); 
-         };
-
-         /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
-         CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
-         { 
-            switch (n->Logic)
-            {
-            case BranchLogic::None:    // Standard cmd
-            case BranchLogic::Break:
-            case BranchLogic::Continue:
-               return true;
-            }
-            return false;
-         };
          
-         /// <summary>Finds first standard command after any else/else-if conditionals</summary>
-         CommandNode::NodeDelegate  CommandNode::isConditionalEnd = [](const CommandNodePtr& n) 
-         { 
-            switch (n->Logic)
-            {
-            case BranchLogic::NOP:
-            case BranchLogic::End:
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-               return false;
-            }
-            return true;
-         };
-
-         /// <summary>Finds next conditional following if/else-if, otherwise next standard command</summary>
-         CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
-         { 
-            switch (n->Logic)
-            {
-            case BranchLogic::None:    // Standard cmd
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-               return true;
-            }
-            return false;
-         };
-
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
@@ -135,6 +90,52 @@ namespace Logic
          {}
 
          // ------------------------------- STATIC METHODS -------------------------------
+         
+         /// <summary>Checks whether commands are standard</summary>
+         CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
+         { 
+            return n->Is(CommandType::Standard); 
+         };
+
+         /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
+         CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
+         { 
+            switch (n->Logic)
+            {
+            case BranchLogic::None:    // Standard cmd
+            case BranchLogic::Break:
+            case BranchLogic::Continue:
+               return true;
+            }
+            return false;
+         };
+         
+         /// <summary>Finds first standard command after any else/else-if conditionals</summary>
+         CommandNode::NodeDelegate  CommandNode::isConditionalEnd = [](const CommandNodePtr& n) 
+         { 
+            switch (n->Logic)
+            {
+            case BranchLogic::NOP:
+            case BranchLogic::End:
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+               return false;
+            }
+            return true;
+         };
+
+         /// <summary>Finds next conditional following if/else-if, otherwise next standard command</summary>
+         CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
+         { 
+            switch (n->Logic)
+            {
+            case BranchLogic::None:    // Standard cmd
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+               return true;
+            }
+            return false;
+         };
 
          // ------------------------------- PUBLIC METHODS -------------------------------
          
@@ -223,7 +224,7 @@ namespace Logic
          void  CommandNode::Print(int depth) const
          {
             // Line#/Logic/Text
-            GuiString line(Is(CommandType::Standard) ? L"%03d: " : L"   : ", Index),      // Line#: <index> 
+            GuiString line(Is(CommandType::Standard) ? L"%03d: %03d : " : L"%03d: --- : ", LineNumber, Index),    // line: index: 
                       logic(GetString(Logic)),
                       txt(LineText);
             Colour    colour(Colour::White);
@@ -249,9 +250,12 @@ namespace Logic
             case BranchLogic::None:
                if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                {
-                  colour = Colour::Green; //Is(CMD_HIDDEN_JUMP) ? Colour::Green : Colour::Yellow;
+                  colour = Colour::Green; 
                   logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
-                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: %d" : L"Goto label %d", JumpTarget?JumpTarget->Index:0xffff);
+
+                  // Display label number if calculated, otherwise label name
+                  wstring addr = (JumpTarget ? GuiString(L"%d", JumpTarget->Index) : Parameters.size()>0 ? Parameters[0].Token.Text : L"<missing>");
+                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: " : L"Goto label ") + addr;
                }
                else if (Is(CMD_DEFINE_LABEL))
                {
@@ -344,7 +348,7 @@ namespace Logic
                return node->get();
 
             // Error
-            throw AlgorithmException(HERE, L"Conditional has no end");
+            throw AlgorithmException(HERE, GuiString(L"Can't find conditional finish for line %d : %s", LineNumber, LineText.TrimLeft(L" ").c_str()));
          }
 
 
@@ -389,7 +393,7 @@ namespace Logic
                return node->get();
 
             // Error
-            throw AlgorithmException(HERE, L"Conditional has no alternatives");
+            throw AlgorithmException(HERE, GuiString(L"Can't find alternate conditional for line %d : %s", LineNumber, LineText.TrimLeft(L" ").c_str()));
          }
 
          /// <summary>Finds the next sibling of this node</summary>

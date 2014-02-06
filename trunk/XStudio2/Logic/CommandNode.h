@@ -143,7 +143,7 @@ namespace Logic
             const UINT      LineNumber;       // 1-based line number
             const CHARRANGE Extent;           // Start/end character offsets
             // Debug
-            wstring         LineText;         // Debug: line text
+            GuiString       LineText;         // Debug: line text
 
          
          };
