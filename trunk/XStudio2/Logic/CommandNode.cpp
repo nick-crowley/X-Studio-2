@@ -24,9 +24,42 @@ namespace Logic
          /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
          CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
          { 
-            return n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE); 
+            switch (n->Logic)
+            {
+            case BranchLogic::None:    // Standard cmd
+            case BranchLogic::Break:
+            case BranchLogic::Continue:
+               return true;
+            }
+            return false;
          };
          
+         /// <summary>Finds first standard command after any else/else-if conditionals</summary>
+         CommandNode::NodeDelegate  CommandNode::isConditionalEnd = [](const CommandNodePtr& n) 
+         { 
+            switch (n->Logic)
+            {
+            case BranchLogic::NOP:
+            case BranchLogic::End:
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+               return false;
+            }
+            return true;
+         };
+
+         /// <summary>Finds next conditional following if/else-if, otherwise next standard command</summary>
+         CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
+         { 
+            switch (n->Logic)
+            {
+            case BranchLogic::None:    // Standard cmd
+            case BranchLogic::Else:
+            case BranchLogic::ElseIf:
+               return true;
+            }
+            return false;
+         };
 
          // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -131,6 +164,18 @@ namespace Logic
             GenerateCommands(script);
          }
          
+         /// <summary>Query command syntax ID</summary>
+         bool  CommandNode::Is(UINT ID) const
+         {
+            return Syntax.Is(ID);
+         }
+
+         /// <summary>Query command syntax type</summary>
+         bool  CommandNode::Is(CommandType t) const
+         {
+            return Syntax.Is(t);
+         }
+
          /// <summary>Identifies branch logic</summary>
          BranchLogic  CommandNode::GetBranchLogic() const
          {
@@ -266,14 +311,6 @@ namespace Logic
          
          // ------------------------------- PRIVATE METHODS ------------------------------
 
-         /// <summary>Check children for presence of certain branch logic</summary>
-         /// <param name="l">logic</param>
-         /// <returns></returns>
-         /*bool  CommandNode::Contains(BranchLogic l) const
-         {
-            return find_if(Children.begin(), Children.end(), [=](const CommandNodePtr& t){ return t->Logic == l; }) != Children.end();
-         }*/
-         
          /// <summary>Finds an ancestor with a given branch logic</summary>
          /// <returns>Parent if found, otherwise nullptr</returns>
          CommandNode*  CommandNode::FindAncestor(BranchLogic l) const
@@ -287,14 +324,6 @@ namespace Logic
             return nullptr;
          }
 
-         /// <summary>Finds the first child with certain branch logic</summary>
-         /// <param name="l">desired logic</param>
-         /// <returns>position if found, otherwise end</returns>
-         /*CommandNode::NodeIterator  CommandNode::FindChild(BranchLogic l) const
-         {
-            return find_if(Children.begin(), Children.end(), [l](const CommandNodePtr& n) {return n->Logic == l;} );
-         }*/
-
          /// <summary>Find a child node by value</summary>
          /// <param name="child">desired child</param>
          /// <returns></returns>
@@ -302,6 +331,22 @@ namespace Logic
          {
             return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
          }
+
+         /// <summary>Finds the command to execute following a failed if/else-if statement</summary>
+         /// <returns></returns>
+         CommandNode* CommandNode::FindConditionalEnd() const
+         {
+            // Find next sibling node containing a standard command
+            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalEnd);
+
+            // Return sibling 
+            if (node != Parent->Children.cend()) 
+               return node->get();
+
+            // Error
+            throw AlgorithmException(HERE, L"Conditional has no end");
+         }
+
 
          /// <summary>Find label definition</summary>
          /// <param name="name">Label name</param>
@@ -321,29 +366,28 @@ namespace Logic
             return nullptr;
          }
          
-         /// <summary>Finds the standard command immediately following this one in the execution order</summary>
+         /// <summary>Finds the command to execute following a failed skip-if/while conditional</summary>
          /// <returns></returns>
          CommandNode* CommandNode::FindNextCommand() const
          {
             // Find next sibling node containing a standard command
-            for (auto node = Parent->FindChild(this)+1; node < Parent->Children.end(); ++node)
-               if ((*node)->Is(CommandType::Standard))
-                  return node->get();
-            
-            // No more siblings: continue search from grandparent
-            return Parent->FindNextCommand();
+            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isStandardCommand);
+
+            // Return if found, else recurse into parent
+            return node != Parent->Children.cend() ? node->get() : Parent->FindNextCommand();
          }
 
-         /// <summary>Finds the standard command immediately following this one in the execution order</summary>
+         /// <summary>Finds the conditional or standard command following an if/else-if statement</summary>
          /// <returns></returns>
          CommandNode* CommandNode::FindNextConditional() const
          {
-            //auto node = find_if(Parent->FindChild(this)+1, Parent->Children.end(), isAlternateConditional);
             // Find next sibling node containing a standard command
-            for (auto node = Parent->FindChild(this)+1; node < Parent->Children.end(); ++node)
-               if ((*node)->Is(CommandType::Standard) || (*node)->Is(CMD_ELSE))
-                  return node->get();
-            
+            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalAlternate);
+
+            // Return sibling 
+            if (node != Parent->Children.cend()) 
+               return node->get();
+
             // Error
             throw AlgorithmException(HERE, L"Conditional has no alternatives");
          }
@@ -444,18 +488,6 @@ namespace Logic
             Children.insert(pos, new CommandNode(this, target));
          }
          
-         /// <summary>Query command syntax ID</summary>
-         bool  CommandNode::Is(UINT ID) const
-         {
-            return Syntax.Is(ID);
-         }
-
-         /// <summary>Query command syntax type</summary>
-         bool  CommandNode::Is(CommandType t) const
-         {
-            return Syntax.Is(t);
-         }
-
          /// <summary>Query whether node is rood</summary>
          bool  CommandNode::IsRoot() const
          {
