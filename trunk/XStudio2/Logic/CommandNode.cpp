@@ -138,6 +138,8 @@ namespace Logic
                colour = Colour::Cyan;
                if (JumpTarget)
                   txt = GuiString(L"Jump-if-false: %d", JumpTarget->Index);
+               if (JumpTarget && !JumpTarget->Index)
+                  txt += L" " + JumpTarget->LineText;
                break;
 
             // NOP:
