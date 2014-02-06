@@ -27,17 +27,15 @@ namespace Logic
          PROPERTY_GET(wstring,Extension,GetExtension);
          PROPERTY_GET(wstring,FileName,GetFileName);
          PROPERTY_GET(wstring,Folder,GetFolder);
-         //PROPERTY_GET(wstring,Text,GetText);
 
 		   // ---------------------- ACCESSORS ------------------------
-		
+      public:
          Path     AppendBackslash() const;
          Path     Append(wstring  path) const;
          bool     Exists() const;
          wstring  GetExtension() const;
          wstring  GetFileName() const;
          wstring  GetFolder() const;
-         //wstring  GetText() const;
          bool     HasExtension(const WCHAR* ext) const;
          bool     HasExtension(wstring ext) const;
          bool     IsDirectory() const;
@@ -45,6 +43,7 @@ namespace Logic
          Path     RemoveExtension() const;
          Path     RenameExtension(wstring  ext) const;
 
+         // Operators
          Path& operator=(const WCHAR* path)     { return Assign(path);               }
          Path& operator=(const wstring& path)   { return Assign(path.c_str());       }
          Path& operator=(const Path& path)      { return Assign(path.Buffer.get());  }
@@ -65,10 +64,10 @@ namespace Logic
          bool operator<(const Path& path) const       { return Compare(path.Buffer.get()) < 0;   }
          bool operator>(const Path& path) const       { return Compare(path.Buffer.get()) > 0;   }
 
-         //operator WCHAR*()                            { return Buffer.get(); }
-         //operator const WCHAR*() const                { return Buffer.get(); }
+         // Access
          const WCHAR* c_str() const                   { return Buffer.get(); }
-         //operator wstring()                           { return Buffer.get(); }
+         explicit operator WCHAR*()                   { return Buffer.get(); }
+         explicit operator wstring()                  { return Buffer.get(); }
 
       private:
          CharArrayPtr  Copy() const;
