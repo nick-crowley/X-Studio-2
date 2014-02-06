@@ -224,6 +224,7 @@
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="Testing\ScriptTextValidator.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +307,7 @@
     </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
+    <ClCompile Include="Testing\ScriptTextValidator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoRes.rc" />

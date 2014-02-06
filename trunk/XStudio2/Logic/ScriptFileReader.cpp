@@ -29,6 +29,8 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire script file</summary>
+      /// <param name="path">Full file path</param>
+      /// <param name="justProperties">True for properties only, False for commands</param>
       /// <returns>New script file</returns>
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>

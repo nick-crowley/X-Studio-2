@@ -138,6 +138,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Parse script 
          ScriptParser parser(Script, Edit->GetLines(), Script.Game);
 
+         // Compile if possible
+         if (parser.Errors.empty())
+            parser.Compile();
+
          // Print errors in debug window
          for (const auto& err : parser.Errors)
          {
@@ -146,9 +150,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // Success: Write
-         if (parser.Errors.size() == 0)
+         if (parser.Errors.empty())
          {
-            // Write
+            // Write to OUTPUT debugging file
             StreamPtr fs(new FileStream(L"D:\\My Projects\\XStudio2\\XStudio2\\output.xml", FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
             w.Write(Script);

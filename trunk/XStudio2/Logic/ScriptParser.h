@@ -54,6 +54,9 @@ namespace Logic
             bool  MatchExpression(const CommandLexer& lex) const;
 
             // ----------------------- MUTATORS ------------------------
+         public:
+            void           Compile();
+
          private:
             CommandNodePtr Advance();
             void           ParseRoot();

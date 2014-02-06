@@ -7,7 +7,7 @@
 #include "CommandHash.h"
 #include "ScriptFile.h"
 
-//#define PRINT_CONSOLE
+//#define DEBUG_PRINT
 
 namespace Logic
 {
@@ -62,6 +62,22 @@ namespace Logic
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
+
+         /// <summary>Reads all commands in the script</summary>
+         /// <exception cref="Logic::InvalidOperationException">Script contains errors</exception>
+         void  ScriptParser::Compile()
+         {
+            // Ensure error free
+            if (!Errors.empty())
+               throw InvalidOperationException(HERE, L"Cannot compile a script with errors");
+
+            // Compile tree
+            Root->Compile(Script);
+
+#ifdef DEBUG_PRINT
+            Root->Print(0);
+#endif
+         }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -118,11 +134,10 @@ namespace Logic
             
             // Verify tree
             Root->Verify(Script, Errors);
-            Root->Print(0);
 
-            // Compile tree
-            Root->Compile(Script);
+#ifdef DEBUG_PRINT
             Root->Print(0);
+#endif
          }
 
          /// <summary>Reads current 'if/else/else-if' command and all descendants including 'end'</summary>
