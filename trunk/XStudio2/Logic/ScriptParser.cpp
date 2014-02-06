@@ -99,7 +99,9 @@ namespace Logic
                // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
-                  ParseIf(Root->Add(Advance()));
+               case BranchLogic::ElseIf:  
+               case BranchLogic::Else:    
+                  ParseIfElse(Root->Add(Advance()));
                   break;
                
                // SkipIf: Add
@@ -107,12 +109,6 @@ namespace Logic
                   ParseSkipIf(Root->Add(Advance()));
                   break;
 
-               // Else/Else-if: Add  (Invalid)
-               case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-                  ParseElse(Root->Add(Advance()));
-                  break;
-               
                // Command/NOP/Break/Continue/End: Add 
                default:
                   Root->Add(Advance());
@@ -124,18 +120,18 @@ namespace Logic
             //Commands->Print(0);
 
             // Populate script. Verify tree
-            Root->Populate(Script);
-            Root->Verify(Script, Errors);
+            //Root->Populate(Script);
+            //Root->Verify(Script, Errors);
             //Commands->Compile(Script);
 
             // DEBUG: Print tree
             Root->Print(0);
          }
 
-         /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
+         /// <summary>Reads current 'if/else/else-if' command and all descendants including 'end'</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
-         void ScriptParser::ParseIf(CommandNodePtr& If)
+         void ScriptParser::ParseIfElse(CommandNodePtr& If)
          {
             while (CurrentNode)
             {  
@@ -150,7 +146,7 @@ namespace Logic
                // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
-                  ParseIf(If->Add(Advance()));  
+                  ParseIfElse(If->Add(Advance()));  
                   break;
 
                // SkipIf: Add
@@ -158,50 +154,15 @@ namespace Logic
                   ParseSkipIf(If->Add(Advance()));  
                   break;
 
-               // Else/Else-if: Add
+               // Else/Else-if: Add-to-Parent, Stop
                case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-                  ParseElse(If->Add(Advance()));  
-                  break;
-
-               // End: Add/Stop
-               case BranchLogic::End: 
-                  If->Add(Advance());
+               case BranchLogic::Else:  
+                  ParseIfElse(If->Parent->Add(Advance()));
                   return;
-               }
-            }
-         }
 
-         /// <summary>Reads current 'else' command and all descendants</summary>
-         /// <returns></returns>
-         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
-         void ScriptParser::ParseElse(CommandNodePtr& Else)
-         {
-            while (CurrentNode)
-            {  
-               // Examine command
-               switch (CurrentNode->Logic)
-               {
-               // Command/NOP/Break/Continue: Add 
-               default: 
-                  Else->Add(Advance());
-                  break;
-
-               // If: Add
-               case BranchLogic::If:      
-               case BranchLogic::While:  
-                  ParseIf(Else->Add(Advance()));  
-                  break;
-
-               // SkipIf: Add
-               case BranchLogic::SkipIf:  
-                  ParseSkipIf(Else->Add(Advance()));  
-                  break;
-
-               // End/Else/Else-if: Stop
-               case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-               case BranchLogic::End: 
+               // End: Add-to-Parent, Stop
+               case BranchLogic::End:
+                  If->Parent->Add(Advance());
                   return;
                }
             }
@@ -223,30 +184,26 @@ namespace Logic
                   SkipIf->Add(Advance());
                   break;
 
-               // Command/Break/Continue: Add/Stop
+               // Command/Break/Continue: Add, Stop
                default: 
                   SkipIf->Add(Advance());
                   return;
 
-               // If: Add/Stop  (Invalid)
-               case BranchLogic::If:      
-               case BranchLogic::While:  
-                  ParseIf(SkipIf->Add(Advance()));  
+               // If: Add (Abort)
+               case BranchLogic::If:      // Invalid
+               case BranchLogic::While:   // Invalid
+               case BranchLogic::ElseIf:  // Invalid 
+               case BranchLogic::Else:    // Invalid
+                  ParseIfElse(SkipIf->Add(Advance()));  
                   return;
 
-               // SkipIf: Add/Stop  (Invalid)
-               case BranchLogic::SkipIf:  
+               // SkipIf: Add (Abort)
+               case BranchLogic::SkipIf:  // Invalid
                   ParseSkipIf(SkipIf->Add(Advance()));  
                   return;
 
-               // Else/Else-if: Add/Stop (invalid)
-               case BranchLogic::ElseIf:  
-               case BranchLogic::Else:    
-                  ParseElse(SkipIf->Add(Advance()));  
-                  return;
-
-               // End: Add/Stop (Invalid)
-               case BranchLogic::End: 
+               // End: Add (Abort)
+               case BranchLogic::End:     // Invalid
                   SkipIf->Add(Advance());
                   return;
                }
