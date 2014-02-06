@@ -57,8 +57,7 @@ namespace Logic
          private:
             CommandNodePtr Advance();
             void           ParseRoot();
-            void           ParseIf(CommandNodePtr& If);
-            void           ParseElse(CommandNodePtr& Else);
+            void           ParseIfElse(CommandNodePtr& If);
             void           ParseSkipIf(CommandNodePtr& SkipIf);
             
             TokenIterator  ReadAssignment(const CommandLexer& lex, TokenIterator& pos);

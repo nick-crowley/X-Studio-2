@@ -123,8 +123,7 @@ namespace Logic
          /// <param name="depth">The depth.</param>
          void  CommandNode::Print(int depth) const
          {
-            // Line/Indent
-            wstring   tab(depth, L' ');
+            // Line#/Logic/Text
             GuiString line(Is(CommandType::Standard) ? L"%03d: " : L"   : ", Index),      // Line#: <index> 
                       logic(GetString(Logic)),
                       txt(LineText);
@@ -160,13 +159,13 @@ namespace Logic
                   colour = Colour::Red;
                   logic = L"PROC";
                }
-               else
-                  logic = L"Cmd";
+               else 
+                  logic = (Parent ? L"Cmd" : L"Root");
                break;
             }
 
             // Print
-            Console << line+tab << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+            Console << line+wstring(depth, L' ') << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
 
             // Print Children
             for (auto c : Children)
