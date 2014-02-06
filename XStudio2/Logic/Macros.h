@@ -47,7 +47,7 @@
 #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
 
 // Macro: Shorthand for console end-of-line manipulator
-#define ENDL      Cons::Endl
+//#define ENDL      Cons::Endl
 
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN(n)     namespace n {

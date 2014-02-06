@@ -96,7 +96,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       try
       {
-         Console << ENDL << Colour::Cyan << L"Parsing language file: " << szPathName << ENDL;
+         Console << Cons::Heading << L"Parsing language file: " << szPathName << ENDL;
 
          // Parse file
          if (GuiString(L"String Library") == szPathName)
