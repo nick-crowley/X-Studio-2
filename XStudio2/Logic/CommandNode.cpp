@@ -15,7 +15,19 @@ namespace Logic
    {
       namespace Compiler
       {
+         /// <summary>Checks whether commands are standard</summary>
+         CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
+         { 
+            return n->Is(CommandType::Standard); 
+         };
+
+         /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
+         CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
+         { 
+            return n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE); 
+         };
          
+
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
@@ -228,15 +240,12 @@ namespace Logic
             // branching logic
             VerifyLogic(errors);
 
-            // def: node == standard cmd
-            function<bool (const CommandNodePtr&)> isStandardNode = [](const CommandNodePtr& n){return n->Is(CommandType::Standard);};
-
             // Ensure script has commands
-            if (count_if(Children.begin(), Children.end(), isStandardNode) == 0)
+            if (count_if(Children.begin(), Children.end(), isStandardCommand) == 0)
                errors += ErrorToken(L"No executable commands found", LineNumber, Extent);
             
             // Ensure last std command is RETURN
-            else if (find_if(Children.rbegin(), Children.rend(), isStandardNode) == Children.rend())
+            else if (find_if(Children.rbegin(), Children.rend(), isStandardCommand) == Children.rend())
             {
                auto last = Children.end()[-1];
                if (!last->Is(CMD_RETURN))
@@ -499,58 +508,97 @@ namespace Logic
          /// <summary>Verifies the branching logic</summary>
          void  CommandNode::VerifyLogic(ErrorArray& errors) const
          {
-            // Check for END
+            CommandNode* n;
             switch (Logic)
             {
+            // IF: Must preceed ELSE-IF/ELSE/END
             case BranchLogic::If:
-            case BranchLogic::While:
-               if (Logic == BranchLogic::If)
-               {
-                  auto Else = FindChild(BranchLogic::Else);
-                  auto ElseIf = FindChild(BranchLogic::ElseIf);
-
-                  // Ensure 'else-if' does not follow 'else'
-                  if (Else != Children.end() && ElseIf != Children.end() && Else < ElseIf)
-                     errors += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->Extent);
-               }
-
-               // Ensure 'end' is present
-               if (FindChild(BranchLogic::End) == Children.end())
+               // EOF?
+               if ((n=FindNextSibling()) == nullptr)
                   errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+               // preceeds End/Else/Else-if?
+               else if (n->Logic != BranchLogic::End && n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf)
+                  errors += ErrorToken(L"expected 'else', 'else if' or 'end'", n->LineNumber, n->Extent);
                break;
 
+            // WHILE: Must preceed END
+            case BranchLogic::While:
+               // EOF?
+               if ((n=FindNextSibling()) == nullptr)
+                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+               // preceed END?
+               else if (n->Logic != BranchLogic::End)
+                  errors += ErrorToken(L"expected 'end'", n->LineNumber, n->Extent);
+               break;
+
+               //if (Logic == BranchLogic::If)
+               //{
+               //   auto Else = FindChild(BranchLogic::Else);
+               //   auto ElseIf = FindChild(BranchLogic::ElseIf);
+
+               //   // Ensure 'else-if' does not follow 'else'
+               //   if (Else != Children.end() && ElseIf != Children.end() && Else < ElseIf)
+               //      errors += ErrorToken(L"'else-if' must come before 'else' command", (*ElseIf)->LineNumber, (*ElseIf)->Extent);
+               //}
+
+               //// Ensure 'end' is present
+               //if (FindChild(BranchLogic::End) == Children.end())
+               //   errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+               //break;
+
+            // ELSE: Must follow IF/ELSE-IF.  Must preceed END
+            case BranchLogic::Else:
+               // follow IF/ELSE-IF?
+               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
+                  errors += ErrorToken(L"unexpected 'else'", LineNumber, Extent);
+
+               // EOF?
+               else if ((n=FindNextSibling()) == nullptr)
+                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+               // preceed END?
+               else if (n->Logic != BranchLogic::End)
+                  errors += ErrorToken(L"expected 'end'", n->LineNumber, n->Extent);
+               break;
+
+            // ELSE-IF: Must follow IF/ELSE-IF. Must preceed ELSE-IF/ELSE/END
+            case BranchLogic::ElseIf:
+               // follow IF/ELSE-IF?
+               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
+                  errors += ErrorToken(L"unexpected 'else-if'", LineNumber, Extent);
+               
+               // EOF?
+               else if ((n=FindNextSibling()) == nullptr)
+                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+               // preceed ELSE-IF/ELSE/END?
+               else if (n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::End)
+                  errors += ErrorToken(L"expected 'else', 'else if' or 'end'", n->LineNumber, n->Extent);
+               break;
+
+            // END: Must follow IF/WHILE/ELSE-IF/ELSE
             case BranchLogic::End:
-               // Check for parent 'if'/'while' command
-               if (Parent->Logic != BranchLogic::While && Parent->Logic != BranchLogic::If)
+               // follow IF/WHILE/ELSE-IF/ELSE?
+               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::While && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::Else))
                   errors += ErrorToken(L"unexpected 'end' command", LineNumber, Extent);
                break;
 
+            // SKIP-IF: Must not preceed SKIP-IF. Must contain 1 standard command
+            case BranchLogic::SkipIf:
+               // not preceed SKIP-IF?
+               if ((n=FindPrevSibling()) != nullptr && n->Logic == BranchLogic::SkipIf)
+                  errors += ErrorToken(L"'skip-if' cannot be nested", LineNumber, Extent);
+
+               // Ensure command present
+               //if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
+               if (count_if(Children.begin(), Children.end(), isSkipIfCompatible) != 1)
+                  errors += ErrorToken(L"must contain single command without conditional", LineNumber, Extent);
+               break;
+
+            // BREAK/CONTINUE: Must be decendant of WHILE
             case BranchLogic::Break:
             case BranchLogic::Continue:
                // Check for a parent 'while' command
                if (!FindAncestor(BranchLogic::While))
-                  errors += ErrorToken(L"break/continue outside 'while' conditional", LineNumber, Extent);
-               break;
-
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-               // Ensure within 'if' command
-               if (Parent->Logic != BranchLogic::If)
-                  errors += ErrorToken(L"else/else-if outside 'if' conditional", LineNumber, Extent);
-               break;
-
-            case BranchLogic::SkipIf:
-               // Ensure command present
-               if (Children.size() == 0)
-                  errors += ErrorToken(L"missing command from 'skip if' conditional", Children[0]->LineNumber, Children[0]->Extent);
-
-               // Ensure command is standard
-               else 
-               {
-                  auto cmd = Children.end()[-1];
-                  if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
-                     errors += ErrorToken(L"incompatible with 'skip if' conditional", cmd->LineNumber, cmd->Extent);
-               }
+                  errors += ErrorToken(L"break/continue cannot appear outside 'while'", LineNumber, Extent);
                break;
             }
 
