@@ -14,8 +14,8 @@ namespace Logic
       {
          ZeroMemory(&Data, sizeof(WIN32_FIND_DATA));
 
-
-         Handle = FindFirstFileEx((WCHAR*)query, FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);
+         // Find first file
+         Handle = FindFirstFileEx(query.c_str(), FindExInfoBasic, &Data, FindExSearchNameMatch, NULL, NULL);
       }
 
       /// <summary>Closes the file search</summary>

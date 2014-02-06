@@ -82,7 +82,7 @@ namespace Logic
 
          // Feedback
          data->SendFeedback(ProgressType::Info, 1, L"Searching for catalogs...");
-         Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << (WCHAR*)folder << ENDL;
+         Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())
@@ -162,7 +162,7 @@ namespace Logic
             // Search for catalogs
             for (int i = 1; i < 99; i++)
             {
-               Path path( StringResource::Format(format, (WCHAR*)Folder, i) );
+               Path path( StringResource::Format(format, Folder.c_str(), i) );
 
                // Ensure exists
                if (!path.Exists() || !path.RenameExtension(L".dat").Exists())
@@ -194,8 +194,8 @@ namespace Logic
             DWORD          size;
 
             // Feedback
-            Console << Colour::White << L"Reading catalog " << (const WCHAR*)cat.FullPath << ENDL;
-            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", (const WCHAR*)cat.FullPath));
+            Console << Colour::White << L"Reading catalog " << cat.FullPath << ENDL;
+            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
             for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)

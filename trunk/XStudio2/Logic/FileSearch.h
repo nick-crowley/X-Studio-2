@@ -28,7 +28,7 @@ namespace Logic
          DWORD   GetAttributes()  { return Data.dwFileAttributes; }
          DWORD   GetFileSize()    { return Data.nFileSizeLow;     }
          wstring GetFileName()    { return Data.cFileName;        }
-         Path    GetFullPath()    { return (Folder+Data.cFileName).Text; }
+         Path    GetFullPath()    { return Folder+Data.cFileName; }
          bool    IsDirectory()    { return (GetAttributes() & FILE_ATTRIBUTE_DIRECTORY) != 0; }
 
          bool  HasResult();

@@ -171,6 +171,13 @@ namespace Logic
          return *this;
       }
 
+      /// <summary>Writes a path to the console</summary>
+      /// <param name="path">path</param>
+      ConsoleWnd& operator<<(const IO::Path& path)
+      {
+         WriteText(path.c_str());
+         return *this;
+      }
 
       /// <summary>Writes an STL exception to the console</summary>
       /// <param name="e">Exception</param>

@@ -27,7 +27,7 @@ namespace Logic
          PROPERTY_GET(wstring,Extension,GetExtension);
          PROPERTY_GET(wstring,FileName,GetFileName);
          PROPERTY_GET(wstring,Folder,GetFolder);
-         PROPERTY_GET(wstring,Text,GetText);
+         //PROPERTY_GET(wstring,Text,GetText);
 
 		   // ---------------------- ACCESSORS ------------------------
 		
@@ -37,7 +37,7 @@ namespace Logic
          wstring  GetExtension() const;
          wstring  GetFileName() const;
          wstring  GetFolder() const;
-         wstring  GetText() const;
+         //wstring  GetText() const;
          bool     HasExtension(const WCHAR* ext) const;
          bool     HasExtension(wstring ext) const;
          bool     IsDirectory() const;
@@ -52,7 +52,7 @@ namespace Logic
 
          Path operator+(const WCHAR* path) const      { return Append(path);               }
          Path operator+(const wstring& path) const    { return Append(path);               }
-         Path operator+(const Path& path) const       { return Append(path.Text);          }
+         Path operator+(const Path& path) const       { return Append(path.c_str());       }
 
          bool operator==(const WCHAR* path) const     { return Compare(path) == 0;               }
          bool operator==(const wstring& path) const   { return Compare(path.c_str()) == 0;       }
@@ -65,8 +65,8 @@ namespace Logic
          bool operator<(const Path& path) const       { return Compare(path.Buffer.get()) < 0;   }
          bool operator>(const Path& path) const       { return Compare(path.Buffer.get()) > 0;   }
 
-         operator WCHAR*()                            { return Buffer.get(); }
-         operator const WCHAR*() const                { return Buffer.get(); }
+         //operator WCHAR*()                            { return Buffer.get(); }
+         //operator const WCHAR*() const                { return Buffer.get(); }
          const WCHAR* c_str() const                   { return Buffer.get(); }
          //operator wstring()                           { return Buffer.get(); }
 

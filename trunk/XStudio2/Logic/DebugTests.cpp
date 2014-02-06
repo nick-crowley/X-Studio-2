@@ -229,7 +229,7 @@ namespace Logic
 
          // Test browse
          for (auto f : vfs.Browse(L"D:\\X3 Albion Prelude\\t"))
-            OutputDebugString(GuiString(L"Found file: '%s'\n", (const WCHAR*)f.FullPath).c_str());
+            Console << L"Found file: " << f.FullPath << ENDL;
 
          // Test search
          XFileInfo f = vfs.Find(L"D:\\X3 Albion Prelude\\types\\TLaser");
