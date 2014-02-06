@@ -201,12 +201,15 @@ namespace Logic
             // branching logic
             VerifyLogic(errors);
 
+            // def: node == standard cmd
+            function<bool (const CommandNodePtr&)> isStandardNode = [](const CommandNodePtr& n){return n->Is(CommandType::Standard);};
+
             // Ensure script has commands
-            if (Children.size() == 0)
-               errors += ErrorToken(L"No commands found", LineNumber, Extent);
+            if (count_if(Children.begin(), Children.end(), isStandardNode) == 0)
+               errors += ErrorToken(L"No executable commands found", LineNumber, Extent);
             
             // Ensure last std command is RETURN
-            else if (find_if(Children.rbegin(), Children.rend(), [](const CommandNodePtr& n){return n->Is(CommandType::Standard);}) == Children.rend())
+            else if (find_if(Children.rbegin(), Children.rend(), isStandardNode) == Children.rend())
             {
                auto last = Children.end()[-1];
                if (!last->Is(CMD_RETURN))
