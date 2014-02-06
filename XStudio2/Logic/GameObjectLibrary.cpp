@@ -97,7 +97,7 @@ namespace Logic
                   continue;
 
                // Feedback
-               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading type file '%s'...", (const WCHAR*)f.FullPath));
+               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading type file '%s'...", f.FullPath.c_str()));
                Console << L"Reading type file: " << f.FullPath << L"...";
 
                // Create appropriate reader

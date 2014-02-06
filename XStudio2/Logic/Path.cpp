@@ -119,10 +119,10 @@ namespace Logic
 
       /// <summary>Get path<summary>
       /// <returns></returns>
-      wstring  Path::GetText() const
+      /*wstring  Path::GetText() const
       {
          return Buffer.get();
-      }
+      }*/
 
       /// <summary>Determines whether path has a given extension (case insensitive)</summary>
       /// <param name="ext">The extention preceeded by a dot</param>

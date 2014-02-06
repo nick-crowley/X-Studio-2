@@ -50,7 +50,7 @@ namespace Logic
                return FileType::Universe;
          }
          catch (ExceptionBase& e) {
-            Console.Log(HERE, e, GuiString(L"Unable to identify file '%s'", (wchar*)path));
+            Console.Log(HERE, e, GuiString(L"Unable to identify file '%s'", path.c_str()));
          }
 
          // Unknown

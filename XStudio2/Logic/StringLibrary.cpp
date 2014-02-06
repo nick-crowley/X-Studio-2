@@ -56,7 +56,7 @@ namespace Logic
             try
             {
                // Feedback
-               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", (const WCHAR*)f.FullPath));
+               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", f.FullPath.c_str()));
                Console << L"Reading language file: " << f.FullPath << L"...";
 
                // Parse language file
