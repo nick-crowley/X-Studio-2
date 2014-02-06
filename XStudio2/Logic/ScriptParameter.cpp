@@ -129,19 +129,29 @@ namespace Logic
             
             // Conditional: Encode conditional + jump destination
             else
+            {
+               if (jumpDestination == 0xffff)
+                  throw AlgorithmException(HERE, L"Missing jump destination");
+
                Value = ReturnValue(ReturnValue(Value.Int).Conditional, jumpDestination).EncodedValue;
+            }
             break;
 
          // String: LabelDeclaration/Comment/String
          case DataType::STRING:
             break;
 
-         // Integer: LabelNumber/Number
+         // Integer: Number/LabelNumber
          case DataType::INTEGER:
             if (Syntax.Type != ParameterType::LABEL_NUMBER)
                Value = _wtoi(Value.String.c_str());
-            else
+            else 
+            {
+               if (jumpDestination == 0xffff)
+                  throw AlgorithmException(HERE, L"Missing jump destination");
+            
                Value = jumpDestination;
+            }
             break;
 
          // Null: Zero
