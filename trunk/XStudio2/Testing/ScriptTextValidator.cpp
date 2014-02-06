@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ScriptTextValidator.h"
 #include "../Logic/FileStream.h"
-#include "../Logic/XFileSystem.h"
+#include "../Logic/XFileInfo.h"
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
 
@@ -40,28 +40,40 @@ namespace Testing
             Console << "Parsing, compiling and writing..." << ENDL;
 
             // Parse command text
-            ScriptParser parser(input, GetAllLines(input.Commands.Input), input.Game);
-            parser.Compile();
+            auto text = GetAllLines(input.Commands.Input);
+            ScriptParser parser(input, text, input.Game);
 
-            // Write output file
-            TempPath tmp;
-            ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
-            w.Write(input);
-            w.Close();
-
-
-            Console << "Reading validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
-
-            // Read output file
-            ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
-            auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
-
-            // Compare
-            Console << "Performing textual comparison..." << ENDL;
-            if (Compare(input, output))
+            // Check for syntax errors
+            if (!parser.Errors.empty())
             {
-               Console << Colour::Green << "Validation Successful" << ENDL;
-               return true;
+               for (auto& e : parser.Errors)
+                  Console << "ERROR: " << e.Line << " : " << text[e.Line-1] << " : " << e.Message << ENDL;
+            }
+            else
+            {
+               TempPath tmp;  
+               
+               // Compile script
+               parser.Compile();
+
+               // Write output file
+               ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
+               w.Write(input);
+               w.Close();
+
+               Console << "Reading validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
+
+               // Read output file
+               ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
+               auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
+
+               // Compare
+               Console << "Performing textual comparison..." << ENDL;
+               if (Compare(input, output))
+               {
+                  Console << Colour::Green << "Validation Successful" << ENDL;
+                  return true;
+               }
             }
          }
          catch (ExceptionBase& e)
