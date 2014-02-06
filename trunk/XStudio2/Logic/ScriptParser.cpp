@@ -21,8 +21,9 @@ namespace Logic
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          ScriptParser::ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v) 
-            : Input(lines), Version(v), Commands(new CommandNode()), Script(file)
+            : Input(lines), Version(v), Root(new CommandNode()), Script(file)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
@@ -84,8 +85,7 @@ namespace Logic
 
          /// <summary>Reads all commands in the script</summary>
          /// <returns></returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          void  ScriptParser::ParseRoot()
          {
             // Read first command
@@ -99,23 +99,23 @@ namespace Logic
                // If: Add
                case BranchLogic::If:      
                case BranchLogic::While:  
-                  ParseIf(Commands->Add(Advance()));
+                  ParseIf(Root->Add(Advance()));
                   break;
                
                // SkipIf: Add
                case BranchLogic::SkipIf:  
-                  ParseSkipIf(Commands->Add(Advance()));
+                  ParseSkipIf(Root->Add(Advance()));
                   break;
 
                // Else/Else-if: Add  (Invalid)
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-                  ParseElse(Commands->Add(Advance()));
+                  ParseElse(Root->Add(Advance()));
                   break;
                
                // Command/NOP/Break/Continue/End: Add 
                default:
-                  Commands->Add(Advance());
+                  Root->Add(Advance());
                   break;
                }
             }
@@ -124,18 +124,17 @@ namespace Logic
             //Commands->Print(0);
 
             // Populate script. Verify tree
-            Commands->Populate(Script);
-            Commands->Verify(Script, Errors);
+            Root->Populate(Script);
+            Root->Verify(Script, Errors);
             //Commands->Compile(Script);
 
             // DEBUG: Print tree
-            Commands->Print(0);
+            Root->Print(0);
          }
 
          /// <summary>Reads current 'if' command and all descendants including 'end'</summary>
          /// <returns></returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          void ScriptParser::ParseIf(CommandNodePtr& If)
          {
             while (CurrentNode)
@@ -175,8 +174,7 @@ namespace Logic
 
          /// <summary>Reads current 'else' command and all descendants</summary>
          /// <returns></returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          void ScriptParser::ParseElse(CommandNodePtr& Else)
          {
             while (CurrentNode)
@@ -211,8 +209,7 @@ namespace Logic
 
          /// <summary>Reads current 'skip-if' command and all descendants</summary>
          /// <returns></returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          void ScriptParser::ParseSkipIf(CommandNodePtr& SkipIf)
          {
             // Read children
@@ -450,7 +447,7 @@ namespace Logic
          /// <param name="pos">The start position.</param>
          /// <returns>Conditional</returns>
          /// <remarks>The iterator is advanced beyond last token read</remarks>
-         /// <exception cref="Logic::ArgumentException">Unrecognised conditional</exception>
+         /// <exception cref="Logic::AlgorithmException">Unrecognised conditional</exception>
          Conditional ScriptParser::ReadConditional(const CommandLexer& lex, TokenIterator& pos)
          {
             // 'if' 'not'?
@@ -473,7 +470,7 @@ namespace Logic
             else if (lex.Match(pos, TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
                return lex.Match(pos, TokenType::Keyword, L"not") ? Conditional::SKIP_IF : Conditional::SKIP_IF_NOT;
                
-            throw ArgumentException(HERE, L"pos", GuiString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
+            throw AlgorithmException(HERE, GuiString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
          }
          
          /// <summary>Reads the reference object and reference operator tokens</summary>
@@ -520,6 +517,7 @@ namespace Logic
          ///    command = (assignment/conditional)? (constant/variable/null '->')? text/keyword/label
          ///
          /// </remarks>
+         /// <exception cref="Logic::AlgorithmException">Error in expression parsing algorithm</exception>
          CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex)
          {
             Conditional   condition = Conditional::DISCARD;
@@ -599,8 +597,6 @@ namespace Logic
          /// <summary>Reads an entire expression command</summary>
          /// <param name="lex">The lexer</param>
          /// <returns>New Expression command node</returns>
-         /// <exception cref="Logic::ArgumentException">Error in expression parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in expression parsing algorithm</exception>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
          ///    value = constant/variable/literal/null
@@ -610,6 +606,7 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
+         /// <exception cref="Logic::AlgorithmException">Error in expression parsing algorithm</exception>
          CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
          {
             Conditional    condition = Conditional::DISCARD;
@@ -656,9 +653,6 @@ namespace Logic
          /// <param name="parent">Parent node</param>
          /// <param name="line">The line.</param>
          /// <returns>Single command node, or nullptr if EOF</returns>
-         /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::InvalidOperationException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::ExpressionParserException">Syntax error in expression</exception>
          /// <remarks>Grammar:
          /// 
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -672,6 +666,7 @@ namespace Logic
          ///    expression = (assignment/conditional) unary_operator? value (operator value)*
          ///
          /// </remarks>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          CommandNodePtr ScriptParser::ReadLine()
          {
             // EOF: Return
