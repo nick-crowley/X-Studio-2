@@ -95,13 +95,15 @@ namespace Logic
             void          Print(int depth = 0) const;
                
          private:
-            bool          Contains(BranchLogic l) const;
-            void          EnumLabels(ErrorArray& errors) const;
+            //bool          Contains(BranchLogic l) const;
+            //void          EnumLabels(ErrorArray& errors) const;
             CommandNode*  FindAncestor(BranchLogic l) const;
-            NodeIterator  FindChild(BranchLogic l) const;
+            /*NodeIterator  FindChild(BranchLogic l) const;*/
             NodeIterator  FindChild(const CommandNode* child) const;
             CommandNode*  FindLabel(const wstring& name) const;
+            CommandNode*  FindNextCommand() const;
             CommandNode*  FindNextSibling() const;
+            CommandNode*  FindPrevSibling() const;
             CommandNode*  FindRoot() const;
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;
