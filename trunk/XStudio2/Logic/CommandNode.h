@@ -83,14 +83,13 @@ namespace Logic
             // ------------------------ STATIC -------------------------
 
             // --------------------- PROPERTIES ------------------------
-
+         public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
 
             // ---------------------- ACCESSORS ------------------------		
          public:
             BranchLogic   GetBranchLogic() const;
             void          Print(int depth = 0) const;
-            void          Verify(const ScriptFile& script, ErrorArray& errors) const;
                
          private:
             bool          Contains(BranchLogic l) const;
@@ -111,10 +110,11 @@ namespace Logic
          public:
             CommandNodePtr Add(CommandNodePtr node);
             void           Compile(ScriptFile& script);
-            void           Populate(ScriptFile& script);
+            void           Verify(ScriptFile& script, ErrorArray& errors);
             
          private:
             void           GenerateCommands(ScriptFile& script);
+            void           IdentifyVariables(ScriptFile& script);
             void           IndexCommands(UINT& next);
             void           InsertJump(NodeIterator pos, const CommandNode* target);
             void           LinkCommands();

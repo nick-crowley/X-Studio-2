@@ -118,7 +118,49 @@ namespace Logic
             // Compile commands
             GenerateCommands(script);
          }
+         
+         /// <summary>Identifies branch logic</summary>
+         BranchLogic  CommandNode::GetBranchLogic() const
+         {
+            // Command
+            switch (Syntax.ID)
+            {
+            case CMD_END:      return BranchLogic::End;
+            case CMD_ELSE:     return BranchLogic::Else;
+            case CMD_BREAK:    return BranchLogic::Break;
+            case CMD_CONTINUE: return BranchLogic::Continue;
 
+            case CMD_COMMAND_COMMENT:
+            case CMD_COMMENT: 
+            case CMD_NOP:     
+               return BranchLogic::NOP;
+         
+            // Conditional
+            default:
+               switch (Condition)
+               {
+               case Conditional::IF:      
+               case Conditional::IF_NOT:        
+                  return BranchLogic::If;
+
+               case Conditional::WHILE:         
+               case Conditional::WHILE_NOT:     
+                  return BranchLogic::While;
+
+               case Conditional::ELSE_IF:  
+               case Conditional::ELSE_IF_NOT:   
+                  return BranchLogic::ElseIf;
+
+               case Conditional::SKIP_IF:  
+               case Conditional::SKIP_IF_NOT:   
+                  return BranchLogic::SkipIf;
+
+               default:
+                  return BranchLogic::None;
+               }
+            }
+         }
+         
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
          void  CommandNode::Print(int depth) const
@@ -172,29 +214,14 @@ namespace Logic
                c->Print(depth+1);
          }
 
-         /// <summary>Populates the script with label and variable names</summary>
-         /// <param name="script">script.</param>
-         void  CommandNode::Populate(ScriptFile& script) 
-         {
-            // Add label definitions to script
-            if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0) 
-               script.Labels.Add(Parameters[0].Value.String, LineNumber);
-
-            // Add variable names to script
-            for (const auto& p : Parameters)
-               if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                  script.Variables.Add(p.Value.String);
-
-            // Examine children
-            for (const auto& cmd : Children)
-               cmd->Populate(script);
-         }
-         
          /// <summary>Verifies the entire tree</summary>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
-         void  CommandNode::Verify(const ScriptFile& script, ErrorArray& errors) const 
+         void  CommandNode::Verify(ScriptFile& script, ErrorArray& errors) 
          {
+            // Identify labels/variables
+            IdentifyVariables(script);
+
             // parameters
             VerifyParameters(script, errors);
 
@@ -339,46 +366,22 @@ namespace Logic
             return n;
          }
 
-         /// <summary>Identifies branch logic</summary>
-         BranchLogic  CommandNode::GetBranchLogic() const
+         /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
+         /// <param name="script">script.</param>
+         void  CommandNode::IdentifyVariables(ScriptFile& script) 
          {
-            // Command
-            switch (Syntax.ID)
-            {
-            case CMD_END:      return BranchLogic::End;
-            case CMD_ELSE:     return BranchLogic::Else;
-            case CMD_BREAK:    return BranchLogic::Break;
-            case CMD_CONTINUE: return BranchLogic::Continue;
+            // Add label definitions to script
+            if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0) 
+               script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
-            case CMD_COMMAND_COMMENT:
-            case CMD_COMMENT: 
-            case CMD_NOP:     
-               return BranchLogic::NOP;
-         
-            // Conditional
-            default:
-               switch (Condition)
-               {
-               case Conditional::IF:      
-               case Conditional::IF_NOT:        
-                  return BranchLogic::If;
+            // Add variable names to script
+            for (const auto& p : Parameters)
+               if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                  script.Variables.Add(p.Value.String);
 
-               case Conditional::WHILE:         
-               case Conditional::WHILE_NOT:     
-                  return BranchLogic::While;
-
-               case Conditional::ELSE_IF:  
-               case Conditional::ELSE_IF_NOT:   
-                  return BranchLogic::ElseIf;
-
-               case Conditional::SKIP_IF:  
-               case Conditional::SKIP_IF_NOT:   
-                  return BranchLogic::SkipIf;
-
-               default:
-                  return BranchLogic::None;
-               }
-            }
+            // Examine children
+            for (const auto& cmd : Children)
+               cmd->IdentifyVariables(script);
          }
          
          /// <summary>Calculates the standard command index</summary>
