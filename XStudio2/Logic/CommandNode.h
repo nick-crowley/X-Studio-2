@@ -93,6 +93,8 @@ namespace Logic
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
+         private:
+            PROPERTY_GET(GuiString,DebugText,GetDebugText);
 
             // ---------------------- ACCESSORS ------------------------		
          public:
@@ -112,6 +114,7 @@ namespace Logic
             CommandNode*  FindPrevSibling() const;
             CommandNode*  FindRoot() const;
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
+            GuiString     GetDebugText() const;
             bool          IsRoot() const;
             void          VerifyLogic(ErrorArray& errors) const;
             void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;

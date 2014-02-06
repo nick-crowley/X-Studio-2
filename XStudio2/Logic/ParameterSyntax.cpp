@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ParameterSyntax.h"
 #include "StringLibrary.h"
+#include "ScriptObjectLibrary.h"
 
 namespace Logic
 {
@@ -55,8 +56,8 @@ namespace Logic
       /// <summary>Get parameter type string</summary>
       GuiString  GetString(ParameterType t)
       {
-         const LanguageString* str=nullptr;
-         return StringLib.TryFind(KnownPage::PARAMETER_TYPES, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
+         const ScriptObject* str=nullptr;
+         return ScriptObjectLib.TryFind(ScriptObjectGroup::ParameterType, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
