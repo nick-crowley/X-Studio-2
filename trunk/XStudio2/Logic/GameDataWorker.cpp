@@ -43,7 +43,7 @@ namespace Logic
                throw ComException(HERE, hr);
 
             // Feedback
-            Console << ENDL << Colour::Cyan << L"Loading " << VersionString(data->Version) << L" game data from " << data->GameFolder.c_str() << ENDL;
+            Console << Cons::Heading << L"Loading " << VersionString(data->Version) << L" game data from " << data->GameFolder.c_str() << ENDL;
             data->SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading %s game data from '%s'", VersionString(data->Version).c_str(), data->GameFolder.c_str()));
 
             // Build VFS. 

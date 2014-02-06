@@ -82,7 +82,7 @@ namespace Logic
 
          // Feedback
          data->SendFeedback(ProgressType::Info, 1, L"Searching for catalogs...");
-         Console << ENDL << Colour::Cyan << L"Building " << VersionString(version) << L" VFS from " << folder << ENDL;
+         Console << Cons::Heading << L"Building " << VersionString(version) << L" VFS from " << folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())

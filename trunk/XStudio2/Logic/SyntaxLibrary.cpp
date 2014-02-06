@@ -54,7 +54,7 @@ namespace Logic
 
          // Feedback
          data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading legacy syntax file '%s'", path.FileName.c_str()));
-         Console << ENDL << Colour::Cyan << L"Reading legacy syntax file: " << path << ENDL;
+         Console << Cons::Heading << L"Reading legacy syntax file: " << path << ENDL;
          
          // Load/Merge legacy syntax file
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );

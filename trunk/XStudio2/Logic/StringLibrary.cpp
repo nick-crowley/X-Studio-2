@@ -38,7 +38,7 @@ namespace Logic
 
          // Feedback
          data->SendFeedback(ProgressType::Info, 1, L"Enumerating language files");
-         Console << ENDL << Colour::Cyan << L"Enumerating language files" << ENDL;
+         Console << Cons::Heading << L"Enumerating language files" << ENDL;
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))

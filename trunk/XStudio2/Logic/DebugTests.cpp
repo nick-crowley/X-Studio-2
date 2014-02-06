@@ -29,7 +29,7 @@ namespace Logic
    
    //ScriptParser::ScriptTree  DebugTests::CompileScript(const vector<wstring>& lines)
    //{
-   //   Console << ENDL << Colour::Cyan << L"Compiling current script text: " << ENDL;
+   //   Console << Cons::Heading << L"Compiling current script text: " << ENDL;
 
    //   ScriptParser p(lines, GameVersion::TerranConflict);
    //   return p.Script;
@@ -46,7 +46,7 @@ namespace Logic
    //   SyntaxLib.Enumerate(nullptr);
 
    //   // Parse script
-   //   Console << ENDL << Colour::Cyan << L"Parsing MSCI script: " << path << ENDL;
+   //   Console << Cons::Heading << L"Parsing MSCI script: " << path << ENDL;
 
    //   StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
    //   ScriptFile script = ScriptFileReader(fs2).ReadFile();
@@ -85,7 +85,7 @@ namespace Logic
       vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
 
       // Feedback
-      Console << ENDL << Colour::Cyan << L"Performing MSCI script batch test: " << ENDL;
+      Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
 
       // Parse each script
       for (auto& v : vfs.Browse(XFolder::Scripts))
@@ -282,7 +282,7 @@ namespace Logic
          auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
 
          // Test iterator
-         Console << ENDL << Colour::Cyan << "Testing Language file iterator..." << ENDL;
+         Console << Cons::Heading << "Testing Language file iterator..." << ENDL;
          for (const LanguagePage& page : langFile)
             for (const LanguageString& str : page)
                Console << GuiString(L"{%d:%d} %s", str.Page, str.ID, str.Text.c_str()) << ENDL;
@@ -389,7 +389,7 @@ namespace Logic
          StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
 
          // Read TWareT
-         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
+         Console << Cons::Heading << L"Reading TFile: " << path << ENDL;
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto file = TWareReader(fs).ReadFile(MainType::TechWare, GameVersion::TerranConflict);
 
@@ -402,7 +402,7 @@ namespace Logic
 
          // Read TLaser
          path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TLaser.txt";
-         Console << ENDL << Colour::Cyan << L"Reading TFile: " << path << ENDL;
+         Console << Cons::Heading << L"Reading TFile: " << path << ENDL;
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
          auto file2 = TLaserReader(fs2).ReadFile(MainType::Laser, GameVersion::TerranConflict);
 

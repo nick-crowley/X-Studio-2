@@ -6,9 +6,11 @@ namespace Logic
    enum class Colour : COLORREF { Black = RGB(0,0,0), Green = RGB(0,255,0), Blue = RGB(0,0,255), White = RGB(255,255,255), Cyan = RGB(150,220,220),
                                   Red = RGB(255,0,0), Yellow = RGB(255,255,0), Grey = RGB(128,128,128), Purple = RGB(255,0,255) };
 
-
    /// <summary>Console manipulators</summary>
-   enum class Cons { Normal, Bold, Endl, Error };
+   enum class Cons { Heading, Normal, Bold, Endl };
+
+   /// <summary>Shorthand for console end-of-line manipulator</summary>
+   const Cons ENDL = Cons::Endl;
 
    /// <summary>Provides a debugging console</summary>
    class ConsoleWnd
@@ -96,16 +98,34 @@ namespace Logic
       }
 
       /// <summary>Inserts text manipulator</summary>
-      /// <param name="cl">The colour</param>
+      /// <param name="cl">manipulator</param>
       ConsoleWnd& operator<<(Cons c)
       {
+         CONSOLE_SCREEN_BUFFER_INFO info;
+
          switch (c)
          {
-         case Cons::Bold:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
-         case Cons::Normal: return *this << Colour::White;
-         case Cons::Endl:   return *this << Colour::White << L"\n";
-         case Cons::Error:  return *this << Colour::Red << L"ERROR : " << Colour::Yellow;
+         // Bold: Add bold
+         case Cons::Bold:   
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY|info.wAttributes); 
+            break;
+
+         // Normal: Remove bold
+         case Cons::Normal: 
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes^FOREGROUND_INTENSITY); 
+            break;
+
+         // Endl: Linebreak + White
+         case Cons::Endl:   
+            return *this << Colour::White << L"\n";
+
+         // Heading: Linebreak + Cyan
+         case Cons::Heading:  
+            return *this << ENDL << Colour::Cyan;
          }
+
          return *this;
       }
 

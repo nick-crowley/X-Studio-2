@@ -101,7 +101,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       WorkerData data(Operation::LoadSaveDocument);
       
       // Feedback
-      Console << ENDL << Colour::Cyan << "Loading script: " << lpszPathName << ENDL;
+      Console << Cons::Heading << "Loading script: " << lpszPathName << ENDL;
       data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading script '%s'", lpszPathName));
 
       try
@@ -130,7 +130,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       WorkerData data(Operation::LoadSaveDocument);
       
       // Feedback
-      Console << ENDL << Colour::Cyan << "Saving script: " << lpszPathName << ENDL;
+      Console << Cons::Heading << "Saving script: " << lpszPathName << ENDL;
       data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", lpszPathName));
 
       try
