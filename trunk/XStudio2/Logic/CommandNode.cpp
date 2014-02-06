@@ -152,6 +152,7 @@ namespace Logic
 
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
+         /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandNode::Compile(ScriptFile& script)
          {
             // Perform linking
@@ -255,7 +256,7 @@ namespace Logic
 
                   // Display label number if calculated, otherwise label name
                   wstring addr = (JumpTarget ? GuiString(L"%d", JumpTarget->Index) : Parameters.size()>0 ? Parameters[0].Token.Text : L"<missing>");
-                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: " : L"Goto label ") + addr;
+                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: " : L"Goto: ") + addr;
                }
                else if (Is(CMD_DEFINE_LABEL))
                {
@@ -273,6 +274,10 @@ namespace Logic
             // Print Children
             for (auto c : Children)
                c->Print(depth+1);
+
+            // Spacing
+            if (IsRoot())
+               Console << ENDL;
          }
 
          /// <summary>Verifies the entire tree</summary>
@@ -335,22 +340,20 @@ namespace Logic
          {
             return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
          }
+         
+         /// <summary>Finds the conditional or standard command following an if/else-if statement</summary>
+         /// <returns></returns>
+         CommandNode* CommandNode::FindConditionalAlternate() const
+         {
+            return FindSibling(isConditionalAlternate, L"alternate conditional");
+         }
 
          /// <summary>Finds the command to execute following a failed if/else-if statement</summary>
          /// <returns></returns>
          CommandNode* CommandNode::FindConditionalEnd() const
          {
-            // Find next sibling node containing a standard command
-            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalEnd);
-
-            // Return sibling 
-            if (node != Parent->Children.cend()) 
-               return node->get();
-
-            // Error
-            throw AlgorithmException(HERE, GuiString(L"Can't find conditional finish for line %d : %s", LineNumber, LineText.TrimLeft(L" ").c_str()));
+            return FindSibling(isConditionalEnd, L"conditional end-point");
          }
-
 
          /// <summary>Find label definition</summary>
          /// <param name="name">Label name</param>
@@ -374,26 +377,7 @@ namespace Logic
          /// <returns></returns>
          CommandNode* CommandNode::FindNextCommand() const
          {
-            // Find next sibling node containing a standard command
-            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isStandardCommand);
-
-            // Return if found, else recurse into parent
-            return node != Parent->Children.cend() ? node->get() : Parent->FindNextCommand();
-         }
-
-         /// <summary>Finds the conditional or standard command following an if/else-if statement</summary>
-         /// <returns></returns>
-         CommandNode* CommandNode::FindNextConditional() const
-         {
-            // Find next sibling node containing a standard command
-            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalAlternate);
-
-            // Return sibling 
-            if (node != Parent->Children.cend()) 
-               return node->get();
-
-            // Error
-            throw AlgorithmException(HERE, GuiString(L"Can't find alternate conditional for line %d : %s", LineNumber, LineText.TrimLeft(L" ").c_str()));
+            return FindSibling(isStandardCommand, L"next executable command");
          }
 
          /// <summary>Finds the next sibling of this node</summary>
@@ -422,6 +406,25 @@ namespace Logic
             return n;
          }
          
+         /// <summary>Searches for a sibling or ancestral sibling with matching properties</summary>
+         /// <param name="d">delegate for matching properties</param>
+         /// <param name="help">help string on failure</param>
+         /// <returns>First matching node</returns>
+         /// <remarks>Does not examine the children of any nodes, searches 'up' and 'right' along the tree</remarks>
+         /// <exception cref="Logic::AlgorithmException">Unable to find node</exception>
+         CommandNode*  CommandNode::FindSibling(NodeDelegate d, const wchar* help) const
+         {
+            // Not found: Error
+            if (IsRoot())
+               throw AlgorithmException(HERE, GuiString(L"Can't find %s for line %d : %s", help, LineNumber, LineText.TrimLeft(L" ").c_str()));
+
+            // Find next sibling node containing a standard command
+            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), d);
+
+            // Return if found, else recurse into parent
+            return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
+         }
+
          /// <summary>Compiles the parameters/commands into the script</summary>
          /// <param name="script">The script.</param>
          void  CommandNode::GenerateCommands(ScriptFile& script)
@@ -499,6 +502,7 @@ namespace Logic
          }
          
          /// <summary>Perform command linking</summary>
+         /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandNode::LinkCommands() 
          {
             CommandNode* n;
@@ -509,7 +513,7 @@ namespace Logic
             case BranchLogic::If: 
             case BranchLogic::ElseIf: 
                // JIF: else-if/else/next-std-sibling
-               JumpTarget = FindNextConditional();
+               JumpTarget = FindConditionalAlternate();
                
                // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
                if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
