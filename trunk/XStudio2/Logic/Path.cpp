@@ -126,7 +126,7 @@ namespace Logic
 
       /// <summary>Gets the folder portion of the path only</summary>
       /// <returns>Folder including a trailing backslash</returns>
-      wstring  Path::GetFolder() const
+      Path  Path::GetFolder() const
       {
          CharArrayPtr buf( Copy() );
 

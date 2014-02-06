@@ -27,7 +27,7 @@ namespace Logic
       public:
          PROPERTY_GET(wstring,Extension,GetExtension);
          PROPERTY_GET(wstring,FileName,GetFileName);
-         PROPERTY_GET(wstring,Folder,GetFolder);
+         PROPERTY_GET(Path,Folder,GetFolder);
 
 		   // ---------------------- ACCESSORS ------------------------
       public:
@@ -36,7 +36,7 @@ namespace Logic
          bool     Exists() const;
          wstring  GetExtension() const;
          wstring  GetFileName() const;
-         wstring  GetFolder() const;
+         Path     GetFolder() const;
          bool     HasExtension(const WCHAR* ext) const;
          bool     HasExtension(wstring ext) const;
          bool     IsDirectory() const;
