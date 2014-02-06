@@ -22,7 +22,7 @@ namespace Logic
       /// <param name="s">syntax</param>
       /// <param name="c">The conditional.</param>
       ScriptParameter::ScriptParameter(const ParameterSyntax& s, Conditional c) 
-         : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c, 0xffff).EncodedValue), Text(L"conditional")
+         : Syntax(s), Type(DataType::VARIABLE), Value(ReturnValue(c, EMPTY_JUMP).EncodedValue), Text(L"conditional")
       {}
    
       /// <summary>Create a parameter from a string/int value READ FROM FILE</summary>
@@ -107,6 +107,8 @@ namespace Logic
 
       /// <summary>Generates value from text</summary>
       /// <param name="script">script used for variable ID lookup</param>
+      /// <exception cref="Logic::AlgorithmException">Invalid jump destination</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid script object ID</exception>
       void  ScriptParameter::Generate(ScriptFile& script, UINT jumpDestination)
       {
          const ScriptObject* obj = nullptr;
@@ -130,28 +132,30 @@ namespace Logic
             // Conditional: Encode conditional + jump destination
             else
             {
-               if (jumpDestination == 0xffff)
+               if (jumpDestination == EMPTY_JUMP)
                   throw AlgorithmException(HERE, L"Missing jump destination");
 
+               // Encode jump destination into existing conditional
                Value = ReturnValue(ReturnValue(Value.Int).Conditional, jumpDestination).EncodedValue;
             }
             break;
 
-         // String: LabelDeclaration/Comment/String
+         // String: Goto/Gosub/Label/Comment/String
          case DataType::STRING:
-            break;
-
-         // Integer: Number/LabelNumber
-         case DataType::INTEGER:
-            if (Syntax.Type != ParameterType::LABEL_NUMBER)
-               Value = _wtoi(Value.String.c_str());
-            else 
+            // Goto/Gosub use 'LABEL_NUMBER' syntax, but have a DT_STRING data-type due to TokenType::Label resolving to DT_STRING
+            if (Syntax.Type == ParameterType::LABEL_NUMBER)
             {
-               if (jumpDestination == 0xffff)
+               if (jumpDestination == EMPTY_JUMP)
                   throw AlgorithmException(HERE, L"Missing jump destination");
             
+               // Set label number
                Value = jumpDestination;
             }
+            break;
+
+         // Integer: Number
+         case DataType::INTEGER:
+            Value = _wtoi(Value.String.c_str());
             break;
 
          // Null: Zero

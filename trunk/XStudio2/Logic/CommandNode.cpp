@@ -24,7 +24,7 @@ namespace Logic
               Condition(Conditional::NONE),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              Index(0), 
+              Index(EMPTY_JUMP), 
               LineNumber(0),
               Extent({0,0})
          {}
@@ -39,13 +39,13 @@ namespace Logic
               Parent(parent),
               LineNumber(0),
               Extent({0,0}),
-              Index(0)
+              Index(EMPTY_JUMP)
          {
             REQUIRED(parent);
             REQUIRED(target);
 
             // Add empty jump parameter
-            Parameters += ScriptParameter(ParameterSyntax::LabelNumberParameter, DataType::INTEGER, 0xffff);
+            Parameters += ScriptParameter(ParameterSyntax::LabelNumberParameter, DataType::INTEGER, EMPTY_JUMP);
          }
 
          /// <summary>Create node for a script command</summary>
@@ -63,7 +63,7 @@ namespace Logic
               LineText(lex.Input),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              Index(0)
+              Index(EMPTY_JUMP)
          {}
 
          /// <summary>Create node for an expression</summary>
@@ -83,7 +83,7 @@ namespace Logic
               LineText(lex.Input),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              Index(0)
+              Index(EMPTY_JUMP)
          {}
 
          CommandNode::~CommandNode()
@@ -225,10 +225,13 @@ namespace Logic
          void  CommandNode::Print(int depth) const
          {
             // Line#/Logic/Text
-            GuiString line(Is(CommandType::Standard) ? L"%03d: %03d : " : L"%03d: --- : ", LineNumber, Index),    // line: index: 
+            GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
                       logic(GetString(Logic)),
                       txt(LineText);
             Colour    colour(Colour::White);
+            
+            // Index
+            line += GuiString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
             
             // Logic
             switch (Logic)
@@ -237,9 +240,8 @@ namespace Logic
             default: 
                colour = Colour::Cyan;
                if (JumpTarget)
-                  txt = GuiString(L"Jump-if-false: %d", JumpTarget->Index);
-               if (JumpTarget && !JumpTarget->Index)
-                  txt += L" " + JumpTarget->LineText;
+                  txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
+                                           : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->DebugText);
                break;
 
             // NOP:
@@ -252,16 +254,20 @@ namespace Logic
                if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                {
                   colour = Colour::Green; 
-                  logic = Is(CMD_HIDDEN_JUMP) ? L"JMP" : L"GOTO";
+                  logic = Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
+                  txt = L"Unconditional: ";
 
-                  // Display label number if calculated, otherwise label name
-                  wstring addr = (JumpTarget ? GuiString(L"%d", JumpTarget->Index) : Parameters.size()>0 ? Parameters[0].Token.Text : L"<missing>");
-                  txt = GuiString(Is(CMD_HIDDEN_JUMP) ? L"Unconditional Jump: " : L"Goto: ") + addr;
+                  // Post-Compile: Display label number 
+                  if (JumpTarget)
+                     txt += GuiString(L"%d", JumpTarget->Index);
+                  // Pre-Compile: Label name
+                  else 
+                     txt += (!Parameters.empty() ? Parameters[0].Token.Text : L"<missing>");
                }
                else if (Is(CMD_DEFINE_LABEL))
                {
                   colour = Colour::Red;
-                  logic = L"PROC";
+                  logic = L"Proc";
                }
                else 
                   logic = (Parent ? L"Cmd" : L"Root");
@@ -345,7 +351,23 @@ namespace Logic
          /// <returns></returns>
          CommandNode* CommandNode::FindConditionalAlternate() const
          {
-            return FindSibling(isConditionalAlternate, L"alternate conditional");
+            auto node = FindSibling(isConditionalAlternate, L"alternate conditional");
+
+            // ELSE: Since else is auxiliary, use first child.  NB: May have no children, or only auxiliary children
+            if (node->Is(CMD_ELSE))
+            {
+               // No children: Use next std sibling of ELSE
+               if (node->Children.empty())
+                  node = node->FindNextCommand();
+               // 1st child is Auxiliary: Use it's next std sibling
+               else if (node->Children[0]->Is(CommandType::Auxiliary))
+                  node = node->Children[0]->FindNextCommand();
+               else
+                  // Default: Use first child
+                  node = node->Children[0].get();
+            }
+
+            return node;
          }
 
          /// <summary>Finds the command to execute following a failed if/else-if statement</summary>
@@ -373,7 +395,7 @@ namespace Logic
             return nullptr;
          }
          
-         /// <summary>Finds the command to execute following a failed skip-if/while conditional</summary>
+         /// <summary>Finds the next executable sibling</summary>
          /// <returns></returns>
          CommandNode* CommandNode::FindNextCommand() const
          {
@@ -416,7 +438,7 @@ namespace Logic
          {
             // Not found: Error
             if (IsRoot())
-               throw AlgorithmException(HERE, GuiString(L"Can't find %s for line %d : %s", help, LineNumber, LineText.TrimLeft(L" ").c_str()));
+               throw AlgorithmException(HERE, GuiString(L"Can't find %s for line %d : %s", help, LineNumber, DebugText.c_str()));
 
             // Find next sibling node containing a standard command
             auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), d);
@@ -431,26 +453,39 @@ namespace Logic
          {
             ParameterArray params;
 
-            if (!IsRoot())
+            try
             {
-               // Compile parameters
-               for (auto& p : Parameters)
-                  p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
-
-               // Generate & insert command
-               if (!Syntax.Is(CMD_EXPRESSION))
-                  script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters));
-               else
+               if (!IsRoot())
                {
-                  // Compile postfix parameters
-                  for (auto& p : Postfix)
-                     p.Generate(script, JumpTarget ? JumpTarget->Index : 0xffff);
+                  // Verify linkage
+                  if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
+                     throw AlgorithmException(HERE, GuiString(L"Illegal linkage to line %d '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()));
+
+                  // Compile parameters
+                  for (auto& p : Parameters)
+                     p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP);
 
                   // Generate & insert command
-                  script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix));
+                  if (!Syntax.Is(CMD_EXPRESSION))
+                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters));
+                  else
+                  {
+                     // Compile postfix parameters
+                     for (auto& p : Postfix)
+                        p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP);
+
+                     // Generate & insert command
+                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix));
+                  }
                }
             }
-
+            catch (ExceptionBase& e)
+            {
+               //throw AlgorithmException(HERE, GuiString(L"Unable to compile: %s"));
+               e.Message = GuiString(L"Unable to compile line %d: '%s' - ", LineNumber, DebugText.c_str()) + e.Message;
+               throw;
+            }
+            
             // Recurse into children
             for (auto& c : Children)
                c->GenerateCommands(script);
@@ -461,7 +496,7 @@ namespace Logic
          void  CommandNode::IdentifyVariables(ScriptFile& script) 
          {
             // Add label definitions to script
-            if (Is(CMD_DEFINE_LABEL) && Parameters.size() > 0) 
+            if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
                script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
             // Add variable names to script
@@ -495,7 +530,13 @@ namespace Logic
             Children.insert(pos, new CommandNode(this, target));
          }
          
-         /// <summary>Query whether node is rood</summary>
+         /// <summary>Get line text without indentation</summary>
+         GuiString   CommandNode::GetDebugText() const
+         {
+            return LineText.TrimLeft(L" ");
+         }
+
+         /// <summary>Query whether node is root</summary>
          bool  CommandNode::IsRoot() const
          {
             return Parent == nullptr;
@@ -550,7 +591,7 @@ namespace Logic
             // JMP: LABEL
             case BranchLogic::None:
                if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
-                  JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);
+                  JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
                break;
             }
 

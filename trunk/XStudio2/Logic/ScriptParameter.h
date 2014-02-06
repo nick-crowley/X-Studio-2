@@ -11,6 +11,8 @@ namespace Logic
    {
       class ScriptFile;
 
+      /// <summary>Sentinel value for unspecified jump destination</summary>
+      const unsigned short EMPTY_JUMP = 0xffff;
       
       /// <summary>Defines current type of parameter value union</summary>
       enum class ValueType { String, Int };
