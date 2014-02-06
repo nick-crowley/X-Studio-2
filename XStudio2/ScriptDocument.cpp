@@ -6,6 +6,7 @@
 #include "ScriptView.h"
 #include <propkey.h>
 #include "Logic/FileStream.h"
+#include "Logic/XFileInfo.h"
 #include "Logic/ScriptFileReader.h"
 #include "Logic/ScriptFileWriter.h"
 #include "Logic/FileIdentifier.h"
@@ -106,9 +107,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       try
       {
-         // Parse script
-         StreamPtr fs2( new FileStream(lpszPathName, FileMode::OpenExisting, FileAccess::Read) );
-         Script = ScriptFileReader(fs2).ReadFile(lpszPathName, false);
+         // Read/Parse script
+         Script = ScriptFileReader(XFileInfo(lpszPathName).OpenRead()).ReadFile(lpszPathName, false);
 
          // Feedback
          data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
