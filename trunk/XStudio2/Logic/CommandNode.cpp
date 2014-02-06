@@ -225,7 +225,7 @@ namespace Logic
          void  CommandNode::Print(int depth) const
          {
             // Line#/Logic/Text
-            GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
+            GuiString line(!IsRoot() && !Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
                       logic(GetString(Logic)),
                       txt(LineText);
             Colour    colour(Colour::White);
@@ -514,7 +514,7 @@ namespace Logic
          void CommandNode::IndexCommands(UINT& next)
          {
             // Standard
-            if (Is(CommandType::Standard))
+            if (!IsRoot() && Is(CommandType::Standard))
                Index = next++;
 
             // Recurse into children
