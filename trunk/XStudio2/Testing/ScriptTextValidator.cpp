@@ -52,7 +52,7 @@ namespace Testing
 
             // Read output file
             ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
-            auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);
+            auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
 
             // Compare
             if (Compare(input, output))
