@@ -119,9 +119,8 @@ namespace Logic
             // DEBUG: Print tree
             //Commands->Print(0);
 
-            // Populate script. Verify tree
-            Root->Populate(Script);
-            //Root->Verify(Script, Errors);
+            // Verify tree
+            Root->Verify(Script, Errors);
             //Commands->Compile(Script);
 
             // DEBUG: Print tree
