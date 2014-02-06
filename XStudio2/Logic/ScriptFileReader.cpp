@@ -199,8 +199,10 @@ namespace Logic
             if (!cmd.Commented && (cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB)))
             {
                // Validate line number
-               if (cmd.GetJumpDestination() >= std.size() || !std[cmd.GetJumpDestination()].Is(CMD_DEFINE_LABEL))
-                  throw InvalidValueException(HERE, GuiString(L"Command on line %d references an invalid jump destination %d", line, cmd.GetJumpDestination()));
+               if (cmd.GetJumpDestination() >= std.size())
+                  throw InvalidValueException(HERE, GuiString(L"Goto/gosub on line %d jumps to non-existent address %d", line, cmd.GetJumpDestination()));
+               else if (!std[cmd.GetJumpDestination()].Is(CMD_DEFINE_LABEL))
+                  throw InvalidValueException(HERE, GuiString(L"Goto/gosub on line %d jumps to non-label : %s", line, std[cmd.GetJumpDestination()].Syntax.Text.c_str()));
                
                // Convert label number -> label name
                cmd.SetLabelName( std[cmd.GetJumpDestination()].GetLabelName() );
