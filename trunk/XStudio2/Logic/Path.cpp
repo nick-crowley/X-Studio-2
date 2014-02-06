@@ -39,6 +39,26 @@ namespace Logic
       {
       }
 
+      /// <summary>dtor</summary>
+      Path::~Path()
+      {}
+
+      /// <summary>Create temporary file path</summary>
+      /// <param name="prefix">three letter filename prefix</param>
+      /// <exception cref="Logic::Win32Exception">API function failed</exception>
+      TempPath::TempPath(const wchar* prefix)
+      {
+         Path folder;
+
+         // Get temp folder
+         if (!GetTempPath(MAX_PATH, (wchar*)folder))
+            throw Win32Exception(HERE, L"Unable to get temp folder");
+            
+         // Generate filename
+         if (!GetTempFileName(folder.c_str(), prefix, NULL, Buffer.get()))
+            throw Win32Exception(HERE, L"Unable to generate temporary filename");
+      }
+
       // ------------------------------- STATIC METHODS ------------------------------
 
       /// <summary>Creates a MAX_PATH char array buffer containing a path</summary>
