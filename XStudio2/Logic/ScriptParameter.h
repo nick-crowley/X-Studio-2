@@ -17,6 +17,9 @@ namespace Logic
       /// <summary>Defines current type of parameter value union</summary>
       enum class ValueType { String, Int };
 
+      /// <summary>Get value type string</summary>
+      GuiString  GetString(ValueType v);
+
       /// <summary>Holds a union value of String/integer</summary>
       class ParameterValue
       {

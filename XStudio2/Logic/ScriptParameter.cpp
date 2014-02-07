@@ -58,6 +58,13 @@ namespace Logic
          return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : StringResource::Missing((UINT)d);
       }
 
+      /// <summary>Get value type string</summary>
+      GuiString  GetString(ValueType v)
+      {
+         return v == ValueType::Int ? L"Int" 
+            : v == ValueType::String ? L"String" : L"Invalid";
+      }
+
       /// <summary>Identify data-type from a token type</summary>
       /// <param name="type">token type.</param>
       /// <returns></returns>
