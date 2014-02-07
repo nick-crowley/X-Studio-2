@@ -7,7 +7,7 @@
 #include "CommandHash.h"
 #include "ScriptFile.h"
 
-//#define DEBUG_PRINT
+#define DEBUG_PRINT
 
 namespace Logic
 {
@@ -662,7 +662,7 @@ namespace Logic
             {
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = new CommandNode();
+               node = new CommandNode(Conditional::NONE, CommandSyntax::Unknown, ParameterArray(), lex, LineNumber);
             }
 
             // Consume line + return node

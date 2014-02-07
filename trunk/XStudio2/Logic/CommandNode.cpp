@@ -224,58 +224,66 @@ namespace Logic
          /// <param name="depth">The depth.</param>
          void  CommandNode::Print(int depth) const
          {
-            // Line#/Logic/Text
-            GuiString line(!IsRoot() && !Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
-                      logic(GetString(Logic)),
-                      txt(LineText);
-            Colour    colour(Colour::White);
-            
-            // Index
-            line += GuiString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
-            
-            // Logic
-            switch (Logic)
+            if (IsRoot())
             {
-            // Conditional:
-            default: 
-               colour = Colour::Cyan;
-               if (JumpTarget)
-                  txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
-                                           : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->DebugText);
-               break;
-
-            // NOP:
-            case BranchLogic::NOP:
-               colour = Colour::Yellow;
-               break;
-
-            // Command:
-            case BranchLogic::None:
-               if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
-               {
-                  colour = Colour::Green; 
-                  logic = Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
-                  txt = L"Unconditional: ";
-
-                  // Post-Compile: Display label number 
-                  if (JumpTarget)
-                     txt += GuiString(L"%d", JumpTarget->Index);
-                  // Pre-Compile: Label name
-                  else 
-                     txt += (!Parameters.empty() ? Parameters[0].Token.Text : L"<missing>");
-               }
-               else if (Is(CMD_DEFINE_LABEL))
-               {
-                  colour = Colour::Red;
-                  logic = L"Proc";
-               }
-               else 
-                  logic = (Parent ? L"Cmd" : L"Root");
-               break;
+               Console << ENDL << "Ln  Index  Logic            Text";
+               Console << ENDL << "-------------------------------------------------------" << ENDL; 
             }
+            else
+            {
+               // Line#/Logic/Text
+               GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
+                         logic(GetString(Logic)),
+                         txt(LineText);
+               Colour    colour(Colour::White);
+            
+               // Index
+               line += GuiString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
+            
+               // Logic
+               switch (Logic)
+               {
+               // Conditional:
+               default: 
+                  colour = Colour::Cyan;
+                  if (JumpTarget)
+                     txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
+                                              : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->DebugText);
+                  break;
 
-            // Print
-            Console << line+wstring(depth, L' ') << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+               // NOP:
+               case BranchLogic::NOP:
+                  colour = Colour::Yellow;
+                  break;
+
+               // Command:
+               case BranchLogic::None:
+                  if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
+                  {
+                     colour = Colour::Green; 
+                     logic = Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
+                     txt = L"Unconditional: ";
+
+                     // Post-Compile: Display label number 
+                     if (JumpTarget)
+                        txt += GuiString(L"%d", JumpTarget->Index);
+                     // Pre-Compile: Label name
+                     else 
+                        txt += (!Parameters.empty() ? Parameters[0].Token.Text : L"<missing>");
+                  }
+                  else if (Is(CMD_DEFINE_LABEL))
+                  {
+                     colour = Colour::Red;
+                     logic = L"Proc";
+                  }
+                  else 
+                     logic = (Parent ? L"Cmd" : L"Root");
+                  break;
+               }
+
+               // Print
+               Console << line+wstring(depth, L' ') << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+            }
 
             // Print Children
             for (auto c : Children)
