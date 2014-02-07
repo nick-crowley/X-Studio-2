@@ -104,15 +104,15 @@ namespace Logic
             // Precedence table taken from X2 scripting manual
             switch (precedence)
             {
-            case 0: return pos->Text == L"OR";
-            case 1: return pos->Text == L"AND";
+            case 0: return pos->Text == L"OR" || pos->Text == L"||";
+            case 1: return pos->Text == L"AND" || pos->Text == L"&&";
             case 2: return pos->Text == L"|";
             case 3: return pos->Text == L"^";
             case 4: return pos->Text == L"&";
             case 5: return pos->Text == L"==" || pos->Text == L"!=";
             case 6: return pos->Text == L"<" || pos->Text == L">" || pos->Text == L"<=" || pos->Text == L">=";
             case 7: return pos->Text == L"+" || pos->Text == L"-"; 
-            case 8: return pos->Text == L"*" || pos->Text == L"/" || pos->Text == L"mod";
+            case 8: return pos->Text == L"*" || pos->Text == L"/" || pos->Text == L"%" || pos->Text == L"MOD";
             case 9: return pos->Text == L"~" || pos->Text == L"!" || pos->Text == L"-"; 
             }
 

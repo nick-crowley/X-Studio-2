@@ -169,12 +169,14 @@ namespace Logic
                case L':':
                case L'[':
                case L']':
+               // (Mine)
+               case L'%':
                   return true;
 
                // and/or/mod
                case L'A':  return MatchChars(L"AND");
                case L'O':  return MatchChars(L"OR");
-               case L'm':  return MatchChars(L"mod");
+               case L'M':  return MatchChars(L"MOD");
                }
 
             return false;
@@ -213,6 +215,8 @@ namespace Logic
                case L'{':  // Game object
                case L'}':  // Game object
                case L'\'': // String
+               // (mine)
+               case L'%':
                   break;
 
                // Allow multi-lingual alphanumeric.  Exclude whitespace 
@@ -358,9 +362,8 @@ namespace Logic
             case L'+':
             case L'*':
             case L'/':
-            case L'&':
             case L'^':
-            case L'|':
+            case L'%':
                ReadChar();
                return MakeToken(start, TokenType::BinaryOp);
 
@@ -380,6 +383,15 @@ namespace Logic
             default:
                switch (*Position)
                {
+               // CUSTOM AND/OR: Bitwise/Logical and/or
+               case L'&':
+               case L'|':
+                  ReadChar();
+                  // Read two characters if they're the same
+                  if (MatchChar(Position[-1]))
+                     ReadChar();
+                  return MakeToken(start, TokenType::BinaryOp);
+
                // RefObj/Subtract/Minus
                case L'-':  
                   ReadChar();               
@@ -410,7 +422,7 @@ namespace Logic
 
                // AND/MOD: Read triple
                case L'A':  
-               case L'm':  
+               case L'M':  
                   Position += 3; 
                   break;
 

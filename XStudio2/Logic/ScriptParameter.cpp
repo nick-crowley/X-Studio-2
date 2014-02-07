@@ -170,6 +170,14 @@ namespace Logic
                Value = (Token.Type == TokenType::BinaryOp ? (int)Operator::Subtract : (int)Operator::Minus);
             else if (Token.Text == L"+")
                Value = (int)Operator::Add;
+            // LOGICAL AND/OR: Identify c++ operators I've added manually
+            else if (Token.Text == L"||")
+               Value = (int)Operator::LogicalOr;
+            else if (Token.Text == L"&&")
+               Value = (int)Operator::LogicalAnd;
+            // MODULUS: I've added '%' manually, and MOD is lower case in ScriptObjectLib
+            else if (Token.Text == L"%" || Token.Text == L"MOD")
+               Value = (int)Operator::Modulus;
             else
                Value = ScriptObjectLib.Find(Value.String).ID; 
 
@@ -264,9 +272,12 @@ namespace Logic
          case DataType::OPERATOR:
             switch (Operator op = (Operator)Value.LowWord)
             {
+            case Operator::Minus:         Text = L"-";      return;   // HACK: Not present in script object lib
             case Operator::Add:           Text = L" + ";    return;   // HACK: Substitute for octal entity
-            case Operator::Minus:         Text =  L"-";     return;   // HACK: Not present in script object lib
             case Operator::Subtract:      Text = L" - ";    return;   // HACK: Not present in script object lib
+            case Operator::Modulus:       Text = L" % ";    return;   // My addition
+            case Operator::LogicalAnd:    Text = L" && ";   return;   // My addition   TODO: Preferences flag to determine which syntax to use
+            case Operator::LogicalOr:     Text = L" || ";   return;   // My addition
             case Operator::LogicalNot:
             case Operator::BitwiseNot:
             case Operator::OpenBracket:   
