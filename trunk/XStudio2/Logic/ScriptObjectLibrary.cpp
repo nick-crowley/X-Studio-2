@@ -231,7 +231,7 @@ namespace Logic
                for (auto& str : page)
                   if (str.IsScriptObject())
                      unmangled.Add( ScriptObject(str.ID, (KnownPage)page.ID, str.ResolvedText, str.Version) );
-         
+
 
          // Generate reverse lookup collection
          for (const auto& pair : unmangled) 
@@ -273,10 +273,6 @@ namespace Logic
          // SpecialCase: Add old [THIS] to ID collection so older scripts can be parsed
          Objects.Add(ScriptObject(0, KnownPage::CONSTANTS, L"THIS", GameVersion::Threat));
 
-         // SpecialCase: Unary/Binary minus
-         /*Objects.Add(ScriptObject((UINT)Operator::Minus, KnownPage::OPERATORS, L"-", GameVersion::Threat));
-         Objects.Add(ScriptObject((UINT)Operator::Subtract, KnownPage::OPERATORS, L"-", GameVersion::Threat));*/
-
          // Return count
          return Objects.size();   
       }
@@ -311,7 +307,7 @@ namespace Logic
          coll.Add(ScriptObject(231, KnownPage::CONSTANTS, L"SSTYPE_WRECK_FACTORY", GameVersion::Threat));
 
          // Distinguish Tiny ware from '-'
-         //coll.Add(ScriptObject(0, KnownPage::TRANSPORT_CLASSES, L"T", GameVersion::Threat));
+         coll.Add(ScriptObject(0, KnownPage::TRANSPORT_CLASSES, L"T", GameVersion::Threat));
          return coll;
       }
 
