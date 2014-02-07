@@ -119,7 +119,7 @@ namespace Logic
 
          // Endl: Linebreak + White
          case Cons::Endl:   
-            return *this << Colour::White << L"\n";
+            return *this << Colour::White << Cons::Normal << L"\n";
 
          // Heading: Linebreak + Cyan
          case Cons::Heading:  
