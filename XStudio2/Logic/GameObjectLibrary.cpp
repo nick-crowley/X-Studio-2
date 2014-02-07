@@ -171,7 +171,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
       /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-      GameObject  GameObjectLibrary::Find(UINT value) const
+      GameObjectRef  GameObjectLibrary::Find(UINT value) const
       {
          return Find((MainType)HIWORD(value), LOWORD(value));
       }
@@ -180,7 +180,7 @@ namespace Logic
       /// <param name="name">object name WITHOUT curly brackets</param>
       /// <returns>Object</returns>
       /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-      GameObject  GameObjectLibrary::Find(const GuiString& name) const
+      GameObjectRef  GameObjectLibrary::Find(const GuiString& name) const
       {
          // Lookup by name
          return Lookup.Find(name);
@@ -192,7 +192,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Matching type file not loaded</exception>
       /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-      GameObject  GameObjectLibrary::Find(MainType main, UINT subtype) const
+      GameObjectRef  GameObjectLibrary::Find(MainType main, UINT subtype) const
       {
          // Ensure types loaded
          if (Files[(UINT)main] == nullptr)
