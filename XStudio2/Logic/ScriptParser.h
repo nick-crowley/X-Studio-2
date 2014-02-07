@@ -21,8 +21,9 @@ namespace Logic
          class ScriptParser
          {
             // ------------------------ TYPES --------------------------
-         public:
+         private:
             
+
             // --------------------- CONSTRUCTION ----------------------
 
          public:
@@ -33,7 +34,7 @@ namespace Logic
             DEFAULT_MOVE(ScriptParser);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
-         
+
             // --------------------- PROPERTIES ------------------------
          private:
             PROPERTY_GET(UINT,LineNumber,GetLineNumber);

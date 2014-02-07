@@ -26,7 +26,8 @@ namespace Logic
               JumpTarget(nullptr), 
               Index(EMPTY_JUMP), 
               LineNumber(0),
-              Extent({0,0})
+              Extent({0,0}),
+              State(InputState::Raw)
          {}
 
          /// <summary>Create node for a hidden jump command</summary>
@@ -39,7 +40,8 @@ namespace Logic
               Parent(parent),
               LineNumber(0),
               Extent({0,0}),
-              Index(EMPTY_JUMP)
+              Index(EMPTY_JUMP),
+              State(InputState::Raw)
          {
             REQUIRED(parent);
             REQUIRED(target);
@@ -63,7 +65,8 @@ namespace Logic
               LineText(lex.Input),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              Index(EMPTY_JUMP)
+              Index(EMPTY_JUMP),
+              State(InputState::Raw)
          {}
 
          /// <summary>Create node for an expression</summary>
@@ -83,7 +86,8 @@ namespace Logic
               LineText(lex.Input),
               Parent(nullptr), 
               JumpTarget(nullptr), 
-              Index(EMPTY_JUMP)
+              Index(EMPTY_JUMP),
+              State(InputState::Raw)
          {}
 
          CommandNode::~CommandNode()
@@ -91,6 +95,13 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
+         /// <summary>Get input state string</summary>
+         const wchar*  CommandNode::GetString(InputState s)
+         {
+            static const wchar* str[] = {L"UNVERIFIED", L"VERIFIED", L"COMPILED"};
+            return str[(UINT)s];
+         }
+
          /// <summary>Checks whether commands are standard</summary>
          CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
          { 
@@ -164,6 +175,9 @@ namespace Logic
             
             // Compile commands
             GenerateCommands(script);
+
+            // Update state
+            State = InputState::Compiled;
          }
          
          /// <summary>Query command syntax ID</summary>
@@ -226,14 +240,14 @@ namespace Logic
          {
             if (IsRoot())
             {
-               Console << ENDL << "Ln  Index  Logic            Text";
+               Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << GetString(State);
                Console << ENDL << "-------------------------------------------------------" << ENDL; 
             }
             else
             {
                // Line#/Logic/Text
                GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
-                         logic(GetString(Logic)),
+                         logic(::GetString(Logic)),
                          txt(LineText);
                Colour    colour(Colour::White);
             
@@ -320,14 +334,8 @@ namespace Logic
                   errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
             }
 
-            /*else for (auto node = Children.rbegin(); node != Children.rend(); ++node)
-            {
-               if (node[0]->Is(CommandType::Auxiliary))
-                  continue;
-               else if (!node[0]->Is(CMD_RETURN))
-                  errors += ErrorToken(L"Last command in script must be 'return'", node[0]->LineNumber, node[0]->Extent);
-               break;
-            }*/
+            // Update state
+            State = InputState::Verified;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -729,7 +737,7 @@ namespace Logic
                
                   // Static type check
                   if (!param.Syntax.Verify(param.Type))
-                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), GetString(param.Syntax.Type).c_str())
+                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), ::GetString(param.Syntax.Type).c_str())
                                                                              , LineNumber, param.Token);
                }
 
