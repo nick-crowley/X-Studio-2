@@ -296,7 +296,7 @@ namespace Logic
                      logic = L"???";
                   }
                   else
-                     logic = L"Cmd";
+                     logic = Is(CMD_EXPRESSION) ? L"Exp" : L"Cmd";
                   break;
                }
 
