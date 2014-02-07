@@ -67,11 +67,11 @@ namespace Logic
       //Test_StringLibrary();
       //Test_XmlWriter();
       //Test_SyntaxWriter();
-      //Test_ExpressionParser();
+      Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      Test_BatchScriptCompile();
+      //Test_BatchScriptCompile();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -153,7 +153,7 @@ namespace Logic
    {
       try
       {
-         const wchar* expressions[] = { L"4-5",       // correctly identify subtraction/Minus 
+         const wchar* expressions[] = { L"4-5",       // identify subtraction/Minus 
                                         L"4 - 5",     // simple Subtraction
                                         L"-$a",       // Minus variable
                                         L"4 + -$a",   // Minus variable in expression
@@ -162,15 +162,18 @@ namespace Logic
                                         L"4--5",      // Subtraction vs Minus
                                         L"4 + 5 - -(1+2)"}; 
          
+         Console << Cons::Heading << "Performing expression parser test..." << ENDL;
+
          // Parse
          for (int i = 0; i < sizeof(expressions)/sizeof(wchar*); ++i)
          {
-            Console << ENDL << "Parsing " << expressions[i] << ENDL;
+            Console << ENDL << "Parsing '" << expressions[i] << "'..." << ENDL;
             CommandLexer lex(expressions[i]);
 
             try
             {
                ExpressionParser(lex.Tokens.begin(), lex.Tokens.end());
+               Console << Colour::Green << "Success" << ENDL;
             }
             catch (ExpressionParserException& e)
             {
