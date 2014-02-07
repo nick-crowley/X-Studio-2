@@ -51,13 +51,19 @@ namespace Logic
    
    void DebugTests::Test_BatchScriptCompile()
    {
-      XFileSystem vfs;
-
-      // Browse scripts in VFS
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      XFileSystem     vfs;
+      vector<wstring> SkipList = 
+      {
+         L"plugin.com.logistics.main.mk1.pck",  // Corrupt <codearray> line number
+         L"!lib.war.races.pck",                 // Unsupported 'else ... return ...' syntax  (ie. Missing 'end' command)
+         L"!move.resupply.group.pck"            // Unsupported '= + ..' syntax
+      };
 
       // Feedback
       Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
+
+      // Browse scripts in VFS
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
 
       // Browse scripts
       for (auto& f : vfs.Browse(XFolder::Scripts))
@@ -67,9 +73,11 @@ namespace Logic
             continue;
 
          // Check Skip list
-         if (f.FullPath.FileName == L"!lib.war.races.pck"               // Missing 'end' from conditional
-             || f.FullPath.FileName == L"!move.resupply.group.pck")    // Unsupported = + .. syntax
+         if (any_of(SkipList.begin(), SkipList.end(), [f](wstring& path) {return f.FullPath.FileName == path;}) )
+         {
+            Console << Cons::Heading << L"Skipping script with known incompatiblity: " << f.FullPath << ENDL;
             continue;
+         }
 
          // Validate
          ScriptTextValidator script(f.FullPath);
