@@ -34,7 +34,7 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
-         static ScriptCommand  Unknown;
+         static ScriptCommand  Unrecognised;
 
          // --------------------- PROPERTIES ------------------------
 			

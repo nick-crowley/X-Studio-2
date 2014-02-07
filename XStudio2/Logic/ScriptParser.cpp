@@ -510,7 +510,7 @@ namespace Logic
             ParameterArray params;
             
             // Unrecognised: Highlight offending token / entire line
-            if (syntax == CommandSyntax::Unknown)
+            if (syntax == CommandSyntax::Unrecognised)
                Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) : MakeError(L"Unexpected token in command", pos));
                
             else
@@ -661,7 +661,7 @@ namespace Logic
             {
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = new CommandNode(Conditional::NONE, CommandSyntax::Unknown, ParameterArray(), lex, LineNumber);
+               node = new CommandNode(Conditional::NONE, CommandSyntax::Unrecognised, ParameterArray(), lex, LineNumber);
             }
 
             // Consume line + return node

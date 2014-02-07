@@ -10,7 +10,7 @@ namespace Logic
    namespace Scripts
    {
       /// <summary>'unknown' command syntax sentinel value</summary>
-      const CommandSyntax  CommandSyntax::Unknown;
+      const CommandSyntax  CommandSyntax::Unrecognised;
 
       // -------------------------------- CONSTRUCTION --------------------------------
 

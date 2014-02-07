@@ -37,7 +37,7 @@ namespace Logic
       {
          // EOF: Return syntax @ this node (if any)
          if (pos >= end)
-            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unknown;
+            return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unrecognised;
 
          // VARG SCRIPT-CALL: Terminate early to prevent analysing arguments
          else if (HasSyntax() && Syntax->ID == CMD_CALL_SCRIPT_VAR_ARGS)
@@ -52,7 +52,7 @@ namespace Logic
                
          // Not found: Return sentinel
          if (pair == Children.end())
-            return CommandSyntax::Unknown;
+            return CommandSyntax::Unrecognised;
 
          // Found: Search children
          return pair->second.Find(++pos, end, ver, params);
@@ -117,7 +117,7 @@ namespace Logic
       /// <returns></returns>
       CommandSyntaxRef  SyntaxLibrary::SyntaxNode::GetSyntax() const
       {
-         return HasSyntax() ? *Syntax : CommandSyntax::Unknown;
+         return HasSyntax() ? *Syntax : CommandSyntax::Unrecognised;
       }
 
       /// <summary>Determine whether node has syntax</summary>
