@@ -273,6 +273,10 @@ namespace Logic
          // SpecialCase: Add old [THIS] to ID collection so older scripts can be parsed
          Objects.Add(ScriptObject(0, KnownPage::CONSTANTS, L"THIS", GameVersion::Threat));
 
+         // SpecialCase: Unary/Binary minus
+         /*Objects.Add(ScriptObject((UINT)Operator::Minus, KnownPage::OPERATORS, L"-", GameVersion::Threat));
+         Objects.Add(ScriptObject((UINT)Operator::Subtract, KnownPage::OPERATORS, L"-", GameVersion::Threat));*/
+
          // Return count
          return Objects.size();   
       }
