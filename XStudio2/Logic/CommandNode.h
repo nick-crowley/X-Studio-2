@@ -126,16 +126,16 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
          public:
             CommandNodePtr Add(CommandNodePtr node);
-            void           Compile(ScriptFile& script);
+            void           Compile(ScriptFile& script, ErrorArray& errors);
             void           Verify(ScriptFile& script, ErrorArray& errors);
             
          private:
-            void  FinalizeLinkage();
-            void  GenerateCommands(ScriptFile& script);
+            void  FinalizeLinkage(ErrorArray& errors);
+            void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
             void  IdentifyVariables(ScriptFile& script);
             void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandNode* target);
-            void  LinkCommands();
+            void  LinkCommands(ErrorArray& errors);
             
             // -------------------- REPRESENTATION ---------------------
          public:

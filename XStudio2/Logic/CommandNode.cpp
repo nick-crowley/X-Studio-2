@@ -38,7 +38,7 @@ namespace Logic
               Condition(Conditional::NONE),
               JumpTarget(target),
               Parent(parent),
-              LineNumber(0),
+              LineNumber(parent->LineNumber),
               Extent({0,0}),
               Index(EMPTY_JUMP),
               State(InputState::Raw)
@@ -164,23 +164,24 @@ namespace Logic
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandNode::Compile(ScriptFile& script)
+         void  CommandNode::Compile(ScriptFile& script, ErrorArray& errors)
          {
             // Perform linking
-            LinkCommands();
+            LinkCommands(errors);
 
             // Index commands
             UINT index = 0;
             IndexCommands(index);
 
             // Finalise linkage
-            FinalizeLinkage();
+            FinalizeLinkage(errors);
             
             // Compile commands
-            GenerateCommands(script);
+            GenerateCommands(script, errors);
 
             // Update state
-            State = InputState::Compiled;
+            if (errors.empty())
+               State = InputState::Compiled;
          }
          
          /// <summary>Query command syntax ID</summary>
@@ -343,7 +344,8 @@ namespace Logic
             }
 
             // Update state
-            State = InputState::Verified;
+            if (errors.empty())
+               State = InputState::Verified;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -418,7 +420,7 @@ namespace Logic
                   return label;
 
             // Should never reach here
-            return nullptr;
+            throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", name));
          }
          
          /// <summary>Finds the next executable sibling</summary>
@@ -464,7 +466,7 @@ namespace Logic
          {
             // Not found: Error
             if (IsRoot())
-               throw AlgorithmException(HERE, GuiString(L"Can't find %s for line %d : %s", help, LineNumber, DebugText.c_str()));
+               throw AlgorithmException(HERE, GuiString(L"Cannot find %s", help));
 
             // Find next sibling node containing a standard command
             auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), d);
@@ -474,7 +476,8 @@ namespace Logic
          }
 
          /// <summary>Perform linkage steps that require the entire tree to be linked</summary>
-         void  CommandNode::FinalizeLinkage()
+         /// <param name="errors">Errors collection.</param>
+         void  CommandNode::FinalizeLinkage(ErrorArray& errors)
          {
             if (!IsRoot())
             {
@@ -484,17 +487,21 @@ namespace Logic
 
                // Verify linkage
                if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-                  throw AlgorithmException(HERE, GuiString(L"Illegal linkage to line %d '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()));
+               {
+                  GuiString msg(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str());
+                  errors += ErrorToken(msg, LineNumber, Extent); 
+               }
             }
 
             // Recurse into children
             for (auto& c : Children)
-               c->FinalizeLinkage();
+               c->FinalizeLinkage(errors);
          }
 
          /// <summary>Compiles the parameters/commands into the script</summary>
-         /// <param name="script">The script.</param>
-         void  CommandNode::GenerateCommands(ScriptFile& script)
+         /// <param name="script">script.</param>
+         /// <param name="errors">Errors collection.</param>
+         void  CommandNode::GenerateCommands(ScriptFile& script, ErrorArray& errors)
          {
             try
             {
@@ -520,16 +527,13 @@ namespace Logic
                   }
                }
             }
-            catch (ExceptionBase& e)
-            {
-               //throw AlgorithmException(HERE, GuiString(L"Unable to compile: %s"));
-               e.Message = GuiString(L"Unable to compile line %d: '%s' - ", LineNumber, DebugText.c_str()) + e.Message;
-               throw;
+            catch (ExceptionBase& e) {
+               errors += ErrorToken(GuiString(L"Compile failed: ") + e.Message, LineNumber, Extent); 
             }
             
             // Recurse into children
             for (auto& c : Children)
-               c->GenerateCommands(script);
+               c->GenerateCommands(script, errors);
          }
 
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
@@ -584,61 +588,68 @@ namespace Logic
          }
          
          /// <summary>Perform command linking</summary>
+         /// <param name="errors">errors collection</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandNode::LinkCommands() 
+         void  CommandNode::LinkCommands(ErrorArray& errors) 
          {
-            CommandNode* n;
-
-            switch (Logic)
+            try
             {
-            // JIF: ELSE-IF/ELSE/END
-            case BranchLogic::If: 
-            case BranchLogic::ElseIf: 
-               // JIF: else-if/else/next-std-sibling
-               JumpTarget = FindConditionalAlternate();
+               CommandNode* n;
+
+               switch (Logic)
+               {
+               // JIF: ELSE-IF/ELSE/END
+               case BranchLogic::If: 
+               case BranchLogic::ElseIf: 
+                  // JIF: else-if/else/next-std-sibling
+                  JumpTarget = FindConditionalAlternate();
                
-               // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
-               if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
-                  InsertJump(Children.end(), FindConditionalEnd());
-               break;
+                  // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
+                  if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
+                     InsertJump(Children.end(), FindConditionalEnd());
+                  break;
 
-            // <nothing>
-            case BranchLogic::Else:
-               break;    
+               // <nothing>
+               case BranchLogic::Else:
+                  break;    
 
-            // JIF: next-std-sibling
-            case BranchLogic::SkipIf:
-               JumpTarget = FindNextCommand();
-               break;
+               // JIF: next-std-sibling
+               case BranchLogic::SkipIf:
+                  JumpTarget = FindNextCommand();
+                  break;
 
-            // JIF: next-std-sibling
-            case BranchLogic::While:
-               JumpTarget = FindNextCommand();
-               InsertJump(Children.end(), this); // JMP: WHILE (to create loop)
-               break;
+               // JIF: next-std-sibling
+               case BranchLogic::While:
+                  JumpTarget = FindNextCommand();
+                  InsertJump(Children.end(), this); // JMP: WHILE (to create loop)
+                  break;
 
-            // JMP: WHILE->next-std-sibling
-            case BranchLogic::Break:
-               JumpTarget = FindAncestor(BranchLogic::While)->FindNextCommand();
-               InsertJump(Children.begin(), JumpTarget);
-               break;
+               // JMP: WHILE->next-std-sibling
+               case BranchLogic::Break:
+                  JumpTarget = FindAncestor(BranchLogic::While)->FindNextCommand();
+                  InsertJump(Children.begin(), JumpTarget);
+                  break;
 
-            // JMP: WHILE
-            case BranchLogic::Continue:
-               JumpTarget = FindAncestor(BranchLogic::While);
-               InsertJump(Children.begin(), JumpTarget);
-               break;
+               // JMP: WHILE
+               case BranchLogic::Continue:
+                  JumpTarget = FindAncestor(BranchLogic::While);
+                  InsertJump(Children.begin(), JumpTarget);
+                  break;
 
-            // JMP: LABEL
-            case BranchLogic::None:
-               if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
-                  JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
-               break;
+               // JMP: LABEL
+               case BranchLogic::None:
+                  if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
+                     JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
+                  break;
+               }
+            }
+            catch (ExceptionBase& e) {
+               errors += ErrorToken(GuiString(L"Linking failed: ") + e.Message, LineNumber, Extent); 
             }
 
             // Recurse into children
             for (auto& c : Children)
-               c->LinkCommands();
+               c->LinkCommands(errors);
          }
          
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
