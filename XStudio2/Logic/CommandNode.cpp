@@ -322,7 +322,7 @@ namespace Logic
             IdentifyVariables(script);
 
             // parameters
-            VerifyParameters(script, errors);
+            VerifyCommand(script, errors);
 
             // branching logic
             VerifyLogic(errors);
@@ -620,6 +620,59 @@ namespace Logic
             for (auto& c : Children)
                c->LinkCommands();
          }
+         
+         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
+         /// <param name="script">script</param>
+         /// <param name="errors">errors collection</param>
+         void  CommandNode::VerifyCommand(const ScriptFile& script, ErrorArray& errors) const
+         {
+            // Skip for unrecognised commands
+            if (Syntax != CommandSyntax::Unrecognised)
+            {
+               // Check for invalid 'start' 
+               if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
+                  errors += ErrorToken(L"Command cannot be executed asynchronously", LineNumber, Extent);
+
+               // Check for missing 'start'
+               else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
+                  errors += ErrorToken(L"Command must be executed asynchronously", LineNumber, Extent);
+
+               // Parameter static type check
+               for (const ScriptParameter& param : Parameters)
+               {
+                  // Recognise game/script objects
+                  switch (param.Token.Type)
+                  {
+                  // GameObject: Ensure exists
+                  case TokenType::GameObject:
+                     if (!GameObjectLib.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
+                     break;
+
+                  // ScriptObject: Ensure exists 
+                  case TokenType::ScriptObject:
+                     if (!ScriptObjectLib.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
+                     break;
+
+                  // Label: Ensure exists
+                  case TokenType::Label:
+                     if (!script.Labels.Contains(param.Value.String))
+                        errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
+                     break;
+                  }
+               
+                  // Static type check
+                  if (!param.Syntax.Verify(param.Type))
+                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), ::GetString(param.Syntax.Type).c_str())
+                                                                             , LineNumber, param.Token);
+               }
+            }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->VerifyCommand(script, errors);
+         }
 
          /// <summary>Verifies the branching logic</summary>
          void  CommandNode::VerifyLogic(ErrorArray& errors) const
@@ -708,49 +761,6 @@ namespace Logic
                c->VerifyLogic(errors);
          }
          
-         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
-         /// <param name="script">script</param>
-         /// <param name="errors">errors collection</param>
-         void  CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
-         {
-            // Skip for unrecognised commands
-            if (Syntax != CommandSyntax::Unrecognised)
-               // Static type check
-               for (const ScriptParameter& param : Parameters)
-               {
-                  // Recognise game/script objects
-                  switch (param.Token.Type)
-                  {
-                  // GameObject: Ensure exists
-                  case TokenType::GameObject:
-                     if (!GameObjectLib.Contains(param.Value.String))
-                        errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
-                     break;
-
-                  // ScriptObject: Ensure exists 
-                  case TokenType::ScriptObject:
-                     if (!ScriptObjectLib.Contains(param.Value.String))
-                        errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
-                     break;
-
-                  // Label: Ensure exists
-                  case TokenType::Label:
-                     if (!script.Labels.Contains(param.Value.String))
-                        errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
-                     break;
-                  }
-               
-                  // Static type check
-                  if (!param.Syntax.Verify(param.Type))
-                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), ::GetString(param.Syntax.Type).c_str())
-                                                                             , LineNumber, param.Token);
-               }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->VerifyParameters(script, errors);
-         }
-
       }
    }
 }

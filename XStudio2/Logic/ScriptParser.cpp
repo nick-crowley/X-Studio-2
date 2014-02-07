@@ -286,6 +286,10 @@ namespace Logic
                return true;
             }
 
+            // Start
+            if (lex.Match(pos, TokenType::Keyword, L"start"))
+               return true;
+
             // Failed
             return (pos=start, false);
          }
@@ -445,6 +449,10 @@ namespace Logic
             // 'do' 'if' 'not'?
             else if (lex.Match(pos, TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
                return lex.Match(pos, TokenType::Keyword, L"not") ? Conditional::SKIP_IF : Conditional::SKIP_IF_NOT;
+
+            // 'start'
+            else if (lex.Match(pos, TokenType::Keyword, L"start"))
+               return Conditional::START;
                
             throw AlgorithmException(HERE, GuiString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
          }
