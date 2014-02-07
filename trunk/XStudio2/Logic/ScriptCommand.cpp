@@ -286,6 +286,10 @@ namespace Logic
             for (UINT i = 3; i < Parameters.size(); ++i)
                Text.append(GuiString(L" %s=%s", f.ScriptCalls.FindArgument(name, i-3).c_str(), Parameters[i].Text.c_str()));
          }
+         
+         // Concurrent: Insert 'start' keyword
+         if (Syntax.Execution == ExecutionType::Concurrent)
+            Text.insert(0, L"start ");
 
          // Commented: Insert comment operator
          if (Commented)

@@ -120,8 +120,8 @@ namespace Logic
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
             GuiString     GetDebugText() const;
             bool          IsRoot() const;
+            void          VerifyCommand(const ScriptFile& script, ErrorArray& errors) const;
             void          VerifyLogic(ErrorArray& errors) const;
-            void          VerifyParameters(const ScriptFile& script, ErrorArray& errors) const;
                
             // ----------------------- MUTATORS ------------------------
          public:
