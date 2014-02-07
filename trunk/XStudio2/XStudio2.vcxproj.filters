@@ -404,7 +404,7 @@
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="Testing\ScriptTextValidator.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Testing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -637,7 +637,7 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Testing\ScriptTextValidator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Testing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

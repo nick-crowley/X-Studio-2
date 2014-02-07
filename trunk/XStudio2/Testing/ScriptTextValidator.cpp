@@ -34,17 +34,16 @@ namespace Testing
             Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
             // Read input file
-            Console << "Reading file..." << ENDL;
-
             ScriptFileReader r(XFileInfo(FullPath).OpenRead());
             auto input = r.ReadFile(FullPath, false);
 
-
             // Parse command text
-            Console << "Parsing..." << ENDL;
-
             auto text = GetAllLines(input.Commands.Input);
             ScriptParser parser(input, text, input.Game);
+
+            // Compile
+            if (!parser.Errors.empty())
+               parser.Compile();
 
             // Check for syntax errors
             if (!parser.Errors.empty())
@@ -57,19 +56,13 @@ namespace Testing
             {
                TempPath tmp;  
                
-               // Compile script
-               Console << "Compiling..." << ENDL;
-               parser.Compile();
-
                // Write output file
-               Console << "Writing..." << ENDL;
+               Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
                ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
                w.Write(input);
                w.Close();
 
                // Read output file
-               Console << "Reading validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
-
                ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
                auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
 
