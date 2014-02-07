@@ -6,8 +6,6 @@
 #include "SyntaxLibrary.h"
 #include "ScriptFile.h"
 
-#undef min
-#undef max
 
 namespace Logic
 {
@@ -671,12 +669,14 @@ namespace Logic
                // Parameter static type check
                for (const ScriptParameter& param : Parameters)
                {
+                  GameObjectLibrary::ObjectID obj;
+
                   // Recognise game/script objects
                   switch (param.Token.Type)
                   {
-                  // GameObject: Ensure exists
+                  // GameObject: Ensure exists  (allow {SSTYPE_LASER@12} placeholders)
                   case TokenType::GameObject:
-                     if (!GameObjectLib.Contains(param.Value.String))
+                     if (!GameObjectLib.Contains(param.Value.String) && !GameObjectLib.ParsePlaceholder(param.Value.String, obj))
                         errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
                      break;
 

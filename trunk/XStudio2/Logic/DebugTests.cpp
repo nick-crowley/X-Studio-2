@@ -27,35 +27,6 @@ namespace Logic
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   
-   //ScriptParser::ScriptTree  DebugTests::CompileScript(const vector<wstring>& lines)
-   //{
-   //   Console << Cons::Heading << L"Compiling current script text: " << ENDL;
-
-   //   ScriptParser p(lines, GameVersion::TerranConflict);
-   //   return p.Script;
-   //}
-
-
-   //ScriptFile  DebugTests::LoadScript(const WCHAR*  path)
-   //{
-   //   XFileSystem vfs;
-
-   //   // Build VFS. Enumerate language files
-   //   vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict, nullptr);
-   //   StringLib.Enumerate(vfs, GameLanguage::English, nullptr);
-   //   SyntaxLib.Enumerate(nullptr);
-
-   //   // Parse script
-   //   Console << Cons::Heading << L"Parsing MSCI script: " << path << ENDL;
-
-   //   StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-   //   ScriptFile script = ScriptFileReader(fs2).ReadFile();
-
-   //   Console << Colour::Green << L"Script loaded successfully" << ENDL;
-   //   return script;
-   //}
-
 
    void  DebugTests::RunAll()
    {
@@ -374,6 +345,22 @@ namespace Logic
          const wregex reg2(expr, wregex::ECMAScript); 
          for (wsregex_iterator it(txt2.cbegin(), txt2.cend(), reg2), eof; it != eof; ++it)
             Console << "Matched: " << Colour::Green << it->str().c_str() << ENDL;
+
+
+         ///////////////////////////////////
+
+         // Ware placeholder test
+         const wstring txt3 = L"{SSTYPE_W_TECH@241}";
+         const wregex reg3(L"\\{([\\w_]+)@(\\d+)\\}");
+
+         Console << ENDL << "Matching " << txt3 << ENDL;
+         
+         if (!regex_match(txt3, matches, reg3))
+            Console << Colour::Red << "Failed" << ENDL;
+         
+         else for (auto m : matches)
+            Console << "Matched: " << m.str().c_str() << ENDL;
+
       }
       catch (regex_error& e)
       {

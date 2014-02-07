@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "TFile.hpp"
 #include "GameObject.h"
+#include <regex>
 
 namespace Logic
 {
@@ -54,12 +55,14 @@ namespace Logic
       class GameObjectLibrary
       {
 		   // ------------------------ TYPES --------------------------
-      private:
+      public:
 	      /// <summary>Defines a {MainType,SubType} pair</summary>
          class ObjectID
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
+            ObjectID() : Type(MainType::Unknown), SubType(0)
+            {}
             ObjectID(MainType t, UINT subtype) : Type(t), SubType(subtype)
             {}
 
@@ -74,8 +77,8 @@ namespace Logic
 
             // -------------------- REPRESENTATION ---------------------
          public:
-            const MainType Type;
-            const UINT     SubType;
+            MainType Type;
+            UINT     SubType;
          };
 
          /// <summary>Collection of game objects sorted by SubType</summary>
@@ -108,6 +111,21 @@ namespace Logic
 
                // Error: Not found
                throw GameObjectNotFoundException(HERE, type, subtype);
+            }
+
+            /// <summary>Attempts to find a game object by subtype</summary>
+            /// <param name="type">Main type.</param>
+            /// <param name="subtype">SubType.</param>
+            /// <param name="obj">object</param>
+            /// <returns>true if found, false otherwise</returns>
+            bool  TryFind(MainType type, UINT subtype, const GameObject* &obj) const
+            {
+               const_iterator it;
+
+               // Lookup object
+               obj = (it = find(ObjectID(type, subtype))) != end() ? &it->second : nullptr;
+               // Return true if found
+               return obj != nullptr;
             }
 
             // ----------------------- MUTATORS ------------------------
@@ -152,7 +170,7 @@ namespace Logic
                throw GameObjectNotFoundException(HERE, sz);
             }
             
-            /// <summary>Finds a game object by name</summary>
+            /// <summary>Tries to find a game object by name</summary>
             /// <param name="name">object name</param>
             /// <param name="obj">object</param>
             /// <returns>true if found, false otherwise</returns>
@@ -193,6 +211,11 @@ namespace Logic
 		   NO_MOVE(GameObjectLibrary);	// No move semantics
 
          // ------------------------ STATIC -------------------------
+      public:
+         static GameObjectLibrary  Instance;
+
+      private:
+         static const wregex  PlaceHolder;
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -201,6 +224,7 @@ namespace Logic
          bool  Contains(UINT value) const;
          bool  Contains(const GuiString& name) const;
          bool  Contains(MainType main, UINT subtype) const;
+         bool  ParsePlaceholder(const GuiString& name, ObjectID& id) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -208,18 +232,15 @@ namespace Logic
          UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
          //const TObject*  Find(MainType main, UINT subtype) const;
          GameObject      Find(UINT value) const;
-         GameObject      Find(const GuiString& sz) const;
+         GameObject      Find(const GuiString& name) const;
          GameObject      Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const GuiString& search) const;
          bool            TryFind(const GuiString& name, const GameObject* &obj) const;
 
       protected:
-         UINT  PopulateObjects(WorkerData* data);
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         static GameObjectLibrary  Instance;
+         UINT            PopulateObjects(WorkerData* data);
          
+         // -------------------- REPRESENTATION ---------------------
       private:
          vector<TFilePtr>  Files;
          ObjectCollection  Objects;
