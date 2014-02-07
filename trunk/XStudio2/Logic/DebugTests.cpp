@@ -96,7 +96,8 @@ namespace Logic
             continue;
 
          // Check Skip list
-         if (f.FullPath.FileName == L"!lib.war.races.pck")     // Missing 'end' from conditional
+         if (f.FullPath.FileName == L"!lib.war.races.pck"               // Missing 'end' from conditional
+             || f.FullPath.FileName == L"!move.resupply.group.pck")    // Unsupported = + .. syntax
             continue;
 
          // Validate
