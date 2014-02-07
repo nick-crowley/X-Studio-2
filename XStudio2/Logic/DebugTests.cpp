@@ -64,6 +64,7 @@ namespace Logic
 
       // Browse scripts in VFS
       vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      UINT count = 0, total = vfs.Browse(XFolder::Scripts).size();
 
       // Browse scripts
       for (auto& f : vfs.Browse(XFolder::Scripts))
@@ -83,7 +84,12 @@ namespace Logic
          ScriptTextValidator script(f.FullPath);
          if (!script.Validate())
             break;
+
+         count++;
       }
+
+      // Feedback
+      Console << Colour::Yellow << "Validated " << count << " of " << total << " scripts..." << ENDL;
    }
 
 
