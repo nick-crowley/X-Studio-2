@@ -150,6 +150,10 @@ namespace Logic
       /// <returns></returns>
       BranchLogic  ScriptCommand::GetLogic() const
       {
+         // Command comments do not use 'CMD_COMMAND_COMMENT' ID on input, they are only distinguished by 'commented' flag
+         if (Commented)
+            return BranchLogic::NOP;
+
          switch (Syntax.ID)
          {
          case CMD_END:      return BranchLogic::End;
