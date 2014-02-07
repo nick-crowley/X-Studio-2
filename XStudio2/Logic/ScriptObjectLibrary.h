@@ -62,7 +62,7 @@ namespace Logic
             /// <param name="id">The ID.</param>
             /// <returns></returns>
             /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-            ScriptObject  Find(ScriptObjectGroup grp, UINT id) const
+            ScriptObjectRef  Find(ScriptObjectGroup grp, UINT id) const
             {
                const_iterator it;
                // Lookup and return string
@@ -126,7 +126,7 @@ namespace Logic
             /// <param name="sz">Object text</param>
             /// <returns>Object</returns>
             /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-            ScriptObject  Find(const GuiString& sz) const
+            ScriptObjectRef  Find(const GuiString& sz) const
             {
                const_iterator it;
                // Lookup and return string
@@ -195,15 +195,15 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         const_iterator begin() const;
-         bool           Contains(const GuiString& obj) const;
-         bool           Contains(ScriptObjectGroup grp, UINT id) const;
-         ScriptObject   Find(ScriptObjectGroup grp, UINT id) const;
-         ScriptObject   Find(KnownPage page, UINT id) const;
-         ScriptObject   Find(DataType type, UINT id) const;
-         ScriptObject   Find(const GuiString& sz) const;
-         const_iterator end() const;
-         UINT           GetCount() const;
+         const_iterator  begin() const;
+         bool            Contains(const GuiString& obj) const;
+         bool            Contains(ScriptObjectGroup grp, UINT id) const;
+         ScriptObjectRef Find(ScriptObjectGroup grp, UINT id) const;
+         ScriptObjectRef Find(KnownPage page, UINT id) const;
+         ScriptObjectRef Find(DataType type, UINT id) const;
+         ScriptObjectRef Find(const GuiString& sz) const;
+         const_iterator  end() const;
+         UINT            GetCount() const;
 
       private:
          ObjectCollection  GetSpecialCases() const;
@@ -216,7 +216,6 @@ namespace Logic
          bool  TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const;
          bool  TryFind(const GuiString& name, const ScriptObject* &obj) const;
       
-
       protected:
          bool  InsertConflicts(ScriptObject a, ScriptObject b);
          bool  MangleConflicts(ScriptObject a, ScriptObject b);
