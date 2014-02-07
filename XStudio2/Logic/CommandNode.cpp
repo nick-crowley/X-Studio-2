@@ -420,7 +420,7 @@ namespace Logic
                   return label;
 
             // Should never reach here
-            throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", name));
+            throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", name.c_str()));
          }
          
          /// <summary>Finds the next executable sibling</summary>

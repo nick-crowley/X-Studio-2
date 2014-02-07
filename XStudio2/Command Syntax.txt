@@ -2899,7 +2899,7 @@ X2,X3R,X3TC,X3AP
 792
 NONE
 $0 add notoriety: race=$1 value=$2
-Var/Race
+RefObj
 Var/Race
 Var/Number
 -------------- END DEFINITION ---------------
