@@ -77,11 +77,10 @@ namespace Logic
          return output;
       }
 
-      
       /// <summary>Generates the new format syntax string from the old</summary>
       /// <param name="syntax">The old syntax text</param>
       /// <returns></returns>
-      wstring LegacySyntaxReader::GenerateSyntax(const wstring& syntax)
+      wstring  LegacySyntaxReader::GenerateSyntax(const wstring& syntax)
       {
          wstring output(syntax);
 
@@ -103,6 +102,29 @@ namespace Logic
          }
 
          return output;
+      }
+
+      /// <summary>Manually Identifies the execution type (hard-coded)</summary>
+      /// <param name="id">The command ID</param>
+      /// <param name="index">The physical parameter index</param>
+      /// <returns>Usage</returns>
+      ExecutionType  LegacySyntaxReader::IdentifyExecution(UINT id)
+      {
+         switch (id)
+         {
+         default:
+            return ExecutionType::Serial;
+
+         case CMD_START_COMMAND:             // START $0 command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+         case CMD_START_DELAYED_COMMAND:     // START $0 delayed command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+         case CMD_START_WING_COMMAND:        // START $0 wing command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+            return ExecutionType::Concurrent;
+
+         case CMD_SPEAK_ARRAY:
+         case CMD_SPEAK_TEXT:
+         case CMD_CALL_SCRIPT_VAR_ARGS:
+            return ExecutionType::Either;
+         }
       }
 
       /// <summary>Manually Identifies the parameter usage (hard-coded)</summary>
@@ -394,6 +416,9 @@ namespace Logic
          
          // Convert old parameter types into new format
          dec.Params = GenerateParams(dec.ID, oldSyntax, params);
+
+         // Execution type
+         dec.Execution = IdentifyExecution(dec.ID);
          return true;
       }
 

@@ -456,7 +456,7 @@ namespace Logic
             case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");             break;
             case 3: Keyword = MatchChars(start, L"end") || MatchChars(start, L"not");           break;
             case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");   break;
-            case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
+            case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"START"); break;
             case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");     break;
             case 8: Keyword = MatchChars(start, L"continue");                                   break;
             }

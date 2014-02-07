@@ -21,6 +21,9 @@ namespace Logic
       /// <summary>Command syntax array</summary>
       typedef vector<const CommandSyntax*>  CmdSyntaxArray;
 
+      /// <summary>Available execution types</summary>
+      enum class ExecutionType  { Serial, Either, Concurrent };
+
       /// <summary>Defines the syntax of a script command</summary>
       class CommandSyntax
       {
@@ -41,6 +44,7 @@ namespace Logic
             wstring          URL,
                              Syntax;
             ParamSyntaxArray Params;
+            ExecutionType    Execution;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -97,6 +101,7 @@ namespace Logic
          const CommandGroup      Group;
          const CommandType       Type;
          const ParamSyntaxArray  Parameters;
+         const ExecutionType     Execution;
          const UINT              Versions,
                                  ID;
          const wstring           Hash,
@@ -202,6 +207,7 @@ namespace Logic
       #define    CMD_ADD_MENU_HEADING_BYREF       256
       #define    CMD_WRITE_LOGBOOK                403
       #define    CMD_WRITE_LOG                    406
+      #define    CMD_START_COMMAND                514
       #define    CMD_AVERAGE_PRICE_BY_REF         628
       #define    CMD_AVERAGE_PRICE                629
       #define    CMD_REGISTER_AL_SCRIPT           1000
@@ -218,7 +224,7 @@ namespace Logic
       #define    CMD_REGISTER_GOD_EVENT           1141
       #define    CMD_GOTO_SUB                     1167
       #define    CMD_END_SUB                      1168
-      #define    CMD_DELAYED_COMMAND              1185
+      #define    CMD_START_DELAYED_COMMAND        1185
       #define    CMD_CONNECT_WING_SCRIPT          1186
       #define    CMD_READ_TEXT_ARRAY              1337
       #define    CMD_READ_TEXT_EXISTS             1338
@@ -228,6 +234,7 @@ namespace Logic
       #define    CMD_SET_WING_COMMAND             1384
       #define    CMD_ADD_WING_SCRIPT              1393
       #define    CMD_ADD_WING_SCRIPT_CHECK        1398
+      #define    CMD_START_WING_COMMAND           1404
       #define    CMD_SET_GLOBAL_SECONDARY_MAP     1407
       #define    CMD_GET_LOCAL_VARIABLE_KEYS      1414
       #define    CMD_CALL_SCRIPT_ARGS             1425
@@ -241,6 +248,7 @@ namespace Logic
       #define    CMD_SET_SHIP_PRELOAD_SCRIPT      1466
       #define    CMD_SET_WING_PRELOAD_SCRIPT      1467
       #define    CMD_GET_OBJECT_NAME_ARRAY        1496
+      #define    CMD_SPEAK_ARRAY                  1510
       #define    CMD_REGISTER_HOTKEY_2            1511
       #define    CMD_ADD_NEWS_ARTICLE             1531
       #define    CMD_ADD_INFO_ARTICLE             1532

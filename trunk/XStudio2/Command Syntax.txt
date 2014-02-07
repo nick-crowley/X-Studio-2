@@ -859,7 +859,7 @@ FLOW_CONTROL
 X2,X3R,X3TC,X3AP
 514
 NONE
-START $0 command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+$0 command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
 RefObj
 Object Command
 Value
@@ -4859,7 +4859,7 @@ FLOW_CONTROL
 X3R,X3TC,X3AP
 1185
 NONE
-START $0 delayed command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+$0 delayed command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
 RefObj
 Object Command
 Value
@@ -6044,7 +6044,7 @@ FLOW_CONTROL
 X3TC,X3AP
 1404
 NONE
-START $0 wing command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
+$0 wing command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5
 RefObj
 Var/Wing Command
 Value
