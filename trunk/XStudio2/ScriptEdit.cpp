@@ -371,6 +371,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          ScriptParser parser(Document->Script, GetLines(), GameVersion::TerranConflict);
          
          // DEBUG:
+         if (!parser.Errors.empty())
+            parser.Print();
          Console << L"Highlighting " << parser.Errors.size() << L" errors" << ENDL;
 
          // Define error underline

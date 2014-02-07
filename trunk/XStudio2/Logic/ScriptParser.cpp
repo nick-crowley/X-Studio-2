@@ -7,7 +7,8 @@
 #include "CommandHash.h"
 #include "ScriptFile.h"
 
-#define DEBUG_PRINT
+/// <summary>Prints the parse tree post-verification and post-compilation</summary>
+//#define DEBUG_PRINT
 
 namespace Logic
 {
@@ -74,8 +75,14 @@ namespace Logic
             Root->Compile(Script);
 
 #ifdef DEBUG_PRINT
-            Root->Print(0);
+            Print();
 #endif
+         }
+
+         /// <summary>Prints current state of the parse tree to the console</summary>
+         void  ScriptParser::Print()
+         {
+            Root->Print(0);
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -135,7 +142,7 @@ namespace Logic
             Root->Verify(Script, Errors);
 
 #ifdef DEBUG_PRINT
-            Root->Print(0);
+            Print();
 #endif
          }
 
@@ -307,13 +314,19 @@ namespace Logic
             TokenIterator start = pos;
 
             // (text '=' constant/variable/null/string/number)?
-            return lex.Match(pos, TokenType::Text) && lex.Match(pos, TokenType::BinaryOp, L"=") &&
-                   (lex.Match(pos, TokenType::ScriptObject) 
-                    || lex.Match(pos, TokenType::GameObject) 
-                    || lex.Match(pos, TokenType::Variable)
-                    || lex.Match(pos, TokenType::Number)
-                    || lex.Match(pos, TokenType::String)
-                    || lex.Match(pos, TokenType::Null))
+            return (lex.Match(pos, TokenType::Text) 
+                    || lex.Match(pos, TokenType::Null)      // Argument names may be reserved words
+                    || lex.Match(pos, TokenType::Keyword))  // Argument names may be reserved words
+
+                   && lex.Match(pos, TokenType::BinaryOp, L"=") 
+
+                   && (lex.Match(pos, TokenType::ScriptObject) 
+                       || lex.Match(pos, TokenType::GameObject) 
+                       || lex.Match(pos, TokenType::Variable)
+                       || lex.Match(pos, TokenType::Number)
+                       || lex.Match(pos, TokenType::String)
+                       || lex.Match(pos, TokenType::Null))
+
                    ? true : (pos=start, false);
          }
 

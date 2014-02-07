@@ -67,11 +67,11 @@ namespace Logic
       //Test_StringLibrary();
       //Test_XmlWriter();
       //Test_SyntaxWriter();
-      Test_ExpressionParser();
+      //Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      //Test_BatchScriptCompile();
+      Test_BatchScriptCompile();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
