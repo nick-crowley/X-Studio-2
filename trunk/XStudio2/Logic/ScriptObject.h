@@ -48,6 +48,10 @@ namespace Logic
          {}
       };
 
+      class ScriptObject;
+
+      /// <summary>Constant script object reference</summary>
+      typedef const ScriptObject&  ScriptObjectRef;
 
       /// <summary>Represents a script object</summary>
       class ScriptObject 

@@ -96,7 +96,7 @@ namespace Logic
       /// <param name="sz">The text</param>
       /// <returns>Object</returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-      ScriptObject  ScriptObjectLibrary::Find(const GuiString& sz) const
+      ScriptObjectRef  ScriptObjectLibrary::Find(const GuiString& sz) const
       {
          return Lookup.Find(sz);
       }
@@ -106,7 +106,7 @@ namespace Logic
       /// <param name="id">object id</param>
       /// <returns></returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
-      ScriptObject  ScriptObjectLibrary::Find(ScriptObjectGroup grp, UINT id) const
+      ScriptObjectRef  ScriptObjectLibrary::Find(ScriptObjectGroup grp, UINT id) const
       {
          return Objects.Find(grp, id);
       }
@@ -117,7 +117,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
       /// <exception cref="Logic::ArgumentException">Invalid known page</exception>
-      ScriptObject  ScriptObjectLibrary::Find(KnownPage page, UINT id) const
+      ScriptObjectRef  ScriptObjectLibrary::Find(KnownPage page, UINT id) const
       {
          return Objects.Find(ScriptObject::IdentifyGroup(page, id), id);
       }
@@ -128,7 +128,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::ScriptObjectNotFoundException">Object not found</exception>
       /// <exception cref="Logic::ArgumentException">Invalid data-type</exception>
-      ScriptObject  ScriptObjectLibrary::Find(DataType type, UINT id) const
+      ScriptObjectRef  ScriptObjectLibrary::Find(DataType type, UINT id) const
       {
          return Objects.Find(ScriptObject::IdentifyGroup(type), id);
       }
