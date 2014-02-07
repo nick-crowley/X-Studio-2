@@ -682,10 +682,10 @@ namespace Logic
                   errors += ErrorToken(L"unexpected 'end' command", LineNumber, Extent);
                break;
 
-            // SKIP-IF: Must not preceed SKIP-IF. Must contain 1 standard command
+            // SKIP-IF: Must not be child of SKIP-IF. Must contain 1 standard command
             case BranchLogic::SkipIf:
-               // not preceed SKIP-IF?
-               if ((n=FindPrevSibling()) != nullptr && n->Logic == BranchLogic::SkipIf)
+               // not parent SKIP-IF?
+               if (Parent->Logic == BranchLogic::SkipIf)
                   errors += ErrorToken(L"'skip-if' cannot be nested", LineNumber, Extent);
 
                // Ensure command present
