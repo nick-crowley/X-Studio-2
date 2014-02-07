@@ -20,7 +20,7 @@ namespace Logic
 
          /// <summary>Create root node</summary>
          CommandNode::CommandNode()
-            : Syntax(CommandSyntax::Unknown), 
+            : Syntax(CommandSyntax::Unrecognised), 
               Condition(Conditional::NONE),
               Parent(nullptr), 
               JumpTarget(nullptr), 
@@ -287,11 +287,16 @@ namespace Logic
                   }
                   else if (Is(CMD_DEFINE_LABEL))
                   {
-                     colour = Colour::Red;
+                     colour = Colour::Purple;
                      logic = L"Proc";
                   }
-                  else 
-                     logic = (Parent ? L"Cmd" : L"Root");
+                  else if (Syntax == CommandSyntax::Unrecognised)
+                  {  // Print entire line in red
+                     Console << (colour = Colour::Red);
+                     logic = L"???";
+                  }
+                  else
+                     logic = L"Cmd";
                   break;
                }
 
@@ -709,7 +714,7 @@ namespace Logic
          void  CommandNode::VerifyParameters(const ScriptFile& script, ErrorArray& errors) const
          {
             // Skip for unrecognised commands
-            if (Syntax != CommandSyntax::Unknown)
+            if (Syntax != CommandSyntax::Unrecognised)
                // Static type check
                for (const ScriptParameter& param : Parameters)
                {

@@ -10,13 +10,13 @@ namespace Logic
    namespace Scripts
    {
       /// <summary>Unrecognised script command sentinel value</summary>
-      ScriptCommand  ScriptCommand::Unknown;
+      ScriptCommand  ScriptCommand::Unrecognised;
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates sentinel value (private ctor)</summary>
       ScriptCommand::ScriptCommand()
-         : Syntax(CommandSyntax::Unknown), RefIndex(0)
+         : Syntax(CommandSyntax::Unrecognised), RefIndex(0)
       {
       }
 

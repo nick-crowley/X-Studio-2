@@ -52,7 +52,7 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
-         static const CommandSyntax  Unknown;
+         static const CommandSyntax  Unrecognised;
 
       private:
          wstring  GenerateHash(const wstring& syntax);
