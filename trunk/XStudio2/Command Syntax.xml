@@ -1388,7 +1388,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="514" version="X2,X3R,X3TC,X3AP">
-      <text>START $0 command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
+      <text>$0 command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
       <group>FLOW_CONTROL</group>
       <type>Standard</type>
       <url></url>
@@ -4098,7 +4098,7 @@ usage : (optional) Defines the meaning of the parameter
       <type>Standard</type>
       <url></url>
       <params>
-        <param displayIndex="0">Var/Race</param>
+        <param displayIndex="0">RefObj</param>
         <param displayIndex="1">Var/Race</param>
         <param displayIndex="2">Var/Number</param>
       </params>
@@ -6695,7 +6695,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="1185" version="X3R,X3TC,X3AP">
-      <text>START $0 delayed command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
+      <text>$0 delayed command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
       <group>FLOW_CONTROL</group>
       <type>Standard</type>
       <url></url>
@@ -8294,7 +8294,7 @@ usage : (optional) Defines the meaning of the parameter
     </command>
 
     <command id="1404" version="X3TC,X3AP">
-      <text>START $0 wing command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
+      <text>$0 wing command $1 : arg1=$2, arg2=$3, arg3=$4, arg4=$5</text>
       <group>FLOW_CONTROL</group>
       <type>Standard</type>
       <url></url>
