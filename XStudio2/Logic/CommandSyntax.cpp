@@ -20,14 +20,23 @@ namespace Logic
          : ID(CMD_UNRECOGNISED), 
            Versions((UINT)GameVersion::Threat|(UINT)GameVersion::Reunion|(UINT)GameVersion::TerranConflict|(UINT)GameVersion::AlbionPrelude),
            Type(CommandType::Standard),
-           Group(CommandGroup::HIDDEN)
+           Group(CommandGroup::HIDDEN),
+           Execution(ExecutionType::Serial)
       {
       }
 
       /// <summary>Create command syntax from a declaration</summary>
       /// <param name="d">Declaration</param>
       CommandSyntax::CommandSyntax(const Declaration& d)
-         : Group(d.Group), ID(d.ID), Versions(d.Versions), URL(d.URL), Text(d.Syntax), Type(d.Type), Parameters(d.Params), Hash(GenerateHash(d.Syntax))
+         : ID(d.ID),
+           URL(d.URL), 
+           Type(d.Type),
+           Text(d.Syntax), 
+           Group(d.Group),  
+           Versions(d.Versions), 
+           Parameters(d.Params), 
+           Execution(d.Execution),
+           Hash(GenerateHash(d.Syntax))
       {
       }
 

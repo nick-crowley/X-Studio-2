@@ -34,6 +34,7 @@ namespace Logic
       private:
          static ParamSyntaxArray  GenerateParams(UINT id, const wstring& syntax, const list<ParameterType>& params);
          static wstring           GenerateSyntax(const wstring& syntax);
+         static ExecutionType     IdentifyExecution(UINT id);
          static CommandType       IdentifyType(UINT id, CommandGroup  g);
          static ParameterUsage    IdentifyUsage(UINT id, UINT index);
 
