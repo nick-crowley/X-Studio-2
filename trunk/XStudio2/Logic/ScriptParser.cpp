@@ -72,7 +72,7 @@ namespace Logic
                throw InvalidOperationException(HERE, L"Cannot compile a script with errors");
 
             // Compile tree
-            Root->Compile(Script);
+            Root->Compile(Script, Errors);
 
 #ifdef DEBUG_PRINT
             Print();
