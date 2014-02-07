@@ -264,8 +264,9 @@ namespace Logic
          case DataType::OPERATOR:
             switch (Operator op = (Operator)Value.LowWord)
             {
-            case Operator::Add:           format = L"+";    break;   // HACK: Substitute for octal entity
-            case Operator::Minus:
+            case Operator::Add:           Text = L" + ";    return;   // HACK: Substitute for octal entity
+            case Operator::Minus:         Text =  L"-";     return;   // HACK: Not present in script object lib
+            case Operator::Subtract:      Text = L" - ";    return;   // HACK: Not present in script object lib
             case Operator::LogicalNot:
             case Operator::BitwiseNot:
             case Operator::OpenBracket:   
@@ -273,7 +274,7 @@ namespace Logic
             default:                      format = L" %s "; break;   // Binary 
             }
             // Lookup text
-            Text = GuiString(format, StringLib.Find(KnownPage::OPERATORS, Value.LowWord).Text.c_str()); 
+            Text = GuiString(format, ScriptObjectLib.Find(ScriptObjectGroup::Operator, Value.LowWord).Text.c_str()); 
             break;
 
          // Various: Strip HIWORD, then lookup ID
