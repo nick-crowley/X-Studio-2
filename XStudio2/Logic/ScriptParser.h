@@ -56,7 +56,8 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
-            void           Compile();
+            void  Compile();
+            void  Print();
 
          private:
             CommandNodePtr Advance();

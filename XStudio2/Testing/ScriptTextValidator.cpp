@@ -31,21 +31,25 @@ namespace Testing
       {
          try
          {
-            Console << Colour::Cyan << ENDL << L"Validating: " << Colour::Yellow << FullPath << ENDL;
+            Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
             // Read input file
+            Console << "Reading file..." << ENDL;
+
             ScriptFileReader r(XFileInfo(FullPath).OpenRead());
             auto input = r.ReadFile(FullPath, false);
 
-            Console << "Parsing, compiling and writing..." << ENDL;
 
             // Parse command text
+            Console << "Parsing..." << ENDL;
+
             auto text = GetAllLines(input.Commands.Input);
             ScriptParser parser(input, text, input.Game);
 
             // Check for syntax errors
             if (!parser.Errors.empty())
             {
+               parser.Print();
                for (auto& e : parser.Errors)
                   Console << "ERROR: " << e.Line << " : " << text[e.Line-1] << " : " << e.Message << ENDL;
             }
@@ -54,16 +58,18 @@ namespace Testing
                TempPath tmp;  
                
                // Compile script
+               Console << "Compiling..." << ENDL;
                parser.Compile();
 
                // Write output file
+               Console << "Writing..." << ENDL;
                ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
                w.Write(input);
                w.Close();
 
+               // Read output file
                Console << "Reading validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
 
-               // Read output file
                ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
                auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
 
