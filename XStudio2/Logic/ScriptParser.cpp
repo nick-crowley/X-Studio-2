@@ -49,7 +49,7 @@ namespace Logic
          /// <returns></returns>
          ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
          {
-            return ErrorToken(msg, LineNumber, lex.count()?lex.begin()->Start:0, CurrentLine->length()-1);
+            return ErrorToken(msg, LineNumber, lex.count()?lex.begin()->Start:0, CurrentLine->length());
          }
 
          /// <summary>Generate an error for a single token</summary>
@@ -384,11 +384,10 @@ namespace Logic
                return false;
 
             // Unary_operator?
-            TokenIterator dummy = pos;
-            if (lex.Match(dummy, TokenType::UnaryOp, L"!") 
-             || lex.Match(dummy, TokenType::BinaryOp, L"-")    // Unary minus is identified as binary subtract by lexer, and converted by parser
-             || lex.Match(dummy, TokenType::UnaryOp, L"~")
-             || lex.Match(dummy, TokenType::UnaryOp, L"("))   
+            if (lex.Match(pos, TokenType::UnaryOp, L"!") 
+             || lex.Match(pos, TokenType::BinaryOp, L"-")    // Unary minus is identified as binary subtract by lexer, and converted by parser
+             || lex.Match(pos, TokenType::UnaryOp, L"~")
+             || lex.Match(pos, TokenType::UnaryOp, L"("))   
                return true;   // Simplify matching of complex expressions eg. ((, (-4 etc.  [Commands never start with unary operators anyway]
 
             // Value        
