@@ -36,7 +36,6 @@ namespace Logic
             ParseRoot();
          }
 
-
          ScriptParser::~ScriptParser()
          {
          }

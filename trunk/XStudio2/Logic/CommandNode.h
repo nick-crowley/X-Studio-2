@@ -75,6 +75,8 @@ namespace Logic
          private:
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
+            enum class InputState { Raw, Verified, Compiled };
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();
@@ -89,6 +91,8 @@ namespace Logic
                                  isConditionalEnd,
                                  isStandardCommand,
                                  isSkipIfCompatible;
+            
+            static const wchar*  GetString(InputState s);
 
             // --------------------- PROPERTIES ------------------------
          public:
@@ -148,8 +152,7 @@ namespace Logic
             const CHARRANGE Extent;           // Start/end character offsets
             // Debug
             GuiString       LineText;         // Debug: line text
-
-         
+            InputState      State;
          };
       }
    }
