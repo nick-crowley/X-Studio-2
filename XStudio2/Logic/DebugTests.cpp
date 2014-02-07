@@ -153,14 +153,18 @@ namespace Logic
    {
       try
       {
-         const wchar* expressions[] = { L"4-5",       // identify subtraction/Minus 
-                                        L"4 - 5",     // simple Subtraction
-                                        L"-$a",       // Minus variable
-                                        L"4 + -$a",   // Minus variable in expression
-                                        L"4+-$a",     // Minus variable in expression without spacing
-                                        L"-(4+5)",    // Minus sub-expression
-                                        L"4--5",      // Subtraction vs Minus
-                                        L"4 + 5 - -(1+2)"}; 
+         const wchar* expressions[] = 
+         { 
+            L"4-5",              // identify subtraction/Minus 
+            L"4 - 5",            // simple Subtraction
+            L"-$a",              // Minus variable
+            L"4 + -$a",          // Minus variable in expression
+            L"4+-$a",            // Minus variable in expression without spacing
+            L"-(4+5)",           // Minus sub-expression
+            L"4--5",             // Subtraction vs Minus
+            L"4 + 5 - -(1+2)",   // Double-minus and brackets
+            L"((-$target.shield) * 100) / $damage"   // problem from !fight.torus.turret.pck
+         }; 
          
          Console << Cons::Heading << "Performing expression parser test..." << ENDL;
 

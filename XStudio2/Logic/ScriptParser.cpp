@@ -389,7 +389,7 @@ namespace Logic
              || lex.Match(dummy, TokenType::BinaryOp, L"-")    // Unary minus is identified as binary subtract by lexer, and converted by parser
              || lex.Match(dummy, TokenType::UnaryOp, L"~")
              || lex.Match(dummy, TokenType::UnaryOp, L"("))   
-               ++pos;
+               return true;   // Simplify matching of complex expressions eg. ((, (-4 etc.  [Commands never start with unary operators anyway]
 
             // Value        
             if (lex.Match(pos, TokenType::Number) 
@@ -398,13 +398,9 @@ namespace Logic
              || lex.Match(pos, TokenType::Null)
              || lex.Match(pos, TokenType::GameObject) 
              || lex.Match(pos, TokenType::ScriptObject))
-               return true;   // Matching TRUE here to evaluate as expr provides better error messages.
+               return true;   // Matching TRUE here without checking for further operators. Expression parser will provide detailed errors (if any)
                               // Won't be confused with Command because that's already matched false
 
-               // (operator value)*   
-               //return pos == lex.end() 
-               //   || lex.Match(pos, TokenType::Operator) && (pos-1)->Text != L"->");  // any non-refObj operator
-            
             // Failed
             return false;
          }
