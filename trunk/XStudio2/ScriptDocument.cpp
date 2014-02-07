@@ -138,10 +138,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Parse script 
          ScriptParser parser(Script, Edit->GetLines(), Script.Game);
 
-         // Compile if possible
-         if (parser.Errors.empty())
-            parser.Compile();
+         try
+         {
+            // Compile 
+            if (parser.Errors.empty())
+               parser.Compile();
 
+            // DEBUG: Print tree
+            if (!parser.Errors.empty())
+               parser.Print();
+         }
+         catch (ExceptionBase& e)
+         {
+            parser.Print();
+            Console.Log(HERE, e, GuiString(L"Failed to compile script '%s'", lpszPathName));
+         }
+         
          // Print errors in debug window
          for (const auto& err : parser.Errors)
          {

@@ -373,7 +373,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // DEBUG:
          if (!parser.Errors.empty())
             parser.Print();
-         Console << L"Highlighting " << parser.Errors.size() << L" errors" << ENDL;
+         Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
 
          // Define error underline
          CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);

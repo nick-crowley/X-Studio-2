@@ -1,349 +1,229 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <!--Written by X-Studio II-->
 <script>
-<name>plugin.piracy.astronaut.cmd.repair</name>
-<version>110</version>
+<name>!move.follow.template</name>
+<version>13</version>
 <engineversion>44</engineversion>
-<description>Piracy: Astronaut Command: Repair Ship</description>
+<description>Low level follow code</description>
 <arguments>
-<argument index="1" name="oTargetShip" type="Var/Ship" desc="Ship to be repaired"></argument>
-<argument index="2" name="iDebug" type="Number" desc="Display debugging info"></argument>
+<argument index="1" name="target" type="Var/Ship" desc="target ship"></argument>
+<argument index="2" name="protectit" type="Var/Number" desc="protect the ship"></argument>
+<argument index="3" name="attacksame" type="Var/Number" desc="attack same target"></argument>
+<argument index="4" name="attacknearest" type="Var/Number" desc="attack nearest enemy"></argument>
+<argument index="5" name="stopwhendocked" type="Var/Number" desc="stop if leader is docked at same"></argument>
 </arguments>
 <codearray>
 <sval type="array" size="10">
-<sval type="string" val="plugin.piracy.astronaut.cmd.repair"></sval>
+<sval type="string" val="!move.follow.template"></sval>
 <sval type="int" val="44"></sval>
-<sval type="string" val="Piracy: Astronaut Command: Repair Ship"></sval>
-<sval type="int" val="110"></sval>
+<sval type="string" val="Low level follow code"></sval>
+<sval type="int" val="13"></sval>
 <sval type="int" val="0"></sval>
-<sval type="array" size="15">
-<sval type="string" val="oTargetShip"></sval>
-<sval type="string" val="iDebug"></sval>
-<sval type="string" val="iSize"></sval>
-<sval type="string" val="iMaximumDistance"></sval>
-<sval type="string" val="iAttackTimeout"></sval>
-<sval type="string" val="iRepositionTimeout"></sval>
-<sval type="string" val="iRepositionChance"></sval>
-<sval type="string" val="aMenu"></sval>
-<sval type="string" val="i"></sval>
-<sval type="string" val="szTemp"></sval>
-<sval type="string" val="iHullStrength"></sval>
-<sval type="string" val="iDistance"></sval>
-<sval type="string" val="x"></sval>
-<sval type="string" val="y"></sval>
-<sval type="string" val="z"></sval>
+<sval type="array" size="24">
+<sval type="string" val="target"></sval>
+<sval type="string" val="protectit"></sval>
+<sval type="string" val="attacksame"></sval>
+<sval type="string" val="attacknearest"></sval>
+<sval type="string" val="stopwhendocked"></sval>
+<sval type="string" val="followonly"></sval>
+<sval type="string" val="isnodrone"></sval>
+<sval type="string" val="oldowner"></sval>
+<sval type="string" val="retvar"></sval>
+<sval type="string" val="curowner"></sval>
+<sval type="string" val="targetdockedat"></sval>
+<sval type="string" val="sector"></sval>
+<sval type="string" val="target.action"></sval>
+<sval type="string" val="cmd"></sval>
+<sval type="string" val="jobleader"></sval>
+<sval type="string" val="target.dest"></sval>
+<sval type="string" val="target.dist"></sval>
+<sval type="string" val="attacker"></sval>
+<sval type="string" val="escorttime"></sval>
+<sval type="string" val="range"></sval>
+<sval type="string" val="dist"></sval>
+<sval type="string" val="owner"></sval>
+<sval type="string" val="size"></sval>
+<sval type="string" val="sizetarget"></sval>
 </sval>
-<sval type="array" size="71">
-<sval type="array" size="3">
-<sval type="int" val="109"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="100"></sval>
-</sval>
+<sval type="array" size="163">
 <sval type="array" size="4">
-<sval type="int" val="780"></sval>
+<sval type="int" val="706"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="0"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="-1610612217"></sval>
 </sval>
-<sval type="array" size="27">
-<sval type="int" val="104"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="400"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="14"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="16"></sval>
-<sval type="int" val="-2"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="-3"></sval>
-<sval type="int" val="14"></sval>
-<sval type="int" val="-5"></sval>
-<sval type="int" val="17"></sval>
-</sval>
-<sval type="array" size="21">
-<sval type="int" val="104"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="5"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="30000"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="10"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="16"></sval>
-<sval type="int" val="-2"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="-3"></sval>
-<sval type="int" val="17"></sval>
-</sval>
-<sval type="array" size="21">
-<sval type="int" val="104"></sval>
-<sval type="int" val="5"></sval>
-<sval type="int" val="5"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="5000"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="16"></sval>
-<sval type="int" val="-2"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="-3"></sval>
-<sval type="int" val="17"></sval>
-</sval>
-<sval type="array" size="7">
-<sval type="int" val="104"></sval>
-<sval type="int" val="6"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="50"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="-1"></sval>
+<sval type="array" size="3">
+<sval type="int" val="103"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
 </sval>
 <sval type="array" size="6">
 <sval type="int" val="705"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="6"></sval>
-<sval type="int" val="-1610610681"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610611705"></sval>
 <sval type="int" val="12"></sval>
-<sval type="int" val="2133"></sval>
+<sval type="int" val="2004"></sval>
 </sval>
-<sval type="array" size="7">
+<sval type="array" size="3">
+<sval type="int" val="103"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="24">
 <sval type="int" val="104"></sval>
+<sval type="int" val="5"></sval>
 <sval type="int" val="6"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="2"></sval>
 <sval type="int" val="15"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="-1"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536866045"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="-2"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="1445"></sval>
-<sval type="int" val="7"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="700"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="8"></sval>
-</sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="Target: %s (%s) is of size %s"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="8"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1446"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-</sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="iMaximumDistance = %s   iAttackTimeout = %s"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1446"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-</sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="iRepositionTimeout = %s   iRepositionChance = %s"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="5"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="6"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1446"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-</sval>
-<sval type="array" size="7">
-<sval type="int" val="1447"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="7"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="OK"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="-1"></sval>
-</sval>
-<sval type="array" size="8">
-<sval type="int" val="1230"></sval>
-<sval type="int" val="-2147483648"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="Debug"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="7"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="900"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
 <sval type="int" val="10"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536856311"></sval>
-<sval type="int" val="3"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="10"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="100"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="15"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="3"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="65551"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="16"></sval>
 <sval type="int" val="-1"></sval>
-<sval type="int" val="3"></sval>
+<sval type="int" val="10"></sval>
 <sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-4"></sval>
+<sval type="int" val="17"></sval>
 </sval>
 <sval type="array" size="6">
-<sval type="int" val="738"></sval>
-<sval type="int" val="11"></sval>
+<sval type="int" val="705"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610610684"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="2067"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="705"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610610684"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="2092"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="701"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="7"></sval>
+</sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610609913"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-5"></sval>
+</sval>
+<sval type="array" size="5">
+<sval type="int" val="1098"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="9"></sval>
+</sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536867325"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-5"></sval>
+</sval>
+<sval type="array" size="5">
+<sval type="int" val="510"></sval>
 <sval type="int" val="131075"></sval>
 <sval type="int" val="1"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="0"></sval>
 </sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536863741"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="-2"></sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
 </sval>
-<sval type="array" size="13">
+<sval type="array" size="3">
+<sval type="int" val="511"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+</sval>
+<sval type="array" size="7">
 <sval type="int" val="104"></sval>
-<sval type="int" val="-536863997"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
+<sval type="int" val="-536829431"></sval>
 <sval type="int" val="1"></sval>
 <sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="3"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="-1"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="-2"></sval>
 </sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="[MOVE-TO-SHIP] Distance = %s (Max %s)"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
+<sval type="array" size="4">
+<sval type="int" val="761"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610607868"></sval>
 </sval>
-<sval type="array" size="5">
-<sval type="int" val="1418"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
+<sval type="array" size="4">
+<sval type="int" val="105"></sval>
+<sval type="int" val="-2147483648"></sval>
 <sval type="int" val="4"></sval>
-<sval type="int" val="60000"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="1167"></sval>
-<sval type="int" val="59"></sval>
+<sval type="int" val="2000"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="112"></sval>
@@ -351,60 +231,12 @@
 </sval>
 <sval type="array" size="13">
 <sval type="int" val="104"></sval>
-<sval type="int" val="-536862973"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="-2"></sval>
-</sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="[ATTACK RUN] Distance = %s (Max %s)"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1418"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="8">
-<sval type="int" val="506"></sval>
-<sval type="int" val="131075"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="8"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536860925"></sval>
+<sval type="int" val="-1610607098"></sval>
 <sval type="int" val="3"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="8"></sval>
 <sval type="int" val="19"></sval>
-<sval type="int" val="9"></sval>
+<sval type="int" val="10"></sval>
 <sval type="int" val="15"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="3"></sval>
@@ -412,159 +244,252 @@
 <sval type="int" val="0"></sval>
 <sval type="int" val="-2"></sval>
 </sval>
-<sval type="array" size="8">
-<sval type="int" val="505"></sval>
-<sval type="int" val="131075"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="-536861944"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="1167"></sval>
-<sval type="int" val="65"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="105"></sval>
+<sval type="array" size="6">
+<sval type="int" val="107"></sval>
 <sval type="int" val="-2147483648"></sval>
 <sval type="int" val="4"></sval>
-<sval type="int" val="1000"></sval>
-</sval>
-<sval type="array" size="8">
-<sval type="int" val="505"></sval>
-<sval type="int" val="131075"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="-536861176"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="1167"></sval>
-<sval type="int" val="65"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="112"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536859901"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="-2"></sval>
-</sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="[ERROR] ATTACK RUN: %s  Distance = %s (Max %s)"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="8"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1418"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="3000"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="105"></sval>
-<sval type="int" val="-2147483648"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="3000"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="106"></sval>
-<sval type="int" val="8"></sval>
+<sval type="int" val="50"></sval>
 <sval type="int" val="4"></sval>
 <sval type="int" val="100"></sval>
 </sval>
-<sval type="array" size="13">
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="7">
 <sval type="int" val="104"></sval>
-<sval type="int" val="-536857853"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
 <sval type="int" val="8"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="6"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="-2"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="-536858621"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="131074"></sval>
 <sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
-<sval type="int" val="15"></sval>
 <sval type="int" val="0"></sval>
-<sval type="int" val="3"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="-1"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="-2"></sval>
 </sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="5"></sval>
-<sval type="string" val="[WAITING] Distance = %s (Max %s)"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1418"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2000"></sval>
-</sval>
-<sval type="array" size="5">
-<sval type="int" val="1332"></sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610606329"></sval>
+<sval type="int" val="7"></sval>
 <sval type="int" val="131075"></sval>
 <sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="50"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-4"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-5"></sval>
 </sval>
 <sval type="array" size="4">
-<sval type="int" val="105"></sval>
+<sval type="int" val="512"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="706"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610605817"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="701"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="9"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610604284"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536862968"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="5">
+<sval type="int" val="1098"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="9"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610604281"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="5">
+<sval type="int" val="526"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="745"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="10"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="703"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="11"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1094"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="12"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536854781"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536858365"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536858877"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="525"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="13"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1180"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="14"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536859640"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="13"></sval>
+<sval type="int" val="18"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="761"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="-536858877"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="107"></sval>
 <sval type="int" val="-2147483648"></sval>
 <sval type="int" val="4"></sval>
-<sval type="int" val="2000"></sval>
+<sval type="int" val="5000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="7000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="107"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="25000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="35000"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="112"></sval>
@@ -572,12 +497,12 @@
 </sval>
 <sval type="array" size="13">
 <sval type="int" val="104"></sval>
-<sval type="int" val="-536857085"></sval>
+<sval type="int" val="-536855291"></sval>
 <sval type="int" val="3"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="11"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="4"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="0"></sval>
 <sval type="int" val="15"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="3"></sval>
@@ -585,28 +510,583 @@
 <sval type="int" val="0"></sval>
 <sval type="int" val="-2"></sval>
 </sval>
-<sval type="array" size="14">
-<sval type="int" val="149"></sval>
+<sval type="array" size="4">
+<sval type="int" val="745"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536856573"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="107"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="5000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="7000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536856573"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="402"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="15"></sval>
 <sval type="int" val="9"></sval>
 <sval type="int" val="5"></sval>
-<sval type="string" val="[REPOSITIONING] Distance = %s (Max %s)"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!move.undock"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="503"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536855805"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="8000"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!move.undock"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="107"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="4000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="8000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!move.undock"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="22">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536834555"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="65551"></sval>
+<sval type="int" val="20"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="11"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-3"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536852221"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="402"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="520"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536852221"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="520"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="732"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610595065"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="15"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="738"></sval>
+<sval type="int" val="16"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="15"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536852221"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="16"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="2000"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="507"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="5000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="110"></sval>
+<sval type="int" val="18"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="60000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="120000"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="761"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-536851192"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="110"></sval>
+<sval type="int" val="18"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="6000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="12000"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610584316"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536842493"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="736"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536842493"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="3"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1149"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="503"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536842493"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="2"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536848637"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="535"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="522"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536842493"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="727"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610589180"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="705"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="-536846840"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="2004"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="744"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="727"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610588153"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536842493"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="761"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-536845560"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="110"></sval>
+<sval type="int" val="18"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="6000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="10000"></sval>
+</sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536844797"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-5"></sval>
+</sval>
+<sval type="array" size="10">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!fight.attack.object"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="0"></sval>
 </sval>
-<sval type="array" size="5">
-<sval type="int" val="1418"></sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="7">
+<sval type="int" val="104"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="732"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-536844024"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="9"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="738"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+</sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536843261"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="3000"></sval>
+<sval type="int" val="15"></sval>
 <sval type="int" val="5"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-5"></sval>
+</sval>
+<sval type="array" size="10">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!fight.attack.object"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="8">
+<sval type="int" val="562"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="18"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536840957"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="761"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-536841720"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="110"></sval>
+<sval type="int" val="18"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="3000"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="6000"></sval>
 </sval>
 <sval type="array" size="6">
 <sval type="int" val="507"></sval>
@@ -614,103 +1094,456 @@
 <sval type="int" val="1"></sval>
 <sval type="int" val="-2147483648"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="5"></sval>
+<sval type="int" val="18"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
 </sval>
 <sval type="array" size="4">
-<sval type="int" val="900"></sval>
+<sval type="int" val="701"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="0"></sval>
+<sval type="int" val="21"></sval>
+</sval>
+<sval type="array" size="25">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536838141"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="21"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="21"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="7"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-5"></sval>
+</sval>
+<sval type="array" size="5">
+<sval type="int" val="1098"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="9"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536838141"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="780"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="22"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="780"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="23"></sval>
+</sval>
+<sval type="array" size="33">
+<sval type="int" val="104"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="23"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="2"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="13"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="120"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="16"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="17"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="-4"></sval>
+<sval type="int" val="13"></sval>
+<sval type="int" val="-6"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="-8"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1131"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="23"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="23"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="2"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="-3"></sval>
+</sval>
+<sval type="array" size="10">
+<sval type="int" val="563"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="60000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="705"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610576636"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="2092"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1149"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="503"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610576636"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1149"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="503"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610576636"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="19"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="1094"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="12"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536834813"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="402"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="746"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536834813"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="1019"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536835576"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+</sval>
+<sval type="array" size="8">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!move.movetostation"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="22">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-1610576633"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="65551"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="8">
+<sval type="int" val="562"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="18"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536829949"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="13">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536833533"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="12"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="401"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="3"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-2"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="507"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="5000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="732"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-1610574588"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="10"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="507"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="15000"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="738"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="10"></sval>
+</sval>
+<sval type="array" size="19">
+<sval type="int" val="104"></sval>
+<sval type="int" val="-536830461"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="20"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="6500"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="6"></sval>
+<sval type="int" val="15"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-1"></sval>
+<sval type="int" val="5"></sval>
+<sval type="int" val="-2"></sval>
+<sval type="int" val="9"></sval>
+<sval type="int" val="-4"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="507"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="4"></sval>
+<sval type="int" val="15000"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="706"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-1610573305"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="4">
+<sval type="int" val="745"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="-536830717"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="1019"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="10"></sval>
+<sval type="int" val="-536830712"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+</sval>
+<sval type="array" size="6">
+<sval type="int" val="501"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131074"></sval>
 <sval type="int" val="10"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="112"></sval>
 <sval type="int" val="0"></sval>
 </sval>
-<sval type="array" size="5">
-<sval type="int" val="765"></sval>
+<sval type="array" size="8">
+<sval type="int" val="516"></sval>
 <sval type="int" val="131075"></sval>
 <sval type="int" val="1"></sval>
-<sval type="int" val="131075"></sval>
-<sval type="int" val="9"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="103"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="0"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="101"></sval>
-<sval type="string" val="moveToShip"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="740"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="12"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="741"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="13"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="742"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="14"></sval>
-</sval>
-<sval type="array" size="12">
-<sval type="int" val="523"></sval>
-<sval type="int" val="131075"></sval>
-<sval type="int" val="1"></sval>
-<sval type="int" val="-2147483648"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="12"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="13"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="14"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="3"></sval>
-</sval>
-<sval type="array" size="1">
-<sval type="int" val="1168"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="101"></sval>
-<sval type="string" val="repairHull"></sval>
-</sval>
-<sval type="array" size="4">
-<sval type="int" val="787"></sval>
-<sval type="int" val="131074"></sval>
-<sval type="int" val="0"></sval>
-<sval type="int" val="10"></sval>
-</sval>
-<sval type="array" size="13">
-<sval type="int" val="104"></sval>
-<sval type="int" val="10"></sval>
-<sval type="int" val="3"></sval>
+<sval type="int" val="8"></sval>
 <sval type="int" val="131074"></sval>
 <sval type="int" val="10"></sval>
 <sval type="int" val="4"></sval>
-<sval type="int" val="25"></sval>
-<sval type="int" val="15"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="3"></sval>
-<sval type="int" val="-1"></sval>
-<sval type="int" val="11"></sval>
-<sval type="int" val="-2"></sval>
+<sval type="int" val="5000"></sval>
 </sval>
-<sval type="array" size="5">
-<sval type="int" val="1047"></sval>
-<sval type="int" val="131074"></sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+<sval type="array" size="10">
+<sval type="int" val="102"></sval>
+<sval type="string" val="!move.movetonextsector"></sval>
+<sval type="int" val="-2147483648"></sval>
+<sval type="int" val="131075"></sval>
+<sval type="int" val="1"></sval>
 <sval type="int" val="0"></sval>
 <sval type="int" val="131074"></sval>
-<sval type="int" val="10"></sval>
+<sval type="int" val="11"></sval>
+<sval type="int" val="131074"></sval>
+<sval type="int" val="0"></sval>
 </sval>
-<sval type="array" size="1">
-<sval type="int" val="1168"></sval>
+<sval type="array" size="2">
+<sval type="int" val="112"></sval>
+<sval type="int" val="0"></sval>
 </sval>
 <sval type="array" size="3">
 <sval type="int" val="103"></sval>
@@ -718,317 +1551,420 @@
 <sval type="int" val="0"></sval>
 </sval>
 </sval>
-<sval type="array" size="2">
-<sval type="array" size="2">
-<sval type="int" val="0"></sval>
-<sval type="string" val="Ship to be repaired"></sval>
-</sval>
+<sval type="array" size="5">
 <sval type="array" size="2">
 <sval type="int" val="0"></sval>
-<sval type="string" val="Display debugging info"></sval>
-</sval>
-</sval>
-<sval type="array" size="68">
-<sval type="array" size="3">
-<sval type="int" val="0"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="***************************************************************************"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="0"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="SHIP REPAIR SLAVES : ASTRONAUT COMMAND  -by-  MISTER BEAR  v1.10  Jan-2011"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="0"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val=""></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="0"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="ARGUMENT 1  :  [ship]  oTargetShip - ship to be repaired"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="0"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="ARGUMENT 2  :  [int]   iDebug     1: Just target info menu    2: Subtitle messages as well"></sval>
+<sval type="string" val="target ship"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="0"></sval>
+<sval type="string" val="protect the ship"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0"></sval>
+<sval type="string" val="attack same target"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0"></sval>
+<sval type="string" val="attack nearest enemy"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0"></sval>
+<sval type="string" val="stop if leader is docked at same"></sval>
+</sval>
+</sval>
+<sval type="array" size="95">
+<sval type="array" size="2">
+<sval type="int" val="4"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="1"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="1"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="---------------- SETUP ---------------------"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="1"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="1"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Scale distances and timeouts based on target size"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="6"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Reduce chance of a reposition by object class"></sval>
+<sval type="int" val="8"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="8"></sval>
 <sval type="int" val="2"></sval>
 </sval>
-<sval type="array" size="3">
-<sval type="int" val="9"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="DEBUG Inform user of target details"></sval>
-</sval>
 <sval type="array" size="2">
 <sval type="int" val="11"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="17"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="14"></sval>
+<sval type="int" val="5"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="19"></sval>
+<sval type="int" val="15"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="19"></sval>
+<sval type="int" val="15"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="3">
-<sval type="int" val="19"></sval>
+<sval type="int" val="20"></sval>
 <sval type="int" val="1"></sval>
-<sval type="string" val="---------------- MAIN LOOP ---------------------"></sval>
+<sval type="string" val="fixes &quot;follower speed jumping&quot; bug while keeping up performance"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="21"></sval>
+<sval type="int" val="22"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="23"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="23"></sval>
 <sval type="int" val="2"></sval>
 </sval>
-<sval type="array" size="3">
-<sval type="int" val="21"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Calculate distance between ships"></sval>
+<sval type="array" size="2">
+<sval type="int" val="25"></sval>
+<sval type="int" val="2"></sval>
 </sval>
-<sval type="array" size="3">
-<sval type="int" val="23"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Move to target vessel"></sval>
+<sval type="array" size="2">
+<sval type="int" val="26"></sval>
+<sval type="int" val="7"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="27"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="28"></sval>
-<sval type="int" val="5"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="28"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Perform an attack run"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="31"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="32"></sval>
 <sval type="int" val="2"></sval>
 </sval>
-<sval type="array" size="3">
+<sval type="array" size="2">
 <sval type="int" val="32"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Examine attack run result"></sval>
+<sval type="int" val="7"></sval>
 </sval>
-<sval type="array" size="3">
+<sval type="array" size="2">
 <sval type="int" val="33"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Fire repair laser on target"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="36"></sval>
+<sval type="int" val="34"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="39"></sval>
+<sval type="int" val="37"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="41"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="stopwhendocked is not used in job commands anymore, because followers left their"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="41"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="formations when docking and would not get restarted."></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="43"></sval>
+<sval type="int" val="7"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="44"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="47"></sval>
 <sval type="int" val="5"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="40"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Report error"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="43"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="43"></sval>
-<sval type="int" val="4"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="43"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="43"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Choose whether to WAIT or MOVE AROUND"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="45"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Wait for 2 seconds"></sval>
 </sval>
 <sval type="array" size="2">
 <sval type="int" val="48"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="48"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="52"></sval>
+<sval type="int" val="6"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="51"></sval>
+<sval type="int" val="53"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="56"></sval>
 <sval type="int" val="5"></sval>
 </sval>
 <sval type="array" size="3">
-<sval type="int" val="51"></sval>
+<sval type="int" val="56"></sval>
 <sval type="int" val="1"></sval>
-<sval type="string" val="Move around randomly for a few seconds"></sval>
+<sval type="string" val="undock at leader if enemy in sight"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="54"></sval>
+<sval type="int" val="59"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="60"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="54"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="55"></sval>
+<sval type="int" val="60"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="55"></sval>
+<sval type="int" val="61"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="62"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="55"></sval>
+<sval type="int" val="62"></sval>
 <sval type="int" val="2"></sval>
 </sval>
+<sval type="array" size="3">
+<sval type="int" val="64"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="i am not docked and target is in same sector"></sval>
+</sval>
 <sval type="array" size="2">
-<sval type="int" val="57"></sval>
+<sval type="int" val="64"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="67"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="if target is docking, wait nearby until target is docked"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="68"></sval>
+<sval type="int" val="6"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="72"></sval>
+<sval type="int" val="6"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="73"></sval>
 <sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="57"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="57"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="---------------------- REPAIRS COMPLETE ------------------------"></sval>
+<sval type="int" val="73"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="57"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="73"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="58"></sval>
+<sval type="int" val="73"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="59"></sval>
+<sval type="int" val="80"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="83"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="87"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="88"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="88"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="92"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="96"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="96"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="96"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="faster response"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="96"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="99"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="keep formation until we are near to attack"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="102"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="102"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="first check they are in the same sector"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="108"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="109"></sval>
+<sval type="int" val="6"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="110"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="110"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="111"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="115"></sval>
+<sval type="int" val="6"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="117"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="120"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="128"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="128"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="dock at leader if no enemy in sight"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="128"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="FIX (13): Added check for freight drone"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="138"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="138"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="138"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="138"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="138"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="140"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="140"></sval>
+<sval type="int" val="6"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="141"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="141"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="142"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="142"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="3">
-<sval type="int" val="59"></sval>
+<sval type="int" val="142"></sval>
 <sval type="int" val="1"></sval>
-<sval type="string" val="-------------------------- SCRIPT ENDS --------------------------"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="59"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="-------------------------- SCRIPT ENDS --------------------------"></sval>
+<sval type="string" val="i am not docked and target is docked or in an other sector"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="59"></sval>
+<sval type="int" val="142"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="59"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="59"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="MOVE TO SHIP : Move the astronaut to the ship"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="59"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="**************"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="59"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="PARAM  :  [obj] oTargetShip       :  The ship"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="59"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="PARAM  :  [int] iMaximumDistance  :  Minimum firing distance from 'oTargetShip'"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="63"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="Move to within the minimum distance for whatever size ship this is"></sval>
+<sval type="int" val="146"></sval>
+<sval type="int" val="5"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="65"></sval>
-<sval type="int" val="2"></sval>
-</sval>
-<sval type="array" size="2">
-<sval type="int" val="65"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="149"></sval>
+<sval type="int" val="5"></sval>
 </sval>
 <sval type="array" size="3">
-<sval type="int" val="65"></sval>
+<sval type="int" val="151"></sval>
 <sval type="int" val="1"></sval>
-<sval type="string" val="REPAIR HULL : Create the illusion of a greater repair impact by artificially increasing hull strength"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="65"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="*************"></sval>
-</sval>
-<sval type="array" size="3">
-<sval type="int" val="65"></sval>
-<sval type="int" val="1"></sval>
-<sval type="string" val="PARAM  :  [obj] oTargetShip       :  The ship"></sval>
+<sval type="string" val="wait outside for 15 seconds, then follow ship to dock"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="70"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="153"></sval>
+<sval type="int" val="6"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="70"></sval>
-<sval type="int" val="2"></sval>
+<sval type="int" val="157"></sval>
+<sval type="int" val="4"></sval>
 </sval>
 <sval type="array" size="2">
-<sval type="int" val="71"></sval>
+<sval type="int" val="158"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="159"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="159"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="159"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="160"></sval>
+<sval type="int" val="5"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="161"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="161"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="162"></sval>
+<sval type="int" val="4"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="163"></sval>
 <sval type="int" val="2"></sval>
 </sval>
 </sval>

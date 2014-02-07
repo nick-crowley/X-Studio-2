@@ -95,6 +95,10 @@ namespace Logic
          if (!f.FullPath.HasExtension(L".pck") && !f.FullPath.HasExtension(L".xml"))
             continue;
 
+         // Check Skip list
+         if (f.FullPath.FileName == L"!lib.war.races.pck")     // Missing 'end' from conditional
+            continue;
+
          // Validate
          ScriptTextValidator script(f.FullPath);
          if (!script.Validate())
