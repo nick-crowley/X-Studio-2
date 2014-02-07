@@ -384,10 +384,8 @@ namespace Logic
                case L'-':  
                   ReadChar();               
                   // Dereference operator
-                  if (MatchChar('>'))  
+                  if (MatchChar('>'))              // NB: '-' is always returned as binary subtract  (unary minus is identified by parser)
                      ReadChar();
-                  //else // Resolve subtract/minus
-                  //   return MakeToken(start, MatchChar(' ') ? TokenType::BinaryOp : TokenType::UnaryOp);
                   break;
 
                // Comparisons
@@ -399,6 +397,10 @@ namespace Logic
                   // Read comparison if present
                   if (MatchChar('='))
                      ReadChar();
+                  
+                  // Logical Not: Return as unary operator
+                  else if (Position[-1] == '!')
+                     return MakeToken(start, TokenType::UnaryOp);
                   break;
 
                // OR: Read double
