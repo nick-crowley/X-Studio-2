@@ -57,15 +57,11 @@ namespace Logic
             // Push/pop branching logic from stack
             switch (logic)
             {
-            case BranchLogic::Break:
-            case BranchLogic::Continue: 
-               branch.push_back(logic); 
-               break;
-
             case BranchLogic::ElseIf:
             case BranchLogic::Else:    
             case BranchLogic::End:      
-               branch.pop_back();       
+               if (!branch.empty())    // shouldn't be empty, but just in case
+                  branch.pop_back();       
                break;
             }
 
@@ -82,18 +78,14 @@ namespace Logic
                branch.push_back(logic);
                break;
 
-            case BranchLogic::Break:
-            case BranchLogic::Continue:
-               branch.pop_back();
-               break;
-
             case BranchLogic::SkipIf:
                branch.push_back(logic); 
                continue;
             }
 
-            // Pop 'SkipIf' after next standard command
-            if (branch.size() > 0 && cmd.Syntax.Type == CommandType::Standard && branch.back() == BranchLogic::SkipIf)
+            // Pop 'SkipIf' after next standard command (or break/continue)
+            if (!branch.empty() && branch.back() == BranchLogic::SkipIf && !cmd.Commented 
+               && (cmd.Is(CommandType::Standard) || cmd.Is(CMD_BREAK) || cmd.Is(CMD_CONTINUE)))
                branch.pop_back();
          }
 
