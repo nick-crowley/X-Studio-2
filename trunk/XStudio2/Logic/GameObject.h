@@ -36,7 +36,12 @@ namespace Logic
          {}
       };
 
-      /// <summary></summary>
+      class GameObject;
+
+      /// <summary>Constant reference to a game object</summary>
+      typedef const GameObject&  GameObjectRef;
+
+      /// <summary>Represents a ware, ship or station</summary>
       class GameObject
       {
          // ------------------------ TYPES --------------------------

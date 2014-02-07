@@ -102,7 +102,7 @@ namespace Logic
             /// <param name="subtype">SubType.</param>
             /// <returns></returns>
             /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-            GameObject  Find(MainType type, UINT subtype) const
+            GameObjectRef  Find(MainType type, UINT subtype) const
             {
                const_iterator it;
                // Lookup and return string
@@ -159,7 +159,7 @@ namespace Logic
             /// <param name="sz">The text</param>
             /// <returns>Object</returns>
             /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-            GameObject  Find(const GuiString& sz) const
+            GameObjectRef  Find(const GuiString& sz) const
             {
                const_iterator it;
                // Lookup and return string
@@ -231,9 +231,9 @@ namespace Logic
          void            Clear();
          UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
          //const TObject*  Find(MainType main, UINT subtype) const;
-         GameObject      Find(UINT value) const;
-         GameObject      Find(const GuiString& name) const;
-         GameObject      Find(MainType main, UINT subtype) const;
+         GameObjectRef   Find(UINT value) const;
+         GameObjectRef   Find(const GuiString& name) const;
+         GameObjectRef   Find(MainType main, UINT subtype) const;
          GameObjectArray Query(const GuiString& search) const;
          bool            TryFind(const GuiString& name, const GameObject* &obj) const;
 
