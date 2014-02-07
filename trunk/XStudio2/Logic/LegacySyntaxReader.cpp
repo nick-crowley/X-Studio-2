@@ -87,9 +87,9 @@ namespace Logic
          // Iterate thru '$n' syntax parameter markers
          for (auto it = find(output.begin(), output.end(), L'$'); it != output.end(); it = find(++it, output.end(), L'$'))
          {
-            // Strip superscript ordinal indicator, if any
-            if (it+2 < output.end())
-               switch (*(it+2))
+            // Strip [1-2 character] superscript ordinal indicator, if any
+            for (int pass = 0; pass<2 && it+2<output.end(); ++pass)
+               switch (it[2])
                {
                case L'º': case 'o':  
                case L'¹': case 'x':  
