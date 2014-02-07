@@ -240,7 +240,7 @@ namespace Logic
          {
             if (IsRoot())
             {
-               Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << GetString(State);
+               Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << Cons::Bold << GetString(State);
                Console << ENDL << "-------------------------------------------------------" << ENDL; 
             }
             else
