@@ -172,6 +172,9 @@ namespace Logic
             // Index commands
             UINT index = 0;
             IndexCommands(index);
+
+            // Finalise linkage
+            FinalizeLinkage();
             
             // Compile commands
             GenerateCommands(script);
@@ -296,7 +299,7 @@ namespace Logic
                      logic = L"???";
                   }
                   else
-                     logic = Is(CMD_EXPRESSION) ? L"Exp" : L"Cmd";
+                     logic = L"Cmd";
                   break;
                }
 
@@ -372,6 +375,7 @@ namespace Logic
          /// <returns></returns>
          CommandNode* CommandNode::FindConditionalAlternate() const
          {
+            // Find next ELSE-IF,ELSE or Std Cmd
             auto node = FindSibling(isConditionalAlternate, L"alternate conditional");
 
             // ELSE: Since else is auxiliary, use first child.  NB: May have no children, or only auxiliary children
@@ -395,6 +399,7 @@ namespace Logic
          /// <returns></returns>
          CommandNode* CommandNode::FindConditionalEnd() const
          {
+            // Find next Std command that isn't ELSE-IF
             return FindSibling(isConditionalEnd, L"conditional end-point");
          }
 
@@ -468,19 +473,34 @@ namespace Logic
             return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
          }
 
+         /// <summary>Perform linkage steps that require the entire tree to be linked</summary>
+         void  CommandNode::FinalizeLinkage()
+         {
+            if (!IsRoot())
+            {
+               // Linked to break/continue: re-link to JMP
+               if (JumpTarget && (JumpTarget->Is(CMD_BREAK) || JumpTarget->Is(CMD_CONTINUE)))
+                  JumpTarget = JumpTarget->Children[0].get();
+
+               // Verify linkage
+               if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
+                  throw AlgorithmException(HERE, GuiString(L"Illegal linkage to line %d '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()));
+            }
+
+            // Recurse into children
+            for (auto& c : Children)
+               c->FinalizeLinkage();
+         }
+
          /// <summary>Compiles the parameters/commands into the script</summary>
          /// <param name="script">The script.</param>
          void  CommandNode::GenerateCommands(ScriptFile& script)
          {
-            ParameterArray params;
-
             try
             {
                if (!IsRoot())
                {
-                  // Verify linkage
-                  if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-                     throw AlgorithmException(HERE, GuiString(L"Illegal linkage to line %d '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()));
+                  ParameterArray params;
 
                   // Compile parameters
                   for (auto& p : Parameters)

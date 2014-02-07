@@ -130,11 +130,12 @@ namespace Logic
             void           Verify(ScriptFile& script, ErrorArray& errors);
             
          private:
-            void           GenerateCommands(ScriptFile& script);
-            void           IdentifyVariables(ScriptFile& script);
-            void           IndexCommands(UINT& next);
-            void           InsertJump(NodeIterator pos, const CommandNode* target);
-            void           LinkCommands();
+            void  FinalizeLinkage();
+            void  GenerateCommands(ScriptFile& script);
+            void  IdentifyVariables(ScriptFile& script);
+            void  IndexCommands(UINT& next);
+            void  InsertJump(NodeIterator pos, const CommandNode* target);
+            void  LinkCommands();
             
             // -------------------- REPRESENTATION ---------------------
          public:
