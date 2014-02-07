@@ -112,6 +112,7 @@ namespace Logic
       void  ScriptParameter::Generate(ScriptFile& script, UINT jumpDestination)
       {
          const ScriptObject* obj = nullptr;
+         GameObjectLibrary::ObjectID  ware;
 
          switch (Type)
          {
@@ -217,7 +218,11 @@ namespace Logic
 
          // Ware: Lookup/Encode
          case DataType::WARE:
-            Value = GameObjectLib.Find(Value.String).EncodedValue;
+            // Encode ware placeholders '{SSTYPE_SHIP@232}' manually
+            if (GameObjectLib.ParsePlaceholder(Value.String, ware))
+               Value = MAKELONG(ware.Type, ware.SubType);
+            else
+               Value = GameObjectLib.Find(Value.String).EncodedValue;
             break;
          }
       }

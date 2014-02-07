@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameObjectLibrary.h"
+#include "ScriptObjectLibrary.h"
 #include "XFileSystem.h"
 #include "WorkerFeedback.h"
 #include "TLaser.h"
@@ -14,10 +15,15 @@ namespace Logic
 {
    namespace Types
    {
+      /// <summary>Game object library singleton</summary>
       GameObjectLibrary  GameObjectLibrary::Instance;
+
+      /// <summary>Ware placeholder regular expression: {SSTYPE_LASER@1234}</summary>
+      const wregex  GameObjectLibrary::PlaceHolder(L"([\\w_]+)@(\\d+)");
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Private ctor</summary>
       GameObjectLibrary::GameObjectLibrary() 
       {
          Clear();
@@ -25,8 +31,7 @@ namespace Logic
 
 
       GameObjectLibrary::~GameObjectLibrary()
-      {
-      }
+      {}
 
       // ------------------------------- STATIC METHODS -------------------------------
 
@@ -53,10 +58,17 @@ namespace Logic
       }
       
       /// <summary>Query whether an object is present</summary>
-      /// <param name="name">The object name</param>
+      /// <param name="name">object name without curly brackets</param>
       /// <returns></returns>
       bool GameObjectLibrary::Contains(const GuiString& name) const
       {
+         ObjectID id;
+
+         // {MainType@SubType} Placeholder: 
+         if (ParsePlaceholder(name, id))
+            return true;
+
+         // Lookup by name
          return Lookup.Contains(name);
       }
 
@@ -164,13 +176,14 @@ namespace Logic
          return Find((MainType)HIWORD(value), LOWORD(value));
       }
 
-      /// <summary>Finds an object by text (Search is case sensitive)<summary>
-      /// <param name="sz">The text</param>
+      /// <summary>Finds an object by name (Search is case sensitive)<summary>
+      /// <param name="name">object name WITHOUT curly brackets</param>
       /// <returns>Object</returns>
       /// <exception cref="Logic::GameObjectNotFoundException">Object not found</exception>
-      GameObject  GameObjectLibrary::Find(const GuiString& sz) const
+      GameObject  GameObjectLibrary::Find(const GuiString& name) const
       {
-         return Lookup.Find(sz);
+         // Lookup by name
+         return Lookup.Find(name);
       }
 
       /// <summary>Finds an object</summary>
@@ -188,7 +201,37 @@ namespace Logic
          // Lookup object
          return Objects.Find(main, subtype);
       }
+      
+      /// <summary>Checks whether an object name is actually a placeholder {SSTYPE_SHIP@42} and extracts it's components</summary>
+      /// <param name="name">name to parse</param>
+      /// <param name="id">On return this contains the MainType and SubType</param>
+      /// <returns>True if placeholder, False if name</returns>
+      bool  GameObjectLibrary::ParsePlaceholder(const GuiString& name, ObjectID& id) const
+      {
+         wsmatch matches;
 
+         // Prepare
+         id.Type = MainType::Unknown;
+         id.SubType = 0;
+
+         // Match {SSTYPE_LASER@1234}
+         if (!regex_match(name, matches, PlaceHolder))
+            return false;
+
+         // Resolve mainType
+         const ScriptObject* mainType;
+         if (!ScriptObjectLib.TryFind(matches[1].str(), mainType))
+            return false;
+
+         // Ensure we matched a mainType
+         if (mainType->Group != ScriptObjectGroup::Constant || mainType->ID < 200 || mainType->ID > 200+(UINT)MainType::ShipWreck)
+            return false;
+
+         // Convert subtype/MainType
+         id.SubType = _ttoi(matches[2].str().c_str());
+         id.Type = (MainType)(mainType->ID - 200);
+         return true;
+      }
       /// <summary>Searches the library for objects containing a substring (Case insensitive)</summary>
       /// <param name="search">substring</param>
       /// <returns></returns>
@@ -206,12 +249,14 @@ namespace Logic
       }
       
       /// <summary>Finds a game object by name</summary>
-      /// <param name="name">object name</param>
-      /// <param name="obj">object</param>
+      /// <param name="name">object name WITHOUT curly brackets</param>
+      /// <param name="obj">On return this contains the object if found, otherwise nullptr</param>
       /// <returns>true if found, false otherwise</returns>
       bool  GameObjectLibrary::TryFind(const GuiString& name, const GameObject* &obj) const
       {
          obj = nullptr;
+
+         // Lookup by name
          return Lookup.TryFind(name, obj);
       }
 
