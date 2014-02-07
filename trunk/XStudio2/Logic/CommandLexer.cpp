@@ -174,7 +174,7 @@ namespace Logic
                // and/or/mod
                case L'A':  return MatchChars(L"AND");
                case L'O':  return MatchChars(L"OR");
-               case L'M':  return MatchChars(L"MOD");
+               case L'm':  return MatchChars(L"mod");
                }
 
             return false;
@@ -410,7 +410,7 @@ namespace Logic
 
                // AND/MOD: Read triple
                case L'A':  
-               case L'M':  
+               case L'm':  
                   Position += 3; 
                   break;
 
