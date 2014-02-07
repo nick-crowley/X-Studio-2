@@ -103,27 +103,44 @@ namespace Logic
       /// <returns></returns>
       ParamSyntaxArray  CommandSyntax::GetParametersByDisplay() const
       {
-         typedef pair<UINT,UINT> Index;   // {Physical,Display}
+         //typedef pair<UINT,UINT> Index;   // {Physical,Display}
 
          ParamSyntaxArray params;
-         vector<Index>    order;
-         
-         // Build array of {Physical,Display} tuples sorted by physical index
-         transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->Index 
-         { 
-            return Index(p.PhysicalIndex, p.DisplayIndex); 
-         });
+         //vector<Index>    order;
+         //
+         //// Build array of {Physical,Display} tuples sorted by physical index
+         //transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->Index 
+         //{ 
+         //   return Index(p.PhysicalIndex, p.DisplayIndex); 
+         //});
 
-         // Build array by display index
-         for (const ParameterSyntax& ps : Parameters)
-            params.push_back( Parameters[order[ps.PhysicalIndex].second] );
+         //// Build array by display index
+         //for (const ParameterSyntax& ps : Parameters)
+         //   params.push_back( Parameters[order[ps.PhysicalIndex].second] );
 
          // Re-order by display index (ascending)
-         /*for (UINT i = 0; i < Parameters.size(); ++i)
+         for (UINT i = 0; i < Parameters.size(); ++i)
          {
             auto p = find_if(Parameters.begin(), Parameters.end(), [i](const ParameterSyntax& ps) {return ps.DisplayIndex == i;});
             params.push_back(*p);
-         }*/
+         }
+
+         // DEBUG: Verify sizes equal
+         if (params.size() != Parameters.size())
+            throw AlgorithmException(HERE, L"");
+
+         // DEBUG: Verify sorted by display index
+         for (UINT i = 0; i < params.size(); i++)
+            if (params[i].DisplayIndex != i)
+            {
+               wstring debug;
+               for_each(params.begin(), params.end(), [&debug](ParameterSyntax& ps)
+               {
+                  debug += GuiString(L"physical %d : display %d : %s\n", ps.PhysicalIndex, ps.DisplayIndex, GetString(ps.Type).c_str());
+               });
+               throw AlgorithmException(HERE, GuiString(L"Parameter %d of %d has display index %d instead of %d : %s\n%s", 
+                                                        i+1, params.size(), params[i].DisplayIndex, i, Text.c_str(), debug.c_str()));
+            }
 
          return params;
       }
