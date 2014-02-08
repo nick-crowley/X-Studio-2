@@ -2,7 +2,6 @@
 #include "../Logic/ScriptFile.h"
 #include "../Logic/FileStream.h"
 #include "../Logic/XFileInfo.h"
-#include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
 #include "ScriptTextValidator.h"
 
