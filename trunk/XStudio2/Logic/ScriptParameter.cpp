@@ -169,20 +169,30 @@ namespace Logic
                Type = DataType::LIVE_VARIABLE;
                Value = script.Variables[Value.String].ID;
             }
-            // RetVar/Discard: Resolve/Encode ID
+            // RetVar: Resolve ID
             else if (Value.Type == ValueType::String)
                Value = ReturnValue(ReturnType::ASSIGNMENT, script.Variables[Value.String].ID).EncodedValue;
-            else if (ReturnValue(Value.Int).Conditional == Conditional::DISCARD)
-               Value = ReturnValue(Conditional::DISCARD, 0).EncodedValue;
+
+            // Condition: encode appropriately
+            else switch (Conditional condition = ReturnValue(Value.Int).Conditional)
+            {
+            // Discard/Start: no jump destination or variable ID
+            case Conditional::DISCARD:
+            case Conditional::START:
+               Value = ReturnValue(condition, 0).EncodedValue;
+               break;
+
+            // None: I don't think this should ever happen
+            case Conditional::NONE:
+               throw AlgorithmException(HERE, L"Unexpected retVar 'NONE' conditional");
             
             // Conditional: Encode conditional + jump destination
-            else
-            {
+            default:
                if (jumpDestination == EMPTY_JUMP)
                   throw AlgorithmException(HERE, L"Missing jump destination");
 
                // Encode jump destination into existing conditional
-               Value = ReturnValue(ReturnValue(Value.Int).Conditional, jumpDestination).EncodedValue;
+               Value = ReturnValue(condition, jumpDestination).EncodedValue;
             }
             break;
 
@@ -289,15 +299,26 @@ namespace Logic
             if (Value.Type == ValueType::String)
                Text = StringResource::Format(format, Value.String.c_str());
 
-            // Default: conditional/variable
-            else switch (ReturnValue(Value.Int).ReturnType)
-            {
-            case ReturnType::DISCARD:       Text = L"";   break;
-            case ReturnType::ASSIGNMENT:    Text = StringResource::Format(format, script.Variables[Value.Int].Name.c_str());   break;
-            case ReturnType::JUMP_IF_TRUE:
-            case ReturnType::JUMP_IF_FALSE: Text = StringLib.Find(KnownPage::CONDITIONALS, (UINT)ReturnValue(Value.Int).Conditional).Text;  break;
+            // Assignment: variable ID
+            else if (ReturnValue(Value.Int).ReturnType == ReturnType::ASSIGNMENT)
+               Text = StringResource::Format(format, script.Variables[(BYTE)Value.Int].Name.c_str());
 
-            default:  throw InvalidValueException(HERE, GuiString(L"Unrecognised return type 0x%x", Value.Int));
+            // Conditional/Discard:
+            else switch (ReturnValue(Value.Int).Conditional)
+            {
+            case Conditional::NONE:
+            case Conditional::DISCARD: Text = L"";       break;
+            case Conditional::START:   Text = L"start";  break;   // HACK: library version is upper case
+            case Conditional::IF:   
+            case Conditional::IF_NOT:   
+            case Conditional::WHILE:   
+            case Conditional::WHILE_NOT:   
+            case Conditional::ELSE_IF:   
+            case Conditional::ELSE_IF_NOT:   
+            case Conditional::SKIP_IF:   
+            case Conditional::SKIP_IF_NOT:   Text = GetString(ReturnValue(Value.Int).Conditional); break;
+            default:                   
+               throw InvalidValueException(HERE, GuiString(L"Unrecognised return value: 0x%x", Value.Int));
             }
             break;
 
