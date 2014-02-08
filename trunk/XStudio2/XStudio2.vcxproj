@@ -308,6 +308,7 @@
     </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
+    <ClCompile Include="Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="Testing\ScriptValidator.cpp" />
   </ItemGroup>

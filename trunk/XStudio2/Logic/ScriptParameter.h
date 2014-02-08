@@ -54,10 +54,22 @@ namespace Logic
             return LOWORD(Int);
          }
 
+         /// <summary>Get string/int value as string</summary>
+         GuiString ToString() const
+         {
+            return Type == ValueType::String ? String : GuiString(L"%d", Int);
+         }
+
          /// <summary>Compare two values</summary>
          bool operator==(const ParameterValue& v) const
          {
             return Type==v.Type && (Type==ValueType::String ? String==v.String : Int==v.Int);
+         }
+
+         /// <summary>Compare two values</summary>
+         bool operator!=(const ParameterValue& v) const
+         {
+            return !operator==(v);
          }
 
 		   // ----------------------- MUTATORS ------------------------

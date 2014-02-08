@@ -645,6 +645,9 @@
     <ClCompile Include="Testing\ScriptTextValidator.cpp">
       <Filter>Source Files\Testing</Filter>
     </ClCompile>
+    <ClCompile Include="Testing\ScriptCodeValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="UserImages.bmp">

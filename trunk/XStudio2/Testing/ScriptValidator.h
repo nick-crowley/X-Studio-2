@@ -67,22 +67,6 @@ namespace Testing
       {
          // ------------------------ TYPES --------------------------
       private:
-         //class ScriptXmlValidator : SourceValueReader
-         //{
-         //   // --------------------- CONSTRUCTION ----------------------
-         //public:
-         //   ScriptXmlValidator(StreamPtr in) : SourceValueReader(in)
-         //   {
-         //      // Parse document
-         //      LoadDocument();
-         //   }
-
-         //   // --------------------- PROPERTIES ------------------------
-
-         //   // ---------------------- ACCESSORS ------------------------			
-
-         //   // ----------------------- MUTATORS ------------------------
-         //};
 
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -115,14 +99,13 @@ namespace Testing
       {
          // ------------------------ TYPES --------------------------
       private:
-         class ScriptReader : SourceValueReader
+         class ScriptReader : public SourceValueReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             ScriptReader(StreamPtr in) : SourceValueReader(in)
             {
-               // Parse document on construction
-               LoadDocument();
+               LoadDocument();   // Parse document on construction
             }
 
             // --------------------- PROPERTIES ------------------------
@@ -134,28 +117,28 @@ namespace Testing
 
          // --------------------- CONSTRUCTION ----------------------
       public:
+         ScriptCodeValidator(StreamPtr orig, StreamPtr copy);
 
          // ------------------------ STATIC -------------------------
-      public:
-         /*static bool  Compare(const LineArray& in, const LineArray& out);
-         static bool  Compare(const ScriptFile& in, const ScriptFile& out);
-
       private:
-         static bool  Compare(const ScriptVariable& in, const ScriptVariable& out);
-         static bool  Compare(UINT line, const ScriptCommand& in, const ScriptCommand& out);
-         static bool  Compare(UINT line, UINT param, const ScriptParameter& in, const ScriptParameter& out);
-
-         static ValidationException  TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b);
-         static ValidationException  TextMismatch(const GuiString& src, const GuiString& prop, int a, int b);*/
+         static ValidationException  CodeMismatch(const GuiString& src, const GuiString& prop, const ParameterValue& a, const ParameterValue& b);
+         static ValidationException  CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b);
+         static ValidationException  CodeMismatch(const GuiString& src, const GuiString& prop, int a, int b);
 
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
 
          // ----------------------- MUTATORS ------------------------
-      
-         // -------------------- REPRESENTATION ---------------------
+      public:
+         bool  Compare();
 
+      private:
+         bool  Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, const wchar* help);
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptReader  In, Out;
       };
 
    }
