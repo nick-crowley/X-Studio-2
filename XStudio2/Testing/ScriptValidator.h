@@ -3,14 +3,6 @@
 #include "../Logic/ScriptParser.h"
 #include "../Logic/ScriptFileReader.h"
 
-//namespace Logic
-//{
-//   namespace Scripts
-//   {
-//      class ScriptVariable;
-//   }
-//}
-
 namespace Testing
 {
    namespace Scripts
@@ -142,7 +134,8 @@ namespace Testing
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptReader  In, Out;
+         ScriptReader   In, Out;
+         VariableArray  InVars, OutVars;
       };
 
    }

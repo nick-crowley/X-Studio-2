@@ -24,7 +24,10 @@ namespace Logic
          DISCARD       = 0x80,      // Discard result
          JUMP_IF_TRUE  = 0xE0,      // Jump to <destination> if result is TRUE
          JUMP_IF_FALSE = 0xA0       // Jump to <destination> if result is FALSE
-      };   
+      };
+
+      /// <summary>Get return type string</summary>
+      GuiString  GetString(ReturnType t);
           
       /// <summary>Identifies the branching statements used in the script language. The first 8 IDs are actually encoded in 
       /// ReturnObjects whereas the last four are defined by auxiliary commands and used for my coding clarity.</summary>
@@ -37,6 +40,9 @@ namespace Logic
          SKIP_IF   = 7,   SKIP_IF_NOT = 8,
          WHILE     = 9,   WHILE_NOT   = 10
       };
+
+      /// <summary>Get conditional string</summary>
+      GuiString  GetString(Conditional c);
 
       /// <summary>Represents the encoded return value of a script command</summary>
       class ReturnValue
@@ -120,6 +126,9 @@ namespace Logic
          Conditional  Conditional;
          int          Destination;
       };
+
+      /// <summary>Write return value to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val);
 
    }
 }
