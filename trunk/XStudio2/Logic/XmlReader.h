@@ -36,7 +36,8 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
       protected:
-         void     LoadDocument();
+         virtual void  LoadDocument();
+
          wstring  ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
          void     ReadElement(XmlNodePtr&  node, const WCHAR*  name);
          wstring  TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
