@@ -27,7 +27,7 @@ namespace Logic
          void  LoadDocument() override;
 
          // -------------------- REPRESENTATION ---------------------
-      protected:
+      public:
          XmlNodePtr  CodeArray;
       };
 
