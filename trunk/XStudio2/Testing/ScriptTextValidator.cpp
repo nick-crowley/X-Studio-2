@@ -88,7 +88,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'   copy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
       }
       
       // ------------------------------- PUBLIC METHODS -------------------------------
