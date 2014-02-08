@@ -105,13 +105,18 @@ namespace Testing
             auto copy_txt = GetAllLines(copy.Commands.Input);
             CompileScript(copy, tmp);
             
-            // Compare files
+            // Compare command text
             Console << Cons::Bold << "Comparing translated command text..." << ENDL;
             ScriptTextValidator::Compare(orig_txt, copy_txt);
 
-            // Compare files
+            // Compare input command list
             Console << Cons::Bold << "Comparing intermediate code..." << ENDL;
             ScriptTextValidator::Compare(orig, copy);
+
+            // Compare xml
+            Console << Cons::Bold << "Comparing generated xml..." << ENDL;
+            ScriptCodeValidator code(XFileInfo(FullPath).OpenRead(), XFileInfo(tmp).OpenRead());
+            code.Compare();
 
             // Success!
             Console << Colour::Green << "Validation Successful" << ENDL;

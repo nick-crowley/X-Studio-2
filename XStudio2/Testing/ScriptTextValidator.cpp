@@ -1,8 +1,4 @@
 #include "stdafx.h"
-#include "../Logic/ScriptFile.h"
-#include "../Logic/FileStream.h"
-#include "../Logic/XFileInfo.h"
-#include "../Logic/ScriptFileWriter.h"
 #include "ScriptValidator.h"
 
 namespace Testing
@@ -51,19 +47,19 @@ namespace Testing
       {
          // Properties
          if (in.Name != out.Name)
-            throw TextMismatch(HERE, L"name", in.Name, out.Name);
+            throw TextMismatch(HERE, L"script name", in.Name, out.Name);
          if (in.Description != out.Description)
-            throw TextMismatch(HERE, L"description", in.Description, out.Description);
+            throw TextMismatch(HERE, L"script description", in.Description, out.Description);
          if (in.Version != out.Version)
-            throw TextMismatch(HERE, L"version", in.Version, out.Version);
+            throw TextMismatch(HERE, L"script version", in.Version, out.Version);
          if (in.Game != out.Game)
-            throw TextMismatch(HERE, L"game version", VersionString(in.Game), VersionString(out.Game));
+            throw TextMismatch(HERE, L"script game version", VersionString(in.Game), VersionString(out.Game));
          if (in.GetCommandName() != out.GetCommandName())
-            throw TextMismatch(HERE, L"command ID", in.GetCommandName(), out.GetCommandName());
+            throw TextMismatch(HERE, L"script command ID", in.GetCommandName(), out.GetCommandName());
 
          // Variables/Arguments count
          if (in.Variables.Count != out.Variables.Count)
-            throw TextMismatch(HERE, L"variable count", in.Variables.Count, out.Variables.Count);
+            throw TextMismatch(HERE, L"script variable count", in.Variables.Count, out.Variables.Count);
 
          // Variables/Arguments
          else for (auto v1 = in.Variables.begin(), v2 = out.Variables.begin(); v1 != in.Variables.end(); ++v1, ++v2)
@@ -71,7 +67,7 @@ namespace Testing
 
          // Command count
          if (in.Commands.Input.size() != out.Commands.Input.size())
-            throw TextMismatch(HERE, L"command count", in.Commands.Input.size(), out.Commands.Input.size());
+            throw TextMismatch(HERE, L"script command count", in.Commands.Input.size(), out.Commands.Input.size());
          else 
          {
             UINT line = 1;
