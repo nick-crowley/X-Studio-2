@@ -157,7 +157,7 @@ namespace Logic
       void  ScriptFileWriter::WriteArgument(XmlElementPtr parent, const ScriptVariable& var)
       {
          auto arg = WriteArray(parent, 2);
-         WriteInt(arg, (int)var.Type);
+         WriteInt(arg, (int)var.ValueType);
          WriteString(arg, var.Description);
       }
 
