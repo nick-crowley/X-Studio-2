@@ -134,8 +134,11 @@ namespace Testing
          bool  Compare();
 
       private:
-         bool  Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, const wchar* help);
-         bool  CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, const wchar* help);
+         bool  Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help);
+         void  CompareArguments();
+         void  CompareCommands();
+         bool  CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help);
+         void  CompareVariables();
 
          // -------------------- REPRESENTATION ---------------------
       private:
