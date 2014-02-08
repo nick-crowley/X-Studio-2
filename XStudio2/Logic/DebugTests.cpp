@@ -17,7 +17,7 @@
 #include "TWare.h"
 #include "TLaser.h"
 #include "StringParser.h"
-#include "../Testing/ScriptTextValidator.h"
+#include "../Testing/ScriptValidator.h"
 
 namespace Logic
 {
@@ -71,21 +71,22 @@ namespace Logic
       for (auto& f : vfs.Browse(XFolder::Scripts))
       {
          // Ensure PCK/XML
-         if (!f.FullPath.HasExtension(L".pck") && !f.FullPath.HasExtension(L".xml"))
-            continue;
-
-         // Check Skip list
-         if (any_of(SkipList.begin(), SkipList.end(), [f](wstring& path) {return f.FullPath.FileName == path;}) )
+         if (f.FullPath.HasExtension(L".pck") || f.FullPath.HasExtension(L".xml"))
          {
-            Console << Cons::Heading << L"Skipping script with known incompatiblity: " << f.FullPath << ENDL;
-            continue;
+            // Check Skip list
+            if (any_of(SkipList.begin(), SkipList.end(), [f](wstring& path) {return f.FullPath.FileName == path;}) )
+            {
+               Console << Cons::Heading << L"Skipping script with known incompatiblity: " << f.FullPath << ENDL;
+               continue;
+            }
+
+            // Validate
+            ScriptValidator sv(f.FullPath);
+            if (!sv.Validate())
+               break;
          }
 
-         // Validate
-         ScriptTextValidator script(f.FullPath);
-         if (!script.Validate())
-            break;
-
+         // Maintain feedback counter
          count++;
       }
 

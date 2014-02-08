@@ -403,7 +403,7 @@
     <ClInclude Include="Logic\ScriptFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Testing\ScriptTextValidator.h">
+    <ClInclude Include="Testing\ScriptValidator.h">
       <Filter>Header Files\Testing</Filter>
     </ClInclude>
   </ItemGroup>
@@ -636,11 +636,14 @@
     <ClCompile Include="Logic\ScriptFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Testing\ScriptTextValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\SourceValueReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing\ScriptValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing\ScriptTextValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
