@@ -48,7 +48,7 @@ namespace Testing
 
             // Print messages
             for (auto& e : parser.Errors)
-               Console << "ERROR: " << e.Line << " : " << ln[e.Line-1] << " : " << e.Message << ENDL;
+               Console << "ERROR: " << e.Line << " : " << e.Message << " : " << e.Text << ENDL;
 
             // Abort
             throw ValidationException(HERE, GuiString(L"Unable to parse: %s", truePath.c_str()));

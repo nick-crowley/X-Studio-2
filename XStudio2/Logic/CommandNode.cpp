@@ -330,14 +330,14 @@ namespace Logic
 
             // Ensure script has commands
             if (count_if(Children.begin(), Children.end(), isStandardCommand) == 0)
-               errors += ErrorToken(L"No executable commands found", LineNumber, Extent);
+               errors += MakeError(L"No executable commands found");
             
             // Ensure last std command is RETURN
             else if (find_if(Children.rbegin(), Children.rend(), isStandardCommand) == Children.rend())
             {
                auto last = Children.end()[-1];
                if (!last->Is(CMD_RETURN))
-                  errors += ErrorToken(L"Last command in script must be 'return'", last->LineNumber, last->Extent);
+                  errors += last->MakeError(L"Last command in script must be 'return'");
             }
 
             // Update state
@@ -483,10 +483,7 @@ namespace Logic
 
                // Verify linkage
                if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-               {
-                  GuiString msg(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str());
-                  errors += ErrorToken(msg, LineNumber, Extent); 
-               }
+                  errors += MakeError( GuiString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()) ); 
             }
 
             // Recurse into children
@@ -524,7 +521,7 @@ namespace Logic
                }
             }
             catch (ExceptionBase& e) {
-               errors += ErrorToken(GuiString(L"Compile failed: ") + e.Message, LineNumber, Extent); 
+               errors += MakeError(GuiString(L"Compile failed: ") + e.Message); 
             }
             
             // Recurse into children
@@ -645,7 +642,7 @@ namespace Logic
                }
             }
             catch (ExceptionBase& e) {
-               errors += ErrorToken(GuiString(L"Linking failed: ") + e.Message, LineNumber, Extent); 
+               errors += MakeError(GuiString(L"Linking failed: ") + e.Message); 
             }
 
             // Recurse into children
@@ -653,6 +650,16 @@ namespace Logic
                c->LinkCommands(errors);
          }
          
+         ErrorToken  CommandNode::MakeError(const GuiString& msg) const
+         {
+            return ErrorToken(msg, LineNumber, LineText.substr(Extent.cpMin, Extent.cpMax-Extent.cpMin), Extent);
+         }
+
+         ErrorToken  CommandNode::MakeError(const GuiString& msg, const ScriptToken& tok) const
+         {
+            return ErrorToken(msg, LineNumber, tok);
+         }
+
          /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
@@ -663,43 +670,42 @@ namespace Logic
             {
                // Check for invalid 'start' 
                if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
-                  errors += ErrorToken(L"Command cannot be executed asynchronously", LineNumber, Extent);
+                  errors += MakeError(L"Command cannot be executed asynchronously");
 
                // Check for missing 'start'
                else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
-                  errors += ErrorToken(L"Command must be executed asynchronously", LineNumber, Extent);
+                  errors += MakeError(L"Command must be executed asynchronously");
 
                // Parameter static type check
-               for (const ScriptParameter& param : Parameters)
+               for (const ScriptParameter& p : Parameters)
                {
                   GameObjectLibrary::ObjectID obj;
 
                   // Recognise game/script objects
-                  switch (param.Token.Type)
+                  switch (p.Token.Type)
                   {
                   // GameObject: Ensure exists  (allow {SSTYPE_LASER@12} placeholders)
                   case TokenType::GameObject:
-                     if (!GameObjectLib.Contains(param.Value.String) && !GameObjectLib.ParsePlaceholder(param.Value.String, obj))
-                        errors += ErrorToken(L"Unrecognised game object", LineNumber, param.Token);
+                     if (!GameObjectLib.Contains(p.Value.String) && !GameObjectLib.ParsePlaceholder(p.Value.String, obj))
+                        errors += MakeError(L"Unrecognised game object", p.Token);
                      break;
 
                   // ScriptObject: Ensure exists 
                   case TokenType::ScriptObject:
-                     if (!ScriptObjectLib.Contains(param.Value.String))
-                        errors += ErrorToken(L"Unrecognised script object", LineNumber, param.Token);
+                     if (!ScriptObjectLib.Contains(p.Value.String))
+                        errors += MakeError(L"Unrecognised script object", p.Token);
                      break;
 
                   // Label: Ensure exists
                   case TokenType::Label:
-                     if (!script.Labels.Contains(param.Value.String))
-                        errors += ErrorToken(L"Unrecognised label", LineNumber, param.Token);
+                     if (!script.Labels.Contains(p.Value.String))
+                        errors += MakeError(L"Unrecognised label", p.Token);
                      break;
                   }
                
                   // Static type check
-                  if (!param.Syntax.Verify(param.Type))
-                     errors += ErrorToken(GuiString(L"'%s' is not a valid %s", param.Text.c_str(), ::GetString(param.Syntax.Type).c_str())
-                                                                             , LineNumber, param.Token);
+                  if (!p.Syntax.Verify(p.Type))
+                     errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
                }
             }
 
@@ -718,67 +724,67 @@ namespace Logic
             case BranchLogic::If:
                // EOF?
                if ((n=FindNextSibling()) == nullptr)
-                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+                  errors += MakeError(L"missing 'end' command");
                // preceeds End/Else/Else-if?
                else if (n->Logic != BranchLogic::End && n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf)
-                  errors += ErrorToken(L"expected 'else', 'else if' or 'end'", n->LineNumber, n->Extent);
+                  errors += n->MakeError(L"expected 'else', 'else if' or 'end'");
                break;
 
             // WHILE: Must preceed END
             case BranchLogic::While:
                // EOF?
                if ((n=FindNextSibling()) == nullptr)
-                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+                  errors += MakeError(L"missing 'end' command");
                // preceed END?
                else if (n->Logic != BranchLogic::End)
-                  errors += ErrorToken(L"expected 'end'", n->LineNumber, n->Extent);
+                  errors += n->MakeError(L"expected 'end'");
                break;
 
             // ELSE: Must follow IF/ELSE-IF.  Must preceed END
             case BranchLogic::Else:
                // follow IF/ELSE-IF?
                if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
-                  errors += ErrorToken(L"unexpected 'else'", LineNumber, Extent);
+                  errors += MakeError(L"unexpected 'else'");
 
                // EOF?
                else if ((n=FindNextSibling()) == nullptr)
-                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+                  errors += MakeError(L"missing 'end' command");
                // preceed END?
                else if (n->Logic != BranchLogic::End)
-                  errors += ErrorToken(L"expected 'end'", n->LineNumber, n->Extent);
+                  errors += n->MakeError(L"expected 'end'");
                break;
 
             // ELSE-IF: Must follow IF/ELSE-IF. Must preceed ELSE-IF/ELSE/END
             case BranchLogic::ElseIf:
                // follow IF/ELSE-IF?
                if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
-                  errors += ErrorToken(L"unexpected 'else-if'", LineNumber, Extent);
+                  errors += MakeError(L"unexpected 'else-if'");
                
                // EOF?
                else if ((n=FindNextSibling()) == nullptr)
-                  errors += ErrorToken(L"missing 'end' command", LineNumber, Extent);
+                  errors += MakeError(L"missing 'end' command");
                // preceed ELSE-IF/ELSE/END?
                else if (n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::End)
-                  errors += ErrorToken(L"expected 'else', 'else if' or 'end'", n->LineNumber, n->Extent);
+                  errors += n->MakeError(L"expected 'else', 'else if' or 'end'");
                break;
 
             // END: Must follow IF/WHILE/ELSE-IF/ELSE
             case BranchLogic::End:
                // follow IF/WHILE/ELSE-IF/ELSE?
                if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::While && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::Else))
-                  errors += ErrorToken(L"unexpected 'end' command", LineNumber, Extent);
+                  errors += MakeError(L"unexpected 'end' command");
                break;
 
             // SKIP-IF: Must not be child of SKIP-IF. Must contain 1 standard command
             case BranchLogic::SkipIf:
                // not parent SKIP-IF?
                if (Parent->Logic == BranchLogic::SkipIf)
-                  errors += ErrorToken(L"'skip-if' cannot be nested", LineNumber, Extent);
+                  errors += MakeError(L"'skip-if' cannot be nested");
 
                // Ensure command present
                //if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
                if (count_if(Children.begin(), Children.end(), isSkipIfCompatible) != 1)
-                  errors += ErrorToken(L"must contain single command without conditional", LineNumber, Extent);
+                  errors += MakeError(L"must contain single command without conditional");
                break;
 
             // BREAK/CONTINUE: Must be decendant of WHILE
@@ -786,7 +792,7 @@ namespace Logic
             case BranchLogic::Continue:
                // Check for a parent 'while' command
                if (!FindAncestor(BranchLogic::While))
-                  errors += ErrorToken(L"break/continue cannot appear outside 'while'", LineNumber, Extent);
+                  errors += MakeError(L"break/continue cannot appear outside 'while'");
                break;
             }
 
