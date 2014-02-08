@@ -43,6 +43,9 @@ namespace Testing
 
          // ------------------------ STATIC -------------------------
       private:
+         static void                 CompileScript(ScriptFile& s, Path truePath);
+         static LineArray            GetAllLines(const CommandList& commands);
+         static ScriptFile           ReadScript(Path truePath, Path displayPath);
          static ValidationException  TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b);
 
          // --------------------- PROPERTIES ------------------------
@@ -54,15 +57,11 @@ namespace Testing
          bool  Validate();
 
       private:
-         
-         bool       Compare(const ScriptFile& in, const ScriptFile& out);
-         bool       Compare(const ScriptVariable& in, const ScriptVariable& out);
-         bool       Compare(UINT line, const ScriptCommand& in, const ScriptCommand& out);
-         bool       Compare(UINT line, UINT param, const ScriptParameter& in, const ScriptParameter& out);
-
-         LineArray  GetAllLines(const CommandList& commands);
-         ScriptFile ParseScript(Path truePath, Path displayPath);
-         ScriptFile ReadScript(Path truePath, Path displayPath);
+         bool  Compare(const LineArray& in, const LineArray& out);
+         bool  Compare(const ScriptFile& in, const ScriptFile& out);
+         bool  Compare(const ScriptVariable& in, const ScriptVariable& out);
+         bool  Compare(UINT line, const ScriptCommand& in, const ScriptCommand& out);
+         bool  Compare(UINT line, UINT param, const ScriptParameter& in, const ScriptParameter& out);
 
          // -------------------- REPRESENTATION ---------------------
 
