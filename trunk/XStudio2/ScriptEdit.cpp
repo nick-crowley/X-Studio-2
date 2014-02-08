@@ -130,24 +130,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return sel;
    }
 
-   /// <summary>Gets the text of a token</summary>
-   /// <param name="tok">error token</param>
-   /// <returns></returns>
-   wstring  ScriptEdit::GetTokenText(const ErrorToken& tok)
-   {
-      // Freeze
-      FreezeWindow(true);
-      
-      // Select token
-      int line = LineIndex(tok.Line-1);
-      SetSel(line+tok.Start, line+tok.End);
-      CString str=GetSelText();
-
-      // Unfreeze without redrawing
-      FreezeWindow(false, false);
-      return (const wchar*)str;
-   }
-
    /// <summary>Determines whether text selection exists</summary>
    /// <returns></returns>
    bool ScriptEdit::HasSelection() const
@@ -385,7 +367,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          for (const auto& err : parser.Errors)
          {
             FormatToken(LineIndex(err.Line-1), err, cf);
-            Console << err.Line << L": " << Colour::Yellow << err.Message << Colour::White << L" : " << (const WCHAR*)GetSelText() << ENDL;
+            Console << err.Line << L": " << Colour::Yellow << err.Message << Colour::White << L" : " << err.Text << ENDL;
          }
 
          // Raise 'Compile Complete'

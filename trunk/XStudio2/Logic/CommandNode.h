@@ -19,17 +19,21 @@ namespace Logic
          {
          public:
             /// <summary>Create error for token</summary>
-            ErrorToken(const wstring& msg, UINT line, const ScriptToken& t) : TokenBase(t), Message(msg), Line(line)
+            ErrorToken(const GuiString& msg, UINT line, const ScriptToken& tok) 
+               : TokenBase(tok), Message(msg), Text(tok.Text), Line(line)
             {}
-            /// <summary>Create error for entire line</summary>
-            ErrorToken(const wstring& msg, UINT line, const CHARRANGE& r) : TokenBase(r.cpMin, r.cpMax), Message(msg), Line(line)
+            /// <summary>Create error for a character range</summary>
+            ErrorToken(const GuiString& msg, UINT line, const GuiString& txt, const CHARRANGE& r) 
+               : TokenBase(r.cpMin, r.cpMax), Message(msg), Text(txt), Line(line)
             {}
-            /// <summary>Create error for character range</summary>
-            ErrorToken(const wstring& msg, UINT line, UINT start, UINT end) : TokenBase(start,end), Message(msg), Line(line)
+            /// <summary>Create error for a character range</summary>
+            ErrorToken(const GuiString& msg, UINT line, const GuiString& txt, UINT start, UINT end) 
+               : TokenBase(start,end), Message(msg), Text(txt), Line(line)
             {}
 
-            const wstring Message;
-            const UINT    Line;
+            const GuiString Message,   // Error message
+                            Text;      // Erroneous token/line text
+            const UINT      Line;      // 1-base line number
          };
 
          /// <summary>Vector of error tokens</summary>
@@ -120,6 +124,8 @@ namespace Logic
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
             GuiString     GetDebugText() const;
             bool          IsRoot() const;
+            ErrorToken    MakeError(const GuiString& msg) const;
+            ErrorToken    MakeError(const GuiString& msg, const ScriptToken& tok) const;
             void          VerifyCommand(const ScriptFile& script, ErrorArray& errors) const;
             void          VerifyLogic(ErrorArray& errors) const;
                

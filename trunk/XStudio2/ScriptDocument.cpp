@@ -149,7 +149,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // ERRORS: Feedback messages in output window
          for (const auto& err : parser.Errors)
          {
-            GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), Edit->GetTokenText(err).c_str());
+            GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
             data.SendFeedback(ProgressType::Error, 1, msg);
          }
 

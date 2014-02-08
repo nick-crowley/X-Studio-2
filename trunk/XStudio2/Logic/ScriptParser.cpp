@@ -49,7 +49,7 @@ namespace Logic
          /// <returns></returns>
          ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
          {
-            return ErrorToken(msg, LineNumber, lex.count()?lex.begin()->Start:0, CurrentLine->length());
+            return ErrorToken(msg, LineNumber, lex.Input.substr(lex.Extent.cpMin, lex.Extent.cpMax-lex.Extent.cpMin), lex.Extent);
          }
 
          /// <summary>Generate an error for a single token</summary>
@@ -58,7 +58,7 @@ namespace Logic
          /// <returns></returns>
          ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
          {
-            return ErrorToken(msg, LineNumber, tok->Start, tok->End);
+            return ErrorToken(msg, LineNumber, *tok);
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
