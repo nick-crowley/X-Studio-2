@@ -7,9 +7,33 @@ namespace Logic
 {
    namespace IO
    {
-      
+      /// <summary>Base class for MSCI script reader</summary>
+      class SourceValueReader : public XmlReader
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         SourceValueReader(StreamPtr in);
+         virtual ~SourceValueReader();
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         XmlNodePtr     GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         int            ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         int            ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         wstring        ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         ParameterValue ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help);
+
+      protected:
+         void  LoadDocument() override;
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         XmlNodePtr  CodeArray;
+      };
+
+
       /// <summary>Reader for MSCI scripts</summary>
-      class ScriptFileReader : protected XmlReader
+      class ScriptFileReader : protected SourceValueReader
       {
       protected:
          /// <summary>Base class for MSCI script command readers</summary>
@@ -20,7 +44,6 @@ namespace Logic
             ScriptCommandReader(ScriptFileReader& r, ScriptFile& s, XmlNodePtr& cmd) : Reader(r), Script(s), Command(cmd), NodeIndex(0) {}
          
             // ----------------------- MUTATORS ------------------------
-
          public:
             virtual ScriptCommand  ReadCommand() PURE;
 
@@ -119,22 +142,14 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
 		   // ----------------------- MUTATORS ------------------------
-
       public:
-         ScriptFile     ReadFile(Path path, bool justProperties);
+         ScriptFile  ReadFile(Path path, bool justProperties);
 
       protected:
-         XmlNodePtr     GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
-         ReaderPtr      GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
-
-         int            ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help);
-         ScriptFile     ReadExternalScript(const wstring& name);
-         int            ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help);
-         wstring        ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help);
-         ParameterValue ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help);
-
-         void  ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch);
-         void  ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
+         ReaderPtr   GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
+         void        ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch);
+         ScriptFile  ReadExternalScript(const wstring& name);
+         void        ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
 
 		   // -------------------- REPRESENTATION ---------------------
       protected:

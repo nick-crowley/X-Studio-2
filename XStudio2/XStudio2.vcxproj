@@ -245,6 +245,7 @@
     <ClCompile Include="Logic\ScriptFileWriter.cpp" />
     <ClCompile Include="Logic\ScriptObject.cpp" />
     <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
+    <ClCompile Include="Logic\SourceValueReader.cpp" />
     <ClCompile Include="Logic\StringParser.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="Logic\TShipReader.cpp" />
