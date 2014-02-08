@@ -9,9 +9,9 @@ namespace Logic
    {
       
       /// <summary>Reader for MSCI scripts</summary>
-      class ScriptFileReader : private XmlReader
+      class ScriptFileReader : protected XmlReader
       {
-      private:
+      protected:
          /// <summary>Base class for MSCI script command readers</summary>
          class ScriptCommandReader
          {
@@ -45,7 +45,6 @@ namespace Logic
             int                   NodeIndex;
          };
 
-
          /// <summary>Reads typical auxiliary commands</summary>
          class AuxiliaryCommandReader : public ScriptCommandReader
          {
@@ -57,7 +56,6 @@ namespace Logic
 
             ScriptCommand  ReadCommand();
          };
-
 
          /// <summary>Reads command comments</summary>
          class CommentedCommandReader : public ScriptCommandReader
@@ -71,7 +69,6 @@ namespace Logic
             ScriptCommand  ReadCommand();
          };
 
-
          /// <summary>Reads variable argument script calls</summary>
          class ScriptCallCommandReader : public ScriptCommandReader
          {
@@ -83,7 +80,6 @@ namespace Logic
 
             ScriptCommand  ReadCommand();
          };
-
 
          /// <summary>Reads expression commands</summary>
          class ExpressionCommandReader : public ScriptCommandReader
@@ -97,7 +93,6 @@ namespace Logic
             ScriptCommand  ReadCommand();
          };
 
-
          /// <summary>Reads typical standard commands</summary>
          class StandardCommandReader : public ScriptCommandReader
          {
@@ -110,9 +105,7 @@ namespace Logic
             ScriptCommand  ReadCommand();
          };
 
-
-
-      private:
+      protected:
          /// <summary>Unique command reader pointer</summary>
          typedef unique_ptr<ScriptCommandReader>  ReaderPtr;
 
@@ -133,7 +126,7 @@ namespace Logic
       public:
          ScriptFile     ReadFile(Path path, bool justProperties);
 
-      private:
+      protected:
          ReaderPtr      GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
 
          int            ReadArray(XmlNodePtr& node, const WCHAR* help);
@@ -147,7 +140,7 @@ namespace Logic
          void  ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
 
 		   // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
          Path  Folder;
       };
 
