@@ -155,10 +155,16 @@ namespace Testing
          {
             UINT line = 1;
             for (auto c1 = in.begin(), c2 = out.begin(); c1 != in.end(); ++c1, ++c2)
+            {
+               // Skip comparison of comments
+               /*if (!c1->empty() && !c2->empty() && c1->front() == '*' && c2->front() == '*')
+                  continue;*/
+               // Compare command text
                if (*c1 != *c2)
                   throw TextMismatch(HERE, GuiString(L"(line %d) command text", line), *c1, *c2);
             
-            ++line;
+               ++line;
+            }
          }
 
          return true;
