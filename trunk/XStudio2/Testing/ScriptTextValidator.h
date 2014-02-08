@@ -32,7 +32,22 @@ namespace Testing
       {
          // ------------------------ TYPES --------------------------
       private:
-         
+         class ScriptXmlValidator : SourceValueReader
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            ScriptXmlValidator(StreamPtr in) : SourceValueReader(in)
+            {
+               // Parse document
+               LoadDocument();
+            }
+
+            // --------------------- PROPERTIES ------------------------
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+         };
 
          // --------------------- CONSTRUCTION ----------------------
 
