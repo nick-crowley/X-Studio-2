@@ -198,7 +198,7 @@ namespace Testing
 
                      // Read values
                      int in_val  = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str()),
-                         out_val = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str());
+                         out_val = In.ReadInt(out_cmd, nodeIndex, (paramId+L" Value").c_str());
                      
                      // Print Variable names
                      switch (p.Type)

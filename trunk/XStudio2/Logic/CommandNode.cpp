@@ -477,7 +477,11 @@ namespace Logic
          {
             if (!IsRoot())
             {
-               // Linked to break/continue: re-link to JMP
+               // JMP: Set address
+               if (Is(CMD_HIDDEN_JUMP))
+                  Parameters[0].Value = JumpTarget->Index;
+
+               // Linked to break/continue: Link to associated JMP (1st child)
                if (JumpTarget && (JumpTarget->Is(CMD_BREAK) || JumpTarget->Is(CMD_CONTINUE)))
                   JumpTarget = JumpTarget->Children[0].get();
 
@@ -504,7 +508,14 @@ namespace Logic
 
                   // Compile parameters
                   for (auto& p : Parameters)
+                  {
+                     // Goto/Gosub: Change label number dataType from DT_STRING (ie. label name) into DT_INTEGER. 
+                     if (p.Syntax.Type == ParameterType::LABEL_NUMBER)
+                        p.Type = DataType::INTEGER;   // parameter ctor resolves 'label' token type to DT_STRING
+
+                     // Compile
                      p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP);
+                  }
 
                   // Generate & insert command
                   if (!Syntax.Is(CMD_EXPRESSION))
