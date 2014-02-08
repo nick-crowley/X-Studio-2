@@ -22,8 +22,8 @@ namespace Logic
       {   
          ASSIGNMENT    = 0x00,      // Assign result to a variable
          DISCARD       = 0x80,      // Discard result
-         JUMP_IF_TRUE  = 0xA0,      // Jump to <destination> if result is TRUE
-         JUMP_IF_FALSE = 0xE0       // Jump to <destination> if result is FALSE
+         JUMP_IF_TRUE  = 0xE0,      // Jump to <destination> if result is TRUE
+         JUMP_IF_FALSE = 0xA0       // Jump to <destination> if result is FALSE
       };   
           
       /// <summary>Identifies the branching statements used in the script language. The first 8 IDs are actually encoded in 

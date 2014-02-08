@@ -30,7 +30,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"%s code mismatch:\n  original='%s'\n  copy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"%s code mismatch:\n  original='%s'\n  copy='%s'\n", prop.c_str(), a.c_str(), b.c_str()) );
       }
 
       /// <summary>Create text mismatch exception</summary>
@@ -41,8 +41,8 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const ParameterValue& a, const ParameterValue& b)
       {
-         GuiString v1 = (a.Type == ValueType::String ? a.String : GuiString(L"0x%X  (%d)", a.Int, a.Int));
-         GuiString v2 = (b.Type == ValueType::String ? b.String : GuiString(L"0x%X  (%d)", b.Int, b.Int));
+         GuiString v1 = (a.Type == ValueType::String ? a.String : GuiString(L"0x%08X  (%d)", a.Int, a.Int));
+         GuiString v2 = (b.Type == ValueType::String ? b.String : GuiString(L"0x%08X  (%d)", b.Int, b.Int));
 
          return CodeMismatch(src, prop, v1, v2);
       }
@@ -55,8 +55,8 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, int a, int b)
       {
-         auto v1 = GuiString(L"0x%X  (%d)", a, a);
-         auto v2 = GuiString(L"0x%X  (%d)", b, b);
+         auto v1 = GuiString(L"0x%08X  (%d)", a, a);
+         auto v2 = GuiString(L"0x%08X  (%d)", b, b);
 
          return CodeMismatch(src, prop, v1, v2);
       }
@@ -74,55 +74,10 @@ namespace Testing
          Compare(In.CodeArray, Out.CodeArray, 4, L"script live data flag");
          Compare(In.CodeArray, Out.CodeArray, 9, L"script command ID");
 
-         // Verify branch sizes
-         CompareSize(In.CodeArray, Out.CodeArray, 5, L"variables branch size");
-         CompareSize(In.CodeArray, Out.CodeArray, 7, L"arguments branch size");
-         CompareSize(In.CodeArray, Out.CodeArray, 6, L"std commands branch size");
-         CompareSize(In.CodeArray, Out.CodeArray, 8, L"aux commands branch size");
-
-         // Variables
-         auto in_vars = In.GetChild(In.CodeArray, 5, L"variables branch");
-         auto out_vars = Out.GetChild(Out.CodeArray, 5, L"variables branch");
-
-         for (int i = 0; i < in_vars->childNodes->length; i++)
-            Compare(in_vars, out_vars, i, L"variable declaration");
-
-         // Arguments
-         auto in_args = In.GetChild(In.CodeArray, 7, L"arguments branch");
-         auto out_args = Out.GetChild(Out.CodeArray, 7, L"arguments branch");
-
-         for (int i = 0; i < in_args->childNodes->length; i++)
-         {
-            // Property count
-            CompareSize(in_args, out_args, i, L"argument sub-branch size");
-            
-            // Get sub-branch
-            auto in_arg = In.GetChild(in_args, i, L"argument sub-branch");
-            auto out_arg = Out.GetChild(out_args, i, L"argument sub-branch");
-            
-            // argument type/description
-            Compare(in_arg, out_arg, 0, L"argument type");
-            Compare(in_arg, out_arg, 1, L"argument description");
-         }
-
-         // Std Commands
-         auto in_cmds = In.GetChild(In.CodeArray, 6, L"std commands branch");
-         auto out_cmds = Out.GetChild(Out.CodeArray, 6, L"std commands branch");
-
-         for (int i = 0; i < in_cmds->childNodes->length; i++)
-         {
-            // Node count
-            CompareSize(in_cmds, out_cmds, i, L"std command sub-branch size");
-            
-            // Get sub-branch
-            auto in_cmd = In.GetChild(in_cmds, i, L"std command sub-branch");
-            auto out_cmd = Out.GetChild(out_cmds, i, L"std command sub-branch");
-            
-            // Nodes
-            for (int i = 0; i < in_cmd->childNodes->length; i++)
-               Compare(in_cmd, out_cmd, i, L"std command component node");
-         }
-
+         // Data + Code
+         CompareVariables();
+         CompareArguments();
+         CompareCommands();
          return true;
       }
 
@@ -131,11 +86,11 @@ namespace Testing
       // ------------------------------- PRIVATE METHODS ------------------------------
       
       /// <summary>Compare type and value of two nodes</summary>
-      bool  ScriptCodeValidator::Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, const wchar* help)
+      bool  ScriptCodeValidator::Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help)
       {
          // Read nodes
-         auto v1 = In.ReadValue(parent_in, index, help);
-         auto v2 = Out.ReadValue(parent_out, index, help);
+         auto v1 = In.ReadValue(parent_in, index, help.c_str());
+         auto v2 = Out.ReadValue(parent_out, index, help.c_str());
 
          // Compare content
          if (v1 != v2)
@@ -144,18 +99,85 @@ namespace Testing
          return true;
       }
 
+      /// <summary>Compare argument branches</summary>
+      void  ScriptCodeValidator::CompareArguments()
+      {
+         // Branch size
+         CompareSize(In.CodeArray, Out.CodeArray, 7, L"arguments branch size");
+
+         // Arguments
+         auto in_args = In.GetChild(In.CodeArray, 7, L"arguments branch");
+         auto out_args = Out.GetChild(Out.CodeArray, 7, L"arguments branch");
+
+         for (int i = 0; i < in_args->childNodes->length; i++)
+         {
+            // Property count
+            CompareSize(in_args, out_args, i, GuiString(L"argument %d sub-branch size", i+1));
+            
+            // Get sub-branch
+            auto in_arg = In.GetChild(in_args, i, GuiString(L"argument %d sub-branch", i+1).c_str());
+            auto out_arg = Out.GetChild(out_args, i, GuiString(L"argument %d sub-branch", i+1).c_str());
+            
+            // argument type/description
+            Compare(in_arg, out_arg, 0, GuiString(L"argument %d type", i+1));
+            Compare(in_arg, out_arg, 1, GuiString(L"argument %d description", i+1));
+         }
+      }
+
+      /// <summary>Compare standard command branches</summary>
+      void  ScriptCodeValidator::CompareCommands()
+      {
+         // Verify branch sizes
+         CompareSize(In.CodeArray, Out.CodeArray, 6, L"std commands branch size");
+         CompareSize(In.CodeArray, Out.CodeArray, 8, L"aux commands branch size");
+
+         // Std Commands
+         auto in_cmds = In.GetChild(In.CodeArray, 6, L"std commands branch");
+         auto out_cmds = Out.GetChild(Out.CodeArray, 6, L"std commands branch");
+
+         for (int i = 0; i < in_cmds->childNodes->length; i++)
+         {
+            // Node count
+            CompareSize(in_cmds, out_cmds, i, GuiString(L"std command %d sub-branch size", i+1));
+            
+            // Get sub-branch
+            auto in_cmd = In.GetChild(in_cmds, i, GuiString(L"std command %d sub-branch", i+1).c_str());
+            auto out_cmd = Out.GetChild(out_cmds, i, GuiString(L"std command %d sub-branch", i+1).c_str());
+            
+            // Nodes
+            for (int n = 0; n < in_cmd->childNodes->length; n++)
+               Compare(in_cmd, out_cmd, n, GuiString(L"std command %d, node %d", i+1, n+1));
+         }
+      }
+
+
       /// <summary>Compare size of two array nodes</summary>
-      bool  ScriptCodeValidator::CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, const wchar* help)
+      bool  ScriptCodeValidator::CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help)
       {
          // Read sizes
-         auto v1 = In.ReadArray(parent_in, index, help);
-         auto v2 = Out.ReadArray(parent_out, index, help);
+         auto v1 = In.ReadArray(parent_in, index, help.c_str());
+         auto v2 = Out.ReadArray(parent_out, index, help.c_str());
 
          // Compare size
          if (v1 != v2)
             throw CodeMismatch(HERE, help, v1, v2);
 
          return true;
+      }
+
+      
+      /// <summary>Compare variables branches</summary>
+      void  ScriptCodeValidator::CompareVariables()
+      {
+         // Verify branch size
+         CompareSize(In.CodeArray, Out.CodeArray, 5, L"variables branch size");
+
+         // Variables
+         auto in_vars = In.GetChild(In.CodeArray, 5, L"variables branch");
+         auto out_vars = Out.GetChild(Out.CodeArray, 5, L"variables branch");
+
+         for (int i = 0; i < in_vars->childNodes->length; i++)
+            Compare(in_vars, out_vars, i, GuiString(L"variable %d of %d", i+1, in_vars->childNodes->length));
       }
 
    }
