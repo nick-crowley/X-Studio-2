@@ -199,7 +199,7 @@ namespace Logic
       /// <returns></returns>
       wstring  ScriptFileReader::ScriptCommandReader::ReadStringNode(const wchar* help)
       { 
-         return Reader.ReadString(ReadNode(), help);   
+         return Reader.ReadString(Command, NodeIndex++, help);   
       }
 
       /// <summary>Reads the next node as an int.</summary>
@@ -207,7 +207,7 @@ namespace Logic
       /// <returns></returns>
       int  ScriptFileReader::ScriptCommandReader::ReadIntNode(const wchar* help)
       { 
-         return Reader.ReadInt(ReadNode(), help);
+         return Reader.ReadInt(Command, NodeIndex++, help);
       }
 
       /// <summary>Reads the next node as an int/string.</summary>
@@ -215,7 +215,7 @@ namespace Logic
       /// <returns></returns>
       ParameterValue  ScriptFileReader::ScriptCommandReader::ReadValueNode(const wchar* help)
       { 
-         return Reader.ReadValue(ReadNode(), help);
+         return Reader.ReadValue(Command, NodeIndex++, help);
       }
 
       /// <summary>Reads the next node as a datatype.</summary>
@@ -228,11 +228,5 @@ namespace Logic
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
       
-      /// <summary>Get the next node.</summary>
-      /// <returns></returns>
-      XmlNodePtr  ScriptFileReader::ScriptCommandReader::ReadNode()
-      { 
-         return Command->childNodes->item[NodeIndex++]; 
-      }
    }
 }

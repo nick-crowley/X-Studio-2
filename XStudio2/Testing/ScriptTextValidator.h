@@ -32,53 +32,53 @@ namespace Testing
       {
          // ------------------------ TYPES --------------------------
       private:
-         class ScriptXmlValidator : ScriptFileReader
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-            ScriptXmlValidator(StreamPtr in) : ScriptFileReader(in)
-            {
-               // Parse document
-               LoadDocument();
+         //class ScriptXmlValidator : ScriptFileReader
+         //{
+         //   // --------------------- CONSTRUCTION ----------------------
+         //public:
+         //   ScriptXmlValidator(StreamPtr in) : ScriptFileReader(in)
+         //   {
+         //      // Parse document
+         //      LoadDocument();
 
-               // Get codearray node
-               CodeArray = Document->documentElement->selectSingleNode(L"codearray");
-               if (CodeArray == nullptr)
-                  throw FileFormatException(HERE, L"Missing codearray node");
+         //      // Get codearray node
+         //      CodeArray = Document->documentElement->selectSingleNode(L"codearray");
+         //      if (CodeArray == nullptr)
+         //         throw FileFormatException(HERE, L"Missing codearray node");
 
-               // Get codearray data array
-               else if (ReadArray(CodeArray = CodeArray->childNodes->item[0], L"codearray branch") != 10)
-                  throw FileFormatException(HERE, L"Invalid codearray node");
-            }
+         //      // Get codearray data array
+         //      else if (ReadArray(CodeArray = CodeArray->childNodes->item[0], L"codearray branch") != 10)
+         //         throw FileFormatException(HERE, L"Invalid codearray node");
+         //   }
 
-            // --------------------- PROPERTIES ------------------------
+         //   // --------------------- PROPERTIES ------------------------
 
-            // ---------------------- ACCESSORS ------------------------			
+         //   // ---------------------- ACCESSORS ------------------------			
 
-            // ----------------------- MUTATORS ------------------------
-         public:
-            int  ReadArray(XmlNodePtr& node, const WCHAR* help)
-            {
-               return ScriptFileReader::ReadArray(node, help);
-            }
+         //   // ----------------------- MUTATORS ------------------------
+         //public:
+         //   int  ReadArray(XmlNodePtr& node, const WCHAR* help)
+         //   {
+         //      return ScriptFileReader::ReadArray(node, help);
+         //   }
 
-            int  ReadInt(XmlNodePtr& node, const WCHAR* help)
-            {
-               return ScriptFileReader::ReadInt(node, help);
-            }
+         //   int  ReadInt(XmlNodePtr& node, const WCHAR* help)
+         //   {
+         //      return ScriptFileReader::ReadInt(node, help);
+         //   }
 
-            wstring  ReadString(XmlNodePtr& node, const WCHAR* help)
-            {
-               return ScriptFileReader::ReadString(node, help);
-            }
+         //   wstring  ReadString(XmlNodePtr& node, const WCHAR* help)
+         //   {
+         //      return ScriptFileReader::ReadString(node, help);
+         //   }
 
-            ParameterValue  ReadValue(XmlNodePtr& node, const WCHAR* help)
-            {
-               return ScriptFileReader::ReadValue(node, help);
-            }
+         //   ParameterValue  ReadValue(XmlNodePtr& node, const WCHAR* help)
+         //   {
+         //      return ScriptFileReader::ReadValue(node, help);
+         //   }
 
-            XmlNodePtr CodeArray;
-         };
+         //   XmlNodePtr CodeArray;
+         //};
 
          // --------------------- CONSTRUCTION ----------------------
 
