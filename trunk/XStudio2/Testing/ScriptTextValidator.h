@@ -61,6 +61,8 @@ namespace Testing
          bool       Compare(UINT line, UINT param, const ScriptParameter& in, const ScriptParameter& out);
 
          LineArray  GetAllLines(const CommandList& commands);
+         ScriptFile ParseScript(Path truePath, Path displayPath);
+         ScriptFile ReadScript(Path truePath, Path displayPath);
 
          // -------------------- REPRESENTATION ---------------------
 
