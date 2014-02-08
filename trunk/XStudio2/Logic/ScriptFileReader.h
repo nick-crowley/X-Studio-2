@@ -30,19 +30,16 @@ namespace Logic
             ParameterValue  ReadValueNode(const wchar* help);
             DataType        ReadTypeNode(const wchar* help);
 
-            ScriptParameter ReadParameter(ParameterSyntax s, const wchar* help) ;
-
-         private:
-            XmlNodePtr      ReadNode();
+            ScriptParameter ReadParameter(ParameterSyntax s, const wchar* help);
 
             // -------------------- REPRESENTATION ---------------------
          protected:
-            ScriptFileReader&     Reader;
-            ScriptFile&           Script;
-            XmlNodePtr&           Command;
+            ScriptFileReader&  Reader;
+            ScriptFile&        Script;
+            XmlNodePtr&        Command;
 
          private:
-            int                   NodeIndex;
+            int   NodeIndex;
          };
 
          /// <summary>Reads typical auxiliary commands</summary>
@@ -127,14 +124,14 @@ namespace Logic
          ScriptFile     ReadFile(Path path, bool justProperties);
 
       protected:
+         XmlNodePtr     GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
          ReaderPtr      GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
 
-         int            ReadArray(XmlNodePtr& node, const WCHAR* help);
-         GameVersion    ReadEngineVersion(XmlNodePtr& node);
+         int            ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help);
          ScriptFile     ReadExternalScript(const wstring& name);
-         int            ReadInt(XmlNodePtr& node, const WCHAR* help);
-         wstring        ReadString(XmlNodePtr& node, const WCHAR* help);
-         ParameterValue ReadValue(XmlNodePtr& node, const WCHAR* help);
+         int            ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         wstring        ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         ParameterValue ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help);
 
          void  ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch);
          void  ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);

@@ -55,26 +55,29 @@ namespace Logic
             if (codeArray == nullptr)
                throw FileFormatException(HERE, L"Missing codearray node");
 
-            // Get codearray data array
-            else if (ReadArray(codeArray = codeArray->childNodes->item[0], L"codearray branch") != 10)
+            // Verify size
+            else if (ReadArray(codeArray, 0, L"codearray branch") != 10)
                throw FileFormatException(HERE, L"Invalid codearray node");
             
+            // Get codearray data array
+            codeArray = GetChild(codeArray, 0, L"codearray Branch");
+
             // Read properties
-            file.Name        = ReadString(codeArray->childNodes->item[0], L"script name");
-            file.Game        = ReadEngineVersion(codeArray->childNodes->item[1]);
-            file.Description = ReadString(codeArray->childNodes->item[2], L"script description");
-            file.Version     = (UINT)ReadInt(codeArray->childNodes->item[3], L"script version");
-            file.LiveData    = (UINT)ReadInt(codeArray->childNodes->item[4], L"script live data flag") != 0;
+            file.Name        = ReadString(codeArray, 0, L"script name");
+            file.Game        = GameVersion::TerranConflict; //EngineVersionConverter::ToGame(ReadInt(codeArray, 1, L"script engine version"));
+            file.Description = ReadString(codeArray, 2, L"script description");
+            file.Version     = (UINT)ReadInt(codeArray, 3, L"script version");
+            file.LiveData    = (UINT)ReadInt(codeArray, 4, L"script live data flag") != 0;
 
             // Arguments/Variables
-            ReadVariables(file, codeArray->childNodes->item[5], codeArray->childNodes->item[7]);
+            ReadVariables(file, GetChild(codeArray, 5, L"variables branch"), GetChild(codeArray, 7, L"codearray arguments branch")); 
 
             // Commands
             if (!justProperties)
-               ReadCommands(file, codeArray->childNodes->item[6], codeArray->childNodes->item[8]);
+               ReadCommands(file, GetChild(codeArray, 6, L"standard commands branch"), GetChild(codeArray, 8, L"auxiliary commands branch"));
 
             // Command ID
-            file.CommandID = ReadValue(codeArray->childNodes->item[9], L"script command ID");
+            file.CommandID = ReadValue(codeArray, 9, L"script command ID");
 
             // Return file
             return file;
@@ -87,6 +90,26 @@ namespace Logic
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
+      
+      /// <summary>Retrieves the child of a node</summary>
+      /// <param name="parent">The node</param>
+      /// <param name="index">Zero-based index</param>
+      /// <param name="help">Meaning of node</param>
+      /// <returns>Child node</returns>
+      /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid index</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      XmlNodePtr  ScriptFileReader::GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      {
+         REQUIRED(parent);
+
+         // Verify index
+         if (index >= (UINT)parent->childNodes->length)
+            throw FileFormatException(HERE, GuiString(L"Cannot read %s from node %d of %d", help, index+1, parent->childNodes->length));
+
+         // Retrieve child
+         return parent->childNodes->item[index];
+      }
 
       /// <summary>Gets an appropriate reader for a given command</summary>
       /// <param name="script">The script.</param>
@@ -99,10 +122,10 @@ namespace Logic
       ScriptFileReader::ReaderPtr  ScriptFileReader::GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch)
       {
          // Verify node is an array
-         int size = ReadArray(cmdBranch, L"script command branch");
+         //int size = ReadArray(cmdBranch, L"script command branch");
 
          // Examine command ID (from first/second node)
-         int id = ReadInt(cmdBranch->childNodes->item[type == CommandType::Standard ? 0 : 1], L"script command ID");
+         int id = ReadInt(cmdBranch, (type == CommandType::Standard ? 0 : 1), L"script command ID");
 
          // Create appropriate reader
          switch (id)
@@ -123,15 +146,20 @@ namespace Logic
          }
       }
 
-      /// <summary>Reads the array size from an sval node</summary>
-      /// <param name="node">The node</param>
+      /// <summary>Reads the array size from an sval child node</summary>
+      /// <param name="parent">Parent node</param>
+      /// <param name="index">Zero-based child node index</param>
+      /// <param name="help">Meaning of array</param>
       /// <returns>Size of the array</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not an array sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      int  ScriptFileReader::ReadArray(XmlNodePtr& node, const WCHAR* help)
+      int  ScriptFileReader::ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
          int size;
+
+         // Verify child
+         auto node = GetChild(parent, index, help);
 
          // Ensure node is script value
          ReadElement(node, L"sval");
@@ -171,11 +199,11 @@ namespace Logic
 
          // Read standard commands
          for (int i = 0; i < stdBranch->childNodes->length; i++)
-            std.push_back( GetCommandReader(script, CommandType::Standard, stdBranch->childNodes->item[i])->ReadCommand() );
+            std.push_back( GetCommandReader(script, CommandType::Standard, GetChild(stdBranch, i, L"standard command"))->ReadCommand() );
 
          // Read auxiliary commands
          for (int i = 0; i < auxBranch->childNodes->length; i++)
-            aux.push_back( GetCommandReader(script, CommandType::Auxiliary, auxBranch->childNodes->item[i])->ReadCommand() );
+            aux.push_back( GetCommandReader(script, CommandType::Auxiliary, GetChild(auxBranch, i, L"auxiliary command"))->ReadCommand() );
 
          // Interlace in correct order
          for (UINT i = 0; i < std.size(); i++)
@@ -252,28 +280,19 @@ namespace Logic
       }
 
 
-      /// <summary>Reads the engine version</summary>
-      /// <param name="node">The sval node.</param>
-      /// <returns>Equivilent game version</returns>
-      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
-      /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
-      /// <exception cref="Logic::ComException">COM Error</exception>
-      GameVersion ScriptFileReader::ReadEngineVersion(XmlNodePtr& node)
-      {
-         int val = ReadInt(node, L"script engine version");
-
-         // TODO: Parse engine version
-         return GameVersion::TerranConflict;
-      }
-      
-      /// <summary>Reads an integer value from a sval node</summary>
-      /// <param name="node">The sval node</param>
+      /// <summary>Reads the integer value from an sval child node</summary>
+      /// <param name="parent">Parent node</param>
+      /// <param name="index">Zero-based child node index</param>
+      /// <param name="help">Meaning of value</param>
       /// <returns>Integer value</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not an integer sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      int  ScriptFileReader::ReadInt(XmlNodePtr& node, const WCHAR* help)
+      int  ScriptFileReader::ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
+         // Get/Verify child
+         auto node = GetChild(parent, index, help);
+
          // Ensure node is script value
          ReadElement(node, L"sval");
 
@@ -285,14 +304,19 @@ namespace Logic
          return _wtoi(ReadAttribute(node, L"val").c_str());
       }
       
-      /// <summary>Reads the string value from a sval node</summary>
-      /// <param name="node">The node.</param>
+      /// <summary>Reads the string value from an sval child node</summary>
+      /// <param name="parent">Parent node</param>
+      /// <param name="index">Zero-based child node index</param>
+      /// <param name="help">Meaning of value</param>
       /// <returns>String value</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not a string sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      wstring  ScriptFileReader::ReadString(XmlNodePtr& node, const WCHAR* help)
+      wstring  ScriptFileReader::ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
+         // Get/Verify child
+         auto node = GetChild(parent, index, help);
+
          // Ensure node is script value
          ReadElement(node, L"sval");
 
@@ -304,14 +328,19 @@ namespace Logic
          return ReadAttribute(node, L"val");
       }
 
-      /// <summary>Reads string or int value from a script value node</summary>
-      /// <param name="node">The node.</param>
+      /// <summary>Reads string or integer value from an sval child node</summary>
+      /// <param name="parent">Parent node</param>
+      /// <param name="index">Zero-based child node index</param>
+      /// <param name="help">Meaning of value</param>
       /// <returns>String/Int value</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not a string/integer sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      ParameterValue  ScriptFileReader::ReadValue(XmlNodePtr& node, const WCHAR* help)
+      ParameterValue  ScriptFileReader::ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
+         // Get/Verify child
+         auto node = GetChild(parent, index, help);
+
          // Ensure node is script value
          ReadElement(node, L"sval");
          wstring type = ReadAttribute(node, L"type");
@@ -342,19 +371,21 @@ namespace Logic
          // Read ScriptVariables from {name,id} pair
          for (int i = 0; i < varBranch->childNodes->length; i++)
          {
-            name = ReadString(varBranch->childNodes->item[i], L"script variable name");
+            name = ReadString(varBranch, i, L"script variable name");
             script.Variables.Add(name);
          }
          
          // Upgrade first N variables into arguments 
          for (int i = 0; i < argBranch->childNodes->length; i++)
          {
-            XmlNodePtr arg(argBranch->childNodes->item[i]);
-
+            // Lookup branch & variable
             ScriptVariable& var = script.Variables[i];
-            var.Type        = VariableType::Argument;
-            var.ValueType   = (ParameterType)ReadInt(arg->childNodes->item[0], L"script argument type");
-            var.Description = ReadString(arg->childNodes->item[1], L"script argument description");
+            XmlNodePtr arg = GetChild(argBranch, i, L"script argument branch");
+
+            // Read extra properties
+            var.Type = VariableType::Argument;
+            var.ValueType = (ParameterType)ReadInt(arg, 0, L"script argument type");
+            var.Description = ReadString(arg, 1, L"script argument description");
          }
 
       }
