@@ -119,11 +119,11 @@ namespace Testing
             CompileScript(copy, tmp);
             
             // Compare files
-            Console << Cons::Bold << "Performing textual comparison..." << ENDL;
+            Console << Cons::Bold << "Comparing translated command text..." << ENDL;
             Compare(orig_txt, copy_txt);
 
             // Compare files
-            Console << Cons::Bold << "Performing compiler intermediate code comparison..." << ENDL;
+            Console << Cons::Bold << "Comparing intermediate code..." << ENDL;
             Compare(orig, copy);
 
             // Success!

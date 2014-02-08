@@ -51,7 +51,7 @@ namespace Logic
             LoadDocument();
 
             // Get codearray node
-            XML::IXMLDOMNodePtr codeArray(Document->documentElement->selectSingleNode(L"codearray"));
+            XmlNodePtr codeArray(Document->documentElement->selectSingleNode(L"codearray"));
             if (codeArray == nullptr)
                throw FileFormatException(HERE, L"Missing codearray node");
 
