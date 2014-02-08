@@ -139,113 +139,113 @@ namespace Testing
          for (int i = 0; i < in_cmds->childNodes->length; i++)
          {
             auto line = GuiString(L"(std %d) : ", i+1);
+            bool errors = false;
 
-            try
-            {
-               // Get command branch
-               auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
-               auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
+            // Get command branch
+            auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
+            auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
 
-               // Get command ID
-               Compare(in_cmd, out_cmd, 0, line + L"command ID");
-               CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), GameVersion::TerranConflict);
+            // Get command ID
+            Compare(in_cmd, out_cmd, 0, line + L"command ID");
+            CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), GameVersion::TerranConflict);
 
-               // Improve location description
-               line = GuiString(L"(std %d) '%s' : ", i+1, syntax.Text.c_str());
+            // Improve location description
+            line = GuiString(L"(std %d) '%s' : ", i+1, syntax.Text.c_str());
 
-               // Node count
-               CompareSize(in_cmds, out_cmds, i, line+L"node count");
+            // Node count
+            CompareSize(in_cmds, out_cmds, i, line+L"node count");
             
-               // parameters
-               UINT nodeIndex = 1, paramIndex = 1;
-               for (ParameterSyntax p : syntax.Parameters)
+            // parameters
+            UINT nodeIndex = 1, paramIndex = 1;
+            for (ParameterSyntax p : syntax.Parameters)
+            {
+               GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax.Parameters.size()) + GetString(p.Type));
+               DataType  dt = DataType::UNKNOWN;
+
+               try
                {
-                  GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax.Parameters.size()) + GetString(p.Type));
-                  DataType  dt = DataType::UNKNOWN;
-
-                  try
+                  switch (p.Type)
                   {
-                     switch (p.Type)
-                     {
-                     // Single node
-                     case ParameterType::COMMENT:        
-                     case ParameterType::SCRIPT_NAME:    
-                     case ParameterType::LABEL_NAME:     
-                     case ParameterType::LABEL_NUMBER: 
-                     case ParameterType::VARIABLE:          // Old 'var' parameter
-                     case ParameterType::RETURN_VALUE:      
-                     case ParameterType::RETURN_VALUE_IF:
-                     case ParameterType::RETURN_VALUE_IF_START:
-                     case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
-                        Compare(in_cmd, out_cmd, nodeIndex, paramId);
-                        break;
+                  // Single node
+                  case ParameterType::COMMENT:        
+                  case ParameterType::SCRIPT_NAME:    
+                  case ParameterType::LABEL_NAME:     
+                  case ParameterType::LABEL_NUMBER: 
+                  case ParameterType::VARIABLE:          // Old 'var' parameter
+                  case ParameterType::RETURN_VALUE:      
+                  case ParameterType::RETURN_VALUE_IF:
+                  case ParameterType::RETURN_VALUE_IF_START:
+                  case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
+                     Compare(in_cmd, out_cmd, nodeIndex, paramId);
+                     break;
                         
-                     // Parameter as {Type,Value} pair
-                     default:
-                        dt = (DataType)In.ReadInt(in_cmd, nodeIndex, (paramId+L" DataType").c_str());
+                  // Parameter as {Type,Value} pair
+                  default:
+                     dt = (DataType)In.ReadInt(in_cmd, nodeIndex, (paramId+L" DataType").c_str());
 
-                        Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (type)");
-                        Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (value)");
+                     Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (type)");
+                     Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (value)");
                         
-                        ++nodeIndex;
-                        break;
-                     }
+                     ++nodeIndex;
+                     break;
                   }
-                  // Comparison failed: Print details of value
-                  catch (ValidationException& e) 
-                  {
-                     Console.Log(HERE, e);
-
-                     // Read values
-                     int in_val  = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str()),
-                         out_val = In.ReadInt(out_cmd, nodeIndex, (paramId+L" Value").c_str());
-                     
-                     // Print Variable names
-                     switch (p.Type)
-                     {
-                     case ParameterType::COMMENT:        
-                     case ParameterType::SCRIPT_NAME:    
-                     case ParameterType::LABEL_NAME:     
-                     case ParameterType::LABEL_NUMBER: 
-                        break;
-
-                     // Var/RetVar
-                     case ParameterType::VARIABLE:          // Old 'var' parameter
-                     case ParameterType::RETURN_VALUE:      
-                     case ParameterType::RETURN_VALUE_IF:
-                     case ParameterType::RETURN_VALUE_IF_START:
-                     case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
-                        // Return Value: Print components
-                        if (in_val < 0 || out_val < 0)  
-                        {
-                           Console << L"  Original RetVal: " << ReturnValue(in_val) << ENDL;
-                           Console << L"  Copy RetVal: " << ReturnValue(out_val) << ENDL;
-                           break;
-                        }
-                        else // RetVar: Print names
-                           dt = DataType::VARIABLE;
-                           // Fall thru...
-
-                     // Parameter as {Type,Value} pair
-                     default:
-                        // Variable: Print names
-                        if (dt == DataType::VARIABLE && in_val >= 0 && out_val >= 0)
-                        {
-                           Console << L"  Original var: " << InVars[in_val] << ENDL;
-                           Console << L"  Copy var: " << OutVars[out_val] << ENDL;
-                        }
-
-                        ++nodeIndex;  // Re-align node index
-                        break;
-                     }
-                  }
-
-                  ++nodeIndex;
                }
+               // Comparison failed: Print details of value
+               catch (ValidationException& e) 
+               {
+                  Console.Log(HERE, e);
+                  errors = true;
+
+                  // Read values
+                  int in_val  = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str()),
+                      out_val = In.ReadInt(out_cmd, nodeIndex, (paramId+L" Value").c_str());
+                     
+                  // Print Variable names
+                  switch (p.Type)
+                  {
+                  case ParameterType::COMMENT:        
+                  case ParameterType::SCRIPT_NAME:    
+                  case ParameterType::LABEL_NAME:     
+                  case ParameterType::LABEL_NUMBER: 
+                     break;
+
+                  // Var/RetVar
+                  case ParameterType::VARIABLE:          // Old 'var' parameter
+                  case ParameterType::RETURN_VALUE:      
+                  case ParameterType::RETURN_VALUE_IF:
+                  case ParameterType::RETURN_VALUE_IF_START:
+                  case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
+                     // Return Value: Print components
+                     if (in_val < 0 || out_val < 0)  
+                     {
+                        Console << L"  Original RetVal: " << ReturnValue(in_val) << ENDL;
+                        Console << L"  Copy RetVal: " << ReturnValue(out_val) << ENDL;
+                        break;
+                     }
+                     else // RetVar: Print names
+                        dt = DataType::VARIABLE;
+                        // Fall thru...
+
+                  // Parameter as {Type,Value} pair
+                  default:
+                     // Variable: Print names
+                     if (dt == DataType::VARIABLE && in_val >= 0 && out_val >= 0)
+                     {
+                        Console << L"  Original var: " << InVars[in_val] << ENDL;
+                        Console << L"  Copy var: " << OutVars[out_val] << ENDL;
+                     }
+
+                     ++nodeIndex;  // Re-align node index
+                     break;
+                  }
+               }
+
+               ++nodeIndex;
             }
-            catch (ValidationException& e) {
-               Console.Log(HERE, e);
-            }
+
+            // Errors: Abort after printing all invalid parameters
+            if (errors)
+               throw GenericException(HERE, L"Stopping validation due to errors");
          }
       }
 
