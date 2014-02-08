@@ -131,6 +131,8 @@ namespace Logic
             const wstring    Text;
          };
 
+         /// <summary>Write script token to the console</summary>
+         ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptToken& tok);
 
          /// <summary>Vector of script tokens</summary>
          class TokenArray : public vector<ScriptToken>

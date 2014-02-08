@@ -98,6 +98,9 @@ namespace Logic
          const ParameterUsage Usage;
       };
 
+      /// <summary>Write parameter syntax to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps);
+
       /// <summary>Vector of parameter syntax</summary>
       typedef vector<ParameterSyntax>  ParamSyntaxArray;
       

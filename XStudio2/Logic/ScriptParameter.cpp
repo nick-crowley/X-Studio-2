@@ -110,6 +110,19 @@ namespace Logic
          }
       }
 
+      /// <summary>Write parameter value to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val)
+      {
+         auto szValue = (val.Type == ValueType::String ? val.String : GuiString(L"%d", val.Int));
+         return c << "{ParameterValue: Type=" << GetString(val.Type) << " Value=" << szValue << "}";
+      }
+
+      /// <summary>Write script parameter to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p)
+      {
+         return c << "{ScriptParameter: Text=" << p.Text << " Value=" << p.Value << " Token=" << p.Token << " Syntax=" << p.Syntax << "}";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Generates value from text</summary>

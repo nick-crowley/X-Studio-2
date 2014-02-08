@@ -85,6 +85,8 @@ namespace Logic
          int       Int;
       };
 
+      /// <summary>Write parameter value to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val);
 
       /// <summary>Represents a script command parameter</summary>
       class ScriptParameter
@@ -128,6 +130,8 @@ namespace Logic
          ScriptToken     Token;
       };
 
+      /// <summary>Write script parameter to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p);
 
       /// <summary>Vector of script parameters</summary>
       class ParameterArray : public vector<ScriptParameter> 

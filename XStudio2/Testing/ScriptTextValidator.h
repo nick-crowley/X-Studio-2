@@ -2,6 +2,14 @@
 #include "../Logic/Common.h"
 #include "../Logic/ScriptParser.h"
 
+//namespace Logic
+//{
+//   namespace Scripts
+//   {
+//      class ScriptVariable;
+//   }
+//}
+
 namespace Testing
 {
    namespace Scripts
