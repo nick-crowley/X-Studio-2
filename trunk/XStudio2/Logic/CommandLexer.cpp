@@ -171,6 +171,8 @@ namespace Logic
                case L']':
                // (Mine)
                case L'%':
+               // (Invalid syntax)
+               case L'}':
                   return true;
 
                // and/or/mod
@@ -376,6 +378,8 @@ namespace Logic
             case L':':
             case L'[':
             case L']':
+            // Invalid placement
+            case L'}':
                ReadChar();
                return MakeToken(start, TokenType::UnaryOp);
 

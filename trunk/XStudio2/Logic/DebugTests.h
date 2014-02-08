@@ -29,6 +29,7 @@ namespace Logic
       static void  Test_ExpressionParser();
       static void  Test_FileSystem();
       static void  Test_GZip();
+      static void  Test_Lexer();
       static void  Test_Iterator();
       static void  Text_RegEx();
       static void  Test_StringLibrary();
