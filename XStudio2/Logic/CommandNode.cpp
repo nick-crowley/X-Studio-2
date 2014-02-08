@@ -133,17 +133,16 @@ namespace Logic
             return true;
          };
 
-         /// <summary>Finds next conditional following if/else-if, otherwise next standard command</summary>
+         /// <summary>Finds next conditional or command following failed if/else-if</summary>
          CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
             {
-            case BranchLogic::None:    // Standard cmd
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-               return true;
+            case BranchLogic::NOP:
+            case BranchLogic::End:
+               return false;
             }
-            return false;
+            return true;
          };
 
          // ------------------------------- PUBLIC METHODS -------------------------------
