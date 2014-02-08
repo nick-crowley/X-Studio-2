@@ -42,7 +42,8 @@ namespace Logic
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      Test_BatchScriptCompile();
+      //Test_BatchScriptCompile();
+      Test_Lexer();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -233,6 +234,34 @@ namespace Logic
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(err);
          return;
+      }
+   }
+
+   void  DebugTests::Test_Lexer()
+   {
+      try
+      {
+         const wchar* expressions[] = 
+         { 
+            L"{Game Object}",          // Game object
+            L"{Game {Invalid}}"        // Illegal brackets within game object
+         }; 
+         
+         Console << Cons::Heading << "Performing lexer test..." << ENDL;
+
+         // Parse
+         for (int i = 0; i < sizeof(expressions)/sizeof(wchar*); ++i)
+         {
+            Console << ENDL << "Lexing " << Colour::Yellow << expressions[i] << ENDL;
+            CommandLexer lex(expressions[i]);
+
+            for (auto tok : lex.Tokens)
+               Console << tok << ENDL;
+         }
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e);
       }
    }
    
