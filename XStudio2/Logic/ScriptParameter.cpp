@@ -145,7 +145,7 @@ namespace Logic
       /// <summary>Write return value to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val)
       {
-         return c << L"{ReturnValue: ReturnType=" << GetString(val.ReturnType) << " Conditional=" << GetString(val.Conditional) << " Destination=" << val.Destination << "}";
+         return c << L"{ReturnValue: ReturnType=" << GetString(val.ReturnType) << " Conditional='" << GetString(val.Conditional) << "' Destination=" << val.Destination << "}";
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -186,9 +186,13 @@ namespace Logic
             }
             break;
 
-         // String: Goto/Gosub/Label/Comment/String
+         // String: Label/Comment/String
          case DataType::STRING:
-            // Goto/Gosub use 'LABEL_NUMBER' syntax, but have a DT_STRING data-type due to TokenType::Label resolving to DT_STRING
+            break;
+
+         // Integer: Number or LabelNumber
+         case DataType::INTEGER:
+            // Goto/Gosub: Set jump address
             if (Syntax.Type == ParameterType::LABEL_NUMBER)
             {
                if (jumpDestination == EMPTY_JUMP)
@@ -197,11 +201,8 @@ namespace Logic
                // Set label number
                Value = jumpDestination;
             }
-            break;
-
-         // Integer: Number
-         case DataType::INTEGER:
-            Value = _wtoi(Value.String.c_str());
+            else
+               Value = _wtoi(Value.String.c_str());
             break;
 
          // Null: Zero

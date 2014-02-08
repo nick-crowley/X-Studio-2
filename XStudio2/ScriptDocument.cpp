@@ -143,7 +143,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             parser.Compile();
 
          // ERRORS: Print tree
-         if (!parser.Errors.empty())
+         //DEBUG: if (!parser.Errors.empty())
             parser.Print();
          
          // ERRORS: Feedback messages in output window
