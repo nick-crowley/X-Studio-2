@@ -78,7 +78,7 @@ namespace Logic
          /// <returns></returns>
          UINT  GetEncodedValue() const
          {
-            return MAKELONG(Type, SubType);
+            return MAKELONG(SubType, Type);
          }
 
          /// <summary>Appends an object id to name</summary>

@@ -240,7 +240,7 @@ namespace Logic
          case DataType::WARE:
             // Encode ware placeholders '{SSTYPE_SHIP@232}' manually
             if (GameObjectLib.ParsePlaceholder(Value.String, ware))
-               Value = MAKELONG(ware.Type, ware.SubType);
+               Value = MAKELONG(ware.SubType, ware.Type);
             else
                Value = GameObjectLib.Find(Value.String).EncodedValue;
             break;

@@ -42,8 +42,8 @@ namespace Logic
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      //Test_BatchScriptCompile();
-      Test_Lexer();
+      Test_BatchScriptCompile();
+      //Test_Lexer();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
