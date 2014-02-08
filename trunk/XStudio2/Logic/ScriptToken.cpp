@@ -27,6 +27,12 @@ namespace Logic
             return str[(UINT)t];
          }
 
+         /// <summary>Write script token to the console</summary>
+         ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptToken& tok)
+         {
+            return c << "{ScriptToken: Type=" << GetString(tok.Type) << " Text=" << tok.Text << " Start=" << tok.Start << "}";
+         }
+
          // ------------------------------- PUBLIC METHODS -------------------------------
 
          // ------------------------------ PROTECTED METHODS -----------------------------

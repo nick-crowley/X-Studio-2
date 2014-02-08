@@ -20,6 +20,20 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get variable type string</summary>
+      GuiString  GetString(VariableType t)
+      {
+         return t == VariableType::Variable ? L"Variable"
+              : t == VariableType::Argument ? L"Argument" 
+                                            : L"Invalid";
+      }
+
+      /// <summary>Write script variable to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v)
+      {
+         return c << "{ScriptVariable: Name=" << v.Name << " ID=" << v.ID << " ValueType=" << GetString(v.ValueType) << " Type=" << GetString(v.Type) << "}";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Clears commands, labels and non-argument variables</summary>

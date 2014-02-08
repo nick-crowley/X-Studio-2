@@ -60,6 +60,12 @@ namespace Logic
          return ScriptObjectLib.TryFind(ScriptObjectGroup::ParameterType, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
       }
 
+      /// <summary>Write parameter syntax to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps)
+      {
+         return c << "{ParameterSyntax: Type=" << GetString(ps.Type) << "}";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Verifies a data-type against the syntax.</summary>

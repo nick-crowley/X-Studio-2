@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "ScriptTextValidator.h"
+#include "../Logic/ScriptFile.h"
 #include "../Logic/FileStream.h"
 #include "../Logic/XFileInfo.h"
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
+#include "ScriptTextValidator.h"
 
 namespace Testing
 {
@@ -140,16 +141,28 @@ namespace Testing
       /// <param name="out">compiled copy</param>
       bool  ScriptTextValidator::Compare(const ScriptVariable& in, const ScriptVariable& out)
       {
-         if (in.Name != out.Name)
-            throw TextMismatch(HERE, GuiString(L"name of variable %d", in.ID), in.Name, out.Name);
-         if (in.ID != out.ID)
-            throw TextMismatch(HERE, GuiString(L"ID of variable '%s'", in.Name.c_str()), GuiString(L"%d", in.ID), GuiString(L"%d", out.ID));
-         if (in.Description != out.Description)
-            throw TextMismatch(HERE, GuiString(L"Description of variable '%s'", in.Name.c_str()), in.Description, out.Description);
-         if (in.Type != out.Type)
-            throw TextMismatch(HERE, GuiString(L"Internal type of variable '%s'", in.Name.c_str()), GuiString(L"%d", in.Type), GuiString(L"%d", out.Type));
-         if (in.ValueType != out.ValueType)
-            throw TextMismatch(HERE, GuiString(L"Value type of variable '%s'", in.Name.c_str()), GetString(in.ValueType), GetString(out.ValueType));
+         try
+         {
+            if (in.Name != out.Name)
+               throw TextMismatch(HERE, GuiString(L"Arg/Var Name (id=%d)", in.ID), in.Name, out.Name);
+            if (in.ID != out.ID)
+               throw TextMismatch(HERE, GuiString(L"Arg/Var ID '%s'", in.Name.c_str()), GuiString(L"%d", in.ID), GuiString(L"%d", out.ID));
+            if (in.Type != out.Type)
+               throw TextMismatch(HERE, GuiString(L"Arg/Var type flag of '%s'", in.Name.c_str()), GetString(in.Type), GetString(out.Type));
+
+            if (in.Description != out.Description)
+               throw TextMismatch(HERE, GuiString(L"Argument description '%s'", in.Name.c_str()), in.Description, out.Description);
+            if (in.ValueType != out.ValueType)
+               throw TextMismatch(HERE, GuiString(L"Argument Type '%s'", in.Name.c_str()), GetString(in.ValueType), GetString(out.ValueType));
+         }
+         catch (ExceptionBase&)
+         {
+            Console << "Var1: " << in << ENDL;
+            Console << "Var2: " << out << ENDL;
+            throw;
+         }
+
+         return true;
       }
 
       /// <summary>Perform textual comparison of two script commands</summary>
@@ -179,6 +192,7 @@ namespace Testing
             }
          }
          
+         return true;
       }
 
       /// <summary>Perform textual comparison of two script parameters</summary>
@@ -188,24 +202,34 @@ namespace Testing
       /// <param name="out">compiled copy</param>
       bool  ScriptTextValidator::Compare(UINT line, UINT param, const ScriptParameter& in, const ScriptParameter& out)
       {
-         // Type
-         if (in.Syntax.Type != out.Syntax.Type)
-            throw TextMismatch(HERE, GuiString(L"(line %d, param %d) syntax", line, param), GetString(in.Syntax.Type), GetString(out.Syntax.Type));
+         try
+         {
+            // Type
+            if (in.Syntax.Type != out.Syntax.Type)
+               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) syntax", line, param), GetString(in.Syntax.Type), GetString(out.Syntax.Type));
 
-         // Text
-         if (in.Text != out.Text)
-            throw TextMismatch(HERE, GuiString(L"(line %d, param %d) text", line, param), in.Text, out.Text);
+            // Text
+            if (in.Text != out.Text)
+               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) text", line, param), in.Text, out.Text);
 
-         // Value
-         if (in.Value.Type != out.Value.Type)
-            throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value type", line, param), GetString(in.Value.Type), GetString(out.Value.Type));
+            // Value
+            if (in.Value.Type != out.Value.Type)
+               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value type", line, param), GetString(in.Value.Type), GetString(out.Value.Type));
 
-         else if (in.Value.Type == ValueType::Int && in.Value.Int != out.Value.Int)
-            throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), GuiString(L"%d", in.Value.Int), GuiString(L"%d", out.Value.Int));
+            else if (in.Value.Type == ValueType::Int && in.Value.Int != out.Value.Int)
+               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), GuiString(L"%d", in.Value.Int), GuiString(L"%d", out.Value.Int));
 
-         else if (in.Value.Type == ValueType::String && in.Value.String != out.Value.String)
-            throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), in.Value.String, out.Value.String);
+            else if (in.Value.Type == ValueType::String && in.Value.String != out.Value.String)
+               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), in.Value.String, out.Value.String);
+         }
+         catch (ExceptionBase&)
+         {
+            Console << "Param1: " << in << ENDL;
+            Console << "Param2: " << out << ENDL;
+            throw;
+         }
 
+         return true;
       }
 
       /// <summary>Gets translated command text as line array</summary>
