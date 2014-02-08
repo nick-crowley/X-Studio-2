@@ -65,6 +65,25 @@ namespace Logic
             : v == ValueType::String ? L"String" : L"Invalid";
       }
 
+      /// <summary>Get return type string</summary>
+      GuiString  GetString(ReturnType t)
+      {
+         switch (t)
+         {
+         case ReturnType::ASSIGNMENT:     return L"ASSIGNMENT";
+         case ReturnType::DISCARD:        return L"DISCARD";
+         case ReturnType::JUMP_IF_TRUE:   return L"JUMP_IF_TRUE";
+         case ReturnType::JUMP_IF_FALSE:  return L"JUMP_IF_FALSE";
+         }
+         return L"Invalid";
+      }
+
+      /// <summary>Get conditional string</summary>
+      GuiString  GetString(Conditional c)
+      {
+         return StringLib.Find(KnownPage::CONDITIONALS, (UINT)c).Text;
+      }
+
       /// <summary>Identify data-type from a token type</summary>
       /// <param name="type">token type.</param>
       /// <returns></returns>
@@ -121,6 +140,12 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p)
       {
          return c << "{ScriptParameter: Text=" << p.Text << " Value=" << p.Value << " Token=" << p.Token << " Syntax=" << p.Syntax << "}";
+      }
+
+      /// <summary>Write return value to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val)
+      {
+         return c << L"{ReturnValue: ReturnType=" << GetString(val.ReturnType) << " Conditional=" << GetString(val.Conditional) << " Destination=" << val.Destination << "}";
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------

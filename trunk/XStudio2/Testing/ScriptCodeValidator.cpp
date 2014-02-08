@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptValidator.h"
+#include "../Logic/SyntaxLibrary.h"
 
 namespace Testing
 {
@@ -30,7 +31,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"%s code mismatch:\n  original='%s'\n  copy='%s'\n", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"code mismatch: %s\n  original='%s'\n  copy='%s'\n", prop.c_str(), a.c_str(), b.c_str()) );
       }
 
       /// <summary>Create text mismatch exception</summary>
@@ -129,7 +130,7 @@ namespace Testing
       {
          // Verify branch sizes
          CompareSize(In.CodeArray, Out.CodeArray, 6, L"std commands branch size");
-         CompareSize(In.CodeArray, Out.CodeArray, 8, L"aux commands branch size");
+         //CompareSize(In.CodeArray, Out.CodeArray, 8, L"aux commands branch size");
 
          // Std Commands
          auto in_cmds = In.GetChild(In.CodeArray, 6, L"std commands branch");
@@ -137,16 +138,114 @@ namespace Testing
 
          for (int i = 0; i < in_cmds->childNodes->length; i++)
          {
-            // Node count
-            CompareSize(in_cmds, out_cmds, i, GuiString(L"std command %d sub-branch size", i+1));
+            auto line = GuiString(L"(std %d) : ", i+1);
+
+            try
+            {
+               // Get command branch
+               auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
+               auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
+
+               // Get command ID
+               Compare(in_cmd, out_cmd, 0, line + L"command ID");
+               CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), GameVersion::TerranConflict);
+
+               // Improve location description
+               line = GuiString(L"(std %d) '%s' : ", i+1, syntax.Text.c_str());
+
+               // Node count
+               CompareSize(in_cmds, out_cmds, i, line+L"node count");
             
-            // Get sub-branch
-            auto in_cmd = In.GetChild(in_cmds, i, GuiString(L"std command %d sub-branch", i+1).c_str());
-            auto out_cmd = Out.GetChild(out_cmds, i, GuiString(L"std command %d sub-branch", i+1).c_str());
-            
-            // Nodes
-            for (int n = 0; n < in_cmd->childNodes->length; n++)
-               Compare(in_cmd, out_cmd, n, GuiString(L"std command %d, node %d", i+1, n+1));
+               // parameters
+               UINT nodeIndex = 1, paramIndex = 1;
+               for (ParameterSyntax p : syntax.Parameters)
+               {
+                  GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax.Parameters.size()) + GetString(p.Type));
+                  DataType  dt = DataType::UNKNOWN;
+
+                  try
+                  {
+                     switch (p.Type)
+                     {
+                     // Single node
+                     case ParameterType::COMMENT:        
+                     case ParameterType::SCRIPT_NAME:    
+                     case ParameterType::LABEL_NAME:     
+                     case ParameterType::LABEL_NUMBER: 
+                     case ParameterType::VARIABLE:          // Old 'var' parameter
+                     case ParameterType::RETURN_VALUE:      
+                     case ParameterType::RETURN_VALUE_IF:
+                     case ParameterType::RETURN_VALUE_IF_START:
+                     case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
+                        Compare(in_cmd, out_cmd, nodeIndex, paramId);
+                        break;
+                        
+                     // Parameter as {Type,Value} pair
+                     default:
+                        dt = (DataType)In.ReadInt(in_cmd, nodeIndex, (paramId+L" DataType").c_str());
+
+                        Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (type)");
+                        Compare(in_cmd, out_cmd, nodeIndex, line+paramId+GetString(p.Type)+L" (value)");
+                        
+                        ++nodeIndex;
+                        break;
+                     }
+                  }
+                  // Comparison failed: Print details of value
+                  catch (ValidationException& e) 
+                  {
+                     Console.Log(HERE, e);
+
+                     // Read values
+                     int in_val  = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str()),
+                         out_val = In.ReadInt(in_cmd, nodeIndex, (paramId+L" Value").c_str());
+                     
+                     // Print Variable names
+                     switch (p.Type)
+                     {
+                     case ParameterType::COMMENT:        
+                     case ParameterType::SCRIPT_NAME:    
+                     case ParameterType::LABEL_NAME:     
+                     case ParameterType::LABEL_NUMBER: 
+                        break;
+
+                     // Var/RetVar
+                     case ParameterType::VARIABLE:          // Old 'var' parameter
+                     case ParameterType::RETURN_VALUE:      
+                     case ParameterType::RETURN_VALUE_IF:
+                     case ParameterType::RETURN_VALUE_IF_START:
+                     case ParameterType::INTERRUPT_RETURN_VALUE_IF: 
+                        // Return Value: Print components
+                        if (in_val < 0 || out_val < 0)  
+                        {
+                           Console << L"  Original RetVal: " << ReturnValue(in_val) << ENDL;
+                           Console << L"  Copy RetVal: " << ReturnValue(out_val) << ENDL;
+                           break;
+                        }
+                        else // RetVar: Print names
+                           dt = DataType::VARIABLE;
+                           // Fall thru...
+
+                     // Parameter as {Type,Value} pair
+                     default:
+                        // Variable: Print names
+                        if (dt == DataType::VARIABLE && in_val >= 0 && out_val >= 0)
+                        {
+                           Console << L"  Original var: " << InVars[in_val] << ENDL;
+                           Console << L"  Copy var: " << OutVars[out_val] << ENDL;
+                        }
+
+                        ++nodeIndex;  // Re-align node index
+                        break;
+                     }
+                  }
+
+                  ++nodeIndex;
+               }
+            }
+            catch (ValidationException& e) {
+               Console.Log(HERE, e);
+            }
          }
       }
 
@@ -172,12 +271,20 @@ namespace Testing
          // Verify branch size
          CompareSize(In.CodeArray, Out.CodeArray, 5, L"variables branch size");
 
-         // Variables
+         // Get branches
          auto in_vars = In.GetChild(In.CodeArray, 5, L"variables branch");
          auto out_vars = Out.GetChild(Out.CodeArray, 5, L"variables branch");
 
+         // Compare names/order
          for (int i = 0; i < in_vars->childNodes->length; i++)
+         {
             Compare(in_vars, out_vars, i, GuiString(L"variable %d of %d", i+1, in_vars->childNodes->length));
+
+            // Store for name resolution
+            InVars.push_back( ScriptVariable(In.ReadString(in_vars, i, L"variable name"), i) );
+            OutVars.push_back( ScriptVariable(Out.ReadString(out_vars, i, L"variable name"), i) );
+         }
+         
       }
 
    }
