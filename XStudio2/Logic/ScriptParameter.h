@@ -29,10 +29,10 @@ namespace Logic
          ParameterValue() : Type(ValueType::Int), Int(0) 
          {}
          /// <summary>Create from integer value</summary>
-         ParameterValue(const wstring& sz) : Type(ValueType::String), Int(0), String(sz)
+         explicit ParameterValue(const wstring& sz) : Type(ValueType::String), Int(0), String(sz)
          {}
          /// <summary>Create from string value</summary>
-         ParameterValue(int val) : Type(ValueType::Int), Int(val)
+         explicit ParameterValue(int val) : Type(ValueType::Int), Int(val)
          {}
 
          // --------------------- PROPERTIES ------------------------

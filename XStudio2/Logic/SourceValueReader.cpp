@@ -147,11 +147,11 @@ namespace Logic
 
          // String: return as string
          if (type == L"string")
-            return ReadAttribute(node, L"val");
+            return ParameterValue( ReadAttribute(node, L"val") );
 
          // Int: return as int
          else if (type == L"int")
-            return _wtoi(ReadAttribute(node, L"val").c_str());
+            return ParameterValue( _wtoi(ReadAttribute(node, L"val").c_str()) );
 
          // Unknown type
          throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));

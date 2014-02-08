@@ -30,7 +30,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"%s code mismatch:\n  original='%s'\n  copy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
       }
 
       /// <summary>Create text mismatch exception</summary>
@@ -41,7 +41,10 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const ParameterValue& a, const ParameterValue& b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), a.ToString().c_str(), b.ToString().c_str()) );
+         GuiString v1 = (a.Type == ValueType::String ? a.String : GuiString(L"0x%X  (%d)", a.Int, a.Int));
+         GuiString v2 = (b.Type == ValueType::String ? b.String : GuiString(L"0x%X  (%d)", b.Int, b.Int));
+
+         return CodeMismatch(src, prop, v1, v2);
       }
       
       /// <summary>Create text mismatch exception</summary>
@@ -52,7 +55,10 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, int a, int b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), GuiString(L"%d",a).c_str(), GuiString(L"%d",b).c_str()) );
+         auto v1 = GuiString(L"0x%X  (%d)", a, a);
+         auto v2 = GuiString(L"0x%X  (%d)", b, b);
+
+         return CodeMismatch(src, prop, v1, v2);
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -62,7 +68,7 @@ namespace Testing
       {
          // Properties
          Compare(In.CodeArray, Out.CodeArray, 0, L"script name");
-         Compare(In.CodeArray, Out.CodeArray, 1, L"script engine version");
+         //Compare(In.CodeArray, Out.CodeArray, 1, L"script engine version");
          Compare(In.CodeArray, Out.CodeArray, 2, L"script description");
          Compare(In.CodeArray, Out.CodeArray, 3, L"script version");
          Compare(In.CodeArray, Out.CodeArray, 4, L"script live data flag");
