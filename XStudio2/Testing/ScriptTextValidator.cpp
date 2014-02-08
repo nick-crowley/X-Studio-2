@@ -157,8 +157,8 @@ namespace Testing
          }
          catch (ExceptionBase&)
          {
-            Console << "Var1: " << in << ENDL;
-            Console << "Var2: " << out << ENDL;
+            Console << "Orig: " << in << ENDL;
+            Console << "Copy: " << out << ENDL;
             throw;
          }
 
@@ -224,8 +224,8 @@ namespace Testing
          }
          catch (ExceptionBase&)
          {
-            Console << "Param1: " << in << ENDL;
-            Console << "Param2: " << out << ENDL;
+            Console << "Orig: " << in << ENDL;
+            Console << "Copy: " << out << ENDL;
             throw;
          }
 
