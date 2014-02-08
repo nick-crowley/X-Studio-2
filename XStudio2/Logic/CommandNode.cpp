@@ -178,8 +178,7 @@ namespace Logic
             GenerateCommands(script, errors);
 
             // Update state
-            if (errors.empty())
-               State = InputState::Compiled;
+            State = InputState::Compiled;
          }
          
          /// <summary>Query command syntax ID</summary>
@@ -342,8 +341,7 @@ namespace Logic
             }
 
             // Update state
-            if (errors.empty())
-               State = InputState::Verified;
+            State = InputState::Verified;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
@@ -405,7 +403,7 @@ namespace Logic
 
          /// <summary>Find label definition</summary>
          /// <param name="name">Label name</param>
-         /// <returns></returns>
+         /// <returns>Label definition command if found, otherwise nullptr</returns>
          CommandNode*  CommandNode::FindLabel(const wstring& name) const
          {
             // Check node
@@ -417,8 +415,8 @@ namespace Logic
                if (CommandNode* label = c->FindLabel(name))
                   return label;
 
-            // Should never reach here
-            throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", name.c_str()));
+            // Not in current branch
+            return nullptr;
          }
          
          /// <summary>Finds the next executable sibling</summary>
@@ -637,7 +635,12 @@ namespace Logic
                // JMP: LABEL
                case BranchLogic::None:
                   if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
+                  {
                      JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
+
+                     if (!JumpTarget)     // Previously identified, should always be found
+                        throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", Parameters[0].Value.String.c_str()));
+                  }
                   break;
                }
             }

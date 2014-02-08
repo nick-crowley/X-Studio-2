@@ -32,53 +32,73 @@ namespace Testing
       
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+      ScriptFile  ScriptTextValidator::ParseScript(Path truePath, Path displayPath)
+      {
+         // Read input file
+         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
+         ScriptFileReader r(XFileInfo(truePath).OpenRead());
+         auto s = r.ReadFile(displayPath, false);
+
+         // Parse command text
+         Console << "Parsing and compiling..." << ENDL;
+         auto ln = GetAllLines(s.Commands.Input);
+         ScriptParser parser(s, ln, s.Game);
+
+         // Compile
+         if (parser.Errors.empty())
+            parser.Compile();
+
+         // Check for syntax errors
+         if (!parser.Errors.empty())
+         {
+            // Print tree 
+            parser.Print();
+
+            // Print messages
+            for (auto& e : parser.Errors)
+               Console << "ERROR: " << e.Line << " : " << ln[e.Line-1] << " : " << e.Message << ENDL;
+
+            // Abort
+            throw ValidationException(HERE, GuiString(L"Unable to parse: %s", truePath.c_str()));
+         }
+
+         return s;
+      }
+
+      ScriptFile  ScriptTextValidator::ReadScript(Path truePath, Path displayPath)
+      {
+         // Read input file
+         ScriptFileReader r(XFileInfo(truePath).OpenRead());
+         return r.ReadFile(displayPath, false);
+      }
+
       /// <summary>Validates the input file</summary>
       bool  ScriptTextValidator::Validate()
       {
          try
          {
+            TempPath tmp;  
+
             Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
-            // Read input file
-            ScriptFileReader r(XFileInfo(FullPath).OpenRead());
-            auto input = r.ReadFile(FullPath, false);
+            // Compile input file
+            auto input = ParseScript(FullPath, FullPath);
 
-            // Parse command text
-            auto text = GetAllLines(input.Commands.Input);
-            ScriptParser parser(input, text, input.Game);
+            // Write output file
+            Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
+            ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
+            w.Write(input);
+            w.Close();
 
-            // Compile
-            if (!parser.Errors.empty())
-               parser.Compile();
-
-            // Check for syntax errors
-            if (!parser.Errors.empty())
+            // Compile output file
+            auto output = ParseScript(tmp, FullPath.Folder+tmp.FileName);  // Tweak display folder so script-call resolution succeeds
+            
+            // Compare files
+            Console << "Performing textual comparison..." << ENDL;
+            if (Compare(input, output))
             {
-               parser.Print();
-               for (auto& e : parser.Errors)
-                  Console << "ERROR: " << e.Line << " : " << text[e.Line-1] << " : " << e.Message << ENDL;
-            }
-            else
-            {
-               TempPath tmp;  
-               
-               // Write output file
-               Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
-               ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
-               w.Write(input);
-               w.Close();
-
-               // Read output file
-               ScriptFileReader r2(StreamPtr(new FileStream(tmp, FileMode::OpenExisting, FileAccess::Read)));
-               auto output = r2.ReadFile(FullPath.Folder+tmp.FileName, false);   // HACK: Pretend temp file is in original folder so script-calls are validated
-
-               // Compare
-               Console << "Performing textual comparison..." << ENDL;
-               if (Compare(input, output))
-               {
-                  Console << Colour::Green << "Validation Successful" << ENDL;
-                  return true;
-               }
+               Console << Colour::Green << "Validation Successful" << ENDL;
+               return true;
             }
          }
          catch (ExceptionBase& e)
