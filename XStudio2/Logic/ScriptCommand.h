@@ -60,7 +60,7 @@ namespace Logic
          CommandSyntaxRef Syntax;
          bool             Commented;
          ParameterArray   Parameters;
-         wstring          Text;
+         GuiString        Text;
          UINT             RefIndex;
       };
 

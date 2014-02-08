@@ -263,14 +263,17 @@ namespace Logic
          // Format command
          for (const ScriptToken& tok : lex.Tokens)
          {
-            if (tok.Type == TokenType::Variable || tok.Type == TokenType::Comment)
+            // Marker: Insert parameter text
+            if (tok.Type == TokenType::Variable || tok.Type == TokenType::Comment)  // Lexer identifies comment syntax as 'comment'
             {
                int i = (tok.Text[1]-48);
                Text.append( Parameters[i].Text );
             }
-            else
+            else // Text: Insert verbatim
                Text.append(tok.Text);
          }
+         // Trim leading spaces
+         Text = Text.TrimLeft(L" ");
 
          // Expressions: Print remaining syntax
          if (Is(CMD_EXPRESSION))
