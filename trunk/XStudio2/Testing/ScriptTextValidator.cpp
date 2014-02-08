@@ -25,22 +25,14 @@ namespace Testing
 
       // ------------------------------- STATIC METHODS -------------------------------
       
-      ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
+      /// <summary>Compiles a script</summary>
+      /// <param name="s">script</param>
+      /// <param name="truePath">true path.</param>
+      void  ScriptTextValidator::CompileScript(ScriptFile& s, Path truePath)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'   copy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
-      }
-      
-      // ------------------------------- PUBLIC METHODS -------------------------------
-
-      ScriptFile  ScriptTextValidator::ParseScript(Path truePath, Path displayPath)
-      {
-         // Read input file
-         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
-         ScriptFileReader r(XFileInfo(truePath).OpenRead());
-         auto s = r.ReadFile(displayPath, false);
+         Console << "Parsing and compiling..." << Colour::Yellow << truePath << ENDL;
 
          // Parse command text
-         Console << "Parsing and compiling..." << ENDL;
          auto ln = GetAllLines(s.Commands.Input);
          ScriptParser parser(s, ln, s.Game);
 
@@ -61,16 +53,45 @@ namespace Testing
             // Abort
             throw ValidationException(HERE, GuiString(L"Unable to parse: %s", truePath.c_str()));
          }
-
-         return s;
+      }
+      
+      /// <summary>Gets translated command text as line array</summary>
+      /// <param name="commands">command list</param>
+      /// <returns></returns>
+      LineArray  ScriptTextValidator::GetAllLines(const CommandList& commands)
+      {
+         LineArray lines;
+         transform(commands.begin(), commands.end(), back_inserter(lines), [](const ScriptCommand& cmd) {return cmd.Text;});
+         return lines;
       }
 
+
+      /// <summary>Reads and translates a script without parsing or compiling it</summary>
+      /// <param name="truePath">true path.</param>
+      /// <param name="displayPath">path containing folder to use to resolve script-calls</param>
+      /// <returns></returns>
       ScriptFile  ScriptTextValidator::ReadScript(Path truePath, Path displayPath)
       {
+         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
+
          // Read input file
          ScriptFileReader r(XFileInfo(truePath).OpenRead());
          return r.ReadFile(displayPath, false);
       }
+
+
+      /// <summary>Create text mismatch exception</summary>
+      /// <param name="src">throw source.</param>
+      /// <param name="prop">name of property that mismatches</param>
+      /// <param name="a">original</param>
+      /// <param name="b">copy</param>
+      /// <returns></returns>
+      ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
+      {
+         return ValidationException(src, GuiString(L"%s mismatch: original='%s'   copy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
+      }
+      
+      // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Validates the input file</summary>
       bool  ScriptTextValidator::Validate()
@@ -81,33 +102,40 @@ namespace Testing
 
             Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
-            // Compile input file
-            auto input = ParseScript(FullPath, FullPath);
+            // Read script. Extract text. Compile
+            auto orig = ReadScript(FullPath, FullPath);
+            auto orig_txt = GetAllLines(orig.Commands.Input);
+            CompileScript(orig, FullPath);
 
-            // Write output file
+            // Write copy
             Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
             ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
-            w.Write(input);
+            w.Write(orig);
             w.Close();
 
-            // Compile output file
-            auto output = ParseScript(tmp, FullPath.Folder+tmp.FileName);  // Tweak display folder so script-call resolution succeeds
+            // Read copy back in. Extract text. Compile
+            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName);  // Supply original folder to enable script-call resolution
+            auto copy_txt = GetAllLines(copy.Commands.Input);
+            CompileScript(copy, tmp);
             
             // Compare files
-            Console << "Performing textual comparison..." << ENDL;
-            if (Compare(input, output))
-            {
-               Console << Colour::Green << "Validation Successful" << ENDL;
-               return true;
-            }
+            Console << Cons::Bold << "Performing textual comparison..." << ENDL;
+            Compare(orig_txt, copy_txt);
+
+            // Compare files
+            Console << Cons::Bold << "Performing compiler intermediate code comparison..." << ENDL;
+            Compare(orig, copy);
+
+            // Success!
+            Console << Colour::Green << "Validation Successful" << ENDL;
+            return true;
          }
          catch (ExceptionBase& e)
          {
             Console.Log(HERE, e);
+            Console << Colour::Red << "Validation FAILED" << ENDL;
+            return false;
          }
-
-         Console << Colour::Red << "Validation FAILED" << ENDL;
-         return false;
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
@@ -115,6 +143,28 @@ namespace Testing
       // ------------------------------- PRIVATE METHODS ------------------------------
       
       /// <summary>Perform textual comparison of a script and it's validation copy</summary>
+      /// <param name="in">original script</param>
+      /// <param name="out">compiled copy</param>
+      bool  ScriptTextValidator::Compare(const LineArray& in, const LineArray& out)
+      {
+         // Variables/Arguments count
+         if (in.size() != out.size())
+            throw TextMismatch(HERE, L"command count", GuiString(L"%d", in.size()), GuiString(L"%d", out.size()));
+
+         else 
+         {
+            UINT line = 1;
+            for (auto c1 = in.begin(), c2 = out.begin(); c1 != in.end(); ++c1, ++c2)
+               if (*c1 != *c2)
+                  throw TextMismatch(HERE, GuiString(L"(line %d) command text", line), *c1, *c2);
+            
+            ++line;
+         }
+
+         return true;
+      }
+
+      /// <summary>Perform comparison of commands generated by compiler between script and it's validation copy</summary>
       /// <param name="in">original script</param>
       /// <param name="out">compiled copy</param>
       bool  ScriptTextValidator::Compare(const ScriptFile& in, const ScriptFile& out)
@@ -252,15 +302,6 @@ namespace Testing
          return true;
       }
 
-      /// <summary>Gets translated command text as line array</summary>
-      /// <param name="commands">command list</param>
-      /// <returns></returns>
-      LineArray  ScriptTextValidator::GetAllLines(const CommandList& commands)
-      {
-         LineArray lines;
-         transform(commands.begin(), commands.end(), back_inserter(lines), [](const ScriptCommand& cmd) {return cmd.Text;});
-         return lines;
-      }
    }
 }
 
