@@ -35,7 +35,7 @@ namespace Logic
          if (Syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
          {
             // Count
-            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, Parameters.size()-3);
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-3);
 
             // Arguments  (Syntax is 'ScriptCallArgument')
             for (UINT i = 3; i < params.size(); ++i)
