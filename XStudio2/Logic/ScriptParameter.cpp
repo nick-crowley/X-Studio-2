@@ -173,7 +173,7 @@ namespace Logic
             else if (Value.Type == ValueType::String)
                Value = ReturnValue(ReturnType::ASSIGNMENT, script.Variables[Value.String].ID).EncodedValue;
             else if (ReturnValue(Value.Int).Conditional == Conditional::DISCARD)
-               Value = ReturnValue(ReturnType::DISCARD, 0).EncodedValue;
+               Value = ReturnValue(Conditional::DISCARD, 0).EncodedValue;
             
             // Conditional: Encode conditional + jump destination
             else
