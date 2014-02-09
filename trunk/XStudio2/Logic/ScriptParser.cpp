@@ -558,8 +558,8 @@ namespace Logic
                   }
                }
 
-               // SCRIPT-CALL: read argument/value pairs  
-               if (syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
+               // VARG SCRIPT-CALL: read argument/value pairs  
+               if (syntax.IsVariableArgument())
                {
                   // Iterate thru triplets
                   for (TokenIterator arg = pos; arg < lex.end(); arg += 3)
