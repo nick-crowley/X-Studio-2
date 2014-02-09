@@ -21,7 +21,9 @@ namespace Logic
            Versions((UINT)GameVersion::Threat|(UINT)GameVersion::Reunion|(UINT)GameVersion::TerranConflict|(UINT)GameVersion::AlbionPrelude),
            Type(CommandType::Standard),
            Group(CommandGroup::HIDDEN),
-           Execution(ExecutionType::Serial)
+           Execution(ExecutionType::Serial),
+           VarArgCount(0),
+           VarArg(false)
       {
       }
 
@@ -33,9 +35,11 @@ namespace Logic
            Type(d.Type),
            Text(d.Syntax), 
            Group(d.Group),  
+           VarArg(d.VarArg),
            Versions(d.Versions), 
            Parameters(d.Params), 
            Execution(d.Execution),
+           VarArgCount(d.VarArgCount),
            Hash(GenerateHash(d.Syntax))
       {
       }
@@ -198,6 +202,12 @@ namespace Logic
       {
          return find_if(Parameters.begin(), Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} ) != Parameters.end();
       }      
+
+      /// <summary>Query whether command has variable arguments</summary>
+      bool  CommandSyntax::IsVariableArgument() const
+      {
+         return VarArg;
+      }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
