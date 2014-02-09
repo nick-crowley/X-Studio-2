@@ -13,7 +13,10 @@ namespace Logic
    {
       namespace Compiler
       {
-         
+#ifdef VALIDATION
+         /// <summary>End of script jump target</summary>
+         CommandNode  CommandNode::EndOfScript;
+#endif
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
@@ -176,6 +179,10 @@ namespace Logic
             UINT index = 0;
             IndexCommands(index);
 
+#ifdef VALIDATION
+            // Set address of EOF
+            EndOfScript.Index = index;
+#endif
             // Finalise linkage
             FinalizeLinkage(errors);
             
@@ -342,7 +349,8 @@ namespace Logic
             if (!any_of(Children.begin(), Children.end(), isStandardCommand))
                errors += MakeError(L"No executable commands found");
 
-            else // Verify all control paths lead to RETURN
+            // [VALID] Verify all control paths lead to RETURN
+            else if (errors.empty()) 
                VerifyTermination(errors);
             
             // Update state
@@ -398,13 +406,25 @@ namespace Logic
 
             return node;
          }
-
+         
          /// <summary>Finds the command to execute following a failed if/else-if statement</summary>
          /// <returns></returns>
          CommandNode* CommandNode::FindConditionalEnd() const
          {
+#ifndef VALIDATION
             // Find next Std command that isn't ELSE-IF
             return FindSibling(isConditionalEnd, L"conditional end-point");
+#else
+            // EOF: Return sentinel
+            if (IsRoot())
+               return &EndOfScript;
+
+            // Find next sibling node containing a standard command
+            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalEnd);
+
+            // Return if found, else recurse into parent
+            return node != Parent->Children.cend() ? node->get() : Parent->FindConditionalEnd();
+#endif
          }
 
          /// <summary>Find label definition</summary>
@@ -661,8 +681,10 @@ namespace Logic
                
                   // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
                   if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
+#ifndef VALIDATION
                      // Don't add JMP if last child is return
                      if (!HasExecutableChild() || !GetLastExecutableChild()->Is(CMD_RETURN))   
+#endif
                         // JMP -> end of conditional branch
                         InsertJump(Children.end(), FindConditionalEnd());
                   break;
@@ -875,6 +897,7 @@ namespace Logic
          
          /// <summary>Verifies that all control paths lead to termination.</summary>
          /// <param name="errors">error collection</param>
+         /// <remarks>This method is only executed when no syntax errors are present</remarks>
          void  CommandNode::VerifyTermination(ErrorArray& errors) const
          {
             // Check for presence of possible conditional or return cmd
@@ -882,23 +905,39 @@ namespace Logic
                errors += MakeError(L"Not all control paths return a value");
             else
             {
+               bool allPaths = false;
+
                // Find last child (exclude NOP/END)
                auto last = *find_if(Children.rbegin(), Children.rend(), isConditionalAlternate);
                switch (last->Logic)
                {
-               // If: Verify sub-branch leads to RETURN
+               // If: Verify branch and any alternates all lead to RETURN
                case BranchLogic::If:
                   last->VerifyTermination(errors);
+
+                  // Verify following Else/ElseIf
+                  for (auto n = last->FindNextSibling(); n != nullptr && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf); n = n->FindPrevSibling())
+                  {
+                     // Cannot guarantee termination without 'Else'
+                     if (n->Logic == BranchLogic::Else)
+                        allPaths = true;
+
+                     // Verify branch
+                     n->VerifyTermination(errors);
+                  }
+
+                  // Ensure 'Else' was present
+                  if (!allPaths)
+                     errors += last->MakeError(L"Not all control paths return a value");
                   break;
 
-               // ElseIf: Verify sub-branch (and preceeding conditionals, if any) leads to RETURN
+               // ElseIf: Find + Verify preceeding 'IF'
                case BranchLogic::Else:
                case BranchLogic::ElseIf:
-                  last->VerifyTermination(errors);
-
-                  // Verify preceeding If/Else/ElseIf
-                  for (auto n = last->FindPrevSibling(); n != nullptr && n->Logic == BranchLogic::If || n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf; n = n->FindPrevSibling())
-                     n->VerifyTermination(errors);
+                  // Simpler if we just verify the preceeding 'If'
+                  for (auto n = last->FindPrevSibling(); ;n = n->FindPrevSibling())
+                     if (n->Logic == BranchLogic::If)
+                        return n->VerifyTermination(errors);
                   break;
                   
                // Command: Verify RETURN
