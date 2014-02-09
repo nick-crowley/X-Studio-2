@@ -179,8 +179,8 @@ namespace Logic
             else if (cmd.Is(CMD_DEFINE_LABEL))
                script.Labels.Add(cmd.GetLabelName(), line);
 
-            // SCRIPT-CALL: Load script properties
-            else if (cmd.Is(CMD_CALL_SCRIPT_VAR_ARGS) && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
+            // VARG SCRIPT-CALL: Load script properties
+            else if (cmd.Syntax.IsVariableArgument() && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
             {
                try 
                {
@@ -213,8 +213,7 @@ namespace Logic
          Console << L"  Resolving script call: " << Colour::Yellow << name << Colour::White << L"..." << ENDL;
 
          // Read script
-         XFileInfo f(path);
-         return ScriptFileReader(f.OpenRead()).ReadFile(path, true);
+         return ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
       }
 
 

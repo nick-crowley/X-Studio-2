@@ -39,8 +39,8 @@ namespace Logic
          if (pos >= end)
             return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unrecognised;
 
-         // VARG SCRIPT-CALL: Terminate early to prevent analysing arguments
-         else if (HasSyntax() && Syntax->ID == CMD_CALL_SCRIPT_VAR_ARGS)
+         // Variable Arguments: Terminate early to prevent analysing arguments
+         else if (HasSyntax() && Syntax->IsVariableArgument())
             return *Syntax;
 
          // PARAM: Store token

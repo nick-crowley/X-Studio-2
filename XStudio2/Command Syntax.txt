@@ -535,14 +535,10 @@ FLOW_CONTROL
 X2,X3R,X3TC,X3AP
 159
 NONE
-$0 interrupt with script $1 and priority $2: arg1=$3o arg2=$4x arg3=$5y arg4=$6z
+$0 interrupt with script $1 and priority $2 :
 RefObj
 Script Name
 Var/Number
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 USER_INTERFACE
 X2,X3R,X3TC,X3AP
@@ -3388,30 +3384,21 @@ FLOW_CONTROL
 X2,X3R,X3TC,X3AP
 1016
 NONE
-$0 interrupt task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z
+$0 interrupt task $2 with script $1 and priority $3 :
 RefObj
 Script Name
 Var/Number
 Var/Number
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 FLOW_CONTROL
 X2,X3R,X3TC,X3AP
 1017
 NONE
-$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a
+$0 begin task $2 with script $1 and priority $3 :
 RefObj
 Script Name
 Var/Number
 Var/Number
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 STATION_TRADE
 X2,X3R,X3TC,X3AP
@@ -6233,30 +6220,20 @@ FLOW_CONTROL
 X3TC,X3AP
 1425
 NONE
-$1 $0 call named script: script=$2, $3, $4, $5, $6, $7
+$1 $0 call named script $2 :
 RefObj
 RetVar/IF
 Var/String
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 FLOW_CONTROL
 X3TC,X3AP
 1426
 NONE
-$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8
+$0 launch named script: task=$1 scriptname=$2 prio=$3 :
 RefObj
 Var/Number
 Var/String
 Var/Number
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 MARINE
 X3TC,X3AP

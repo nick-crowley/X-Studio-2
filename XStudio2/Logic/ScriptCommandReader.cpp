@@ -153,6 +153,10 @@ namespace Logic
          for (ParameterSyntax p : syntax.Parameters)
             params += ReadParameter(p, L"standard parameter");
 
+         // varg Arguments
+         for (int i = 0; i < syntax.VarArgCount; i++)
+            params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"standard varg argument");
+
          // Return command
          return ScriptCommand(syntax, params, false);
       }
