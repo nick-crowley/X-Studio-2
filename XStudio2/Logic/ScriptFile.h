@@ -498,7 +498,6 @@ namespace Logic
 		   // ---------------------- ACCESSORS ------------------------
 			
          wstring GetCommandName() const;
-         bool    HasCommandName() const;
 
 		   // ----------------------- MUTATORS ------------------------
 

@@ -93,10 +93,10 @@ namespace Logic
             WriteCommand(commands, c);
 
          // Command ID
-         if (sf.HasCommandName())
-            WriteString(codearray, sf.CommandName);
+         if (sf.CommandID.Type == ValueType::String)
+            WriteString(codearray, sf.CommandID.String);
          else
-            WriteInt(codearray, 0);
+            WriteInt(codearray, sf.CommandID.Int);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

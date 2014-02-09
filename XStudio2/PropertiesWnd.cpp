@@ -113,8 +113,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CPropertiesWnd::OnDisplayProperties(CWnd* pWnd, PropertyTarget type)
    {
       list<ScriptObject> command_names, param_types;
-      wstring cmd;
-
+      
       // Clear contents
       m_wndPropList.RemoveAll();
 
@@ -128,17 +127,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          else if (obj.Group == ScriptObjectGroup::ParameterType)
             param_types.push_back(obj);
 
-      // Get command Name
-      try
-      {
-         cmd = doc->Script.CommandName;
-      }
-      catch (ExceptionBase& e)
-      {
-         Console.Log(HERE, e);
-         cmd = GuiString(L"%d", doc->Script.CommandID.Int);
-      }
-
       // GENERAL
       CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
       general->AddSubItem(new CMFCPropertyGridProperty(L"Name", doc->Script.Name.c_str(), L"How script is referenced throughout the game"));
@@ -146,7 +134,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)doc->Script.Version, L"Current version number"));
 
       // Command ID
-      CMFCPropertyGridProperty* option = new CMFCPropertyGridProperty(L"Command", cmd.c_str(), L"ID of ship/station command implemented by the script");
+      CMFCPropertyGridProperty* option = new CMFCPropertyGridProperty(L"Command", doc->Script.CommandName.c_str(), L"ID of ship/station command implemented by the script");
       for (const ScriptObject& obj : command_names)
          option->AddOption(obj.Text.c_str(), FALSE);
       general->AddSubItem(option);
