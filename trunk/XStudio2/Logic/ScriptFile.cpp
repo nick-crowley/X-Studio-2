@@ -66,22 +66,17 @@ namespace Logic
 
       /// <summary>Gets the name of the object command.</summary>
       /// <returns>Name of command if any, otherwise empty string</returns>
-      /// <exception cref="Logic::ScriptObjectNotFoundException">Command matching ID is not present</exception>
       wstring  ScriptFile::GetCommandName() const
       {
-         if (CommandID.Type == ValueType::Int && CommandID.Int > 0)
-            return ScriptObjectLib.Find(ScriptObjectGroup::ObjectCommand, CommandID.Int).Text;
+         const ScriptObject* cmd;
 
-         else if (CommandID.Type == ValueType::String && CommandID.String.length() > 0)
-            return ScriptObjectLib.Find(CommandID.String).Text;
+         if (CommandID.Type == ValueType::String)
+            return CommandID.String;
 
-         return wstring();
-      }
-
-      /// <summary>Gets whether script implements an object command.</summary>
-      bool  ScriptFile::HasCommandName() const
-      {
-         return CommandID.Type != ValueType::Int || CommandID.Int > 0;
+         else if (CommandID.Int != 0 && ScriptObjectLib.TryFind(ScriptObjectGroup::ObjectCommand, CommandID.Int, cmd))
+            return cmd->Text;
+         
+         return L"";   
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
