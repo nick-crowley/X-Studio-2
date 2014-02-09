@@ -1,0 +1,2 @@
+1. ScriptEdit underlines verification errors and output window displays verification/compilation errors, meaning compiler
+   errors are never underlined.

@@ -7,6 +7,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XStudio2", "XStudio2\XStudi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C18D-400A-AEE7-55C4FD08B326}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\Task List.txt = Docs\Task List.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Problems", "Problems", "{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587}"
+	ProjectSection(SolutionItems) = preProject
 		Docs\!job.fight.attackallenemies.xml = Docs\!job.fight.attackallenemies.xml
 		Docs\!wing.cmd.attack.std.xml = Docs\!wing.cmd.attack.std.xml
 		Docs\Problem Scripts.txt = Docs\Problem Scripts.txt
@@ -26,6 +31,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
