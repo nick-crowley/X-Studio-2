@@ -100,6 +100,12 @@ namespace Logic
             return str[(UINT)s];
          }
 
+         /// <summary>Checks whether a command is executable from a logic perspective</summary>
+         CommandNode::NodeDelegate  CommandNode::isExecutableCommand = [](const CommandNodePtr& n) 
+         { 
+            return n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE); 
+         };
+
          /// <summary>Checks whether commands are standard</summary>
          CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
          { 
@@ -381,8 +387,9 @@ namespace Logic
                // No children: Use next std sibling of ELSE
                if (node->Children.empty())
                   node = node->FindNextCommand();
-               // 1st child is Auxiliary: Use it's next std sibling
-               else if (node->Children[0]->Is(CommandType::Auxiliary))
+               
+               // 1st child is not executable (Auxiliary): Use it's next std sibling
+               else if (!isExecutableCommand(node->Children[0])) 
                   node = node->Children[0]->FindNextCommand();
                else
                   // Default: Use first child
@@ -422,7 +429,7 @@ namespace Logic
          /// <returns></returns>
          CommandNode* CommandNode::FindNextCommand() const
          {
-            return FindSibling(isStandardCommand, L"next executable command");
+            return FindSibling(isExecutableCommand, L"next executable command");
          }
 
          /// <summary>Finds the next sibling of this node</summary>
