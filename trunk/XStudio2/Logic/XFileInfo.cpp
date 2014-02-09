@@ -2,6 +2,7 @@
 #include "XFileSystem.h"
 #include "GZipStream.h"
 #include "DataStream.h"
+#include "EncryptedStream.h"
 
 namespace Logic
 {
@@ -86,25 +87,39 @@ namespace Logic
       /// <returns></returns>
       StreamPtr  XFileInfo::OpenRead() const
       {
-         Stream*  s;
+         StreamPtr s;
 
          // PHYSICAL: Open file directly
          if (Source == FileSource::Physical)
          {
-            s = new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read);
+            // basic file stream
+            s = StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read));
 
-            // TODO: Examine first 3 bytes, wrap in encrypted stream
+            // Wrap in encrypted stream if necessary
+            if (s->GetLength() > 3)
+            {
+               WORD header;
+
+               // Read 2-byte header and reset position
+               s->Seek(1, SeekOrigin::Begin);
+               s->Read(reinterpret_cast<BYTE*>(&header), 2);
+               s->Seek(0, SeekOrigin::Begin);
+
+               // Check for encrypted GZip header 
+               if ((header ^ 0x7e7e) == 0x8b1f)
+                  s = StreamPtr(new EncryptedStream(s));
+            }
          }
          else
             // CATALOG: Read from .dat file
-            s = new DataStream(*this);
+            s = StreamPtr(new DataStream(*this));
 
          // PCK: Wrap in GZip decompression stream
          if (FullPath.HasExtension(L".pck"))
-            s = new GZipStream(StreamPtr(s), GZipStream::Operation::Decompression);
+            s = StreamPtr(new GZipStream(StreamPtr(s), GZipStream::Operation::Decompression));
 
          // Return stream
-         return StreamPtr(s);
+         return s;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
