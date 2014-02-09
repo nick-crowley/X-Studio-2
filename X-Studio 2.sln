@@ -5,6 +5,13 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XStudio2", "XStudio2\XStudio2.vcxproj", "{A45897BA-6214-4004-A6E5-005ED1B3BE8B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C18D-400A-AEE7-55C4FD08B326}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\!job.fight.attackallenemies.xml = Docs\!job.fight.attackallenemies.xml
+		Docs\!wing.cmd.attack.std.xml = Docs\!wing.cmd.attack.std.xml
+		Docs\Problem Scripts.txt = Docs\Problem Scripts.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

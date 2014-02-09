@@ -1,0 +1,185 @@
+<?xml version="1.0" standalone="yes" ?>
+<?xml-stylesheet href="x2script.xsl" type="text/xsl" ?>
+<script>
+<name>!job.fight.attackallenemies</name>
+<version>1</version>
+<engineversion>40</engineversion>
+<description>fly around and attack all enemies in range</description>
+<arguments>
+</arguments>
+<sourcetext>
+<line linenr="001" interruptable="@" indent=""><var>=&#160;</var><text>wait&#160;randomly&#160;from&#160;</text><var>500</var><text>&#160;to&#160;</text><var>3500</var><text>&#160;ms</text></line>
+<line linenr="002" indent=""><var>if&#160;not&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;get&#160;job&#160;leader</text></line>
+<line linenr="003" indent=""><comment><text>*&#160;</text><var>flatten&#160;gamestart&#160;performance&#160;hit</var></comment></line>
+<line linenr="004" indent="&#160;"><var>$homesector&#160;=&#160;</var><text>&#160;=&#160;random&#160;value&#160;from&#160;</text><var>5000</var><text>&#160;to&#160;</text><var>150000</var><text>&#160;-&#160;1</text></line>
+<line linenr="005" indent="&#160;"><var>if&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;is&#160;docked</text></line>
+<line linenr="006" interruptable="@" indent="&#160;&#160;"><var>=&#160;</var><text>wait&#160;</text><var>$homesector</var><text>&#160;ms</text></line>
+<line linenr="007" indent="&#160;"><var>else&#160;if&#160;not&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;is&#160;in&#160;active&#160;sector</text></line>
+<line linenr="008" interruptable="@" indent="&#160;&#160;"><var>=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;move&#160;around&#160;</text><var>$homesector</var><text>&#160;ms</text></line>
+<line linenr="009" indent="&#160;"><text>end</text></line>
+<line linenr="010" indent="&#160;"></line>
+<line linenr="011" indent="&#160;"><var>$homesector&#160;=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;get&#160;homesector</text></line>
+<line linenr="012" indent="&#160;"><var>skip&#160;if&#160;not&#160;</var><var>$homesector</var></line>
+<line linenr="013" interruptable="@" indent="&#160;&#160;"><var>=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;call&#160;script&#160;</text><call>!ship.cmd.movesector.std</call><text>&#160;:&#160;</text><text>&#160;target&#160;sector=</text><var>$homesector</var></line>
+<line linenr="014" interruptable="@" indent="&#160;"><var>=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;call&#160;script&#160;</text><call>!ship.cmd.killenemies.std</call><text>&#160;:&#160;</text></line>
+<line linenr="015" indent=""><text>else</text></line>
+<line linenr="016" indent="&#160;"><text>START&#160;</text><var>[THIS]&#160;-&gt;</var><text>&#160;delayed&#160;command&#160;</text><var>COMMAND_DESTROY_THIS</var><text>&#160;:&#160;arg1=</text><var>null</var><text>,&#160;arg2=</text><var>null</var><text>,&#160;arg3=</text><var>null</var><text>,&#160;arg4=</text><var>100</var></line>
+<line linenr="017" indent=""><text>end</text></line>
+<line linenr="018" indent=""><text>return&#160;</text><var>null</var></line>
+</sourcetext>
+<codearray>
+
+<sval type="array" size="10">
+  <sval type="string" val="!job.fight.attackallenemies"/>
+  <sval type="int" val="40"/>
+  <sval type="string" val="fly around and attack all enemies in range"/>
+  <sval type="int" val="1"/>
+  <sval type="int" val="0"/>
+  <sval type="array" size="1">
+    <sval type="string" val="homesector"/>
+  </sval>
+  <sval type="array" size="15">
+    <sval type="array" size="6">
+      <sval type="int" val="107"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="500"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="3500"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="1180"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-536867580"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="110"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="5000"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="150000"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="745"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-1610611197"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="105"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="112"/>
+      <sval type="int" val="8"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="761"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-536868858"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="507"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="1162"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="7">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-1610609912"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-1"/>
+    </sval>
+    <sval type="array" size="8">
+      <sval type="int" val="102"/>
+      <sval type="string" val="!ship.cmd.movesector.std"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="102"/>
+      <sval type="string" val="!ship.cmd.killenemies.std"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="112"/>
+      <sval type="int" val="14"/>
+    </sval>
+    <sval type="array" size="15">
+      <sval type="int" val="1185"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="18"/>
+      <sval type="int" val="34"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="100"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+  </sval>
+  <sval type="int" val="0"/>
+  <sval type="array" size="5">
+    <sval type="array" size="3">
+      <sval type="int" val="2"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="flatten gamestart performance hit"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="8"/>
+      <sval type="int" val="4"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="8"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="13"/>
+      <sval type="int" val="5"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="14"/>
+      <sval type="int" val="4"/>
+    </sval>
+  </sval>
+  <sval type="int" val="0"/>
+</sval>
+
+</codearray>
+<signature>
+LtOJpCdVzGpUw2V5lxO6MzDI3XjEFRakqV/oXRjB3rnL2N2u0r8wSe3P5jLfRs5gOtjeFbhy2V7dclVan0s9dAiXzgr491QdJI1dG7q7Q4d5TVvoJk4O9EeUvKacRK49jALq/leSt8m80ldP+g8kgDVqDkTWGWlhQyIaxQ9FrpNA0dTNfZg4SNubrINvdtb79Iedx8phB77nqOa5Ymd1nsis0Zr3dOtNc4NbiQo6z02agQxf3e0AzemgfzJ0I0CyHGe44BSiPsk5Ql8qTdLaEU+bFyemXwLDOImKCWghDopjiHMKYF/9KaS/oXCXaAPkcCdOX2LM/rQDnCL/uJK/lg==
+</signature>
+</script>

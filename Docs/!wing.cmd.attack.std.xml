@@ -1,0 +1,308 @@
+<?xml version="1.0" standalone="yes" ?>
+<?xml-stylesheet href="x2script.xsl" type="text/xsl" ?>
+<script>
+<name>!wing.cmd.attack.std</name>
+<version>3</version>
+<engineversion>40</engineversion>
+<description>Wing Standard COMMAND ATTACK</description>
+<arguments>
+<argument index="1" name="WING" type="Var/Wing" desc="wing" />
+<argument index="2" name="target" type="Var/Ship/Station" desc="Victim" />
+</arguments>
+<sourcetext>
+<line linenr="001" indent=""><comment><text>*&#160;</text><var>17-03-08&#160;(SymTec)</var></comment></line>
+<line linenr="002" indent=""><comment><text>*&#160;</text><var>06-07-2008&#160;(Cycrow)&#160;-&#160;Changed&#160;script&#160;call&#160;arguments</var></comment></line>
+<line linenr="003" indent=""><var>$WING&#160;-&gt;</var><text>&#160;set&#160;wing&#160;command:&#160;</text><var>COMMAND_WING_ATTACK</var><text>&#160;&#160;target=</text><var>$target</var><text>&#160;target2=</text><var>null</var></line>
+<line linenr="004" indent=""></line>
+<line linenr="005" indent=""><comment><text>*&#160;</text><var>check&#160;for&#160;correct&#160;input</var></comment></line>
+<line linenr="006" indent=""><var>skip&#160;if&#160;</var><var>$target&#160;-&gt;</var><text>&#160;exists</text></line>
+<line linenr="007" indent="&#160;"><text>return&#160;</text><var>null</var></line>
+<line linenr="008" indent=""><var>if&#160;not&#160;</var><var>$target&#160;-&gt;</var><text>&#160;is&#160;of&#160;class&#160;</text><var>Ship</var></line>
+<line linenr="009" indent="&#160;"><var>skip&#160;if&#160;</var><var>$target&#160;-&gt;</var><text>&#160;is&#160;of&#160;class&#160;</text><var>Station</var></line>
+<line linenr="010" indent="&#160;&#160;"><text>return&#160;</text><var>null</var></line>
+<line linenr="011" indent=""><text>end</text></line>
+<line linenr="012" indent=""><var>$owner&#160;=&#160;</var><var>$target&#160;-&gt;</var><text>&#160;get&#160;owner&#160;race</text></line>
+<line linenr="013" indent=""><var>$pos&#160;=&#160;</var><var>$WING&#160;-&gt;</var><text>&#160;get&#160;owner&#160;race</text></line>
+<line linenr="014" indent=""><var>skip&#160;if&#160;</var><var>$owner</var><text>&#160;</text><var>!=</var><text>&#160;</text><var>$pos</var></line>
+<line linenr="015" indent="&#160;"><text>return&#160;</text><var>null</var></line>
+<line linenr="016" indent=""></line>
+<line linenr="017" indent=""><var>$ships&#160;=&#160;</var><text>&#160;get&#160;flight&#160;wing&#160;ship&#160;array:&#160;wing=</text><var>$WING</var></line>
+<line linenr="018" indent=""><var>skip&#160;if&#160;</var><text>&#160;size&#160;of&#160;array&#160;</text><var>$ships</var></line>
+<line linenr="019" indent="&#160;"><text>return&#160;</text><var>null</var></line>
+<line linenr="020" indent=""><var>$WING&#160;-&gt;</var><text>&#160;set&#160;relation&#160;against&#160;</text><var>$owner</var><text>&#160;to&#160;</text><var>Foe</var></line>
+<line linenr="021" indent=""><var>$WING&#160;-&gt;</var><text>&#160;set&#160;relation&#160;against&#160;</text><var>$target</var><text>&#160;to&#160;</text><var>Foe</var></line>
+<line linenr="022" indent=""></line>
+<line linenr="023" interruptable="@" indent=""><var>$pos&#160;=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;call&#160;script&#160;</text><call>!wing.fight.manager</call><text>&#160;:&#160;</text><text>&#160;Wing=</text><var>$WING</var><text>&#160;</text><text>&#160;victim=</text><var>$target</var><text>&#160;</text><text>&#160;protect=</text><var>null</var><text>&#160;</text><text>&#160;preferred&#160;attack&#160;class=</text><var>null</var><text>&#160;</text><text>&#160;follow&#160;victim&#160;in&#160;new&#160;sector=</text><var>[TRUE]</var><text>&#160;</text><text>&#160;land&#160;here&#160;after&#160;completion=</text><var>null</var><text>&#160;</text><text>&#160;stop&#160;if&#160;leader&#160;killed&#160;/&#160;no&#160;enemy=</text><var>[TRUE]</var><text>&#160;</text><text>&#160;Only&#160;take&#160;down&#160;shields=</text><var>[FALSE]</var></line>
+<line linenr="024" indent=""><var>if&#160;</var><var>$pos</var></line>
+<line linenr="025" indent="&#160;"><var>$WING&#160;-&gt;</var><text>&#160;set&#160;wing&#160;command:&#160;</text><var>COMMAND_WING_NONE</var></line>
+<line linenr="026" interruptable="@" indent="&#160;"><var>=&#160;</var><text>wait&#160;</text><var>1</var><text>&#160;ms</text></line>
+<line linenr="027" indent="&#160;"><var>$WING&#160;-&gt;</var><text>&#160;set&#160;wing&#160;command:&#160;</text><var>COMMAND_WING_ATTACK</var></line>
+<line linenr="028" interruptable="@" indent="&#160;"><var>=&#160;</var><var>[THIS]&#160;-&gt;</var><text>&#160;call&#160;script&#160;</text><call>!wing.fight.defendpos</call><text>&#160;:&#160;</text><text>&#160;wing=</text><var>$WING</var><text>&#160;</text><text>&#160;position=</text><var>$pos</var><text>&#160;</text><text>&#160;range=</text><var>10000</var><text>&#160;</text><text>&#160;terminate&#160;if&#160;no&#160;enemies&#160;found=</text><var>[FALSE]</var></line>
+<line linenr="029" indent=""><text>end</text></line>
+<line linenr="030" indent=""></line>
+<line linenr="031" indent=""><text>return&#160;</text><var>null</var></line>
+</sourcetext>
+<codearray>
+
+<sval type="array" size="10">
+  <sval type="string" val="!wing.cmd.attack.std"/>
+  <sval type="int" val="40"/>
+  <sval type="string" val="Wing Standard COMMAND ATTACK"/>
+  <sval type="int" val="3"/>
+  <sval type="int" val="0"/>
+  <sval type="array" size="5">
+    <sval type="string" val="WING"/>
+    <sval type="string" val="target"/>
+    <sval type="string" val="owner"/>
+    <sval type="string" val="pos"/>
+    <sval type="string" val="ships"/>
+  </sval>
+  <sval type="array" size="22">
+    <sval type="array" size="13">
+      <sval type="int" val="1384"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="25"/>
+      <sval type="int" val="5"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="706"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-536870137"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="705"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-536869372"/>
+      <sval type="int" val="12"/>
+      <sval type="int" val="2004"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="705"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-536869369"/>
+      <sval type="int" val="12"/>
+      <sval type="int" val="2016"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="701"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="701"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="3"/>
+    </sval>
+    <sval type="array" size="13">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-536868345"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="2"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="15"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="-1"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="1356"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="131"/>
+      <sval type="int" val="-536867577"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="4"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="7">
+      <sval type="int" val="744"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="2"/>
+      <sval type="int" val="14"/>
+      <sval type="int" val="-1"/>
+    </sval>
+    <sval type="array" size="7">
+      <sval type="int" val="744"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="14"/>
+      <sval type="int" val="-1"/>
+    </sval>
+    <sval type="array" size="22">
+      <sval type="int" val="102"/>
+      <sval type="string" val="!wing.fight.manager"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="8"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="10"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="10"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="7">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-1610607357"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-1"/>
+    </sval>
+    <sval type="array" size="5">
+      <sval type="int" val="1383"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="25"/>
+      <sval type="int" val="0"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="105"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="1"/>
+    </sval>
+    <sval type="array" size="5">
+      <sval type="int" val="1383"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="25"/>
+      <sval type="int" val="5"/>
+    </sval>
+    <sval type="array" size="14">
+      <sval type="int" val="102"/>
+      <sval type="string" val="!wing.fight.defendpos"/>
+      <sval type="int" val="-2147483647"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="10000"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="0"/>
+    </sval>
+  </sval>
+  <sval type="array" size="2">
+    <sval type="array" size="2">
+      <sval type="int" val="61"/>
+      <sval type="string" val="wing"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="22"/>
+      <sval type="string" val="Victim"/>
+    </sval>
+  </sval>
+  <sval type="array" size="9">
+    <sval type="array" size="3">
+      <sval type="int" val="0"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="17-03-08 (SymTec)"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="0"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="06-07-2008 (Cycrow) - Changed script call arguments"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="1"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="1"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="check for correct input"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="6"/>
+      <sval type="int" val="4"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="10"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="15"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="21"/>
+      <sval type="int" val="4"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="21"/>
+      <sval type="int" val="2"/>
+    </sval>
+  </sval>
+  <sval type="int" val="0"/>
+</sval>
+
+</codearray>
+<signature>
+F1qezlzvuyi/dGO18BC2oVxdkw8qeGZS/APfIo1EXN30qogztfJlo+jbYcaFYfEGZ80Y6HUQ0p7fPciMYkmo1hDyV1XVk+/qQgIjn7TDBpiA9iyIPbLT+hwgU9FnqTp93UuOH3W+i6+gbIx/rvj/cOhsQaBc3tH4cSKS1ByWBQ9RY8COqlZK5+9FKVQP3N10ff7NX64ozXZVr0NaARqK0Wmv2VzfaKzZls3dWiDgntvq49T8sU7PPzcQuWUQAg0QWJs8vCqq4VjZAijIyPRn2WuYiYyA09gHl9WelORyvFu0ysegvdZugYCf734hxggwLmKTg1+o7mbr4SRsiqhkcQ==
+</signature>
+</script>
