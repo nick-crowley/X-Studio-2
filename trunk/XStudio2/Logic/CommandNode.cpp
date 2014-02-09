@@ -296,6 +296,11 @@ namespace Logic
                      colour = Colour::Purple;
                      logic = L"Proc";
                   }
+                  else if (Is(CMD_RETURN))
+                  {
+                     colour = Colour::Cyan;
+                     logic = L"Ret";
+                  }
                   else if (Syntax == CommandSyntax::Unrecognised)
                   {  // Print entire line in red
                      Console << (colour = Colour::Red);
