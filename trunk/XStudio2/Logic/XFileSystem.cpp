@@ -13,7 +13,7 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Initializes a new instance of the <see cref="XFileSystem"/> class.</summary>
-      XFileSystem::XFileSystem() 
+      XFileSystem::XFileSystem() : Version(GameVersion::Threat)
       {
       }
 
@@ -64,7 +64,7 @@ namespace Logic
 
       /// <summary>Enumerates and locks the catalogs and their contents.  Any previous contents are cleared.</summary>
       /// <param name="folder">Folder to enumerate</param>
-      /// <param name="version">Game version</param>
+      /// <param name="ver">Game version</param>
       /// <param name="data">Background worker data</param>
       /// <returns>Number of files found</returns>
       /// <exception cref="Logic::ArgumentNullException">Worker data is null</exception>
@@ -72,7 +72,7 @@ namespace Logic
       /// <exception cref="Logic::NotSupportedException">Version is X2 or X-Rebirth</exception>
       /// <exception cref="Logic::FileNotFoundException">Catalog not found</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      DWORD  XFileSystem::Enumerate(Path folder, GameVersion version, const WorkerData* data)
+      DWORD  XFileSystem::Enumerate(Path folder, GameVersion ver, const WorkerData* data)
       {
          REQUIRED(data);
 
@@ -80,20 +80,21 @@ namespace Logic
          Catalogs.clear();
          Files.clear();
 
+         // Ensure trailing backslash
+         Folder = folder.AppendBackslash();
+         Version = ver;
+
          // Feedback
          data->SendFeedback(ProgressType::Info, 1, L"Searching for catalogs...");
-         Console << Cons::Heading << L"Building " << VersionString(version) << L" VFS from " << folder << ENDL;
+         Console << Cons::Heading << L"Building " << VersionString(ver) << L" VFS from " << folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())
             throw DirectoryNotFoundException(HERE, folder);
 
          // Ensure not X2/X4
-         if (Version == GameVersion::Threat || version == GameVersion::Rebirth)
+         if (Version == GameVersion::Threat || Version == GameVersion::Rebirth)
             throw NotSupportedException(HERE, L"X2 and Rebirth are not supported");
-
-         // Ensure trailing backslash
-         Folder = folder.AppendBackslash();
 
          // Enumerate catalogs/files
          EnumerateCatalogs();
