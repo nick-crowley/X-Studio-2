@@ -68,14 +68,15 @@ namespace Testing
       /// <summary>Reads and translates a script without parsing or compiling it</summary>
       /// <param name="truePath">true path.</param>
       /// <param name="displayPath">path containing folder to use to resolve script-calls</param>
+      /// <param name="dropJMPs">Whether to drop JMP commands</param>
       /// <returns></returns>
-      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath)
+      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool dropJMPs)
       {
          Console << "Reading: " << Colour::Yellow << truePath << ENDL;
 
          // Read input file
          ScriptFileReader r(XFileInfo(truePath).OpenRead());
-         return r.ReadFile(displayPath, false);
+         return r.ReadFile(displayPath, false, dropJMPs);
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -89,10 +90,15 @@ namespace Testing
 
             Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
 
-            // Read script. Extract/preserve cmds+text. Compile
-            auto orig = ReadScript(FullPath, FullPath);
+            // Read script, including JMPs
+            auto orig = ReadScript(FullPath, FullPath, false);
+
+            // Preserve copy of command list with JMPs
             auto orig_cmds = orig.Commands.Input;
-            auto orig_txt = GetAllLines(orig_cmds);
+            orig.Commands.Input.remove_if([](ScriptCommand& c) {return c.Is(CMD_HIDDEN_JUMP);} );
+            auto orig_txt = GetAllLines(orig.Commands.Input);
+            
+            // Compile
             CompileScript(orig, FullPath);
 
             // Write copy
@@ -101,9 +107,12 @@ namespace Testing
             w.Write(orig);
             w.Close();
 
-            // Read copy back in. Extract text. Compile
-            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName);  // Supply original folder to enable script-call resolution
+            // Read copy back in. Extract text
+            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName, true);  // Supply original folder to enable script-call resolution
             auto copy_txt = GetAllLines(copy.Commands.Input);
+
+            // Preserve command list WITHOUT JMPS. Compile
+            auto copy_cmds = copy.Commands.Input;
             CompileScript(copy, tmp);
             
             // Compare command text
@@ -124,11 +133,14 @@ namespace Testing
             // Failed: Print trees
             catch (ExceptionBase&)
             {
-               Console << ENDL << "Command tree: " << Colour::Yellow << FullPath;
-               ScriptParser orig_parser(orig, GetAllLines(orig_cmds), orig.Game);
-               if (orig_parser.Errors.empty()) 
-                  orig_parser.Compile();
-               orig_parser.Print();
+               Console << ENDL << "Raw Input tree: " << Colour::Yellow << FullPath;
+               PrintTree(orig_cmds);
+
+               Console << ENDL << "Compiled Output tree: " << Colour::Yellow << FullPath;
+               ScriptParser copy_parser(copy, GetAllLines(copy_cmds), copy.Game);
+               if (copy_parser.Errors.empty()) 
+                  copy_parser.Compile();
+               copy_parser.Print();
                throw;
             }
 
@@ -148,6 +160,85 @@ namespace Testing
 
       // ------------------------------- PRIVATE METHODS ------------------------------
       
+      /// <summary>Prints a command list in tree format akin to the script parser.</summary>
+      /// <param name="list">List of translated commands</param>
+      void  ScriptValidator::PrintTree(const CommandList& list)
+      {
+         Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << Cons::Bold << L"DIRECT TRANSLATION";
+         Console << ENDL << "-------------------------------------------------------" << ENDL; 
+      
+         UINT LineNumber = 1, Index = 0;
+         for (auto& cmd : list)
+         {
+            // Line#/Logic/Text
+            GuiString line(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
+                      logic(::GetString(cmd.Logic)),
+                      txt(cmd.Text);
+            Colour    colour(Colour::White);
+            
+            // Index
+            line += GuiString(cmd.Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
+            
+            // Logic
+            switch (cmd.Logic)
+            {
+            // Conditional:
+            default: 
+               colour = Colour::Cyan;
+               for (auto ps : cmd.Syntax.Parameters)
+                  if (ps.IsRetVar())
+                  {
+                     UINT jumpTarget = ReturnValue(cmd.Parameters[ps.PhysicalIndex].Value.Int).Destination;
+                     if (jumpTarget)
+                        txt = GuiString(L"Jump-if-false: %d", jumpTarget);
+                     break;
+                  }
+               break;
+
+            // NOP:
+            case BranchLogic::NOP:
+               colour = Colour::Yellow;
+               break;
+
+            // Command:
+            case BranchLogic::None:
+               if (cmd.Is(CMD_HIDDEN_JUMP) || cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB))
+               {
+                  colour = Colour::Green; 
+                  logic = cmd.Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
+                  txt = GuiString(L"Unconditional: %d", cmd.Parameters[0].Value.Int);
+               }
+               else if (cmd.Is(CMD_DEFINE_LABEL))
+               {
+                  colour = Colour::Purple;
+                  logic = L"Proc";
+               }
+               else if (cmd.Is(CMD_RETURN))
+               {
+                  colour = Colour::Cyan;
+                  logic = L"Ret";
+               }
+               else if (cmd.Syntax == CommandSyntax::Unrecognised)
+               {  // Print entire line in red
+                  Console << (colour = Colour::Red);
+                  logic = L"???";
+               }
+               else
+                  logic = L"Cmd";
+               break;
+            }
+
+            // Print
+            Console << line << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+
+            // Advance line/index
+            if (cmd.Is(CommandType::Standard))
+               ++Index;
+            ++LineNumber;
+         }
+      
+         Console << ENDL;
+      }
    }
 }
 

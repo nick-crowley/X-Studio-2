@@ -31,6 +31,7 @@ namespace Logic
       /// <summary>Reads the entire script file</summary>
       /// <param name="path">Full file path</param>
       /// <param name="justProperties">True for properties only, False for commands</param>
+      /// <param name="dropJMPs">True for remove JMP commands, False to retain</param>
       /// <returns>New script file</returns>
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
@@ -38,7 +39,7 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Invalid script command</exception>
       /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      ScriptFile ScriptFileReader::ReadFile(Path path, bool justProperties)
+      ScriptFile ScriptFileReader::ReadFile(Path path, bool justProperties, bool dropJMPs)
       {
          try
          {
@@ -62,7 +63,7 @@ namespace Logic
 
             // Commands
             if (!justProperties)
-               ReadCommands(file, GetChild(CodeArray, 6, L"standard commands branch"), GetChild(CodeArray, 8, L"auxiliary commands branch"));
+               ReadCommands(file, GetChild(CodeArray, 6, L"standard commands branch"), GetChild(CodeArray, 8, L"auxiliary commands branch"), dropJMPs);
 
             // Command ID
             file.CommandID = ReadValue(CodeArray, 9, L"script command ID");
@@ -124,7 +125,7 @@ namespace Logic
       /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch)
+      void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs)
       {
          CommandArray  std;
          CommandList   aux; 
@@ -147,8 +148,9 @@ namespace Logic
                aux.pop_front();
             }
 
-            // Insert standard command  (Drop JMP)
-            if (!std[i].Syntax.Is(CMD_HIDDEN_JUMP))
+            // Drop/Keep JMP commands
+            if (!dropJMPs || !std[i].Syntax.Is(CMD_HIDDEN_JUMP))
+               // Insert standard command 
                script.Commands.AddInput(std[i]);
          }
          // Insert any trailing comments

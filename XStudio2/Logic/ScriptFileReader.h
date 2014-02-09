@@ -175,11 +175,11 @@ namespace Logic
 			
 		   // ----------------------- MUTATORS ------------------------
       public:
-         ScriptFile  ReadFile(Path path, bool justProperties);
+         ScriptFile  ReadFile(Path path, bool justProperties, bool dropJMPs = true);
 
       protected:
          ReaderPtr   GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
-         void        ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch);
+         void        ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs);
          ScriptFile  ReadExternalScript(const wstring& name);
          void        ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
 
