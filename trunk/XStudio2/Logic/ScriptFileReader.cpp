@@ -147,10 +147,14 @@ namespace Logic
                aux.pop_front();
             }
 
-            // Insert standard command
+            // Insert standard command  (Drop JMP)
             if (!std[i].Syntax.Is(CMD_HIDDEN_JUMP))
                script.Commands.AddInput(std[i]);
          }
+         // Insert any trailing comments
+         for (auto& c : aux)
+            script.Commands.AddInput(c);
+
 
          // Translate all commands/parameters
          UINT line = 1;

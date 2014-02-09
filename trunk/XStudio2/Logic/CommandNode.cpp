@@ -627,7 +627,9 @@ namespace Logic
                
                   // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
                   if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
-                     InsertJump(Children.end(), FindConditionalEnd());
+                     if (Children.empty() || !Children.back()->Is(CMD_RETURN))   // SpecialCase: Last child is return, no JMP necessary
+                        // JMP -> end of conditional branch
+                        InsertJump(Children.end(), FindConditionalEnd());
                   break;
 
                // <nothing>

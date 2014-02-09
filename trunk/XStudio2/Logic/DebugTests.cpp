@@ -56,7 +56,8 @@ namespace Logic
       vector<wstring> SkipList = 
       {
          L"plugin.com.logistics.main.mk1.pck",  // Corrupt <codearray> line number
-         L"!lib.war.races.pck",                 // Unsupported 'else ... return ...' syntax  (ie. Missing 'end' command)
+         //L"!lib.war.races.pck",                 // Unsupported 'else ... return ...' syntax  (ie. Missing 'end' command)
+         //L"!lib.fleet.shipsfortarget.pck",      // Unsupported 'else ... return ...' syntax  (ie. Missing 'end' command)
          L"!move.resupply.group.pck",           // Unsupported '= + ..' syntax
       };
 
