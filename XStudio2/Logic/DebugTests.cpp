@@ -42,8 +42,11 @@ namespace Logic
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      Test_BatchScriptCompile();
+      //Test_BatchScriptCompile();
       //Test_Lexer();
+
+      ScriptValidator sv(L"D:\\X3 Albion Prelude\\scripts\\!job.special.spacefly.hunter.pck");
+      sv.Validate();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -65,7 +68,7 @@ namespace Logic
       Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
 
       // Browse scripts in VFS
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude);
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
       UINT count = 0, total = vfs.Browse(XFolder::Scripts).size() - SkipList.size();
 
       // Browse scripts
