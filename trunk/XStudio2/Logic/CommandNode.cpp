@@ -239,7 +239,7 @@ namespace Logic
                }
             }
          }
-         
+
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
          void  CommandNode::Print(int depth) const

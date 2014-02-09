@@ -38,12 +38,13 @@ namespace Testing
       private:
          static void       CompileScript(ScriptFile& s, Path truePath);
          static LineArray  GetAllLines(const CommandList& commands);
-         static ScriptFile ReadScript(Path truePath, Path displayPath);
+         static ScriptFile ReadScript(Path truePath, Path displayPath, bool dropJMPs);
+         static void       PrintTree(const CommandList& list);
 
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
-
+      
          // ----------------------- MUTATORS ------------------------
       public:
          bool  Validate();
