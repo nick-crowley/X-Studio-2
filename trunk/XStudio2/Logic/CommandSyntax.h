@@ -40,11 +40,13 @@ namespace Logic
             CommandGroup     Group;
             CommandType      Type;
             UINT             Versions, 
-                             ID;
+                             ID,
+                             VarArgCount;
             wstring          URL,
                              Syntax;
             ParamSyntaxArray Params;
             ExecutionType    Execution;
+            bool             VarArg;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -94,6 +96,9 @@ namespace Logic
          /// <summary>Query whether command is a script call</summary>
          bool  IsScriptCall() const;
 
+         /// <summary>Query whether command has variable arguments</summary>
+         bool  IsVariableArgument() const;
+
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
@@ -103,10 +108,12 @@ namespace Logic
          const ParamSyntaxArray  Parameters;
          const ExecutionType     Execution;
          const UINT              Versions,
-                                 ID;
+                                 ID,
+                                 VarArgCount;
          const wstring           Hash,
                                  Text,
                                  URL;
+         const bool              VarArg;
       };
 
       /// <summary>Defines the display group of a script command</summary>

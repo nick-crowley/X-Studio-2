@@ -36,14 +36,14 @@ namespace Logic
       /// <param name="physical">physical index</param>
       /// <param name="display">display index</param>
       ParameterSyntax::ParameterSyntax(ParameterType t, UINT physical, UINT display)
-         : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(0), Usage(ParameterUsage::None)
+         : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(0), Usage(ParameterUsage::None), Optional(false)
       {
       }
 
       /// <summary>Create syntax from a declaration</summary>
       /// <param name="d">The declaration</param>
       ParameterSyntax::ParameterSyntax(Declaration& d)
-         : Type(d.Type), PhysicalIndex(d.PhysicalIndex), DisplayIndex(d.DisplayIndex), Ordinal(d.Ordinal), Usage(d.Usage)
+         : Type(d.Type), PhysicalIndex(d.PhysicalIndex), DisplayIndex(d.DisplayIndex), Ordinal(d.Ordinal), Usage(d.Usage), Optional(d.Optional)
       {
       }
 

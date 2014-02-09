@@ -23,8 +23,8 @@ namespace Logic
             //Declaration() : PhysicalIndex(0), DisplayIndex(0), Ordinal(0), PageID(false), StringID(false), Optional(false) {}
 
             /// <summary>Creates a declaration from legacy syntax components</summary>
-            Declaration(ParameterType t, UINT physical, UINT display, UINT ord, ParameterUsage use) 
-               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), Usage(use)
+            Declaration(ParameterType t, UINT physical, UINT display, UINT ord, ParameterUsage use, bool varg) 
+               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), Usage(use), Optional(varg)
             {}
 
             ParameterType   Type;
@@ -32,7 +32,7 @@ namespace Logic
                             DisplayIndex,
                             Ordinal;
             ParameterUsage  Usage;
-            //bool            Optional;
+            bool            Optional;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -96,6 +96,7 @@ namespace Logic
                               PhysicalIndex,
                               Ordinal;
          const ParameterUsage Usage;
+         const bool           Optional;
       };
 
       /// <summary>Write parameter syntax to the console</summary>
