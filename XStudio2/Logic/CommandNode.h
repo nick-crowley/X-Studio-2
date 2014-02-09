@@ -131,6 +131,7 @@ namespace Logic
             ErrorToken    MakeError(const GuiString& msg, const ScriptToken& tok) const;
             void          VerifyCommand(const ScriptFile& script, ErrorArray& errors) const;
             void          VerifyLogic(ErrorArray& errors) const;
+            void          VerifyTermination(ErrorArray& errors) const;
                
             // ----------------------- MUTATORS ------------------------
          public:

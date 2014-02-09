@@ -125,7 +125,7 @@ namespace Logic
             return false;
          };
          
-         /// <summary>Finds first standard command after any else/else-if conditionals</summary>
+         /// <summary>Finds any command or 'starting' conditional, but rejects 'middle' conditionals like else,else-if,end</summary>
          CommandNode::NodeDelegate  CommandNode::isConditionalEnd = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
@@ -139,7 +139,7 @@ namespace Logic
             return true;
          };
 
-         /// <summary>Finds next conditional or command following failed if/else-if</summary>
+         /// <summary>Finds any executable command, ie. anything except END or NOP</summary>
          CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
@@ -341,14 +341,10 @@ namespace Logic
             // Ensure script has std commands  [don't count break/continue]
             if (!any_of(Children.begin(), Children.end(), isStandardCommand))
                errors += MakeError(L"No executable commands found");
-            else 
-            {  
-               // Ensure last executable command is RETURN
-               auto last = GetLastExecutableChild();
-               if (!last->Is(CMD_RETURN))
-                  errors += last->MakeError(L"Last command in script must be 'return'");
-            }
 
+            else // Verify all control paths lead to RETURN
+               VerifyTermination(errors);
+            
             // Update state
             State = InputState::Verified;
          }
@@ -438,16 +434,28 @@ namespace Logic
 
          /// <summary>Finds the next sibling of this node</summary>
          /// <returns></returns>
+         /// <exception cref="Logic::AlgorithmException">Executed on root node</exception>
          CommandNode* CommandNode::FindNextSibling() const
          {
+            // Ensure not root
+            if (IsRoot())
+               throw AlgorithmException(HERE, L"Cannot retrieve next sibling of the root");
+
+            // Find 'this' and return next (if any)
             auto node = Parent->FindChild(this);
             return node+1 != Parent->Children.end() ? node[1].get() : nullptr;
          }
 
          /// <summary>Finds the prev sibling of this node</summary>
          /// <returns></returns>
+         /// <exception cref="Logic::AlgorithmException">Executed on root node</exception>
          CommandNode* CommandNode::FindPrevSibling() const
          {
+            // Ensure not root
+            if (IsRoot())
+               throw AlgorithmException(HERE, L"Cannot retrieve previous sibling of the root");
+
+            // Find 'this' and return prev (if any)
             auto node = Parent->FindChild(this);
             return node != Parent->Children.begin() ? node[-1].get() : nullptr;
          }
@@ -707,11 +715,18 @@ namespace Logic
                c->LinkCommands(errors);
          }
          
+         /// <summary>Create error for this entire line</summary>
+         /// <param name="msg">error message</param>
+         /// <returns></returns>
          ErrorToken  CommandNode::MakeError(const GuiString& msg) const
          {
             return ErrorToken(msg, LineNumber, LineText.substr(Extent.cpMin, Extent.cpMax-Extent.cpMin), Extent);
          }
 
+         /// <summary>Create error for a token on this line</summary>
+         /// <param name="msg">error message</param>
+         /// <param name="tok">token</param>
+         /// <returns></returns>
          ErrorToken  CommandNode::MakeError(const GuiString& msg, const ScriptToken& tok) const
          {
             return ErrorToken(msg, LineNumber, tok);
@@ -858,6 +873,50 @@ namespace Logic
                c->VerifyLogic(errors);
          }
          
+         /// <summary>Verifies that all control paths lead to termination.</summary>
+         /// <param name="errors">error collection</param>
+         void  CommandNode::VerifyTermination(ErrorArray& errors) const
+         {
+            // Check for presence of possible conditional or return cmd
+            if (!HasExecutableChild())
+               errors += MakeError(L"Not all control paths return a value");
+            else
+            {
+               // Find last child (exclude NOP/END)
+               auto last = *find_if(Children.rbegin(), Children.rend(), isConditionalAlternate);
+               switch (last->Logic)
+               {
+               // If: Verify sub-branch leads to RETURN
+               case BranchLogic::If:
+                  last->VerifyTermination(errors);
+                  break;
+
+               // ElseIf: Verify sub-branch (and preceeding conditionals, if any) leads to RETURN
+               case BranchLogic::Else:
+               case BranchLogic::ElseIf:
+                  last->VerifyTermination(errors);
+
+                  // Verify preceeding If/Else/ElseIf
+                  for (auto n = last->FindPrevSibling(); n != nullptr && n->Logic == BranchLogic::If || n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf; n = n->FindPrevSibling())
+                     n->VerifyTermination(errors);
+                  break;
+                  
+               // Command: Verify RETURN
+               case BranchLogic::While:      // While is unacceptable because we can't evaluate conditions under which loop will end
+               case BranchLogic::SkipIf:     // SkipIf is unacceptable by default because JIF leads to no alternate branch
+               case BranchLogic::Break:      
+               case BranchLogic::Continue:   // Break/Continue are unacceptable because they're not RETURN
+               case BranchLogic::None:
+                  if (!last->Is(CMD_RETURN))
+                     errors += last->MakeError(L"Last command in script must be 'return'");
+                  break;
+
+               default:
+                  throw AlgorithmException(HERE, GuiString(L"Unexpected branching logic '%s' for an executable child", ::GetString(last->Logic)));
+               }
+            }
+         }
+
       }
    }
 }
