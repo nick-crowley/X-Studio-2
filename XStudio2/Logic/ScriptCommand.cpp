@@ -35,11 +35,22 @@ namespace Logic
          if (Syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
          {
             // Count
-            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-3);
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.Parameters.size());
 
-            // Arguments  (Syntax is 'ScriptCallArgument')
-            for (UINT i = 3; i < params.size(); ++i)
-               Parameters += params[i];
+            // Arguments
+            for (UINT i = Syntax.Parameters.size(); i < params.size(); ++i)   // NB: Syntax is 'ScriptCallArgument'
+               Parameters += params[i]; 
+         }
+
+         // VARGS: Append arguments + trailing NULLs
+         if (Syntax.IsVariableArgument())
+         {
+            // Calculate true number of parameters required
+            UINT total = Syntax.Parameters.size() + Syntax.VarArgCount;
+
+            // Append supplied parameters followed by DT_NULL parameters
+            for (UINT i = Syntax.Parameters.size(); i < total; ++i)
+               Parameters += (i < params.size() ? params[i] : ScriptParameter(ParameterSyntax::ScriptCallArgument, DataType::Null, 0));      
          }
       }
 
