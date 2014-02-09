@@ -21,6 +21,22 @@ namespace Logic
                  : engine <= 44 ? GameVersion::TerranConflict
                                 : GameVersion::AlbionPrelude;
          }
+
+         /// <summary>Get engine version from game version</summary>
+         /// <param name="ver">game version</param>
+         /// <returns>matching engine version</returns>
+         static int  ToVersion(GameVersion ver)
+         {
+            switch (ver)
+            {
+            case GameVersion::Threat:          return 24;
+            case GameVersion::Reunion:         return 39;
+            case GameVersion::TerranConflict:  return 44;
+            case GameVersion::AlbionPrelude:   return 50;
+            default:
+               throw ArgumentException(HERE, L"ver", GuiString(L"Unrecognised game version %d", ver));
+            }
+         }
       };
 
       /// <summary>Base class for MSCI script reader</summary>

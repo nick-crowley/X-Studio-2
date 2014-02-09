@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptFileWriter.h"
+#include "ScriptFileReader.h"
 
 namespace Logic
 {
@@ -50,7 +51,7 @@ namespace Logic
          // Properties
          WriteElement(root, L"name", sf.Name);
          WriteElement(root, L"version", GuiString(L"%d", sf.Version));
-         WriteElement(root, L"engineversion", L"44");
+         WriteElement(root, L"engineversion", GuiString(L"%d", EngineVersionConverter::ToVersion(sf.Game)) );
          WriteElement(root, L"description", sf.Description);
 
          // Arguments
@@ -66,7 +67,7 @@ namespace Logic
 
          // Properties 
          WriteString(codearray, sf.Name);
-         WriteInt(codearray, 44);
+         WriteInt(codearray, EngineVersionConverter::ToVersion(sf.Game));
          WriteString(codearray, sf.Description);
          WriteInt(codearray, sf.Version);
          WriteInt(codearray, sf.LiveData ? 1 : 0);

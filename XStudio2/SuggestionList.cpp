@@ -173,7 +173,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          break;
 
       case Suggestion::Command: 
-         for (auto& obj : SyntaxLib.Query(L"", GameVersion::TerranConflict))
+         for (auto& obj : SyntaxLib.Query(L"", Script->Game))
             Content.push_back( SuggestionItem(obj->DisplayText, GetString(obj->Group), obj->Hash) );
          break;
       }
