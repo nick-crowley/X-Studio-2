@@ -57,7 +57,8 @@ namespace Logic
       {
          L"plugin.com.logistics.main.mk1.pck",  // Corrupt <codearray> line number
          L"!lib.war.races.pck",                 // Unsupported 'else ... return ...' syntax  (ie. Missing 'end' command)
-         L"!move.resupply.group.pck"            // Unsupported '= + ..' syntax
+         L"!move.resupply.group.pck",           // Unsupported '= + ..' syntax
+         //L"plugin.missile.def.main.convoy.pck"  // Requires enumerating variable IDs in physical syntax order, not display syntax order
       };
 
       // Feedback
