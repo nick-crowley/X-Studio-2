@@ -409,6 +409,9 @@
     <ClInclude Include="Logic\EncryptedStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\IndentationStack.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">

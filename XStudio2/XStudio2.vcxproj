@@ -142,6 +142,7 @@
     <ClInclude Include="Logic\GameDataWorker.h" />
     <ClInclude Include="Logic\GameObject.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
+    <ClInclude Include="Logic\IndentationStack.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
     <ClInclude Include="Logic\ParameterTypes.h" />
     <ClInclude Include="Logic\RaceLookup.h" />

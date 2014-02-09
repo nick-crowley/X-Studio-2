@@ -3,7 +3,9 @@
 #include "../Logic/FileStream.h"
 #include "../Logic/XFileInfo.h"
 #include "../Logic/ScriptFileWriter.h"
+#include "../Logic/IndentationStack.h"
 #include "ScriptValidator.h"
+
 
 namespace Testing
 {
@@ -164,9 +166,13 @@ namespace Testing
       /// <param name="list">List of translated commands</param>
       void  ScriptValidator::PrintTree(const CommandList& list)
       {
+         IndentationStack indent;
+
+         // Header
          Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << Cons::Bold << L"DIRECT TRANSLATION";
          Console << ENDL << "-------------------------------------------------------" << ENDL; 
       
+         // Print commands
          UINT LineNumber = 1, Index = 0;
          for (auto& cmd : list)
          {
@@ -206,7 +212,10 @@ namespace Testing
                {
                   colour = Colour::Green; 
                   logic = cmd.Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
-                  txt = GuiString(L"Unconditional: %d", cmd.Parameters[0].Value.Int);
+                  if (cmd.Is(CMD_HIDDEN_JUMP))
+                     txt = GuiString(L"Unconditional: %d", cmd.Parameters[0].Value.Int);
+                  else
+                     txt = GuiString(L"Unconditional: %s", cmd.Parameters[0].Value.String);
                }
                else if (cmd.Is(CMD_DEFINE_LABEL))
                {
@@ -229,10 +238,12 @@ namespace Testing
             }
 
             // Print
-            Console << line << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+            indent.PreDisplay(cmd);
+            Console << line + wstring(indent.Size, L' ') << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
+            indent.PostDisplay(cmd);
 
             // Advance line/index
-            if (cmd.Is(CommandType::Standard))
+            if (cmd.Is(CommandType::Standard) && !cmd.Commented)
                ++Index;
             ++LineNumber;
          }
