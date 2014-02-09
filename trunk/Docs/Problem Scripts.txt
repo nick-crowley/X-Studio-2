@@ -1,0 +1,13 @@
+!wing.cmd.attack.std.pck
+-------------------------
+
+1st command:  "set wing command" has two hidden DT_NULL parameters
+
+
+
+!job.fight.attackallenemies.pck
+-------------------------------
+
+penultimate command: "[THIS] -> delayed command [COMMAND_DESTROY_THIS] ..." has one hidden DT_NULL parameter
+
+
