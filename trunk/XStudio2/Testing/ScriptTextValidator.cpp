@@ -54,8 +54,8 @@ namespace Testing
             throw TextMismatch(HERE, L"script version", in.Version, out.Version);
          if (in.Game != out.Game)
             throw TextMismatch(HERE, L"script game version", VersionString(in.Game), VersionString(out.Game));
-         if (in.GetCommandName() != out.GetCommandName())
-            throw TextMismatch(HERE, L"script command ID", in.GetCommandName(), out.GetCommandName());
+         if (in.CommandName != out.CommandName)
+            throw TextMismatch(HERE, L"script command ID", in.CommandName, out.CommandName);
 
          // Variables/Arguments count
          if (in.Variables.Count != out.Variables.Count)

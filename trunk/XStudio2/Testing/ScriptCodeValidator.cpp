@@ -73,7 +73,7 @@ namespace Testing
          Compare(In.CodeArray, Out.CodeArray, 2, L"script description");
          Compare(In.CodeArray, Out.CodeArray, 3, L"script version");
          Compare(In.CodeArray, Out.CodeArray, 4, L"script live data flag");
-         //Compare(In.CodeArray, Out.CodeArray, 9, L"script command ID");
+         Compare(In.CodeArray, Out.CodeArray, 9, L"script command ID");
 
          // Identify script version
          Version = EngineVersionConverter::ToGame( In.ReadInt(In.CodeArray, 1, L"script engine version") );
