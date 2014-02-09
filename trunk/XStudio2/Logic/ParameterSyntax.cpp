@@ -26,6 +26,9 @@ namespace Logic
       /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
 
+      /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
+      //const ParameterSyntax  ParameterSyntax::ScriptCallVArgument(ParameterType::VALUE, 3, 3);
+
       /// <summary>Syntax for parameters of an unrecognised command. [UNUSED]</summary>
       const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNRECOGNISED, 0, 0);
       

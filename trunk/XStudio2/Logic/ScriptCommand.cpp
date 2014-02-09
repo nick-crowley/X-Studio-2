@@ -280,14 +280,25 @@ namespace Logic
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
 
-         // Script Calls: Print remaining syntax
-         else if (Is(CMD_CALL_SCRIPT_VAR_ARGS))
+         // Varg Script Calls: Print remaining syntax
+         else if (Syntax.IsVariableArgument())
          {
-            wstring name = GetScriptCallName();
-
+            typedef pair<wstring,ScriptParameter> Argument;
+            
+            // Get script name
+            wstring script = GetScriptCallName();
+            
             // Populate argument name/value pairs
-            for (UINT i = 3; i < Parameters.size(); ++i)
-               Text.append(GuiString(L" %s=%s", f.ScriptCalls.FindArgument(name, i-3).c_str(), Parameters[i].Text.c_str()));
+            vector<Argument> vargs;
+            for (UINT p = Syntax.Parameters.size(), a = 0; p < Parameters.size(); ++p, ++a)
+               vargs.push_back( Argument(f.ScriptCalls.FindArgument(script, a), Parameters[p]) );
+
+            // Append argument pairs, abort if all remaining arguments are NULL
+            for (auto it = vargs.begin(); it != vargs.end(); ++it)
+               if ( any_of(it, vargs.end(), [](Argument& a){return a.second.Type != DataType::Null;}) )
+                  Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+               else
+                  break;
          }
          
          // Concurrent: Insert 'start' keyword

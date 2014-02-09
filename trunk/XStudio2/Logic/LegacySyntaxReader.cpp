@@ -340,11 +340,11 @@ namespace Logic
       {
          switch (id)
          {
+         case CMD_BEGIN_TASK_ARGS:                    // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
          case CMD_CALL_SCRIPT_ARGS:                   // "$1 $0 call named script: script=$2, $3, $4, $5, $6, $7"
          case CMD_LAUNCH_SCRIPT_ARGS:                 // "$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8"
             return 5;
 
-         case CMD_BEGIN_TASK_ARGS:                    // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
          case CMD_INTERRUPT_SCRIPT_ARGS:              // "$0 interrupt with script $1 and prio $2: arg1=$3 arg2=$4 arg3=$5 arg4=$6"
          case CMD_INTERRUPT_TASK_ARGS:                // "$0 interrupt task $2 with script $1 and prio $3: arg1=$4 arg2=$5 arg3=$6 arg4=$7"
             return 4;
@@ -352,13 +352,13 @@ namespace Logic
          case CMD_CALL_SCRIPT_VAR_ARGS:               // "$1 $2 call script $0 :"
             return 8;
 
-         case CMD_START_COMMAND:
+         /*case CMD_START_COMMAND:
          case CMD_START_DELAYED_COMMAND:
          case CMD_START_WING_COMMAND:
-            return 4;
+            return 4;*/
 
          default:
-            throw;
+            return 0;
          }
       }
       
