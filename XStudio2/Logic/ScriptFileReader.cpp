@@ -52,7 +52,7 @@ namespace Logic
 
             // Read properties
             file.Name        = ReadString(CodeArray, 0, L"script name");
-            file.Game        = GameVersion::TerranConflict; //EngineVersionConverter::ToGame(ReadInt(codeArray, 1, L"script engine version"));
+            file.Game        = EngineVersionConverter::ToGame(ReadInt(CodeArray, 1, L"script engine version"));
             file.Description = ReadString(CodeArray, 2, L"script description");
             file.Version     = (UINT)ReadInt(CodeArray, 3, L"script version");
             file.LiveData    = (UINT)ReadInt(CodeArray, 4, L"script live data flag") != 0;
