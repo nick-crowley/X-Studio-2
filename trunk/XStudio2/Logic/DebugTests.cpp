@@ -70,19 +70,19 @@ namespace Logic
       XFileSystem     vfs;
       vector<wstring> SkipList = 
       {
-         //L"plugin.com.logistics.main.mk1.pck",  // X3TC: Corrupt <codearray> line number
+         L"plugin.com.logistics.main.mk1.pck",  // X3TC: Corrupt <codearray> line number
          //L"!lib.war.races.pck",                 // X3TC: Un-optimized JMP-RET commands
          //L"!job.special.spacefly.hunter.pck",   // X3TC: Un-optimized JMP-RET commands
          L"!move.resupply.group.pck",             // X3TC/X3AP: Unsupported '= + ..' syntax
          //L"!lib.fleet.shipsfortarget.pck",      // X3AP: Un-optimized JMP-RET commands
-         L"!lib.get.randomshiptype.pck",          // X3AP: Not all control paths return a value
+         //L"!lib.get.randomshiptype.pck",          // X3AP: Not all control paths return a value
       };
 
       // Feedback
       Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
 
       // Browse scripts in VFS
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude);
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
       UINT count = 0, total = vfs.Browse(XFolder::Scripts).size() - SkipList.size();
 
       // Browse scripts
