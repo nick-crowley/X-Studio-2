@@ -8,6 +8,9 @@
 #include "ScriptToken.h"
 #include <algorithm>
 
+/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
+#define VALIDATION
+
 namespace Logic
 {
    namespace Scripts
@@ -99,6 +102,9 @@ namespace Logic
             
             static const wchar*  GetString(InputState s);
 
+#ifdef VALIDATION
+            static CommandNode  EndOfScript;
+#endif
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
