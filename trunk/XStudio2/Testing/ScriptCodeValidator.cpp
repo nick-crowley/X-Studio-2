@@ -153,7 +153,7 @@ namespace Testing
             line = GuiString(L"(std %d) '%s' : ", i, syntax.Text.c_str());
 
             // Node count:  (Skip for commands with known 'hidden' parameters)
-            if (!syntax.Is(CMD_START_DELAYED_COMMAND) && !syntax.Is(CMD_SET_WING_COMMAND)) // && !syntax.Is(CMD_START_WING_COMMAND))
+            if (!syntax.Is(CMD_START_DELAYED_COMMAND) && !syntax.Is(CMD_SET_WING_COMMAND) && !syntax.Is(CMD_GET_OBJECT_NAME_ARRAY))
                CompareSize(in_cmds, out_cmds, i, line+L"node count");
             
             // parameters

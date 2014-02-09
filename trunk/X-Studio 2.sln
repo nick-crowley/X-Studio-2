@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C
 		Docs\!job.fight.attackallenemies.xml = Docs\!job.fight.attackallenemies.xml
 		Docs\!wing.cmd.attack.std.xml = Docs\!wing.cmd.attack.std.xml
 		Docs\Problem Scripts.txt = Docs\Problem Scripts.txt
+		Docs\z.cheat.cycrow.createwing.xml = Docs\z.cheat.cycrow.createwing.xml
 	EndProjectSection
 EndProject
 Global
