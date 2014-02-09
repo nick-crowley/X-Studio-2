@@ -136,6 +136,7 @@ namespace Testing
       private:
          ScriptReader   In, Out;
          VariableArray  InVars, OutVars;
+         GameVersion    Version;
       };
 
    }

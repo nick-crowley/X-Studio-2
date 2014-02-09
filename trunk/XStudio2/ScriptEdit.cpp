@@ -350,7 +350,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try 
       { 
          // Parse script 
-         ScriptParser parser(Document->Script, GetLines(), GameVersion::TerranConflict);
+         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
          
          // DEBUG:
          if (!parser.Errors.empty())

@@ -75,6 +75,9 @@ namespace Testing
          Compare(In.CodeArray, Out.CodeArray, 4, L"script live data flag");
          //Compare(In.CodeArray, Out.CodeArray, 9, L"script command ID");
 
+         // Identify script version
+         Version = EngineVersionConverter::ToGame( In.ReadInt(In.CodeArray, 1, L"script engine version") );
+
          // Data + Code
          CompareVariables();
          CompareArguments();
@@ -147,7 +150,7 @@ namespace Testing
 
             // Get command ID
             Compare(in_cmd, out_cmd, 0, line + L"command ID");
-            CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), GameVersion::TerranConflict);
+            CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), Version);
 
             // Improve location description
             line = GuiString(L"(std %d) '%s' : ", i, syntax.Text.c_str());
