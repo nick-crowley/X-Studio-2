@@ -124,6 +124,8 @@ namespace Logic
             CommandNode*  FindRoot() const;
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
             GuiString     GetDebugText() const;
+            CommandNode*  GetLastExecutableChild() const;
+            bool          HasExecutableChild() const;
             bool          IsRoot() const;
             ErrorToken    MakeError(const GuiString& msg) const;
             ErrorToken    MakeError(const GuiString& msg, const ScriptToken& tok) const;
