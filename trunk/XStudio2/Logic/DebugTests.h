@@ -21,7 +21,7 @@ namespace Logic
       static void  RunAll();
 
    private:
-      static void  Test_BatchScriptCompile();
+      static void  BatchTest_ScriptCompiler();
       static void  Test_CommandSyntax();
       static void  Test_LanguageFileReader();
       static void  Test_TFileReader();
@@ -33,6 +33,7 @@ namespace Logic
       static void  Test_Iterator();
       static void  Text_RegEx();
       static void  Test_StringLibrary();
+      static void  Test_ScriptCompiler();
       static void  Test_SyntaxWriter();
       static void  Test_XmlWriter();
 

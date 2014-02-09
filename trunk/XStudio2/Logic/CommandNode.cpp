@@ -338,14 +338,13 @@ namespace Logic
             // branching logic
             VerifyLogic(errors);
 
-            // Ensure script has commands
-            if (count_if(Children.begin(), Children.end(), isStandardCommand) == 0)
+            // Ensure script has std commands  [don't count break/continue]
+            if (!any_of(Children.begin(), Children.end(), isStandardCommand))
                errors += MakeError(L"No executable commands found");
-            
-            // Ensure last std command is RETURN
-            else if (find_if(Children.rbegin(), Children.rend(), isStandardCommand) == Children.rend())
-            {
-               auto last = Children.end()[-1];
+            else 
+            {  
+               // Ensure last executable command is RETURN
+               auto last = GetLastExecutableChild();
                if (!last->Is(CMD_RETURN))
                   errors += last->MakeError(L"Last command in script must be 'return'");
             }
@@ -505,7 +504,7 @@ namespace Logic
             for (auto& c : Children)
                c->FinalizeLinkage(errors);
          }
-
+         
          /// <summary>Compiles the parameters/commands into the script</summary>
          /// <param name="script">script.</param>
          /// <param name="errors">Errors collection.</param>
@@ -549,6 +548,28 @@ namespace Logic
             // Recurse into children
             for (auto& c : Children)
                c->GenerateCommands(script, errors);
+         }
+         
+         /// <summary>Gets the last executable child.</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::AlgorithmException">No executable children</exception>
+         CommandNode* CommandNode::GetLastExecutableChild() const
+         {
+            // Reverse linear search
+            auto cmd = find_if(Children.rbegin(), Children.rend(), isExecutableCommand);
+
+            // Failed: error
+            if (cmd == Children.rend())
+               throw AlgorithmException(HERE, L"Command doesn't have any executable children");
+
+            return cmd->get();
+         }
+         
+         /// <summary>Determines whether has executable child</summary>
+         /// <returns></returns>
+         bool  CommandNode::HasExecutableChild() const
+         {
+            return any_of(Children.begin(), Children.end(), isExecutableCommand);
          }
 
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
@@ -632,7 +653,8 @@ namespace Logic
                
                   // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
                   if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
-                     if (Children.empty() || !Children.back()->Is(CMD_RETURN))   // SpecialCase: Last child is return, no JMP necessary
+                     // Don't add JMP if last child is return
+                     if (!HasExecutableChild() || !GetLastExecutableChild()->Is(CMD_RETURN))   
                         // JMP -> end of conditional branch
                         InsertJump(Children.end(), FindConditionalEnd());
                   break;

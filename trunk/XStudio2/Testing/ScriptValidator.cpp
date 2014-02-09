@@ -66,101 +66,6 @@ namespace Testing
          return lines;
       }
 
-
-      /// <summary>Reads and translates a script without parsing or compiling it</summary>
-      /// <param name="truePath">true path.</param>
-      /// <param name="displayPath">path containing folder to use to resolve script-calls</param>
-      /// <param name="dropJMPs">Whether to drop JMP commands</param>
-      /// <returns></returns>
-      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool dropJMPs)
-      {
-         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
-
-         // Read input file
-         ScriptFileReader r(XFileInfo(truePath).OpenRead());
-         return r.ReadFile(displayPath, false, dropJMPs);
-      }
-
-      // ------------------------------- PUBLIC METHODS -------------------------------
-
-      /// <summary>Validates the input file</summary>
-      bool  ScriptValidator::Validate()
-      {
-         try
-         {
-            TempPath tmp;  
-
-            Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
-
-            // Read script, including JMPs
-            auto orig = ReadScript(FullPath, FullPath, false);
-
-            // Preserve copy of command list with JMPs
-            auto orig_cmds = orig.Commands.Input;
-            orig.Commands.Input.remove_if([](ScriptCommand& c) {return c.Is(CMD_HIDDEN_JUMP);} );
-            auto orig_txt = GetAllLines(orig.Commands.Input);
-            
-            // Compile
-            CompileScript(orig, FullPath);
-
-            // Write copy
-            Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
-            ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
-            w.Write(orig);
-            w.Close();
-
-            // Read copy back in. Extract text
-            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName, true);  // Supply original folder to enable script-call resolution
-            auto copy_txt = GetAllLines(copy.Commands.Input);
-
-            // Preserve command list WITHOUT JMPS. Compile
-            auto copy_cmds = copy.Commands.Input;
-            CompileScript(copy, tmp);
-            
-            // Compare command text
-            Console << Cons::Bold << "Comparing translated command text..." << ENDL;
-            ScriptTextValidator::Compare(orig_txt, copy_txt);
-
-            try
-            {
-               // Compare input command list
-               Console << Cons::Bold << "Comparing intermediate code..." << ENDL;
-               ScriptTextValidator::Compare(orig, copy);
-
-               // Compare xml
-               Console << Cons::Bold << "Comparing generated xml..." << ENDL;
-               ScriptCodeValidator code(XFileInfo(FullPath).OpenRead(), XFileInfo(tmp).OpenRead());
-               code.Compare();
-            }
-            // Failed: Print trees
-            catch (ExceptionBase&)
-            {
-               Console << ENDL << "Raw Input tree: " << Colour::Yellow << FullPath;
-               PrintTree(orig_cmds);
-
-               Console << ENDL << "Compiled Output tree: " << Colour::Yellow << FullPath;
-               ScriptParser copy_parser(copy, GetAllLines(copy_cmds), copy.Game);
-               if (copy_parser.Errors.empty()) 
-                  copy_parser.Compile();
-               copy_parser.Print();
-               throw;
-            }
-
-            // Success!
-            Console << Colour::Green << "Validation Successful" << ENDL;
-            return true;
-         }
-         catch (ExceptionBase& e)
-         {
-            Console.Log(HERE, e);
-            Console << Colour::Red << "Validation FAILED" << ENDL;
-            return false;
-         }
-      }
-
-      // ------------------------------ PROTECTED METHODS -----------------------------
-
-      // ------------------------------- PRIVATE METHODS ------------------------------
       
       /// <summary>Prints a command list in tree format akin to the script parser.</summary>
       /// <param name="list">List of translated commands</param>
@@ -250,6 +155,117 @@ namespace Testing
       
          Console << ENDL;
       }
+
+      /// <summary>Reads and translates a script without parsing or compiling it</summary>
+      /// <param name="truePath">true path.</param>
+      /// <param name="displayPath">path containing folder to use to resolve script-calls</param>
+      /// <param name="dropJMPs">Whether to drop JMP commands</param>
+      /// <returns></returns>
+      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool dropJMPs)
+      {
+         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
+
+         // Read input file
+         ScriptFileReader r(XFileInfo(truePath).OpenRead());
+         return r.ReadFile(displayPath, false, dropJMPs);
+      }
+
+      // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Prints the command tree of the input file</summary>
+      void  ScriptValidator::Print()
+      {
+         try
+         {
+            // Read script, including JMPs
+            auto orig = ReadScript(FullPath, FullPath, false);
+            PrintTree(orig.Commands.Input);
+         }
+         catch (ExceptionBase& e)
+         {
+            Console.Log(HERE, e, GuiString(L"Unable to print translation tree for '%s'", FullPath.c_str()));
+         }
+      }
+
+      /// <summary>Validates the input file</summary>
+      bool  ScriptValidator::Validate()
+      {
+         try
+         {
+            TempPath tmp;  
+
+            Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
+
+            // Read script, including JMPs
+            auto orig = ReadScript(FullPath, FullPath, false);
+
+            // Preserve copy of command list with JMPs
+            auto orig_cmds = orig.Commands.Input;
+            orig.Commands.Input.remove_if([](ScriptCommand& c) {return c.Is(CMD_HIDDEN_JUMP);} );
+            auto orig_txt = GetAllLines(orig.Commands.Input);
+            
+            // Compile
+            CompileScript(orig, FullPath);
+
+            // Write copy
+            Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
+            ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
+            w.Write(orig);
+            w.Close();
+
+            // Read copy back in. Extract text
+            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName, true);  // Supply original folder to enable script-call resolution
+            auto copy_txt = GetAllLines(copy.Commands.Input);
+
+            // Preserve command list WITHOUT JMPS. Compile
+            auto copy_cmds = copy.Commands.Input;
+            CompileScript(copy, tmp);
+            
+            // Compare command text
+            Console << Cons::Bold << "Comparing translated command text..." << ENDL;
+            ScriptTextValidator::Compare(orig_txt, copy_txt);
+
+            try
+            {
+               // Compare input command list
+               Console << Cons::Bold << "Comparing intermediate code..." << ENDL;
+               ScriptTextValidator::Compare(orig, copy);
+
+               // Compare xml
+               Console << Cons::Bold << "Comparing generated xml..." << ENDL;
+               ScriptCodeValidator code(XFileInfo(FullPath).OpenRead(), XFileInfo(tmp).OpenRead());
+               code.Compare();
+            }
+            // Failed: Print trees
+            catch (ExceptionBase&)
+            {
+               Console << ENDL << "Raw Input tree: " << Colour::Yellow << FullPath;
+               PrintTree(orig_cmds);
+
+               Console << ENDL << "Compiled Output tree: " << Colour::Yellow << FullPath;
+               ScriptParser copy_parser(copy, GetAllLines(copy_cmds), copy.Game);
+               if (copy_parser.Errors.empty()) 
+                  copy_parser.Compile();
+               copy_parser.Print();
+               throw;
+            }
+
+            // Success!
+            Console << Colour::Green << "Validation Successful" << ENDL;
+            return true;
+         }
+         catch (ExceptionBase& e)
+         {
+            Console.Log(HERE, e);
+            Console << Colour::Red << "Validation FAILED" << ENDL;
+            return false;
+         }
+      }
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+      // ------------------------------- PRIVATE METHODS ------------------------------
+      
    }
 }
 

@@ -47,6 +47,7 @@ namespace Testing
       
          // ----------------------- MUTATORS ------------------------
       public:
+         void  Print();
          bool  Validate();
 
          // -------------------- REPRESENTATION ---------------------

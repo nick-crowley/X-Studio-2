@@ -42,18 +42,30 @@ namespace Logic
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      //Test_BatchScriptCompile();
+      //BatchTest_ScriptCompiler();
       //Test_Lexer();
 
-      ScriptValidator sv(L"D:\\X3 Albion Prelude\\scripts\\!job.special.spacefly.hunter.pck");
-      sv.Validate();
+      
+      Test_ScriptCompiler();
+      
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
-   void DebugTests::Test_BatchScriptCompile()
+   void DebugTests::Test_ScriptCompiler()
+   {
+      // Located problem: egosoft inserts JMPs to end-of-conditional even after RETURNs, except when it's the final RETURN of the script.
+
+      ScriptValidator sv1(L"D:\\X3 Albion Prelude\\scripts\\!job.special.spacefly.hunter.pck");
+      sv1.Print();
+
+      ScriptValidator sv2(L"D:\\X3 Albion Prelude\\scripts\\!lib.war.races.pck");
+      sv2.Validate();
+   }
+
+   void DebugTests::BatchTest_ScriptCompiler()
    {
       XFileSystem     vfs;
       vector<wstring> SkipList = 
