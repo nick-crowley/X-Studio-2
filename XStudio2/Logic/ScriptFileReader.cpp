@@ -160,7 +160,6 @@ namespace Logic
 
          // Translate all commands/parameters
          UINT line = 1;
-         wstring name;
          for (ScriptCommand& cmd : script.Commands.Input)
          {
             // GOTO/GOSUB: Replace label number parameters with label name params
@@ -180,14 +179,22 @@ namespace Logic
                script.Labels.Add(cmd.GetLabelName(), line);
 
             // VARG SCRIPT-CALL: Load script properties
-            else if (cmd.Syntax.IsVariableArgument() && !script.ScriptCalls.Contains(name = cmd.GetScriptCallName()))
+            else if (cmd.Syntax.IsVariableArgument())
             {
+               wstring name;
+
                try 
-               {
-                  script.ScriptCalls.Add(name, ReadExternalScript(name));
+               {  
+                  // Find name of target script (may be a variable)
+                  name = cmd.GetScriptCallName();
+
+                  // Read unless previously read
+                  if (!name.empty() && !script.ScriptCalls.Contains(name))
+                     script.ScriptCalls.Add(name, ReadExternalScript(name));
                }
                catch (ExceptionBase& e ) {
-                  Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
+                  if (e.ErrorID != ERROR_FILE_NOT_FOUND)
+                     Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
                }
             }
 

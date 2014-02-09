@@ -43,7 +43,7 @@ namespace Logic
          }
 
          // VARGS: Append arguments + trailing NULLs
-         if (Syntax.IsVariableArgument())
+         else if (Syntax.IsVariableArgument())
          {
             // Calculate true number of parameters required
             UINT total = Syntax.Parameters.size() + Syntax.VarArgCount;
@@ -211,7 +211,7 @@ namespace Logic
       }
 
       /// <summary>Gets the name of target script</summary>
-      /// <returns></returns>
+      /// <returns>Name of script, or empty string if name was a variable</returns>
       /// <exception cref="Logic::InvalidOperationException">Command is not a script call -or- name parameter is missing</exception>
       wstring  ScriptCommand::GetScriptCallName() const
       {
@@ -223,11 +223,11 @@ namespace Logic
             throw InvalidOperationException(HERE, GuiString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
 
          // Ensure present
-         if (Parameters.size() < param->PhysicalIndex+1 || Parameters[param->PhysicalIndex].Value.Type != ValueType::String)
+         if (Parameters.size() < param->PhysicalIndex+1) 
             throw InvalidOperationException(HERE, GuiString(L"Missing script name parameter"));
 
-         // Return name
-         return Parameters[param->PhysicalIndex].Value.String;
+         // Return name if exists, or empty string if variable
+         return Parameters[param->PhysicalIndex].Type == DataType::STRING ? Parameters[param->PhysicalIndex].Value.String : L"";
       }
       
       /// <summary>Compare command ID</summary>
@@ -295,21 +295,23 @@ namespace Logic
          else if (Syntax.IsVariableArgument())
          {
             typedef pair<wstring,ScriptParameter> Argument;
+            vector<Argument> vargs;
             
+            // Test whether argument is DT_NULL
+            function<bool (Argument& a)> isNull = [](Argument& a) { return a.second.Type == DataType::Null; };
+
             // Get script name
             wstring script = GetScriptCallName();
             
             // Populate argument name/value pairs
-            vector<Argument> vargs;
             for (UINT p = Syntax.Parameters.size(), a = 0; p < Parameters.size(); ++p, ++a)
                vargs.push_back( Argument(f.ScriptCalls.FindArgument(script, a), Parameters[p]) );
 
-            // Append argument pairs, abort if all remaining arguments are NULL
+            // Append argument pairs
             for (auto it = vargs.begin(); it != vargs.end(); ++it)
-               if ( any_of(it, vargs.end(), [](Argument& a){return a.second.Type != DataType::Null;}) )
+               // Drop 'null' arguments if following are all 'null'  (Exception: Genuine varg script-calls have all args appended)
+               if (Is(CMD_CALL_SCRIPT_VAR_ARGS) || !all_of(it, vargs.end(), isNull) )
                   Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
-               else
-                  break;
          }
          
          // Concurrent: Insert 'start' keyword
