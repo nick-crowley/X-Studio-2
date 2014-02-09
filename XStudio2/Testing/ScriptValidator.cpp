@@ -103,8 +103,7 @@ namespace Testing
 
             // Read copy back in. Extract text. Compile
             auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName);  // Supply original folder to enable script-call resolution
-            auto copy_cmds = copy.Commands.Input;
-            auto copy_txt = GetAllLines(copy_cmds);
+            auto copy_txt = GetAllLines(copy.Commands.Input);
             CompileScript(copy, tmp);
             
             // Compare command text
@@ -130,13 +129,6 @@ namespace Testing
                if (orig_parser.Errors.empty()) 
                   orig_parser.Compile();
                orig_parser.Print();
-
-               Console << ENDL << "Command tree: " << Colour::Yellow << tmp;
-               ScriptParser copy_parser(copy, GetAllLines(copy_cmds), copy.Game);
-               if (copy_parser.Errors.empty()) 
-                  copy_parser.Compile();
-               copy_parser.Print();
-               
                throw;
             }
 

@@ -93,6 +93,7 @@ namespace Logic
          private:
             static NodeDelegate  isConditionalAlternate,
                                  isConditionalEnd,
+                                 isExecutableCommand,
                                  isStandardCommand,
                                  isSkipIfCompatible;
             

@@ -138,7 +138,7 @@ namespace Testing
 
          for (int i = 0; i < in_cmds->childNodes->length; i++)
          {
-            auto line = GuiString(L"(std %d) : ", i+1);
+            auto line = GuiString(L"(std %d) : ", i);
             bool errors = false;
 
             // Get command branch
@@ -150,7 +150,7 @@ namespace Testing
             CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), GameVersion::TerranConflict);
 
             // Improve location description
-            line = GuiString(L"(std %d) '%s' : ", i+1, syntax.Text.c_str());
+            line = GuiString(L"(std %d) '%s' : ", i, syntax.Text.c_str());
 
             // Node count
             CompareSize(in_cmds, out_cmds, i, line+L"node count");
