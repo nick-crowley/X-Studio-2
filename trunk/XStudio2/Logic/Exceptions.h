@@ -100,7 +100,7 @@ namespace Logic
       /// <param name="file">Folder path</param>
       DirectoryNotFoundException(wstring  src, IO::Path  folder) 
          // "The folder '%s' does not exist"
-         : ExceptionBase(src, StringResource::Format(L"The folder '%s' does not exist", folder.c_str()) )
+         : ExceptionBase(src, ERROR_PATH_NOT_FOUND, StringResource::Format(L"The folder '%s' does not exist", folder.c_str()) )
       {}
    };
 
@@ -133,7 +133,7 @@ namespace Logic
       /// <param name="src">Location of throw</param>
       /// <param name="file">File path</param>
       FileNotFoundException(wstring  src, IO::Path  file) 
-         : ExceptionBase(src, StringResource::Format(L"The file '%s' does not exist", file.c_str()))
+         : ExceptionBase(src, ERROR_FILE_NOT_FOUND, StringResource::Format(L"The file '%s' does not exist", file.c_str()))
       {}
    };
    

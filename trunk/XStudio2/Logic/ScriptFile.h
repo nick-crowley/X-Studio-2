@@ -418,7 +418,7 @@ namespace Logic
                   return Find(name).Variables[index].Name;
                
                // Missing/Invalid: 
-               return GuiString(L"argument%d", index+1);
+               return GuiString(L"arg%d", index+1);
             }
          };
 
