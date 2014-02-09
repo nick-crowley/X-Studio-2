@@ -11,3 +11,10 @@
 penultimate command: "[THIS] -> delayed command [COMMAND_DESTROY_THIS] ..." has one hidden DT_NULL parameter
 
 
+
+
+z.cheat.cycrow.createwing.xml
+------------------------------
+
+command 74 (line 84): "$speak = $wing -> get object array" has hidden single int node parameter '10'
+
