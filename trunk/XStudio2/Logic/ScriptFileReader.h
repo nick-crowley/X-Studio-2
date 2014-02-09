@@ -7,6 +7,22 @@ namespace Logic
 {
    namespace IO
    {
+      /// <summary>Converts between game and engine versions</summary>
+      class EngineVersionConverter
+      {
+      public:
+         /// <summary>Get game version from engine version</summary>
+         /// <param name="engine">engine version</param>
+         /// <returns>matching game version</returns>
+         static GameVersion  ToGame(int engine)
+         {
+            return engine <= 24 ? GameVersion::Threat
+                 : engine <= 39 ? GameVersion::Reunion
+                 : engine <= 44 ? GameVersion::TerranConflict
+                                : GameVersion::AlbionPrelude;
+         }
+      };
+
       /// <summary>Base class for MSCI script reader</summary>
       class SourceValueReader : public XmlReader
       {
