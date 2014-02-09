@@ -554,10 +554,21 @@ namespace Logic
             if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
                script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
-            // Add variable names to script
-            for (const auto& p : Parameters)
-               if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                  script.Variables.Add(p.Value.String);
+            // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
+            // by enumerating variables in physical syntax order. (if all parameters are present)
+            if (Parameters.size() == Syntax.Parameters.size())
+               for (const auto& ps : Syntax.Parameters)
+               {
+                  ScriptParameter& p = Parameters[ps.DisplayIndex];
+
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                     script.Variables.Add(p.Value.String);
+               }
+            // Missing/Discarded/vArgs: Enumerate in display order
+            else 
+               for (const auto& p : Parameters)
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                     script.Variables.Add(p.Value.String);
 
             // Examine children
             for (const auto& cmd : Children)
