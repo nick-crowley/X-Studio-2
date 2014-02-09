@@ -183,7 +183,7 @@ namespace Testing
             Colour    colour(Colour::White);
             
             // Index
-            line += GuiString(cmd.Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
+            line += GuiString(cmd.Is(CommandType::Standard) && !cmd.Commented ? L"%03d: " : L"---: ", Index);
             
             // Logic
             switch (cmd.Logic)
