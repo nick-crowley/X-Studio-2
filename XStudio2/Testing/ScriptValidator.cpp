@@ -221,12 +221,12 @@ namespace Testing
             auto copy_cmds = copy.Commands.Input;
             CompileScript(copy, tmp);
             
-            // Compare command text
-            Console << Cons::Bold << "Comparing translated command text..." << ENDL;
-            ScriptTextValidator::Compare(orig_txt, copy_txt);
-
             try
             {
+               // Compare command text
+               Console << Cons::Bold << "Comparing translated command text..." << ENDL;
+               ScriptTextValidator::Compare(orig_txt, copy_txt);
+
                // Compare input command list
                Console << Cons::Bold << "Comparing intermediate code..." << ENDL;
                ScriptTextValidator::Compare(orig, copy);
