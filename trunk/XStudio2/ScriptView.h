@@ -11,7 +11,7 @@
 //#include "afxwin.h"
 
 /// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------ EVENTS AND DELEGATES -----------------
 
@@ -92,5 +92,5 @@ NAMESPACE_BEGIN(GUI)
    #endif
 
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Views)
 
