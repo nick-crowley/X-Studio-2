@@ -487,7 +487,12 @@ namespace Logic
 
             // Commented Command:
             if (MatchCommand(lex2) && (node = ReadCommand(lex2, true)))
+#ifdef VALIDATION
+               if (!node->Is(CMD_DEFINE_LABEL))
+                  return node;
+#else
                return node;
+#endif
 
             // Commented Expression:
             else if (MatchExpression(lex2) && (node = ReadExpression(lex2, true)))
