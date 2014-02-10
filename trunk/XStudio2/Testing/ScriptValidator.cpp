@@ -155,7 +155,9 @@ namespace Testing
                ++stdIndex;
             else
                ++auxIndex;
-            ++LineNumber;
+
+            if (!cmd.Is(CMD_HIDDEN_JUMP))
+               ++LineNumber;
          }
       
          Console << ENDL;
