@@ -70,18 +70,19 @@ namespace Logic
       XFileSystem     vfs;
       vector<wstring> SkipList = 
       {
-         L"plugin.com.logistics.main.mk1.pck",      // X3TC: Corrupt <codearray> line number
-         L"!move.resupply.group.pck",               // X3TC/X3AP: Unsupported '= + ..' syntax
-         L"aab.query.menu.xml",                     // X3TC: Contains command comment encoded as comment
-         L"plugin.com.logistics.config.mk2.pck",    // X3TC: Contains command comment encoded as comment
-         L"plugin.piracy.detectbase.xml",           // X3TC: Contains command comment encoded as comment
+         //L"plugin.com.logistics.main.mk1.pck",      // X3TC: Corrupt <codearray> line number
+         L"!move.resupply.group.pck",                 // X3TC/X3AP: Unsupported '= + ..' syntax
+         //L"aab.query.menu.xml",                     // X3TC: Contains command comment encoded as comment
+         //L"plugin.com.logistics.config.mk2.pck",    // X3TC: Contains command comment encoded as comment
+         //L"plugin.piracy.detectbase.xml",           // X3TC: Contains command comment encoded as comment
+         L"!lib.get.randomshiptype.pck",              // X3AP: Not all control paths return a value
       };
 
       // Feedback
       Console << Cons::Heading << L"Performing MSCI script batch test: " << ENDL;
 
       // Browse scripts in VFS
-      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+      vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude);
       UINT count = 0, total = vfs.Browse(XFolder::Scripts).size() - SkipList.size();
 
       // Browse scripts
