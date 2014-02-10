@@ -161,9 +161,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (Document == nullptr)
          throw InvalidOperationException(HERE, L"Must attach document prior to displaying text");
 
+      // Extend character limit
+      LimitText(256*1024);
+
       // Replace contents with RTF
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str());
+      if (!SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
+         throw Win32Exception(HERE, L"Unable to set script text");
 
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width()+10);

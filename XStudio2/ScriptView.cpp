@@ -156,23 +156,30 @@ NAMESPACE_BEGIN(GUI)
       // Attach edit to document
       GetDocument()->AttachEdit(RichEdit);
 
-      // Convert script to RTF (ansi)
-      string txt;
-      RtfScriptTextWriter w(txt);
-      w.Write(GetDocument()->Script);
-      w.Close();
+      try
+      {
+         // Convert script to RTF (ansi)
+         string txt;
+         RtfScriptTextWriter w(txt);
+         w.Write(GetDocument()->Script);
+         w.Close();
 
-      // Setup RichEdit
-      RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-      RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
+         // Setup RichEdit
+         RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
+         RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
 
-      // Display script text
-      RichEdit.SetDocument(GetDocument());
-      RichEdit.SetRtf(txt);
+         // Display script text
+         RichEdit.SetDocument(GetDocument());
+         RichEdit.SetRtf(txt);
 
-      // Populate variables/scope
-      PopulateVariables();
-      PopulateScope();
+         // Populate variables/scope
+         PopulateVariables();
+         PopulateScope();
+      }
+      catch (ExceptionBase& e)
+      {
+         theApp.ShowError(HERE, e, L"Unable to initialise the script view");
+      }
    }
    
    /// <summary>Query state of clipboard copy context menu command</summary>

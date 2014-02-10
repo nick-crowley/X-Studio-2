@@ -2,3 +2,7 @@
    errors are never underlined.
 
 2. CommandNode relies on a hardcoded script folder to resolve script-calls
+
+3. Cleanup new vArg flags in parameter/command syntax
+
+4. script-calls and argument name resolution are both case sensitive, make them case insensitive

@@ -246,7 +246,7 @@ namespace Logic
       /// <param name="src">Location of throw</param>
       /// <param name="msg">message</param>
       Win32Exception(wstring  src, wstring  msg) 
-         : ExceptionBase(src, msg + L" : " + SysErrorString())
+         : ExceptionBase(src, msg + L" : " + (GetLastError() ? (wstring)SysErrorString() : L"<Subsystem provided no further details>"))
       {}
    };
 

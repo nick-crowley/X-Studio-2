@@ -251,7 +251,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_MESSAGE_MAP()
 
       static const wchar*  GetString(Suggestion& s);
-	  
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			

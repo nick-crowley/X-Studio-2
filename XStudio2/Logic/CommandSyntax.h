@@ -177,7 +177,7 @@ namespace Logic
       #define    CMD_CONTINUE                     6
       #define    CMD_GOTO_LABEL                   100
       #define    CMD_DEFINE_LABEL                 101
-      #define    CMD_CALL_SCRIPT         102
+      #define    CMD_CALL_SCRIPT                  102
       #define    CMD_RETURN                       103
       #define    CMD_EXPRESSION                   104
       #define    CMD_RANDOM_VALUE_ZERO            106
