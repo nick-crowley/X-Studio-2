@@ -130,7 +130,7 @@ namespace Testing
       private:
          bool  Compare(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help);
          void  CompareArguments();
-         void  CompareCommands();
+         void  CompareCommands(CommandType cmdType);
          bool  CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help);
          void  CompareVariables();
 
