@@ -135,9 +135,9 @@ namespace Testing
       /// <param name="cmdType">branch type</param>
       void  ScriptCodeValidator::CompareCommands(CommandType cmdType)
       {
-         int codeArrayIndex = (cmdType == CommandType::Standard ? 6 : 8);
+         int codeArrayIndex  = (cmdType == CommandType::Standard ? 6 : 8);
          const wchar* branch = (cmdType == CommandType::Standard ? L"std" : L"aux");
-         UINT initialIndex = (cmdType == CommandType::Standard ? 0 : 1);
+         UINT initialIndex   = (cmdType == CommandType::Standard ? 0 : 1);
 
          // Verify branch size
          CompareSize(In.CodeArray, Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch size", branch).c_str());
@@ -159,6 +159,10 @@ namespace Testing
             // Get command branch
             auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
             auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
+
+            // [LABEL DEF] variously encoded as NOP/CmdComment, depending on the author.  All mine are encoded as CmdComment.
+            if (cmdType == CommandType::Auxiliary && IsCommentedLabel(in_cmd, out_cmd, line))
+               continue;
 
             // Get command ID
             Compare(in_cmd, out_cmd, nodeIndex, line + L"command ID");
@@ -315,6 +319,43 @@ namespace Testing
             OutVars.push_back( ScriptVariable(Out.ReadString(out_vars, i, L"variable name"), i) );
          }
          
+      }
+      
+      /// <summary>Check for a label definition encoded as a comment in the egosoft script, and an commented command by my compiler</summary>
+      /// <param name="in_cmd">input command</param>
+      /// <param name="out_cmd">output command</param>
+      /// <param name="line">The line.</param>
+      /// <returns>True if same label name but encoded different ways, otherwise false</returns>
+      /// <exception cref="Testing::Scripts::ValidationException">Label names don't match</exception>
+      bool  ScriptCodeValidator::IsCommentedLabel(XmlNodePtr in_cmd, XmlNodePtr out_cmd, const GuiString& line)
+      {
+         // Get command IDs
+         UINT in_ID  = In.ReadInt(in_cmd, 1, (line+L"command ID").c_str()),
+              out_ID = Out.ReadInt(out_cmd, 1, (line+L"command ID").c_str());
+
+         // Check for Comment vs CommandComment
+         if (in_ID == CMD_COMMENT && out_ID == CMD_COMMAND_COMMENT)
+         {
+            // Verify underlying ID is label definition
+            if (Out.ReadInt(out_cmd, 2, (line+L"commented command ID").c_str()) != CMD_DEFINE_LABEL)
+               return false;
+
+            // [COMMENT vs COMMENTED DEFINE_LABEL] Read names from different indicies
+            auto v1 = In.ReadString(in_cmd, 2, (line+L"label defintion").c_str());
+            auto v2 = Out.ReadString(out_cmd, 3, (line+L"commented label definition").c_str());
+
+            // Strip trailing colon + whitespace from comment version
+            v1 = GuiString(v1).TrimRight(L": ");
+
+            // Compare names
+            if (v1 != v2)
+               throw CodeMismatch(HERE, (line+L"commented label definition"), v1, v2);
+
+            return true;
+         }
+
+         // Not a mismatched label
+         return false;
       }
 
    }
