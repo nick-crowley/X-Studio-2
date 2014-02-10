@@ -19,9 +19,9 @@ namespace Logic
       {}
 
       /// <summary>Create an argument parameter for a PARSED VARG SCRIPT CALL</summary>
-      /// <param name="name">Argument name</param>
+      /// <param name="name">Argument name token</param>
       /// <param name="val">Value token</param>
-      ScriptParameter::ScriptParameter(const wstring& name, const ScriptToken& val) 
+      ScriptParameter::ScriptParameter(const ScriptToken& name, const ScriptToken& val) 
          : Syntax(ParameterSyntax::ScriptCallArgument), 
            Type(IdentifyDataType(val)), 
            Token(val), 

@@ -105,7 +105,7 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptParameter(const wstring& name, const ScriptToken& val);
+         ScriptParameter(const ScriptToken& name, const ScriptToken& val);
          ScriptParameter(const ParameterSyntax& s, const ScriptToken& t);
          ScriptParameter(const ParameterSyntax& s, Conditional c);
          ScriptParameter(const ParameterSyntax& s, DataType t, ParameterValue val);
@@ -139,9 +139,9 @@ namespace Logic
          DataType        Type;
          ParameterValue  Value;
          ParameterSyntax Syntax;
-         wstring         ArgName,
-                         Text;
-         ScriptToken     Token;
+         wstring         Text;
+         ScriptToken     ArgName,
+                         Token;
       };
 
       /// <summary>Write script parameter to the console</summary>
