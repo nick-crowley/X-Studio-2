@@ -149,7 +149,7 @@ namespace Logic
          private:
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
-            void  IdentifyVariables(ScriptFile& script);
+            void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
             void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandNode* target);
             void  LinkCommands(ErrorArray& errors);

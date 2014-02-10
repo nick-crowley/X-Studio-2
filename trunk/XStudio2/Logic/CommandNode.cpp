@@ -353,7 +353,7 @@ namespace Logic
          void  CommandNode::Verify(ScriptFile& script, ErrorArray& errors) 
          {
             // Identify labels/variables
-            IdentifyVariables(script);
+            IdentifyVariables(script, errors);
 
             // parameters
             VerifyCommand(script, errors);
@@ -629,14 +629,20 @@ namespace Logic
 
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
          /// <param name="script">script.</param>
-         void  CommandNode::IdentifyVariables(ScriptFile& script) 
+         /// <param name="errors">Errors collection</param>
+         void  CommandNode::IdentifyVariables(ScriptFile& script, ErrorArray& errors) 
          {
             // Do not enumerate the labels/variables of command comments  [But do include script-calls]
             if (!CmdComment)
             {
                // Add label definitions to script
                if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
-                  script.Labels.Add(Parameters[0].Value.String, LineNumber);
+               {
+                  auto name = Parameters[0].Value.String;
+                  // Ensure unique
+                  if (!script.Labels.Add(name, LineNumber))
+                     errors += MakeError(GuiString(L"Label '%s' already defined on line %d", script.Labels[name].LineNumber), Parameters[0].Token);
+               }
 
    #ifdef VALIDATION
                // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
@@ -676,7 +682,7 @@ namespace Logic
 
             // Examine children
             for (const auto& cmd : Children)
-               cmd->IdentifyVariables(script);
+               cmd->IdentifyVariables(script, errors);
          }
          
          /// <summary>Calculates the standard command index</summary>
