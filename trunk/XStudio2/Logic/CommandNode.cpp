@@ -842,6 +842,7 @@ namespace Logic
                   // Error in CmdComment: Silently revert to ordinary comment
                   if (CmdComment && !errQueue.empty())
                   {
+                     // DEBUG:
                      for (auto& err : errQueue)
                         Console << err.Line << " " << err.Message << " " << err.Text << ENDL;
                      RevertCommandComment();
@@ -970,8 +971,9 @@ namespace Logic
 
             // Label: Ensure exists  [Don't check if commented]
             case TokenType::Label:
-               if (!script.Labels.Contains(p.Value.String) && !CmdComment)
-                  errors += MakeError(L"Unrecognised label", p.Token);
+               if (!CmdComment)
+                  if (!script.Labels.Contains(p.Value.String))
+                     errors += MakeError(L"Unrecognised label", p.Token);
                break;
             }
 
@@ -982,7 +984,7 @@ namespace Logic
                auto callName = GetScriptCallName();
                      
                // Skip check if name or script is missing 
-               if (!callName.empty() || !script.ScriptCalls.Contains(callName))
+               if (!callName.empty() && script.ScriptCalls.Contains(callName))
                {
                   auto call = script.ScriptCalls.Find(callName);
 

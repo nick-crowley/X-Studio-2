@@ -24,7 +24,7 @@ namespace Testing
          /// <param name="orig">Original value</param>
          /// <param name="copy">Validation copy value</param>
          ValidationException(wstring  src, GuiString msg, GuiString orig, GuiString copy) 
-            : ExceptionBase(src, GuiString(L"Validation failed: ") + msg + L"\n  Original: " + orig + L"\n  Copy: " + copy)
+            : ExceptionBase(src, GuiString(L"Validation failed: %s\n  Original: '%s'\n  Copy: '%s'", msg.c_str(), orig.c_str(), copy.c_str()) )
          {}
       };
 
@@ -142,6 +142,7 @@ namespace Testing
          void  CompareCommands(CommandType cmdType);
          bool  CompareSize(XmlNodePtr parent_in, XmlNodePtr parent_out, UINT index, GuiString help);
          void  CompareVariables();
+         bool  IsCommentedLabel(XmlNodePtr in_cmd, XmlNodePtr out_cmd, const GuiString& line);
 
          // -------------------- REPRESENTATION ---------------------
       private:

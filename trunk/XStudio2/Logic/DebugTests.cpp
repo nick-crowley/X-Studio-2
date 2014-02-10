@@ -70,12 +70,14 @@ namespace Logic
       XFileSystem     vfs;
       vector<wstring> SkipList = 
       {
-         L"plugin.com.logistics.main.mk1.pck",  // X3TC: Corrupt <codearray> line number
-         //L"!lib.war.races.pck",                 // X3TC: Un-optimized JMP-RET commands
-         //L"!job.special.spacefly.hunter.pck",   // X3TC: Un-optimized JMP-RET commands
+         L"plugin.com.logistics.main.mk1.pck",    // X3TC: Corrupt <codearray> line number
          L"!move.resupply.group.pck",             // X3TC/X3AP: Unsupported '= + ..' syntax
-         //L"!lib.fleet.shipsfortarget.pck",      // X3AP: Un-optimized JMP-RET commands
-         //L"!lib.get.randomshiptype.pck",          // X3AP: Not all control paths return a value
+         
+         //L"!job.trade.docktrader.pck",            // X3TC: Contains label definition encoded as comment instead of command comment
+         //L"!job.trade.freetrader.pck",            // X3TC: Contains label definition encoded as comment instead of command comment
+         //L"!job.trade.freetrader.docksonly.pck",  // X3TC: Contains label definition encoded as comment instead of command comment
+         //L"!job.trade.freetrader.raceonly.pck"    // X3TC: Contains label definition encoded as comment instead of command comment
+         //L"!move.mine.loop.pck",                  // X3TC: Contains label definition encoded as comment instead of command comment
       };
 
       // Feedback

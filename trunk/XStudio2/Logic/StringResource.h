@@ -163,8 +163,8 @@ namespace Logic
 
          auto pos = s.find_last_not_of(chars);
          // Strip chars
-         if (pos != s.size()-1 && pos != npos)
-            s.erase(s.begin()+pos, s.end());
+         if (pos != npos)
+            s.erase(s.begin()+pos+1, s.end());
          return s;
       }
 
