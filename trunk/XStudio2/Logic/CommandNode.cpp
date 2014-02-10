@@ -204,9 +204,11 @@ namespace Logic
          }
          
          /// <summary>Query command syntax ID</summary>
+         /// <param name="id">Command ID</param>
+         /// <returns>True if command is uncommented and has a matching ID, otherwise false</returns>
          bool  CommandNode::Is(UINT ID) const
          {
-            return Syntax.Is(ID);
+            return !CmdComment && Syntax.Is(ID);
          }
 
          /// <summary>Query command syntax type</summary>
@@ -835,9 +837,10 @@ namespace Logic
                   for (const ScriptParameter& p : Parameters)
                      VerifyParameter(p, index++, script, errQueue);
 
-                  // Verify varg argument count
-                  if (!Is(CMD_CALL_SCRIPT) && Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
-                     errQueue += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
+                  // Verify vArg argument count     [Genuine CallScript commands can have unlimited arguments]
+                  if (!Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
+                     if (Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
+                        errQueue += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
 
                   // Error in CmdComment: Silently revert to ordinary comment
                   if (CmdComment && !errQueue.empty())
