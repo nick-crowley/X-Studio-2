@@ -190,13 +190,13 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
 
-            /// <summary>Adds a variable using the next available ID. If name already exists no changes are made</summary>
+            /// <summary>Adds a label name to the collection</summary>
             /// <param name="name">label name</param>
             /// <param name="line">1-based line number</param>
-            void  Add(const wstring& name, UINT line)
+            /// <returns>True if inserted, False if already present</returns>
+            bool  Add(const wstring& name, UINT line)
             {
-               if (!Contains(name))
-                  insert( value_type(name, ScriptLabel(name, line)) );
+               return insert( value_type(name, ScriptLabel(name, line)) ).second;
             }
 
             /// <summary>Clears all labels</summary>
