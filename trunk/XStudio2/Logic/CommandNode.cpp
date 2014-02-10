@@ -807,7 +807,7 @@ namespace Logic
                   VerifyParameter(p, index++, script, errors);
 
                // Verify varg argument count
-               if (!Is(CMD_CALL_SCRIPT) && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
+               if (!Is(CMD_CALL_SCRIPT) && Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
                   errors += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
             }
 

@@ -182,7 +182,6 @@ namespace Logic
       protected:
          ReaderPtr   GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
          void        ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs);
-         ScriptFile  ReadExternalScript(const wstring& name);
          void        ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
 
 		   // -------------------- REPRESENTATION ---------------------
