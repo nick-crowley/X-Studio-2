@@ -32,7 +32,7 @@ namespace Logic
             Parameters += params[ps.DisplayIndex];
 
          // SCRIPT-CALL: Append arguments
-         if (Syntax.Is(CMD_CALL_SCRIPT_VAR_ARGS))
+         if (Syntax.Is(CMD_CALL_SCRIPT))
          {
             // Count
             Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.Parameters.size());
@@ -315,7 +315,7 @@ namespace Logic
                   Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #else
                // Drop 'null' arguments iff remainder are 'null' and command is not genuine 102 varg ScriptCall
-               if (Is(CMD_CALL_SCRIPT_VAR_ARGS) || !all_of(it, vargs.end(), isNull) )
+               if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
                   Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #endif
          }

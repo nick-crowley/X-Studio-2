@@ -55,7 +55,7 @@ namespace Logic
                params += ReadParameter(ParameterSyntax::ExpressionParameter, L"commented expression parameter");
             break;
 
-         case CMD_CALL_SCRIPT_VAR_ARGS:
+         case CMD_CALL_SCRIPT:
             // scriptname / RetVar / refObj
             params += ReadParameter(syntax.Parameters[0], L"commented scriptcall script-name");
             params += ReadParameter(syntax.Parameters[1], L"commented scriptcall retVar");

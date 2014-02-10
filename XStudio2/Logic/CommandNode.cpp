@@ -801,9 +801,14 @@ namespace Logic
                else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
                   errors += MakeError(L"Command must be executed asynchronously");
 
-               // Verify parameters
+               // Verify parameter values/types
+               UINT index = 0;
                for (const ScriptParameter& p : Parameters)
-                  VerifyParameter(p, script, errors);
+                  VerifyParameter(p, index++, script, errors);
+
+               // Verify varg argument count
+               if (!Is(CMD_CALL_SCRIPT) && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
+                  errors += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
             }
 
             // Recurse into children
@@ -900,9 +905,10 @@ namespace Logic
          
          /// <summary>Verifies object/label names, and performs static type checking on standard and variable arguments</summary>
          /// <param name="p">parameter</param>
+         /// <param name="index">display index</param>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
-         void  CommandNode::VerifyParameter(const ScriptParameter& p, const ScriptFile& script, ErrorArray& errors) const
+         void  CommandNode::VerifyParameter(const ScriptParameter& p, UINT index, const ScriptFile& script, ErrorArray& errors) const
          {
             GameObjectLibrary::ObjectID obj;
 
@@ -928,27 +934,37 @@ namespace Logic
                break;
             }
 
-            // Varg Argument
+            // varg Argument: Lookup script and verify argument name+type
             if (p.Syntax == ParameterSyntax::ScriptCallArgument)
             {
                // Find scriptName parameter
                auto callName = GetScriptCallName();
                      
-               // Skip check if missing (or a variable)
-               if (!callName.empty())
+               // Skip check if name or script is missing 
+               if (!callName.empty() || !script.ScriptCalls.Contains(callName))
                {
-                  // Lookup argument type
-                  auto type = script.ScriptCalls.FindArgumentType(callName, p.ArgName);
-                  Console << "Script Argument Type Check : " << ::GetString(type) << " vs " << ::GetString(p.Type) << ENDL;
-                  
-                  // Static type check
-                  if (!ParameterSyntax::Verify(type, p.Type))
-                     errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
+                  auto call = script.ScriptCalls.Find(callName);
+
+                  // Verify argument name
+                  if (!call.Variables.Contains(p.ArgName))
+                     errors += MakeError(GuiString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.c_str()), p.Token);
+                  else 
+                  {
+                     auto arg = call.Variables[p.ArgName];
+                     
+                     // Verify argument order
+                     if (arg.ID != index-Syntax.Parameters.size())
+                        errors += MakeError(GuiString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.Token);
+
+                     // Verify argument type 
+                     if (!ParameterSyntax::Verify(arg.ValueType, p.Type))
+                        errors += MakeError(GuiString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ValueType).c_str()), p.Token);
+                  }
                }
             }
-            // Std parameter: Static type check
+            // Std parameter: Check value vs. type
             else if (!p.Syntax.Verify(p.Type))
-               errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
+               errors += MakeError(GuiString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
          }
 
          /// <summary>Verifies that all control paths lead to termination.</summary>
