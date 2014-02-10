@@ -946,15 +946,15 @@ namespace Logic
                   auto call = script.ScriptCalls.Find(callName);
 
                   // Verify argument name
-                  if (!call.Variables.Contains(p.ArgName))
-                     errors += MakeError(GuiString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.c_str()), p.Token);
+                  if (!call.Variables.Contains(p.ArgName.Text))
+                     errors += MakeError(GuiString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
                   else 
                   {
-                     auto arg = call.Variables[p.ArgName];
+                     auto arg = call.Variables[p.ArgName.Text];
                      
                      // Verify argument order
                      if (arg.ID != index-Syntax.Parameters.size())
-                        errors += MakeError(GuiString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.Token);
+                        errors += MakeError(GuiString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
 
                      // Verify argument type 
                      if (!ParameterSyntax::Verify(arg.ValueType, p.Type))
