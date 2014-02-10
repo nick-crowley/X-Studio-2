@@ -24,6 +24,10 @@ namespace Logic
 
 using namespace Logic;
 
+
+/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
+#define VALIDATION
+
 #include "StringResource.h"
 #include "Path.h"
 #include "Exceptions.h"

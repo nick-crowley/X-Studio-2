@@ -8,8 +8,6 @@
 #include "ScriptToken.h"
 #include <algorithm>
 
-/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
-#define VALIDATION
 
 namespace Logic
 {
