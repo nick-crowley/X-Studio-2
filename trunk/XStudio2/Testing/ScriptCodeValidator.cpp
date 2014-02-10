@@ -31,7 +31,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"code mismatch: %s\n  original='%s'\n  copy='%s'\n", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"code mismatch: %s", prop.c_str()), a, b);
       }
 
       /// <summary>Create text mismatch exception</summary>
@@ -137,6 +137,7 @@ namespace Testing
       {
          int codeArrayIndex = (cmdType == CommandType::Standard ? 6 : 8);
          const wchar* branch = (cmdType == CommandType::Standard ? L"std" : L"aux");
+         UINT initialIndex = (cmdType == CommandType::Standard ? 0 : 1);
 
          // Verify branch size
          CompareSize(In.CodeArray, Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch size", branch).c_str());
@@ -149,7 +150,7 @@ namespace Testing
          for (int i = 0; i < in_cmds->childNodes->length; i++)
          {
             const CommandSyntax* syntax = nullptr;
-            UINT nodeIndex = 0;
+            UINT nodeIndex = initialIndex;
 
             // Build location description
             auto line = GuiString(L"(%s %d) : ", branch, i);
@@ -159,13 +160,16 @@ namespace Testing
             auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
             auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
 
-            // [AUX] Verify refIndex
-            if (cmdType == CommandType::Auxiliary)
-               Compare(in_cmd, out_cmd, nodeIndex++, line + L"RefIndex");
-            
             // Get command ID
             Compare(in_cmd, out_cmd, nodeIndex, line + L"command ID");
             syntax = &SyntaxLib.Find(In.ReadInt(in_cmd, nodeIndex++, (line+L"command ID").c_str()), Version);
+
+            // [AUX] Verify refIndex
+            if (cmdType == CommandType::Auxiliary)
+               // JMP is appended as child of break/continue, so my RefIndex associates with JMP, not the following Std command.
+               //  This means that break/continue refIndex cannot be validated
+               if (!syntax->Is(CMD_BREAK) && !syntax->Is(CMD_CONTINUE))
+                  Compare(in_cmd, out_cmd, 0, line + L"RefIndex");
 
             // [CMD COMMENT] Get true command ID
             if (syntax->Is(CMD_COMMAND_COMMENT))

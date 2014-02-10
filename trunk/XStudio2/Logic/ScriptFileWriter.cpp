@@ -215,13 +215,13 @@ namespace Logic
          switch (p.Syntax.Type)
          {
          // Single int node
-         case ParameterType::VARIABLE:
          case ParameterType::STRUCTURAL_COUNT:
          case ParameterType::EXPRESSION_INFIX:
             WriteInt(parent, p.Value.Int);
             break;
 
          // Single node, int/string depends on whether cmd is commented
+         case ParameterType::VARIABLE:
          case ParameterType::RETURN_VALUE:
          case ParameterType::RETURN_VALUE_IF:
          case ParameterType::RETURN_VALUE_IF_START:
