@@ -25,6 +25,26 @@ namespace Logic
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
+      
+      /// <summary>Reads the properties of an external script</summary>
+      /// <param name="folder">folder to search</param>
+      /// <param name="script">script name WITHOUT extension</param>
+      /// <returns>ScriptFile containing properties only</returns>
+      ScriptFile  ScriptFileReader::ReadExternalScript(Path folder, const wstring& script)
+      {
+         // Generate path
+         Path path(folder + (script + L".pck"));
+
+         // Check for PCK and XML versions
+         if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
+            throw FileNotFoundException(HERE, folder+script);
+
+         // Feedback
+         Console << L"  Resolving script call: " << Colour::Yellow << script << Colour::White << L"..." << ENDL;
+
+         // Read script
+         return ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
+      }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -190,7 +210,7 @@ namespace Logic
 
                   // Read unless previously read
                   if (!name.empty() && !script.ScriptCalls.Contains(name))
-                     script.ScriptCalls.Add(name, ReadExternalScript(name));
+                     script.ScriptCalls.Add(name, ReadExternalScript(Folder, name));
                }
                catch (ExceptionBase& e ) {
                   if (e.ErrorID != ERROR_FILE_NOT_FOUND)
@@ -202,25 +222,6 @@ namespace Logic
             cmd.Translate(script);
             ++line;
          }
-      }
-
-      /// <summary>Reads the properties of an external script in the same folder</summary>
-      /// <param name="name">script name</param>
-      /// <returns>ScriptFile containing properties only</returns>
-      ScriptFile  ScriptFileReader::ReadExternalScript(const wstring& name)
-      {
-         // Generate path
-         Path path(Folder + (name + L".pck"));
-
-         // Check for PCK and XML versions
-         if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
-            throw FileNotFoundException(HERE, Folder+name);
-
-         // Feedback
-         Console << L"  Resolving script call: " << Colour::Yellow << name << Colour::White << L"..." << ENDL;
-
-         // Read script
-         return ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
       }
 
 

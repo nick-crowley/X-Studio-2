@@ -18,6 +18,18 @@ namespace Logic
          : Syntax(s), Token(t), Type(IdentifyDataType(t)), Value(t.ValueText), Text(t.Text)
       {}
 
+      /// <summary>Create an argument parameter for a PARSED VARG SCRIPT CALL</summary>
+      /// <param name="name">Argument name</param>
+      /// <param name="val">Value token</param>
+      ScriptParameter::ScriptParameter(const wstring& name, const ScriptToken& val) 
+         : Syntax(ParameterSyntax::ScriptCallArgument), 
+           Type(IdentifyDataType(val)), 
+           Token(val), 
+           Value(val.ValueText), 
+           Text(val.Text), 
+           ArgName(name)
+      {}
+
       /// <summary>Create a conditional retVar parameter from a PARSED CONDITIONAL</summary>
       /// <param name="s">syntax</param>
       /// <param name="c">The conditional.</param>

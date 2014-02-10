@@ -286,12 +286,12 @@ namespace Logic
          // Trim leading spaces
          Text = Text.TrimLeft(L" ");
 
-         // Expressions: Print remaining syntax
+         // Expressions: Print components
          if (Is(CMD_EXPRESSION))
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
 
-         // Varg Script Calls: Print remaining syntax
+         // ScriptCalls: Print argument name/value pairs
          else if (Syntax.IsVariableArgument())
          {
             typedef pair<wstring,ScriptParameter> Argument;
@@ -305,13 +305,19 @@ namespace Logic
             
             // Populate argument name/value pairs
             for (UINT p = Syntax.Parameters.size(), a = 0; p < Parameters.size(); ++p, ++a)
-               vargs.push_back( Argument(f.ScriptCalls.FindArgument(script, a), Parameters[p]) );
+               vargs.push_back( Argument(f.ScriptCalls.FindArgumentName(script, a), Parameters[p]) );
 
             // Append argument pairs
             for (auto it = vargs.begin(); it != vargs.end(); ++it)
-               // Drop 'null' arguments if following are all 'null'  (Exception: Genuine varg script-calls have all args appended)
+#ifndef VALIDATION
+               // Drop 'null' arguments iff remainder are 'null' 
+               if (!all_of(it, vargs.end(), isNull))
+                  Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+#else
+               // Drop 'null' arguments iff remainder are 'null' and command is not genuine 102 varg ScriptCall
                if (Is(CMD_CALL_SCRIPT_VAR_ARGS) || !all_of(it, vargs.end(), isNull) )
                   Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+#endif
          }
          
          // Concurrent: Insert 'start' keyword

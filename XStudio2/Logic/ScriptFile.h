@@ -316,9 +316,9 @@ namespace Logic
             /// <param name="name">name without $ prefix</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
-            ScriptVariable& operator[](const wstring& name)
+            const ScriptVariable& operator[](const wstring& name) const
             {
-               iterator v;
+               const_iterator v;
 
                // Lookup variable by name
                if ((v=find(name)) != base::end())
@@ -395,7 +395,7 @@ namespace Logic
             /// <param name="name">script name</param>
             /// <returns></returns>
             /// <exception cref="Logic::InvalidOperationException">Script not present</exception>
-            const ScriptFile&  Find(const wstring& name)
+            const ScriptFile&  Find(const wstring& name) const
             {
                const_iterator pos;
                // Lookup and return
@@ -407,18 +407,31 @@ namespace Logic
             }
 
             /// <summary>Finds a name of script argument by index.</summary>
-            /// <param name="name">script name (without extension, case sensitive)</param>
+            /// <param name="script">script name (without extension, case sensitive)</param>
             /// <param name="index">Zero based index</param>
             /// <returns>Argument name if found, otherwise placeholder</returns>
-            /// <exception cref="Logic::InvalidOperationException">Script not present</exception>
-            wstring  FindArgument(const wstring& name, UINT index)
+            wstring  FindArgumentName(const wstring& script, UINT index) const
             {
-               // Lookup name + Validate index
-               if (Contains(name) && index < Find(name).Variables.GetCount())
-                  return Find(name).Variables[index].Name;
+               // Lookup script + Validate index
+               if (Contains(script) && index < Find(script).Variables.GetCount())
+                  return Find(script).Variables[index].Name;
                
                // Missing/Invalid: 
                return GuiString(L"arg%d", index+1);
+            }
+
+            /// <summary>Finds a type of script argument by name</summary>
+            /// <param name="script">script name (without extension, case sensitive)</param>
+            /// <param name="arg">Argument name</param>
+            /// <returns>Argument type if found, otherwise PS_VALUE  (Which is immune from static type checking)</returns>
+            ParameterType  FindArgumentType(const wstring& script, const wstring& arg) const
+            {
+               // Lookup script + Validate index
+               if (Contains(script))
+                  return Find(script).Variables[arg].ValueType;
+               
+               // Missing/Invalid: 
+               return ParameterType::VALUE;
             }
          };
 

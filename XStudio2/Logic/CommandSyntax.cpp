@@ -200,7 +200,7 @@ namespace Logic
       /// <returns></returns>
       bool  CommandSyntax::IsScriptCall() const
       {
-         return find_if(Parameters.begin(), Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} ) != Parameters.end();
+         return any_of(Parameters.begin(), Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} );
       }      
 
       /// <summary>Query whether command has variable arguments</summary>
