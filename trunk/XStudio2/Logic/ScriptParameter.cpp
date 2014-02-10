@@ -164,12 +164,18 @@ namespace Logic
 
       /// <summary>Generates value from text</summary>
       /// <param name="script">script used for variable ID lookup</param>
+      /// <param name="jumpDestination">Zero-based jump destination</param>
+      /// <param name="commented">Whether parameter belongs to a command comment</param>
       /// <exception cref="Logic::AlgorithmException">Invalid jump destination</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid script object ID</exception>
-      void  ScriptParameter::Generate(ScriptFile& script, UINT jumpDestination)
+      void  ScriptParameter::Generate(ScriptFile& script, UINT jumpDestination, bool commented)
       {
          const ScriptObject* obj = nullptr;
          GameObjectLibrary::ObjectID  ware;
+
+         // Commented: Use zero for all jump destinations
+         if (commented)
+            jumpDestination = NULL;
 
          switch (Type)
          {
@@ -208,11 +214,11 @@ namespace Logic
             }
             break;
 
-         // String: Label/Comment/String
+         // String: Label/Comment/String/Commented-LabelNumber
          case DataType::STRING:
             break;
 
-         // Integer: Number or LabelNumber
+         // Integer: Number/Uncommented-LabelNumber
          case DataType::INTEGER:
             // Goto/Gosub: Set jump address
             if (Syntax.Type == ParameterType::LABEL_NUMBER)
@@ -224,6 +230,7 @@ namespace Logic
                Value = jumpDestination;
             }
             else
+               // Number: Str->Int
                Value = _wtoi(Value.String.c_str());
             break;
 
@@ -288,7 +295,7 @@ namespace Logic
          case DataType::WARE:
             // Encode ware placeholders '{SSTYPE_SHIP@232}' manually
             if (GameObjectLib.ParsePlaceholder(Value.String, ware))
-               Value = MAKELONG(ware.SubType, ware.Type);
+               Value = GameObject::GetEncodedValue(ware.Type, ware.SubType);
             else
                Value = GameObjectLib.Find(Value.String).EncodedValue;
             break;

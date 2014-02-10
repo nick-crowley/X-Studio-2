@@ -136,7 +136,6 @@ namespace Logic
             bool          IsRoot() const;
             ErrorToken    MakeError(const GuiString& msg) const;
             ErrorToken    MakeError(const GuiString& msg, const ScriptToken& tok) const;
-            void          VerifyCommand(const ScriptFile& script, ErrorArray& errors) const;
             void          VerifyLogic(ErrorArray& errors) const;
             void          VerifyParameter(const ScriptParameter& p, UINT index, const ScriptFile& script, ErrorArray& errors) const;
             void          VerifyTermination(ErrorArray& errors) const;
@@ -154,6 +153,8 @@ namespace Logic
             void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandNode* target);
             void  LinkCommands(ErrorArray& errors);
+            void  RevertCommandComment();
+            void  VerifyCommand(const ScriptFile& script, ErrorArray& errors);
             
             // -------------------- REPRESENTATION ---------------------
          public:

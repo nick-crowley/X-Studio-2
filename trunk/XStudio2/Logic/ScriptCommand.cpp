@@ -24,8 +24,9 @@ namespace Logic
       /// <param name="text">Entire command text</param>
       /// <param name="syntax">Command syntax</param>
       /// <param name="params">Parameters in DISPLAY ORDER</param>
-      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& params)
-         : Syntax(syntax), RefIndex(0), Text(text)
+      /// <param name="cmdComment">Whether command is commented</param>
+      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& params, bool cmdComment)
+         : Syntax(syntax), RefIndex(0), Text(text), Commented(cmdComment)
       {
          // Re-order parameters by physical index
          for (auto& ps : Syntax.Parameters)
@@ -55,40 +56,54 @@ namespace Logic
       }
 
       /// <summary>Create an expression PARSED FROM COMMAND TEXT</summary>
-      /// <param name="text">Entire command text</param>
-      /// <param name="syntax">Command syntax</param>
+      /// <param name="text">Entire expression text</param>
+      /// <param name="syntax">Expression syntax</param>
       /// <param name="infix">RetVar + Parameters in INFIX ORDER</param>
       /// <param name="postfix">Parameters in POSTFIX ORDER</param>
-      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix)
-         : Syntax(syntax), RefIndex(0), Text(text)
+      /// <param name="cmdComment">Whether expression is commented</param>
+      ScriptCommand::ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, bool cmdComment)
+         : Syntax(syntax), RefIndex(0), Text(text), Commented(cmdComment)
       {
          // RetVar
          Parameters += infix[0];
 
-         // Postfix Count:
-         Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, postfix.size());
+         // Commented Expression: Supply infix tuples only
+         if (Commented)
+         {
+            // Infix Count:  (minus RetVar)
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, infix.size()-1);
 
-         // Postfix: Append verbatim   (Syntax is 'ExpressionParameter')
-         Parameters += postfix;
+            // Infix Parameter tuples
+            for (UINT i = 1; i < infix.size(); ++i)
+               Parameters += infix[i];
+         }
+         else
+         {
+            // Postfix Count:
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, postfix.size());
+
+            // Postfix: Append verbatim   (Syntax is 'ExpressionParameter')
+            Parameters += postfix;
                      
-         // Infix Count:  (minus RetVar)
-         Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, infix.size()-1);
+            // Infix Count:  (minus RetVar)
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, infix.size()-1);
 
-         // Infix: Use 'InfixParameter' syntax to define single nodes.  +ve == operator, -ve == 1-based index into postfix array
-         for (UINT i = 1; i < infix.size(); ++i)
-            if (infix[i].Type == DataType::OPERATOR || infix[i].Type == DataType::UNARY_OPERATOR)
-               // Operator: Preserve type/value, change syntax
-               Parameters += ScriptParameter(ParameterSyntax::InfixParameter, infix[i].Type, infix[i].Value);
-            else
-            {
-               // Lookup postfix param
-               if (find(postfix.begin(), postfix.end(), infix[i]) == postfix.end())
-                  throw AlgorithmException(HERE, L"Unable to find postfix parameter");
+            // Infix: Use 'InfixParameter' syntax to define single nodes.  +ve == operator, -ve == 1-based index into postfix array
+            for (UINT i = 1; i < infix.size(); ++i)
+               if (infix[i].Type == DataType::OPERATOR || infix[i].Type == DataType::UNARY_OPERATOR)
+                  // Operator: Preserve type/value, change syntax
+                  Parameters += ScriptParameter(ParameterSyntax::InfixParameter, infix[i].Type, infix[i].Value);
+               else
+               {
+                  // Lookup postfix param
+                  if (find(postfix.begin(), postfix.end(), infix[i]) == postfix.end())
+                     throw AlgorithmException(HERE, L"Unable to find postfix parameter");
 
-               // Operand: Calculate Negative 1-based array index 
-               int index = find(postfix.begin(), postfix.end(), infix[i]) - postfix.begin();
-               Parameters += ScriptParameter(ParameterSyntax::InfixParameter, DataType::INTEGER, -(index+1));
-            }
+                  // Operand: Calculate Negative 1-based array index 
+                  int index = find(postfix.begin(), postfix.end(), infix[i]) - postfix.begin();
+                  Parameters += ScriptParameter(ParameterSyntax::InfixParameter, DataType::INTEGER, -(index+1));
+               }
+         }
       }
 
       /// <summary>Create a STANDARD command READ FROM A FILE</summary>
