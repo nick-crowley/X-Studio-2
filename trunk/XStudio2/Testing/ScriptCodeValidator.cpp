@@ -78,10 +78,13 @@ namespace Testing
          // Identify script version
          Version = EngineVersionConverter::ToGame( In.ReadInt(In.CodeArray, 1, L"script engine version") );
 
-         // Data + Code
+         // Vars/Args
          CompareVariables();
          CompareArguments();
-         CompareCommands();
+
+         // Std/Aux commands
+         CompareCommands(CommandType::Standard);
+         CompareCommands(CommandType::Auxiliary);
          return true;
       }
 
@@ -128,42 +131,61 @@ namespace Testing
          }
       }
 
-      /// <summary>Compare standard command branches</summary>
-      void  ScriptCodeValidator::CompareCommands()
+      /// <summary>Compare command branches</summary>
+      /// <param name="cmdType">branch type</param>
+      void  ScriptCodeValidator::CompareCommands(CommandType cmdType)
       {
-         // Verify branch sizes
-         CompareSize(In.CodeArray, Out.CodeArray, 6, L"std commands branch size");
-         //CompareSize(In.CodeArray, Out.CodeArray, 8, L"aux commands branch size");
+         int codeArrayIndex = (cmdType == CommandType::Standard ? 6 : 8);
+         const wchar* branch = (cmdType == CommandType::Standard ? L"std" : L"aux");
 
-         // Std Commands
-         auto in_cmds = In.GetChild(In.CodeArray, 6, L"std commands branch");
-         auto out_cmds = Out.GetChild(Out.CodeArray, 6, L"std commands branch");
+         // Verify branch size
+         CompareSize(In.CodeArray, Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch size", branch).c_str());
 
+         // Get branch
+         auto in_cmds = In.GetChild(In.CodeArray, codeArrayIndex, GuiString(L"%s commands branch", branch).c_str());
+         auto out_cmds = Out.GetChild(Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch", branch).c_str());
+
+         // Verify each command
          for (int i = 0; i < in_cmds->childNodes->length; i++)
          {
-            auto line = GuiString(L"(std %d) : ", i);
+            const CommandSyntax* syntax = nullptr;
+            UINT nodeIndex = 0;
+
+            // Build location description
+            auto line = GuiString(L"(%s %d) : ", branch, i);
             bool errors = false;
 
             // Get command branch
             auto in_cmd = In.GetChild(in_cmds, i, (line+L"sub-branch").c_str());
             auto out_cmd = Out.GetChild(out_cmds, i, (line+L"sub-branch").c_str());
 
+            // [AUX] Verify refIndex
+            if (cmdType == CommandType::Auxiliary)
+               Compare(in_cmd, out_cmd, nodeIndex++, line + L"RefIndex");
+            
             // Get command ID
-            Compare(in_cmd, out_cmd, 0, line + L"command ID");
-            CommandSyntax syntax = SyntaxLib.Find(In.ReadInt(in_cmd, 0, (line+L"command ID").c_str()), Version);
+            Compare(in_cmd, out_cmd, nodeIndex, line + L"command ID");
+            syntax = &SyntaxLib.Find(In.ReadInt(in_cmd, nodeIndex++, (line+L"command ID").c_str()), Version);
+
+            // [CMD COMMENT] Get true command ID
+            if (syntax->Is(CMD_COMMAND_COMMENT))
+            {
+               Compare(in_cmd, out_cmd, nodeIndex, line + L"commented command ID");
+               syntax = &SyntaxLib.Find(In.ReadInt(in_cmd, nodeIndex++, (line+L"commented command ID").c_str()), Version);
+            }
 
             // Improve location description
-            line = GuiString(L"(std %d) '%s' : ", i, syntax.Text.c_str());
+            line = GuiString(L"(%s %d) '%s' : ", branch, i, syntax->Text.c_str());
 
             // Node count:  (Skip for commands with known 'hidden' parameters)
-            if (!syntax.Is(CMD_START_DELAYED_COMMAND) && !syntax.Is(CMD_SET_WING_COMMAND) && !syntax.Is(CMD_GET_OBJECT_NAME_ARRAY))
+            if (!syntax->Is(CMD_START_DELAYED_COMMAND) && !syntax->Is(CMD_SET_WING_COMMAND) && !syntax->Is(CMD_GET_OBJECT_NAME_ARRAY))
                CompareSize(in_cmds, out_cmds, i, line+L"node count");
             
             // parameters
-            UINT nodeIndex = 1, paramIndex = 1;
-            for (ParameterSyntax p : syntax.Parameters)
+            UINT paramIndex = 1;
+            for (ParameterSyntax p : syntax->Parameters)
             {
-               GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax.Parameters.size()) + GetString(p.Type));
+               GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax->Parameters.size()) + GetString(p.Type));
                DataType  dt = DataType::UNKNOWN;
 
                try
