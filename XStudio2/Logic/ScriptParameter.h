@@ -131,7 +131,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
       public:
-         void  Generate(ScriptFile& script, UINT jumpDestination);
+         void  Generate(ScriptFile& script, UINT jumpDestination, bool commented);
          void  Translate(ScriptFile& script);
 
 		   // -------------------- REPRESENTATION ---------------------

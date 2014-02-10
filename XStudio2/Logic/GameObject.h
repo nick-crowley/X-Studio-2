@@ -61,6 +61,13 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
 
+         /// <summary>Encodes a ware</summary>
+         /// <returns></returns>
+         static UINT  GetEncodedValue(MainType main, UINT sub) 
+         {
+            return MAKELONG(sub, main);
+         }
+
          // --------------------- PROPERTIES ------------------------
 
          PROPERTY_GET(GuiString,DisplayText,GetDisplayText);

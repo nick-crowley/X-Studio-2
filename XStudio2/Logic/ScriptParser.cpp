@@ -477,7 +477,13 @@ namespace Logic
          {
             ParameterArray params;
             CommandNodePtr node;
-            CommentLexer   lex2(lex.Input);
+
+            // NOP: No processing required
+            if (lex.count() == 0)
+               return new CommandNode(Conditional::NONE, SyntaxLib.Find(CMD_NOP, Version), params, lex, LineNumber, false);
+
+            // Re-lex line without the '*' operator
+            CommentLexer lex2(lex.Input);
 
             // Commented Command:
             if (MatchCommand(lex2) && (node = ReadCommand(lex2, true)))
@@ -486,10 +492,6 @@ namespace Logic
             // Commented Expression:
             else if (MatchExpression(lex2) && (node = ReadExpression(lex2, true)))
                return node;
-
-            // NOP: No processing required
-            if (lex.count() == 0)
-               return new CommandNode(Conditional::NONE, SyntaxLib.Find(CMD_NOP, Version), params, lex, LineNumber, false);
 
             // Comment: Assemble manually
             CommandSyntaxRef syntax = SyntaxLib.Find(CMD_COMMENT, Version);

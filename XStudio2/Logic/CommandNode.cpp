@@ -112,19 +112,19 @@ namespace Logic
             static const wchar* str[] = {L"UNVERIFIED", L"VERIFIED", L"COMPILED"};
             return str[(UINT)s];
          }
-
+         
          /// <summary>Checks whether a command is executable from a logic perspective</summary>
          CommandNode::NodeDelegate  CommandNode::isExecutableCommand = [](const CommandNodePtr& n) 
          { 
-            return n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE); 
+            return !n->CmdComment && (n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE)); 
          };
 
          /// <summary>Checks whether commands are standard</summary>
          CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
          { 
-            return n->Is(CommandType::Standard); 
+            return n->Is(CommandType::Standard) && !n->CmdComment; 
          };
-
+         
          /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
          CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
          { 
@@ -218,6 +218,10 @@ namespace Logic
          /// <summary>Identifies branch logic</summary>
          BranchLogic  CommandNode::GetBranchLogic() const
          {
+            // CmdComment
+            if (CmdComment)
+               return BranchLogic::NOP;
+
             // Command
             switch (Syntax.ID)
             {
@@ -226,7 +230,6 @@ namespace Logic
             case CMD_BREAK:    return BranchLogic::Break;
             case CMD_CONTINUE: return BranchLogic::Continue;
 
-            case CMD_COMMAND_COMMENT:
             case CMD_COMMENT: 
             case CMD_NOP:     
                return BranchLogic::NOP;
@@ -290,6 +293,7 @@ namespace Logic
 
                // NOP:
                case BranchLogic::NOP:
+                  logic = (!CmdComment ? L"NOP" : L"Cmd");
                   colour = Colour::Yellow;
                   break;
 
@@ -562,20 +566,20 @@ namespace Logic
                         p.Type = DataType::INTEGER;   // parameter ctor resolves 'label' token type to DT_STRING
 
                      // Compile
-                     p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP);
+                     p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP, CmdComment);
                   }
 
-                  // Generate & insert command
+                  // Command: Provide compiled parameters in display order
                   if (!Syntax.Is(CMD_EXPRESSION))
-                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters));
+                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, CmdComment));
                   else
                   {
                      // Compile postfix parameters
                      for (auto& p : Postfix)
-                        p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP);
+                        p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP, CmdComment);
 
-                     // Generate & insert command
-                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix));
+                     // Expression: Provide compiled parameters in infix & postfix order
+                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix, CmdComment));
                   }
                }
             }
@@ -604,7 +608,7 @@ namespace Logic
          }
          
          /// <summary>Gets the name of the script (if any) called by this command</summary>
-         /// <returns>Script name, or empty string</returns>
+         /// <returns>Script name, or empty string if defined by variable</returns>
          wstring CommandNode::GetScriptCallName() const
          {
             // Find scriptName parameter
@@ -625,32 +629,36 @@ namespace Logic
          /// <param name="script">script.</param>
          void  CommandNode::IdentifyVariables(ScriptFile& script) 
          {
-            // Add label definitions to script
-            if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
-               script.Labels.Add(Parameters[0].Value.String, LineNumber);
+            // Do not enumerate the labels/variables of command comments  [But do include script-calls]
+            if (!CmdComment)
+            {
+               // Add label definitions to script
+               if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
+                  script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
-#ifdef VALIDATION
-            // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
-            // by enumerating variables in physical syntax order. (Required all parameters be present)
-            if (Parameters.size() == Syntax.Parameters.size())
-               for (const auto& ps : Syntax.Parameters)
-               {
-                  ScriptParameter& p = Parameters[ps.DisplayIndex];
+   #ifdef VALIDATION
+               // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
+               // by enumerating variables in physical syntax order. (Required all parameters be present)
+               if (Parameters.size() == Syntax.Parameters.size())
+                  for (const auto& ps : Syntax.Parameters)
+                  {
+                     ScriptParameter& p = Parameters[ps.DisplayIndex];
 
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String);
-               }
-            else 
-#endif
-               // Missing/Discarded/vArgs: Enumerate in display order
-               for (const auto& p : Parameters)
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String);
+                     if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                        script.Variables.Add(p.Value.String);
+                  }
+               else 
+   #endif
+                  // Missing/Discarded/vArgs: Enumerate in display order
+                  for (const auto& p : Parameters)
+                     if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                        script.Variables.Add(p.Value.String);
+            }
 
             // Load script-calls for argument type-checking
             if (Syntax.IsScriptCall())
             {
-               // Find name of target script (may be a variable)
+               // Find name of target script (empty if a variable)
                wstring call = GetScriptCallName();
 
                try {  
@@ -673,8 +681,8 @@ namespace Logic
          /// <param name="next">Next index to use</param>
          void CommandNode::IndexCommands(UINT& next)
          {
-            // Standard
-            if (!IsRoot() && Is(CommandType::Standard))
+            // Standard command  
+            if (!IsRoot() && !CmdComment && Is(CommandType::Standard))
                Index = next++;
 
             // Recurse into children
@@ -794,14 +802,24 @@ namespace Logic
             return ErrorToken(msg, LineNumber, tok);
          }
 
+         /// <summary>Reverts a command comment with verification errors into an ordinary comment</summary>
+         void CommandNode::RevertCommandComment()
+         {
+            throw NotImplementedException(HERE, L"Cannot revert command comments");
+         }
+
          /// <summary>Verifies the execution type and parameters</summary>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
-         void  CommandNode::VerifyCommand(const ScriptFile& script, ErrorArray& errors) const
+         void  CommandNode::VerifyCommand(const ScriptFile& script, ErrorArray& errors) 
          {
             // Skip for unrecognised commands
             if (Syntax != CommandSyntax::Unrecognised)
             {
+               // CmdComment: Redirect verification errors into dummy queue
+               ErrorArray  commentErrors;
+               ErrorArray& errQueue = (CmdComment ? commentErrors : errors);
+
                // Check for invalid 'start' 
                if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
                   errors += MakeError(L"Command cannot be executed asynchronously");
@@ -818,6 +836,10 @@ namespace Logic
                // Verify varg argument count
                if (!Is(CMD_CALL_SCRIPT) && Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
                   errors += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
+
+               // Error in CmdComment: Silently revert to ordinary comment
+               if (CmdComment && !errQueue.empty())
+                  RevertCommandComment();
             }
 
             // Recurse into children
