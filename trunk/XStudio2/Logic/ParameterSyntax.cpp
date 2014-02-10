@@ -69,25 +69,35 @@ namespace Logic
          return c << "{ParameterSyntax: Type=" << GetString(ps.Type) << "}";
       }
 
-      // ------------------------------- PUBLIC METHODS -------------------------------
-
-      /// <summary>Verifies a data-type against the syntax.</summary>
+      /// <summary>Verifies a parameter type against a parameter data-type</summary>
+      /// <param name="pt">Parameter type</param>
+      /// <param name="dt">Datatype</param>
       /// <returns></returns>
-      bool  ParameterSyntax::Verify(DataType t) const
+      bool  ParameterSyntax::Verify(ParameterType pt, DataType dt) 
       {
          // [NULL] Must not be RetVar
-         if (t == DataType::Null)
-            return !IsRetVar();
+         if (dt == DataType::Null)
+            switch (pt)
+            {
+            case ParameterType::INTERRUPT_RETURN_VALUE_IF:
+            case ParameterType::RETURN_VALUE_IF_START:
+            case ParameterType::RETURN_VALUE:
+            case ParameterType::RETURN_VALUE_IF:   
+               return false;
 
+            default: 
+               return true;
+            }
+         
          // Determine whether datatype matches syntax
-         switch (Type)
+         switch (pt)
          {
          // [INVALID] Not used
 	      case ParameterType::UNRECOGNISED:
          case ParameterType::STRUCTURAL_COUNT:
          case ParameterType::EXPRESSION_INFIX:
          case ParameterType::CONDITION:  
-            throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(Type).c_str()));
+            throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(pt).c_str()));
 
          // [USER CUSTOMIZED] Unable to determine, allow anything
          default:
@@ -104,110 +114,110 @@ namespace Logic
 	      case ParameterType::RETURN_VALUE_IF:
 	      case ParameterType::RETURN_VALUE_IF_START:
 	      case ParameterType::INTERRUPT_RETURN_VALUE_IF:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
          // [FLIGHT RETURN] Stored using their own datatypes
 	      case ParameterType::FLIGHTRETCODE:
-            return t == DataType::FLIGHTRETURN || t == DataType::VARIABLE;
+            return dt == DataType::FLIGHTRETURN || dt == DataType::VARIABLE;
 
          // [LABEL NUMBER] Goto/gosub - displayed as string
          case ParameterType::LABEL_NUMBER: 
-            return t == DataType::STRING;
+            return dt == DataType::STRING;
 
          // [LABEL NAME, SCRIPT NAME, STRING, COMMENT] Always held as strings
          case ParameterType::LABEL_NAME:
 	      case ParameterType::SCRIPT_NAME:
          case ParameterType::COMMENT:
          case ParameterType::STRING:
-            return t == DataType::STRING;
+            return dt == DataType::STRING;
 
          // [NUMBER] Integers only
          case ParameterType::NUMBER:
-            return t == DataType::INTEGER;
+            return dt == DataType::INTEGER;
 
          // [REFERENCE OBJECT] Constants and Variables only
 	      case ParameterType::REFERENCE_OBJECT:
-            return t == DataType::VARIABLE || t == DataType::CONSTANT;
+            return dt == DataType::VARIABLE || dt == DataType::CONSTANT;
    
          // [RELATIONS] Stored using their own datatypes
 	      case ParameterType::RELATION:
-            return t == DataType::RELATION || t == DataType::VARIABLE;
+            return dt == DataType::RELATION || dt == DataType::VARIABLE;
 
          // [SCRIPT REFERENCE TYPE]
          case ParameterType::SCRIPT_REFERENCE_TYPE:
-            return t == DataType::SCRIPTDEF || t == DataType::VARIABLE;
+            return dt == DataType::SCRIPTDEF || dt == DataType::VARIABLE;
 
          // [SECTOR POSITION] What about DataType::ARRAY?
 	      case ParameterType::SECTOR_POSITION:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
          // [VARIABLE]
 	      case ParameterType::VARIABLE:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
 
 
          
          // [ARRAY / VARIABLE]
 	      case ParameterType::ARRAY:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
          // [BOOLEAN / VARIABLE]
          case ParameterType::VARIABLE_BOOLEAN:  /// Compatible with: [TRUE] and [FALSE]
-            return t == DataType::CONSTANT || t == DataType::VARIABLE;
+            return dt == DataType::CONSTANT || dt == DataType::VARIABLE;
 
          // [CONSTANT / VARIABLE]
 	      case ParameterType::VARIABLE_CONSTANT:
-            return t == DataType::CONSTANT || t == DataType::VARIABLE;
+            return dt == DataType::CONSTANT || dt == DataType::VARIABLE;
 
          // [COMMAND / SIGNAL] 
 	      case ParameterType::OBJECTCOMMAND:     
 	      case ParameterType::OBJECTCOMMAND_OBJECTSIGNAL:
 	      case ParameterType::OBJECTSIGNAL:
-            return t == DataType::OBJECTCOMMAND || t == DataType::VARIABLE;
+            return dt == DataType::OBJECTCOMMAND || dt == DataType::VARIABLE;
 
          // [DATATYPE / VARIABLE]
 	      case ParameterType::VARIABLE_DATATYPE:
-            return t == DataType::DATATYPE || t == DataType::VARIABLE;
+            return dt == DataType::DATATYPE || dt == DataType::VARIABLE;
 
          // [ENVIRONMENT / VARIABLE] 
          case ParameterType::VARIABLE_ENVIRONMENT: /// Compatible with: [ENVIRONMENT]
-            return t == DataType::CONSTANT || t == DataType::VARIABLE;
+            return dt == DataType::CONSTANT || dt == DataType::VARIABLE;
 
          // [GLOBAL PARAMETER] Stored as string
          case ParameterType::VARIABLE_GLOBAL_PARAMETER:     /// NEW: Work in progress
-            return t == DataType::STRING || t == DataType::VARIABLE;
+            return dt == DataType::STRING || dt == DataType::VARIABLE;
 
          // [NUMBER / VARIABLE] Integer, Constant or Variable
          case ParameterType::VARIABLE_NUMBER:      /// Compatible with: [TRUE], [FALSE], [MAX]?
-            return t == DataType::INTEGER || t == DataType::CONSTANT || t == DataType::VARIABLE;
+            return dt == DataType::INTEGER || dt == DataType::CONSTANT || dt == DataType::VARIABLE;
 
          // [OBJECT CLASS / VARIABLE] Stored using it's own datatypes
 	      case ParameterType::VARIABLE_CLASS:
-            return t == DataType::OBJECTCLASS || t == DataType::VARIABLE; // || t == DataType::CONSTANT;
+            return dt == DataType::OBJECTCLASS || dt == DataType::VARIABLE; // || dt == DataType::CONSTANT;
 
          // [PASSENGER / VARIABLE] What about DataType::PASSENGER?
          case ParameterType::VARIABLE_PASSENGER:
          case ParameterType::VARIABLE_PASSENGER_OF_SHIP:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
          // [QUEST / VARIABLE]      
          case ParameterType::VARIABLE_QUEST:    /// Compatible with: Quest.xxx constants
-            return t == DataType::VARIABLE || t == DataType::QUEST || t == DataType::CONSTANT;
+            return dt == DataType::VARIABLE || dt == DataType::QUEST || dt == DataType::CONSTANT;
 
          // [RACE / VARIABLE]
          case ParameterType::VARIABLE_RACE:     /// Possibly related: [OWNER]
-            return t == DataType::VARIABLE || t == DataType::RACE || t == DataType::CONSTANT;
+            return dt == DataType::VARIABLE || dt == DataType::RACE || dt == DataType::CONSTANT;
 
          // [SECTOR / VARIABLE] 
          case ParameterType::VARIABLE_SECTOR:   /// Compatible with: [SECTOR]
-            return t == DataType::VARIABLE || t == DataType::SECTOR || t == DataType::CONSTANT;
+            return dt == DataType::VARIABLE || dt == DataType::SECTOR || dt == DataType::CONSTANT;
 
          // [SHIP TYPE / STATION TYPE]
          case ParameterType::VARIABLE_SHIPTYPE:
 	      case ParameterType::VARIABLE_SHIPTYPE_STATIONTYPE:
          case ParameterType::VARIABLE_STATIONTYPE:
-            return t == DataType::OBJECTCLASS || t == DataType::VARIABLE || t == DataType::WARE;
+            return dt == DataType::OBJECTCLASS || dt == DataType::VARIABLE || dt == DataType::WARE;
 
          // [SHIP / STATION / VARIABLE] Ship, station, constant or variable
          case ParameterType::VARIABLE_SHIP:              /// Compatible with: [SHIP]
@@ -221,25 +231,25 @@ namespace Logic
 	      case ParameterType::VARIABLE_STATION:
 	      case ParameterType::VARIABLE_STATIONPRODUCT:
 	      case ParameterType::VARIABLE_STATIONRESOURCE:
-	         return t == DataType::SHIP || t == DataType::STATION || t == DataType::CONSTANT || 
-                   t == DataType::WARE || t == DataType::VARIABLE;
+	         return dt == DataType::SHIP || dt == DataType::STATION || dt == DataType::CONSTANT || 
+                   dt == DataType::WARE || dt == DataType::VARIABLE;
 
          // [STATION SERIAL / VARAIBLE]
          case ParameterType::VARIABLE_STATIONSERIAL:
-            return t == DataType::VARIABLE || t == DataType::STATIONSERIAL;
+            return dt == DataType::VARIABLE || dt == DataType::STATIONSERIAL;
 
          // [STRING / VARIABLE] Variable, string or constant
          case ParameterType::VARIABLE_STRING:
-            return t == DataType::STRING || t == DataType::VARIABLE || t == DataType::CONSTANT;
+            return dt == DataType::STRING || dt == DataType::VARIABLE || dt == DataType::CONSTANT;
 
          // [TRANSPORT CLASS / VARIABLE]
 	      case ParameterType::VARIABLE_TRANSPORTCLASS:
-            return t == DataType::VARIABLE || t == DataType::TRANSPORTCLASS; 
+            return dt == DataType::VARIABLE || dt == DataType::TRANSPORTCLASS; 
 
          // [UNIVERSE OBJECTS]
 	      case ParameterType::VARIABLE_ASTEROID:
 	      case ParameterType::VARIABLE_WARPGATE:
-            return t == DataType::VARIABLE;
+            return dt == DataType::VARIABLE;
 
          // [WARE / VARIABLE]
 	      case ParameterType::VARIABLE_STATIONWARE:
@@ -250,15 +260,15 @@ namespace Logic
 	      case ParameterType::VARIABLE_FLYINGWARE:
 	      case ParameterType::VARIABLE_WARE:
 	      case ParameterType::VARIABLE_WARE_OF_SHIP:
-            return t == DataType::WARE || t == DataType::VARIABLE;
+            return dt == DataType::WARE || dt == DataType::VARIABLE;
 
          // [WING / VARIABLE]
          case ParameterType::VARIABLE_WING:     /// Compatible with Wing.xxx constants
-            return t == DataType::CONSTANT || t == DataType::VARIABLE;
+            return dt == DataType::CONSTANT || dt == DataType::VARIABLE;
    
          // [WING COMMAND / VARIABLE]
          case ParameterType::VARIABLE_WING_COMMAND:
-            return t == DataType::WINGCOMMAND || t == DataType::VARIABLE;
+            return dt == DataType::WINGCOMMAND || dt == DataType::VARIABLE;
 
 
 
@@ -271,8 +281,17 @@ namespace Logic
          case ParameterType::VARIABLE_JUMPDRIVE_SECTOR:
          // [FLEET COMMANDER] 
          case ParameterType::VARIABLE_FLEET_COMMANDER:   
-            return t == DataType::WARE || t == DataType::VARIABLE;
+            return dt == DataType::WARE || dt == DataType::VARIABLE;
          }
+      }
+
+      // ------------------------------- PUBLIC METHODS -------------------------------
+
+      /// <summary>Verifies this syntax against a data-type</summary>
+      /// <returns></returns>
+      bool  ParameterSyntax::Verify(DataType t) const
+      {
+         return Verify(Type, t);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

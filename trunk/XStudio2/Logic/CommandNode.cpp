@@ -2,6 +2,7 @@
 #include "CommandNode.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
+#include "ScriptFileReader.h"
 #include "ExpressionParser.h"
 #include "SyntaxLibrary.h"
 #include "ScriptFile.h"
@@ -593,6 +594,17 @@ namespace Logic
             return cmd->get();
          }
          
+         /// <summary>Gets the name of the script (if any) called by this command</summary>
+         /// <returns>Script name, or empty string</returns>
+         wstring CommandNode::GetScriptCallName() const
+         {
+            // Find scriptName parameter
+            auto callName = find_if(Parameters.begin(), Parameters.end(), [](const ScriptParameter& s) {return s.Syntax.Usage == ParameterUsage::ScriptName;} );
+                     
+            // Return name is present, empty string if missing (or a variable)
+            return callName != Parameters.end() && callName->Type == DataType::STRING ? callName->Value.String : L"";
+         }
+
          /// <summary>Determines whether has executable child</summary>
          /// <returns></returns>
          bool  CommandNode::HasExecutableChild() const
@@ -608,6 +620,7 @@ namespace Logic
             if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
                script.Labels.Add(Parameters[0].Value.String, LineNumber);
 
+#ifdef VALIDATION
             // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
             // by enumerating variables in physical syntax order. (if all parameters are present)
             if (Parameters.size() == Syntax.Parameters.size())
@@ -618,11 +631,29 @@ namespace Logic
                   if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
                      script.Variables.Add(p.Value.String);
                }
-            // Missing/Discarded/vArgs: Enumerate in display order
             else 
+#endif
+               // Missing/Discarded/vArgs: Enumerate in display order
                for (const auto& p : Parameters)
                   if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
                      script.Variables.Add(p.Value.String);
+
+            // Load script-calls for argument type-checking
+            if (Syntax.IsScriptCall())
+            {
+               // Find name of target script (may be a variable)
+               wstring call = GetScriptCallName();
+
+               try {  
+                  // Skip reading if previously read
+                  if (!call.empty() && !script.ScriptCalls.Contains(call))
+                     script.ScriptCalls.Add(call, ScriptFileReader::ReadExternalScript(L"D:\\X3 Albion Prelude\\scripts", call));
+               }
+               catch (ExceptionBase& e) {
+                  //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
+                     Console.Log(HERE, e, GuiString(L"Unable to resolve call to external script '%s'", call.c_str()));
+               }
+            }
 
             // Examine children
             for (const auto& cmd : Children)
@@ -754,7 +785,7 @@ namespace Logic
             return ErrorToken(msg, LineNumber, tok);
          }
 
-         /// <summary>Converts parameter tokens into ordered list of script parameters</summary>
+         /// <summary>Verifies the execution type and parameters</summary>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
          void  CommandNode::VerifyCommand(const ScriptFile& script, ErrorArray& errors) const
@@ -770,37 +801,9 @@ namespace Logic
                else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
                   errors += MakeError(L"Command must be executed asynchronously");
 
-               // Parameter static type check
+               // Verify parameters
                for (const ScriptParameter& p : Parameters)
-               {
-                  GameObjectLibrary::ObjectID obj;
-
-                  // Recognise game/script objects
-                  switch (p.Token.Type)
-                  {
-                  // GameObject: Ensure exists  (allow {SSTYPE_LASER@12} placeholders)
-                  case TokenType::GameObject:
-                     if (!GameObjectLib.Contains(p.Value.String) && !GameObjectLib.ParsePlaceholder(p.Value.String, obj))
-                        errors += MakeError(L"Unrecognised game object", p.Token);
-                     break;
-
-                  // ScriptObject: Ensure exists 
-                  case TokenType::ScriptObject:
-                     if (!ScriptObjectLib.Contains(p.Value.String))
-                        errors += MakeError(L"Unrecognised script object", p.Token);
-                     break;
-
-                  // Label: Ensure exists
-                  case TokenType::Label:
-                     if (!script.Labels.Contains(p.Value.String))
-                        errors += MakeError(L"Unrecognised label", p.Token);
-                     break;
-                  }
-               
-                  // Static type check
-                  if (!p.Syntax.Verify(p.Type))
-                     errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
-               }
+                  VerifyParameter(p, script, errors);
             }
 
             // Recurse into children
@@ -895,6 +898,59 @@ namespace Logic
                c->VerifyLogic(errors);
          }
          
+         /// <summary>Verifies object/label names, and performs static type checking on standard and variable arguments</summary>
+         /// <param name="p">parameter</param>
+         /// <param name="script">script</param>
+         /// <param name="errors">errors collection</param>
+         void  CommandNode::VerifyParameter(const ScriptParameter& p, const ScriptFile& script, ErrorArray& errors) const
+         {
+            GameObjectLibrary::ObjectID obj;
+
+            // Recognise game/script objects
+            switch (p.Token.Type)
+            {
+            // GameObject: Ensure exists  (allow {SSTYPE_LASER@12} placeholders)
+            case TokenType::GameObject:
+               if (!GameObjectLib.Contains(p.Value.String) && !GameObjectLib.ParsePlaceholder(p.Value.String, obj))
+                  errors += MakeError(L"Unrecognised game object", p.Token);
+               break;
+
+            // ScriptObject: Ensure exists 
+            case TokenType::ScriptObject:
+               if (!ScriptObjectLib.Contains(p.Value.String))
+                  errors += MakeError(L"Unrecognised script object", p.Token);
+               break;
+
+            // Label: Ensure exists
+            case TokenType::Label:
+               if (!script.Labels.Contains(p.Value.String))
+                  errors += MakeError(L"Unrecognised label", p.Token);
+               break;
+            }
+
+            // Varg Argument
+            if (p.Syntax == ParameterSyntax::ScriptCallArgument)
+            {
+               // Find scriptName parameter
+               auto callName = GetScriptCallName();
+                     
+               // Skip check if missing (or a variable)
+               if (!callName.empty())
+               {
+                  // Lookup argument type
+                  auto type = script.ScriptCalls.FindArgumentType(callName, p.ArgName);
+                  Console << "Script Argument Type Check : " << ::GetString(type) << " vs " << ::GetString(p.Type) << ENDL;
+                  
+                  // Static type check
+                  if (!ParameterSyntax::Verify(type, p.Type))
+                     errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
+               }
+            }
+            // Std parameter: Static type check
+            else if (!p.Syntax.Verify(p.Type))
+               errors += MakeError(GuiString(L"'%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
+         }
+
          /// <summary>Verifies that all control paths lead to termination.</summary>
          /// <param name="errors">error collection</param>
          /// <remarks>This method is only executed when no syntax errors are present</remarks>

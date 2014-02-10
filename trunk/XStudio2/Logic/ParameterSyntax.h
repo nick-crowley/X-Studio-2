@@ -42,6 +42,10 @@ namespace Logic
          ParameterSyntax(Declaration& d);
          virtual ~ParameterSyntax();
 
+         // ----------------------- STATIC --------------------------
+
+         static bool  Verify(ParameterType pt, DataType dt);
+
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------

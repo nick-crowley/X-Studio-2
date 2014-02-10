@@ -565,8 +565,7 @@ namespace Logic
                   for (TokenIterator arg = pos; arg < lex.end(); arg += 3)
                      // Match {name, '=', value} triplet
                      if (MatchScriptArgument(lex, TokenIterator(arg)))
-                        // TODO: Match argument name
-                        params.push_back(ScriptParameter(ParameterSyntax::ScriptCallArgument, arg[2]));
+                        params.push_back(ScriptParameter(arg[0].Text, arg[2]));
                      else 
                      {  // Error: Abort
                         Errors += MakeError(L"Expected script-call argument", arg);

@@ -168,6 +168,8 @@ namespace Logic
          virtual ~ScriptFileReader();
 
          // ------------------------ STATIC -------------------------
+      public:
+         static ScriptFile  ReadExternalScript(Path folder, const wstring& script);
 
          // --------------------- PROPERTIES ------------------------
 			
