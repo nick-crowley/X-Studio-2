@@ -998,10 +998,11 @@ namespace Logic
                      // Verify argument order
                      if (arg.ID != index-Syntax.Parameters.size())
                         errors += MakeError(GuiString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
-
+#ifndef VALIDATION
                      // Verify argument type 
                      if (!ParameterSyntax::Verify(arg.ValueType, p.Type))
                         errors += MakeError(GuiString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ValueType).c_str()), p.Token);
+#endif
                   }
                }
             }

@@ -70,14 +70,11 @@ namespace Logic
       XFileSystem     vfs;
       vector<wstring> SkipList = 
       {
-         L"plugin.com.logistics.main.mk1.pck",    // X3TC: Corrupt <codearray> line number
-         L"!move.resupply.group.pck",             // X3TC/X3AP: Unsupported '= + ..' syntax
-         
-         //L"!job.trade.docktrader.pck",            // X3TC: Contains label definition encoded as comment instead of command comment
-         //L"!job.trade.freetrader.pck",            // X3TC: Contains label definition encoded as comment instead of command comment
-         //L"!job.trade.freetrader.docksonly.pck",  // X3TC: Contains label definition encoded as comment instead of command comment
-         //L"!job.trade.freetrader.raceonly.pck"    // X3TC: Contains label definition encoded as comment instead of command comment
-         //L"!move.mine.loop.pck",                  // X3TC: Contains label definition encoded as comment instead of command comment
+         L"plugin.com.logistics.main.mk1.pck",      // X3TC: Corrupt <codearray> line number
+         L"!move.resupply.group.pck",               // X3TC/X3AP: Unsupported '= + ..' syntax
+         L"aab.query.menu.xml",                     // X3TC: Contains command comment encoded as comment
+         L"plugin.com.logistics.config.mk2.pck",    // X3TC: Contains command comment encoded as comment
+         L"plugin.piracy.detectbase.xml",           // X3TC: Contains command comment encoded as comment
       };
 
       // Feedback
@@ -99,6 +96,9 @@ namespace Logic
                Console << Cons::Heading << L"Skipping script with known incompatiblity: " << f.FullPath << ENDL;
                continue;
             }
+            // Skip my scripts, they contain commands encoded as COMMENT
+            if (GuiString(f.FullPath.FileName).Left(lstrlen(L"plugin.piracy")) == L"plugin.piracy")
+               continue;
 
             // Validate
             ScriptValidator sv(f.FullPath);
