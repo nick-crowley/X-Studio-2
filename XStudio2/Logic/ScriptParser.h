@@ -22,7 +22,18 @@ namespace Logic
          {
             // ------------------------ TYPES --------------------------
          private:
-            
+            class CommentLexer : public CommandLexer
+            {
+            public:
+               CommentLexer(const wstring& input) : CommandLexer(StripComment(input), true)
+               {}
+
+            private:
+               wstring StripComment(const wstring& in)
+               {
+                  return in.substr(in.find('*')+1);
+               }
+            };
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -70,8 +81,8 @@ namespace Logic
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
             CommandNodePtr   ReadComment(const CommandLexer& lex);
-            CommandNodePtr   ReadCommand(const CommandLexer& lex);
-            CommandNodePtr   ReadExpression(const CommandLexer& lex);
+            CommandNodePtr   ReadCommand(const CommandLexer& lex, bool comment);
+            CommandNodePtr   ReadExpression(const CommandLexer& lex, bool comment);
             CommandNodePtr   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
@@ -84,9 +95,10 @@ namespace Logic
             const LineArray&  Input;
             const GameVersion Version;
 
-            CommandNodePtr  Root;       // Parse tree
-            LineIterator    CurrentLine;
-            CommandNodePtr  CurrentNode;
+            CommandNodePtr  Root;            // Parse tree
+            LineIterator    CurrentLine;     // Line being parsed
+            CommandNodePtr  CurrentNode;     // Most recently parsed node
+            ErrorArray      CommentErrors;   // Separate error queue used for trying to parse command comments
          };
       }
    }

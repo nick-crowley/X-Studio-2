@@ -80,14 +80,15 @@ namespace Logic
          private:
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
+            /// <summary>Distinguishes tree state when printed to the console</summary>
             enum class InputState { Raw, Verified, Compiled };
 
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();
             CommandNode(CommandNode* parent, const CommandNode* target);
-            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line);
-            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line);
+            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
+            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
             ~CommandNode();
 
             // ------------------------ STATIC -------------------------
@@ -101,6 +102,7 @@ namespace Logic
             static const wchar*  GetString(InputState s);
 
 #ifdef VALIDATION
+            /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
             static CommandNode  EndOfScript;
 #endif
             // --------------------- PROPERTIES ------------------------
@@ -163,13 +165,14 @@ namespace Logic
             CommandSyntaxRef   Syntax;        // command syntax
             const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
+            bool               CmdComment;    // Whether a command comment  [false for ordinary comments]
 
             Conditional     Condition;        // Conditional
             const UINT      LineNumber;       // 1-based line number
             const CHARRANGE Extent;           // Start/end character offsets
             // Debug
             GuiString       LineText;         // Debug: line text
-            InputState      State;
+            InputState      State;            // Debug: processing state
          };
       }
    }

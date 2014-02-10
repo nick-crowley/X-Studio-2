@@ -15,7 +15,7 @@ namespace Logic
       namespace Compiler
       {
 #ifdef VALIDATION
-         /// <summary>End of script jump target</summary>
+         /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
          CommandNode  CommandNode::EndOfScript;
 #endif
          // -------------------------------- CONSTRUCTION --------------------------------
@@ -29,12 +29,14 @@ namespace Logic
               Index(EMPTY_JUMP), 
               LineNumber(0),
               Extent({0,0}),
-              State(InputState::Raw)
+              State(InputState::Raw),
+              CmdComment(false)
          {}
 
          /// <summary>Create node for a hidden jump command</summary>
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
+         /// <exception cref="Logic::ArgumentNullException">Parent or target is null</exception>
          CommandNode::CommandNode(CommandNode* parent, const CommandNode* target)
             : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
@@ -43,7 +45,8 @@ namespace Logic
               LineNumber(parent->LineNumber),
               Extent({0,0}),
               Index(EMPTY_JUMP),
-              State(InputState::Raw)
+              State(InputState::Raw),
+              CmdComment(false)
          {
             REQUIRED(parent);
             REQUIRED(target);
@@ -58,7 +61,9 @@ namespace Logic
          /// <param name="params">parameters.</param>
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
-         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line)
+         /// <param name="commented">Whether command comment</param>
+         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, 
+                                  const CommandLexer& lex, UINT line, bool commented)
             : Syntax(syntax),
               Condition(cnd),
               Parameters(move(params)),
@@ -68,7 +73,8 @@ namespace Logic
               Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(EMPTY_JUMP),
-              State(InputState::Raw)
+              State(InputState::Raw),
+              CmdComment(commented)
          {}
 
          /// <summary>Create node for an expression</summary>
@@ -78,7 +84,9 @@ namespace Logic
          /// <param name="params">postfix parameters.</param>
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
-         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line)
+         /// <param name="commented">Whether command comment</param>
+         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, 
+                                  const CommandLexer& lex, UINT line, bool commented)
             : Syntax(syntax),
               Condition(cnd),
               Parameters(move(infix)),
@@ -89,7 +97,8 @@ namespace Logic
               Parent(nullptr), 
               JumpTarget(nullptr), 
               Index(EMPTY_JUMP),
-              State(InputState::Raw)
+              State(InputState::Raw),
+              CmdComment(commented)
          {}
 
          CommandNode::~CommandNode()
@@ -622,7 +631,7 @@ namespace Logic
 
 #ifdef VALIDATION
             // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
-            // by enumerating variables in physical syntax order. (if all parameters are present)
+            // by enumerating variables in physical syntax order. (Required all parameters be present)
             if (Parameters.size() == Syntax.Parameters.size())
                for (const auto& ps : Syntax.Parameters)
                {
