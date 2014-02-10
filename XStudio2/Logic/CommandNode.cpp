@@ -641,7 +641,7 @@ namespace Logic
                   auto name = Parameters[0].Value.String;
                   // Ensure unique
                   if (!script.Labels.Add(name, LineNumber))
-                     errors += MakeError(GuiString(L"Label '%s' already defined on line %d", script.Labels[name].LineNumber), Parameters[0].Token);
+                     errors += MakeError(GuiString(L"Label '%s' already defined on line %d", name.c_str(), script.Labels[name].LineNumber), Parameters[0].Token);
                }
 
    #ifdef VALIDATION
