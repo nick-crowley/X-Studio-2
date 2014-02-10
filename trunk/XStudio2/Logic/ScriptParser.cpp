@@ -472,27 +472,38 @@ namespace Logic
 
          /// <summary>Reads an entire NOP/comment command</summary>
          /// <param name="lex">The lexer</param>
-         /// <returns>New NOP/Comment command node</returns>
+         /// <returns>New NOP/Comment/CmdComment command node</returns>
          CommandNodePtr ScriptParser::ReadComment(const CommandLexer& lex)
          {
             ParameterArray params;
+            CommandNodePtr node;
+            CommentLexer   lex2(lex.Input);
 
-            // Identify syntax
-            CommandSyntaxRef syntax = SyntaxLib.Find(lex.count() == 0 ? CMD_NOP : CMD_COMMENT, Version);
-            
-            // Add comment, or insert placeholder
-            if (syntax.Is(CMD_COMMENT) && lex.count()==2)
-               params += ScriptParameter(syntax.Parameters[0], lex.Tokens[1]);
+            // Commented Command:
+            if (MatchCommand(lex2) && (node = ReadCommand(lex2, true)))
+               return node;
 
-            else if (syntax.Is(CMD_COMMENT))
-               params += ScriptParameter(syntax.Parameters[0], ScriptToken(TokenType::Comment, 1,1, L""));
+            // Commented Expression:
+            else if (MatchExpression(lex2) && (node = ReadExpression(lex2, true)))
+               return node;
 
-            // 
-            return new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber);
+            // NOP: No processing required
+            if (lex.count() == 0)
+               return new CommandNode(Conditional::NONE, SyntaxLib.Find(CMD_NOP, Version), params, lex, LineNumber, false);
+
+            // Comment: Assemble manually
+            CommandSyntaxRef syntax = SyntaxLib.Find(CMD_COMMENT, Version);
+
+            // Extract text (Insert placeholder if none)
+            params += ScriptParameter(syntax.Parameters[0], lex.count()==2 ? lex.Tokens[1] : ScriptToken(TokenType::Comment, 1,1, L""));
+
+            // Return comment
+            return new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber, false);
          }
 
          /// <summary>Reads an entire non-expression command</summary>
          /// <param name="lex">The lexer</param>
+         /// <param name="comment">whether attempting to read as a command comment</param>
          /// <returns>New Non-expression command node</returns>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -502,8 +513,9 @@ namespace Logic
          ///
          /// </remarks>
          /// <exception cref="Logic::AlgorithmException">Error in expression parsing algorithm</exception>
-         CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex)
+         CommandNodePtr  ScriptParser::ReadCommand(const CommandLexer& lex, bool comment)
          {
+            ErrorArray&   errQueue = (comment ? CommentErrors : Errors);  // Set appropriate error queue
             Conditional   condition = Conditional::DISCARD;
             TokenIterator pos = lex.begin(),
                           retVar = lex.end(),
@@ -527,8 +539,7 @@ namespace Logic
             
             // Unrecognised: Highlight offending token / entire line
             if (syntax == CommandSyntax::Unrecognised)
-               Errors += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) : MakeError(L"Unexpected token in command", pos));
-               
+               errQueue += (pos == lex.end() ? MakeError(L"Unrecognised command", lex) : MakeError(L"Unexpected token in command", pos));
             else
             {
                // Read/Match remaining tokens against parameter syntax
@@ -543,7 +554,7 @@ namespace Logic
                      params += ScriptParameter(ps, *refObj);
                
                   else if (ps.IsRefObj())
-                     Errors += MakeError(L"Missing reference object", lex);
+                     errQueue += MakeError(L"Missing reference object", lex);
                
                   // Parameter: ensure present
                   else if (!tokens.empty())
@@ -553,7 +564,7 @@ namespace Logic
                   }
                   else
                   {  // Error: Missing parameter
-                     Errors += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), lex);
+                     errQueue += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), lex);
                      break;
                   }
                }
@@ -568,17 +579,30 @@ namespace Logic
                         params.push_back(ScriptParameter(arg[0], arg[2]));
                      else 
                      {  // Error: Abort
-                        Errors += MakeError(L"Expected script-call argument", arg);
+                        errQueue += MakeError(L"Expected script-call argument", arg);
                         break;
                      }
                }
             }
 
-            return new CommandNode(condition, syntax, params, lex, LineNumber);
+            // Comment: Return nothing if command cannot be properly parsed
+            if (comment && !errQueue.empty())
+            {
+               errQueue.clear();
+               return nullptr;
+            }
+
+            // DEBUG:
+            if (comment)
+               Console << "Parsed commented command: " << lex.Input << ENDL;
+
+            // Return new command / commented-command
+            return new CommandNode(condition, syntax, params, lex, LineNumber, comment);
          }
 
          /// <summary>Reads an entire expression command</summary>
          /// <param name="lex">The lexer</param>
+         /// <param name="comment">whether attempting to read as a command comment</param>
          /// <returns>New Expression command node</returns>
          /// <remarks>Grammar:
          ///    conditional = 'if'/'if not'/'while'/'while not'/'skip if'/'do if'
@@ -590,8 +614,9 @@ namespace Logic
          ///
          /// </remarks>
          /// <exception cref="Logic::AlgorithmException">Error in expression parsing algorithm</exception>
-         CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex)
+         CommandNodePtr  ScriptParser::ReadExpression(const CommandLexer& lex, bool comment)
          {
+            ErrorArray&    errQueue = (comment ? CommentErrors : Errors);  // Set appropriate error queue
             Conditional    condition = Conditional::DISCARD;
             TokenIterator  pos = lex.begin();
             ParameterArray params, 
@@ -621,14 +646,27 @@ namespace Logic
             }
             catch (ExpressionParserException& e) {
                // Add to error collection
-               Errors += (lex.Valid(e.Position) ? MakeError(e.Message, e.Position) : MakeError(e.Message, lex));
+               errQueue += (lex.Valid(e.Position) ? MakeError(e.Message, e.Position) : MakeError(e.Message, lex));
 
                // DEBUG: print tokens
-               for (auto it = lex.begin(); it != lex.end(); ++it)
-                  Console << (it==pos?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
+               if (!comment)
+                  for (auto it = lex.begin(); it != lex.end(); ++it)
+                     Console << (it==pos?L"  <*>":L"  ") << it->Text << L" " << GetString(it->Type) << ENDL;
             }
 
-            return new CommandNode(condition, syntax, params, postfix, lex, LineNumber);
+            // Comment: Return nothing if command cannot be properly parsed
+            if (comment && !errQueue.empty())
+            {
+               errQueue.clear();
+               return nullptr;
+            }
+
+            // DEBUG:
+            if (comment)
+               Console << "Parsed commented expression: " << lex.Input << ENDL;
+
+            // Return new expression / commented-expression
+            return new CommandNode(condition, syntax, params, postfix, lex, LineNumber, comment);
          }
          
          
@@ -660,23 +698,23 @@ namespace Logic
             CommandLexer   lex(*CurrentLine);
             CommandNodePtr node;
             
-            // Comment/NOP:
+            // NOP/Comment/CmdComment:
             if (MatchComment(lex))
                node = ReadComment(lex);
 
             // Command:
             else if (MatchCommand(lex))
-               node = ReadCommand(lex);
+               node = ReadCommand(lex, false);
 
             // Expression:
             else if (MatchExpression(lex))
-               node = ReadExpression(lex);
+               node = ReadExpression(lex, false);
             
             else
             {
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = new CommandNode(Conditional::NONE, CommandSyntax::Unrecognised, ParameterArray(), lex, LineNumber);
+               node = new CommandNode(Conditional::NONE, CommandSyntax::Unrecognised, ParameterArray(), lex, LineNumber, false);
             }
 
             // Consume line + return node
