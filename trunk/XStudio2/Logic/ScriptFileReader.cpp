@@ -125,13 +125,13 @@ namespace Logic
          case CMD_CONTINUE:
          case CMD_END:
          case CMD_NOP:
-         case CMD_COMMENT:              return ReaderPtr(new AuxiliaryCommandReader(*this, script, cmdBranch));
+         case CMD_COMMENT:           return ReaderPtr(new AuxiliaryCommandReader(*this, script, cmdBranch));
 
-         case CMD_COMMAND_COMMENT:      return ReaderPtr(new CommentedCommandReader(*this, script, cmdBranch));
-         case CMD_CALL_SCRIPT_VAR_ARGS: return ReaderPtr(new ScriptCallCommandReader(*this, script, cmdBranch));
-         case CMD_EXPRESSION:           return ReaderPtr(new ExpressionCommandReader(*this, script, cmdBranch));
+         case CMD_COMMAND_COMMENT:   return ReaderPtr(new CommentedCommandReader(*this, script, cmdBranch));
+         case CMD_CALL_SCRIPT:       return ReaderPtr(new ScriptCallCommandReader(*this, script, cmdBranch));
+         case CMD_EXPRESSION:        return ReaderPtr(new ExpressionCommandReader(*this, script, cmdBranch));
 
-         default:                       return ReaderPtr(new StandardCommandReader(*this, script, cmdBranch));
+         default:                    return ReaderPtr(new StandardCommandReader(*this, script, cmdBranch));
          }
       }
 

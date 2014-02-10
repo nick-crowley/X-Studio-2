@@ -177,7 +177,7 @@ namespace Logic
       #define    CMD_CONTINUE                     6
       #define    CMD_GOTO_LABEL                   100
       #define    CMD_DEFINE_LABEL                 101
-      #define    CMD_CALL_SCRIPT_VAR_ARGS         102
+      #define    CMD_CALL_SCRIPT         102
       #define    CMD_RETURN                       103
       #define    CMD_EXPRESSION                   104
       #define    CMD_RANDOM_VALUE_ZERO            106
@@ -244,7 +244,7 @@ namespace Logic
       #define    CMD_START_WING_COMMAND           1404
       #define    CMD_SET_GLOBAL_SECONDARY_MAP     1407
       #define    CMD_GET_LOCAL_VARIABLE_KEYS      1414
-      #define    CMD_CALL_SCRIPT_ARGS             1425
+      #define    CMD_CALL_NAMED_SCRIPT            1425
       #define    CMD_LAUNCH_SCRIPT_ARGS           1426
       #define    CMD_GET_GLOBAL_VARIABLE_KEYS     1436
       #define    CMD_ADD_MENU_INFO                1446

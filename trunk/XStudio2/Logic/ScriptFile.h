@@ -249,7 +249,7 @@ namespace Logic
             VarIterator end()             { return VarIterator(*this, base::end()); }
             ConstIterator end() const     { return ConstIterator(*this, base::cend()); }
 
-            /// <summary>Query presence of a variable</summary>
+            /// <summary>Query presence of an argument or variable</summary>
             /// <param name="name">name without $ prefix</param>
             bool Contains(const wstring& name) const
             { 
