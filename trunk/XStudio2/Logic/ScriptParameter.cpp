@@ -185,12 +185,16 @@ namespace Logic
             if (!Syntax.IsRetVar())
             {
                Type = DataType::LIVE_VARIABLE;
-               Value = script.Variables[Value.String].ID;
+               // Leave as string if commented
+               if (!commented)
+                  Value = script.Variables[Value.String].ID;
             }
-            // RetVar: Resolve ID
+            // RetVar: Resolve and encode ID
             else if (Value.Type == ValueType::String)
-               Value = ReturnValue(ReturnType::ASSIGNMENT, script.Variables[Value.String].ID).EncodedValue;
-
+            {
+               if (!commented)   // Leave as string if commented
+                  Value = ReturnValue(ReturnType::ASSIGNMENT, script.Variables[Value.String].ID).EncodedValue;
+            }
             // Condition: encode appropriately
             else switch (Conditional condition = ReturnValue(Value.Int).Conditional)
             {

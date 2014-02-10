@@ -107,8 +107,10 @@ namespace Logic
       /// <returns></returns>
       UINT ScriptFileWriter::CalculateSize(const ScriptCommand& cmd)
       {
-         // ID [+Index]
-         UINT count = cmd.Is(CommandType::Standard) ? 1 : 2;
+         // Set initial count
+         UINT count = cmd.Commented                  ? 3       // CmdID+RefIndex+CmdID
+                    : cmd.Is(CommandType::Auxiliary) ? 2       // RefIndex+CmdID
+                                                     : 1;      // CmdID
 
          // Parameters
          for (const ScriptParameter& p : cmd.Parameters)
@@ -182,12 +184,20 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       void  ScriptFileWriter::WriteCommand(XmlElementPtr parent, const ScriptCommand& cmd)
       {
-         // array
+         // Arrray size
          auto node = WriteArray(parent, CalculateSize(cmd));
 
-         // Index+ID
-         if (cmd.Is(CommandType::Auxiliary))
+         // CmdComment: RefIndex + CmdCommentID
+         if (cmd.Commented)
+         {
             WriteInt(node, cmd.RefIndex);
+            WriteInt(node, CMD_COMMAND_COMMENT);
+         }
+         // Auxiliary: RefIndex
+         else if (cmd.Is(CommandType::Auxiliary))
+            WriteInt(node, cmd.RefIndex);
+
+         // Command ID
          WriteInt(node, cmd.Syntax.ID);
 
          // Parameters

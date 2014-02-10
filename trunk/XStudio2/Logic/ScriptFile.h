@@ -472,7 +472,7 @@ namespace Logic
             void  AddOutput(ScriptCommand& cmd)
             {
                // Standard: Append
-               if (cmd.Is(CommandType::Standard))
+               if (cmd.Is(CommandType::Standard) && !cmd.Commented)
                   StdOutput.push_back(cmd);
                else
                {  // Auxiliary: Set reference index + Append
