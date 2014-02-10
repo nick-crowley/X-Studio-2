@@ -478,14 +478,7 @@ namespace Logic
                {  
                   // Auxiliary: Set reference index 
                   cmd.RefIndex = StdOutput.size();
-
-#ifdef VALIDATION
-                  // JMP is appended as child of break/continue, so my RefIndex associates with JMP, not the
-                  //  following STD command as with Egosoft.  Increment the RefIndex to fix this.
-                  if (cmd.Is(CMD_BREAK) || cmd.Is(CMD_CONTINUE))
-                     cmd.RefIndex++;
-#endif
-
+                  
                   // Append Aux
                   AuxOutput.push_back(cmd);
                }

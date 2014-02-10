@@ -14,8 +14,17 @@ namespace Testing
          /// <summary>Create an ValidationException</summary>
          /// <param name="src">Location of throw</param>
          /// <param name="msg">Message</param>
-         ValidationException(wstring  src, wstring  msg) 
-            : ExceptionBase(src, wstring(L"Validation failed: ") + msg)
+         ValidationException(wstring  src, GuiString msg) 
+            : ExceptionBase(src, GuiString(L"Validation failed: ") + msg)
+         {}
+
+         /// <summary>Create an ValidationException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="msg">Message</param>
+         /// <param name="orig">Original value</param>
+         /// <param name="copy">Validation copy value</param>
+         ValidationException(wstring  src, GuiString msg, GuiString orig, GuiString copy) 
+            : ExceptionBase(src, GuiString(L"Validation failed: ") + msg + L"\n  Original: " + orig + L"\n  Copy: " + copy)
          {}
       };
 

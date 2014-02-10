@@ -562,7 +562,7 @@ namespace Logic
                   for (auto& p : Parameters)
                   {
                      // Goto/Gosub: Change label number dataType from DT_STRING (ie. label name) into DT_INTEGER. 
-                     if (p.Syntax.Type == ParameterType::LABEL_NUMBER)
+                     if (p.Syntax.Type == ParameterType::LABEL_NUMBER && !CmdComment)
                         p.Type = DataType::INTEGER;   // parameter ctor resolves 'label' token type to DT_STRING
 
                      // Compile
@@ -813,33 +813,43 @@ namespace Logic
          /// <param name="errors">errors collection</param>
          void  CommandNode::VerifyCommand(const ScriptFile& script, ErrorArray& errors) 
          {
-            // Skip for unrecognised commands
-            if (Syntax != CommandSyntax::Unrecognised)
+            try
             {
-               // CmdComment: Redirect verification errors into dummy queue
-               ErrorArray  commentErrors;
-               ErrorArray& errQueue = (CmdComment ? commentErrors : errors);
+               // Skip for unrecognised commands
+               if (Syntax != CommandSyntax::Unrecognised)
+               {
+                  // CmdComment: Redirect verification errors into dummy queue
+                  ErrorArray  commentErrors;
+                  ErrorArray& errQueue = (CmdComment ? commentErrors : errors);
 
-               // Check for invalid 'start' 
-               if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
-                  errors += MakeError(L"Command cannot be executed asynchronously");
+                  // Check for invalid 'start' 
+                  if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
+                     errQueue += MakeError(L"Command cannot be executed asynchronously");
 
-               // Check for missing 'start'
-               else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
-                  errors += MakeError(L"Command must be executed asynchronously");
+                  // Check for missing 'start'
+                  else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
+                     errQueue += MakeError(L"Command must be executed asynchronously");
 
-               // Verify parameter values/types
-               UINT index = 0;
-               for (const ScriptParameter& p : Parameters)
-                  VerifyParameter(p, index++, script, errors);
+                  // Verify parameter values/types
+                  UINT index = 0;
+                  for (const ScriptParameter& p : Parameters)
+                     VerifyParameter(p, index++, script, errQueue);
 
-               // Verify varg argument count
-               if (!Is(CMD_CALL_SCRIPT) && Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
-                  errors += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
+                  // Verify varg argument count
+                  if (!Is(CMD_CALL_SCRIPT) && Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
+                     errQueue += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
 
-               // Error in CmdComment: Silently revert to ordinary comment
-               if (CmdComment && !errQueue.empty())
-                  RevertCommandComment();
+                  // Error in CmdComment: Silently revert to ordinary comment
+                  if (CmdComment && !errQueue.empty())
+                  {
+                     for (auto& err : errQueue)
+                        Console << err.Line << " " << err.Message << " " << err.Text << ENDL;
+                     RevertCommandComment();
+                  }
+               }
+            }
+            catch (ExceptionBase& e) {
+               errors += MakeError(GuiString(L"Verification failed: ") + e.Message); 
             }
 
             // Recurse into children
@@ -958,9 +968,9 @@ namespace Logic
                   errors += MakeError(L"Unrecognised script object", p.Token);
                break;
 
-            // Label: Ensure exists
+            // Label: Ensure exists  [Don't check if commented]
             case TokenType::Label:
-               if (!script.Labels.Contains(p.Value.String))
+               if (!script.Labels.Contains(p.Value.String) && !CmdComment)
                   errors += MakeError(L"Unrecognised label", p.Token);
                break;
             }

@@ -191,7 +191,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), a.c_str(), b.c_str()) );
+         return ValidationException(src, GuiString(L"text mismatch: %s", prop.c_str()), a, b);
       }
       
       /// <summary>Create text mismatch exception</summary>
@@ -202,7 +202,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, int a, int b)
       {
-         return ValidationException(src, GuiString(L"%s mismatch: original='%s'\ncopy='%s'", prop.c_str(), GuiString(L"%d",a).c_str(), GuiString(L"%d",b).c_str()) );
+         return ValidationException(src, GuiString(L"text mismatch: %s", prop.c_str()), GuiString(L"%d",a), GuiString(L"%d",b));
       }
    }
 }
