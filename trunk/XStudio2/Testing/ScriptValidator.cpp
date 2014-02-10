@@ -78,17 +78,22 @@ namespace Testing
          Console << ENDL << "-------------------------------------------------------" << ENDL; 
       
          // Print commands
-         UINT LineNumber = 1, Index = 0;
+         UINT LineNumber = 1, stdIndex = 0, auxIndex = 0;
          for (auto& cmd : list)
          {
-            // Line#/Logic/Text
-            GuiString line(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
-                      logic(::GetString(cmd.Logic)),
+            // Logic/Text
+            GuiString logic(::GetString(cmd.Logic)),
                       txt(cmd.Text);
             Colour    colour(Colour::White);
             
-            // Index
-            line += GuiString(cmd.Is(CommandType::Standard) && !cmd.Commented ? L"%03d: " : L"---: ", Index);
+            // Line#
+            Console << GuiString(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber);
+
+            // Index/RefIndex
+            if (cmd.Is(CommandType::Standard) && !cmd.Commented)
+               Console << GuiString(L"%03d: ", stdIndex);
+            else
+               Console << Colour::Yellow << GuiString(L"%03d: ", auxIndex) << Colour::White;
             
             // Logic
             switch (cmd.Logic)
@@ -109,6 +114,7 @@ namespace Testing
             // NOP:
             case BranchLogic::NOP:
                colour = Colour::Yellow;
+               logic = cmd.Commented ? L"Cmd" : L"NOP";
                break;
 
             // Command:
@@ -117,10 +123,7 @@ namespace Testing
                {
                   colour = Colour::Green; 
                   logic = cmd.Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
-                  if (cmd.Is(CMD_HIDDEN_JUMP))
-                     txt = GuiString(L"Unconditional: %d", cmd.Parameters[0].Value.Int);
-                  else
-                     txt = GuiString(L"Unconditional: %s", cmd.Parameters[0].Value.String);
+                  txt = GuiString(L"Unconditional: %s", cmd.Parameters[0].Value.ToString().c_str());
                }
                else if (cmd.Is(CMD_DEFINE_LABEL))
                {
@@ -144,12 +147,14 @@ namespace Testing
 
             // Print
             indent.PreDisplay(cmd);
-            Console << line + wstring(indent.Size, L' ') << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
+            Console << wstring(indent.Size, L' ') << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
             indent.PostDisplay(cmd);
 
             // Advance line/index
             if (cmd.Is(CommandType::Standard) && !cmd.Commented)
-               ++Index;
+               ++stdIndex;
+            else
+               ++auxIndex;
             ++LineNumber;
          }
       
