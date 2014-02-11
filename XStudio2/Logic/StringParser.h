@@ -241,11 +241,12 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static const wregex IsAuthorTag,
+         static const wregex IsOpeningTag,
+                             IsClosingTag,
                              IsBasicTag,
-                             IsComplexTag,
-                             IsOpenTag,
-                             IsTitleTag;
+                             IsTagProperty,
+                             IsAuthorDefition,
+                             IsTitleDefition;
 
          // --------------------- PROPERTIES ------------------------
 

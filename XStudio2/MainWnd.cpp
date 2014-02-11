@@ -310,7 +310,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          DebugTests::RunAll();
-         AfxMessageBox(L"Tests completed successfully");
+         //AfxMessageBox(L"Tests completed successfully");
+         Console << ENDL << "Tests completed" << ENDL;
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, L"Unhandled exception in debugging tests");
