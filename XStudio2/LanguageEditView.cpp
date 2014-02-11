@@ -15,7 +15,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    LanguageEditView::LanguageEditView() : CFormView(LanguageEditView::IDD)
    {
-
    }
 
    LanguageEditView::~LanguageEditView()
@@ -30,7 +29,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
    END_MESSAGE_MAP()
-
+   
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    #ifdef _DEBUG
