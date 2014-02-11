@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
-#include "StringParser.h"
+#include "StringResolver.h"
 #include "ParameterTypes.h"
 
 namespace Logic
@@ -29,7 +29,7 @@ namespace Logic
       /// <returns></returns>
       wstring  LanguageString::GetResolvedText() const
       {
-         return StringParser(*this).Text;
+         return StringResolver(*this).Text;
       }
 
       /// <summary>Determines whether string can be used as the source of a script object</summary>

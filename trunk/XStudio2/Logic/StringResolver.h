@@ -24,18 +24,18 @@ namespace Logic
 
 
       /// <summary></summary>
-      class StringParser
+      class StringResolver
       {
          // ------------------------ TYPES --------------------------
       private:
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         StringParser(const LanguageString& str);
-         virtual ~StringParser();
+         StringResolver(const LanguageString& str);
+         virtual ~StringResolver();
 
-         DEFAULT_COPY(StringParser);	// Default copy semantics
-         DEFAULT_MOVE(StringParser);	// Default move semantics
+         DEFAULT_COPY(StringResolver);	// Default copy semantics
+         DEFAULT_MOVE(StringResolver);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
       private:

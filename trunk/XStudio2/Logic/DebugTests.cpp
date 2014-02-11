@@ -16,7 +16,7 @@
 #include "CommandLexer.h"
 #include "TWare.h"
 #include "TLaser.h"
-#include "StringParser.h"
+#include "StringResolver.h"
 #include "../Testing/ScriptValidator.h"
 
 namespace Logic

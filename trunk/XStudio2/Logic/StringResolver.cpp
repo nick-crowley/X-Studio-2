@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "StringParser.h"
+#include "StringResolver.h"
 #include "LanguagePage.h"
 #include "StringLibrary.h"
 #include <initializer_list>
@@ -17,15 +17,15 @@ namespace Logic
                           L"[^" open_bracket close_bracket backslash L"]+" 
                           L"(?!" backslash close_bracket L")" close_bracket;
 
-      const wregex StringParser::FullMarker(L"\\{(\\d+),(\\d+)\\}"), 
-                   StringParser::DefaultMarker(L"\\{(\\d+)\\}"),
-                   StringParser::RemoveComment(expr);
+      const wregex StringResolver::FullMarker(L"\\{(\\d+),(\\d+)\\}"), 
+                   StringResolver::DefaultMarker(L"\\{(\\d+)\\}"),
+                   StringResolver::RemoveComment(expr);
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create a parser for a language string</summary>
       /// <param name="str">The string.</param>
-      StringParser::StringParser(const LanguageString& str) : Text(str.Text), Page(str.Page)
+      StringResolver::StringResolver(const LanguageString& str) : Text(str.Text), Page(str.Page)
       {
          //Console << "Parsing " << Colour::Yellow << str.Text << ENDL;
 
@@ -35,7 +35,7 @@ namespace Logic
       }
 
 
-      StringParser::~StringParser()
+      StringResolver::~StringResolver()
       {
       }
 
@@ -48,7 +48,7 @@ namespace Logic
       /// <summary>Called for each occurrence of {aaa,bbb} markers</summary>
       /// <param name="match">The match.</param>
       /// <returns>Replacement text</returns>
-      wstring  StringParser::OnFullMarker(wsmatch& match)
+      wstring  StringResolver::OnFullMarker(wsmatch& match)
       {
          UINT id   = _wtoi( match[2].str().c_str() ),
               page = _wtoi( match[1].str().c_str() );
@@ -60,7 +60,7 @@ namespace Logic
       /// <summary>Called for each occurrence of {aaa} markers</summary>
       /// <param name="match">The match.</param>
       /// <returns>Replacement text</returns>
-      wstring  StringParser::OnDefaultMarker(wsmatch& match)
+      wstring  StringResolver::OnDefaultMarker(wsmatch& match)
       {
          UINT id   = _wtoi( match[1].str().c_str() );
 
@@ -71,7 +71,7 @@ namespace Logic
       // ------------------------------- PRIVATE METHODS ------------------------------
 
       /// <summary>Parses the instance text.</summary>
-      void  StringParser::Parse()
+      void  StringResolver::Parse()
       {
          wsmatch match;
          wstring r;
