@@ -42,12 +42,13 @@ namespace Logic
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      BatchTest_ScriptCompiler();
+      //BatchTest_ScriptCompiler();
       //Test_Lexer();
 
       
       //Test_ScriptCompiler();
       
+      Test_StringParser();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -504,6 +505,125 @@ namespace Logic
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(err);
          return;
+      }
+   }
+
+   void DebugTests::Test_StringParser()
+   {
+      wsmatch matches;
+
+      // Expressions
+      vector<wstring> expressions = 
+      {
+         L"[author]",
+         L"[author space]",
+         L"[author_underscore]",
+         L"[author304number]",
+         L"[/author]",
+         L"[author\\]",
+         L"[/author\\]"
+      };
+
+      try
+      {
+         // Basic Tag
+         wregex IsBasicTag(L"\\[/?([a-z]+)\\]");
+         for (auto expr : expressions)
+         {
+            Console << Cons::Heading << "Matching basic Tag: " << Colour::White << expr << ENDL;
+         
+            if (!regex_match(expr, matches, IsBasicTag))
+               Console << Colour::Red << "Failed" << ENDL;
+         
+            else for (auto m : matches)
+               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+         }
+
+         // Open Tag
+         wregex IsOpenTag(L"\\[([a-z]+)\\]");
+         for (auto expr : expressions)
+         {
+            Console << Cons::Heading << "Matching open Tag: " << Colour::White << expr << ENDL;
+         
+            if (!regex_match(expr, matches, IsOpenTag))
+               Console << Colour::Red << "Failed" << ENDL;
+         
+            else for (auto m : matches)
+               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+         }
+
+         // Expressions
+         expressions = 
+         {
+            L"[author]hello dolly[/author]something else",
+            L"[/author]hello dolly[author]something else",
+            L"[author]hello dolly[author]something else",
+            L"[/author]hello dolly[/author]something else",
+            L"[author]hello dolly[/title]something else",
+            L"[author][/author]something else",
+            L"[author]hellow dolly[text]something else",
+         };
+
+         // Author/Title Tag
+         wregex IsAuthorTag(L"\\[author\\](.*)\\[/author\\]");
+         for (auto expr : expressions)
+         {
+            Console << Cons::Heading << "Matching author/title Tag: " << Colour::White << expr << ENDL;
+         
+            if (!regex_search(expr, matches, IsAuthorTag))
+               Console << Colour::Red << "Failed" << ENDL;
+         
+            else for (auto m : matches)
+               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+         }
+
+         // Expressions
+         expressions = 
+         {
+            L"bongo [select]button text[/select] bongo",
+            L"bongo [select value='id']button text[/select]",
+            L"bongo [select value=\"id\"]button text[/select]",
+            L"[select value = 'id']button text[/select]",
+            L"bongo [select value ='id]button text[select] bongo",
+            L"bongo [text cols='54' width='22']paragraph text[/text] bongo",
+            L"bongo [text cols='54' width='22' extra='hello']paragraph text[/text] bongo",
+         };
+
+         // Complex Tag
+         //wregex IsComplexTag(L"\\[([a-z]+)(\\s+([a-z]+)='(\\w+)')+\\]");
+         wregex IsComplexTag(L"\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
+         for (auto expr : expressions)
+         {
+            Console << Cons::Heading << "Matching complex Tag: " << Colour::White << expr << ENDL;
+         
+            if (!regex_search(expr, matches, IsComplexTag))
+               Console << Colour::Red << "Failed" << ENDL;
+         
+            else 
+            {
+               // Initial match
+               for (auto m : matches)
+                  Console << (m.matched ? Colour::Green : Colour::Red) << "Matched: " << m.str() << ENDL;
+
+               // Properties
+               auto properties = matches[0].str();
+               Console << Colour::Yellow << "  Iterating over properties: '" << properties << "'..." << ENDL;
+               
+               wregex IsProperty(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
+               for (wsregex_iterator it(properties.begin()+matches[1].length(), properties.end(), IsProperty), eof; it != eof; ++it)
+               {
+                  Console << Colour::Green << "  Matched: " << it->str() << ENDL;
+                  for (auto m : *it)
+                     Console << (m.matched ? Colour::Green : Colour::Red) << "    SubMatch: " << m.str() << ENDL;
+               }
+            }
+         }
+
+         
+      }
+      catch (exception& e)
+      {
+         Console.Log(HERE, e);
       }
    }
    

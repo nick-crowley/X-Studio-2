@@ -6,11 +6,23 @@ namespace Logic
 {
    namespace Language
    {
-      const wregex  StringParser::IsBasicTag = wregex(L"[/?(\\w+)]"),
-                    StringParser::IsOpenTag = wregex(L"[(\\w+)]"),
-                    StringParser::IsComplexTag = wregex(L"[(\\w+) (\\w+)='(\\w+)']"),
-                    StringParser::IsAuthorTag = wregex(L"[author](.*)[/author]"),
-                    StringParser::IsTitleTag = wregex(L"[title](.*)[/title]");
+      /// <summary>Matches an opening tag (at beginning of string) and captures the name</summary>
+      const wregex  StringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
+
+      /// <summary>Matches any closing tag (at beginning of string) and captures the name</summary>
+      const wregex  StringParser::IsClosingTag = wregex(L"^\\[/?([a-z]+)\\]");
+      
+      /// <summary>Matches any opening/closing tag (at beginning of string) without properties and captures the name</summary>
+      const wregex  StringParser::IsBasicTag = wregex(L"^\\[/?([a-z]+)\\]");
+
+      /// <summary>Matches multiple tag properties captures both name and value</summary>
+      const wregex  StringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
+
+      /// <summary>Matches opening and closing [author] tags (at beginning of string) and captures the text</summary>
+      const wregex  StringParser::IsAuthorDefition = wregex(L"^[author](.*)[/author]");
+
+      /// <summary>Matches opening and closing [title] tags (at beginning of string) and captures the text</summary>
+      const wregex  StringParser::IsTitleDefition = wregex(L"^[title](.*)[/title]");
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -135,6 +147,7 @@ namespace Logic
          // Failed
          return false;
       }
+
       /// <summary>Matches any opening or closing tag</summary>
       /// <param name="pos">position of opening bracket</param>
       /// <returns></returns>
@@ -142,13 +155,8 @@ namespace Logic
       {
          wsmatch match;
 
-         // Find end bracket
-         auto end = find_if(pos, Input.cend(), [](const wchar& ch) {return ch == ']';} );
-         if (end == Input.end())
-            return false;
-
          // Match tag using RegEx
-         return regex_match(pos, end, match, IsOpenTag);
+         return regex_search(pos, Input.end(), match, IsOpeningTag) || regex_search(pos, Input.end(), match, IsClosingTag);
       }
 
 
@@ -233,8 +241,16 @@ namespace Logic
          }
       }
 
+      Alignment StringParser::GetAlignment(TagType t) const
+      {
+         // TODO
+         return Alignment::Left;
+      }
+
       StringParser::TagType  StringParser::IdentifyTag(const wstring& name) const
       {
+         // TODO
+         return TagType::Author;
       }
    }
 }
