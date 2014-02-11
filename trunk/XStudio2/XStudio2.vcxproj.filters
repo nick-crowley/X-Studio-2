@@ -102,7 +102,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
     <Text Include="Command Syntax.txt" />
   </ItemGroup>
   <ItemGroup>
