@@ -17,6 +17,7 @@
 #include "TWare.h"
 #include "TLaser.h"
 #include "StringResolver.h"
+#include "StringParser.h"
 #include "../Testing/ScriptValidator.h"
 
 namespace Logic
@@ -48,7 +49,8 @@ namespace Logic
       
       //Test_ScriptCompiler();
       
-      Test_StringParserRegEx();
+      Test_StringParser();
+      //Test_StringParserRegEx();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -513,16 +515,47 @@ namespace Logic
       // Expressions
       vector<wstring> strings = 
       {
+         L"",
          L"quick brown fox jumped over the lazy dog",
          L"quick brown fox [b]jumped over[/b] the lazy dog",
-         L"[author]fred[/author][title]red alert[/title]",
-         L"[author space]",
-         L"[author_underscore]",
-         L"[author304number]",
-         L"[/author]",
-         L"[author\\]",
-         L"[/author\\]"
+         L"quick brown fox [i]jumped over[/i] the lazy dog",
+         L"quick brown fox [u]jumped over[/u] the lazy dog",
+
+         L"[author][/author]",
+         L"[author][/author][title][/title]",
+         L"[author]fred[/author] quick brown fox [b]jumped over[/b] the lazy dog",
+         L"[author]fred[/author][title]george[/title] quick brown fox [b]jumped over[/b] the lazy dog",
+
+         L"[left][/left]",
+         L"[left]quick brown fox [b]jumped over[/b] the lazy dog[/left]",
+         L"[right]quick brown fox [b]jumped over[/b] the lazy dog[/right]",
+         L"[center]quick brown fox [b]jumped over[/b] the lazy dog[/center]",
+         L"[justify]quick brown fox [b]jumped over[/b] the lazy dog[/justify]",
+         
+         L"[select][/select]",
+         L"[select]jump again[/select]",
+         L"[select value='one']jump once[/select] [select value='two']jump twice[/select]",
+
+         L"[text][/text]",
+         L"[text]quick brown fox [b]jumped over[/b] the lazy dog[/text]",
+         L"[text cols='2']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
+         L"[text colwidth='40']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
+         L"[text cols='3' colwidth='40']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
+         L"[text cols='3' colwidth='40' colspacing='50']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
       };
+
+      try
+      {
+         for (auto str : strings)
+         {
+            Console << "Parsing language string: '" << str << "'..." << ENDL;
+            StringParser p(str);
+         }
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e);
+      }
    }
 
    void DebugTests::Test_StringParserRegEx()
