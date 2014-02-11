@@ -3,8 +3,20 @@
 namespace Logic
 {
    /// <summary>RGB Colours</summary>
-   enum class Colour : COLORREF { Black = RGB(0,0,0), Green = RGB(0,255,0), Blue = RGB(0,0,255), White = RGB(255,255,255), Cyan = RGB(150,220,220),
-                                  Red = RGB(255,0,0), Yellow = RGB(255,255,0), Grey = RGB(128,128,128), Purple = RGB(255,0,255) };
+   enum class Colour : COLORREF 
+   { 
+      Black = RGB(0,0,0), 
+      White = RGB(255,255,255), 
+      Default = RGB(200,200,200),
+      Green = RGB(0,255,0), 
+      Blue = RGB(0,0,255), 
+      Cyan = RGB(150,220,220),
+      Red = RGB(255,0,0), 
+      Yellow = RGB(255,255,0), 
+      Grey = RGB(128,128,128),
+      Orange = RGB(200,200,50),
+      Purple = RGB(255,0,255) 
+   };
 
    /// <summary>Console manipulators</summary>
    enum class Cons { Heading, Normal, Bold, Endl };
