@@ -104,6 +104,13 @@ namespace Logic
             return *this;
          }
 
+         /// <summary>Append button</summary>
+         RichParagraph& operator+=(RichButton* btn)
+         {
+            Content.push_back(RichElementPtr(btn));
+            return *this;
+         }
+
          // -------------------- REPRESENTATION ---------------------
       public:
          ElementList Content;
@@ -329,19 +336,26 @@ namespace Logic
          static TagType   IdentifyTag(const wstring& name);
 
          // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(RichParagraph&,FirstParagraph,GetFirstParagraph);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
          bool  MatchColourCode(CharIterator pos) const;
          bool  MatchTag(CharIterator pos) const;
 
+      private:
+         RichButton*  CreateButton(const RichTag& tag) const;
+
          // ----------------------- MUTATORS ------------------------
       public:
          void  Parse();
 
       private:
+         RichParagraph& GetFirstParagraph();
          Colour  ReadColourCode(CharIterator& pos);
          RichTag ReadTag(CharIterator& pos);
+         void    SetColumnInfo(const RichTag& tag);
          
          // -------------------- REPRESENTATION ---------------------
       public:

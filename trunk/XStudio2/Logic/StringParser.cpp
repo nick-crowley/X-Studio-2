@@ -208,9 +208,9 @@ namespace Logic
       /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
       void  StringParser::Parse()
       {
-         RichParagraph* Paragraph;
-         Colour TextColour = Colour::Default;
-         bool   Escaped = false;
+         RichParagraph* Paragraph = &FirstParagraph;     // Current paragraph (output)
+         Colour         TextColour = Colour::Default;    // Current colour
+         bool           Escaped = false;                 // Whether current char is escaped
 
          // Iterate thru input
          for (auto ch = Input.begin(); ch != Input.end(); ++ch)
@@ -237,28 +237,42 @@ namespace Logic
                else 
                {
                   // RichTag: Read entire tag. Adjust colour/formatting/paragraph
-                  RichTag t = ReadTag(ch);
-                  switch (t.Class)
+                  RichTag tag = ReadTag(ch);
+                  switch (tag.Class)
                   {
                   // Paragraph: Add/Remove alignment. Append new paragraph?
                   case TagClass::Paragraph:
-                     Alignments.PushPop(t);
-                     if (t.Opening)
+                     Alignments.PushPop(tag);
+                     if (tag.Opening)
                      {
-                        Output += RichParagraph(GetAlignment(t.Type));
-                        Paragraph = &Output.Paragraphs.back();
+                        Output += RichParagraph(GetAlignment(tag.Type));
+                        Paragraph = &FirstParagraph;
                      }
                      break;
 
                   // Formatting: Add/Remove current formatting
                   case TagClass::Character:
-                     Formatting.PushPop(t);
+                     Formatting.PushPop(tag);
                      break;
 
                   // Colour: Add/Remove current colour. Reset any colourCode override
                   case TagClass::Colour:
-                     Colours.PushPop(t);
+                     Colours.PushPop(tag);
                      TextColour = Colours.Current;
+                     break;
+
+                  // Special: 
+                  case TagClass::Special:
+                     switch (tag.Type)
+                     {
+                     // Author/Title: Insert into output
+                     case TagType::Author: Output.Author = tag.Text; break;
+                     case TagType::Title:  Output.Title = tag.Text;  break;
+
+                     // Button:
+                     case TagType::Select: *Paragraph += CreateButton(tag);  break;
+                     case TagType::Text:   SetColumnInfo(tag);               break;
+                     }
                      break;
                   }
                }
@@ -279,6 +293,43 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
+      /// <summary>Creates a button from a select tag</summary>
+      /// <param name="tag">select tag.</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::InvalidOperation">Not a 'select' tag</exception>
+      /// <exception cref="Logic::Language::RichTextException">Invalid tag property</exception>
+      RichButton*  StringParser::CreateButton(const RichTag& tag) const
+      {
+         // Ensure tag is 'select'
+         if (tag.Type != TagType::Select)
+            throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", GetString(tag.Type).c_str()) );
+
+         // Recursively parse text  (To enable character/colour formatting)
+         StringParser btn(tag.Text);
+                        
+         // Get ID
+         wstring id;
+         if (tag.Properties.empty())
+         {
+            // Ensure property is 'value'
+            if (tag.Properties.front().first != L"value")
+               throw RichTextException(HERE, GuiString(L"Unrecognised button property '%s'", tag.Properties.front().first.c_str()) );
+
+            id = tag.Properties.front().second;
+         }
+                           
+         // Append button     [Extract only 1st paragraph of button text, to strip paragraph alignment]
+         return new RichButton(id, btn.FirstParagraph.Content);
+      }
+      
+
+      /// <summary>Gets the first paragraph.</summary>
+      /// <returns></returns>
+      RichParagraph& StringParser::GetFirstParagraph() 
+      {
+         return Output.Paragraphs.back();
+      }
+
       /// <summary>Matches a unix style colour code.</summary>
       /// <param name="pos">position of backslash</param>
       /// <returns></returns>
@@ -421,6 +472,40 @@ namespace Logic
             // Advance Iterator + Return tag
             pos += matches[0].length();
             return RichTag(IdentifyTag(matches[1].str()), props);
+         }
+      }
+      
+      /// <summary>Extracts column information from a text tag</summary>
+      /// <param name="tag">text tag</param>
+      /// <exception cref="Logic::InvalidOperation">Not a 'text' tag</exception>
+      /// <exception cref="Logic::Language::RichTextException">Invalid tag property</exception>
+      void  StringParser::SetColumnInfo(const RichTag& tag)
+      {
+         // Ensure tag is 'text'
+         if (tag.Type != TagType::Text)
+            throw InvalidOperationException(HERE, GuiString(L"Cannot extract column info from a '%s' tag", GetString(tag.Type).c_str()) );
+
+         // Extract properties direct into output
+         for (const Property& p : tag.Properties)
+         {
+            // Column count
+            if (p.first == L"cols")
+            {
+               // Verify
+               auto cols = _ttoi(p.second.c_str());
+               if (cols < 0 || cols > 3)
+                  throw RichTextException(HERE, GuiString(L"Cannot arrange text in %d columns", cols));
+               Output.Columns = static_cast<ColumnType>(cols);
+            }
+            // Column width
+            else if (p.first == L"colwidth")
+               Output.Width = _ttoi(p.second.c_str());
+            // Column spacing
+            else if (p.first == L"colspacing")
+               Output.Width = _ttoi(p.second.c_str());
+            else
+               // Unrecognised
+               throw RichTextException(HERE, GuiString(L"Invalid 'text' tag property '%s'", p.first.c_str()));
          }
       }
 
