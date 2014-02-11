@@ -48,7 +48,7 @@ namespace Logic
       
       //Test_ScriptCompiler();
       
-      Test_StringParser();
+      Test_StringParserRegEx();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -509,6 +509,23 @@ namespace Logic
    }
 
    void DebugTests::Test_StringParser()
+   {
+      // Expressions
+      vector<wstring> strings = 
+      {
+         L"quick brown fox jumped over the lazy dog",
+         L"quick brown fox [b]jumped over[/b] the lazy dog",
+         L"[author]fred[/author][title]red alert[/title]",
+         L"[author space]",
+         L"[author_underscore]",
+         L"[author304number]",
+         L"[/author]",
+         L"[author\\]",
+         L"[/author\\]"
+      };
+   }
+
+   void DebugTests::Test_StringParserRegEx()
    {
       wsmatch matches;
 
