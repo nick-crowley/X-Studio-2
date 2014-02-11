@@ -9,11 +9,13 @@ namespace Logic
    {
       class RichElement;
 
+      // ------------------------ TYPES --------------------------
+
       /// <summary>Paragraph alignment</summary>
-      enum class Alignment { Left, Centre, Right, Justify };
+      enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
 
       /// <summary>Column spacing of a rich-text string</summary>
-      enum class ColumnSpacing { Default, Single, Double, Triple };
+      enum class ColumnType { Default, Single, Double, Triple };
 
       /// <summary>Distinguishes characters from buttons in rich text</summary>
       enum class ElementType  { Character, Button };
@@ -25,9 +27,24 @@ namespace Logic
       /// <summary>List of rich-text characters/buttons</summary>
       typedef list<RichElementPtr>  ElementList;
 
-      /// <summary>Button/Character within a rich-text string</summary>
+      // ------------------------ CLASSES ------------------------
+
+      /// <summary>Occurs when an error is detected in a rich-text string</summary>
+      class RichTextException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create a RichTextException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="msg">Message</param>
+         RichTextException(wstring  src, wstring  msg) 
+            : ExceptionBase(src, wstring(L"Invalid formatting: ") + msg)
+         {}
+      };
+
+      /// <summary>Base class for a Button/Character within a rich-text string</summary>
       class RichElement
       {
+         // --------------------- CONSTRUCTION ----------------------
       protected:
          RichElement(ElementType t) : Type(t)
          {}
@@ -39,10 +56,13 @@ namespace Logic
       /// <summary>Character within a rich-text paragraph</summary>
       class RichChar : public RichElement
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          RichChar(wchar ch, Colour c, UINT format) : RichElement(ElementType::Character), Char(ch), Colour(c), Format(format)
          {}
 
+         // -------------------- REPRESENTATION ---------------------
+      public:
          wchar  Char;
          UINT   Format;
          Colour Colour;
@@ -51,10 +71,13 @@ namespace Logic
       /// <summary>Button within a rich-text paragraph</summary>
       class RichButton : public RichElement
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          RichButton(const wstring& id, const ElementList& txt) : RichElement(ElementType::Button), ID(id), Text(txt)
          {}
 
+         // -------------------- REPRESENTATION ---------------------
+      public:
          wstring     ID;
          ElementList Text;
       };
@@ -62,12 +85,18 @@ namespace Logic
       /// <summary>Paragraph of text within a rich-text string</summary>
       class RichParagraph
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create empty left-aligned paragraph</summary>
          RichParagraph() : Align(Alignment::Left)
          {}
+         /// <summary>Create empty paragraph</summary>
+         /// <param name="al">alignment</param>
          RichParagraph(Alignment al) : Align(al)
          {}
 
+         // ----------------------- MUTATORS ------------------------
+      public:
          /// <summary>Append character</summary>
          RichParagraph& operator+=(RichChar* ch)
          {
@@ -75,6 +104,8 @@ namespace Logic
             return *this;
          }
 
+         // -------------------- REPRESENTATION ---------------------
+      public:
          ElementList Content;
          Alignment   Align;
       };
@@ -82,6 +113,12 @@ namespace Logic
       /// <summary>Result of parsing a Language string with rich-text formatting</summary>
       class RichString
       {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         RichString() : Columns(ColumnType::Default), Spacing(0), Width(0)
+         {}
+
+         // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Append paragraph</summary>
          RichString& operator+=(const RichParagraph& p)
@@ -90,9 +127,12 @@ namespace Logic
             return *this;
          }
 
+         // -------------------- REPRESENTATION ---------------------
+      public:
          list<RichParagraph> Paragraphs;
-         ColumnSpacing       Spacing;
-         UINT                ColumnWidth;
+         ColumnType          Columns;
+         UINT                Width,
+                             Spacing;
          wstring             Author,
                              Title;
       };
@@ -105,9 +145,16 @@ namespace Logic
          /// <summary>Constant character iterator</summary>
          typedef wstring::const_iterator CharIterator;
 
+         /// <summary>Rich-text tag {name,value} property pair</summary>
+         typedef pair<wstring,wstring> Property;
+
+         /// <summary>List of {name,value} property pairs for a rich-text tag</summary>
+         typedef list<Property>  PropertyList;
+
          /// <summary>Defines available rich edit tags</summary>
          enum class TagType { Bold, Underline, Italic, Left, Right, Centre, Justify, Text, Select, Author, Title, Rank,
-                              Black, Blue, Cyan, Green, Magenta, Orange, Red, Silver, Yellow, White };
+                              Black, Blue, Cyan, Green, Magenta, Orange, Red, Silver, Yellow, White,
+                              Unrecognised };
 
          /// <summary>Groups tags by category</summary>
          enum class TagClass { Character, Paragraph, Colour, Special };
@@ -115,6 +162,7 @@ namespace Logic
          /// <summary>Any valid tag in a rich-text string</summary>
          class RichTag
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             RichTag(TagType t, bool open) : Type(t), Class(GetClass(t)), Opening(open), Closing(!open), SelfClosing(false)
             {}
@@ -122,36 +170,45 @@ namespace Logic
             RichTag(TagType t, const wstring& txt) : Type(t), Class(TagClass::Special), Text(txt), Opening(false), Closing(false), SelfClosing(false)
             {}
 
-            bool     Opening,
-                     Closing,
-                     SelfClosing;
-            
-            wstring  Text;
-            TagType  Type;
-            TagClass Class;
+            RichTag(TagType t, const PropertyList& props) : Type(t), Properties(props), Class(GetClass(t)), Opening(true), Closing(false), SelfClosing(false)
+            {}
 
-         private:
-            TagClass GetClass(TagType t)
-            {
-               // TODO
-               return TagClass::Character;
-            }
+            // -------------------- REPRESENTATION ---------------------
+         public:
+            bool         Opening,         // Opening tag
+                         Closing,         // Closing tag
+                         SelfClosing;     // Self-closing tag
+            
+            wstring      Text;         // Title/Author/Button text
+            TagType      Type;         // Tag type
+            TagClass     Class;        // Class of tag
+            PropertyList Properties;   // {Name,Value} property pairs
          };
 
          /// <summary>Stack of rich formatting tags</summary>
          class TagStack : protected deque<TagType>
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             /// <summary>Create tag stack</summary>
             /// <param name="cl">The class of tags to hold</param>
             TagStack(TagClass cl) : Class(cl)
             {}
 
+            // --------------------- PROPERTIES ------------------------
+
+            // ---------------------- ACCESSORS ------------------------			
+
+            // ----------------------- MUTATORS ------------------------
+         public:
             /// <summary>Push or pop a tag from the stack</summary>
+            /// <exception cref="Logic::ArgumentException">Tag is of the incorrect class</exception>
+            /// <exception cref="Logic::Language::RichTextException">Closing tag doesn't match currently open tag</exception>
             void  PushPop(const RichTag& tag)
             {
+               // Ensure tag is of correct class
                if (tag.Class != Class)
-                  throw "Cannot add %s tag to a %s stack";
+                  throw ArgumentException(HERE, L"tag", GuiString(L"Cannot add %s tag to a %s stack", GetString(tag.Type).c_str(), GetString(tag.Class).c_str()) );
 
                // Open: Push stack
                if (tag.Opening)
@@ -163,9 +220,10 @@ namespace Logic
 
                else
                   // Mismatch: Error
-                  throw "Mismatched tag";
+                  throw RichTextException(HERE, GuiString(L"Unexpected closing %s tag", GetString(tag.Type).c_str()) );
             }
 
+            // -------------------- REPRESENTATION ---------------------
          private:
             TagClass Class;
          };
@@ -173,16 +231,22 @@ namespace Logic
          /// <summary>Specialised character tag stack</summary>
          class CharTagStack : public TagStack
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             CharTagStack() : TagStack(TagClass::Character)
             {}
 
+            // --------------------- PROPERTIES ------------------------
+         public:
+            /// <summary>Generate character formatting flags from tags in stack</summary>
             PROPERTY_GET(UINT,Current,GetCurrent);
 
-            /// <summary>Get formatting flags for all tags in stack</summary>
-            UINT  GetCurrent()
+            // ---------------------- ACCESSORS ------------------------			
+         public:
+            /// <summary>Generate character formatting flags from tags in stack</summary>
+            UINT  GetCurrent() const
             {
-               UINT format;
+               UINT format = NULL;
                
                // Convert current tags into formating flags
                for (auto& t : *this)
@@ -197,21 +261,30 @@ namespace Logic
             }
          };
 
-         /// <summary>Specialised character tag stack</summary>
+         /// <summary>Specialised colour tag stack</summary>
          class ColourTagStack : public TagStack
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             ColourTagStack() : TagStack(TagClass::Colour)
             {}
             
+            // --------------------- PROPERTIES ------------------------
+         public:
+            /// <summary>Get colour on top of the stack, or default colour if empty</summary>
             PROPERTY_GET(Colour,Current,GetCurrent);
 
-            /// <summary>Get formatting flags for all tags in stack</summary>
-            Colour GetCurrent()
+            // ---------------------- ACCESSORS ------------------------			
+         public:
+            /// <summary>Get colour on top of the stack, or default colour if empty</summary>
+            /// <exception cref="Logic::AlgorithmException">Current colour tag is unrecognised</exception>
+            Colour GetCurrent() const
             {
+               // Default if empty
                if (empty())
                   return Colour::Default;
 
+               // Convert tag to colour
                switch (back())
                {
                case TagType::Black:	   return Colour::Black;
@@ -226,7 +299,8 @@ namespace Logic
                case TagType::White:	   return Colour::White;
                }
 
-               throw "Unrecognised colour tag";
+               // Error
+               throw AlgorithmException(HERE, L"Unrecognised colour tag on top of stack");
             }
          };
 
@@ -248,16 +322,18 @@ namespace Logic
                              IsAuthorDefition,
                              IsTitleDefition;
 
+         static Alignment GetAlignment(TagType t);
+         static TagClass  GetClass(TagType t);
+         static wstring   GetString(TagType t);
+         static wstring   GetString(TagClass t);
+         static TagType   IdentifyTag(const wstring& name);
+
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
       public:
          bool  MatchColourCode(CharIterator pos) const;
          bool  MatchTag(CharIterator pos) const;
-
-      private:
-         Alignment GetAlignment(TagType t) const;
-         TagType   IdentifyTag(const wstring& name) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -266,7 +342,7 @@ namespace Logic
       private:
          Colour  ReadColourCode(CharIterator& pos);
          RichTag ReadTag(CharIterator& pos);
-
+         
          // -------------------- REPRESENTATION ---------------------
       public:
          RichString      Output;
