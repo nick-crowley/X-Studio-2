@@ -8,6 +8,7 @@ namespace Logic
       Black = RGB(0,0,0), 
       White = RGB(255,255,255), 
       Default = RGB(200,200,200),
+      Silver = RGB(126,126,126),
       Green = RGB(0,255,0), 
       Blue = RGB(0,0,255), 
       Cyan = RGB(150,220,220),
