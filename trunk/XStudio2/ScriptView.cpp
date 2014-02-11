@@ -158,6 +158,26 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try
       {
+         // Create tooltip
+         ToolTip.Create(this);
+         ToolTip.AddTool(&RichEdit, L"This is supposed to be the title of the tooltip", CRect(0,0,500,500), 42);
+         ToolTip.Activate(TRUE);
+         
+
+         CMFCToolTipInfo params;
+         params.m_bBoldLabel = TRUE;
+         params.m_bDrawDescription = TRUE;
+         params.m_bDrawIcon = FALSE;
+         params.m_bRoundedCorners = TRUE;
+         params.m_bDrawSeparator = TRUE;
+
+         params.m_clrFill = RGB(255, 255, 255);
+         params.m_clrFillGradient = RGB(228, 228, 240);
+         params.m_clrText = RGB(61, 83, 80);
+         params.m_clrBorder = RGB(144, 149, 168);
+         ToolTip.SetParams(&params);
+         ToolTip.SetDescription(L"The quick brown fox jumped over the lazy dog.\nThe quick brown fox jumped over the lazy dog.\nThe quick brown fox jumped over the lazy dog");
+
          // Convert script to RTF (ansi)
          string txt;
          RtfScriptTextWriter w(txt);
@@ -286,6 +306,22 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   return CFormView::PreCreateWindow(cs);
    }
    
+
+   /// <summary>Relay mouse events to tooltip</summary>
+   /// <param name="pMsg">MSG.</param>
+   /// <returns></returns>
+   BOOL ScriptView::PreTranslateMessage(MSG* pMsg)
+   {
+      if(pMsg->message== WM_LBUTTONDOWN ||
+         pMsg->message== WM_LBUTTONUP ||
+         pMsg->message== WM_MOUSEMOVE)
+      {
+         ToolTip.RelayEvent(pMsg);
+      }
+
+      return CFormView::PreTranslateMessage(pMsg);
+   }
+
    /// <summary>Selects the current scope in the labels dropdown</summary>
    void ScriptView::UpdateScope()
    {

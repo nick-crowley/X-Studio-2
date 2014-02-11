@@ -81,9 +81,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       ScriptEdit RichEdit;
       CComboBox  ScopeCombo;
       CComboBox  VariablesCombo;
+      CMFCToolTipCtrl  ToolTip;
 
    protected:
       EventHandler fnCompileComplete;
+   public:
+      virtual BOOL PreTranslateMessage(MSG* pMsg);
    };
 
    #ifndef _DEBUG  
