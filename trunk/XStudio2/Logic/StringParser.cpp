@@ -26,9 +26,10 @@ namespace Logic
       void  StringParser::Parse()
       {
          RichParagraph* Paragraph;
-         bool  Escaped = false;
          Colour CurrentColour = Colour::Default;
+         bool   Escaped = false;
 
+         // Iterate thru input
          for (auto ch = Input.begin(); ch != Input.end(); ++ch)
          {
             switch (*ch)
@@ -37,11 +38,11 @@ namespace Logic
             case '\\': 
                // ColourCode: Read and override existing stack colour, if any
                if (MatchColourCode(ch))
-                  CurrentColour = ReadColourCode(ch)
+                  CurrentColour = ReadColourCode(ch);
                else
                {  // Backslash: Insert as char, escape next character
                   Escaped = true;
-                  Paragraphs.Current += RichChar('\\', CurrentColour, Formatting.Current);
+                  *Paragraph += RichChar('\\', CurrentColour, Formatting.Current);
                }
                continue;
 
@@ -49,7 +50,7 @@ namespace Logic
             case '[':
                // Escaped/Not-a-tag: Add as char
                if (Escaped || MatchTag(ch))
-                  Paragraphs.Current += RichChar('[', CurrentColour, Formatting.Current);
+                  *Paragraph += RichChar('[', CurrentColour, Formatting.Current);
                else 
                {
                   // RichTag: Read entire tag. Adjust colour/formatting/paragraph
@@ -58,9 +59,12 @@ namespace Logic
                   {
                   // Paragraph:
                   case TagClass::Paragraph:
-                     Paragraphs.PushPop(t);
+                     Output.Paragraphs.PushPop(t);
                      if (t.Opening)
+                     {
                         Output += RichParagraph(t.Type);
+                        Paragraph = &Output.Paragraphs.back();
+                     }
                      break;
 
                   // Formatting: Add/Remove current formatting
@@ -71,7 +75,7 @@ namespace Logic
                   // Colour: Add/Remove current colour. Reset any colourCode override
                   case TagClass::Colour:
                      Colours.PushPop(t);
-                     Colour = Colours.Current;
+                     CurrentColour = Colours.Current;
                      break;
                   }
                }
@@ -79,7 +83,7 @@ namespace Logic
 
             // Char: Append to current paragraph
             default:
-               Paragraphs.Current += RichChar(*ch, CurrentColour, Formatting.Current);
+               *Paragraph += RichChar(*ch, CurrentColour, Formatting.Current);
                break;
             }
 
@@ -92,5 +96,57 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
+      bool  StringParser::MatchColourCode(CharIterator ch)
+      {
+         // Check for EOF?
+         if (ch+3 >= Input.end())
+            return false;
+
+         // Match '\\033'
+         if (ch[0] != '\\' || ch[1] != '0' || ch[2] != '3' || ch[3] != '3')
+            return false;
+
+         // Match colour character
+         switch (ch[4])
+         {
+         case 'A':   // Silver
+         case 'B':   // Blue
+         case 'C':   // Cyan
+         case 'G':   // Green
+         case 'O':   // Orange
+         case 'M':   // Magenta
+         case 'R':   // Red
+         case 'W':   // White
+         case 'X':   // Default
+         case 'Y':   // Yellow
+         case 'Z':   // Black
+            return true;
+         }
+
+         // Failed
+         return false;
+      }
+
+      Colour  StringParser::ReadColourCode(CharIterator ch)
+      {
+         // Match colour character
+         switch (*ch)
+         {
+         case 'A':   return Colour::Silver;
+         case 'B':   return Colour::Blue;
+         case 'C':   return Colour::Cyan;
+         case 'G':   return Colour::Green;
+         case 'O':   return Colour::Orange;
+         case 'M':   return Colour::Purple;
+         case 'R':   return Colour::Red;
+         case 'W':   return Colour::White;
+         case 'X':   return Colour::Default;
+         case 'Y':   return Colour::Yellow;
+         case 'Z':   return Colour::Black;
+         }
+
+         // Failed
+         throw "Invalid colour code";
+      }
    }
 }
