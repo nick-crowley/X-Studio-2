@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
-#include "Logic/StringParser.h"
+#include "Logic/StringResolver.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)

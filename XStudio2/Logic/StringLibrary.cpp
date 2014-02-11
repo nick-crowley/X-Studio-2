@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StringLibrary.h"
 #include "LanguageFileReader.h"
-#include "StringParser.h"
+#include "StringResolver.h"
 
 namespace Logic
 {
