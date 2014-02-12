@@ -30,12 +30,15 @@ namespace Logic
                                 Green = RGB(0,255,0), Grey   = RGB(128,128,128), Orange = RGB(255,128,40),  Purple = RGB(255,0,255), 
                                 Red   = RGB(255,0,0), Yellow = RGB(255,255,0);
 
+         static COLORREF ToRGB(Colour c);
+
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
 
          // ----------------------- MUTATORS ------------------------
       public:
+         void  Close();
          void  Write(const RichString& str);
 
          // -------------------- REPRESENTATION ---------------------

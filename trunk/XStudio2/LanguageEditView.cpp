@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "LanguageEditView.h"
+#include "Logic/RtfStringWriter.h"
 #include "Helpers.h"
 #include "afxcview.h"
 
@@ -131,10 +132,26 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          // Re-populate
          if (LanguageString* str = GetStringView()->GetSelectedString())
-            RichEdit.SetWindowTextW(str->Text.c_str());
+         {
+            string rtf; //RichEdit.SetWindowTextW(str->Text.c_str());
+
+            // Convert string into RTF
+            RtfStringWriter w(rtf);
+            w.Write(str->RichText);
+            w.Close();
+
+            // Extend character limit
+            RichEdit.LimitText(256*1024);
+
+            // Replace contents with RTF
+            SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+            if (!RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
+               throw Win32Exception(HERE, L"Unable to set rich-edit text");
+         }
       }
       catch (ExceptionBase& e) { 
          Console.Log(HERE, e); 
+         RichEdit.SetWindowTextW(GuiString(L"Error: %s", e.Message.c_str()).c_str());
       }
    }
    

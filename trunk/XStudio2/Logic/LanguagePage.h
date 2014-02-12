@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "MapIterator.hpp"
+#include "RichString.h"
 
 namespace Logic
 {
@@ -42,11 +43,13 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
          PROPERTY_GET(wstring,ResolvedText,GetResolvedText);
+         PROPERTY_GET(RichString,RichText,GetRichText);
 
 		   // ---------------------- ACCESSORS ------------------------
       public:
-         wstring GetResolvedText() const;
-         bool    IsScriptObject() const;
+         wstring    GetResolvedText() const;
+         RichString GetRichText() const;
+         bool       IsScriptObject() const;
 
 		   // ----------------------- MUTATORS ------------------------
 
