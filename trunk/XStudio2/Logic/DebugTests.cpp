@@ -544,18 +544,18 @@ namespace Logic
          L"[text cols='3' colwidth='40' colspacing='50']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
       };
 
-      try
+      // Parse strings
+      for (auto str : strings)
       {
-         for (auto str : strings)
+         try
          {
-            Console << "Parsing language string: '" << str << "'..." << ENDL;
+            Console << Cons::Heading << "Parsing language string: " << Colour::Yellow << Cons::Bold << str << ENDL;
             StringParser p(str);
-            Console << p.Output << ENDL << ENDL;
+            Console << p.Output << ENDL;
          }
-      }
-      catch (ExceptionBase& e)
-      {
-         Console.Log(HERE, e);
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
+         }
       }
    }
 
