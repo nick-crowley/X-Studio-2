@@ -29,6 +29,12 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguageFrame, CMDIChildWndEx)
    END_MESSAGE_MAP()
 
+   BEGIN_MESSAGE_MAP(LanguagePageSplitter, CSplitterWnd)
+   END_MESSAGE_MAP()
+
+   BEGIN_MESSAGE_MAP(LanguageStringSplitter, CSplitterWnd)
+   END_MESSAGE_MAP()
+
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    #ifdef _DEBUG
@@ -52,10 +58,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try
       {
-         int pageWidth = theApp.GetSectionInt(L"LanguageView", L"PageWidth", 150),
-             strWidth = theApp.GetSectionInt(L"LanguageView", L"StringWidth", 500),
-             strHeight = theApp.GetSectionInt(L"LanguageView", L"StringHeight", 400),
-             editHeight = theApp.GetSectionInt(L"LanguageView", L"EditHeight", 100);
+         int pageWidth = theApp.GetSectionInt(L"LanguageFrame", L"PageWidth", 150),
+             strWidth = theApp.GetSectionInt(L"LanguageFrame", L"StringWidth", 500),
+             strHeight = theApp.GetSectionInt(L"LanguageFrame", L"StringHeight", 400),
+             editHeight = theApp.GetSectionInt(L"LanguageFrame", L"EditHeight", 100);
 
          //theApp.WriteSectionInt(L"LanguageView", L"Width", 100);
          // Split horizontally:  x | y
@@ -92,6 +98,5 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    
 NAMESPACE_END2(GUI,Views)
-
 
 
