@@ -36,35 +36,70 @@
 
 ///////////////////////////////// COMMANDS /////////////////////////////
 
-#define ID_STATUSBAR_PANE1              200
-#define ID_STATUSBAR_PANE2              201
-#define ID_VIEW_CUSTOMIZE               202
-#define ID_WINDOW_MANAGER               203
-#define ID_VIEW_PROJECTWND              204
-#define ID_VIEW_CLASSVIEW               205
-#define ID_PROPERTIES                   206
-#define ID_OPEN                         207
-#define ID_OPEN_WITH                    208
-#define ID_DUMMY_COMPILE                209
-#define ID_CLASS_ADD_MEMBER_FUNCTION    210
-#define ID_CLASS_ADD_MEMBER_VARIABLE    211
-#define ID_CLASS_DEFINITION             212
-#define ID_CLASS_PROPERTIES             213
-#define ID_NEW_FOLDER                   214
-#define ID_VIEW_SCRIPT_OBJECTS          215
-#define ID_VIEW_GAME_OBJECTS            216
-#define ID_VIEW_COMMANDS                217
-#define ID_VIEW_OUTPUTWND               218
-#define ID_VIEW_PROPERTIESWND           219
-#define ID_SORTPROPERTIES               220
-#define ID_PROPERTIES1                  221
-#define ID_PROPERTIES2                  222
-#define ID_EXPAND_ALL                   223
-#define ID_TOOLS_MACRO                  224
-#define ID_SET_STYLE                    225
-#define ID_TEST_RUN_ALL                 226
-#define ID_TEST_COMPILE                 227
-#define ID_VIEW_STRING_LIBRARY          228
+// File Menu
+#define ID_FILE_SAVE_ALL                200
+#define ID_FILE_EXPORT                  201
+
+// Edit Menu
+#define ID_EDIT_COMMENT                 202
+#define ID_EDIT_LOCALIZE                203
+
+// Test menu
+#define ID_TEST_RUN_ALL                 204
+#define ID_TEST_COMPILE                 205
+
+// View menu
+#define ID_VIEW_PROJECT                 206
+#define ID_VIEW_SCRIPT_OBJECTS          207
+#define ID_VIEW_GAME_OBJECTS            208
+#define ID_VIEW_COMMANDS                209
+#define ID_VIEW_OUTPUT                  210
+#define ID_VIEW_PROPERTIES              211
+#define ID_VIEW_STRING_LIBRARY          212
+#define ID_VIEW_CUSTOMIZE               213
+#define ID_VIEW_PREFERENCES             214
+
+// Window menu
+#define ID_WINDOW_MANAGER               215
+
+////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
+
+// PropertiesWnd Context
+#define ID_EXPAND_ALL                   216
+#define ID_SORTPROPERTIES               217
+#define ID_PROPERTIES1                  218
+#define ID_PROPERTIES2                  219
+
+// ProjectWnd Context menu
+#define ID_OPEN                         220
+#define ID_OPEN_WITH                    221
+#define ID_DUMMY_COMPILE                222
+#define ID_CLASS_ADD_MEMBER_FUNCTION    223
+#define ID_CLASS_ADD_MEMBER_VARIABLE    224
+#define ID_CLASS_DEFINITION             225
+#define ID_CLASS_PROPERTIES             226
+#define ID_NEW_FOLDER                   227
+#define ID_PROPERTIES                   228
+
+///////////////////////////// TOOLBAR COMMANDS //////////////////////////
+
+// Toolbar Customization
+#define ID_TOOLS_MACRO                  229
+
+// LanguageEditor
+#define ID_EDIT_BOLD                    230
+#define ID_EDIT_ITALIC                  231
+#define ID_EDIT_UNDERLINE               232
+#define ID_EDIT_COLOUR                  233
+#define ID_EDIT_LEFT                    234
+#define ID_EDIT_CENTRE                  235
+#define ID_EDIT_RIGHT                   236
+#define ID_EDIT_JUSTIFY                 237
+#define ID_EDIT_ADD_BUTTON              238
+#define ID_VIEW_SOURCE                  239
+#define ID_VIEW_EDITOR                  240
+#define ID_VIEW_DISPLAY                 241
+
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -82,71 +117,56 @@
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
-#define ERR_XML_MISSING_ELEMENT         1000
-#define ERR_XML_UNEXPECTED_ELEMENT      1001
-#define ERR_XML_MISSING_ATTRIBUTE       1002
-#define ERR_XML_PARSE_FAILED            1003
-
-#define ERR_LANGUAGE_ID_INVALID         1004
-#define ERR_ARGUMENT_NULL               1005
-#define ERR_NO_READ_ACCESS              1006
-#define ERR_NO_WRITE_ACCESS             1007
-#define ERR_NO_SEEK_ACCESS              1008
-
-#define IDS_SOCKETS_INIT_FAILED         1009
-
+// Output window
 #define IDS_BUILD_TAB                   1010
 #define IDS_DEBUG_TAB                   1011
 #define IDS_FIND_TAB                    1012
-#define IDS_EXPLORER                    1013
+
+// Customization
 #define IDS_EDIT_MENU                   1014
 
+// Status bar
 #define IDS_CARET_STATUS                1015
 #define IDS_STATUS_PANE2                1016
 #define IDS_TOOLBAR_STANDARD            1017
 #define IDS_TOOLBAR_CUSTOMIZE           1018
 
-//#define IDS_FILE_VIEW                   155
-//#define IDS_OUTPUT_WND                  157
-//#define IDS_PROPERTIES_WND              158
 
 // Command Group Names
-#define IDS_COMMAND_GROUP_ARRAY			                   1100
-#define IDS_COMMAND_GROUP_CUSTOM                          1101
-#define IDS_COMMAND_GROUP_FLEET						          1102
-#define IDS_COMMAND_GROUP_FLOW_CONTROL							 1103
-#define IDS_COMMAND_GROUP_GAME_ENGINE							 1104
-#define IDS_COMMAND_GROUP_GRAPH							       1105 
-#define IDS_COMMAND_GROUP_MACRO                           1106
-#define IDS_COMMAND_GROUP_MARINE							       1107
-#define IDS_COMMAND_GROUP_MATHS							       1108
-#define IDS_COMMAND_GROUP_MERCHANT							    1109
-#define IDS_COMMAND_GROUP_NON_PLAYER							 1110
-#define IDS_COMMAND_GROUP_OBJECT_ACTION						 1111
-#define IDS_COMMAND_GROUP_OBJECT_PROPERTY						 1112
-#define IDS_COMMAND_GROUP_PASSENGER							    1113
-#define IDS_COMMAND_GROUP_PILOT							       1114
-#define IDS_COMMAND_GROUP_PLAYER							       1115
-#define IDS_COMMAND_GROUP_SCRIPT_PROPERTY						 1116
-#define IDS_COMMAND_GROUP_SHIP_ACTION							 1117
-#define IDS_COMMAND_GROUP_SHIP_PROPERTY						 1118
-#define IDS_COMMAND_GROUP_SHIP_TRADE							 1119
-#define IDS_COMMAND_GROUP_SHIP_WING							    1120
-#define IDS_COMMAND_GROUP_STATION_PROPERTY					 1121
-#define IDS_COMMAND_GROUP_STATION_TRADE						 1122
-#define IDS_COMMAND_GROUP_STOCK_EXCHANGE						 1123
-#define IDS_COMMAND_GROUP_STRING							       1124
-#define IDS_COMMAND_GROUP_SYSTEM_PROPERTY						 1125
-#define IDS_COMMAND_GROUP_UNIVERSE_DATA						 1126
-#define IDS_COMMAND_GROUP_UNIVERSE_PROPERTY					 1127
-#define IDS_COMMAND_GROUP_USER_INTERFACE						 1128
-#define IDS_COMMAND_GROUP_WAR					                1129
-#define IDS_COMMAND_GROUP_WARE_PROPERTY						 1130
-#define IDS_COMMAND_GROUP_WEAPON_PROPERTY						 1131
-#define IDS_COMMAND_GROUP_HIDDEN		                      1132
-
-
-#define IDS_FIRST_COMMAND_GROUP                           IDS_COMMAND_GROUP_ARRAY
+#define IDS_COMMAND_GROUP_ARRAY			          1100
+#define IDS_COMMAND_GROUP_CUSTOM                 1101
+#define IDS_COMMAND_GROUP_FLEET						 1102
+#define IDS_COMMAND_GROUP_FLOW_CONTROL				 1103
+#define IDS_COMMAND_GROUP_GAME_ENGINE				 1104
+#define IDS_COMMAND_GROUP_GRAPH						 1105 
+#define IDS_COMMAND_GROUP_MACRO                  1106
+#define IDS_COMMAND_GROUP_MARINE						 1107
+#define IDS_COMMAND_GROUP_MATHS						 1108
+#define IDS_COMMAND_GROUP_MERCHANT					 1109
+#define IDS_COMMAND_GROUP_NON_PLAYER				 1110
+#define IDS_COMMAND_GROUP_OBJECT_ACTION	 		 1111
+#define IDS_COMMAND_GROUP_OBJECT_PROPERTY	 		 1112
+#define IDS_COMMAND_GROUP_PASSENGER			 		 1113
+#define IDS_COMMAND_GROUP_PILOT					 	 1114
+#define IDS_COMMAND_GROUP_PLAYER						 1115
+#define IDS_COMMAND_GROUP_SCRIPT_PROPERTY			 1116
+#define IDS_COMMAND_GROUP_SHIP_ACTION				 1117
+#define IDS_COMMAND_GROUP_SHIP_PROPERTY			 1118
+#define IDS_COMMAND_GROUP_SHIP_TRADE				 1119
+#define IDS_COMMAND_GROUP_SHIP_WING					 1120
+#define IDS_COMMAND_GROUP_STATION_PROPERTY 		 1121
+#define IDS_COMMAND_GROUP_STATION_TRADE			 1122
+#define IDS_COMMAND_GROUP_STOCK_EXCHANGE		 	 1123
+#define IDS_COMMAND_GROUP_STRING						 1124
+#define IDS_COMMAND_GROUP_SYSTEM_PROPERTY			 1125
+#define IDS_COMMAND_GROUP_UNIVERSE_DATA			 1126
+#define IDS_COMMAND_GROUP_UNIVERSE_PROPERTY		 1127
+#define IDS_COMMAND_GROUP_USER_INTERFACE			 1128
+#define IDS_COMMAND_GROUP_WAR					       1129
+#define IDS_COMMAND_GROUP_WARE_PROPERTY			 1130
+#define IDS_COMMAND_GROUP_WEAPON_PROPERTY			 1131
+#define IDS_COMMAND_GROUP_HIDDEN		             1132
+#define IDS_FIRST_COMMAND_GROUP                  IDS_COMMAND_GROUP_ARRAY
 
 // Maintype names
 #define IDS_MAIN_TYPE_BULLET                     1140         
@@ -181,44 +201,54 @@
 #define IDS_MAIN_TYPE_DOCK_WRECK                 1169 
 #define IDS_MAIN_TYPE_FACTORY_WRECK              1170 
 #define IDS_MAIN_TYPE_SHIP_WRECK                 1171 
-
 #define IDS_FIRST_MAIN_TYPE                      IDS_MAIN_TYPE_BULLET
 
 
 // ScriptObject Group names
-#define IDS_SCRIPT_OBJECT_GROUP_CONSTANT                 1180      // Script Constant
-#define IDS_SCRIPT_OBJECT_GROUP_DATA_TYPE                1181      // Variable Data Type
-#define IDS_SCRIPT_OBJECT_GROUP_FLIGHT_RETURN            1182      // Flight Return Code
-#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_CLASS             1183      // Object Class
-#define IDS_SCRIPT_OBJECT_GROUP_RACE                     1184      // Race
-#define IDS_SCRIPT_OBJECT_GROUP_RELATION                 1185      // Relation
-#define IDS_SCRIPT_OBJECT_GROUP_PARAMETER_TYPE           1186      // Parameter Syntax
-#define IDS_SCRIPT_OBJECT_GROUP_SECTOR                   1187      // Sector
-#define IDS_SCRIPT_OBJECT_GROUP_STATION_SERIAL           1188      // Station Serial
-#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_COMMAND           1189      // Object Command
-#define IDS_SCRIPT_OBJECT_GROUP_WING_COMMAND             1190      // Wing Command
-#define IDS_SCRIPT_OBJECT_GROUP_SIGNAL                   1191      // Signal
-#define IDS_SCRIPT_OBJECT_GROUP_TRANSPORT_CLASS          1192      // Transport Class
-#define IDS_SCRIPT_OBJECT_GROUP_OPERATOR                 1193      // Operator
-
-
-#define IDS_FIRST_SCRIPT_OBJECT_GROUP              IDS_SCRIPT_OBJECT_GROUP_CONSTANT
+#define IDS_SCRIPT_OBJECT_GROUP_CONSTANT         1180      // Script Constant
+#define IDS_SCRIPT_OBJECT_GROUP_DATA_TYPE        1181      // Variable Data Type
+#define IDS_SCRIPT_OBJECT_GROUP_FLIGHT_RETURN    1182      // Flight Return Code
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_CLASS     1183      // Object Class
+#define IDS_SCRIPT_OBJECT_GROUP_RACE             1184      // Race
+#define IDS_SCRIPT_OBJECT_GROUP_RELATION         1185      // Relation
+#define IDS_SCRIPT_OBJECT_GROUP_PARAMETER_TYPE   1186      // Parameter Syntax
+#define IDS_SCRIPT_OBJECT_GROUP_SECTOR           1187      // Sector
+#define IDS_SCRIPT_OBJECT_GROUP_STATION_SERIAL   1188      // Station Serial
+#define IDS_SCRIPT_OBJECT_GROUP_OBJECT_COMMAND   1189      // Object Command
+#define IDS_SCRIPT_OBJECT_GROUP_WING_COMMAND     1190      // Wing Command
+#define IDS_SCRIPT_OBJECT_GROUP_SIGNAL           1191      // Signal
+#define IDS_SCRIPT_OBJECT_GROUP_TRANSPORT_CLASS  1192      // Transport Class
+#define IDS_SCRIPT_OBJECT_GROUP_OPERATOR         1193      // Operator
+#define IDS_FIRST_SCRIPT_OBJECT_GROUP            IDS_SCRIPT_OBJECT_GROUP_CONSTANT
 
 
 
 // Language page group names
-#define IDS_LANGUAGE_GROUP_DATA                             1200
-#define IDS_LANGUAGE_GROUP_DIALOGUE                         1201
-#define IDS_LANGUAGE_GROUP_MISC                             1202
-#define IDS_LANGUAGE_GROUP_QUEST                            1203
-#define IDS_LANGUAGE_GROUP_BONUS                            1204
-#define IDS_LANGUAGE_GROUP_MENU                             1205
-#define IDS_LANGUAGE_GROUP_EDITOR                           1206
-#define IDS_LANGUAGE_GROUP_NEWS                             1207
-#define IDS_LANGUAGE_GROUP_PLOT                             1208
-#define IDS_LANGUAGE_GROUP_NPC                              1209
-#define IDS_LANGUAGE_GROUP_USER                             1210
+#define IDS_LANGUAGE_GROUP_DATA                  1200
+#define IDS_LANGUAGE_GROUP_DIALOGUE              1201
+#define IDS_LANGUAGE_GROUP_MISC                  1202
+#define IDS_LANGUAGE_GROUP_QUEST                 1203
+#define IDS_LANGUAGE_GROUP_BONUS                 1204
+#define IDS_LANGUAGE_GROUP_MENU                  1205
+#define IDS_LANGUAGE_GROUP_EDITOR                1206
+#define IDS_LANGUAGE_GROUP_NEWS                  1207
+#define IDS_LANGUAGE_GROUP_PLOT                  1208
+#define IDS_LANGUAGE_GROUP_NPC                   1209
+#define IDS_LANGUAGE_GROUP_USER                  1210
+#define IDS_FIRST_LANGUAGE_GROUP                 IDS_LANGUAGE_GROUP_DATA
 
 
-#define IDS_FIRST_LANGUAGE_GROUP                           IDS_LANGUAGE_GROUP_DATA
+// Errors
+#define IDS_SOCKETS_INIT_FAILED         1009
+
+#define ERR_XML_MISSING_ELEMENT         1000
+#define ERR_XML_UNEXPECTED_ELEMENT      1001
+#define ERR_XML_MISSING_ATTRIBUTE       1002
+#define ERR_XML_PARSE_FAILED            1003
+
+#define ERR_LANGUAGE_ID_INVALID         1004
+#define ERR_ARGUMENT_NULL               1005
+#define ERR_NO_READ_ACCESS              1006
+#define ERR_NO_WRITE_ACCESS             1007
+#define ERR_NO_SEEK_ACCESS              1008
 

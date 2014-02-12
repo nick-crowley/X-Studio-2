@@ -168,8 +168,7 @@ BOOL  Application::OpenStringLibrary()
 void Application::PreLoadState()
 {
 	GetContextMenuManager()->AddMenu(GuiString(IDS_EDIT_MENU).c_str(), IDM_EDIT_POPUP);
-
-	GetContextMenuManager()->AddMenu(GuiString(IDS_EXPLORER).c_str(), IDM_PROJECT_POPUP);
+	GetContextMenuManager()->AddMenu(GuiString(IDR_PROJECT).c_str(), IDM_PROJECT_POPUP);
 }
 
 void Application::LoadCustomState()
