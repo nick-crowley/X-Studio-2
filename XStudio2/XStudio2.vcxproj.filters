@@ -348,9 +348,6 @@
     <ClInclude Include="Logic\ParameterTypes.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\RtfScriptTextWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\TMissile.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
@@ -413,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="Logic\StringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RtfScriptWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -599,9 +599,6 @@
     <ClCompile Include="Logic\CommandNode.cpp">
       <Filter>Source Files\Logic\Scripts\Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\RtfScriptTextWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\TShipReader.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
@@ -661,6 +658,9 @@
     </ClCompile>
     <ClCompile Include="Logic\StringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RtfScriptWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

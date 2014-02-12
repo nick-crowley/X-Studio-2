@@ -7,7 +7,7 @@
 #include "ScriptView.h"
 #include "PropertiesWnd.h"
 #include "Logic/DebugTests.h"
-#include "Logic/RtfScriptTextWriter.h"
+#include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
 
 #ifdef _DEBUG
@@ -180,7 +180,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Convert script to RTF (ansi)
          string txt;
-         RtfScriptTextWriter w(txt);
+         RtfScriptWriter w(txt);
          w.Write(GetDocument()->Script);
          w.Close();
 

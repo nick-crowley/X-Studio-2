@@ -4,7 +4,7 @@
 #include "ScriptToken.h"
 #include "CommandLexer.h"
 #include "IndentationStack.h"
-#include "RtfScriptTextWriter.h"
+#include "RtfScriptWriter.h"
 
 namespace Logic
 {
@@ -14,7 +14,7 @@ namespace Logic
 
       /// <summary>Create an Rtf script writer</summary>
       /// <param name="out">Output stream</param>
-      RtfScriptTextWriter::RtfScriptTextWriter(string&  out) : RtfWriter(out)
+      RtfScriptWriter::RtfScriptWriter(string&  out) : RtfWriter(out)
       {
          // Define colours
          list<COLORREF> col;
@@ -38,14 +38,14 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the writer.</summary>
-      void  RtfScriptTextWriter::Close()
+      void  RtfScriptWriter::Close()
       {
          RtfWriter::Close();
       }
 
       /// <summary>Writes a script file to the output</summary>
       /// <param name="f">The script</param>
-      void RtfScriptTextWriter::Write(ScriptFile& f)
+      void RtfScriptWriter::Write(ScriptFile& f)
       {
          IndentationStack indent;
 
@@ -70,7 +70,7 @@ namespace Logic
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
       /// <param name="indent">Indent in characters</param>
-      void  RtfScriptTextWriter::WriteCommand(const ScriptCommand& cmd, UINT  indent)
+      void  RtfScriptWriter::WriteCommand(const ScriptCommand& cmd, UINT  indent)
       {
          CommandLexer lex(cmd.Text, false);
 
@@ -87,7 +87,7 @@ namespace Logic
 
       /// <summary>Writes a token to the output.</summary>
       /// <param name="p">The token</param>
-      void  RtfScriptTextWriter::WriteToken(const ScriptToken& tok)
+      void  RtfScriptWriter::WriteToken(const ScriptToken& tok)
       {
          COLORREF col;
 

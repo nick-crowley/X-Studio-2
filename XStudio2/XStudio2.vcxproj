@@ -191,7 +191,7 @@
     <ClInclude Include="Logic\ScriptFileReader.h" />
     <ClInclude Include="Logic\ScriptParser.h" />
     <ClInclude Include="Logic\ScriptToken.h" />
-    <ClInclude Include="Logic\RtfScriptTextWriter.h" />
+    <ClInclude Include="Logic\RtfScriptWriter.h" />
     <ClInclude Include="Logic\Stream.h" />
     <ClInclude Include="Logic\StringLibrary.h" />
     <ClInclude Include="Logic\StringReader.h" />
@@ -285,7 +285,7 @@
     <ClCompile Include="Logic\CommandLexer.cpp" />
     <ClCompile Include="Logic\ScriptParameter.cpp" />
     <ClCompile Include="Logic\ScriptFileReader.cpp" />
-    <ClCompile Include="Logic\RtfScriptTextWriter.cpp" />
+    <ClCompile Include="Logic\RtfScriptWriter.cpp" />
     <ClCompile Include="Logic\ScriptParser.cpp" />
     <ClCompile Include="Logic\ScriptToken.cpp" />
     <ClCompile Include="Logic\StringLibrary.cpp" />
