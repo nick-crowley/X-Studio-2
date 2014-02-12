@@ -141,14 +141,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
          // ToolBar:
-	      if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		       !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+	      if (!m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
             throw Win32Exception(HERE, L"Unable to create MainWnd toolbar");
+         m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
 	      
+         // Allow user-defined toolbars operations:
 	      m_wndToolBar.SetWindowText(GuiString(IDS_TOOLBAR_STANDARD).c_str());
 	      m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
-
-	      // Allow user-defined toolbars operations:
 	      InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
 
 
@@ -256,7 +255,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	      // enable menu personalization (most-recently used commands)
 	      // TODO: define your own basic commands, ensuring that each pulldown menu has at least one basic command.
-	      CList<UINT, UINT> lstBasicCommands;
+	      /*CList<UINT, UINT> lstBasicCommands;
 
 	      lstBasicCommands.AddTail(ID_FILE_NEW);
 	      lstBasicCommands.AddTail(ID_FILE_OPEN);
@@ -270,7 +269,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
 	      lstBasicCommands.AddTail(ID_VIEW_CUSTOMIZE);
 
-	      CMFCToolBar::SetBasicCommands(lstBasicCommands);
+	      CMFCToolBar::SetBasicCommands(lstBasicCommands);*/
 
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
