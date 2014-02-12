@@ -9,12 +9,12 @@ namespace Logic
    {
          
       /// <summary>Writes entire scripts in RTF</summary>
-      class RtfScriptTextWriter : protected RtfWriter
+      class RtfScriptWriter : protected RtfWriter
       {
       private:
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RtfScriptTextWriter(string&  out);
+         RtfScriptWriter(string&  out);
 
          // ------------------------ STATIC -------------------------
       private:
