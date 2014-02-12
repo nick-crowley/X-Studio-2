@@ -9,29 +9,25 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates an RTF Writer</summary>
-      /// <param name="font">Font name</param>
-      /// <param name="size">Font size in points</param>
-      /// <param name="cols">List of colours</param>
-      RtfWriter::RtfWriter(const wstring& font, UINT size, list<COLORREF> cols) : Font(font), Closed(false), Colour(0xff000000)
+      /// <param name="out">Output</param>
+      RtfWriter::RtfWriter(string& out) 
+         : Output(out), Closed(true), Colour(0xff000000)
       {
-         // Copy colours
-         for (COLORREF c : cols)
-            Colours.push_back(c);
-
-         // Write header
-         WriteHeader();
-         SetSize(size);
+         
       }
 
+      /// <summary>Closes the writer, if open</summary>
       RtfWriter::~RtfWriter()
       {
+         if (!Closed)
+            Close();
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Closes the writer</summary>
+      /// <summary>Appends the RTF footer and closes the writer</summary>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
       void   RtfWriter::Close()
       { 
@@ -44,12 +40,30 @@ namespace Logic
          Closed = true;
       }
 
+      /// <summary>Initialises the writer</summary>
+      /// <param name="font">Font name</param>
+      /// <param name="size">Font size in points</param>
+      /// <param name="cols">List of colours</param>
+      void  RtfWriter::Open(const wstring& font, UINT size, list<COLORREF> cols) 
+      {
+         // Check stream is closed
+         if (!Closed)
+            throw InvalidOperationException(HERE, L"Writer is already open");
+
+         // Copy colours
+         for (COLORREF c : cols)
+            Colours.push_back(c);
+
+         // Write header
+         WriteHeader();
+         SetFontSize(size);
+      }
       
       /// <summary>Sets the text colour</summary>
       /// <param name="c">The colour</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
-      void   RtfWriter::SetColour(COLORREF c)
+      void   RtfWriter::SetForeColour(COLORREF c)
       {
          CHAR buf[10];
 
@@ -78,7 +92,7 @@ namespace Logic
       /// <summary>Sets the font size</summary>
       /// <param name="points">The size in points</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
-      void   RtfWriter::SetSize(int points)
+      void   RtfWriter::SetFontSize(int points)
       {
          CHAR buf[10];
 
@@ -89,13 +103,6 @@ namespace Logic
          // Set size
          StringCchPrintfA(buf, 10, "\\fs%d ", points*2);
          Write(buf);
-      }
-
-      /// <summary>Get ANSI contents of stream</summary>
-      /// <returns>Stream contents</returns>
-      string RtfWriter::ToString() 
-      { 
-         return Output; 
       }
 
       /// <summary>Writes UNICODE character to the stream, converting to RTF as necessary</summary>

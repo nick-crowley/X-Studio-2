@@ -13,7 +13,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         RtfWriter(const wstring& font, UINT size, list<COLORREF> cols);
+         RtfWriter(string& out);
          virtual ~RtfWriter();
 
          // ------------------------ STATIC -------------------------
@@ -22,23 +22,18 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------			
 
-      public:
-         string ToString();
-
 		   // ----------------------- MUTATORS ------------------------
-
       public:
          void  Close();
-
+         void  Open(const wstring& font, UINT size, list<COLORREF> cols);
          void  Write(WCHAR ch);
          void  Write(const wstring& str);
          void  WriteLn(const wstring& str);
-         void  SetColour(COLORREF c);
-         void  SetSize(int points);
+         void  SetForeColour(COLORREF c);
+         void  SetFontSize(int points);
 
       private:
          void  Write(const CHAR* str);
-
          void  WriteColour(COLORREF c);
          void  WriteFooter();
          void  WriteHeader();
@@ -48,9 +43,10 @@ namespace Logic
       private:
          bool              Closed;
          wstring           Font;
-         string            Output;
          vector<COLORREF>  Colours;
          COLORREF          Colour;
+
+         string&           Output;
       };
 
    }

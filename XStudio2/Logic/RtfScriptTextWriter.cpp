@@ -1,7 +1,10 @@
 #include "stdafx.h"
-#include "RtfScriptTextWriter.h"
+#include "ScriptFile.h"
+#include "ScriptCommand.h"
+#include "ScriptToken.h"
 #include "CommandLexer.h"
 #include "IndentationStack.h"
+#include "RtfScriptTextWriter.h"
 
 namespace Logic
 {
@@ -9,20 +12,11 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Initializes an RtfCommandWriter</summary>
-      /// <param name="font">Font name</param>
-      /// <param name="size">Font size in points</param>
-      RtfScriptTextWriter::RtfCommandWriter::RtfCommandWriter(const wstring& font, UINT size) : RtfWriter(font, size, GetColours())
+      /// <summary>Create an Rtf script writer</summary>
+      /// <param name="out">Output stream</param>
+      RtfScriptTextWriter::RtfScriptTextWriter(string&  out) : RtfWriter(out)
       {
-         RtfWriter::SetColour(White);
-      }
-
-      // ------------------------------- STATIC METHODS -------------------------------
-
-      /// <summary>Populates the writer colour table</summary>
-      /// <returns></returns>
-      list<COLORREF>  RtfScriptTextWriter::RtfCommandWriter::GetColours()
-      {
+         // Define colours
          list<COLORREF> col;
          col.push_back(Black);
          col.push_back(White);
@@ -33,14 +27,20 @@ namespace Logic
          col.push_back(Purple);
          col.push_back(Cyan);
          col.push_back(Grey);
-         return col;
+
+         // Init writer
+         RtfWriter::Open(L"Arial", 10, col);
+         RtfWriter::SetForeColour(White);
       }
+
+      // ------------------------------- STATIC METHODS -------------------------------
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the writer.</summary>
       void  RtfScriptTextWriter::Close()
       {
+         RtfWriter::Close();
       }
 
       /// <summary>Writes a script file to the output</summary>
@@ -48,28 +48,29 @@ namespace Logic
       void RtfScriptTextWriter::Write(ScriptFile& f)
       {
          IndentationStack indent;
-         RtfCommandWriter w(L"Arial", 10);
 
          // Examine commands
          for (ScriptCommand& cmd : f.Commands.Input)
          {
+            // Identation
             indent.PreDisplay(cmd);
 
             // Write command
-            w.Write(cmd, 3*indent.Size);
+            WriteCommand(cmd, 3*indent.Size);
 
+            // Identation
             indent.PostDisplay(cmd);
          }
-
-         // Write RTF to output
-         w.Close();
-         Output = w.ToString();
       }
 
+		// ------------------------------ PROTECTED METHODS -----------------------------
+
+		// ------------------------------- PRIVATE METHODS ------------------------------
+      
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
       /// <param name="indent">Indent in characters</param>
-      void  RtfScriptTextWriter::RtfCommandWriter::Write(const ScriptCommand& cmd, UINT  indent)
+      void  RtfScriptTextWriter::WriteCommand(const ScriptCommand& cmd, UINT  indent)
       {
          CommandLexer lex(cmd.Text, false);
 
@@ -78,19 +79,15 @@ namespace Logic
 
          // Write command text
          for (const ScriptToken& tok : lex.Tokens)
-            Write(tok);
+            WriteToken(tok);
 
          // Add CRLF
          RtfWriter::WriteLn(L"");
       }
 
-		// ------------------------------ PROTECTED METHODS -----------------------------
-
-		// ------------------------------- PRIVATE METHODS ------------------------------
-
       /// <summary>Writes a token to the output.</summary>
       /// <param name="p">The token</param>
-      void  RtfScriptTextWriter::RtfCommandWriter::Write(const ScriptToken& tok)
+      void  RtfScriptTextWriter::WriteToken(const ScriptToken& tok)
       {
          COLORREF col;
 
@@ -116,11 +113,11 @@ namespace Logic
          }
 
          // Write token
-         RtfWriter::SetColour(col);
+         RtfWriter::SetForeColour(col);
          RtfWriter::Write(tok.Text);
 
          // Reset colour
-         RtfWriter::SetColour(White);
+         RtfWriter::SetForeColour(White);
       }
 
       
