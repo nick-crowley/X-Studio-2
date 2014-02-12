@@ -146,6 +146,7 @@
     <ClInclude Include="Logic\IndentationStack.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
     <ClInclude Include="Logic\ParameterTypes.h" />
+    <ClInclude Include="Logic\PreferencesLibrary.h" />
     <ClInclude Include="Logic\RaceLookup.h" />
     <ClInclude Include="Logic\RichString.h" />
     <ClInclude Include="Logic\RtfStringWriter.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="Logic\GameObject.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
     <ClCompile Include="Logic\LanguageString.cpp" />
+    <ClCompile Include="Logic\PreferencesLibrary.cpp" />
     <ClCompile Include="Logic\RichString.cpp" />
     <ClCompile Include="Logic\RtfStringWriter.cpp" />
     <ClCompile Include="Logic\ScriptFileWriter.cpp" />

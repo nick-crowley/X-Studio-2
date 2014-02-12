@@ -420,6 +420,9 @@
     <ClInclude Include="Logic\RtfStringWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\PreferencesLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -673,6 +676,9 @@
     </ClCompile>
     <ClCompile Include="Logic\RichString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\PreferencesLibrary.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
