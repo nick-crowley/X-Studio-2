@@ -707,31 +707,37 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Icon - Language File.ico">
+    <Image Include="res\Icon - Document - Language.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\Icon - MainWnd.ico">
+    <Image Include="res\Icon - Document - Script.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\Icon - OutputWnd.ico">
+    <Image Include="res\Icon - Window - Commands.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\Icon - ProjectWnd.ico">
+    <Image Include="res\Icon - Window - Game Objects.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\Icon - PropertiesWnd.ico">
+    <Image Include="res\Icon - Window - Main.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
-    <Image Include="res\Icon - Script File.ico">
+    <Image Include="res\Icon - Window - Output.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Project.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Properties.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Script Objects.ico">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\ImageList - GameDataWnd.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\ImageList - OutputWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\ImageList - OutputWnd2.bmp">
       <Filter>Resource Files\Files</Filter>
     </Image>
     <Image Include="res\ImageList - ProjectWnd.bmp">
