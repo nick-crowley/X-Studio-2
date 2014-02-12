@@ -176,15 +176,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
 	      // Project Window:
-	      if (!m_wndProject.Create(GuiString(IDR_PROJECT).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+	      if (!m_wndProject.Create(GuiString(IDR_PROJECT).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
             throw Win32Exception(HERE, L"Unable to create Project window");
 	   
 	      // Output Window:
-	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Output window");
 
 	      // Properties Window:
-	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
 
          // Commands Window:
