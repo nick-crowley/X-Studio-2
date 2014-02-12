@@ -56,7 +56,7 @@ namespace Logic
       /// <param name="msg">Handler error message</param>
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
-         *this << ENDL 
+         *this << ENDL << Cons::Bold
                << Colour::Purple << L"ERROR: " 
                << Colour::Red << msg 
                << Colour::White << L"...     Source: " 
@@ -72,7 +72,7 @@ namespace Logic
       /// <param name="e">error</param>
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
-         *this << ENDL 
+         *this << ENDL << Cons::Bold
                << Colour::Purple << L"EXCEPTION: " 
                << Colour::Red << e.Message.TrimRight(L"\r\n") 
                << Colour::White << L"...    Source: " 
@@ -86,7 +86,7 @@ namespace Logic
       /// <param name="e">error</param>
       void  Log(const GuiString& src, const exception&e)
       {
-         *this << ENDL 
+         *this << ENDL << Cons::Bold 
                << Colour::Purple << L"STL EXCEPTION: " 
                << Colour::Red << e.what()
                << Colour::White << L"...    Source: " 
@@ -97,15 +97,21 @@ namespace Logic
       /// <param name="cl">The colour</param>
       ConsoleWnd& operator<<(Colour cl)
       {
+         CONSOLE_SCREEN_BUFFER_INFO info;
+
+         // Preserve bold attribute
+         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+         WORD bold = (info.wAttributes & FOREGROUND_INTENSITY);
+
          switch (cl)
          {
-         case Colour::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE);                   break;
-         case Colour::Green:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);                  break;
-         case Colour::Red:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);                    break;
-         case Colour::Cyan:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE|FOREGROUND_GREEN);  break;
-         case Colour::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE|FOREGROUND_RED);    break;
-         case Colour::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN|FOREGROUND_RED);   break;
-         case Colour::White:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         case Colour::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE);                   break;
+         case Colour::Green:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN);                  break;
+         case Colour::Red:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED);                    break;
+         case Colour::Cyan:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_GREEN);  break;
+         case Colour::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_RED);    break;
+         case Colour::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN|FOREGROUND_RED);   break;
+         case Colour::White:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
          }
          return *this;
       }
@@ -121,18 +127,18 @@ namespace Logic
          // Bold: Add bold
          case Cons::Bold:   
             GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY|info.wAttributes); 
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes|FOREGROUND_INTENSITY); 
             break;
 
          // Normal: Remove bold
          case Cons::Normal: 
             GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes^FOREGROUND_INTENSITY); 
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes& ~FOREGROUND_INTENSITY); 
             break;
 
          // Endl: Linebreak + White
          case Cons::Endl:   
-            return *this << Colour::White << Cons::Normal << L"\n";
+            return *this << Cons::Normal << Colour::White << L"\n";
 
          // Heading: Linebreak + Cyan
          case Cons::Heading:  

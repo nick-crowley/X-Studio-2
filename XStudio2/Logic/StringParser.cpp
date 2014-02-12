@@ -19,10 +19,10 @@ namespace Logic
       const wregex  StringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
 
       /// <summary>Matches opening and closing [author] tags (at beginning of string) and captures the text</summary>
-      const wregex  StringParser::IsAuthorDefition = wregex(L"^[author](.*)[/author]");
+      const wregex  StringParser::IsAuthorDefition = wregex(L"^\\[author\\](.*)\\[/author\\]");
 
       /// <summary>Matches opening and closing [title] tags (at beginning of string) and captures the text</summary>
-      const wregex  StringParser::IsTitleDefition = wregex(L"^[title](.*)[/title]");
+      const wregex  StringParser::IsTitleDefition = wregex(L"^\\[title\\](.*)\\[/title\\]");
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -245,7 +245,7 @@ namespace Logic
       /// <summary>Output rich-text button to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e)
       {
-         return c << "{RichButton Id=" << e.ID << " Text=";
+         c << "{" << Colour::Yellow << "RichButton" << Colour::White << " Id=" << e.ID << " Text=";
 
          // Text
          for (const auto& el : e.Text)
@@ -258,7 +258,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p)
       {
          // Properties
-         c << "{RichParagraph Align=" << GetString(p.Align);
+         c << "{" << Colour::Yellow << "RichParagraph" << Colour::White << " Align=" << GetString(p.Align);
 
          // Elements
          c << ENDL << "Content=";
@@ -272,7 +272,8 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s)
       {
          // Properties
-         c << "{RichString Author=" << s.Author << " Title=" << s.Title << " Cols=" << (int)s.Columns << " Width=" << s.Width << " Spacing=" << s.Spacing;
+         c << "{" << Colour::Yellow << "RichString" << Colour::White;
+         c << " Author=" << s.Author << " Title=" << s.Title << " Cols=" << (int)s.Columns << " Width=" << s.Width << " Spacing=" << s.Spacing;
 
          // Elements
          c << ENDL << "Paragraphs=";
@@ -327,13 +328,14 @@ namespace Logic
                      Alignments.PushPop(tag);
                      if (tag.Opening)
                      {
-                        // Special case: Ignore initial 'left' paragraph
-                        if (GetAlignment(tag.Type) == Alignment::Left && Output.Paragraphs.size() == 1 && FirstParagraph.Content.empty())
-                           continue;
-
-                        // Append
-                        Output += RichParagraph(GetAlignment(tag.Type));
-                        Paragraph = &FirstParagraph;
+                        // SpecialCase: First tag - Adjust existing alignment 
+                        if (Output.Paragraphs.size() == 1 && FirstParagraph.Content.empty())
+                           FirstParagraph.Align = GetAlignment(tag.Type);
+                        else
+                        {  // Append new
+                           Output += RichParagraph(GetAlignment(tag.Type));
+                           Paragraph = &FirstParagraph;
+                        }
                      }
                      break;
 
@@ -396,7 +398,7 @@ namespace Logic
                         
          // Get ID
          wstring id;
-         if (tag.Properties.empty())
+         if (!tag.Properties.empty())
          {
             // Ensure property is 'value'
             if (tag.Properties.front().first != L"value")
@@ -511,7 +513,7 @@ namespace Logic
          if (regex_search(pos, Input.cend(), matches, IsBasicTag))
          {
             // Identify open/close
-            bool opening = (pos[1] != '\\');
+            bool opening = (pos[1] != '/');
             wstring name = matches[1].str();
             
             // Identify type
@@ -524,7 +526,7 @@ namespace Logic
                   throw RichTextException(HERE, L"Invalid author tag");
 
                // Advance iterator.  Return author text
-               pos += matches[0].length();
+               pos += matches[0].length()-1;
                return RichTag(TagType::Author, matches[1].str());
 
             // Title: Return title
@@ -534,12 +536,12 @@ namespace Logic
                   throw RichTextException(HERE, L"Invalid title tag");
 
                // Advance iterator.  Return title text
-               pos += matches[0].length();
+               pos += matches[0].length()-1;
                return RichTag(TagType::Title, matches[1].str());
 
             // Default: Advance iterator to ']' + return
             default:
-               pos += matches[0].length();
+               pos += matches[0].length()-1;
                return RichTag(type, opening);
             }
          }
@@ -557,7 +559,7 @@ namespace Logic
                props.push_back( Property((*it)[1].str(), (*it)[2].str()) );
             
             // Advance Iterator + Return tag
-            pos += matches[0].length();
+            pos += matches[0].length()-1;
             return RichTag(IdentifyTag(matches[1].str()), props);
          }
       }
