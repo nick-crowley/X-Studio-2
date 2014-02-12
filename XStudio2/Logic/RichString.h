@@ -45,6 +45,9 @@ namespace Logic
       protected:
          RichElement(ElementType t) : Type(t)
          {}
+      public:
+         virtual ~RichElement()
+         {}
 
       public:
          ElementType Type;
@@ -57,6 +60,34 @@ namespace Logic
       public:
          RichCharacter(wchar ch, Colour c, UINT format) : RichElement(ElementType::Character), Char(ch), Colour(c), Format(format)
          {}
+
+         // --------------------- PROPERTIES ------------------------
+
+         PROPERTY_GET(bool,Bold,IsBold);
+         PROPERTY_GET(bool,Italic,IsItalic);
+         PROPERTY_GET(bool,Underline,IsUnderline);
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get whether character is bold</summary>
+         bool  IsBold() const
+         {
+            return (Format & CFE_BOLD) != 0;
+         }
+
+         /// <summary>Get whether character is italicised</summary>
+         bool  IsItalic() const
+         {
+            return (Format & CFE_ITALIC) != 0;
+         }
+
+         /// <summary>Get whether character is underlined</summary>
+         bool  IsUnderline() const
+         {
+            return (Format & CFE_UNDERLINE) != 0;
+         }
+
+         // ----------------------- MUTATORS ------------------------
 
          // -------------------- REPRESENTATION ---------------------
       public:

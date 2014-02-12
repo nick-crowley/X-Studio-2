@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
 #include "StringResolver.h"
+#include "StringParser.h"
 #include "ParameterTypes.h"
 
 namespace Logic
@@ -30,6 +31,16 @@ namespace Logic
       wstring  LanguageString::GetResolvedText() const
       {
          return StringResolver(*this).Text;
+      }
+
+      /// <summary>Generate rich-text string from source text</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
+      /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
+      /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
+      RichString  LanguageString::GetRichText() const
+      {
+         return StringParser(Text).Output;
       }
 
       /// <summary>Determines whether string can be used as the source of a script object</summary>
