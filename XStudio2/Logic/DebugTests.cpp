@@ -46,10 +46,10 @@ namespace Logic
       //BatchTest_ScriptCompiler();
       //Test_Lexer();
 
-      
+      AfxGetMainWnd()->SendMessageToDescendants(WM_SETTINGCHANGE, NULL, NULL);
       //Test_ScriptCompiler();
       
-      Test_StringParser();
+      //Test_StringParser();
       //Test_StringParserRegEx();
    }
 

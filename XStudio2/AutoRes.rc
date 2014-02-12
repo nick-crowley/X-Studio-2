@@ -64,6 +64,21 @@ BEGIN
     BUTTON      ID_EDIT_PASTE
 END
 
+IDR_EDITOR_LARGE TOOLBAR 24, 23
+BEGIN
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+END
 IDR_CUSTOM TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_WINDOW_MANAGER
@@ -105,7 +120,7 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Toolbars and Docking Windows"
+        POPUP "&Windows"
         BEGIN
             MENUITEM "<placeholder>",               ID_VIEW_CUSTOMIZE
         END
@@ -147,10 +162,11 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Toolbars and Docking Windows"
+        POPUP "&Windows"
         BEGIN
             MENUITEM "<placeholder>",               ID_VIEW_CUSTOMIZE
         END
+        MENUITEM "String Library",              ID_VIEW_STRING_LIBRARY
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Window"
@@ -189,9 +205,17 @@ BEGIN
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
+    POPUP "&Test"
+    BEGIN
+        MENUITEM "Run All",                     ID_TEST_RUN_ALL
+    END
     POPUP "&View"
     BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_CUSTOMIZE
+        POPUP "&Windows"
+        BEGIN
+            MENUITEM "<placeholder>",               ID_VIEW_CUSTOMIZE
+        END
+        MENUITEM "String Library",              ID_VIEW_STRING_LIBRARY
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Window"
