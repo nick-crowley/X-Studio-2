@@ -424,7 +424,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ToolBarEx.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -684,46 +684,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ToolBarEx.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="UserImages.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - LanguageView.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - MainWnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - OutputWnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - ProjectWnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - PropertiesWnd.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - ScriptView.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\ImageList - ProjectWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\menuimages.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - MainWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - ProjectWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - PropertiesWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -743,5 +705,64 @@
     <ResourceCompile Include="AutoRes.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Icon - Language File.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - MainWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - OutputWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - ProjectWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - PropertiesWnd.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Icon - Script File.ico">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\ImageList - GameDataWnd.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\ImageList - OutputWnd.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\ImageList - OutputWnd2.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\ImageList - ProjectWnd.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Customize.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor Disabled 16.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor Disabled 24.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor Normal 16.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor Normal 24.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd 16.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd 24.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - ProjectWnd.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar - PropertiesWnd.bmp">
+      <Filter>Resource Files\Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

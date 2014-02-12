@@ -12,6 +12,7 @@
 #include "ScriptView.h"
 #include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
+#include "ToolBarEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -71,7 +72,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected: 
 	   CMFCMenuBar       m_wndMenuBar;
-	   CMFCToolBar       m_wndToolBar;
+	   ToolBarEx         m_wndToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
 	   CProjectWnd       m_wndProject;

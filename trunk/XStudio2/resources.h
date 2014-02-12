@@ -2,16 +2,18 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
-#define IDR_PROPERTIES                  101
-#define IDR_PROJECT                     102
-#define IDR_OUTPUT                      103
-#define IDR_GAMEDATA                    104
-#define IDR_CUSTOM                      105
-#define IDR_EDITOR_16                   106
-#define IDR_EDITOR_24                   108
+#define IDR_MAINFRAME_16                101
+#define IDR_MAINFRAME_24                102
+#define IDR_PROPERTIES                  103
+#define IDR_PROJECT                     104
+#define IDR_OUTPUT                      105
+#define IDR_GAMEDATA                    106
+#define IDR_CUSTOM                      107
+#define IDR_EDITOR_16                   108
+#define IDR_EDITOR_24                   109
 
-#define IDR_LANGUAGEVIEW                109
-#define IDR_SCRIPTVIEW                  110
+#define IDR_LANGUAGEVIEW                110
+#define IDR_SCRIPTVIEW                  111
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 
@@ -25,6 +27,7 @@
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
+
 #define IDB_EDITOR_16_GREY              120
 #define IDB_EDITOR_24_GREY              121
 #define IDB_PROJECT_ICONS               122
@@ -37,69 +40,73 @@
 ///////////////////////////////// COMMANDS /////////////////////////////
 
 // File Menu
-#define ID_FILE_SAVE_ALL                200
-#define ID_FILE_EXPORT                  201
+#define ID_FILE_BROWSE                  200
+#define ID_FILE_SAVE_ALL                201
+#define ID_FILE_EXPORT                  202
 
 // Edit Menu
-#define ID_EDIT_COMMENT                 202
-#define ID_EDIT_LOCALIZE                203
+#define ID_EDIT_COMMENT                 203
+#define ID_EDIT_LOCALIZE                204
 
 // Test menu
-#define ID_TEST_RUN_ALL                 204
-#define ID_TEST_COMPILE                 205
+#define ID_TEST_RUN_ALL                 205
+#define ID_TEST_COMPILE                 206
 
 // View menu
-#define ID_VIEW_PROJECT                 206
-#define ID_VIEW_SCRIPT_OBJECTS          207
-#define ID_VIEW_GAME_OBJECTS            208
-#define ID_VIEW_COMMANDS                209
-#define ID_VIEW_OUTPUT                  210
-#define ID_VIEW_PROPERTIES              211
-#define ID_VIEW_STRING_LIBRARY          212
-#define ID_VIEW_CUSTOMIZE               213
-#define ID_VIEW_PREFERENCES             214
+#define ID_VIEW_PROJECT                 207
+#define ID_VIEW_SCRIPT_OBJECTS          208
+#define ID_VIEW_GAME_OBJECTS            209
+#define ID_VIEW_COMMANDS                210
+#define ID_VIEW_OUTPUT                  211
+#define ID_VIEW_PROPERTIES              212
+#define ID_VIEW_STRING_LIBRARY          213
+#define ID_VIEW_MEDIA_LIBRARY           214
+#define ID_VIEW_CUSTOMIZE               215
+#define ID_VIEW_PREFERENCES             216
 
 // Window menu
-#define ID_WINDOW_MANAGER               215
+#define ID_WINDOW_MANAGER               217
+
+// Help
+#define ID_HELP_FORUMS                  218
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
 // PropertiesWnd Context
-#define ID_EXPAND_ALL                   216
-#define ID_SORTPROPERTIES               217
-#define ID_PROPERTIES1                  218
-#define ID_PROPERTIES2                  219
+#define ID_EXPAND_ALL                   219
+#define ID_SORTPROPERTIES               220
+#define ID_PROPERTIES1                  221
+#define ID_PROPERTIES2                  222
 
 // ProjectWnd Context menu
-#define ID_OPEN                         220
-#define ID_OPEN_WITH                    221
-#define ID_DUMMY_COMPILE                222
-#define ID_CLASS_ADD_MEMBER_FUNCTION    223
-#define ID_CLASS_ADD_MEMBER_VARIABLE    224
-#define ID_CLASS_DEFINITION             225
-#define ID_CLASS_PROPERTIES             226
-#define ID_NEW_FOLDER                   227
-#define ID_PROPERTIES                   228
+#define ID_OPEN                         223
+#define ID_OPEN_WITH                    224
+#define ID_DUMMY_COMPILE                225
+#define ID_CLASS_ADD_MEMBER_FUNCTION    226
+#define ID_CLASS_ADD_MEMBER_VARIABLE    227
+#define ID_CLASS_DEFINITION             228
+#define ID_CLASS_PROPERTIES             229
+#define ID_NEW_FOLDER                   230
+#define ID_PROPERTIES                   231
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 
 // Toolbar Customization
-#define ID_TOOLS_MACRO                  229
+#define ID_TOOLS_MACRO                  232
 
 // LanguageEditor
-#define ID_EDIT_BOLD                    230
-#define ID_EDIT_ITALIC                  231
-#define ID_EDIT_UNDERLINE               232
-#define ID_EDIT_COLOUR                  233
-#define ID_EDIT_LEFT                    234
-#define ID_EDIT_CENTRE                  235
-#define ID_EDIT_RIGHT                   236
-#define ID_EDIT_JUSTIFY                 237
-#define ID_EDIT_ADD_BUTTON              238
-#define ID_VIEW_SOURCE                  239
-#define ID_VIEW_EDITOR                  240
-#define ID_VIEW_DISPLAY                 241
-
+#define ID_EDIT_BOLD                    233
+#define ID_EDIT_ITALIC                  234
+#define ID_EDIT_UNDERLINE               235
+#define ID_EDIT_COLOUR                  236
+#define ID_EDIT_LEFT                    237
+#define ID_EDIT_CENTRE                  238
+#define ID_EDIT_RIGHT                   239
+#define ID_EDIT_JUSTIFY                 240
+#define ID_EDIT_ADD_BUTTON              241
+#define ID_VIEW_SOURCE                  242
+#define ID_VIEW_EDITOR                  243
+#define ID_VIEW_DISPLAY                 244
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
