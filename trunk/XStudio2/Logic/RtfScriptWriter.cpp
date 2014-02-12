@@ -30,7 +30,12 @@ namespace Logic
 
          // Init writer
          RtfWriter::Open(L"Arial", 10, col);
+
+         // Set properties
          RtfWriter::SetForeColour(White);
+         RtfWriter::SetBackColour(Black);
+         RtfWriter::SetAlignment(Alignment::Left);
+         RtfWriter::SetLeftMargin(500);
       }
 
       // ------------------------------- STATIC METHODS -------------------------------

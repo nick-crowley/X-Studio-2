@@ -20,6 +20,10 @@ namespace Logic
    /// <summary>Defines the available game versions</summary>
    enum class GameVersion : UINT { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
 
+   
+   /// <summary>Paragraph alignment</summary>
+   enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
+
 }
 
 using namespace Logic;
