@@ -414,6 +414,12 @@
     <ClInclude Include="Logic\RtfScriptWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\RichString.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RtfStringWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -661,6 +667,12 @@
     </ClCompile>
     <ClCompile Include="Logic\RtfScriptWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RtfStringWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RichString.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
