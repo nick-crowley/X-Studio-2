@@ -29,6 +29,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguageEditView, CFormView)
       ON_WM_SIZE()
       ON_WM_CREATE()
+      ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -155,6 +156,31 @@ NAMESPACE_BEGIN2(GUI,Views)
          RichEdit.SetWindowTextW(GuiString(L"Error: %s", e.Message.c_str()).c_str());
       }
    }
+
+   /// <summary>Re-creates toolbar</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void LanguageEditView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      CFormView::OnSettingChange(uFlags, lpszSection);
+
+      ToolBar.DestroyWindow();
+      
+      ToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EDITOR);
+	   ToolBar.LoadToolBar(IDR_EDITOR_LARGE, 0, 0, TRUE /* Is locked */);
+	   ToolBar.CleanUpLockedImages();
+	   ToolBar.LoadBitmap(IDR_EDITOR_LARGE, 0, 0, TRUE /* Locked */);
+
+      ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
+	   ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
+	   ToolBar.SetOwner(this);
+
+      // All commands will be routed via this control , not via the parent frame:
+	   ToolBar.SetRouteCommandsViaFrame(FALSE);
+
+      AdjustLayout();
+   }
+
    
    /// <summary>Adjusts layout</summary>
    /// <param name="nType">Type of the resize</param>

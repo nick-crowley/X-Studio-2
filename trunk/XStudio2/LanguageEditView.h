@@ -54,6 +54,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnStringSelectionChanged;
       CRichEditCtrl            RichEdit;
       CMFCToolBar              ToolBar;
+   public:
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
    };
 
    #ifndef _DEBUG  

@@ -8,6 +8,7 @@
 #define IDR_GAMEDATA                    104
 #define IDR_CUSTOM                      179
 #define IDR_EDITOR                      107
+#define IDR_EDITOR_LARGE                108
 
 #define IDR_LANGUAGEVIEW                105
 #define IDR_SCRIPTVIEW                  106
