@@ -6,12 +6,12 @@
 #define IDR_PROJECT                     102
 #define IDR_OUTPUT                      103
 #define IDR_GAMEDATA                    104
-#define IDR_CUSTOM                      179
-#define IDR_EDITOR                      107
-#define IDR_EDITOR_LARGE                108
+#define IDR_CUSTOM                      105
+#define IDR_EDITOR_16                   106
+#define IDR_EDITOR_24                   108
 
-#define IDR_LANGUAGEVIEW                105
-#define IDR_SCRIPTVIEW                  106
+#define IDR_LANGUAGEVIEW                109
+#define IDR_SCRIPTVIEW                  110
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 
@@ -19,24 +19,26 @@
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  119
-#define IDM_PROJECT_POPUP               174
-#define IDM_OUTPUT_POPUP                182
+#define IDM_EDIT_POPUP                  115
+#define IDM_PROJECT_POPUP               116
+#define IDM_OUTPUT_POPUP                117
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_PROJECT_ICONS               175
-#define IDB_OUTPUT_ICONS                176
-#define IDB_GAMEDATA_ICONS              177
+#define IDB_EDITOR_16_GREY              120
+#define IDB_EDITOR_24_GREY              121
+#define IDB_PROJECT_ICONS               122
+#define IDB_OUTPUT_ICONS                123
+#define IDB_GAMEDATA_ICONS              124
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
 
 ///////////////////////////////// COMMANDS /////////////////////////////
 
-#define ID_STATUSBAR_PANE1              120
-#define ID_STATUSBAR_PANE2              121
-#define ID_VIEW_CUSTOMIZE               126
+#define ID_STATUSBAR_PANE1              128
+#define ID_STATUSBAR_PANE2              129
+#define ID_VIEW_CUSTOMIZE               130
 #define ID_WINDOW_MANAGER               131
 #define ID_VIEW_PROJECTWND              133
 #define ID_VIEW_CLASSVIEW               134

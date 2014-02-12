@@ -1,6 +1,7 @@
 #pragma once
 
 #include "afxcmn.h"
+#include "ToolBarEx.h"
 #include "LanguageDocument.h"
 #include "LanguageStringView.h"
 
@@ -53,7 +54,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       SelectionChangedHandler  fnStringSelectionChanged;
       CRichEditCtrl            RichEdit;
-      CMFCToolBar              ToolBar;
+      ToolBarEx                ToolBar;
    public:
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
    };

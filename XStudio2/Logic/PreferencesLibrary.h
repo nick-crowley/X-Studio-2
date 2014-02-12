@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common.h"
+//#include "Common.h"  Included in stdafx.h
 
 namespace Logic
 {
@@ -35,7 +35,9 @@ namespace Logic
 
       // --------------------- PROPERTIES ------------------------
    public:
+      PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false);
       PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false);
+      PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
       // ---------------------- ACCESSORS ------------------------			
    private:
