@@ -258,18 +258,29 @@ namespace Logic
          if (Closed)
             throw InvalidOperationException(HERE, L"Writer is closed");
 
-         // ANSI char:
-         if (ch == L'{' || ch == L'}')
+         // Escape/Convert char:
+         switch (ch)
          {
-            Output.push_back('\\');
-            Output.push_back((CHAR)ch);
-         }
-         else if (ch <= 0x7f)
-            Output.push_back((CHAR)ch);
-         else
-         {  // UNICODE char:
-            StringCchPrintfA(buf, 10, "\\u%u?", (UINT)ch);
-            Output.append(buf);
+         case L'{':
+         case L'}':  
+            Output.push_back('\\'); 
+            Output.push_back((CHAR)ch);   
+            break;
+
+         case L'\\': Write("\\\\");     break;
+         case L'\n': Write("\\line ");  break;
+         case L'\t': Write("\\tab ");   break;
+
+         default:
+            // ANSI char:
+            if (ch <= 0x7f)
+               Output.push_back((CHAR)ch);
+            else
+            {  // UNICODE char:
+               StringCchPrintfA(buf, 10, "\\u%u?", (UINT)ch);
+               Output.append(buf);
+            }
+            break;
          }
       }
 
@@ -354,7 +365,9 @@ namespace Logic
       /// <param name="c">The colour to define</param>
       void  RtfWriter::WriteColour(COLORREF c)
       {
-         Write(StringResource::Format(L"\\red%d\\green%d\\blue%d;", GetRValue(c), GetGValue(c), GetBValue(c)));
+         char buf[64];
+         StringCchPrintfA(buf, 64, "\\red%d\\green%d\\blue%d;", GetRValue(c), GetGValue(c), GetBValue(c));
+         Write(buf);
       }
 
       /// <summary>Writes RTF footer</summary>

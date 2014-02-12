@@ -221,8 +221,16 @@ namespace Logic
                // ColourCode: Read and override existing stack colour, if any
                if (MatchColourCode(ch))
                   TextColour = ReadColourCode(ch);
+               
+               // NewLine/Tab: Convert to character representation
+               else if (ch+1 < Input.end() && (ch[1] == 'n' || ch[1] == 't'))
+               {
+                  *Paragraph += new RichCharacter(ch[1] == 'n' ? '\n' : '\t', TextColour, Formatting.Current);
+                  ++ch;
+               }
                else
-               {  // Backslash: Append as text, escape next character
+               {  
+                  // Backslash: Append as text, escape next character
                   Escaped = true;
                   *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);
                }
@@ -341,7 +349,7 @@ namespace Logic
       bool  StringParser::MatchColourCode(CharIterator pos) const
       {
          // Check for EOF?
-         if (pos+5 >= Input.end())
+         if (pos+4 >= Input.end())
             return false;
 
          // Match '\\033'
@@ -390,12 +398,13 @@ namespace Logic
       /// <param name="pos">position of backslash</param>
       /// <returns></returns>
       /// <exception cref="Logic::AlgorithmException">Previously matched colour code is unrecognised</exception>
+      /// <remarks>Advances the iterator to the last character of the tag, so Parse() loop advances correctly to the next character</remarks>
       Colour  StringParser::ReadColourCode(CharIterator& pos)
       {
          Colour c;
 
          // Match colour character
-         switch (*pos)
+         switch (pos[4])
          {
          case 'A':   c = Colour::Silver;  break;
          case 'B':   c = Colour::Blue;    break;
@@ -413,7 +422,7 @@ namespace Logic
          }
 
          // Consume + return colour
-         pos += 5;
+         pos += 4;
          return c;
       }
 
@@ -421,6 +430,7 @@ namespace Logic
       /// <param name="pos">position of opening bracket</param>
       /// <returns></returns>
       /// <exception cref="Logic::Language::RichTextException">Closing tag doesn't match currently open tag</exception>
+      /// <remarks>Advances the iterator to the last character of the tag, so Parse() loop advances correctly to the next character</remarks>
       StringParser::RichTag  StringParser::ReadTag(CharIterator& pos)
       {
          wsmatch matches;
