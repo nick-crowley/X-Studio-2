@@ -7,17 +7,19 @@
 #define IDR_PROPERTIES                  103
 #define IDR_PROJECT                     104
 #define IDR_OUTPUT                      105
-#define IDR_GAMEDATA                    106
-#define IDR_CUSTOM                      107
-#define IDR_EDITOR_16                   108
-#define IDR_EDITOR_24                   109
+#define IDR_COMMANDS                    106
+#define IDR_GAME_OBJECTS                107
+#define IDR_SCRIPT_OBJECTS              108
+#define IDR_EDITOR_16                   109
+#define IDR_EDITOR_24                   110
+#define IDR_CUSTOM                      111
 
-#define IDR_LANGUAGEVIEW                110
-#define IDR_SCRIPTVIEW                  111
+#define IDR_LANGUAGEVIEW                112
+#define IDR_SCRIPTVIEW                  113
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 
-#define IDD_ABOUTBOX                    100
+#define IDD_ABOUTBOX                    114
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
@@ -27,12 +29,11 @@
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-
-#define IDB_EDITOR_16_GREY              120
-#define IDB_EDITOR_24_GREY              121
-#define IDB_PROJECT_ICONS               122
-#define IDB_OUTPUT_ICONS                123
-#define IDB_GAMEDATA_ICONS              124
+#define IDB_EDITOR_16_GREY              118
+#define IDB_EDITOR_24_GREY              119
+#define IDB_PROJECT_ICONS               120
+#define IDB_OUTPUT_ICONS                121
+#define IDB_GAMEDATA_ICONS              122
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

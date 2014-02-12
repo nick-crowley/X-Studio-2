@@ -97,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ListView.EnableGroupView(TRUE);
          
          // Setup ImageList:
-         Images.Create(IDB_GAMEDATA_ICONS, 16, 1, RGB(255,0,255));
+         Images.Create(IDB_GAMEDATA_ICONS, 16, 8, RGB(255,0,255));
 	      ListView.SetImageList(&Images, LVSIL_SMALL);
 
          // create Search edit

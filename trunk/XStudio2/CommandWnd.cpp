@@ -65,6 +65,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          LVItem item(i, Content[i]->DisplayText, (UINT)Content[i]->Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
          item.iImage = 0;
 
+         // Set icon
+         if (Content[i]->IsCompatible(GameVersion::Threat))
+            item.iImage = 3;
+         else if (Content[i]->IsCompatible(GameVersion::Reunion))
+            item.iImage = 4;
+         else
+            item.iImage = Content[i]->IsCompatible(GameVersion::TerranConflict) ? 5 : 6;
+
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
             throw Win32Exception(HERE, GuiString(L"Unable to insert %s command '%s' (item %d)", GetString(Content[i]->Group).c_str(), item.pszText, i) );

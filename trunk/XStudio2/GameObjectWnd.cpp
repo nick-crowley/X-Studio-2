@@ -64,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       for (UINT i = 0; i < Content.size(); ++i)
       {
          LVItem item(i, Content[i].Name, Content[i].Type - MainType::Dock, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-         item.iImage = 0;
+         item.iImage = 1;
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
