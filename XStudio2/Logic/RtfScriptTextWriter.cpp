@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RtfScriptTextWriter.h"
 #include "CommandLexer.h"
+#include "IndentationStack.h"
 
 namespace Logic
 {
@@ -46,47 +47,18 @@ namespace Logic
       /// <param name="f">The script</param>
       void RtfScriptTextWriter::Write(ScriptFile& f)
       {
-         deque<BranchLogic> branch;
-         RtfCommandWriter   w(L"Arial", 10);
+         IndentationStack indent;
+         RtfCommandWriter w(L"Arial", 10);
 
          // Examine commands
          for (ScriptCommand& cmd : f.Commands.Input)
          {
-            BranchLogic logic = cmd.Logic;
-
-            // Push/pop branching logic from stack
-            switch (logic)
-            {
-            case BranchLogic::ElseIf:
-            case BranchLogic::Else:    
-            case BranchLogic::End:      
-               if (!branch.empty())    // shouldn't be empty, but just in case
-                  branch.pop_back();       
-               break;
-            }
+            indent.PreDisplay(cmd);
 
             // Write command
-            w.Write(cmd, 3*branch.size());
+            w.Write(cmd, 3*indent.Size);
 
-            // Re-Examine stack
-            switch (logic)
-            {
-            case BranchLogic::If:
-            case BranchLogic::While:
-            case BranchLogic::Else:
-            case BranchLogic::ElseIf:
-               branch.push_back(logic);
-               break;
-
-            case BranchLogic::SkipIf:
-               branch.push_back(logic); 
-               continue;
-            }
-
-            // Pop 'SkipIf' after next standard command (or break/continue)
-            if (!branch.empty() && branch.back() == BranchLogic::SkipIf && !cmd.Commented 
-               && (cmd.Is(CommandType::Standard) || cmd.Is(CMD_BREAK) || cmd.Is(CMD_CONTINUE)))
-               branch.pop_back();
+            indent.PostDisplay(cmd);
          }
 
          // Write RTF to output
