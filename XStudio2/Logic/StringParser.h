@@ -11,9 +11,6 @@ namespace Logic
 
       // ------------------------ TYPES --------------------------
 
-      /// <summary>Paragraph alignment</summary>
-      enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
-
       /// <summary>Column spacing of a rich-text string</summary>
       enum class ColumnType { Default, Single, Double, Triple };
 
