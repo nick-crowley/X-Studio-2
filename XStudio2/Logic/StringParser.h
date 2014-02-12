@@ -54,11 +54,11 @@ namespace Logic
       };
 
       /// <summary>Character within a rich-text paragraph</summary>
-      class RichChar : public RichElement
+      class RichCharacter : public RichElement
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RichChar(wchar ch, Colour c, UINT format) : RichElement(ElementType::Character), Char(ch), Colour(c), Format(format)
+         RichCharacter(wchar ch, Colour c, UINT format) : RichElement(ElementType::Character), Char(ch), Colour(c), Format(format)
          {}
 
          // -------------------- REPRESENTATION ---------------------
@@ -67,6 +67,7 @@ namespace Logic
          UINT   Format;
          Colour Colour;
       };
+
       
       /// <summary>Button within a rich-text paragraph</summary>
       class RichButton : public RichElement
@@ -98,7 +99,7 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Append character</summary>
-         RichParagraph& operator+=(RichChar* ch)
+         RichParagraph& operator+=(RichCharacter* ch)
          {
             Content.push_back(RichElementPtr(ch));
             return *this;
@@ -122,8 +123,11 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create empty string with single left-aligned paragraph</summary>
          RichString() : Columns(ColumnType::Default), Spacing(0), Width(0)
-         {}
+         {
+            operator+=( RichParagraph(Alignment::Left) );
+         }
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -143,6 +147,16 @@ namespace Logic
          wstring             Author,
                              Title;
       };
+
+      /// <summary>Get paragraph alignment string</summary>
+      wstring  GetString(Alignment a);
+
+      /// <summary>Write rich-text objects to console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e);
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e);
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e);
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p);
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s);
       
       /// <summary>Rich-text parser</summary>
       class StringParser

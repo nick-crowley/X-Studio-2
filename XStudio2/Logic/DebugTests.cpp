@@ -550,6 +550,7 @@ namespace Logic
          {
             Console << "Parsing language string: '" << str << "'..." << ENDL;
             StringParser p(str);
+            Console << p.Output << ENDL << ENDL;
          }
       }
       catch (ExceptionBase& e)
