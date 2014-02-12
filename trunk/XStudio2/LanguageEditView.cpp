@@ -120,6 +120,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Listen for string SelectionChanged
       fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
+      
+      // Init RichEdit
+      RichEdit.SetBackgroundColor(FALSE, MessageBackground);
+      RichEdit.LimitText(256*1024);
    }
 
    /// <summary>Populates the text of the currently selected string</summary>
@@ -133,15 +137,12 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Re-populate
          if (LanguageString* str = GetStringView()->GetSelectedString())
          {
-            string rtf; //RichEdit.SetWindowTextW(str->Text.c_str());
+            string rtf; 
 
             // Convert string into RTF
             RtfStringWriter w(rtf);
             w.Write(str->RichText);
             w.Close();
-
-            // Extend character limit
-            RichEdit.LimitText(256*1024);
 
             // Replace contents with RTF
             SETTEXTEX opt = {ST_DEFAULT, CP_ACP};

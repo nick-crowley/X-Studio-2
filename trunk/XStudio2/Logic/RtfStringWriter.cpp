@@ -15,14 +15,15 @@ namespace Logic
          // Define colours
          list<COLORREF> col;
          col.push_back(Black);
-         col.push_back(White);
-         col.push_back(Red);
-         col.push_back(Green);
-         col.push_back(Blue);
-         col.push_back(Yellow);
-         col.push_back(Purple);
          col.push_back(Cyan);
+         col.push_back(Blue);
+         col.push_back(Green);
          col.push_back(Grey);
+         col.push_back(Orange);
+         col.push_back(Purple);
+         col.push_back(Red);
+         col.push_back(Yellow);
+         col.push_back(White);
 
          // Init writer
          RtfWriter::Open(L"Arial", 10, col);
@@ -46,8 +47,10 @@ namespace Logic
          switch (c)
          {
          case Colour::Black:   return Black;
-         case Colour::White:   return White;
-         case Colour::Silver:  
+         case Colour::Default:
+         case Colour::White:   
+         case Colour::Silver:  return White;
+
          case Colour::Grey:    return Grey;
          case Colour::Blue:    return Blue;
          case Colour::Cyan:    return Cyan;
@@ -58,7 +61,7 @@ namespace Logic
          case Colour::Yellow:  return Yellow;
          }
 
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour %d", c));
+         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour enumeration: %d", c));
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------

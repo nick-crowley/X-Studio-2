@@ -25,6 +25,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       DECLARE_MESSAGE_MAP()
 
+      static const COLORREF  MessageBackground = RGB(22,31,46);
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
