@@ -232,6 +232,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
+    <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -323,6 +324,7 @@
     <ClCompile Include="Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="Testing\ScriptValidator.cpp" />
+    <ClCompile Include="ToolBarEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoRes.rc" />

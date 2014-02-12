@@ -77,8 +77,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   if (RichEdit.GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
          return;
          
-      CRect view;
-      GetClientRect(view);
+      ClientRect view(this);
 
       // Anchor toolbar to top
       int barHeight = ToolBar.CalcFixedLayout(FALSE, TRUE).cy;
@@ -99,18 +98,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       if (CFormView::OnCreate(lpCreateStruct) == -1)
          return -1;
 
-      ToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EDITOR);
-	   ToolBar.LoadToolBar(IDR_EDITOR, 0, 0, TRUE /* Is locked */);
-	   ToolBar.CleanUpLockedImages();
-	   ToolBar.LoadBitmap(IDR_EDITOR, 0, 0, TRUE /* Locked */);
-
-      ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
-	   ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
-	   ToolBar.SetOwner(this);
-
-      // All commands will be routed via this control , not via the parent frame:
-	   ToolBar.SetRouteCommandsViaFrame(FALSE);
-
+      // Create toolbar
+      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
       return 0;
    }
 
@@ -164,20 +153,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CFormView::OnSettingChange(uFlags, lpszSection);
 
+      // Re-create toolbar
       ToolBar.DestroyWindow();
-      
-      ToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EDITOR);
-	   ToolBar.LoadToolBar(IDR_EDITOR_LARGE, 0, 0, TRUE /* Is locked */);
-	   ToolBar.CleanUpLockedImages();
-	   ToolBar.LoadBitmap(IDR_EDITOR_LARGE, 0, 0, TRUE /* Locked */);
+      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
 
-      ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
-	   ToolBar.SetPaneStyle(ToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
-	   ToolBar.SetOwner(this);
-
-      // All commands will be routed via this control , not via the parent frame:
-	   ToolBar.SetRouteCommandsViaFrame(FALSE);
-
+      // Adjust layout
       AdjustLayout();
    }
 

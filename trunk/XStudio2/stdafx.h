@@ -66,9 +66,13 @@ using namespace std;
 // Application 
 #include "Application.h"
 
+// Preferences
+#include "Logic/PreferencesLibrary.h"
+
 // Resource IDs
 #include "Resources.h"
 #include <afxcview.h>
+
 
 
 // Common controls

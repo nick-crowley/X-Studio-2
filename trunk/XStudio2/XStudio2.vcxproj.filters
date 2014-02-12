@@ -423,6 +423,9 @@
     <ClInclude Include="Logic\PreferencesLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ToolBarEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -678,6 +681,9 @@
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
     <ClCompile Include="Logic\PreferencesLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolBarEx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
