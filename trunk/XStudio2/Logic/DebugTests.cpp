@@ -46,6 +46,11 @@ namespace Logic
       //BatchTest_ScriptCompiler();
       //Test_Lexer();
 
+      //theApp.WriteString(L"example", L"writeString");
+      theApp.WriteProfileStringW(L"Settings", L"example 1", L"WriteProfileStringW");
+      //theApp.WriteSectionString(L"Settings", L"example 2", L"WriteSectionString");
+      
+
       AfxGetMainWnd()->SendMessageToDescendants(WM_SETTINGCHANGE, NULL, NULL);
       //Test_ScriptCompiler();
       
