@@ -103,6 +103,20 @@ namespace Logic
          throw ArgumentException(HERE, L"t", L"Unrecognised tags have no class");
       }
 
+      /// <summary>Convert paragraph alignment string</summary>
+      /// <param name="a">alignment</param>
+      /// <returns></returns>
+      wstring  GetString(Alignment a)
+      {
+         switch (a)
+         {
+         case Alignment::Left:    return L"Left";
+         case Alignment::Centre:  return L"Centre";
+         case Alignment::Right:   return L"Right";
+         case Alignment::Justify: return L"Justify";
+         }
+         return L"Invalid";
+      }
       
       /// <summary>Convert tag class to string</summary>
       /// <param name="c">tag class.</param>
@@ -200,6 +214,74 @@ namespace Logic
          return TagType::Unrecognised;
       }
 
+
+      /// <summary>Output rich-text element to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e)
+      {
+         if (e.Type == ElementType::Button)
+            return c << (const RichButton&)e;
+
+         else if (e.Type == ElementType::Character)
+            return c << (const RichCharacter&)e;
+         
+         return c;
+      }
+
+      /// <summary>Output rich-text character to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e)
+      {
+         c << e.Colour;
+         if (e.Format & CFE_BOLD)
+            c << Cons::Bold;
+
+         c << e.Char;
+
+         if (e.Format & CFE_BOLD)
+            c << Cons::Normal;
+
+         return c;
+      }
+
+      /// <summary>Output rich-text button to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e)
+      {
+         return c << "{RichButton Id=" << e.ID << " Text=";
+
+         // Text
+         for (const auto& el : e.Text)
+            c << *el;
+         
+         return c << "}";
+      }
+
+      /// <summary>Output rich-text paragraph to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p)
+      {
+         // Properties
+         c << "{RichParagraph Align=" << GetString(p.Align);
+
+         // Elements
+         c << ENDL << "Content=";
+         for (const auto& el : p.Content)
+            c << *el;
+         
+         return c << "}";
+      }
+
+      /// <summary>Output rich-text string to the console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s)
+      {
+         // Properties
+         c << "{RichString Author=" << s.Author << " Title=" << s.Title << " Cols=" << (int)s.Columns << " Width=" << s.Width << " Spacing=" << s.Spacing;
+
+         // Elements
+         c << ENDL << "Paragraphs=";
+         for (const auto& el : s.Paragraphs)
+            c << el;
+         
+         return c << "}";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Parses input string</summary>
@@ -225,7 +307,7 @@ namespace Logic
                else
                {  // Backslash: Append as text, escape next character
                   Escaped = true;
-                  *Paragraph += new RichChar('\\', TextColour, Formatting.Current);
+                  *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);
                }
                continue;
 
@@ -233,7 +315,7 @@ namespace Logic
             case '[':
                // Escaped/Not-a-tag: Append as text
                if (Escaped || !MatchTag(ch))
-                  *Paragraph += new RichChar('[', TextColour, Formatting.Current);
+                  *Paragraph += new RichCharacter('[', TextColour, Formatting.Current);
                else 
                {
                   // RichTag: Read entire tag. Adjust colour/formatting/paragraph
@@ -245,6 +327,11 @@ namespace Logic
                      Alignments.PushPop(tag);
                      if (tag.Opening)
                      {
+                        // Special case: Ignore initial 'left' paragraph
+                        if (GetAlignment(tag.Type) == Alignment::Left && Output.Paragraphs.size() == 1 && FirstParagraph.Content.empty())
+                           continue;
+
+                        // Append
                         Output += RichParagraph(GetAlignment(tag.Type));
                         Paragraph = &FirstParagraph;
                      }
@@ -280,7 +367,7 @@ namespace Logic
 
             // Char: Append to current paragraph
             default:
-               *Paragraph += new RichChar(*ch, TextColour, Formatting.Current);
+               *Paragraph += new RichCharacter(*ch, TextColour, Formatting.Current);
                break;
             }
 

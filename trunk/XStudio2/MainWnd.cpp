@@ -278,7 +278,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
          // Load game data
-         GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
+         //GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
 	      return 0;
       }
       catch (ExceptionBase& e)
