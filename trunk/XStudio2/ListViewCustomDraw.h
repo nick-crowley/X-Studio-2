@@ -7,11 +7,12 @@ namespace GUI
    namespace Utils
    {
 
-      /// <summary></summary>
+      /// <summary>Custom draw implementation for a ListView</summary>
       class ListViewCustomDraw : public CustomDrawImpl<NMLVCUSTOMDRAW>
       {
          // ------------------------ TYPES --------------------------
       protected:
+         /// <summary>Holds convenient item properties</summary>
          class ItemData
          {
          public:
@@ -20,7 +21,8 @@ namespace GUI
 
             int   Index,
                   SubItem;
-            UINT  State;
+            bool  Focused,
+                  Selected;
             CRect Rect;
          };
 
@@ -41,9 +43,8 @@ namespace GUI
 
          // ----------------------- MUTATORS ------------------------
       protected:
-         bool  onDrawItem(NMLVCUSTOMDRAW* pDraw, Stage stage) override final;
-
-         virtual bool  onDrawSubItem(CDC* dc, const ItemData& item) PURE;
+         bool          onDrawItem(NMLVCUSTOMDRAW* pDraw, Stage stage) override final;
+         virtual void  onDrawSubItem(CDC* dc, ItemData& item);
 
          // -------------------- REPRESENTATION ---------------------
 

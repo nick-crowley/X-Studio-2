@@ -182,9 +182,12 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
-   bool  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, const ItemData& item)
+   /// <summary>Custom draws the text column</summary>
+   /// <param name="dc">Device context</param>
+   /// <param name="item">Item data.</param>
+   void  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
    {
-      return false;
+      ListViewCustomDraw::onDrawSubItem(dc, item);
    }
 
 

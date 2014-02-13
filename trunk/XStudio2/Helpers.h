@@ -48,22 +48,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
    public:
       /// <summary>Create empty item for retrieving text and properties</summary>
-      /// <param name="len">buffer length</param>
+      /// <param name="item">Item</param>
+      /// <param name="subItem">SubItem</param>
+      /// <param name="bufLen">buffer length</param>
       /// <param name="flags">desired properties</param>
-      LVItem(UINT len, UINT flags = LVIF_TEXT | LVIF_STATE | LVIF_IMAGE | LVIF_PARAM | LVIF_GROUPID)
+      LVItem(UINT item, UINT subItem, UINT bufLen, UINT flags = LVIF_TEXT | LVIF_STATE | LVIF_IMAGE | LVIF_PARAM | LVIF_GROUPID)
       {
          ZeroMemory((LVITEM*)this, sizeof(LVITEM));
 
          // Allocate text buffer
-         if (len > 0)
+         if (bufLen > 0)
          {
-            Text = CharArrayPtr(new wchar[len]);
+            Text = CharArrayPtr(new wchar[bufLen]);
             Text.get()[0] = '\0';
          }
 
-         mask = flags;
-         pszText = Text.get();
-         cchTextMax = len;
+         mask       = flags;
+         pszText    = Text.get();
+         cchTextMax = bufLen;
+         iItem      = item;
+         iSubItem   = subItem;
       }
 
       /// <summary>Create a populated item for setting text and properties</summary>
