@@ -3,6 +3,7 @@
 #include "afxcview.h"
 #include "LanguageDocument.h"
 #include "LanguagePageView.h"
+#include "ImageListEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -53,6 +54,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    private:
       SelectionChangedHandler  fnPageSelectionChanged;
+      ImageListEx              Images;
    
    };
    

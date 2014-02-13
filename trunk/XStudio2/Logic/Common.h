@@ -24,6 +24,24 @@ namespace Logic
    /// <summary>Paragraph alignment</summary>
    enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
 
+   /// <summary>Map Game version into zero-based index</summary>
+   class GameVersionIndex
+   {
+   public:
+      GameVersionIndex(GameVersion v) : Index(0)
+      {
+         switch (v)
+         {
+         case GameVersion::Threat:         Index = 0;  break;
+         case GameVersion::Reunion:        Index = 1;  break;
+         case GameVersion::TerranConflict: Index = 2;  break;
+         case GameVersion::AlbionPrelude:  Index = 3;  break;
+         case GameVersion::Rebirth:        Index = 4;  break;
+         }
+      }
+
+      int  Index;
+   };
 }
 
 using namespace Logic;

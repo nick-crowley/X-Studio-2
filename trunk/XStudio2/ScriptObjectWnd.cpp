@@ -64,16 +64,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Generate/insert display text for each command
       for (UINT i = 0; i < Content.size(); ++i)
       {
+         // Define item
          LVItem item(i, Content[i].Text, (UINT)Content[i].Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-         item.iImage = 2;
-
-         // Set icon
-         if (Content[i].Version == GameVersion::Threat)
-            item.iImage = 3;
-         else if (Content[i].Version == GameVersion::Reunion)
-            item.iImage = 4;
-         else
-            item.iImage = Content[i].Version == GameVersion::TerranConflict ? 5 : 6;
+         item.iImage = 3 + GameVersionIndex(Content[i].Version).Index;
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)

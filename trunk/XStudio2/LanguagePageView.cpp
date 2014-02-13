@@ -93,6 +93,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CListView::OnInitialUpdate();
 
+      // Icons
+      Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
+
       // Setup listView
       GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
       GetListCtrl().SetView(LV_VIEW_DETAILS);
@@ -100,6 +103,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
       GetListCtrl().EnableGroupView(TRUE);
+      GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
       // Define groups
       for (UINT i = (UINT)PageGroup::DATA; i <= (UINT)PageGroup::USER; ++i)
@@ -126,8 +130,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          const LanguagePage& p = pair.second;
          
-         // Add item {ID,Title}
-         LVItem item(index++, GuiString(L"%d", p.ID), (UINT)p.GetGroup(), LVIF_TEXT | LVIF_GROUPID);
+         // Define item
+         LVItem item(index++, GuiString(L"%d", p.ID), (UINT)p.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+         item.iImage = p.Voiced ? 1 : 0;
+
+         // Add item.  Set title
          GetListCtrl().InsertItem(&item);
          GetListCtrl().SetItemText(item.iItem, 1, p.Title.c_str());
       }
