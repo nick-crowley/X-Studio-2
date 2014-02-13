@@ -340,9 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Command Syntax.xml" />
-    <Xml Include="Description Variables.xml" />
     <Xml Include="Descriptions.xml" />
-    <Xml Include="Object Descriptions.xml" />
     <Xml Include="output.xml" />
     <Xml Include="plugin.piracy.astronaut.cmd.repair.xml" />
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
