@@ -1,12 +1,27 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 
+<!-- ********************************************************************************** -->
+<!-- **                                                                              ** -->
+<!-- **              X-Studio II Command Syntax Definitions v1.0  Feb 2014           ** -->
+<!-- **                                                                              ** -->
+<!-- **                                                                              ** -->
+<!-- **                                                                              ** -->
+<!-- **                                                                              ** -->
+<!-- ********************************************************************************** -->
+
 <!--
-* ***************************************************** 
-* X-Studio II Command Syntax Definitions v1.0  Jan 2014 
-* ***************************************************** 
 
 <SYNTAX>: Document root
 ========
+
+Element Properties:
+
+title    : File description which is displayed when this file is loaded. 
+           Alter this string if you customize this file and share it with other forum users.
+version  : Version name/number
+
+
+
 
 
 <SYNTAX>::<GROUPS> : Defines the MSCI command groups listed in the GUI
@@ -16,8 +31,6 @@ Child Elements:
 
 group : Maps the numeric group ID to a name you can use in this file
         They must collectively form a zero-based contiguous group.
-
-
 
 
 <SYNTAX>::<GROUPS>::<GROUP> : Defines an identifier for a command group you can use with <COMMAND> nodes
@@ -33,14 +46,13 @@ id : Group ID
 
 
 
+
 <SYNTAX>::<TYPES> : Defines the parameter types available to MSCI script commands
 ===================
 
 Child Elements:
 
 type : Maps the numeric parameter type to a name you use in this file
-
-
 
 
 <SYNTAX>::<TYPES>::<TYPE> : Defines an identifier for a parameter type you can use with <PARAM> nodes
@@ -90,14 +102,14 @@ url   : Full http URL of the associated MSCI Reference topic on forums.egosoft.c
 
 
 
+
+
 <SYNTAX>::<COMMAND>::<PARAMS> : List of parameters
 =============================
 
 Child Elements:
 
 param : Defines each parameter in the order they are saved in the <codearray>
-
-
 
 
 <SYNTAX>::<COMMAND>::<PARAMS>::<PARAM> : Defines parameter syntax for a MSCI script command 
@@ -122,7 +134,7 @@ usage : (optional) Defines the meaning of the parameter
 -->
 
 
-<syntax>
+<syntax title="Standard MSCI Command Syntax by mr.bear" version="v1.0">
   <groups>
     <group id="0">ARRAY</group>
     <group id="1">CUSTOM</group>
