@@ -129,18 +129,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      mdiTabParams.m_bDocumentMenu = TRUE; // enable the document menu at the right edge of the tab area
 	      EnableMDITabbedGroups(TRUE, mdiTabParams);
 
-
-
-         // MainMenu:
-	      if (!m_wndMenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16))
-            throw Win32Exception(HERE, L"Unable to create MainWnd menu");
-	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
-         //m_wndMenuBar.LoadBitmap(IDR_MAINFRAME_16, NULL, IDR_MAINFRAME_16, TRUE);
-         
-
-	      // prevent the menu bar from taking the focus on activation
+         // prevent the menu bar from taking the focus on activation
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
+         // Load menu item image (not placed on any standard toolbars):
+         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME_16, IDR_MAINFRAME_16);
+
+         // MainMenu:
+	      if (!m_wndMenuBar.Create(this)) //, AFX_DEFAULT_TOOLBAR_STYLE, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16))
+            throw Win32Exception(HERE, L"Unable to create MainWnd menu");
+	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+         
+	      
          // ToolBar:
 	      if (!m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
             throw Win32Exception(HERE, L"Unable to create MainWnd toolbar");
@@ -148,8 +148,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      
          // Allow user-defined toolbars operations:
 	      m_wndToolBar.SetWindowText(GuiString(IDS_TOOLBAR_STANDARD).c_str());
-	      m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
-	      InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+	      //m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
+	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+
 
          // StatusBar:
 	      if (!m_wndStatusBar.Create(this))
@@ -172,9 +173,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	      
          
-         // Load menu item image (not placed on any standard toolbars):
-	      //CMFCToolBar::AddToolBarForImageCollection(IDR_CUSTOM, IDR_CUSTOM);
-         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME_16, IDR_MAINFRAME_16);
+         
          
 
 	      // Project Window:
