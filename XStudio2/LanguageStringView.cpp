@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
 #include "Logic/StringResolver.h"
+#include "RichTextRenderer.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -17,7 +18,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageStringView::LanguageStringView()
+   LanguageStringView::LanguageStringView() : CustomDraw(this)
    {
    }
 
@@ -89,13 +90,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
 
+   /// <summary>Custom draw the strings</summary>
+   /// <param name="pNMHDR">header.</param>
+   /// <param name="pResult">result.</param>
    void LanguageStringView::OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult)
    {
-      LPNMCUSTOMDRAW pDraw = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-      
-      pDraw->dwDrawStage
-
-      *pResult = 0;
+      NMCUSTOMDRAW* pDraw = reinterpret_cast<NMCUSTOMDRAW*>(pNMHDR);
+      *pResult = CustomDraw.OnCustomDraw(pDraw);
    }
 
    
@@ -181,6 +182,31 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
-   
+   bool  LanguageStringView::StringCustomDraw::onDrawItem(NMCUSTOMDRAW* pDraw, Stage stage) 
+   {
+      return true;
+   }
+
+   bool  LanguageStringView::StringCustomDraw::onDrawSubItem(NMCUSTOMDRAW* pDraw, Stage stage) 
+   {
+      auto pDraw2 = reinterpret_cast<NMLVCUSTOMDRAW*>(pDraw);
+
+      // ID: Draw normally
+      if (pDraw2->iSubItem == 0)
+         return false;
+
+      CDC dc;
+
+      // Text: Draw manually
+      dc.Attach(pDraw->hdc);
+      //RichTextRenderer::DrawLine(&dc, pDraw->rc, str);
+      dc.Detach();
+      return true;
+   }
+
+
+
+
+
 NAMESPACE_END2(GUI,Views)
 

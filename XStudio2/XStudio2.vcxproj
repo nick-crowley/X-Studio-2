@@ -221,6 +221,7 @@
     <ClInclude Include="MainWnd.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="RichTextRenderer.h" />
     <ClInclude Include="ScriptDocument.h" />
     <ClInclude Include="ScriptEdit.h" />
     <ClInclude Include="ScriptObjectWnd.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="Logic\XmlWriter.cpp" />
     <ClCompile Include="MainWnd.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="RichTextRenderer.cpp" />
     <ClCompile Include="ScriptDocument.cpp" />
     <ClCompile Include="ScriptEdit.cpp" />
     <ClCompile Include="ScriptObjectWnd.cpp" />

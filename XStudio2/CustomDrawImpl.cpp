@@ -13,8 +13,8 @@ namespace GUI
       CustomDrawImpl::CustomDrawImpl(CWnd* wnd, UINT flags) : Wnd(wnd), Flags(flags)
       {
          // Validate flags
-         if ((flags & ((UINT)CustomDraw::Paint | (UINT)CustomDraw::Erase)) == NULL)
-            throw ArgumentException(HERE, L"flags", L"Must specify CustomDraw::Paint and/or CustomDraw::Erase");
+         if ((flags & ((UINT)DrawCycle::Paint | (UINT)DrawCycle::Erase)) == NULL)
+            throw ArgumentException(HERE, L"flags", L"Must specify DrawCycle::Paint and/or DrawCycle::Erase");
       }
 
 
@@ -38,35 +38,40 @@ namespace GUI
             // [PRE-CYCLE] Request appropriate notifications
          case CDDS_PREERASE:
          case CDDS_PREPAINT:
+            Console << "CDDS_PREPAINT" << ENDL;
             // Items: Request item drawing
-            if (Flags & (LRESULT)CustomDraw::Items)
+            if (Flags & (UINT)DrawCycle::Items)
                retCode |= (LRESULT)RetCode::NotifyItem;
 
             // PostPaint/PostErase: Request notification
-            if (Flags & (LRESULT)CustomDraw::Paint)
+            if (Flags & (UINT)DrawCycle::Paint)
                retCode |= (LRESULT)RetCode::NotifyPostPaint;
-            if (Flags & (LRESULT)CustomDraw::Erase)
+            if (Flags & (UINT)DrawCycle::Erase)
                retCode |= (LRESULT)RetCode::NotifyPostErase;
             break;
 
             // [PRE-ITEM] 
          case CDDS_ITEMPREERASE:
          case CDDS_ITEMPREPAINT:
+            Console << "CDDS_ITEMPREPAINT" << ENDL;
             // SubItems: Request sub-item drawing
-            if (Flags & (UINT)CustomDraw::SubItems)
-               retCode |= (UINT)RetCode::NotifyItem;
+            if (Flags & (UINT)DrawCycle::SubItems)
+               retCode |= (LRESULT)RetCode::NotifyItem;
 
             // Paint/Erase item
-            if (!onDrawItem(pDraw, pDraw->dwDrawStage == CDDS_ITEMPREPAINT ? Stage::Paint : Stage::Erase))
+            if (onDrawItem(pDraw, pDraw->dwDrawStage == CDDS_ITEMPREPAINT ? Stage::Paint : Stage::Erase))
+               retCode |= (LRESULT)RetCode::UserDrawn;
+            else
                return (LRESULT)RetCode::SystemDrawn;
             break;
 
             // [PRE-SUBITEM] 
          case CDDS_SUBITEM | CDDS_ITEMPREERASE:
          case CDDS_SUBITEM | CDDS_ITEMPREPAINT:
+            Console << "CDDS_SUBITEM | CDDS_ITEMPREPAINT" << ENDL;
             // Draw sub-item
-            if (!onDrawSubItem(pDraw, pDraw->dwDrawStage == (CDDS_SUBITEM | CDDS_ITEMPREPAINT) ? Stage::Paint : Stage::Erase))
-               return (LRESULT)RetCode::SystemDrawn;
+            if (onDrawSubItem(pDraw, pDraw->dwDrawStage == (CDDS_SUBITEM | CDDS_ITEMPREPAINT) ? Stage::Paint : Stage::Erase))
+               return (LRESULT)RetCode::UserDrawn;
             break;
 
             //// [POST-ITEM] 

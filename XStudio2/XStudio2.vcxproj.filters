@@ -432,6 +432,9 @@
     <ClInclude Include="ImageListEx.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="RichTextRenderer.h">
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="CustomDrawImpl.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
@@ -693,6 +696,9 @@
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="ImageListEx.cpp">
+      <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="RichTextRenderer.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
     <ClCompile Include="CustomDrawImpl.cpp">

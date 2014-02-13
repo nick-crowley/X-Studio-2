@@ -14,7 +14,17 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    private:
-	  
+	   class StringCustomDraw : public CustomDrawImpl
+      {
+      public:
+         StringCustomDraw(LanguageStringView* v) : CustomDrawImpl(v, (UINT)DrawCycle::Paint|(UINT)DrawCycle::Items|(UINT)DrawCycle::SubItems)
+         {}
+
+      protected:
+         bool  onDrawItem(NMCUSTOMDRAW* pDraw, Stage stage) override;
+         bool  onDrawSubItem(NMCUSTOMDRAW* pDraw, Stage stage) override;
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    protected:
       LanguageStringView();    // Protected constructor used by dynamic creation
@@ -43,10 +53,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       void AdjustLayout();
 
-      void onPageSelectionChanged();
-	  
+      afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       virtual void OnInitialUpdate();
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
+      handler void onPageSelectionChanged();
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
@@ -56,9 +66,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    private:
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
-   
-   public:
-      afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
+      StringCustomDraw         CustomDraw;
    };
    
    #ifndef _DEBUG  

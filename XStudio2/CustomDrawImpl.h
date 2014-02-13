@@ -1,14 +1,13 @@
-
 #pragma once
 
-#include "Logic/Common.h"
 
 namespace GUI
 {
    namespace Utils
    {
       /// <summary>Types of custom draw available</summary>
-      enum class CustomDraw : UINT { Off = 0, Items = 1, SubItems = 2, Paint = 4, Erase = 8 };
+      enum class DrawCycle : UINT { Off = 0, Items = 1, SubItems = 2, Paint = 4, Erase = 8 };
+
 
       /// <summary>Base class for custom draw implementations</summary>
       class CustomDrawImpl
@@ -39,7 +38,7 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         CustomDrawImpl(CWnd* wnd, UINT flags = (UINT)CustomDraw::Items | (UINT)CustomDraw::SubItems | (UINT)CustomDraw::Paint);
+         CustomDrawImpl(CWnd* wnd, UINT flags = (UINT)DrawCycle::Items | (UINT)DrawCycle::SubItems | (UINT)DrawCycle::Paint);
          virtual ~CustomDrawImpl();
 
          DEFAULT_COPY(CustomDrawImpl);	// Default copy semantics
@@ -53,6 +52,9 @@ namespace GUI
 
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Invokes the appropriate paint handler</summary>
+         /// <param name="pDraw">draw data</param>
+         /// <returns>Custom draw message return code</returns>
          LRESULT  OnCustomDraw(NMCUSTOMDRAW* pDraw);
 
       protected:
@@ -69,6 +71,7 @@ namespace GUI
       private:
          UINT   Flags;
       };
+
    }
 }
 
