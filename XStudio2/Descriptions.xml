@@ -89,6 +89,9 @@ page : Page ID      (Defined by matching string ID in main language file)
 
 
 
+<!-- ******************************************* -->
+<!-- **               Macros                  ** -->
+<!-- ******************************************* -->
 
 <macros>
 
@@ -799,6 +802,21 @@ Original command name: {COMMAND:%s}</macro>
 
 
 
+<!-- ******************************************* -->
+<!-- **              Commands                 ** -->
+<!-- ******************************************* -->
+
+<commands>
+
+
+
+
+
+
+
+</commands>
+
+
 
 
 
@@ -812,11 +830,14 @@ Original command name: {COMMAND:%s}</macro>
 
 
 <!-- ******************************************* -->
-<!-- **              Constants                ** -->
+<!-- **            Script Objects             ** -->
 <!-- ******************************************* -->
 
 <constants>
-  
+
+<!-- ******************************************* -->
+<!-- **              Constants                ** -->
+<!-- ******************************************* -->  
 
 <constant id="1" page="2002">The object upon which the script is executing</constant>
 <!--
@@ -877,7 +898,7 @@ Original command name: {COMMAND:%s}</macro>
 
 
 
-<!-- ********************************* SEARCH FLAGS ***************************** -->
+<!-- *************** SEARCH FLAGS *************** -->
 
 <!--Find.Random-->
 <constant id="105" page="2002">Used as a flag in any search command to return an OBJ matching the specified criteria at random.
@@ -2094,5 +2115,8 @@ This is the base OBJCLASS for all objects in the galaxy except {TYPE:wings}, whi
     
 
 </constants>
+
+
+
 
 </language>
