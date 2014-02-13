@@ -4,7 +4,7 @@
 #include "LanguageDocument.h"
 #include "LanguagePageView.h"
 #include "ImageListEx.h"
-#include "CustomDrawImpl.h"
+#include "CustomDrawImpl.hpp"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -14,15 +14,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    private:
-	   class StringCustomDraw : public CustomDrawImpl
+	   class StringCustomDraw : public ListViewCustomDraw
       {
       public:
-         StringCustomDraw(LanguageStringView* v) : CustomDrawImpl(v, (UINT)DrawCycle::Paint|(UINT)DrawCycle::Items|(UINT)DrawCycle::SubItems)
+         StringCustomDraw(LanguageStringView* v) : ListViewCustomDraw(v, (UINT)DrawCycle::Paint|(UINT)DrawCycle::Items|(UINT)DrawCycle::SubItems)
          {}
 
       protected:
-         bool  onDrawItem(NMCUSTOMDRAW* pDraw, Stage stage) override;
-         bool  onDrawSubItem(NMCUSTOMDRAW* pDraw, Stage stage) override;
+         bool  onDrawItem(NMLVCUSTOMDRAW* pDraw, Stage stage) override;
+         bool  onDrawSubItem(NMLVCUSTOMDRAW* pDraw, Stage stage) override;
       };
 
       // --------------------- CONSTRUCTION ----------------------
