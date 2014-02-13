@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<language id="44">
+
+
+<page id="1" title="Formatting">
+
+<!--Headings-->
+<t id="HEADING" parameters="1">[b][u]%s:[/u][/b]</t>                            <!--  {HEADING:szText}        Format headings in bold with underline -->
+<t id="SUBMISSION" parameters="1">[right][i](Submitted by %s)[/i][/right]</t>   <!--  {SUBMISSION:szText}     Format credits in right-aligned italics -->
+<t id="CORRECTION" parameters="1">[right][i](Updated by %s)[/i][/right]</t>     <!--  {CORRECTION:szText}     Format credits in right-aligned italics -->
+
+<!--Formatting Types-->
+<t id="VALUE" parameters="1">[b][red]`%s`[/red][/b]</t>                         <!--  {VALUE:szValue}         Format values in red  -->
+<t id="COMMAND" parameters="1">[b]%s[/b]</t>                                    <!--  {COMMAND:szCommand}     Format commands in black (bold)  -->
+<t id="PARAMETER" parameters="1">[b]«%s»[/b]</t>                                <!--  {PARAMETER:szParameter} Enclose in braces. Format in black (bold)  -->
+<t id="UNITS" parameters="1">{TERMINOLOGY:%s}</t>                               <!--  {UNITS:szUnits}         Format units in italics  -->
+
+<t id="TYPE" parameters="1">[b][blue]%s[/blue][/b]</t>
+<t id="DATATYPE" parameters="1">[b][blue]%s[/blue][/b]</t>                      <!-- {DATATYPE:szType}       Format script data-types in yellow (Bold)  -->
+<t id="CONSTANT" parameters="1">[b][red]%s[/red][/b]</t>                        <!-- {CONSTANT:szConstant}   Format script constants in red (BOLD) -->
+<t id="VARIABLE" parameters="1">[b][green]%s[/green][/b]</t>                    <!-- {VARIABLE:szVariable}   Format variables in green (Bold)  -->
+<t id="PROPERTY" parameters="1">[magenta]%s[/magenta]</t>                       <!-- {PROPERTY:szSkill}      Format properties in purple  -->
+<t id="CLASS" parameters="1">[b][yellow]%s[/yellow][/b]</t>                     <!-- {CLASS:szObjectClass}   Format Object Classes in yellow (bold)  -->
+<t id="KEYWORD" parameters="1">[b][blue]%s[/blue][/b]</t>                       <!-- {KEYWORD:szKeyword}     Format keywords in blue (bold)  -->
+<t id="OBJECT" parameters="1">[b][orange]%s[/orange][/b]</t>                    <!-- {OBJECT:szObject}       Format objects in orange (Bold)  -->
+<t id="TERMINOLOGY" parameters="1">[i]%s[/i]</t>                                <!-- {TERMINOLOGY:szWord}    Format terminology in italics   -->
+
+</page>
+
+
+<page id="2" title="Keywords">
+
+<!--Data/Object Types-->
+<t id="AL_PLUGIN">{TYPE:artificial life plugin}</t>
+<t id="AL_PLUGINS">{TYPE:artificial life plugins}</t>
+<t id="ARRAY">{TYPE:array}</t>
+<t id="ARRAYS">{TYPE:arrays}</t>
+<t id="ASTEROID">{TYPE:asteroid}</t>
+<t id="ASTEROIDS">{TYPE:asteroids}</t>
+<t id="ASTRONAUT">{TYPE:astronaut}</t>
+<t id="ASTRONAUTS">{TYPE:astronauts}</t>
+<t id="CORPORATION">{TYPE:corporation}</t>
+<t id="DEBRIS">{TYPE:debris}</t>
+<t id="DOCK">{TYPE:dock}</t>
+<t id="DOCKS">{TYPE:docks}</t>
+<t id="FACTORY">{TYPE:factory}</t>
+<t id="FACTORIES">{TYPE:factories}</t>
+<t id="INTEGER">{TYPE:integer}</t>
+<t id="INTEGERS">{TYPE:integers}</t>
+<t id="JUMPGATE">{TYPE:jumpgate}</t>
+<t id="JUMPGATES">{TYPE:jumpgates}</t>
+<t id="FLYINGWARE">{TYPE:flying ware}</t>
+<t id="FLYINGWARES">{TYPE:flying wares}</t>
+<t id="GUN">{TYPE:gun}</t>
+<t id="GUNS">{TYPE:guns}</t>
+<t id="LASER">{TYPE:laser}</t>
+<t id="LASERS">{TYPE:lasers}</t>
+<t id="MARINE">{TYPE:marine}</t>
+<t id="MARINES">{TYPE:marines}</t>
+<t id="MISSILE">{TYPE:missile}</t>
+<t id="MISSILES">{TYPE:missiles}</t>
+<t id="NEBULA">{TYPE:nebula}</t>
+<t id="NEBULAE">{TYPE:nebulae}</t>
+<t id="OBJ">{TYPE:object}</t>
+<t id="OBJS">{TYPE:objects}</t>
+<t id="PASSENGER">{TYPE:passenger}</t>
+<t id="PASSENGERS">{TYPE:passengers}</t>
+<t id="PILOT">{TYPE:pilot}</t>
+<t id="PILOTS">{TYPE:pilots}</t>
+<t id="PLANET">{TYPE:planet}</t>
+<t id="PLANETS">{TYPE:planets}</t>
+<t id="RACE">{TYPE:race}</t>
+<t id="RACES">{TYPE:races}</t>
+<t id="SECTOR">{TYPE:sector}</t>
+<t id="SECTORS">{TYPE:sectors}</t>
+<t id="SECTOROBJECT">{TYPE:sector-object}</t>
+<t id="SECTOROBJECTS">{TYPE:sector-objects}</t>
+<t id="SHIP">{TYPE:ship}</t>
+<t id="SHIPS">{TYPE:ships}</t>
+<t id="SHIPYARD">{TYPE:shipyard}</t>
+<t id="SHIPYARDS">{TYPE:shipyards}</t>
+<t id="SHIELD">{TYPE:shield}</t>
+<t id="SHIELDS">{TYPE:shields}</t>
+<t id="SPECIAL">{TYPE:special}</t>
+<t id="SPECIALS">{TYPE:specials}</t>
+<t id="STATION">{TYPE:station}</t>
+<t id="STATIONS">{TYPE:stations}</t>
+<t id="STRING">{TYPE:string}</t>
+<t id="STRINGS">{TYPE:strings}</t>
+<t id="SUN">{TYPE:sun}</t>
+<t id="SUNS">{TYPE:suns}</t>
+<t id="TURRET">{TYPE:turret}</t>
+<t id="TURRETS">{TYPE:turrets}</t>
+<t id="WING">{TYPE:wing}</t>
+<t id="WINGS">{TYPE:wings}</t>
+<t id="WARE">{TYPE:ware}</t>
+<t id="WARES">{TYPE:wares}</t>
+
+<!--Constants-->
+<t id="TRUE" recursive="0">[b][green]\[TRUE\][/green][/b]</t>
+<t id="FALSE" recursive="0">[b][red]\[FALSE\][/red][/b]</t>
+<t id="NULL">{VARIABLE:null}</t>
+
+<!--Terminology-->
+<t id="OBJCLASS">{TERMINOLOGY:Object Class}</t>
+<t id="OBJCLASSES">{TERMINOLOGY:Object Classes}</t>
+<t id="OBJTYPE">{TERMINOLOGY:Type}</t>
+<t id="OBJTYPES">{TERMINOLOGY:Types}</t>
+<t id="MAINTYPE">{TERMINOLOGY:MainType}</t>
+<t id="MAINTYPES">{TERMINOLOGY:MainTypes}</t>
+<t id="SUBTYPE">{TERMINOLOGY:SubType}</t>
+<t id="SUBTYPES">{TERMINOLOGY:SubTypes}</t>
+<t id="FLAG">{TERMINOLOGY:search flag}</t>
+<t id="FLAGS">{TERMINOLOGY:search flags}</t>
+<t id="TFILE">{TERMINOLOGY:T-File}</t>
+
+<!--Properties--> 
+<t id="DOCKED">{PROPERTY:docked}</t>
+<t id="HOMEBASE">{PROPERTY:homebase}</t>
+<t id="FORMATION">{PROPERTY:formation}</t>
+<t id="FORMATIONLEADER">{PROPERTY:formation leader}</t>
+<t id="OWNEDBY">{PROPERTY:owned by}</t>
+<t id="MANUFACTUREDBY">{PROPERTY:manufactured by}</t>
+<t id="SECURITY">{PROPERTY:security}</t> 
+<t id="NOTORIETY">{PROPERTY:notoriety}</t>
+<t id="PRODUCTS">{PROPERTY:products}</t>
+<t id="PRODUCT">{PROPERTY:product}</t>
+<t id="RESOURCES">{PROPERTY:resources}</t>
+<t id="RESOURCE">{PROPERTY:resource}</t>
+<t id="SERIAL">{PROPERTY:station serial}</t>
+<t id="SERIALS">{PROPERTY:station serials}</t>
+<t id="PRIMARYRESOURCE">{PROPERTY:primary resource}</t>
+<t id="SECONDARYRESOURCE">{PROPERTY:secondary resource}</t>
+
+<!--Ship Sizes--> 
+<t id="M0_OBJECT">{OBJECT:Dreadnought \(M0\)}</t>
+<t id="M1_OBJECT">{OBJECT:Carrier \(M1\)}</t>
+<t id="M2_OBJECT">{OBJECT:Battleship \(M2\)}</t>
+<t id="M3_OBJECT">{OBJECT:Heavy Fighter \(M3\)}</t>
+<t id="M4_OBJECT">{OBJECT:Medium Fighter \(M4\)}</t>
+<t id="M5_OBJECT">{OBJECT:Light Fighter \(M5\)}</t>
+<t id="M6_OBJECT">{OBJECT:Corvette \(M6\)}</t>
+<t id="M7_OBJECT">{OBJECT:Frigate \(M7\)}</t>
+<t id="M7M_OBJECT">{OBJECT:Missile Frigate \(M7M\)}</t>
+<t id="M8_OBJECT">{OBJECT:Bomber \(M8\)}</t>
+<t id="TS_OBJECT">{OBJECT:Small Transport \(TS\)}</t>
+<t id="PTS_OBJECT">{OBJECT:Small Pirate Transport \(TS\)}</t>
+<t id="TL_OBJECT">{OBJECT:Large Transport \(TL\)}</t>
+<t id="PTL_OBJECT">{OBJECT:Large Pirate Transport \(TL\)}</t>
+<t id="TM_OBJECT">{OBJECT:Military Transport \(TM\)}</t>
+<t id="TP_OBJECT">{OBJECT:Personnel Transport \(TP\)}</t>
+
+<!--Ship Classes--> 
+<t id="M0_CLASS">{CLASS:Dreadnought \(M0\)}</t>
+<t id="M1_CLASS">{CLASS:Carrier \(M1\)}</t>
+<t id="M2_CLASS">{CLASS:Battleship \(M2\)}</t>
+<t id="M3_CLASS">{CLASS:Heavy Fighter \(M3\)}</t>
+<t id="M4_CLASS">{CLASS:Medium Fighter \(M4\)}</t>
+<t id="M5_CLASS">{CLASS:Light Fighter \(M5\)}</t>
+<t id="M6_CLASS">{CLASS:Corvette \(M6\)}</t>
+<t id="M7_CLASS">{CLASS:Frigate \(M7\)}</t>
+<t id="M7M_CLASS">{CLASS:Missile Frigate \(M7M\)}</t>
+<t id="M8_CLASS">{CLASS:Bomber \(M8\)}</t>
+<t id="TS_CLASS">{CLASS:Small Transport \(TS\)}</t>
+<t id="PTS_CLASS">{CLASS:Small Pirate Transport \(TS\)}</t>
+<t id="TL_CLASS">{CLASS:Large Transport \(TL\)}</t>
+<t id="PTL_CLASS">{CLASS:Large Pirate Transport \(TL\)}</t>
+<t id="TM_CLASS">{CLASS:Military Transport \(TM\)}</t>
+<t id="TP_CLASS">{CLASS:Personnel Transport \(TP\)}</t>
+
+<!--Special-->
+
+<t id="X_EDITOR">{TERMINOLOGY:X³ Editor} by DoubleShadow</t>
+<t id="HANDBOOK">{TERMINOLOGY:X² Programmer`s Handbook} by Kurt Fitzner</t>
+<t id="X_SERIES">{TERMINOLOGY:X-Series}</t>
+<t id="X_STUDIO">{TERMINOLOGY:X-Studio}</t>
+<t id="EXSCRIPTOR">{TERMINOLOGY:eXscriptor}</t>
+<t id="MD">{TERMINOLOGY:Mission Director}</t>
+<t id="MSCI">{TERMINOLOGY:M.S.C.I.}</t>
+<t id="X2">{TERMINOLOGY:X² - The Threat}</t>
+<t id="X3R">{TERMINOLOGY:X³ - Reunion}</t>
+<t id="X3TC">{TERMINOLOGY:X³ - Terran Conflict}</t>
+<t id="X3AP">{TERMINOLOGY:X³ - Albion Prelude}</t>
+
+</page>
+
+
+
+
+
+
+
+
+
+
+<page id="3" title="Stock Phrases">
+
+<!--X-Studio--> 
+<t id="ABOUT_MACROS">{HEADING:Macros}
+
+Macros are not real commands, they are convenient placeholders for a small series of commands.  As such they will appear in EXSCRIPTOR and MSCI as an ordinary block of commands.  This macro will appear as:</t>
+
+
+<t id="UNDOCUMENTED">[b][red]The functionality of this command is unknown.[/red][/b]
+
+If you know how this command works, please right-click on this command and click `Submit Correction`.</t>
+
+
+<t id="NOT_IMPLEMENTED">This command was never implemented by Egosoft.</t>
+
+
+<!--Arrays-->
+<t id="ABOUT_COPYING_ARRAYS">{HEADING:Copying Vs. Linking Arrays}
+
+The code below will not copy the contents of the array {VARIABLE:$aShips}, it will link {VARIABLE:$aShipsCopy} to the contents of the array {VARIABLE:$aShips} so that any changes to the array will be reflected in both variables.
+[center]{VARIABLE:$aShipsCopy} = {VARIABLE:$aShips}[/center]</t>
+
+
+<!--Asteroids-->
+<t id="ABOUT_MINERAL_TYPES">The {PROPERTY:mineral type} is the SUBTYPE of a WARE from the 'WareM' TFILE, the default values are: [center]{OBJECT:Ore} = 0\t{OBJECT:Silicon} = 1\t{OBJECT:Nvidium} = 2\t{OBJECT:Ice} = 3[/center]</t>
+
+
+
+<!--JumpGates-->
+<t id="ROUTE_CALCULATIONS">{HEADING:Route Calculations}
+
+This commands internally calculates the shortest route in {UNITS:meters} rather than {PROPERTY:jump distance}.
+In certain circumstances where SECTOR JUMPGATES are far apart, this command will always use the shortest, fastest route.</t>
+
+
+<t id="ABOUT_JUMPGATE_ID">{HEADING:Jump Gate IDs}
+
+In the vanilla map, each {PROPERTY:jump gate ID} corresponds to the direction of travel:
+[center]{VARIABLE:0} - [b]Northern[/b]\t{VARIABLE:1} - [b]Eastern[/b]\t{VARIABLE:2} - [b]Southern[/b]\t{VARIABLE:3}- [b]Western[/b][/center]</t>
+
+
+
+<!--Game Concepts-->
+
+<t id="ABOUT_AL_PLUGINS">{HEADING:Artificial Life Plugins}
+
+ AL_PLUGINS are scripts that are called by the game engine in response to a timer to create the illusion of a changing galaxy.  The events are listed below:
+
+{CONSTANT:init} - User started a new game
+{CONSTANT:reinit} - User loaded a save game
+{CONSTANT:start} - User has commanded plugin to start
+{CONSTANT:stop} - User has commanded plugin to stop
+{CONSTANT:timer} - Sent every x seconds so plugin can perform tasks
+{CONSTANT:isenabled} - Queries whether the plugin is enabled</t>
+
+<t id="ABOUT_ENVIRONMENT">{HEADING:Environment}
+
+The {CONSTANT:\[ENVIRONMENT\]} constant reflects the container of an OBJ.  If an OBJ is in space then the {PROPERTY:environment} is the SECTOR, if an OBJ is DOCKED then the {PROPERTY:environment} is the {CLASS:Carrier} or STATION with which it is DOCKED.</t>
+
+
+<t id="ABOUT_GUNS_AND_TURRETS">{HEADING:Guns and Turrets}
+
+Each TURRET on a SHIP defines the position and angle from which a SHIP can fire.  Each TURRET may contain one or more GUNS in individually numbered {PROPERTY:gun slots}.  Each GUN has different properties which define the amount of damage and rate of fire.
+
+The {PROPERTY:main turret} on any SHIP is always TURRET zero.</t>
+
+
+<t id="ABOUT_LOCAL_AND_GLOBAL_VARIABLES">{HEADING:Local and Global Variables}
+
+You can store any value in a SHIP or STATION using a {PROPERTY:local variable}.  This value will remain until you alter it, or the OBJ is destroyed.  Each {PROPERTY:local variable} within an OBJ must have a unique name.
+Only {TERMINOLOGY:Albion Prelude 2.5.3} or newer will allow you to store values in SECTORS.
+
+You can store any value into the game universe using a {PROPERTY:global variable}.  This value will remain until you set it to NULL.  Each {PROPERTY:global variable} must have a unique name.{CORRECTION:Jack08}</t>
+
+
+<t id="ABOUT_MAINTYPES_AND_SUBTYPES">{HEADING:MainTypes and SubTypes}
+
+The OBJTYPE of every OBJ in the game is defined by a category and ID.  Each category is called a MAINTYPE, and each item within a category is called a SUBTYPE. The {TYPE:Argon Buster} is a SUBTYPE in the {CONSTANT:SSTYPE_SHIPS} MAINTYPE, for example, and the {TYPE:FireFly Missile} is a SUBTYPE in the {CONSTANT:SSTYPE_MISSILES} MAINTYPE.
+
+This only defines the OBJTYPE of an OBJ - each {TYPE:Firefly Missile} fired in the game is unique, but they are all of the OBJTYPE {TYPE:FireFly Missile}.</t>
+
+
+<t id="ABOUT_NOTORIETY">{HEADING:Notoriety}
+
+{PROPERTY:Notoriety} determines how friendly a RACE, CORPORATION or the player is towards another RACE.  These values also define the player`s {PROPERTY:trade rank}, {PROPERTY:fight rank} and {PROPERTY:mission rank}, although the titles used for each type are different.
+
+{HEADING:Notoriety Ranks}
+
+Rank index {CONSTANT:-5} = Raw value between -1,000,000 and -100,000
+Rank index {CONSTANT:-4} = Raw value between -100,000 and -10,000
+Rank index {CONSTANT:-3} = Raw value between -10,000 and -1,000
+Rank index {CONSTANT:-2} = Raw value between -1,000 and -100
+Rank index {CONSTANT:-1} = Raw value between -100 and -10
+Rank index  {CONSTANT:0} = Raw value between -10 and +10
+Rank index  {CONSTANT:1} = Raw value between 10 and 33
+Rank index  {CONSTANT:2} = Raw value between 33 and 100
+Rank index  {CONSTANT:3} = Raw value between 100 and 333
+Rank index  {CONSTANT:4} = Raw value between 333 and 1,000
+Rank index  {CONSTANT:5} = Raw value between 1,000 and 3,333
+Rank index  {CONSTANT:6} = Raw value between 3,333 and 10,000
+Rank index  {CONSTANT:7} = Raw value between 10,000 and 33,333
+Rank index  {CONSTANT:8} = Raw value between 33,333 and 100,000
+Rank index  {CONSTANT:9} = Raw value between 100,000 and 333,333
+Rank index {CONSTANT:10} = Raw value between 333,333 and 1,000,000
+
+{HEADING:Effects of Rank}
+
+At rank index {CONSTANT:-3} or below, SHIPS are attacked in {PROPERTY:border sectors}
+At rank index {CONSTANT:-2} or below, SHIPS are attacked in {PROPERTY:core sectors}
+At rank index {CONSTANT:0} or above, SHIPS may dock in {PROPERTY:border sectors}
+At rank index {CONSTANT:1} or above, SHIPS may dock in {PROPERTY:core sectors}</t>
+
+
+<t id="ABOUT_OBJECT_CLASSES">{HEADING:Object Classes}
+
+Every {TYPE:object} belongs to one or more OBJCLASSES such as {CLASS:Ship}, {CLASS:Station} or {CLASS:Huge Ship}.  Some OBJCLASSES contain other OBJCLASSES, eg. {CLASS:Station} contains {CLASS:Factory} and {CLASS:Dock}.</t>
+
+
+<t id="ABOUT_RACE_LOGIC">{HEADING:Race Logic}
+
+{TERMINOLOGY:Race Logic} is used to control SHIPS that do not belong to the player.  If you wish to create and control OBJS of another RACE, you must disable {TERMINOLOGY:Race Logic} or the game engine will usurp your control of the OBJ.</t>
+
+
+<t id="ABOUT_START_ACTIONS">{HEADING:Start Actions}
+
+Certain OBJCLASSES execute a pre-determined {TYPE:command} when they are created:
+
+» {M0_CLASS} and {M1_CLASS} and {M2_CLASS} and {M6_CLASS}
+
+Always {CONSTANT:\[COMMAND_KILL_ENEMIES\]}
+
+» {M3_CLASS} and {M4_CLASS} and {M4_CLASS}
+
+If SHIP is {PROPERTY:player owned} then {CONSTANT:\[COMMAND_NONE\]}
+If SHIP has a {PROPERTY:formation leader} then {CONSTANT:\[COMMAND_PROTECT\]}
+If SHIP is under attack then {CONSTANT:\[COMMAND_ATTACK\]}
+If SHIP is {PROPERTY:Xenon}, {PROPERTY:Pirate} or {PROPERTY:Kh`aak} then {CONSTANT:\[COMMAND_KILL_ENEMIES\]}
+If none of the above then {CONSTANT:\[COMMAND_RETURN_HOME\]}
+
+» {TS_CLASS}
+
+If {PROPERTY:player owned} then {CONSTANT:\[COMMAND_NONE\]}
+If SHIP has a {PROPERTY:homebase} then {CONSTANT:\[COMMAND_RETURN_HOME\]}
+If none of the above then {CONSTANT:\[COMMAND_DOCKAT\]}
+
+» {CLASS:Goner Ship} - If {PROPERTY:player owned} then {CONSTANT:\[COMMAND_NONE\]} otherwise {CONSTANT:\[COMMAND_PREACH\]}
+» {CLASS:SpaceFly} - Always {CONSTANT:\[COMMAND_FOLLOW\]}
+» {CLASS:UFO} - Always {CONSTANT:\[COMMAND_PREACH\]}
+
+All other OBJCLASSES start with {CONSTANT:\[COMMAND_NONE\]}</t>
+
+
+
+<!--Marines and Boarding-->
+<t id="ABOUT_MARINE_SKILLS">{HEADING:Marine Skills}
+
+Each MARINE has four skills: {PROPERTY:fighting}, {PROPERTY:hacking}, {PROPERTY:engineering} and {PROPERTY:mechanical}, which are numbered between 0 and 100 \(in the vanilla game\).  Each skill is used to affect different parts of the boarding procedure.</t>
+
+
+<t id="ABOUT_BOARDING_PROCEDURE">{HEADING:Boarding Procedure}
+
+The boarding procedure is a three part process:
+
+[i]Breaching the Hull:[/i] The success of this procedure is dependent on a {TYPE:marine`s} {PROPERTY:mechanical skill}, the use of a {OBJECT:Boarding Pod}, the {PROPERTY:defence level} of the SHIP and the presence of {OBJECT:Hull Polarising Device}.
+
+[i]Fighting the Crew:[/i] The success of this procedure is dependent on a {TYPE:marine`s} {PROPERTY:fighting skill} and the presence of {OBJECT:Internal Sentry Lasers}.
+
+[i]Hacking the Computer:[/i] The success of this procedure is dependent on a {TYPE:marine`s} {PROPERTY:hacking skill} and the {PROPERTY:security level} of the SHIP.
+
+The {PROPERTY:engineering skill} does not affect the success of the boarding procedure, instead it reduces the level of damage done to the target SHIP.</t>
+
+
+<t id="ABOUT_MARINE_STORAGE">{HEADING:Marine Storage}
+
+Only STATIONS and the following classes of SHIP are capable of containing MARINES:
+[center]{M1_CLASS}\t{M2_CLASS}\t{M6_CLASS}\t{M7_CLASS}
+\t{TL_CLASS}\t{TM_CLASS}\t{TP_CLASS}[/center]</t>
+
+
+<t id="ABOUT_BOARDING_TARGETS">{HEADING:Boarding Targets}
+
+Only the following classes of SHIP are capable of being boarded by MARINES:
+[center]{M1_CLASS}\t{M2_CLASS}\t{M6_CLASS}\t{M7_CLASS}
+{TL_CLASS}\t{TM_CLASS}[/center]</t>
+
+
+
+<!--Rotation System--> 
+<t id="ABOUT_OBJECT_ROTATION">{HEADING:Object Rotation}
+
+The direction in which every object faces is defined by it`s alignment on three axes: x, y and z.
+[center]x-axis : {PROPERTY:yaw}\ty-axis : {PROPERTY:pitch}\tz-axis : {PROPERTY:roll}[/center]</t>
+
+
+
+<!--Sectors-->
+<t id="ABOUT_SECTOR_SECURITY">{HEADING:Sector Security}
+
+The {PROPERTY:security} of a SECTOR determines the {PROPERTY:player rank} required to enter the SECTOR and trade with the STATIONS within it.  A lower {PROPERTY:player rank} is required for {PROPERTY:border sectors} than for {PROPERTY:core sectors}.
+
+{OBJECT:Unknown Sectors} and {OBJECT:Xenon Sectors} have no {PROPERTY:security} rating and can be entered freely.</t>
+
+
+<!--SectorObjects-->
+<t id="ABOUT_SECTOR_OBJECTS">{HEADING:Sector Objects}
+When a SECTOR is rendered, each OBJ in the SECTOR is given a SECTOROBJECT in turn, starting with the SECTOR itself which is usually followed by the SUN, NEBULAE, then STATIONS, SHIPS, and ASTEROIDS.
+
+The {TERMINOLOGY:Sector Object ID} is an INTEGER that starts at one for the first OBJ rendered in the first SECTOR entered after a new game is started or loaded, and increases by one for every new one created.  When a SHIP enters the rendered SECTOR, a new SECTOROBJECT with a unique ID is created.  When it leaves, it is destroyed.
+
+{SEE_HANDBOOK_PAGE:72}</t>
+
+
+<!--Script Execution-->
+<t id="COMMAND_INTERRUPTABLE">{HEADING:Interrupt Point}
+
+Your script will yield execution to other scripts and signals during this command.</t>
+
+
+<t id="ABOUT_COMMANDS_TASKS_AND_SIGNALS">{HEADING:Commands, Tasks and Signals}
+
+Each OBJ can concurrently execute an unlimited number of scripts, with each script representing a {TYPE:command} or a {TYPE:signal}.
+
+The OBJ assigns each script a {PROPERTY:task ID}, the first twenty of which have a pre-defined purpose.
+
+» To run two scripts concurrently, you should run them as different {PROPERTY:tasks}.
+» To stop one script and execute another, you should run them on the same {PROPERTY:task}.
+» To pause a script while you execute another, and then resume the original script, you should {TERMINOLOGY:interrupt} the script on the same {PROPERTY:task}.
+
+All {TYPE:signals} use the {TERMINOLOGY:interrupt} method of execution.  You must choose the execution method of script calls.</t>
+
+
+<t id="ABOUT_INTERRUPTS_AND_YIELDING">{HEADING:Interrupts and Yielding}
+
+When a script reaches an {TERMINOLOGY:interruptable} command, it will yield to other scripts in the game.  The following special actions can also occurr at {TERMINOLOGY:interrupt points}:
+
+» If another command has been ordered to execute in the same {PROPERTY:task}, the script will be terminated at the first {TERMINOLOGY:interrupt point} and the new command will begin.
+
+» If another script has been ordered to {TERMINOLOGY:interrupt} this {PROPERTY:task}, the new script will wait until the first {TERMINOLOGY:interrupt point}, execute, finish, then resume the original script.
+
+{RELATED_COMMAND_3:To execute a script serially or concurrently or as an interrupt,call script,begin task,interrupt with script,Flow Control}</t>
+
+
+<!--Strings-->
+<t id="LOADTEXT_REQUIREMENT">If the STRING resides in a custom {TERMINOLOGY:Language Strings File}, you must have previously loaded that file or this command will return a STRING containing a `read text:` error.</t>
+
+
+<!--Unit Indicies-->
+<t id="ABOUT_JUMP_DISTANCES">All {PROPERTY:jump distances} are zero-based.</t>
+
+
+</page>
+
+
+
+
+
+
+
+
+<page id="4" title="Parameterised Phrases">
+
+
+<!--Debugging-->
+<t id="TODO" parameters="1">[b][red]WIP: %s[/red][/b]</t>  
+
+
+
+<!--Related Commands--> 
+<t id="RELATED_COMMAND" parameters="3">{HEADING:Related Commands}
+
+%s, see the {COMMAND:%s} command in the [b]%s[/b] category of [i]Script Commands[/i]</t>
+
+
+<t id="RELATED_COMMAND_2" parameters="4">{HEADING:Related Commands}
+
+%s, see the {COMMAND:%s} and {COMMAND:%s} commands in the [b]%s[/b] category of [i]Script Commands[/i]</t>
+
+
+<t id="RELATED_COMMAND_3" parameters="5">{HEADING:Related Commands}
+
+%s, see the {COMMAND:%s}, {COMMAND:%s} and {COMMAND:%s} commands in the [b]%s[/b] category of [i]Script Commands[/i]</t>
+
+
+<t id="INLINE_RELATED_COMMAND" parameters="3">%s, see the {COMMAND:%s} command in the [b]%s[/b] category of [i]Script Commands[/i]</t>
+
+
+<t id="INLINE_RELATED_COMMAND_2" parameters="4">%s, see the {COMMAND:%s} and {COMMAND:%s} commands in the [b]%s[/b] category of [i]Script Commands[/i]</t>
+
+
+
+<!--Related Lists--> 
+<t id="RELATED_GAME_OBJECT_LIST" parameters="2">{HEADING:See Also}
+
+For a full list of available %s, see the [b]%s[/b] category of [i]Game Objects[/i].</t>
+
+
+<t id="RELATED_SCRIPT_OBJECT_LIST" parameters="2">{HEADING:See Also}
+
+For a full list of available %s, see the [b]%s[/b] category of [i]Script Objects[/i].</t>
+
+
+<t id="RELATED_COMMAND_LIST" parameters="2">{HEADING:See Also}
+
+For a full list of available %s commands, see the [b]%s[/b] category of [i]Script Commands[/i].</t>
+
+<t id="RELATED_MEDIA" parameters="1">{HEADING:See Also}
+
+For a full list of available [i]%s[/i], see the [i]Media Browser[/i].</t>
+
+
+
+<!--Co-Ordinate System--> 
+<t id="COORDINATES" parameters="4">{HEADING:Positioning Objects}
+
+The %s is positioned at the co-ordinates \(x, y, z\) in the following order:
+[center]x=$%s, y=$%s, z=$%s.[/center]</t>
+
+
+<!--External Reference--> 
+<t id="SEE_HANDBOOK_AND_XEDITOR" parameters="1">{HEADING:See Also}
+
+You can use the X_EDITOR to browse available %s, or see the HANDBOOK.</t>
+
+
+<t id="SEE_HANDBOOK" parameters="1">{HEADING:See Also}
+
+See the HANDBOOK to browse available %s.</t>
+
+
+<t id="SEE_HANDBOOK_PAGE" parameters="1">See page %s of the HANDBOOK for further information.</t>
+
+
+<t id="SEE_XEDITOR" parameters="1">{HEADING:See Also}
+
+You can use the X_EDITOR to browse available %s.</t>
+
+
+
+<!--Command Compatibility-->
+<t id="COMPATIBILITY_1" parameters="1">{HEADING:Compatibility}
+
+This is one of the few commands Egosoft modified over the course of the X_SERIES.
+This command is compatible with: {%s}.</t>
+
+<t id="COMPATIBILITY_2" parameters="2">{HEADING:Compatibility}
+
+This is one of the few commands Egosoft modified over the course of the X_SERIES.
+This command is compatible with: {%s} and {%s}.</t>
+
+<t id="COMPATIBILITY_3" parameters="3">{HEADING:Compatibility}
+
+This is one of the few commands Egosoft modified over the course of the X_SERIES.
+This command is compatible with: {%s}, {%s} and {%s}.</t>
+
+<t id="COMMAND_NAME_CHANGED" parameters="1">{HEADING:X-Studio Specific}
+
+This command has been renamed by X-Studio for greater clarity but will be displayed using the original name in EXSCRIPTOR and the MSCI.
+
+Original command name: {COMMAND:%s}</t>
+
+
+
+<!--Fly Command Descriptions-->
+<t id="RETURNS_FLIGHT_CODE">This command returns one of the following {TYPE:flight return codes} upon completion:</t>
+
+<t id="FLIGHT_BREAK" parameters="1">{CONSTANT:\[FLRET_BREAK\]} - The %s was interruped by the execution of another command</t>
+
+<t id="FLIGHT_BREAK_JUMPED" parameters="1">{CONSTANT:\[FLRET_BREAK\]} - The target SHIP $%s has been destroyed or jumped to another SECTOR</t>
+
+<t id="FLIGHT_ERROR" parameters="1">{CONSTANT:\[FLRET_ERROR\]} - The SHIP was unable to complete the %s due to an error</t>
+
+<t id="FLIGHT_INTERRUPTED" parameters="1">{CONSTANT:\[FLRET_INTERRUPTED\]} - The %s was interruped by the execution of another script</t>
+
+<t id="FLIGHT_INVALIDPARAMS">{CONSTANT:\[FLRET_INVALIDPARAMS\]} - The SHIP $0 does not exist</t>
+
+<t id="FLIGHT_NOCOMMANDS" parameters="1">{CONSTANT:\[FLRET_NOCOMMANDS\]} - The %s completed successfully</t>
+
+<t id="FLIGHT_TIMEOUT" parameters="1">{CONSTANT:\[FLRET_TIMEOUT\]} - The timeout period $%s has elapsed</t>
+
+
+
+
+<!--Search Command Descriptions-->
+<t id="SEARCH_SYNTAX" parameters="1">If no matching %s can be found then this command returns NULL.  There are a number of optional search parameters explained below that you can omit or combine to refine the search.  To omit a parameter, set it to NULL.</t>
+
+<t id="SEARCH_RANGE" parameters="3">The %s must be within a {PROPERTY:jump distance} of $%s from the SECTOR $%s.</t>
+
+<t id="SEARCH_RANGE_DIFFERENT" parameters="2">If $%s is NULL then the SECTOR containing $%s is used instead.</t>
+
+<t id="SEARCH_BY_DISTANCE" parameters="3">Only return %s that are within $%s {UNITS:meters} of the {TYPE:object} $%s</t>
+
+<t id="SEARCH_BY_DISTANCE_2" parameters="4">Only return %s within $%s {UNITS:meters} of the {TYPE:object} $%s or the {PROPERTY:position} $%s</t>
+
+<t id="SEARCH_EXCLUDE_ARRAY" parameters="2">Do not return of any of the %s in the ARRAY $%s</t>
+
+<t id="SEARCH_BY_SERIAL" parameters="1">Only return STATIONS with the SERIAL $%s</t>
+
+<t id="SEARCH_BY_TYPE_CLASS" parameters="2">Only return %s with an OBJCLASS or OBJTYPE of $%s</t>
+
+<t id="SEARCH_BY_MAINTYPE_SUBTYPE" parameters="3">Only return %s with a MAINTYPE of $%s and SUBTYPE of $%s</t>
+
+<t id="SEARCH_BY_RACE" parameters="2">Only return %s OWNEDBY the RACE $%s</t>
+
+<t id="SEARCH_BY_FLAGS" parameters="2">Only return %s matching the FLAGS $%s</t>
+
+<t id="SEARCH_BY_MAXIMUM_PRICE" parameters="2">Only return %s with a maximum {PROPERTY:ware price} of $%s credits</t>
+<t id="SEARCH_BY_MINIMUM_PRICE" parameters="2">Only return %s with a minimum {PROPERTY:ware price} of $%s credits</t>
+
+<t id="SEARCH_BY_QUANITY_BUY" parameters="2">Only return %s willing to buy a {PROPERTY:ware quantity} of $%s units or more</t>
+<t id="SEARCH_BY_QUANITY_SELL" parameters="2">Only return %s with a {PROPERTY:ware quantity} of $%s units or more</t>
+<t id="SEARCH_BY_TRADER" parameters="2">Only return {PROPERTY:known} %s at which $%s may dock and trade</t>
+
+
+<!--Search Command Flags-->
+<t id="FLAG_RANDOM" parameters="1">{CONSTANT:\[Find.Random\]} - Return a random %s from those matching the criteria</t>
+
+<t id="FLAG_NEAREST" parameters="2">{CONSTANT:\[Find.Nearest\]} - Return the %s closest to the {TYPE:object} $%s</t>
+
+<t id="FLAG_NEAREST_2" parameters="3">{CONSTANT:\[Find.Nearest\]} - Return the %s closest to the {TYPE:object} $%s or {PROPERTY:position} $%s</t>
+
+<t id="FLAG_VISIBLE" parameters="2">{CONSTANT:\[Find.Visible\]} - Return %s that are within scanner range of the {TYPE:object} $%s</t>
+
+<t id="FLAG_KNOWN" parameters="1">{CONSTANT:\[Find.Known\]} - Return %s that are known to the player</t>
+
+<t id="FLAG_RACE_LOGIC">{CONSTANT:\[Find.RaceLogicEnabled\]} - Return only SHIPS that have {PROPERTY:race logic} enabled</t>
+
+<t id="FLAG_INCLUDE_DOCKED">{CONSTANT:\[Find.IncludeDocked\]} - Return SHIPS that are currently docked</t>
+
+<t id="FLAG_WING_ONLY">{CONSTANT:\[Find.WingOnly\]} - Return only SHIPS that are part of a WING</t>
+
+<t id="FLAG_EXACT_JUMPS" parameters="2">{CONSTANT:\[Find.ExactJumps\]} - Return %s with a precise {PROPERTY:jump distance} of $%s</t>
+
+<t id="FLAG_DOCKING_ALLOWED" parameters="2">{CONSTANT:\[Find.DockingAllowed\]} - Return %s at which the {TYPE:object} $%s may dock</t>
+
+<t id="FLAG_MULTIPLE" parameters="2">{CONSTANT:\[Find.Multiple\]} - Return up to $%s %s</t>
+
+<t id="FLAG_MULTIPLE_UNLIMITED" parameters="1">{CONSTANT:\[Find.Multiple\]} - Return multiple %s</t>
+  
+<t id="FLAG_FRIEND" parameters="2">{CONSTANT:\[Find.Friend\]} - Return %s that are a {PROPERTY:friend} of the {TYPE:object} $%s</t>
+<t id="FLAG_ENEMY" parameters="2">{CONSTANT:\[Find.Enemy\]} - Return %s that are an {PROPERTY:enemy} of the {TYPE:object} $%s</t>
+<t id="FLAG_NEUTRAL" parameters="2">{CONSTANT:\[Find.Neutral\]} - Return %s that are {PROPERTY:neutral} towards the {TYPE:object} $%s</t>
+
+<t id="FLAG_NO_EXACTJUMPS" parameters="1">{CONSTANT:\[Find.ExactJumps\]} - This command does not search SECTORS other than $%s</t>
+
+<t id="FLAG_NO_MULTIPLE" parameters="1">{CONSTANT:\[Find.Multiple\]} - This command returns a single %s</t>
+
+<t id="FLAG_NO_RELATIONS" parameters="1">{CONSTANT:\[Find.Friend\]}, {CONSTANT:\[Find.Enemy\]}, {CONSTANT:\[Find.Neutral\]} - These have no bearing upon %s</t>
+
+
+
+<!--Search Command Info-->
+<t id="FLAGS_COMBINING" parameters="2">{TERMINOLOGY:Search flags} can be combined using the {TERMINOLOGY:bitwise-or} operator but you must save them in a variable before use. eg. {VARIABLE:$iFlags} = {CONSTANT:\[Find.%s\]} | {CONSTANT:\[Find.%s\]}</t>
+
+<t id="FLAGS_DEPENDENCY" parameters="2">{CONSTANT:\[Find.%s\]} requires you also use {CONSTANT:\[Find.%s\]}</t>
+
+<t id="FLAGS_MULTIPLE_NEAREST">Combining {CONSTANT:\[Find.Multiple\]} and {CONSTANT:\[Find.Nearest\]} sorts the results by ascending {PROPERTY:distance}.</t>
+
+<t id="FLAGS_MUTUTALLY_EXCLUSIVE_2" parameters="2">{CONSTANT:\[Find.%s\]} and {CONSTANT:\[Find.%s\]} are mutually exclusive</t>
+
+<t id="FLAGS_MUTUTALLY_EXCLUSIVE_3" parameters="3">{CONSTANT:\[Find.%s\]}, {CONSTANT:\[Find.%s\]} and {CONSTANT:\[Find.%s\]} are mutually exclusive</t>
+
+<t id="FLAGS_REFERENCE_REQUIREMENT" parameters="2">You can only use an {TYPE:object} $%s or a {PROPERTY:position} $%s, not both.</t>
+
+<t id="FLAGS_RELATION_REQUIREMENT" parameters="1">The {PROPERTY:relation} FLAGS require the {TYPE:object} $%s to be a descendant of the {CLASS:Ship} or {CLASS:Station} OBJCLASS.</t>
+
+
+
+
+
+
+</page>
+
+
+</language>

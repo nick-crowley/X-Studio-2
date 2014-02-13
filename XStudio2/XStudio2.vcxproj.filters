@@ -721,6 +721,9 @@
     <Xml Include="plugin.piracy.lib.ui.xml" />
     <Xml Include="plugin.piracy.astronaut.cmd.repair.xml" />
     <Xml Include="output.xml" />
+    <Xml Include="Descriptions.xml" />
+    <Xml Include="Description Variables.xml" />
+    <Xml Include="Object Descriptions.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoRes.rc">
