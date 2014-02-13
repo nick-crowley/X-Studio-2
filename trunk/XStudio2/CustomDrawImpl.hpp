@@ -18,9 +18,9 @@ namespace GUI
          enum class RetCode : LRESULT
          {
             UserDrawn = CDRF_SKIPDEFAULT,
-            UserPostPaint = CDRF_SKIPPOSTPAINT,
+            UserPostPaint = CDRF_SKIPPOSTPAINT,    // Vista or later
             SystemDrawn = CDRF_DODEFAULT,
-            SystemErase = CDRF_DOERASE,
+            SystemErase = CDRF_DOERASE,            // Vista or later
             FontChanged = CDRF_NEWFONT,
 
             NotifyItem = CDRF_NOTIFYITEMDRAW,
@@ -55,6 +55,21 @@ namespace GUI
 
          // ------------------------ STATIC -------------------------
 
+         /// <summary>Gets stage string.</summary>
+         /// <param name="s">stage</param>
+         /// <returns></returns>
+         static wstring GetString(Stage s)
+         {
+            switch (s)
+            {
+            case Stage::Erase:      return L"Erase";
+            case Stage::Paint:      return L"Paint";
+            case Stage::PostErase:  return L"PostErase";
+            case Stage::PostPaint:  return L"PostPaint";
+            default: return L"Invalid";
+            }
+         }
+
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
@@ -73,7 +88,8 @@ namespace GUI
                // [PRE-CYCLE] Request appropriate notifications
             case CDDS_PREERASE:
             case CDDS_PREPAINT:
-               Console << "CDDS_PREPAINT" << ENDL;
+               //Console << "CDDS_PREPAINT" << ENDL;
+
                // Items: Request item drawing
                if (Flags & (UINT)DrawCycle::Items)
                   retCode |= (LRESULT)RetCode::NotifyItem;
@@ -88,7 +104,8 @@ namespace GUI
                // [PRE-ITEM] 
             case CDDS_ITEMPREERASE:
             case CDDS_ITEMPREPAINT:
-               Console << "CDDS_ITEMPREPAINT" << ENDL;
+               //Console << "CDDS_ITEMPREPAINT" << ENDL;
+               
                // SubItems: Request sub-item drawing
                if (Flags & (UINT)DrawCycle::SubItems)
                   retCode |= (LRESULT)RetCode::NotifyItem;
@@ -100,43 +117,46 @@ namespace GUI
                   return (LRESULT)RetCode::SystemDrawn;
                break;
 
-               // [PRE-SUBITEM] 
+               // [PRE-SUBITEM] Draw sub-item
             case CDDS_SUBITEM | CDDS_ITEMPREERASE:
             case CDDS_SUBITEM | CDDS_ITEMPREPAINT:
-               Console << "CDDS_SUBITEM | CDDS_ITEMPREPAINT" << ENDL;
-               // Draw sub-item
-               if (onDrawSubItem(reinterpret_cast<DATA_T*>(pDraw), pDraw->dwDrawStage == (CDDS_SUBITEM|CDDS_ITEMPREPAINT) ? Stage::Paint : Stage::Erase))
-                  return (LRESULT)RetCode::UserDrawn;
+               //Console << "CDDS_SUBITEM | CDDS_ITEMPREPAINT" << ENDL;
+               onDrawSubItem(reinterpret_cast<DATA_T*>(pDraw), pDraw->dwDrawStage == (CDDS_SUBITEM|CDDS_ITEMPREPAINT) ? Stage::Paint : Stage::Erase);
                break;
 
-               //// [POST-ITEM] 
-               //case CDDS_ITEMPOSTERASE:
-               //case CDDS_ITEMPOSTPAINT:
-               //   // Paint/Erase item
-               //   if (onDrawItem(pDraw, pDraw->dwDrawStage == CDDS_ITEMPOSTPAINT ? Stage::PostPaint : Stage::PostErase))
-               //      return (LRESULT)RetCode::UserPostPaint; 
-               //   break;
+            //// [POST-ITEM] 
+            //case CDDS_ITEMPOSTERASE:
+            //case CDDS_ITEMPOSTPAINT:
+            //   Console << "CDDS_ITEMPOSTPAINT" << ENDL;
+            //   // Paint/Erase item
+            //   if (onDrawItem(reinterpret_cast<DATA_T*>(pDraw), pDraw->dwDrawStage == CDDS_ITEMPOSTPAINT ? Stage::PostPaint : Stage::PostErase))
+            //      return (LRESULT)RetCode::UserPostPaint; 
+            //   break;
+            //
+            //// [POST-SUBITEM] 
+            //case CDDS_SUBITEM | CDDS_ITEMPOSTERASE:
+            //case CDDS_SUBITEM | CDDS_ITEMPOSTPAINT:
+            //   Console << "CDDS_SUBITEM | CDDS_ITEMPOSTPAINT" << ENDL;
+            //   // Draw sub-item
+            //   if (!onDrawSubItem(reinterpret_cast<DATA_T*>(pDraw), pDraw->dwDrawStage == (CDDS_SUBITEM|CDDS_ITEMPOSTPAINT) ? Stage::PostPaint : Stage::PostErase))
+            //      return (LRESULT)RetCode::SystemDrawn;
+            //   break;
 
-               //// [POST-SUBITEM] 
-               //case CDDS_SUBITEM | CDDS_ITEMPOSTERASE:
-               //case CDDS_SUBITEM | CDDS_ITEMPOSTPAINT:
-               //   // Draw sub-item
-               //   if (!onDrawSubItem(pDraw, pDraw->dwDrawStage == (CDDS_SUBITEM|CDDS_ITEMPOSTPAINT) ? Stage::PostPaint : Stage::PostErase))
-               //      return (LRESULT)RetCode::SystemDrawn;
-               //   break;
-
-               //// [POST-CYLE] 
-               //case CDDS_POSTERASE:
-               //case CDDS_POSTPAINT:
-               //   break;
+            // [POST-CYLE] 
+            case CDDS_POSTERASE:
+            case CDDS_POSTPAINT:
+               //Console << "CDDS_POSTPAINT item=" << (int)pDraw->dwItemSpec << ENDL;
+               if (onDrawItem(reinterpret_cast<DATA_T*>(pDraw), pDraw->dwDrawStage == CDDS_POSTPAINT ? Stage::PostPaint : Stage::PostErase))
+                  return (LRESULT)RetCode::UserPostPaint; 
+               break;
             }
 
             return retCode;
          }
 
       protected:
-         virtual bool  onDrawItem(DATA_T* pDraw, Stage stage) { return false; }
-         virtual bool  onDrawSubItem(DATA_T* pDraw, Stage stage) { return false; }
+         virtual bool  onDrawItem(DATA_T* pDraw, Stage stage)    { return false; }
+         virtual void  onDrawSubItem(DATA_T* pDraw, Stage stage) { }
          /*bool  onEraseItem(NMCUSTOMDRAW* pDraw, Stage stage);
          bool  onEraseSubItem(NMCUSTOMDRAW* pDraw, Stage stage);*/
 
@@ -152,8 +172,6 @@ namespace GUI
       /// <summary>Generic custom draw implementation</summary>
       typedef CustomDrawImpl<NMCUSTOMDRAW>  BasicCustomDraw;
 
-      /// <summary>ListView custom draw implementation</summary>
-      typedef CustomDrawImpl<NMLVCUSTOMDRAW>  ListViewCustomDraw;
    }
 }
 

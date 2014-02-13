@@ -137,6 +137,7 @@
     <ClInclude Include="LanguagePageView.h" />
     <ClInclude Include="LanguageStringView.h" />
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="ListViewCustomDraw.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\CommandNode.h" />
     <ClInclude Include="Logic\EncryptedStream.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="LanguageFrame.cpp" />
     <ClCompile Include="LanguagePageView.cpp" />
     <ClCompile Include="LanguageStringView.cpp" />
+    <ClCompile Include="ListViewCustomDraw.cpp" />
     <ClCompile Include="Logic\CommandNode.cpp" />
     <ClCompile Include="Logic\EncryptedStream.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
