@@ -8,6 +8,7 @@ namespace Logic
    namespace Language
    {
       class RichElement;
+      class RichCharacter;
 
       // ------------------------ TYPES --------------------------
 
@@ -23,6 +24,12 @@ namespace Logic
 
       /// <summary>List of rich-text characters/buttons</summary>
       typedef list<RichElementPtr>  ElementList;
+
+      /// <summary>Shared pointer to a rich-text character/button</summary>
+      //typedef shared_ptr<RichCharacter>  RichCharacterPtr;
+
+      /// <summary>List of rich-text characters/buttons</summary>
+      typedef list<const RichCharacter*>  RichCharList;
 
       // ------------------------ CLASSES ------------------------
 
@@ -138,6 +145,26 @@ namespace Logic
          {
             Content.push_back(RichElementPtr(btn));
             return *this;
+         }
+
+         // --------------------- PROPERTIES ------------------------
+
+         PROPERTY_GET(RichCharList,Characters,GetCharacters);
+
+         // ---------------------- ACCESSORS ------------------------			
+
+         /// <summary>Gets content as list of characters</summary>
+         /// <returns></returns>
+         RichCharList GetCharacters() const
+         {
+            RichCharList list;
+
+            // Extract characters, drop buttons
+            for (auto& el : Content)
+               if (el->Type == ElementType::Character)
+                  list.push_back(dynamic_cast<RichCharacter*>(el.get()));
+
+            return list;
          }
 
          // -------------------- REPRESENTATION ---------------------
