@@ -195,18 +195,18 @@ namespace Logic
       void  DescriptionFileReader::ReadConstants(DescriptionFile& file)
       {
          // Find macros node
-         auto commandsNode = Root->selectSingleNode(L"constants");
-         if (commandsNode == nullptr)
+         auto constantsNode = Root->selectSingleNode(L"constants");
+         if (constantsNode == nullptr)
             throw FileFormatException(HERE, L"Missing 'constants' node");
 
          // Read macros
-         for (int i = 0; i < commandsNode->childNodes->length; i++)
+         for (int i = 0; i < constantsNode->childNodes->length; i++)
          {
-            XmlNodePtr n = commandsNode->childNodes->item[i];
+            XmlNodePtr n = constantsNode->childNodes->item[i];
 
             // Read all elements
             if (n->nodeType == XML::NODE_ELEMENT)
-               file.Commands.Add( ReadCommand(n) );
+               file.Constants.Add( ReadConstant(n) );
          }
       }
    }

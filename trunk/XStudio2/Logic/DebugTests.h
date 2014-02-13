@@ -27,6 +27,7 @@ namespace Logic
       static void  Test_TFileReader();
       static void  Test_CatalogReader();
       static void  Test_ExpressionParser();
+      static void  Test_DescriptionReader();
       static void  Test_FileSystem();
       static void  Test_GZip();
       static void  Test_Lexer();
