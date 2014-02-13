@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ToolBarEx.h"
 
-/// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+/// <summary>User interface controls</summary>
+NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -60,5 +60,5 @@ NAMESPACE_BEGIN(GUI)
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Controls)
 

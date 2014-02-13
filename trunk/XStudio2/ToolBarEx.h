@@ -1,8 +1,8 @@
 #pragma once
 #include "afxtoolbar.h"
 
-/// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+/// <summary>User interface controls</summary>
+NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary></summary>
    class ToolBarEx : public CMFCToolBar
@@ -33,4 +33,4 @@ NAMESPACE_BEGIN(GUI)
    };
    
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Controls)
