@@ -100,6 +100,12 @@
     <Filter Include="Header Files\Testing">
       <UniqueIdentifier>{1eb985a9-6293-421c-892e-8c09ed1a7041}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Utils">
+      <UniqueIdentifier>{74b91542-8ce8-4345-9d84-141f96388b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Utils">
+      <UniqueIdentifier>{b099d206-09b5-4acb-93c3-73269b31bc55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -324,9 +330,6 @@
     <ClInclude Include="SuggestionList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="ImageListEx.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\GameObjectLibrary.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
@@ -420,14 +423,17 @@
     <ClInclude Include="Logic\RtfStringWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\PreferencesLibrary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ToolBarEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\PreferencesLibrary.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageListEx.h">
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="CustomDrawImpl.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -596,9 +602,6 @@
     <ClCompile Include="SuggestionList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="ImageListEx.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\GameObjectLibrary.cpp">
       <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
@@ -683,14 +686,17 @@
     <ClCompile Include="Logic\RichString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\PreferencesLibrary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ToolBarEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\PreferencesLibrary.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageListEx.cpp">
+      <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="CustomDrawImpl.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

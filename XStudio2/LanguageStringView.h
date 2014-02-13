@@ -4,6 +4,7 @@
 #include "LanguageDocument.h"
 #include "LanguagePageView.h"
 #include "ImageListEx.h"
+#include "CustomDrawImpl.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)

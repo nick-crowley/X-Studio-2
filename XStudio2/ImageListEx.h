@@ -1,8 +1,8 @@
 #pragma once
 #include <afxwin.h>
 
-/// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+/// <summary>User interface Utilities</summary>
+NAMESPACE_BEGIN2(GUI,Utils)
    
    /// <summary></summary>
    class ImageListEx : public CImageList
@@ -37,4 +37,4 @@ NAMESPACE_BEGIN(GUI)
    };
    
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Utils)
