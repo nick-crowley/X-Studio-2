@@ -435,7 +435,7 @@
     <ClInclude Include="RichTextRenderer.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="CustomDrawImpl.h">
+    <ClInclude Include="CustomDrawImpl.hpp">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -699,9 +699,6 @@
       <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
     <ClCompile Include="RichTextRenderer.cpp">
-      <Filter>Source Files\GUI\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomDrawImpl.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
   </ItemGroup>
