@@ -129,18 +129,22 @@ namespace Logic
       /// <summary>Reads an optional attribute</summary>
       /// <param name="node">The element containing the attribute</param>
       /// <param name="name">Name of attribute</param>
-      /// <returns>attribute value, or empty string</returns>
+      /// <param name="val">On return, contains attribute value, or empty string</param>
+      /// <returns>True/False</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      wstring  XmlReader::TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name)
+      bool XmlReader::TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name, wstring& val)
       {
          REQUIRED(node);
 
          try
          {
-            // Read attribute text or return empty string
+            // Read attribute text or set empty string
             XmlNodePtr attr = node->attributes->getNamedItem(name);
-            return attr == NULL ? L"" : (WCHAR*)attr->text;
+            val = (attr == NULL ? L"" : (WCHAR*)attr->text);
+
+            // Return true if successful
+            return attr != NULL;
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

@@ -441,6 +441,9 @@
     <ClInclude Include="ListViewCustomDraw.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\DescriptionFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -706,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="ListViewCustomDraw.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\DescriptionFileReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

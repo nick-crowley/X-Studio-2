@@ -140,6 +140,7 @@
     <ClInclude Include="ListViewCustomDraw.h" />
     <ClInclude Include="Logic\BackgroundWorker.h" />
     <ClInclude Include="Logic\CommandNode.h" />
+    <ClInclude Include="Logic\DescriptionFileReader.h" />
     <ClInclude Include="Logic\EncryptedStream.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
     <ClInclude Include="Logic\GameDataWorker.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="ListViewCustomDraw.cpp" />
     <ClCompile Include="Logic\CommandNode.cpp" />
+    <ClCompile Include="Logic\DescriptionFileReader.cpp" />
     <ClCompile Include="Logic\EncryptedStream.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />

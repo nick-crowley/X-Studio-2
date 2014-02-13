@@ -40,7 +40,7 @@ namespace Logic
 
          wstring  ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
          void     ReadElement(XmlNodePtr&  node, const WCHAR*  name);
-         wstring  TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
+         bool     TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name, wstring& val);
 
 		   // -------------------- REPRESENTATION ---------------------
 

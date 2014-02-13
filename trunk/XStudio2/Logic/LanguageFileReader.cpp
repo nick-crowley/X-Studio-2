@@ -196,16 +196,18 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       LanguagePage  LanguageFileReader::ReadPage(XmlNodePtr&  element)
       {
+         wstring id, title, desc, tmp;
          GameVersion ver;
+         bool voice;
 
          // Verify page tag
          ReadElement(element, L"page");
 
          // Read properties
-         wstring id(ReadAttribute(element, L"id")),
-                 title(TryReadAttribute(element, L"title")),
-                 desc(TryReadAttribute(element, L"desc"));
-         bool    voice = (TryReadAttribute(element, L"voice") == L"yes");
+         id = ReadAttribute(element, L"id");
+         TryReadAttribute(element, L"title", title);
+         TryReadAttribute(element, L"desc", desc);
+         voice = TryReadAttribute(element, L"desc", tmp) && tmp == L"yes";
 
          // Create page (also normalise PageID)
          LanguagePage page(ParsePageID(id, ver), title, desc, voice);
