@@ -47,18 +47,53 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // --------------------- CONSTRUCTION ----------------------
       
    public:
-      LVItem(UINT item, const wstring& txt, UINT group, UINT flags = LVIF_TEXT | LVIF_GROUPID) : Text(txt)
+      /// <summary>Create empty item for retrieving text and properties</summary>
+      /// <param name="len">buffer length</param>
+      /// <param name="flags">desired properties</param>
+      LVItem(UINT len, UINT flags = LVIF_TEXT | LVIF_STATE | LVIF_IMAGE | LVIF_PARAM | LVIF_GROUPID)
+      {
+         ZeroMemory((LVITEM*)this, sizeof(LVITEM));
+
+         // Allocate text buffer
+         if (len > 0)
+         {
+            Text = CharArrayPtr(new wchar[len]);
+            Text.get()[0] = '\0';
+         }
+
+         mask = flags;
+         pszText = Text.get();
+         cchTextMax = len;
+      }
+
+      /// <summary>Create a populated item for setting text and properties</summary>
+      /// <param name="item">item number</param>
+      /// <param name="txt">text.</param>
+      /// <param name="group">group.</param>
+      /// <param name="flags">properties.</param>
+      LVItem(UINT item, const wstring& txt, UINT group, UINT flags = LVIF_TEXT | LVIF_GROUPID) : Text(CopyText(txt))
       {
          ZeroMemory((LVITEM*)this, sizeof(LVITEM));
 
          mask     = flags;
          iItem    = item;
          iGroupId = group;
-         pszText  = (WCHAR*)Text.c_str();
+         pszText  = Text.get();
       }
       
       // ------------------------ STATIC -------------------------
       
+      /// <summary>Duplicates the input string.</summary>
+      /// <param name="str">The string.</param>
+      /// <returns>new wide char array</returns>
+      wchar* CopyText(const wstring& str)
+      {
+         wchar* buf = new wchar[str.length()+1];
+         memcpy(buf, str.data(), sizeof(wchar)*str.length());
+         buf[str.length()] = L'\0';
+         return buf;
+      }
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
@@ -68,7 +103,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // -------------------- REPRESENTATION ---------------------
       
    private:
-      wstring Text;
+      CharArrayPtr  Text;
    };
 
 NAMESPACE_END2(GUI,Controls)

@@ -182,24 +182,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
-   bool  LanguageStringView::StringCustomDraw::onDrawItem(NMLVCUSTOMDRAW* pDraw, Stage stage) 
+   bool  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, const ItemData& item)
    {
-      return true;
-   }
-
-   bool  LanguageStringView::StringCustomDraw::onDrawSubItem(NMLVCUSTOMDRAW* pDraw, Stage stage) 
-   {
-      // ID: Draw normally
-      if (pDraw->iSubItem == 0)
-         return false;
-
-      CDC dc;
-
-      // Text: Draw manually
-      dc.Attach(pDraw->nmcd.hdc);
-      //RichTextRenderer::DrawLine(&dc, pDraw->rc, str);
-      dc.Detach();
-      return true;
+      return false;
    }
 
 
