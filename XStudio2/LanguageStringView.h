@@ -21,7 +21,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          {}
 
       protected:
-         bool  onDrawSubItem(CDC* dc, const ItemData& item) override;
+         void  onDrawSubItem(CDC* dc, ItemData& item) override;
       };
 
       // --------------------- CONSTRUCTION ----------------------
