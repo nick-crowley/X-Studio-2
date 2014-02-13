@@ -93,12 +93,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CListView::OnInitialUpdate();
 
+      // Icons
+      Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
+	   
       // Setup listView
       GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
       GetListCtrl().SetView(LV_VIEW_DETAILS);
       GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
       GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
       GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
+      GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
       // Listen for PageClicked
       fnPageSelectionChanged = GetPageView()->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
@@ -139,8 +143,8 @@ NAMESPACE_BEGIN2(GUI,Views)
             {
                const LanguageString& str = pair.second;
 
-               // Add item {ID,Text}
-               GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 0);
+               // Add item. set Text
+               GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
                GetListCtrl().SetItemText(item, 1, str.ResolvedText.c_str());
             }
             GetListCtrl().SetRedraw(TRUE);
