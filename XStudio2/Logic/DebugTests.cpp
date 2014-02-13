@@ -18,6 +18,7 @@
 #include "TLaser.h"
 #include "StringResolver.h"
 #include "StringParser.h"
+#include "DescriptionFileReader.h"
 #include "../Testing/ScriptValidator.h"
 
 namespace Logic
@@ -56,6 +57,8 @@ namespace Logic
       
       //Test_StringParser();
       //Test_StringParserRegEx();
+
+      Test_DescriptionReader();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -169,6 +172,31 @@ namespace Logic
          AfxMessageBox(sz);
       }
    }
+
+
+   void  DebugTests::Test_DescriptionReader()
+   {
+      const WCHAR* path = L"D:\\My Projects\\XStudio2\\XStudio2\\Descriptions.xml";
+   
+      try
+      {
+         // Load descriptions
+         StreamPtr cs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+
+         // Test description reader
+         DescriptionFileReader rd(cs);
+         DescriptionFile f(rd.ReadFile());
+      
+         /*wstring line;
+         while (rd.ReadLine(line))
+            OutputDebugString((line+L'\n').c_str());*/
+      }
+      catch (ExceptionBase&  e)
+      {
+         Console.Log(HERE, e, L"Unable to load descriptions");
+      }
+   }
+
 
    void  DebugTests::Test_ExpressionParser()
    {
