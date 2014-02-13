@@ -426,6 +426,9 @@
     <ClInclude Include="ToolBarEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="CustomDrawImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -685,6 +688,9 @@
     </ClCompile>
     <ClCompile Include="ToolBarEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomDrawImpl.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

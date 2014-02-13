@@ -56,6 +56,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
    
+   public:
+      afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
    };
    
    #ifndef _DEBUG  

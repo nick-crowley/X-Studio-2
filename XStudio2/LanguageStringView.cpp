@@ -12,6 +12,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguageStringView, CListView)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
+      ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -87,6 +88,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
+
+   void LanguageStringView::OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LPNMCUSTOMDRAW pDraw = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+      
+      pDraw->dwDrawStage
+
+      *pResult = 0;
+   }
+
    
    /// <summary>Initialise control</summary>
    void LanguageStringView::OnInitialUpdate()
@@ -172,5 +183,4 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    
 NAMESPACE_END2(GUI,Views)
-
 
