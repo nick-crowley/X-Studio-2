@@ -25,7 +25,7 @@ NAMESPACE_BEGIN(GUI)
    public: 
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(CWnd* parent, UINT nID, UINT nColdResID = 0, UINT nDisabledResID = 0);
+      BOOL Create(CWnd* parent, UINT nID, UINT nDisabledResID = 0);
 
       // -------------------- REPRESENTATION ---------------------
       

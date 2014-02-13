@@ -24,11 +24,10 @@ NAMESPACE_BEGIN(GUI)
 
    /// <summary>Creates a toolbar with normal and disabled icons</summary>
    /// <param name="parent">Parent window</param>
-   /// <param name="nResID">The resource identifier.</param>
-   /// <param name="nColdResID">Cold icons resource ID</param>
+   /// <param name="nResID">Hot icons resource ID.</param>
    /// <param name="nDisabledResID">Disabled icons resource ID</param>
    /// <returns></returns>
-   BOOL  ToolBarEx::Create(CWnd* parent, UINT nID, UINT nColdResID, UINT nDisabledResID)
+   BOOL  ToolBarEx::Create(CWnd* parent, UINT nID, UINT nDisabledResID)
    {
       try
       {
@@ -37,9 +36,9 @@ NAMESPACE_BEGIN(GUI)
             throw Win32Exception(HERE, GuiString(L"Unable to create toolbar %d", nID));
 
          // Load toolbar + bitmaps
-	      LoadToolBar(nID, nColdResID, 0, TRUE, nDisabledResID);
+	      LoadToolBar(nID, nID, nID, TRUE, nDisabledResID);
 	      CleanUpLockedImages();
-	      LoadBitmap(nID, nColdResID, 0, TRUE, nDisabledResID);
+	      LoadBitmap(nID, nID, nID, TRUE, nDisabledResID);
 
          // Set styles
          SetPaneStyle(GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
