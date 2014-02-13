@@ -20,19 +20,6 @@ namespace GUI
 
       // ------------------------------- STATIC METHODS -------------------------------
 
-      struct RichPhrase
-      {
-      public:
-         RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour)
-         {
-            Text.push_back(ch.Char);
-         }
-
-         wstring Text;
-         UINT    Format;
-         Colour  Colour;
-      };
-
       /// <summary>Draw rich text in a single line</summary>
       /// <param name="dc">dc.</param>
       /// <param name="line">line rect</param>
@@ -77,18 +64,12 @@ namespace GUI
          // Draw phrases
          for (auto& block : phrases)
          {
-            CFont f;
-            LOGFONT lf = fontData;
-            Colour col = block.Colour;
-
-            // Create/Select approprate font
-            fontData.lfItalic = (block.Format & CFE_ITALIC ? TRUE : FALSE);
-            fontData.lfWeight = (block.Format & CFE_BOLD ? FW_BOLD : FW_NORMAL);
-            fontData.lfUnderline = (block.Format & CFE_UNDERLINE ? TRUE : FALSE);
-            f.CreateFontIndirectW(&lf);
-            dc->SelectObject(&f);
+            // Select approprate font
+            auto font = shared_ptr<CFont>(block.GetFont(fontData));
+            dc->SelectObject(font.get());
             
             // Invert black/white
+            Colour col = block.Colour;
             switch (block.Colour)
             {
             case Colour::Default:
