@@ -130,15 +130,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      EnableMDITabbedGroups(TRUE, mdiTabParams);
 
 
-         // MainMenu:
-	      if (!m_wndMenuBar.Create(this))
-            throw Win32Exception(HERE, L"Unable to create MainWnd menu");
 
+         // MainMenu:
+	      if (!m_wndMenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16))
+            throw Win32Exception(HERE, L"Unable to create MainWnd menu");
 	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+         //m_wndMenuBar.LoadBitmap(IDR_MAINFRAME_16, NULL, IDR_MAINFRAME_16, TRUE);
+         
 
 	      // prevent the menu bar from taking the focus on activation
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);
-
 
          // ToolBar:
 	      if (!m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
@@ -149,7 +150,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      m_wndToolBar.SetWindowText(GuiString(IDS_TOOLBAR_STANDARD).c_str());
 	      m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
 	      InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
-
 
          // StatusBar:
 	      if (!m_wndStatusBar.Create(this))
@@ -170,65 +170,67 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CDockingManager::SetDockingMode(DT_SMART);
 	      EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
-	      // Load menu item image (not placed on any standard toolbars):
-	      CMFCToolBar::AddToolBarForImageCollection(IDR_CUSTOM, IDR_CUSTOM);
-
+	      
+         
+         // Load menu item image (not placed on any standard toolbars):
+	      //CMFCToolBar::AddToolBarForImageCollection(IDR_CUSTOM, IDR_CUSTOM);
+         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME_16, IDR_MAINFRAME_16);
+         
 
 	      // Project Window:
 	      if (!m_wndProject.Create(GuiString(IDR_PROJECT).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
             throw Win32Exception(HERE, L"Unable to create Project window");
 	   
+         m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+         DockPane(&m_wndProject);
+
 	      // Output Window:
 	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Output window");
+
+         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
+	      DockPane(&m_wndOutput);
+         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
 	      // Properties Window:
 	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
 
+         m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndProperties.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+	      DockPane(&m_wndProperties);
+
          // Commands Window:
 	      if (!m_wndCommands.Create(GuiString(L"Commands").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_COMMANDS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Commands window");
+
+         m_wndCommands.SetIcon(theApp.LoadIconW(IDR_COMMANDS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndCommands.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+         DockPane(&m_wndCommands);
 
          // Game objects window:
          if (!m_wndGameObjects.Create(GuiString(L"Game Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_GAME_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Game objects window");
 
+         m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_GAME_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndGameObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+         DockPane(&m_wndGameObjects);
+
          // Game objects window:
          if (!m_wndScriptObjects.Create(GuiString(L"Script Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SCRIPT_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Script objects window");
          
-         
-         // Set icons
-         m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndCommands.SetIcon(theApp.LoadIconW(IDR_COMMANDS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-         m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_GAME_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndScriptObjects.SetIcon(theApp.LoadIconW(IDR_SCRIPT_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+         m_wndScriptObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+         DockPane(&m_wndScriptObjects);
+         
+         
+         // Set document icons??
 	      UpdateMDITabbedBarsIcons();
 
-         // Dock each window
-	      m_wndProject.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndProject);
-	   
-	      m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
-	      DockPane(&m_wndOutput);
-
-	      m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
-	      DockPane(&m_wndProperties);
-
-         m_wndCommands.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndCommands);
-
-         m_wndGameObjects.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndGameObjects);
-
-         m_wndScriptObjects.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndScriptObjects);
-
-
-	      // set the visual manager and style 
+                  
+         // set the visual manager and style 
 	      CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
 		   CDockingManager::SetDockingMode(DT_SMART);
 	      m_wndOutput.UpdateFonts();
@@ -253,23 +255,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 		      }
 	      }
 
-	      // enable menu personalization (most-recently used commands)
-	      // TODO: define your own basic commands, ensuring that each pulldown menu has at least one basic command.
-	      /*CList<UINT, UINT> lstBasicCommands;
-
-	      lstBasicCommands.AddTail(ID_FILE_NEW);
-	      lstBasicCommands.AddTail(ID_FILE_OPEN);
-	      lstBasicCommands.AddTail(ID_FILE_SAVE);
-	      lstBasicCommands.AddTail(ID_FILE_PRINT);
-	      lstBasicCommands.AddTail(ID_APP_EXIT);
-	      lstBasicCommands.AddTail(ID_EDIT_CUT);
-	      lstBasicCommands.AddTail(ID_EDIT_PASTE);
-	      lstBasicCommands.AddTail(ID_EDIT_UNDO);
-	      lstBasicCommands.AddTail(ID_APP_ABOUT);
-	      lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
-	      lstBasicCommands.AddTail(ID_VIEW_CUSTOMIZE);
-
-	      CMFCToolBar::SetBasicCommands(lstBasicCommands);*/
 
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
