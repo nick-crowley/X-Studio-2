@@ -17,12 +17,20 @@ namespace Logic
    /// <summary>Defines the available game data languages</summary>
    enum class GameLanguage : UINT { Russian = 7, French = 33, Spanish = 34, Italian = 39, Czech = 42, English = 44, Polish = 48, German = 49 };
 
+   /// <summary>Get game language string</summary>
+   wstring  GetString(GameLanguage l);
+
+
    /// <summary>Defines the available game versions</summary>
    enum class GameVersion : UINT { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
 
    
    /// <summary>Paragraph alignment</summary>
    enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
+
+   /// <summary>Get paragraph alignment string</summary>
+   wstring  GetString(Alignment a);
+
 
    /// <summary>Map Game version into zero-based index</summary>
    class GameVersionIndex

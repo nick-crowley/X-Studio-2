@@ -9,22 +9,6 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
-      /// <summary>Convert paragraph alignment string</summary>
-      /// <param name="a">alignment</param>
-      /// <returns></returns>
-      wstring  GetString(Alignment a)
-      {
-         switch (a)
-         {
-         case Alignment::Left:    return L"Left";
-         case Alignment::Centre:  return L"Centre";
-         case Alignment::Right:   return L"Right";
-         case Alignment::Justify: return L"Justify";
-         }
-         return L"Invalid";
-      }
-      
-
       /// <summary>Output rich-text element to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e)
       {

@@ -203,9 +203,7 @@ namespace Logic
                              Title;
       };
 
-      /// <summary>Get paragraph alignment string</summary>
-      wstring  GetString(Alignment a);
-
+      
       /// <summary>Write rich-text objects to console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e);
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e);
