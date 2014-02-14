@@ -37,7 +37,7 @@ macro : explained below
 ==================================
 
 Element text specifies the replacement text, using the formatting tags found in X3 language files.
-It can also contain formatting tag %s (string) or %d (int). 
+It can also contain formatting tag %s (string). 
                                             Note: Misuse of formatting tags will cause program crashes
 
 

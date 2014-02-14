@@ -14,7 +14,7 @@ namespace Logic
       {
          SetConsoleTitle(L"Debug Console");
 
-         COORD buf { 200, 3*1000 };
+         COORD buf { 200, 6*1000 };
          SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), buf);
 
          //SMALL_RECT wnd { 0, 0, buf.X-2, buf.Y-2};

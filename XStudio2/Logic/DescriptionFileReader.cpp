@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "DescriptionFileReader.h"
+#include <regex>
+#include <strsafe.h>
+#include "StringResolver.h"
 
 namespace Logic
 {
@@ -15,6 +18,8 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       DescriptionFileReader::DescriptionFileReader(StreamPtr in) : XmlReader(in)
       {
+         FormatBuffer = CharArrayPtr(new wchar[BUFFER_LENGTH]);
+         FormatBuffer.get()[0] = L'\0';
       }
 
 
@@ -59,6 +64,21 @@ namespace Logic
             ReadCommands(file);
             ReadConstants(file);
 
+            // DEBUG: Parse constants
+            for (auto& c : file.Constants)
+            {
+               try
+               {
+                  ConstantDescription& d = c.second;
+                  Console << Cons::Heading << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << d.Text << "'" << ENDL;
+                  d.Text = Parse(d.Text);
+                  Console << Colour::Green << "Success: " << d.Text << ENDL;
+               }
+               catch (ExceptionBase& e) {
+                  Console.Log(HERE, e);
+               }
+            }
+
             // Return file
             return file;
          }
@@ -71,53 +91,6 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
-      /// <summary>Reads a macro element</summary>
-      /// <param name="n">Macro node</param>
-      /// <returns></returns>
-      DescriptionFileReader::Macro  DescriptionFileReader::ReadMacro(XmlNodePtr n)
-      {
-         wstring name, txt, tmp;
-         UINT params = 0;
-         bool recurse = true;
-
-         // Verify tag
-         ReadElement(n, L"macro");
-
-         // Read name/text
-         name = ReadAttribute(n, L"id");
-         txt  = (wchar*)n->text;
-
-         // Read formatting parameter count
-         if (TryReadAttribute(n, L"parameters", tmp))
-            params = _ttoi(tmp.c_str());
-         // Read recursive flag
-         if (TryReadAttribute(n, L"recursive", tmp))
-            recurse = (tmp != L"0");
-
-         // Create macro
-         return Macro(name, txt, params, recurse);  
-      }
-
-      /// <summary>Reads the macros.</summary>
-      void  DescriptionFileReader::ReadMacros()
-      {
-         // Find macros node
-         auto macrosNode = Root->selectSingleNode(L"macros");
-         if (macrosNode == nullptr)
-            throw FileFormatException(HERE, L"Missing 'macros' node");
-
-         // Read macros
-         for (int i = 0; i < macrosNode->childNodes->length; i++)
-         {
-            XmlNodePtr n = macrosNode->childNodes->item[i];
-
-            // Read all elements
-            if (n->nodeType == XML::NODE_ELEMENT)
-               Macros.Add( ReadMacro(n) );
-         }
-      }
-
-
       /// <summary>Reads a command description</summary>
       /// <param name="n">command node</param>
       /// <returns></returns>
@@ -209,5 +182,143 @@ namespace Logic
                file.Constants.Add( ReadConstant(n) );
          }
       }
+
+      /// <summary>Reads a macro element</summary>
+      /// <param name="n">Macro node</param>
+      /// <returns></returns>
+      DescriptionFileReader::Macro  DescriptionFileReader::ReadMacro(XmlNodePtr n)
+      {
+         wstring name, txt, tmp;
+         UINT params = 0;
+         bool recurse = true;
+
+         // Verify tag
+         ReadElement(n, L"macro");
+
+         // Read name/text
+         name = ReadAttribute(n, L"id");
+         txt  = (wchar*)n->text;
+
+         // Read formatting parameter count
+         if (TryReadAttribute(n, L"parameters", tmp))
+            params = _ttoi(tmp.c_str());
+         // Read recursive flag
+         if (TryReadAttribute(n, L"recursive", tmp))
+            recurse = (tmp != L"0");
+
+         // Create macro
+         return Macro(name, txt, params, recurse);  
+      }
+
+      /// <summary>Reads the macros.</summary>
+      void  DescriptionFileReader::ReadMacros()
+      {
+         // Find macros node
+         auto macrosNode = Root->selectSingleNode(L"macros");
+         if (macrosNode == nullptr)
+            throw FileFormatException(HERE, L"Missing 'macros' node");
+
+         // Read macros
+         for (int i = 0; i < macrosNode->childNodes->length; i++)
+         {
+            XmlNodePtr n = macrosNode->childNodes->item[i];
+
+            // Read all elements
+            if (n->nodeType == XML::NODE_ELEMENT)
+               Macros.Add( ReadMacro(n) );
+         }
+      }
+
+
+      /// <summary>Called for each occurrence of parameterized macros</summary>
+      /// <param name="match">The match.</param>
+      /// <returns>Replacement text</returns>
+      wstring  DescriptionFileReader::OnComplexMacro(wsmatch& match)
+      {
+         const Macro* m;
+         wstring name = match[1].str(),
+                 param = match[2].str();
+
+         // Lookup macro + format + recursively parse
+         if (Macros.TryFind(name, m))
+         {
+            StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, m->Text.c_str(), param.c_str());
+            return Parse(FormatBuffer.get());
+         }
+
+         // Failed: Return match
+         return match[0].str();
+      }
+
+      /// <summary>Called for each occurrence of parameterless macros</summary>
+      /// <param name="match">The match.</param>
+      /// <returns>Replacement text</returns>
+      wstring  DescriptionFileReader::OnSimpleMacro(wsmatch& match)
+      {
+         const Macro* m;
+         wstring name = match[1].str();
+         
+         // Lookup macro + recursively parse
+         if (Macros.TryFind(name, m))
+            return m->Recursive ? Parse(m->Text) : m->Text;
+
+         // Failed: Return match
+         return match[0].str();
+      }
+
+      /// <summary>Matches a macro with no parameters</summary>
+      wregex  DescriptionFileReader::SimpleMacro(L"([A-Z_0-9]+)");
+
+      /// <summary>Matches a macro with one parameter</summary>
+      wregex  DescriptionFileReader::SingleParamMacro(L"\\{([A-Z_0-9]+):(\\w+)\\}");
+
+      /// <summary>Matches a macro with two parameters</summary>
+      wregex  DescriptionFileReader::DualParamMacro(L"\\{([A-Z_0-9]+):(\\w+),(\\w+)\\}");
+
+      /// <summary>Matches a macro with three parameters</summary>
+      wregex  DescriptionFileReader::TripleParamMacro(L"\\{([A-Z_0-9]+):(\\w+),(\\w+),(\\w+)\\}");
+
+      // ------------------------------- PRIVATE METHODS ------------------------------
+
+      /// <summary>Parses the text.</summary>
+      wstring  DescriptionFileReader::Parse(wstring text)
+      {
+         UINT Position;
+         wsmatch match;
+         wstring r;
+         
+         try
+         {
+            // Replace parameterized macros.   
+            //for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, DualParamMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
+            //{
+            //   r = OnComplexMacro(match);
+            //   //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+            //   text.replace(match[0].first, match[0].second, r);
+            //}
+
+            // Replace parameterized macros.   
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, SingleParamMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
+            {
+               r = OnComplexMacro(match);
+               //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               text.replace(match[0].first, match[0].second, r);
+            }
+
+            // Replace all simple macros.  
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, SimpleMacro); Position += r.length())  // Manually track position for in-place replacement + avoid infinite loop
+            {
+               r = OnSimpleMacro(match);
+               //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               text.replace(match[0].first, match[0].second, r);
+            }
+
+            return text;
+         }
+         catch (regex_error& e) {
+            throw RegularExpressionException(HERE, e);
+         }
+      }
+
    }
 }

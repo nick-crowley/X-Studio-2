@@ -153,6 +153,17 @@ namespace Logic
             {
                return insert(value_type(m.Name, m)).second;
             }
+
+            /// <summary>Tries to find a macro</summary>
+            /// <param name="id">macro name</param>
+            /// <param name="out">macro if found, otherwise nullptr</param>
+            /// <returns></returns>
+            bool  TryFind(const wstring& id, const Macro* &out) const
+            {
+               auto it = find(id);
+               out = (it != end() ? &it->second : nullptr);
+               return out != nullptr;
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -164,6 +175,11 @@ namespace Logic
          NO_MOVE(DescriptionFileReader);	// No move semantics
 
          // ------------------------ STATIC -------------------------
+      private:
+         static wregex  SimpleMacro,
+                        SingleParamMacro,
+                        DualParamMacro,
+                        TripleParamMacro;
 
          // --------------------- PROPERTIES ------------------------
 
@@ -183,11 +199,18 @@ namespace Logic
          ConstantDescription ReadConstant(XmlNodePtr n);
          void                ReadConstants(DescriptionFile& file);
 
+         wstring  Parse(wstring text);
+         wstring  OnSimpleMacro(wsmatch& match);
+         wstring  OnComplexMacro(wsmatch& match);
+
          // -------------------- REPRESENTATION ---------------------
 
       private:
+         const UINT  BUFFER_LENGTH = 32*1024;
+
          MacroCollection  Macros;
-         XmlNodePtr Root;
+         XmlNodePtr       Root;
+         CharArrayPtr     FormatBuffer;
       };
 
    }
