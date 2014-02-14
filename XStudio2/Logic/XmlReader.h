@@ -3,7 +3,7 @@
 #include "Stream.h"
 #include "msxml.h"
 
-using namespace XML;
+//using namespace XML;
 
 namespace Logic
 {

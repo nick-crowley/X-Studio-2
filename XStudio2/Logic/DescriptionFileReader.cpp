@@ -367,7 +367,7 @@ namespace Logic
             XmlNodePtr n = commandsNode->childNodes->item[i];
 
             // Read all elements
-            if (n->nodeType == XML::NODE_ELEMENT)
+            if (n->nodeType == Xml::NODE_ELEMENT)
                file.Commands.Add( ReadCommand(n) );
          }
       }
@@ -388,7 +388,7 @@ namespace Logic
             XmlNodePtr n = constantsNode->childNodes->item[i];
 
             // Read all elements
-            if (n->nodeType == XML::NODE_ELEMENT)
+            if (n->nodeType == Xml::NODE_ELEMENT)
                file.Constants.Add( ReadConstant(n) );
          }
       }
@@ -408,7 +408,7 @@ namespace Logic
             XmlNodePtr n = macrosNode->childNodes->item[i];
 
             // Read all elements
-            if (n->nodeType == XML::NODE_ELEMENT)
+            if (n->nodeType == Xml::NODE_ELEMENT)
                Macros.Add( ReadMacro(n) );
          }
       }
