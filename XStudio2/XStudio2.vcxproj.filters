@@ -438,6 +438,15 @@
     <ClInclude Include="Logic\DescriptionFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\DescriptionLibrary.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Descriptions.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\DescriptionFile.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -706,6 +715,9 @@
     </ClCompile>
     <ClCompile Include="Logic\DescriptionFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\DescriptionLibrary.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

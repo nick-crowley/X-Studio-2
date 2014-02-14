@@ -2,118 +2,13 @@
 
 #include "Common.h"
 #include "XmlReader.h"
-#include "LanguagePage.h"
+#include "DescriptionFile.h"
 
 namespace Logic
 {
    namespace IO
    {
-      /// <summary></summary>
-      class Description
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         Description(const wstring& txt) : Text(txt)
-         {}
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         wstring  Text;
-      };
-
-
-
-      /// <summary></summary>
-      class CommandDescription : public Description
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         CommandDescription(UINT id, GameVersion ver, const wstring& txt) : Description(txt), ID(id), Version(ver)
-         {}
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         UINT         ID;
-         GameVersion  Version;
-      };
-
-
-
-      /// <summary></summary>
-      class ConstantDescription : public Description
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         ConstantDescription(KnownPage page, UINT id, const wstring& txt) : Description(txt), Page(page), ID(id)
-         {}
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         UINT       ID;
-         KnownPage  Page;
-      };
-
-
-
-      /// <summary></summary>
-      class DescriptionFile
-      {
-         // ------------------------ TYPES --------------------------
-      public:
-         /// <summary></summary>
-         typedef pair<UINT,GameVersion>  CmdID;
-
-         /// <summary></summary>
-         class CommandCollection : public map<CmdID, CommandDescription>
-         {
-         public:
-            /// <summary>Adds a command description</summary>
-            /// <param name="d">description</param>
-            /// <returns></returns>
-            bool  Add(CommandDescription&& d)
-            {
-               return insert( value_type(CmdID(d.ID,d.Version), d) ).second;
-            }
-         };
-
-         /// <summary></summary>
-         typedef pair<KnownPage,UINT>  ConstID;
-
-         /// <summary></summary>
-         class ConstantCollection : public map<ConstID, ConstantDescription>
-         {
-         public:
-            /// <summary>Adds a command description</summary>
-            /// <param name="d">description</param>
-            /// <returns></returns>
-            bool  Add(ConstantDescription&& d)
-            {
-               return insert( value_type(ConstID(d.Page,d.ID), d) ).second;
-            }
-         };
-
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         DescriptionFile()
-         {}
-         // ------------------------ STATIC -------------------------
-
-         // --------------------- PROPERTIES ------------------------
-
-         // ---------------------- ACCESSORS ------------------------			
-
-         // ----------------------- MUTATORS ------------------------
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         CommandCollection  Commands;
-         ConstantCollection Constants;
-
-         GameLanguage  Language;
-         wstring       Title,
-                       Version;
-      };
-
+      
       /// <summary></summary>
       class DescriptionFileReader : public XmlReader
       {
