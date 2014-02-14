@@ -447,6 +447,9 @@
     <ClInclude Include="Logic\DescriptionFile.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\DescriptionParser.h">
+      <Filter>Header Files\Logic\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -717,6 +720,9 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\DescriptionLibrary.cpp">
+      <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\DescriptionParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
   </ItemGroup>

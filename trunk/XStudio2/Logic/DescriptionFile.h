@@ -44,6 +44,26 @@ namespace Logic
             }
          };
 
+         /// <summary></summary>
+         class MacroCollection : public map<wstring, DescriptionMacro>  
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            MacroCollection()
+            {}
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Add a macro to the collection</summary>
+            /// <param name="m">The macro.</param>
+            /// <returns></returns>
+            bool  Add(DescriptionMacro&& m)
+            {
+               return insert(value_type(m.Name, m)).second;
+            }
+
+         };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          DescriptionFile()
@@ -60,6 +80,7 @@ namespace Logic
       public:
          CommandCollection  Commands;
          ConstantCollection Constants;
+         MacroCollection    Macros;
 
          GameLanguage  Language;
          wstring       Title,
