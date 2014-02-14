@@ -8,18 +8,28 @@ namespace Logic
 {
    namespace Language
    {
-      //class DescriptionFile;
+      /// <summary>Occurs when a tooltip is not found</summary>
+      class DescriptionNotFoundException : public ExceptionBase
+      {
+      public:
+         /// <summary>Create a DescriptionNotFoundException</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="msg">Message</param>
+         DescriptionNotFoundException(wstring  src, wstring  msg) 
+            : ExceptionBase(src, wstring(L"Invariant violated: ") + msg)
+         {}
+      };
 
       /// <summary></summary>
       class DescriptionLibrary
       {
          // ------------------------ TYPES --------------------------
       private:
-         /// <summary></summary>
-         typedef pair<UINT,GameVersion>  CmdID;
+         /// <summary>Defines an association between command ID and version</summary>
+         typedef pair<UINT,GameVersion>  CommandID;
 
-         /// <summary></summary>
-         class CommandCollection : public map<CmdID, CommandDescription>
+         /// <summary>Collection of script command descriptions</summary>
+         class CommandCollection : public map<CommandID, CommandDescription>
          {
          public:
             /// <summary>Adds a command description</summary>
@@ -27,27 +37,45 @@ namespace Logic
             /// <returns></returns>
             bool  Add(const CommandDescription& d)
             {
-               return insert( value_type(CmdID(d.ID,d.Version), d) ).second;
+               return insert( value_type(CommandID(d.ID,d.Version), d) ).second;
+            }
+
+            /// <summary>Query whether command description exists</summary>
+            /// <param name="id">command ID</param>
+            /// <param name="ver">Lowest compatible game version</param>
+            /// <returns></returns>
+            bool  Contains(UINT id, GameVersion ver) const
+            {
+               return find(CommandID(id,ver)) != end();
             }
          };
 
-         /// <summary></summary>
-         typedef pair<KnownPage,UINT>  ConstID;
+         /// <summary>Defines an association between constant ID and page</summary>
+         typedef pair<ScriptObjectGroup,UINT>  ConstantID;
 
-         /// <summary></summary>
-         class ConstantCollection : public map<ConstID, ConstantDescription>
+         /// <summary>Collection of script object descriptions</summary>
+         class ConstantCollection : public map<ConstantID, ConstantDescription>
          {
          public:
-            /// <summary>Adds a command description</summary>
+            /// <summary>Adds a script object description</summary>
             /// <param name="d">description</param>
             /// <returns></returns>
             bool  Add(const ConstantDescription& d)
             {
-               return insert( value_type(ConstID(d.Page,d.ID), d) ).second;
+               return insert( value_type(ConstantID(d.Group,d.ID), d) ).second;
+            }
+
+            /// <summary>Query whether script object description exists</summary>
+            /// <param name="group">script object group</param>
+            /// <param name="id">object id</param>
+            /// <returns></returns>
+            bool  Contains(ScriptObjectGroup group, UINT id) const
+            {
+               return find(ConstantID(group,id)) != end();
             }
          };
 
-         /// <summary></summary>
+         /// <summary>Collection of description macros</summary>
          class MacroCollection : public map<wstring, DescriptionMacro>  
          {
             // --------------------- CONSTRUCTION ----------------------

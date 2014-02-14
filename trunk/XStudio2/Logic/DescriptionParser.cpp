@@ -54,7 +54,7 @@ namespace Logic
       /// <param name="depth">Debugging output depth</param>
       /// <returns>Replacement text</returns>
       /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
-      /// <exception cref="regex_error">RegEx error</exception>
+      /// <exception cref="std::regex_error">RegEx error</exception>
       wstring  DescriptionParser::onMatchMacro(const wsmatch& match, int depth) const 
       {
          const DescriptionMacro* macro;

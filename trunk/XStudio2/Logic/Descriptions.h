@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Common.h"
-#include "LanguagePage.h"
+#include "ScriptObject.h"
 
 namespace Logic
 {
@@ -43,13 +43,13 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ConstantDescription(KnownPage page, UINT id, const wstring& txt) : Description(txt), Page(page), ID(id)
+         ConstantDescription(ScriptObjectGroup grp, UINT id, const wstring& txt) : Description(txt), Group(grp), ID(id)
          {}
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         UINT       ID;
-         KnownPage  Page;
+         UINT               ID;
+         ScriptObjectGroup  Group;
       };
 
 

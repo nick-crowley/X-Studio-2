@@ -29,7 +29,7 @@ namespace Logic
          };
 
          /// <summary></summary>
-         typedef pair<KnownPage,UINT>  ConstID;
+         typedef pair<ScriptObjectGroup,UINT>  ConstID;
 
          /// <summary></summary>
          class ConstantCollection : public map<ConstID, ConstantDescription>
@@ -40,7 +40,7 @@ namespace Logic
             /// <returns></returns>
             bool  Add(ConstantDescription&& d)
             {
-               return insert( value_type(ConstID(d.Page,d.ID), d) ).second;
+               return insert( value_type(ConstID(d.Group,d.ID), d) ).second;
             }
          };
 
