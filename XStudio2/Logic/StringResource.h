@@ -28,6 +28,14 @@ namespace Logic
 		// -------------------- REPRESENTATION ---------------------
    };
 
+   /// <summary>Indentation string, used for debugging output</summary>
+   class Indent : public wstring
+   {
+   public:
+      Indent(UINT depth) : wstring(depth, L' ')
+      {}
+   };
+
    /// <summary>A formattable GUI string</summary>
    class GuiString : public wstring
    {

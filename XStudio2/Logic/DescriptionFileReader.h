@@ -176,31 +176,30 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static wregex  MatchKeyword,
-                        MatchMacro,
-                        MatchParameters;
+         static const wregex  MatchKeyword,
+                              MatchMacro,
+                              MatchParameters;
 
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      private:         
+         wstring  onMatchKeyword(const wsmatch& match, int depth) const;
+         wstring  onMatchMacro(const wsmatch& match, int depth) const;
+         wstring  Parse(wstring text, int depth = 0) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
          DescriptionFile  ReadFile();
 
       private:
-         Macro ReadMacro(XmlNodePtr n);
-         void  ReadMacros();
-
-         CommandDescription ReadCommand(XmlNodePtr n);
-         void               ReadCommands(DescriptionFile& file);
-
+         CommandDescription  ReadCommand(XmlNodePtr n);
          ConstantDescription ReadConstant(XmlNodePtr n);
-         void                ReadConstants(DescriptionFile& file);
-
-         wstring  Parse(wstring text);
-         wstring  onMatchKeyword(wsmatch& match);
-         wstring  onMatchMacro(wsmatch& match);
+         Macro               ReadMacro(XmlNodePtr n);
+         
+         void  ReadCommands(DescriptionFile& file);
+         void  ReadConstants(DescriptionFile& file);
+         void  ReadMacros();
 
          // -------------------- REPRESENTATION ---------------------
 
