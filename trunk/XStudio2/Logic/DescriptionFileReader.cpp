@@ -5,7 +5,7 @@
 #include "StringResolver.h"
 
 /// <summary>Turn console debugging output on/off</summary>
-#define PRINT_CONSOLE
+//#define PRINT_CONSOLE
 
 namespace Logic
 {
@@ -76,28 +76,53 @@ namespace Logic
             ReadCommands(file);
             ReadConstants(file);
 
-            // DEBUG: Parse constants
+            // Parse constants
             for (auto& c : file.Constants)
             {
                try
                {
                   ConstantDescription& d = c.second;
-                  
-                  if (d.Page == 2006 && d.ID == 2020)
-                  {
-                     Console << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << Colour::Cyan << d.Text << "'" << ENDL;
-                     Console << ENDL << ENDL;
-
-                     d.Text = Parse(d.Text);
-
-                     Console << ENDL << Colour::Green << "Success: " << Colour::Yellow << d.Text << ENDL;
-                     Console << ENDL << ENDL << ENDL << ENDL;
-                  }
+                  d.Text = Parse(d.Text);
                }
                catch (ExceptionBase& e) {
-                  Console.Log(HERE, e);
+                  Console.Log(HERE, e, GuiString(L"Unable to parse constant description: '%s'", c.second.Text.c_str()));
                }
             }
+
+            // Parse commands
+            for (auto& c : file.Commands)
+            {
+               try
+               {
+                  CommandDescription& d = c.second;
+                  d.Text = Parse(d.Text);
+               }
+               catch (ExceptionBase& e) {
+                  Console.Log(HERE, e, GuiString(L"Unable to parse command description: '%s'", c.second.Text.c_str()));
+               }
+            }
+
+            //for (auto& c : file.Constants)
+            //{
+            //   try
+            //   {
+            //      ConstantDescription& d = c.second;
+            //      
+            //      //if (d.Page == 2006 && d.ID == 2020)
+            //      {
+            //         Console << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << Colour::Cyan << d.Text << "'" << ENDL;
+            //         Console << ENDL << ENDL;
+
+            //         d.Text = Parse(d.Text);
+
+            //         Console << ENDL << Colour::Green << "Success: " << Colour::Yellow << d.Text << ENDL;
+            //         Console << ENDL << ENDL << ENDL << ENDL;
+            //      }
+            //   }
+            //   catch (ExceptionBase& e) {
+            //      Console.Log(HERE, e);
+            //   }
+            //}
 
             // Return file
             return file;
@@ -124,21 +149,28 @@ namespace Logic
          // Lookup macro 
          if (Macros.TryFind(name, macro))
          {
-            vector<wstring> arg = { L"", L"", L"", L"", L"", L"" };
-            UINT i = 0;
+            // HEADING: Assume comments are part of text, not comma delimited arguments
+            if (name == L"HEADING")
+               StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, macro->Text.c_str(), arguments.c_str());
+            else
+            {
+               // MACRO: Extract arguments and format them into the replacement text
+               vector<wstring> arg = { L"", L"", L"", L"", L"", L"" };
+               UINT i = 0;
 
-            // Separate parameters into array
-            for (wsregex_iterator m(arguments.begin(), arguments.end(), MatchParameters), end; m != end && i <= 5; ++m)
-               arg[i++] = (*m)[0].str();
+               // Separate parameters into array
+               for (wsregex_iterator m(arguments.begin(), arguments.end(), MatchParameters), end; m != end && i <= 5; ++m)
+                  arg[i++] = (*m)[0].str();
 
-            // Verify argument count
-            if (macro->ParamCount != i)
-               throw FileFormatException(HERE, GuiString(L"The macro '%s' requires %d parameters : '%s'", macro->Name.c_str(), macro->ParamCount, match[0].str().c_str()));
+               // Verify argument count
+               if (macro->ParamCount != i)
+                  throw FileFormatException(HERE, GuiString(L"The macro '%s' requires %d parameters : '%s'", macro->Name.c_str(), macro->ParamCount, match[0].str().c_str()));
 
-            // Format macro with up to six parameters...
-            StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, 
-                            macro->Text.c_str(), 
-                            arg[0].c_str(), arg[1].c_str(), arg[2].c_str(), arg[3].c_str(), arg[4].c_str(), arg[5].c_str());
+               // Format macro with up to six parameters...
+               StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, 
+                               macro->Text.c_str(), 
+                               arg[0].c_str(), arg[1].c_str(), arg[2].c_str(), arg[3].c_str(), arg[4].c_str(), arg[5].c_str());
+            }
 
 #ifdef PRINT_CONSOLE
             Console << Colour::Cyan << Indent(depth) << "Matched Macro: " << Colour::Yellow << match[0].str() 
