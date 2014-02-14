@@ -36,7 +36,7 @@ namespace Logic
          try
          {
             // Create document /
-            Document = XmlDocumentPtr(__uuidof(XML::DOMDocument60));
+            Document = XmlDocumentPtr(__uuidof(Xml::DOMDocument60));
             // Set properties (from MSDN)
             Document->async = VARIANT_FALSE;
             Document->validateOnParse = VARIANT_FALSE;
@@ -68,7 +68,7 @@ namespace Logic
             UINT headerLen = lstrlenA(header);
 
             // Load style sheet
-            XmlDocumentPtr style = XmlDocumentPtr(__uuidof(XML::DOMDocument60));
+            XmlDocumentPtr style = XmlDocumentPtr(__uuidof(Xml::DOMDocument60));
             style->preserveWhiteSpace = VARIANT_TRUE;
             style->loadXML(szStyleSheet);
 

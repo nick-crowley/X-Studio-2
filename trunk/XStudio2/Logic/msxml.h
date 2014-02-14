@@ -1,19 +1,19 @@
 #pragma once
 
-#import "MSXML6.dll" rename_namespace(_T("XML"))
+#import "MSXML6.dll" rename_namespace(_T("Xml"))
 //#include <msxml2.h>
 
 /// <summary>Xml DOM document smart pointer</summary>
-typedef XML::IXMLDOMDocumentPtr  XmlDocumentPtr;
+typedef Xml::IXMLDOMDocumentPtr  XmlDocumentPtr;
 
 /// <summary>Xml DOM node smart pointer</summary>
-typedef XML::IXMLDOMNodePtr  XmlNodePtr;
+typedef Xml::IXMLDOMNodePtr  XmlNodePtr;
 
 /// <summary>Xml DOM element smart pointer</summary>
-typedef XML::IXMLDOMElementPtr  XmlElementPtr;
+typedef Xml::IXMLDOMElementPtr  XmlElementPtr;
 
 /// <summary>Xml DOM element smart pointer</summary>
-typedef XML::IXMLDOMAttributePtr  XmlAttributePtr;
+typedef Xml::IXMLDOMAttributePtr  XmlAttributePtr;
 
 
 

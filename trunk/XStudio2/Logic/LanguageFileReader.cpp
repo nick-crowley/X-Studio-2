@@ -153,7 +153,7 @@ namespace Logic
             {
                XmlNodePtr n = languageNode->childNodes->item[i];
 
-               if (n->nodeType == XML::NODE_ELEMENT)
+               if (n->nodeType == Xml::NODE_ELEMENT)
                   file.Pages.Add( ReadPage(n) );
             }
 
@@ -217,7 +217,7 @@ namespace Logic
          {
             XmlNodePtr node = element->childNodes->item[i];
 
-            if (node->nodeType == XML::NODE_ELEMENT)
+            if (node->nodeType == Xml::NODE_ELEMENT)
                page.Strings.Add( ReadString(node, page, ver) );
          }
 
