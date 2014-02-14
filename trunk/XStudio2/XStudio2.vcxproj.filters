@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Files">
-      <UniqueIdentifier>{2589df15-25b6-47e3-9d4c-91aa9b903774}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{22fe12e2-bdf5-4580-a125-dd7fb22e1ab8}</UniqueIdentifier>
     </Filter>
@@ -298,9 +295,6 @@
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoRes.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="ScriptView.h">
@@ -716,9 +710,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="res\CustomRes.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="plugin.piracy.enslavepassengers.xml" />
@@ -730,73 +721,8 @@
     <Xml Include="Descriptions.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AutoRes.rc">
+    <ResourceCompile Include="Resources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Icon - Document - Language.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Document - Script.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Commands.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Game Objects.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Main.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Output.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Project.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Properties.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Icon - Window - Script Objects.ico">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\ImageList - GameDataWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\ImageList - OutputWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\ImageList - ProjectWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - Customize.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - Editor Disabled 16.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - Editor Disabled 24.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - Editor Normal 16.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - Editor Normal 24.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - MainWnd 16.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - MainWnd 24.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - ProjectWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
-    <Image Include="res\Toolbar - PropertiesWnd.bmp">
-      <Filter>Resource Files\Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

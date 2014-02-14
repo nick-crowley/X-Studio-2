@@ -98,7 +98,7 @@ namespace Logic
                szFormat[512];
       
       // Load string 
-      if (!LoadString(theApp.m_hInstance, id, szFormat, 512))
+      if (!LoadString(theApp.ResourceLibrary, id, szFormat, 512))
          return Missing(id);
          
       // Format + Return

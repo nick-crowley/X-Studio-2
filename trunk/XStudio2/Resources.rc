@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "autores.h"
+#include "resources.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -23,65 +23,6 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 #pragma code_page(1252)
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Accelerator
-//
-
-IDR_MAINFRAME ACCELERATORS
-BEGIN
-    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_ABOUTBOX DIALOGEX 0, 0, 189, 69
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About MFC Test 1"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            128,IDC_STATIC,14,14,20,20
-    LTEXT           "MFC Test 1, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2014",IDC_STATIC,42,26,114,8
-    DEFPUSHBUTTON   "OK",IDOK,132,48,50,14,WS_GROUP
-END
-
-IDR_SCRIPTVIEW DIALOGEX 0, 0, 320, 200
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    COMBOBOX        IDC_SCOPE_COMBO,0,0,140,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_VARIABLES_COMBO,159,0,161,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_SCRIPT_EDIT,"RichEdit20W",WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x10c4,0,18,319,181
-END
-
-IDR_LANGUAGEVIEW DIALOGEX 0, 0, 164, 57
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    CONTROL         "",IDC_STRING_EDIT,"RichEdit20W",ES_MULTILINE | ES_WANTRETURN | WS_VSCROLL | WS_TABSTOP,0,18,162,39
-END
-
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +72,7 @@ END
 
 1 TEXTINCLUDE 
 BEGIN
-    "autores.h\0"
+    "resources.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -153,7 +94,6 @@ BEGIN
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
     "LANGUAGE 9, 1\r\n"
-    "#include ""res\\CustomRes.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""      // Standard components\r\n"
     "#if !defined(_AFXDLL)\r\n"
     "#include ""afxprint.rc""        // printing/print preview resources\r\n"
@@ -166,19 +106,6 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDR_LANGUAGEVIEW, DIALOG
-    BEGIN
-    END
-END
-#endif    // APSTUDIO_INVOKED
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -196,7 +123,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE 9, 1
-#include "res\CustomRes.rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"      // Standard components
 #if !defined(_AFXDLL)
 #include "afxprint.rc"        // printing/print preview resources
