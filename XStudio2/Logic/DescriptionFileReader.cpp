@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DescriptionFileReader.h"
 
+
 namespace Logic
 {
    namespace IO
@@ -170,7 +171,7 @@ namespace Logic
          page = (KnownPage)_ttoi(ReadAttribute(n, L"page").c_str());
 
          // Create script object description
-         return ConstantDescription(page, id, (wchar*)n->text);  
+         return ConstantDescription(ScriptObject::IdentifyGroup(page, id), id, (wchar*)n->text);  
       }
       
 
