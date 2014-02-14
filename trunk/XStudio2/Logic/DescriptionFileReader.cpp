@@ -70,9 +70,17 @@ namespace Logic
                try
                {
                   ConstantDescription& d = c.second;
-                  Console << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << Colour::Cyan << d.Text << "'" << ENDL << ENDL;
-                  d.Text = Parse(d.Text);
-                  Console << ENDL << Colour::Green << "Success: " << Colour::Yellow << d.Text << ENDL << ENDL << ENDL << ENDL << ENDL;
+                  
+                  //if (d.Page == 2006 && d.ID == 2020)
+                  {
+                     Console << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << Colour::Cyan << d.Text << "'" << ENDL;
+                     Console << ENDL << ENDL;
+
+                     d.Text = Parse(d.Text);
+
+                     Console << ENDL << Colour::Green << "Success: " << Colour::Yellow << d.Text << ENDL;
+                     Console << ENDL << ENDL << ENDL << ENDL;
+                  }
                }
                catch (ExceptionBase& e) {
                   Console.Log(HERE, e);
@@ -239,6 +247,9 @@ namespace Logic
          wstring name      = match[1].str(),
                  arguments = match[2].str();
 
+         // DEBUG:
+         //Console << Colour::Cyan << "Matched Macro: " << Colour::White << match[0].str() << ENDL;
+
          // Lookup macro 
          if (Macros.TryFind(name, macro))
          {
@@ -274,6 +285,9 @@ namespace Logic
          const Macro* m;
          wstring name = (match[1].matched ? match[1].str() : match[2].str()); // Retrieve keyword/macro
          
+         // DEBUG:
+         //Console << Colour::Cyan << "Matched Keyword: " << Colour::White << match[0].str() << ENDL;
+
          // Lookup macro + recursively parse
          if (Macros.TryFind(name, m))
             return m->Recursive ? Parse(m->Text) : m->Text;
@@ -302,19 +316,28 @@ namespace Logic
          
          try
          {
+            // DEBUG:
+            //Console << Colour::Cyan << "Parsing: " << Colour::White << text << ENDL;
+
             // Replace parameterized macros.   
-            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchMacro); ) //  Manually track position for in-place replacement + avoid infinite loop
             {
                r = onMatchMacro(match);
                Console << "  Replace Macro: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+
+               // Advance position to beyond inserted text, and insert text
+               Position = (match[0].first - text.cbegin()) + r.length();
                text.replace(match[0].first, match[0].second, r);
             }
 
             // Replace keywords
-            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchKeyword); Position += r.length())  // Manually track position for in-place replacement + avoid infinite loop
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchKeyword); )  
             {
                r = onMatchKeyword(match);
                Console << "  Replace Keyword: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+
+               // Advance position to beyond inserted text, and insert text
+               Position = (match[0].first - text.cbegin()) + r.length();
                text.replace(match[0].first, match[0].second, r);
             }
 
