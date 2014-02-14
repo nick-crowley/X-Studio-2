@@ -52,6 +52,23 @@ namespace Logic
          KnownPage  Page;
       };
 
+
+      /// <summary></summary>
+      class DescriptionMacro
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         DescriptionMacro(const wstring& nm, const wstring& txt, UINT params, bool recurse) 
+            : Name(nm), Text(txt), ParamCount(params), Recursive(recurse)
+         {}
+
+         // -------------------- REPRESENTATION ---------------------
+
+         wstring  Name,
+                  Text;
+         UINT     ParamCount;
+         bool     Recursive;
+      };
    }
 }
 

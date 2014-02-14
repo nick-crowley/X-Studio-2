@@ -143,6 +143,7 @@
     <ClInclude Include="Logic\DescriptionFile.h" />
     <ClInclude Include="Logic\DescriptionFileReader.h" />
     <ClInclude Include="Logic\DescriptionLibrary.h" />
+    <ClInclude Include="Logic\DescriptionParser.h" />
     <ClInclude Include="Logic\Descriptions.h" />
     <ClInclude Include="Logic\EncryptedStream.h" />
     <ClInclude Include="Logic\FileIdentifier.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Logic\CommandNode.cpp" />
     <ClCompile Include="Logic\DescriptionFileReader.cpp" />
     <ClCompile Include="Logic\DescriptionLibrary.cpp" />
+    <ClCompile Include="Logic\DescriptionParser.cpp" />
     <ClCompile Include="Logic\EncryptedStream.cpp" />
     <ClCompile Include="Logic\FileIdentifier.cpp" />
     <ClCompile Include="Logic\GameDataWorker.cpp" />
