@@ -253,6 +253,7 @@
     <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="ListViewCustomDraw.cpp" />
     <ClCompile Include="Logic\CommandNode.cpp" />
+    <ClCompile Include="Logic\Common.cpp" />
     <ClCompile Include="Logic\DescriptionFileReader.cpp" />
     <ClCompile Include="Logic\DescriptionLibrary.cpp" />
     <ClCompile Include="Logic\DescriptionParser.cpp" />

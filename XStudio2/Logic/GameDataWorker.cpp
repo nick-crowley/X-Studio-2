@@ -9,7 +9,7 @@
 #include "ScriptObjectLibrary.h"
 #include "LegacySyntaxReader.h"
 #include "GameObjectLibrary.h"
-
+#include "DescriptionLibrary.h"
 
 namespace Logic
 {
@@ -55,6 +55,9 @@ namespace Logic
             // script/game objects
             ScriptObjectLib.Enumerate(data);
             GameObjectLib.Enumerate(vfs, data);
+
+            // Descriptions
+            DescriptionLib.Enumerate(data);
 
             // legacy syntax file
             SyntaxLib.Enumerate(data);

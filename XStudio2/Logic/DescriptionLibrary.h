@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "DescriptionFile.h"
 #include "BackgroundWorker.h"
+#include "DescriptionParser.h"
 
 namespace Logic
 {
@@ -12,11 +13,20 @@ namespace Logic
       class DescriptionNotFoundException : public ExceptionBase
       {
       public:
-         /// <summary>Create a DescriptionNotFoundException</summary>
+         /// <summary>Create a DescriptionNotFoundException for a command</summary>
          /// <param name="src">Location of throw</param>
-         /// <param name="msg">Message</param>
-         DescriptionNotFoundException(wstring  src, wstring  msg) 
-            : ExceptionBase(src, wstring(L"Invariant violated: ") + msg)
+         /// <param name="id">Command ID</param>
+         /// <param name="ver">Game version</param>
+         DescriptionNotFoundException(wstring  src, UINT id, GameVersion ver) 
+            : ExceptionBase(src, GuiString(L"Missing description for %s script command with id %d", VersionString(ver).c_str(), id))
+         {}
+
+         /// <summary>Create a DescriptionNotFoundException for a script object</summary>
+         /// <param name="src">Location of throw</param>
+         /// <param name="grp">Object group</param>
+         /// <param name="id">Object ID</param>
+         DescriptionNotFoundException(wstring  src, ScriptObjectGroup grp, UINT id) 
+            : ExceptionBase(src, GuiString(L"Missing description for %s script object with id %d", GetString(grp).c_str(), id))
          {}
       };
 
@@ -48,6 +58,26 @@ namespace Logic
             {
                return find(CommandID(id,ver)) != end();
             }
+
+            /// <summary>Finds a script command.</summary>
+            /// <param name="id">command ID</param>
+            /// <param name="ver">Lowest compatible game version</param>
+            /// <returns>Description text</returns>
+            /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
+            /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
+            /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
+            wstring  Find(UINT id, GameVersion ver) const
+            {
+               // Lookup object
+               auto it = find(CommandID(id,ver));
+
+               // Parse text
+               if (it != end())
+                  return DescriptionParser(it->second.Text).Text;
+
+               // Missing: Error
+               throw DescriptionNotFoundException(HERE, id, ver);
+            }
          };
 
          /// <summary>Defines an association between constant ID and page</summary>
@@ -72,6 +102,26 @@ namespace Logic
             bool  Contains(ScriptObjectGroup group, UINT id) const
             {
                return find(ConstantID(group,id)) != end();
+            }
+
+            /// <summary>Finds a script object description</summary>
+            /// <param name="group">script object group</param>
+            /// <param name="id">object id</param>
+            /// <returns>Description text</returns>
+            /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
+            /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
+            /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
+            wstring  Find(ScriptObjectGroup group, UINT id) const
+            {
+               // Lookup object
+               auto it = find(ConstantID(group,id));
+
+               // Parse text
+               if (it != end())
+                  return DescriptionParser(it->second.Text).Text;
+
+               // Missing: Error
+               throw DescriptionNotFoundException(HERE, group, id);
             }
          };
 
@@ -106,9 +156,9 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-
-      public:
+      private:
          DescriptionLibrary();
+      public:
          virtual ~DescriptionLibrary();
 
          DEFAULT_COPY(DescriptionLibrary);	// Default copy semantics
@@ -137,6 +187,7 @@ namespace Logic
          MacroCollection    Macros;
 
       private:
+         
       };
 
       /// <summary>Description library singleton access</summary>

@@ -725,6 +725,9 @@
     <ClCompile Include="Logic\DescriptionParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\Common.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

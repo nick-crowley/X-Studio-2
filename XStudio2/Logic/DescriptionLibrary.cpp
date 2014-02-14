@@ -12,6 +12,7 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Private ctor</summary>
       DescriptionLibrary::DescriptionLibrary()
       {
       }
@@ -37,8 +38,10 @@ namespace Logic
       /// <summary>Populates the library from the descriptions file</summary>
       /// <param name="data">Background worker data</param>
       /// <returns>Descriptions loaded</returns>
-      /// <exception cref="Logic::FileFormatException">??????????</exception>
-      /// <exception cref="Logic::InvalidValueException">??????????</exception>
+      /// <exception cref="Logic::ArgumentNullException">Missing xml node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid language ID -or- invalid command version</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       UINT  DescriptionLibrary::Enumerate(WorkerData* data)
       {
@@ -48,15 +51,19 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 1, L"Loading description tooltips...");
+         data->SendFeedback(ProgressType::Info, 1, L"Loading commands and objects tooltips...");
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading legacy syntax file '%s'", path.FileName.c_str()));
-         Console << Cons::Heading << L"Reading legacy syntax file: " << path << ENDL;
+         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading commands and objects tooltip file '%s'", path.FileName.c_str()));
+         Console << Cons::Heading << L"Reading descriptions file: " << path << ENDL;
          
-         // Load/Add descriptions file
+         // Load descriptions file
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         Add( DescriptionFileReader(fs).ReadFile() );
+         DescriptionFile file( DescriptionFileReader(fs).ReadFile() );
+         Add(file);
+
+         // Feedback
+         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded '%s' (%s) %s", file.Title.c_str(), GetString(file.Language).c_str(), file.Version.c_str()));
 
          // Return descriptions read
          Console << Colour::Green << L"Description file loaded successfully" << ENDL;

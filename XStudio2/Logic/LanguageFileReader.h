@@ -16,7 +16,7 @@ namespace Logic
          LanguageFilenameReader(const wstring& fn);
 
          // ------------------------ STATIC -------------------------
-      
+      public:
          static UINT         ParseFileID(const wstring& sz);
          static GameLanguage ParseLanguageID(const wstring& sz);
 
