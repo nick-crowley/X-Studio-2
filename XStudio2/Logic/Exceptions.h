@@ -1,4 +1,6 @@
 #pragma once
+#include "D:/My Projects/XStudio2/Resources/Resources.h"
+
 #include "StringResource.h"
 #include "Path.h"
 

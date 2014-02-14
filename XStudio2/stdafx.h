@@ -69,8 +69,11 @@ using namespace std;
 // Preferences
 #include "Logic/PreferencesLibrary.h"
 
-// Resource IDs
-#include "Resources.h"
+// Import Resource IDs from resource project
+#include "D:/My Projects/XStudio2/Resources/Resources.h"
+
+
+
 #include <afxcview.h>
 
 

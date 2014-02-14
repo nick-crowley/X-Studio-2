@@ -230,7 +230,6 @@
     <ClInclude Include="ScriptView.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
-    <ClInclude Include="AutoRes.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="targetver.h" />
@@ -334,11 +333,7 @@
     <ClCompile Include="ToolBarEx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AutoRes.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="res\CustomRes.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Command Syntax.xml" />
@@ -350,27 +345,7 @@
     <Xml Include="plugin.piracy.lib.ui.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Icon - Document - Language.ico" />
-    <Image Include="res\Icon - Document - Script.ico" />
-    <Image Include="res\Icon - Window - Commands.ico" />
-    <Image Include="res\Icon - Window - Game Objects.ico" />
-    <Image Include="res\Icon - Window - Main.ico" />
-    <Image Include="res\Icon - Window - Output.ico" />
-    <Image Include="res\Icon - Window - Project.ico" />
-    <Image Include="res\Icon - Window - Properties.ico" />
-    <Image Include="res\Icon - Window - Script Objects.ico" />
-    <Image Include="res\ImageList - GameDataWnd.bmp" />
-    <Image Include="res\ImageList - OutputWnd.bmp" />
-    <Image Include="res\ImageList - ProjectWnd.bmp" />
-    <Image Include="res\Toolbar - Customize.bmp" />
-    <Image Include="res\Toolbar - Editor Disabled 16.bmp" />
-    <Image Include="res\Toolbar - Editor Disabled 24.bmp" />
-    <Image Include="res\Toolbar - Editor Normal 16.bmp" />
-    <Image Include="res\Toolbar - Editor Normal 24.bmp" />
-    <Image Include="res\Toolbar - MainWnd 16.bmp" />
-    <Image Include="res\Toolbar - MainWnd 24.bmp" />
-    <Image Include="res\Toolbar - ProjectWnd.bmp" />
-    <Image Include="res\Toolbar - PropertiesWnd.bmp" />
+    <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

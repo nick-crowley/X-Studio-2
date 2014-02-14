@@ -29,6 +29,7 @@ protected:
 
 public:
    AppStateChangedEvent     StateChanged;
+   HINSTANCE                ResourceLibrary;
 
    // --------------------- PROPERTIES ------------------------
 	

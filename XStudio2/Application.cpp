@@ -49,7 +49,11 @@ Application::Application() : GameDataState(AppState::NoGameData)
 /// <returns></returns>
 int Application::ExitInstance()
 {
-	//TODO: handle additional resources you may have added
+   // Free resources
+   FreeLibrary(ResourceLibrary);
+   ResourceLibrary = NULL;
+
+	
 	return CWinAppEx::ExitInstance();
 }
 
@@ -58,9 +62,20 @@ int Application::ExitInstance()
 BOOL Application::InitInstance()
 {
 	
-   //VLDEnable();
-   VLDDisable();
+   VLDEnable();
+   //VLDDisable();
    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
+
+   // Load resource library
+   ResourceLibrary = LoadLibrary(_T("XStudio2.Resources.dll"));
+   if(ResourceLibrary)
+      AfxSetResourceHandle(ResourceLibrary);
+   else
+   {
+      AfxMessageBox(L"Failed to load resource library");
+      return FALSE;
+   }
+
 
 	// Init common controls
 	INITCOMMONCONTROLSEX InitCtrls;
