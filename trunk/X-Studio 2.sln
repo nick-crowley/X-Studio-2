@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Problems", "Problems", "{66
 		Docs\z.cheat.cycrow.createwing.xml = Docs\z.cheat.cycrow.createwing.xml
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Resources", "Resources\Resources.vcxproj", "{73CC6A77-0A76-4840-B36B-D359407294B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +30,10 @@ Global
 		{A45897BA-6214-4004-A6E5-005ED1B3BE8B}.Debug|Win32.Build.0 = Debug|Win32
 		{A45897BA-6214-4004-A6E5-005ED1B3BE8B}.Release|Win32.ActiveCfg = Release|Win32
 		{A45897BA-6214-4004-A6E5-005ED1B3BE8B}.Release|Win32.Build.0 = Release|Win32
+		{73CC6A77-0A76-4840-B36B-D359407294B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{73CC6A77-0A76-4840-B36B-D359407294B9}.Debug|Win32.Build.0 = Debug|Win32
+		{73CC6A77-0A76-4840-B36B-D359407294B9}.Release|Win32.ActiveCfg = Release|Win32
+		{73CC6A77-0A76-4840-B36B-D359407294B9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
