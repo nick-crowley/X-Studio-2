@@ -59,6 +59,7 @@ namespace Logic
       //Test_StringParserRegEx();
 
       Test_DescriptionReader();
+      //Text_DescriptionRegEx();
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------
@@ -197,6 +198,89 @@ namespace Logic
       }
    }
 
+   void DebugTests::Text_DescriptionRegEx()
+   {
+      try
+      {
+         wstring txt = L"The QUICK brown FOx juMPED OVER the LAZY dog \n\
+                        {NONE} \n\
+                        {SINGLE:Interrupts and Yielding}\n \
+                        {DOUBLE:first,second}\n\
+                        {TRIPLE:first,second,third}\n \
+                        {QUADRUPLE:first first,second,third third,fourth} \n\
+                        {QUINTUPLE:First first FIRST first,second SECOND,third THIRD,fourth fourth FOURTH,fifth fifth}";
+
+         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+
+         const wchar* keywords = L"\\b([A-Z_0-9]+)(?![:\\}])\\b" L"|" L"\\{([A-Z_0-9]+)\\}";
+         const wregex MatchKeyword(keywords);
+
+         // KEYWORDS TEST
+         Console << Cons::Heading << "Matching keywords: " << Colour::White << keywords << ENDL;
+
+         // All matches:
+         for (wsregex_iterator it(txt.begin(), txt.end(), MatchKeyword), end; it != end; ++it)
+         {
+            Console << "Instance found:" << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+         }
+
+
+
+
+         // PARAMETERIZED MACROS TEST
+         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+
+         const wchar* macros = L"\\{([A-Z_0-9]+):(.+)\\}";
+         const wregex MatchMacro(macros);
+
+         // Feedback
+         Console << Cons::Heading << "Matching macros: " << Colour::White << macros << ENDL;
+
+         // All matches:
+         for (wsregex_iterator it(txt.begin(), txt.end(), MatchMacro), end; it != end; ++it)
+         {
+            Console << "Instance found:" << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+         }
+
+
+
+         
+         // PARAMETERS TEST
+         txt = L"First first FIRST first,second SECOND,third THIRD,fourth fourth FOURTH,fifth fifth";
+         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+         
+         const wchar* params = L"([^,]+)((?=,)[^,]+)*";
+         const wregex MatchParams(params);
+
+         // Feedback
+         Console << Cons::Heading << "Matching parameters: " << Colour::White << params << ENDL;
+
+         // Match:
+         /*wsmatch matches;
+         if (!regex_match(txt.cbegin(), txt.cend(), matches, MatchParams))
+            Console << Colour::Red << "Failed" << ENDL;
+         else
+         {
+            Console << "Instance found:" << ENDL;
+            for (auto m : matches)
+               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+         }*/
+         for (wsregex_iterator it(txt.begin(), txt.end(), MatchParams), end; it != end; ++it)
+         {
+            Console << "Instance found:" << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+         }
+      }
+      catch (regex_error& e)
+      {
+         Console.Log(HERE, RegularExpressionException(HERE, e));
+      }
+   }
 
    void  DebugTests::Test_ExpressionParser()
    {
