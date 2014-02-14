@@ -176,10 +176,9 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static wregex  SimpleMacro,
-                        SingleParamMacro,
-                        DualParamMacro,
-                        TripleParamMacro;
+         static wregex  MatchKeyword,
+                        MatchMacro,
+                        MatchParameters;
 
          // --------------------- PROPERTIES ------------------------
 
@@ -200,8 +199,8 @@ namespace Logic
          void                ReadConstants(DescriptionFile& file);
 
          wstring  Parse(wstring text);
-         wstring  OnSimpleMacro(wsmatch& match);
-         wstring  OnComplexMacro(wsmatch& match);
+         wstring  onMatchKeyword(wsmatch& match);
+         wstring  onMatchMacro(wsmatch& match);
 
          // -------------------- REPRESENTATION ---------------------
 

@@ -70,9 +70,9 @@ namespace Logic
                try
                {
                   ConstantDescription& d = c.second;
-                  Console << Cons::Heading << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << d.Text << "'" << ENDL;
+                  Console << "Parsing constant: page=" << d.Page << " id=" << d.ID << " txt='" << Colour::Cyan << d.Text << "'" << ENDL << ENDL;
                   d.Text = Parse(d.Text);
-                  Console << Colour::Green << "Success: " << d.Text << ENDL;
+                  Console << ENDL << Colour::Green << "Success: " << Colour::Yellow << d.Text << ENDL << ENDL << ENDL << ENDL << ENDL;
                }
                catch (ExceptionBase& e) {
                   Console.Log(HERE, e);
@@ -233,30 +233,46 @@ namespace Logic
       /// <summary>Called for each occurrence of parameterized macros</summary>
       /// <param name="match">The match.</param>
       /// <returns>Replacement text</returns>
-      wstring  DescriptionFileReader::OnComplexMacro(wsmatch& match)
+      wstring  DescriptionFileReader::onMatchMacro(wsmatch& match)
       {
-         const Macro* m;
-         wstring name = match[1].str(),
-                 param = match[2].str();
+         const Macro* macro;
+         wstring name      = match[1].str(),
+                 arguments = match[2].str();
 
-         // Lookup macro + format + recursively parse
-         if (Macros.TryFind(name, m))
+         // Lookup macro 
+         if (Macros.TryFind(name, macro))
          {
-            StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, m->Text.c_str(), param.c_str());
+            vector<wstring> arg = { L"", L"", L"", L"", L"", L"" };
+            UINT i = 0;
+
+            // Separate parameters into array
+            for (wsregex_iterator m(arguments.begin(), arguments.end(), MatchParameters), end; m != end && i <= 5; ++m)
+               arg[i++] = (*m)[0].str();
+
+            // Verify argument count
+            if (macro->ParamCount != i)
+               throw FileFormatException(HERE, GuiString(L"The macro '%s' requires %d parameters : '%s'", macro->Name.c_str(), macro->ParamCount, match[0].str().c_str()));
+
+            // Format macro with up to six parameters...
+            StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, 
+                            macro->Text.c_str(), 
+                            arg[0].c_str(), arg[1].c_str(), arg[2].c_str(), arg[3].c_str(), arg[4].c_str(), arg[5].c_str());
+
+            // Recursively parse
             return Parse(FormatBuffer.get());
          }
 
-         // Failed: Return match
+         // Failed: Return verbatim
          return match[0].str();
       }
 
       /// <summary>Called for each occurrence of parameterless macros</summary>
       /// <param name="match">The match.</param>
       /// <returns>Replacement text</returns>
-      wstring  DescriptionFileReader::OnSimpleMacro(wsmatch& match)
+      wstring  DescriptionFileReader::onMatchKeyword(wsmatch& match)
       {
          const Macro* m;
-         wstring name = match[1].str();
+         wstring name = (match[1].matched ? match[1].str() : match[2].str()); // Retrieve keyword/macro
          
          // Lookup macro + recursively parse
          if (Macros.TryFind(name, m))
@@ -266,17 +282,14 @@ namespace Logic
          return match[0].str();
       }
 
-      /// <summary>Matches a macro with no parameters</summary>
-      wregex  DescriptionFileReader::SimpleMacro(L"([A-Z_0-9]+)");
+      /// <summary>Matches a capitalized keyword or a macro with no parameters, in both instances the name is captured</summary>
+      wregex  DescriptionFileReader::MatchKeyword(L"\\b([A-Z_0-9]+)(?![:\\}])\\b" L"|" L"\\{([A-Z_0-9]+)\\}");
 
-      /// <summary>Matches a macro with one parameter</summary>
-      wregex  DescriptionFileReader::SingleParamMacro(L"\\{([A-Z_0-9]+):(\\w+)\\}");
+      /// <summary>Matches a macro with one or more parameters. captures the name alone and parameters as a block</summary>
+      wregex  DescriptionFileReader::MatchMacro(L"\\{([A-Z_0-9]+):([^\\}]+)\\}");
 
-      /// <summary>Matches a macro with two parameters</summary>
-      wregex  DescriptionFileReader::DualParamMacro(L"\\{([A-Z_0-9]+):(\\w+),(\\w+)\\}");
-
-      /// <summary>Matches a macro with three parameters</summary>
-      wregex  DescriptionFileReader::TripleParamMacro(L"\\{([A-Z_0-9]+):(\\w+),(\\w+),(\\w+)\\}");
+      /// <summary>Matches each parameter in a comma delimited string</summary>
+      wregex  DescriptionFileReader::MatchParameters(L"([^,]+)((?=,)[^,]+)*");
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 
@@ -290,26 +303,18 @@ namespace Logic
          try
          {
             // Replace parameterized macros.   
-            //for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, DualParamMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
-            //{
-            //   r = OnComplexMacro(match);
-            //   //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
-            //   text.replace(match[0].first, match[0].second, r);
-            //}
-
-            // Replace parameterized macros.   
-            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, SingleParamMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchMacro); Position += r.length()) //  Manually track position for in-place replacement + avoid infinite loop
             {
-               r = OnComplexMacro(match);
-               //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               r = onMatchMacro(match);
+               Console << "  Replace Macro: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
                text.replace(match[0].first, match[0].second, r);
             }
 
-            // Replace all simple macros.  
-            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, SimpleMacro); Position += r.length())  // Manually track position for in-place replacement + avoid infinite loop
+            // Replace keywords
+            for (Position = 0; regex_search(text.cbegin()+Position, text.cend(), match, MatchKeyword); Position += r.length())  // Manually track position for in-place replacement + avoid infinite loop
             {
-               r = OnSimpleMacro(match);
-               //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               r = onMatchKeyword(match);
+               Console << "  Replace Keyword: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
                text.replace(match[0].first, match[0].second, r);
             }
 
