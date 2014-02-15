@@ -150,54 +150,54 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="indent">True to indent, false to outdent.</param>
    void  ScriptEdit::IndentSelection(bool indent)
    {
-      // Freeze window
-      FreezeWindow(true);
+      vector<GuiString>  lines;
+      GuiString          output;
 
       // Get index of first/last line
-      auto sel = GetSelection();
-      int first = LineFromChar(sel.cpMin),
-          last = LineFromChar(sel.cpMax);
+      int first = LineFromChar(GetSelection().cpMin),
+          last = LineFromChar(GetSelection().cpMax);
+
+      // Select lines entirely
+      SetSel(LineIndex(first), LineIndex(last)+GetLineLength(last));
+
+      // Freeze window
+      FreezeWindow(true);
 
       // DEBUG:
       //Console << "Indenting first=" << first << " last=" << last << " indent=" << indent << ENDL;
 
-      // Indent/outdent selected lines
-      for (int line = last; line >= first; --line)
+      // Get selected lines
+      int length = 0;
+      for (int i = first; i <= last; i++)
       {
-         // Indent: Prepend '   ' to each line
+         // Get line text
+         lines.push_back( GetLineText(i) );
+         GuiString& ln = lines.back();
+
+         // In/Outdent by adding/removing tab from start of each line
          if (indent)
-         {
-            // Extend selection-end by 3 chars
-            sel.cpMax += 3;
-            // Shift selection-begin by 3 chars if first line isn't entirely selected
-            if (line == first && sel.cpMin > LineIndex(line))
-               sel.cpMin += 3;
+            ln.insert(0, L"   ");
+         else if (ln.Left(3) == L"   ")
+            ln.erase(0, 3);
 
-            // Indent: Prepend '   ' to line
-            SetSel(LineIndex(line), LineIndex(line));
-            ReplaceSel(L"   ");
-         }
-         // Outdent: Remove '   ' from each line
-         else
-         {
-            SetSel(LineIndex(line), LineIndex(line)+3);
-            if (GetSelText() == L"   ")
-            {
-               ReplaceSel(L"");
+         // Add to output
+         length += ln.length();
+         output += ln;
 
-               // Shift selection-begin by 3 chars if first line isn't entirely selected
-               if (line == first && sel.cpMin > LineIndex(line))
-                  sel.cpMin -= 3;
-               
-               // Reduce selection-end by 3 chars
-               sel.cpMax -= 3;
-            }
+         // CRLF
+         if (i != last)
+         {
+            output += L"\r";
+            length++;
          }
       }
 
+      //// Replace existing selection
+      ReplaceSel(output.c_str(), TRUE);
+
       // Unfreeze window
       FreezeWindow(false);
-      SetSel(sel);
+      SetSel(LineIndex(first), LineIndex(first)+length);
    }
 
    /// <summary>Gets the length of the line by character index.</summary>
