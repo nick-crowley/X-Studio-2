@@ -33,6 +33,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_SETFOCUS()
+      ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
+      ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
       ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
       ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
@@ -40,6 +42,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryClipboardPaste)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, &ScriptView::OnQueryEditIndent)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
    END_MESSAGE_MAP()
@@ -153,6 +157,20 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
 
+   /// <summary>Indent selected commands</summary>
+   void ScriptView::OnEditIndent()
+   {
+      if (RichEdit.HasSelection())
+         RichEdit.IndentSelection(true);
+   }
+
+   /// <summary>Outdent selected commands</summary>
+   void ScriptView::OnEditOutdent()
+   {
+      if (RichEdit.HasSelection())
+         RichEdit.IndentSelection(false);
+   }
+
    /// <summary>Undo last edit operation</summary>
    void ScriptView::OnEditUndo()
    {
@@ -235,6 +253,20 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnQueryClipboardPaste(CCmdUI *pCmdUI)
    {
       pCmdUI->Enable(RichEdit.CanPaste(CF_UNICODETEXT));
+   }
+
+   /// <summary>Query state of INDENT  context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryEditIndent(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.HasSelection());
+   }
+
+   /// <summary>Query state of OUTDENT context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryEditOutdent(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.HasSelection());
    }
 
    /// <summary>Query state of UNDO context menu command</summary>
