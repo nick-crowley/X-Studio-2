@@ -239,6 +239,71 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // -------------------- REPRESENTATION ---------------------
       };
 
+      /// <summary>Proxy for manipulating line text</summary>
+      class LineProxy
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         LineProxy(ScriptEdit& edit, int line) : Edit(edit), LineNumber(line)
+         {}
+         // ------------------------ STATIC -------------------------
+
+         // --------------------- PROPERTIES ------------------------
+		public:
+         PROPERTY_GET_SET(wstring,Text,GetText,SetText);
+         PROPERTY_GET(int,Start,GetStart);
+         PROPERTY_GET(int,End,GetEnd);
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Gets the character index of the start of the line</summary>
+         /// <returns></returns>
+         int GetStart() const
+         {
+            return Edit.GetLineStart(LineNumber);
+         }
+
+         /// <summary>Gets the character index of the end of the line</summary>
+         /// <returns></returns>
+         int GetEnd() const
+         {
+            return Edit.GetLineEnd(LineNumber);
+         }
+
+         /// <summary>Gets the line text</summary>
+         /// <returns></returns>
+         wstring GetText() const
+         {
+            return Edit.GetLineText(LineNumber);
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Sets the line text and redraws it</summary>
+         /// <param name="str">Text</param>
+         void SetText(const wstring& str)
+         {
+            SetText(str, true, true);
+         }
+
+         /// <summary>Sets the text</summary>
+         /// <param name="str">text.</param>
+         /// <param name="canUndo">Whether can be undone.</param>
+         /// <param name="redraw">Whether to redraw.</param>
+         void SetText(const wstring& str, bool canUndo, bool redraw)
+         {
+            Edit.FreezeWindow(true);
+            Edit.SelectLine(LineNumber);
+            Edit.ReplaceSel(str.c_str(), canUndo ? TRUE : FALSE);
+            Edit.FreezeWindow(false, redraw);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptEdit& Edit;
+         int         LineNumber;
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
@@ -271,11 +336,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int       LineLength(int nChar = -1) const;
 
    protected:
+      int        GetLineEnd(int line = -1) const;
+      int        GetLineStart(int line = -1) const;
       CPoint     GetScrollCoordinates() const;
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
-
+      
       // ----------------------- MUTATORS ------------------------
    public:
       bool   EnsureVisible(int line);
@@ -289,6 +356,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   FreezeWindow(bool freeze, bool invalidate = true);
       void   InsertSuggestion();
       void   RefreshGutter();
+      void   SelectLine(int line = -1);
       void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
       void   SetGutterWidth(UINT twips);
