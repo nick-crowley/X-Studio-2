@@ -172,7 +172,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Get index of first/last line
       int first = LineFromChar(GetSelection().cpMin),
           last = LineFromChar(GetSelection().cpMax);
-
+      
       // Select lines entirely
       SetSel(LineIndex(first), LineIndex(last)+GetLineLength(last));
 
