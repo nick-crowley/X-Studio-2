@@ -83,7 +83,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       enum class InputState : UINT { Normal, Suggestions };
 
    private:
-      
+      class LineTextIterator;
+
       /// <summary>Device context containing same font as ScriptEdit</summary>
       class FontDC : public CClientDC
       {
@@ -242,8 +243,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Proxy for manipulating line text</summary>
       class LineProxy
       {
+         friend class LineTextIterator;
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Creates a line proxy</summary>
+         /// <param name="edit">edit.</param>
+         /// <param name="line">zero-based line number</param>
          LineProxy(ScriptEdit& edit, int line) : Edit(edit), LineNumber(line)
          {}
          // ------------------------ STATIC -------------------------
@@ -253,6 +258,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          PROPERTY_GET_SET(wstring,Text,GetText,SetText);
          PROPERTY_GET(int,Start,GetStart);
          PROPERTY_GET(int,End,GetEnd);
+         PROPERTY_GET(int,Line,GetLine);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
@@ -268,6 +274,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
          int GetEnd() const
          {
             return Edit.GetLineEnd(LineNumber);
+         }
+
+         /// <summary>Gets the zero-based line number</summary>
+         /// <returns></returns>
+         int GetLine() const
+         {
+            return LineNumber;
          }
 
          /// <summary>Gets the line text</summary>
@@ -297,9 +310,71 @@ NAMESPACE_BEGIN2(GUI,Controls)
             Edit.ReplaceSel(str.c_str(), canUndo ? TRUE : FALSE);
             Edit.FreezeWindow(false, redraw);
          }
+      private:
+         /// <summary>Changes the line number.</summary>
+         /// <param name="line">zero-based line number</param>
+         void SetLine(int line)
+         {
+            LineNumber = line;
+         }
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptEdit& Edit;
+         int         LineNumber;
+      };
+
+      /// <summary>Bi-directional line text iterator</summary>
+      class LineTextIterator : public std::iterator<std::bidirectional_iterator_tag, LineProxy>
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         LineTextIterator(ScriptEdit& edit, int line) : Line(edit,line), Edit(edit), LineNumber(line)
+         {}
+         // ------------------------ STATIC -------------------------
+
+         // --------------------- PROPERTIES ------------------------
+			
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         const LineProxy& operator*() const    { return Line;  }
+         const LineProxy* operator->() const   { return &Line; }
+         LineProxy& operator*()                { return Line;  }
+         LineProxy* operator->()               { return &Line; }
+
+         bool operator==(const LineTextIterator& r) const { return Edit.m_hWnd==r.Edit.m_hWnd && LineNumber==r.LineNumber; }
+         bool operator!=(const LineTextIterator& r) const { return Edit.m_hWnd!=r.Edit.m_hWnd || LineNumber!=r.LineNumber; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         LineTextIterator& operator++() 
+         { 
+            Line.SetLine(++LineNumber); 
+            return *this; 
+         }
+
+         LineTextIterator& operator--()
+         { 
+            Line.SetLine(--LineNumber); 
+            return *this; 
+         }
+
+         LineTextIterator operator++(int) 
+         {
+            LineTextIterator tmp(*this); 
+            operator++(); 
+            return tmp;
+         }
+
+         LineTextIterator operator--(int) 
+         {
+            LineTextIterator tmp(*this); 
+            operator--(); 
+            return tmp;
+         }
 
          // -------------------- REPRESENTATION ---------------------
       private:
+         LineProxy   Line;
          ScriptEdit& Edit;
          int         LineNumber;
       };

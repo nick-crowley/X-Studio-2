@@ -88,7 +88,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Gets the character index of the end of a line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
-   int  ScriptEdit::GetLineEnd(int line = -1) const
+   int  ScriptEdit::GetLineEnd(int line) const
    {
       return GetLineStart(line) + GetLineLength(line);
    }
@@ -104,7 +104,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Gets the character index of the start of a line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
-   int ScriptEdit::GetLineStart(int line = -1) const
+   int ScriptEdit::GetLineStart(int line) const
    {
       return LineIndex(line);
    }
@@ -788,7 +788,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Selects an entire line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
-   void  ScriptEdit::SelectLine(int line = -1)
+   void  ScriptEdit::SelectLine(int line)
    {
       SetSel(GetLineStart(line), GetLineEnd(line));
    }
