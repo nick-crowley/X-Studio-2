@@ -42,8 +42,8 @@ public:
    {
       return GameDataState;
    }
-   HICON     LoadIcon(UINT nResID, UINT iSize) const;
-   CBitmap*  LoadBitmap(UINT nResID, int x, int y, UINT flags) const;
+   HICON     LoadIconW(UINT nResID, UINT iSize) const;
+   CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
    
    // ----------------------- MUTATORS ------------------------

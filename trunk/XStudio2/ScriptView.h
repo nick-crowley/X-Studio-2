@@ -8,7 +8,7 @@
 #include "Logic/Common.h"
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
-//#include "afxwin.h"
+#include "CommandTooltip.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -81,7 +81,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ScriptEdit RichEdit;
       CComboBox  ScopeCombo;
       CComboBox  VariablesCombo;
-      CMFCToolTipCtrl  ToolTip;
+      CommandTooltip  ToolTip;
 
    protected:
       EventHandler fnCompileComplete;

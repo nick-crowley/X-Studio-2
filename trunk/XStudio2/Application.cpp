@@ -140,9 +140,16 @@ BOOL Application::InitInstance()
 /// <param name="nResID">The resource identifier.</param>
 /// <param name="iSize">Size of the icon</param>
 /// <returns></returns>
-HICON  Application::LoadIcon(UINT nResID, UINT iSize) const
+/// <exception cref="Logic::Win32Exception">Failed to load icon</exception>
+HICON  Application::LoadIconW(UINT nResID, UINT iSize) const
 {
-   return (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
+   HICON icon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_ICON, iSize, iSize, 0);
+   
+   // Ensure loaded
+   if (icon == nullptr)
+      throw Win32Exception(HERE, GuiString(L"Failed to load icon %d (%dx%d)", nResID, iSize, iSize));
+
+   return icon;
 }
 
 /// <summary>Loads a bitmap.</summary>
@@ -151,7 +158,7 @@ HICON  Application::LoadIcon(UINT nResID, UINT iSize) const
 /// <param name="cy">The height.</param>
 /// <param name="flags">Loading flags.</param>
 /// <returns></returns>
-CBitmap*  Application::LoadBitmap(UINT nResID, int cx, int cy, UINT flags) const
+CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) const
 {
    CBitmap* bmp = new CBitmap();
    HBITMAP h = (HBITMAP)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_BITMAP, cx, cy, flags);
