@@ -256,18 +256,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // --------------------- PROPERTIES ------------------------
 		public:
          PROPERTY_GET_SET(wstring,Text,GetText,SetText);
-         PROPERTY_GET(int,Start,GetStart);
+         PROPERTY_GET(bool,Commented,GetCommented);
          PROPERTY_GET(int,End,GetEnd);
          PROPERTY_GET(int,Length,GetLength);
          PROPERTY_GET(int,Line,GetLine);
+         PROPERTY_GET(bool,NOP,GetNOP);
+         PROPERTY_GET(int,Start,GetStart);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         /// <summary>Gets the character index of the start of the line</summary>
+         
+         /// <summary>Gets whether line is commented</summary>
          /// <returns></returns>
-         int GetStart() const
+         bool GetCommented() const
          {
-            return Edit.GetLineStart(LineNumber);
+            auto txt = GetText();
+            // Check for '*' as first character
+            int pos = txt.find_first_not_of(L' ');
+            return pos != wstring::npos && txt[pos] == L'*';
          }
 
          /// <summary>Gets the character index of the end of the line</summary>
@@ -276,7 +282,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             return Edit.GetLineEnd(LineNumber);
          }
-
+         
          /// <summary>Gets the line length</summary>
          /// <returns></returns>
          int GetLength() const
@@ -289,6 +295,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
          int GetLine() const
          {
             return LineNumber;
+         }
+
+         /// <summary>Gets whether command is NOP</summary>
+         /// <returns></returns>
+         bool GetNOP() const
+         {
+            return Text.find_first_not_of(' ') != wstring::npos;
+         }
+
+         /// <summary>Gets the character index of the start of the line</summary>
+         /// <returns></returns>
+         int GetStart() const
+         {
+            return Edit.GetLineStart(LineNumber);
          }
 
          /// <summary>Gets the line text (Does not alter the edit selection)</summary>
@@ -434,14 +454,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      void   CommentSelection();
       bool   EnsureVisible(int line);
       void   IndentSelection(bool indent);
       void   SetDocument(ScriptDocument* doc);
       void   SetRtf(const string& rtf);
 
    protected:
-      LineTextIterator begin(int line = 0)  { return LineTextIterator(*this, line);             }
-      LineTextIterator end()                { return LineTextIterator(*this, GetLineCount()-1); }
+      LineTextIterator begin(int line = 0);
+      LineTextIterator sbegin();
+      LineTextIterator end();
+      LineTextIterator send();
 
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
