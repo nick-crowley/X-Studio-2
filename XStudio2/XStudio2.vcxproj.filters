@@ -450,6 +450,9 @@
     <ClInclude Include="Logic\DescriptionParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="CommandTooltip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -727,6 +730,12 @@
     </ClCompile>
     <ClCompile Include="Logic\Common.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTooltip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

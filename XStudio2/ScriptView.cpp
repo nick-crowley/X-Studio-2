@@ -167,16 +167,20 @@ NAMESPACE_BEGIN2(GUI,Views)
          CMFCToolTipInfo params;
          params.m_bBoldLabel = TRUE;
          params.m_bDrawDescription = TRUE;
-         params.m_bDrawIcon = FALSE;
+         params.m_bDrawIcon = TRUE;
          params.m_bRoundedCorners = TRUE;
          params.m_bDrawSeparator = TRUE;
 
-         params.m_clrFill = RGB(255, 255, 255);
+         /*params.m_clrFill = RGB(255, 255, 255);
          params.m_clrFillGradient = RGB(228, 228, 240);
          params.m_clrText = RGB(61, 83, 80);
-         params.m_clrBorder = RGB(144, 149, 168);
+         params.m_clrBorder = RGB(144, 149, 168);*/
          ToolTip.SetParams(&params);
-         ToolTip.SetDescription(L"The quick brown fox jumped over the lazy dog.\nThe quick brown fox jumped over the lazy dog.\nThe quick brown fox jumped over the lazy dog");
+         ToolTip.SetDescription(L"The quick brown fox jumped over the lazy dog.");
+         ToolTip.SetFixedWidth(400, 600);
+         ToolTip.SetDelayTime(TTDT_INITIAL, 1500);
+         ToolTip.SetDelayTime(TTDT_AUTOPOP, 30*1000);
+         ToolTip.SetDelayTime(TTDT_RESHOW, 3000);
 
          // Convert script to RTF (ansi)
          string txt;
@@ -312,6 +316,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <returns></returns>
    BOOL ScriptView::PreTranslateMessage(MSG* pMsg)
    {
+      // Relay mouse messages to tooltip
       if(pMsg->message== WM_LBUTTONDOWN ||
          pMsg->message== WM_LBUTTONUP ||
          pMsg->message== WM_MOUSEMOVE)

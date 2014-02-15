@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="CommandTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="CustomDrawImpl.hpp" />
     <ClInclude Include="GameDataWnd.h" />
@@ -244,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="CommandTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
     <ClCompile Include="GameObjectWnd.cpp" />
@@ -338,6 +340,7 @@
     <ClCompile Include="Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="Testing\ScriptValidator.cpp" />
     <ClCompile Include="ToolBarEx.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
