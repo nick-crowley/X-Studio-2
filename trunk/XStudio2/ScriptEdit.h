@@ -279,6 +279,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    public:
       bool   EnsureVisible(int line);
+      void   IndentSelection(bool indent);
       void   SetDocument(ScriptDocument* doc);
       void   SetRtf(const string& rtf);
 
