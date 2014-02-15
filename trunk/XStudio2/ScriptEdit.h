@@ -291,7 +291,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return LineNumber;
          }
 
-         /// <summary>Gets the line text</summary>
+         /// <summary>Gets the line text (Does not alter the edit selection)</summary>
          /// <returns></returns>
          wstring GetText() const
          {
@@ -300,22 +300,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Sets the line text and redraws it</summary>
+         /// <summary>Sets the line text and redraws it (Alters the edit selection)</summary>
          /// <param name="str">Text</param>
          void SetText(const wstring& str)
          {
-            SetText(str, true);
+            SetText(str, true, true);
          }
 
-         /// <summary>Sets the text</summary>
+         /// <summary>Sets the text (Alters the edit selection)</summary>
          /// <param name="str">text.</param>
          /// <param name="canUndo">Whether can be undone.</param>
-         void SetText(const wstring& str, bool canUndo)
+         /// <param name="redraw">Whether to redraw.</param>
+         void SetText(const wstring& str, bool canUndo, bool redraw)
          {
-            //Edit.FreezeWindow(true);
+            Edit.FreezeWindow(true);
             Edit.SelectLine(LineNumber);
             Edit.ReplaceSel(str.c_str(), canUndo ? TRUE : FALSE);
-            //Edit.FreezeWindow(false, redraw);
+            Edit.FreezeWindow(false, redraw);
          }
       private:
          /// <summary>Changes the line number.</summary>
