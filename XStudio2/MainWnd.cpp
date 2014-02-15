@@ -183,7 +183,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
          m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
          DockPane(&m_wndProject);
-
+         
 	      // Output Window:
 	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Output window");
