@@ -1,5 +1,5 @@
 
-// MFC Test 1View.cpp : implementation of the ScriptView class
+// ScriptView.cpp : implementation of the ScriptView class
 //
 
 #include "stdafx.h"
@@ -27,7 +27,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
 	   ON_WM_CONTEXTMENU()
-      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnSelectionChange)
+      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
+      ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_ACTIVATE()
@@ -229,7 +230,16 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   OnContextMenu(this, point);
    }
 
-
+   
+   /// <summary>Scrolls to the desired label</summary>
+   void ScriptView::OnScopeSelectionChange()
+   {
+      // Ensure item selected
+      if (ScopeCombo.GetCurSel() > 0)
+         // Scroll to a couple of lines preceeding the label 
+         RichEdit.EnsureVisible( GetDocument()->Script.Labels[ScopeCombo.GetCurSel()-1].LineNumber - 4 );
+   }
+   
    /// <summary>Set the focus to the script Edit</summary>
    /// <param name="pOldWnd">The old WND.</param>
    void ScriptView::OnSetFocus(CWnd* pOldWnd)
@@ -253,7 +263,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>
    /// <param name="pNMHDR">Message header</param>
    /// <param name="result">The result.</param>
-   void ScriptView::OnSelectionChange(NMHDR* pNMHDR, LRESULT* result)
+   void ScriptView::OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result)
    {
       //SELCHANGE *pSel = reinterpret_cast<SELCHANGE*>(pNMHDR);
       *result = TRUE;
@@ -268,7 +278,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          Console.Log(HERE, e);
       }
    }
-   
+
    /// <summary>Populates the variables dropdown</summary>
    void ScriptView::PopulateVariables()
    {
@@ -343,5 +353,4 @@ NAMESPACE_BEGIN2(GUI,Views)
 
 
 NAMESPACE_END2(GUI,Views)
-
 

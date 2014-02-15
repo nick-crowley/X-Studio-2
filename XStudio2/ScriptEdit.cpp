@@ -62,6 +62,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
 
+   /// <summary>Ensures a line is visible.</summary>
+   /// <param name="line">1-based line number</param>
+   /// <returns></returns>
+   bool  ScriptEdit::EnsureVisible(int line)
+   {
+      SetScrollCoordinates(CPoint(0, max(0,line)));
+      return true;
+   }
    
    /// <summary>Gets the character index of the caret with respect to the current line.</summary>
    /// <returns></returns>

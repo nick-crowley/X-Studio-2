@@ -54,7 +54,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // DEBUG:
-         Console << "OnDrawLabel: " << Colour::Yellow << "rect=" << rect << " bCalcOnly=" << bCalcOnly << ENDL;
+         Console << "OnDrawLabel: " << Colour::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
 
          // Get random title
          wstring sz = SyntaxLib.Find(133, GameVersion::Threat).Text;
@@ -79,11 +79,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         Console << "OnDrawDescription: " << Colour::Yellow << "rect=" << rect << " bCalcOnly=" << bCalcOnly << ENDL;
+         Console << "OnDrawDescription: " << Colour::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
 
          // Get random description
          wstring sz = DescriptionLib.Commands.Find(133, GameVersion::Threat);
-         Console << sz << ENDL << ENDL;
+         //Console << sz << ENDL << ENDL;
       
          // Draw/Calculate rectangle
          pDC->DrawText(sz.c_str(), rect, DT_LEFT|DT_WORDBREAK | (bCalcOnly?DT_CALCRECT:NULL));

@@ -146,6 +146,8 @@ namespace Logic
             // ------------------------ STATIC -------------------------
 
             // --------------------- PROPERTIES ------------------------
+         public:
+            PROPERTY_GET(size_type,Count,GetCount);
 
             // ---------------------- ACCESSORS ------------------------			
             
@@ -173,7 +175,7 @@ namespace Logic
             }
 
             /// <summary>Get label by name</summary>
-            /// <param name="name">name without : operator</param>
+            /// <param name="name">name without ':' operator</param>
             /// <returns></returns>
             /// <exception cref="Logic::LabelNotFoundException">Not found</exception>
             ScriptLabel& operator[](const wstring& name)
@@ -186,6 +188,23 @@ namespace Logic
 
                // Not found:
                throw LabelNotFoundException(HERE, name);
+            }
+
+            /// <summary>Get label by index</summary>
+            /// <param name="index">zero based index</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::IndexOutOfRangeException">Not found</exception>
+            ScriptLabel& operator[](const int index)
+            {
+               int i = 0;
+
+               // Lookup label by index
+               for (LabelIterator it = begin(); it != end(); ++it)
+                  if (index == i++)
+                     return *it;
+
+               // Not found:
+               throw IndexOutOfRangeException(HERE, index, Count);
             }
 
             // ----------------------- MUTATORS ------------------------
