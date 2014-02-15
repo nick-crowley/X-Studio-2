@@ -61,7 +61,63 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   CRichEditCtrl::Dump(dc);
    }
    #endif //_DEBUG
+   
+   /// <summary>Toggles comment on the selected lines.</summary>
+   void  ScriptEdit::CommentSelection()
+   {
+      GuiString  output;
 
+      // Get first/last line
+      LineTextIterator first = sbegin(), last = send();
+      
+      // Select entire block of lines 
+      SetSel(first->Start, last->End);
+      FreezeWindow(true);
+
+      // Choose state based on first line
+      bool comment = !first->Commented;
+
+      // Get selected lines
+      int length = 0;
+      for (auto it = first; it <= last; ++it)
+      {
+         GuiString txt = it->Text;
+
+         // Comment: Add '*' to start of each line
+         if (comment && !it->Commented && !it->NOP)
+            txt.insert(txt.find_first_not_of(L' '), L"* ");
+
+         // Uncomment: Remove '*' from start of each line
+         else if (!comment && it->Commented)
+         {
+            // Erase spaces trailing '*'
+            auto end = txt.find_first_not_of(L' ', txt.find(L'*')+1);
+            if (end != GuiString::npos)
+               txt.erase(txt.find(L'*'), end);
+            else
+               txt.erase(txt.find(L'*'));
+         }
+
+         // Add to output
+         length += txt.length();
+         output += txt;
+
+         // CRLF  [except last line]
+         if (it != last)
+         {
+            output += L"\r";
+            length++;
+         }
+      }
+
+      // Replace existing selection
+      ReplaceSel(output.c_str(), TRUE);
+
+      // Unfreeze window
+      FreezeWindow(false);
+      SetSel(first->Start, last->End);
+   }
+   
    /// <summary>Ensures a line is visible.</summary>
    /// <param name="line">1-based line number</param>
    /// <returns></returns>
@@ -85,14 +141,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return POINT {GetCaretIndex(), 1+LineFromChar(-1)};
    }
 
-   /// <summary>Gets the character index of the end of a line.</summary>
-   /// <param name="line">The zero-based line index, or -1 for current line</param>
-   /// <returns></returns>
-   int  ScriptEdit::GetLineEnd(int line) const
-   {
-      return GetLineStart(line) + GetLineLength(line);
-   }
-
    /// <summary>Gets the length of the line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
@@ -101,14 +149,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CRichEditCtrl::LineLength(LineIndex(line));
    }
    
-   /// <summary>Gets the character index of the start of a line.</summary>
-   /// <param name="line">The zero-based line index, or -1 for current line</param>
-   /// <returns></returns>
-   int ScriptEdit::GetLineStart(int line) const
-   {
-      return LineIndex(line);
-   }
-
    /// <summary>Get line text</summary>
    /// <param name="line">zero based line index, or -1 for current line</param>
    /// <returns></returns>
@@ -161,7 +201,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       auto sel = GetSelection();
       return sel.cpMin != sel.cpMax;
    }
-
+   
    /// <summary>Indents or outdents the selected lines.</summary>
    /// <param name="indent">True to indent, false to outdent.</param>
    void  ScriptEdit::IndentSelection(bool indent)
@@ -169,8 +209,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       GuiString  output;
 
       // Get first/last line
-      LineTextIterator first = begin(LineFromChar(GetSelection().cpMin)),
-                       last = begin(LineFromChar(GetSelection().cpMax));
+      LineTextIterator first = sbegin(), last = send();
       
       // Select entire block of lines 
       SetSel(first->Start, last->End);
@@ -248,6 +287,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Get line iterator for the specified line.</summary>
+   /// <param name="line">Zero-based line number</param>
+   /// <returns></returns>
+   ScriptEdit::LineTextIterator  ScriptEdit::begin(int line)
+   { 
+      return LineTextIterator(*this, line);            
+   }
+   
+   /// <summary>Get line iterator for the first line in the text selection, if any, otherwise the line containing the caret</summary>
+   /// <returns></returns>
+   ScriptEdit::LineTextIterator  ScriptEdit::sbegin() 
+   { 
+      return LineTextIterator(*this, HasSelection() ? LineFromChar(GetSelection().cpMin) : LineFromChar(-1)); 
+   }
+   
+   /// <summary>Get line iterator for the last line.</summary>
+   /// <returns></returns>
+   ScriptEdit::LineTextIterator  ScriptEdit::end() 
+   { 
+      return LineTextIterator(*this, GetLineCount()-1); 
+   }
+
+   /// <summary>Get line iterator for the last line in the text selection, if any, otherwise the line containing the caret</summary>
+   /// <returns></returns>
+   ScriptEdit::LineTextIterator  ScriptEdit::send() 
+   { 
+      return LineTextIterator(*this, HasSelection() ? LineFromChar(GetSelection().cpMax) : LineFromChar(-1)); 
+   }
+
    /// <summary>Closes the suggestion list</summary>
    void ScriptEdit::CloseSuggestions()
    {
@@ -262,7 +330,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (!SuggestionsList.DestroyWindow())
          throw Win32Exception(HERE, L"Unable to destroy suggestion list");
    }
-
+   
    /// <summary>Selects and formats a token.</summary>
    /// <param name="offset">The character index of the line</param>
    /// <param name="t">The token</param>
@@ -302,6 +370,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
    
+   /// <summary>Gets the character index of the end of a line.</summary>
+   /// <param name="line">The zero-based line index, or -1 for current line</param>
+   /// <returns></returns>
+   int  ScriptEdit::GetLineEnd(int line) const
+   {
+      return GetLineStart(line) + GetLineLength(line);
+   }
+
+   /// <summary>Gets the character index of the start of a line.</summary>
+   /// <param name="line">The zero-based line index, or -1 for current line</param>
+   /// <returns></returns>
+   int ScriptEdit::GetLineStart(int line) const
+   {
+      return LineIndex(line);
+   }
+
    /// <summary>Gets the coordinates of the first character</summary>
    /// <returns>Character co-orindates</returns>
    CPoint ScriptEdit::GetScrollCoordinates() const
