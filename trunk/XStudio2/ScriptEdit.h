@@ -341,8 +341,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
          LineProxy& operator*()                { return Line;  }
          LineProxy* operator->()               { return &Line; }
 
-         bool operator==(const LineTextIterator& r) const { return Edit.m_hWnd==r.Edit.m_hWnd && LineNumber==r.LineNumber; }
-         bool operator!=(const LineTextIterator& r) const { return Edit.m_hWnd!=r.Edit.m_hWnd || LineNumber!=r.LineNumber; }
+         bool operator==(const LineTextIterator& r) const  { return Edit.m_hWnd==r.Edit.m_hWnd && LineNumber==r.LineNumber; }
+         bool operator!=(const LineTextIterator& r) const  { return Edit.m_hWnd!=r.Edit.m_hWnd || LineNumber!=r.LineNumber; }
+         bool operator<(const LineTextIterator& r) const   { return LineNumber < r.LineNumber;  }
+         bool operator>(const LineTextIterator& r) const   { return LineNumber > r.LineNumber;  }
+         bool operator<=(const LineTextIterator& r) const  { return LineNumber <= r.LineNumber; }
+         bool operator>=(const LineTextIterator& r) const  { return LineNumber >= r.LineNumber; }
+         /*distance_type operator-(const LineTextIterator& r) const  { return LineNumber - r.LineNumber; }
+         distance_type operator+(const LineTextIterator& r) const  { return LineNumber + r.LineNumber; }*/
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -426,6 +432,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SetRtf(const string& rtf);
 
    protected:
+      LineTextIterator begin(int line = 0)  { return LineTextIterator(*this, line);             }
+      LineTextIterator end()                { return LineTextIterator(*this, GetLineCount()-1); }
+
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze, bool invalidate = true);
