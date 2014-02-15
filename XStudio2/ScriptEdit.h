@@ -258,6 +258,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          PROPERTY_GET_SET(wstring,Text,GetText,SetText);
          PROPERTY_GET(int,Start,GetStart);
          PROPERTY_GET(int,End,GetEnd);
+         PROPERTY_GET(int,Length,GetLength);
          PROPERTY_GET(int,Line,GetLine);
 
          // ---------------------- ACCESSORS ------------------------			
@@ -274,6 +275,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
          int GetEnd() const
          {
             return Edit.GetLineEnd(LineNumber);
+         }
+
+         /// <summary>Gets the line length</summary>
+         /// <returns></returns>
+         int GetLength() const
+         {
+            return Edit.GetLineLength(LineNumber);
          }
 
          /// <summary>Gets the zero-based line number</summary>
@@ -296,19 +304,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="str">Text</param>
          void SetText(const wstring& str)
          {
-            SetText(str, true, true);
+            SetText(str, true);
          }
 
          /// <summary>Sets the text</summary>
          /// <param name="str">text.</param>
          /// <param name="canUndo">Whether can be undone.</param>
-         /// <param name="redraw">Whether to redraw.</param>
-         void SetText(const wstring& str, bool canUndo, bool redraw)
+         void SetText(const wstring& str, bool canUndo)
          {
-            Edit.FreezeWindow(true);
+            //Edit.FreezeWindow(true);
             Edit.SelectLine(LineNumber);
             Edit.ReplaceSel(str.c_str(), canUndo ? TRUE : FALSE);
-            Edit.FreezeWindow(false, redraw);
+            //Edit.FreezeWindow(false, redraw);
          }
       private:
          /// <summary>Changes the line number.</summary>
