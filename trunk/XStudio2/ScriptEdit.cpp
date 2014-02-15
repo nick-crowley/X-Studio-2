@@ -208,7 +208,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
 
-      //// Replace existing selection
+      // Replace existing selection
       ReplaceSel(output.c_str(), TRUE);
 
       // Unfreeze window
