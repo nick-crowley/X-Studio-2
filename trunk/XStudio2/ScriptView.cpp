@@ -26,18 +26,22 @@ NAMESPACE_BEGIN2(GUI,Views)
    IMPLEMENT_DYNCREATE(ScriptView, CFormView)
 
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
-	   ON_WM_CONTEXTMENU()
-      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
       ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
+      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
+      ON_WM_ACTIVATE()
+      ON_WM_CONTEXTMENU()
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
-      ON_WM_ACTIVATE()
       ON_WM_SETFOCUS()
+      ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
+      ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
       ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
       ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
       ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryClipboardPaste)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -149,6 +153,18 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
 
+   /// <summary>Undo last edit operation</summary>
+   void ScriptView::OnEditUndo()
+   {
+      RichEdit.Undo();
+   }
+
+   /// <summary>Redo last edit operation</summary>
+   void ScriptView::OnEditRedo()
+   {
+      RichEdit.Redo();
+   }
+
    void ScriptView::OnInitialUpdate()
    {
 	   CFormView::OnInitialUpdate();
@@ -219,6 +235,20 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnQueryClipboardPaste(CCmdUI *pCmdUI)
    {
       pCmdUI->Enable(RichEdit.CanPaste(CF_UNICODETEXT));
+   }
+
+   /// <summary>Query state of UNDO context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryEditUndo(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.CanUndo());
+   }
+
+   /// <summary>Query state of REDO context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void ScriptView::OnQueryEditRedo(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(RichEdit.CanRedo());
    }
 
    /// <summary>Invoke context menu</summary>

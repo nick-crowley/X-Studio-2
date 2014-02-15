@@ -65,6 +65,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      afx_msg void OnEditUndo();
+      afx_msg void OnEditRedo();
       afx_msg void OnClipboardCopy();
       afx_msg void OnClipboardCut();
       afx_msg void OnClipboardPaste();
@@ -73,6 +75,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnQueryClipboardCut(CCmdUI *pCmdUI);
       afx_msg void OnQueryClipboardPaste(CCmdUI *pCmdUI);
+      afx_msg void OnQueryEditUndo(CCmdUI *pCmdUI);
+      afx_msg void OnQueryEditRedo(CCmdUI *pCmdUI);
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnScopeSelectionChange();
       afx_msg void OnSetFocus(CWnd* pOldWnd);
