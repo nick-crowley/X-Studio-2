@@ -52,6 +52,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   ScriptDocument* GetDocument() const;
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      virtual BOOL PreTranslateMessage(MSG* pMsg);
 
    protected:
       void AdjustLayout();
@@ -72,9 +74,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnQueryClipboardCut(CCmdUI *pCmdUI);
       afx_msg void OnQueryClipboardPaste(CCmdUI *pCmdUI);
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-      afx_msg void OnSelectionChange(NMHDR* pNMHDR, LRESULT* result);
+      afx_msg void OnScopeSelectionChange();
       afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
+      afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
 
       // -------------------- REPRESENTATION ---------------------
    public:
@@ -85,8 +88,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       EventHandler fnCompileComplete;
-   public:
-      virtual BOOL PreTranslateMessage(MSG* pMsg);
    };
 
    #ifndef _DEBUG  

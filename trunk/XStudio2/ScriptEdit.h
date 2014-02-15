@@ -278,6 +278,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      bool   EnsureVisible(int line);
       void   SetDocument(ScriptDocument* doc);
       void   SetRtf(const string& rtf);
 
