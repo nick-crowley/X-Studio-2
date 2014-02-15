@@ -49,66 +49,68 @@
 // Edit Menu
 #define ID_EDIT_COMMENT                 203
 #define ID_EDIT_LOCALIZE                204
+#define ID_EDIT_INDENT                  205
+#define ID_EDIT_OUTDENT                 206
 
 // Test menu
-#define ID_TEST_RUN_ALL                 205
-#define ID_TEST_COMPILE                 206
+#define ID_TEST_RUN_ALL                 207
+#define ID_TEST_COMPILE                 208
 
 // View menu
-#define ID_VIEW_PROJECT                 207
-#define ID_VIEW_SCRIPT_OBJECTS          208
-#define ID_VIEW_GAME_OBJECTS            209
-#define ID_VIEW_COMMANDS                210
-#define ID_VIEW_OUTPUT                  211
-#define ID_VIEW_PROPERTIES              212
-#define ID_VIEW_STRING_LIBRARY          213
-#define ID_VIEW_MEDIA_LIBRARY           214
-#define ID_VIEW_CUSTOMIZE               215
-#define ID_VIEW_PREFERENCES             216
+#define ID_VIEW_PROJECT                 209
+#define ID_VIEW_SCRIPT_OBJECTS          210
+#define ID_VIEW_GAME_OBJECTS            211
+#define ID_VIEW_COMMANDS                212
+#define ID_VIEW_OUTPUT                  213
+#define ID_VIEW_PROPERTIES              214
+#define ID_VIEW_STRING_LIBRARY          215
+#define ID_VIEW_MEDIA_LIBRARY           216
+#define ID_VIEW_CUSTOMIZE               217
+#define ID_VIEW_PREFERENCES             218
 
 // Window menu
-#define ID_WINDOW_MANAGER               217
+#define ID_WINDOW_MANAGER               219
 
 // Help
-#define ID_HELP_FORUMS                  218
+#define ID_HELP_FORUMS                  220
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
 // PropertiesWnd Context
-#define ID_EXPAND_ALL                   219
-#define ID_SORTPROPERTIES               220
-#define ID_PROPERTIES1                  221
-#define ID_PROPERTIES2                  222
+#define ID_EXPAND_ALL                   221
+#define ID_SORTPROPERTIES               222
+#define ID_PROPERTIES1                  223
+#define ID_PROPERTIES2                  224
 
 // ProjectWnd Context menu
-#define ID_OPEN                         223
-#define ID_OPEN_WITH                    224
-#define ID_DUMMY_COMPILE                225
-#define ID_CLASS_ADD_MEMBER_FUNCTION    226
-#define ID_CLASS_ADD_MEMBER_VARIABLE    227
-#define ID_CLASS_DEFINITION             228
-#define ID_CLASS_PROPERTIES             229
-#define ID_NEW_FOLDER                   230
-#define ID_PROPERTIES                   231
+#define ID_OPEN                         225
+#define ID_OPEN_WITH                    226
+#define ID_DUMMY_COMPILE                227
+#define ID_CLASS_ADD_MEMBER_FUNCTION    228
+#define ID_CLASS_ADD_MEMBER_VARIABLE    229
+#define ID_CLASS_DEFINITION             230
+#define ID_CLASS_PROPERTIES             231
+#define ID_NEW_FOLDER                   232
+#define ID_PROPERTIES                   233
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 
 // Toolbar Customization
-#define ID_TOOLS_MACRO                  232
+#define ID_TOOLS_MACRO                  234
 
 // LanguageEditor
-#define ID_EDIT_BOLD                    233
-#define ID_EDIT_ITALIC                  234
-#define ID_EDIT_UNDERLINE               235
-#define ID_EDIT_COLOUR                  236
-#define ID_EDIT_LEFT                    237
-#define ID_EDIT_CENTRE                  238
-#define ID_EDIT_RIGHT                   239
-#define ID_EDIT_JUSTIFY                 240
-#define ID_EDIT_ADD_BUTTON              241
-#define ID_VIEW_SOURCE                  242
-#define ID_VIEW_EDITOR                  243
-#define ID_VIEW_DISPLAY                 244
+#define ID_EDIT_BOLD                    235
+#define ID_EDIT_ITALIC                  236
+#define ID_EDIT_UNDERLINE               237
+#define ID_EDIT_COLOUR                  238
+#define ID_EDIT_LEFT                    239
+#define ID_EDIT_CENTRE                  240
+#define ID_EDIT_RIGHT                   241
+#define ID_EDIT_JUSTIFY                 242
+#define ID_EDIT_ADD_BUTTON              243
+#define ID_VIEW_SOURCE                  244
+#define ID_VIEW_EDITOR                  245
+#define ID_VIEW_DISPLAY                 246
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
