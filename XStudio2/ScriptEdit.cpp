@@ -166,42 +166,34 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="indent">True to indent, false to outdent.</param>
    void  ScriptEdit::IndentSelection(bool indent)
    {
-      vector<GuiString>  lines;
-      GuiString          output;
+      GuiString  output;
 
-      // Get index of first/last line
-      int first = LineFromChar(GetSelection().cpMin),
-          last = LineFromChar(GetSelection().cpMax);
+      // Get first/last line
+      LineTextIterator first = begin(LineFromChar(GetSelection().cpMin)),
+                       last = begin(LineFromChar(GetSelection().cpMax));
       
-      // Select lines entirely
-      SetSel(LineIndex(first), LineIndex(last)+GetLineLength(last));
-
-      // Freeze window
+      // Select entire block of lines 
+      SetSel(first->Start, last->End);
       FreezeWindow(true);
-
-      // DEBUG:
-      //Console << "Indenting first=" << first << " last=" << last << " indent=" << indent << ENDL;
 
       // Get selected lines
       int length = 0;
-      for (int i = first; i <= last; i++)
+      for (auto it = first; it <= last; ++it)
       {
-         // Get line text
-         lines.push_back( GetLineText(i) );
-         GuiString& ln = lines.back();
+         GuiString txt = it->Text;
 
          // In/Outdent by adding/removing tab from start of each line
          if (indent)
-            ln.insert(0, L"   ");
-         else if (ln.Left(3) == L"   ")
-            ln.erase(0, 3);
+            txt.insert(0, L"   ");
+         else if (txt.Left(3) == L"   ")
+            txt.erase(0, 3);
 
          // Add to output
-         length += ln.length();
-         output += ln;
+         length += txt.length();
+         output += txt;
 
-         // CRLF
-         if (i != last)
+         // CRLF  [except last line]
+         if (it != last)
          {
             output += L"\r";
             length++;
@@ -213,7 +205,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Unfreeze window
       FreezeWindow(false);
-      SetSel(LineIndex(first), LineIndex(first)+length);
+      SetSel(first->Start, last->End);
    }
 
    /// <summary>Gets the length of the line by character index.</summary>
