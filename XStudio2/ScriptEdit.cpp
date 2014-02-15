@@ -146,6 +146,60 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return sel.cpMin != sel.cpMax;
    }
 
+   /// <summary>Indents or outdents the selected lines.</summary>
+   /// <param name="indent">True to indent, false to outdent.</param>
+   void  ScriptEdit::IndentSelection(bool indent)
+   {
+      // Freeze window
+      FreezeWindow(true);
+
+      // Get index of first/last line
+      auto sel = GetSelection();
+      int first = LineFromChar(sel.cpMin),
+          last = LineFromChar(sel.cpMax);
+
+      // DEBUG:
+      //Console << "Indenting first=" << first << " last=" << last << " indent=" << indent << ENDL;
+
+      // Indent/outdent selected lines
+      for (int line = last; line >= first; --line)
+      {
+         // Indent: Prepend '   ' to each line
+         if (indent)
+         {
+            // Extend selection-end by 3 chars
+            sel.cpMax += 3;
+            // Shift selection-begin by 3 chars if first line isn't entirely selected
+            if (line == first && sel.cpMin > LineIndex(line))
+               sel.cpMin += 3;
+
+            // Indent: Prepend '   ' to line
+            SetSel(LineIndex(line), LineIndex(line));
+            ReplaceSel(L"   ");
+         }
+         // Outdent: Remove '   ' from each line
+         else
+         {
+            SetSel(LineIndex(line), LineIndex(line)+3);
+            if (GetSelText() == L"   ")
+            {
+               ReplaceSel(L"");
+
+               // Shift selection-begin by 3 chars if first line isn't entirely selected
+               if (line == first && sel.cpMin > LineIndex(line))
+                  sel.cpMin -= 3;
+               
+               // Reduce selection-end by 3 chars
+               sel.cpMax -= 3;
+            }
+         }
+      }
+
+      // Unfreeze window
+      FreezeWindow(false);
+      SetSel(sel);
+   }
+
    /// <summary>Gets the length of the line by character index.</summary>
    /// <param name="nChar">The zero-based character index, or -1 for current line</param>
    /// <returns></returns>
@@ -609,7 +663,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="shift">whether SHIFT key is pressed</param>
    void ScriptEdit::OnTabKeyDown(bool shift)
    {
-      ReplaceSel(L"    ", TRUE);
+      // No selection: Insert spaces
+      if (!HasSelection())
+         ReplaceSel(L"    ", TRUE);
+      
+      // Indent/Outdent
+      else 
+         IndentSelection(!shift);
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>
