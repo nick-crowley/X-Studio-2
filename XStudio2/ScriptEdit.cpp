@@ -233,6 +233,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width()+10);
+
+      // Clear 'Undo' buffer
+      EmptyUndoBuffer();
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
