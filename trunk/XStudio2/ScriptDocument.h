@@ -7,10 +7,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class ScriptEdit;
 NAMESPACE_END2(GUI,Controls)
 
-/// <summary>Forward declaration</summary>
-NAMESPACE_BEGIN2(GUI,Utils)
-   class SearchOperation;
-NAMESPACE_END2(GUI,Utils)
 
 /// <summary>Documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)

@@ -1,10 +1,6 @@
 #pragma once
 #include "Logic/Path.h"
-
-/// <summary>Forward declaration</summary>
-NAMESPACE_BEGIN2(GUI,Utils)
-   class SearchOperation;
-NAMESPACE_END2(GUI,Utils)
+#include "Logic/SearchOperation.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -34,10 +30,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
       IO::Path     GetFullPath() const;
       DocumentType GetType() const;
 

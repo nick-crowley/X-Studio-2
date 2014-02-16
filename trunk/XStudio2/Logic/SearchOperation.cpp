@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "SearchOperation.h"
-#include "Logic/XFileSystem.h"
-#include "Logic/ScriptFileReader.h"
-#include "ScriptDocument.h"
-#include "DocumentBase.h"
+#include "XFileSystem.h"
+#include "ScriptFileReader.h"
+#include "../ScriptDocument.h"
+#include "../DocumentBase.h"
 
-namespace GUI
+namespace Logic
 {
-   namespace Utils
-   {
+   
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -89,6 +88,6 @@ namespace GUI
          // Set initial state
          Complete = Files.empty();
       }
-   }
+   
 }
 

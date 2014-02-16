@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "SearchOperation.h"
 #include "DocumentBase.h"
 
 
@@ -27,17 +26,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void DocumentBase::AssertValid() const
+   /// <summary>Finds the next.</summary>
+   /// <param name="src">The source.</param>
+   /// <returns></returns>
+   bool  DocumentBase::FindNext(SearchOperation& src)
    {
-	   CDocument::AssertValid();
+      return true;
    }
-   
-   void DocumentBase::Dump(CDumpContext& dc) const
-   {
-	   CDocument::Dump(dc);
-   }
-   #endif //_DEBUG
 
    /// <summary>Get the full document path.</summary>
    /// <returns></returns>
