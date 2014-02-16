@@ -126,6 +126,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetScrollCoordinates(CPoint(0, max(0,line)));
       return true;
    }
+
+   /// <summary>Gets all the text.</summary>
+   /// <returns></returns>
+   wstring  ScriptEdit::GetAllText() const
+   {
+      // Allocate buffer
+      int length = GetTextLength();
+      CharArrayPtr buf(new wchar[length+1]);
+      
+      // Get entire text
+      GetWindowTextW(buf.get(), length);
+      return wstring(buf.get());
+   }
    
    /// <summary>Gets the character index of the caret with respect to the current line.</summary>
    /// <returns></returns>

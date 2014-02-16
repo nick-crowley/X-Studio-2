@@ -53,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      virtual bool  FindNext(SearchOperation& src);
+      bool          FindNext(SearchOperation& src);
       void          SetSelection(CHARRANGE rng);
       virtual BOOL  PreTranslateMessage(MSG* pMsg);
 

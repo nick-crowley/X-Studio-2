@@ -8,6 +8,9 @@ namespace Logic
       /// <summary></summary>
       enum class SearchTarget { Selection, Document, OpenDocuments, ProjectDocuments, ScriptFolder };
 
+      /// <summary>Get search target name</summary>
+      wstring  GetString(SearchTarget t);
+
       /// <summary></summary>
       class SearchOperation
       {
