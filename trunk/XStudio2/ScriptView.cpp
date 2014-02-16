@@ -164,7 +164,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       RichEdit.CommentSelection();
    }
-
+   
    /// <summary>Indent selected commands</summary>
    void ScriptView::OnEditIndent()
    {

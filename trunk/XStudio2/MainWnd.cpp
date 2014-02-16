@@ -45,13 +45,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
 	   ON_WM_CREATE()
-	   ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
+      ON_WM_SETTINGCHANGE()
+      ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnEditFind)
+	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnRunAllTests)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnViewStringLibrary)
-      ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnRunAllTests)
-	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+      ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
-	   ON_WM_SETTINGCHANGE()
+	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryEditFind)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -173,7 +175,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	      
          
-         
+         // Find & Replace dialog:
+         m_dlgFind.Create(FindDialog::IDD, this);
          
 
 	      // Project Window:
@@ -271,6 +274,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
+   /// <summary>Displays the Find & Replace dialog.</summary>
+   void MainWnd::OnEditFind()
+   {
+      m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
+   }
+
    void MainWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
       // Success: Change app state
@@ -286,6 +295,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
 	         theApp.ProcessShellCommand(cmdInfo);
       }
+   }
+
+   void MainWnd::OnQueryEditFind(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(TRUE);
+      pCmdUI->SetCheck(m_dlgFind.IsWindowVisible());
    }
    
    void MainWnd::OnRunAllTests()

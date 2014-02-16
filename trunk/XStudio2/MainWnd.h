@@ -13,6 +13,7 @@
 #include "Logic/GameDataWorker.h"
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
+#include "FindDialog.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -56,12 +57,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
    protected:
-      void onGameDataFeedback(const WorkerProgress& wp);
-      void onScriptViewCaretMoved(POINT pt);
-
-	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnEditFind();
+      handler void onGameDataFeedback(const WorkerProgress& wp);
+      afx_msg void OnQueryEditFind(CCmdUI *pCmdUI);
       afx_msg void OnRunAllTests();
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+      handler void onScriptViewCaretMoved(POINT pt);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
       afx_msg void OnViewCustomize();
       afx_msg void OnViewStringLibrary();
@@ -71,6 +73,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // -------------------- REPRESENTATION ---------------------
 
    protected: 
+      FindDialog        m_dlgFind;
 	   CMFCMenuBar       m_wndMenuBar;
 	   ToolBarEx         m_wndToolBar;
 	   CMFCStatusBar     m_wndStatusBar;

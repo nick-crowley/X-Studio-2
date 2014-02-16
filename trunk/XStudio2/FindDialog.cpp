@@ -16,6 +16,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          , UseRegEx(FALSE)
          , MatchCase(FALSE)
          , MatchWholeWord(FALSE)
+         , Expanded(true)
       {
 
       }
@@ -50,12 +51,49 @@ NAMESPACE_BEGIN2(GUI,Window)
          DDX_Check(pDX, IDC_CASE_CHECK, MatchCase);
          DDX_Check(pDX, IDC_WORD_CHECK, MatchWholeWord);
          DDX_Control(pDX, IDC_FIND, FindButton);
-         DDX_Control(pDX, IDC_REPLACE, ReplaceButton);
          DDX_Control(pDX, IDC_FIND_ALL, FindAllButton);
-         DDX_Control(pDX, IDC_REPLACE_ALL, ReplaceAllButton);
          DDX_Control(pDX, IDC_FIND_COMBO, FindCombo);
+         DDX_Control(pDX, IDC_OPTIONS, OptionsButton);
+         DDX_Control(pDX, IDC_REPLACE, ReplaceButton);
+         DDX_Control(pDX, IDC_REPLACE_ALL, ReplaceAllButton);
          DDX_Control(pDX, IDC_REPLACE_COMBO, ReplaceCombo);
          DDX_Control(pDX, IDC_TARGET_COMBO, TargetCombo);
+      }
+
+      void FindDialog::Expand(bool expand)
+      {
+         vector<int> Buttons  = { IDC_FIND, IDC_REPLACE, IDC_OPTIONS, IDC_FIND_ALL, IDC_REPLACE_ALL };
+         vector<int> Controls = { IDC_REGEX_CHECK, IDC_CASE_CHECK, IDC_WORD_CHECK, IDC_RESULTS1_RADIO, IDC_RESULTS2_RADIO, IDC_FIND_GROUPBOX };
+
+         // Show/Hide controls
+         for (int id : Controls)
+            GetDlgItem(id)->ShowWindow(expand ? SW_SHOW : SW_HIDE);
+
+         // Calculate amount to resize
+         CRect resizeRect;
+         GetDlgItem(IDC_FIND_RESIZE)->GetWindowRect(resizeRect);
+         int resize = (expand ? 1 : -1) * resizeRect.Height();
+
+         // Resize window
+         CRect wnd;
+         GetWindowRect(wnd);
+         SetWindowPos(nullptr, 0, 0, wnd.Width(), wnd.Height()+resize, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+         
+         // Move buttons
+         for (int id : Buttons)
+         {
+            CRect rc;
+            GetDlgItem(id)->GetWindowRect(rc);
+            ScreenToClient(rc);
+            rc.OffsetRect(0, resize);
+            GetDlgItem(id)->SetWindowPos(nullptr, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+         }
+
+         // Set options text
+         OptionsButton.SetWindowTextW(expand ? L"Hide Options" : L"Show Options");
+
+         // Update state
+         Expanded = expand;
       }
       
       BOOL FindDialog::OnInitDialog()
@@ -68,6 +106,10 @@ NAMESPACE_BEGIN2(GUI,Window)
          TargetCombo.AddString(L"All Open Documents");
          TargetCombo.AddString(L"All Project Files");
          TargetCombo.AddString(L"Scripts Folder");
+         TargetCombo.SetCurSel(0);
+
+         // Set output
+         this->CheckRadioButton(IDC_RESULTS1_RADIO, IDC_RESULTS2_RADIO, IDC_RESULTS1_RADIO);
 
          return TRUE;  // return TRUE unless you set the focus to a control
       }
@@ -90,7 +132,8 @@ NAMESPACE_BEGIN2(GUI,Window)
       
       void FindDialog::OnOptions_Click()
       {
-         // TODO: Add your control notification handler code here
+         // Toggle window size
+         Expand(!Expanded);
       }
 
       void FindDialog::OnReplace_Click()
