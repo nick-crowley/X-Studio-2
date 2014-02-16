@@ -2,6 +2,8 @@
 #include "SearchOperation.h"
 #include "Logic/XFileSystem.h"
 #include "Logic/ScriptFileReader.h"
+#include "ScriptDocument.h"
+#include "DocumentBase.h"
 
 namespace GUI
 {
@@ -9,6 +11,10 @@ namespace GUI
    {
    
       // -------------------------------- CONSTRUCTION --------------------------------
+
+      SearchOperation::SearchOperation() : Complete(true)
+      {
+      }
 
       SearchOperation::SearchOperation(const wstring& txt, SearchTarget targ) 
          : Term(txt), Target(targ), LastMatch({-1,-1}), Complete(false)
@@ -37,7 +43,7 @@ namespace GUI
             if (theApp.IsDocumentOpen(Files.front()))
             {
                // Search document + highlight match
-               if (theApp.GetDocument(Files.front())->FindNext(this))
+               if (theApp.GetDocument(Files.front())->FindNext(*this))
                   return true;
             }
             // File on disc: Open in memory and search
@@ -48,13 +54,13 @@ namespace GUI
                ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(f.FullPath, false);
              
                // Search translated text
-               if (script.FindNext(this))
+               if (script.FindNext(*this))
                {
-                  auto doc = theApp.OpenDocumentFile(f.FullPath.c_str());
+                  auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
 
                   // highlight match
-                  if (doc->SetSelection(LastMatch))
-                     return true;
+                  doc->SetSelection(LastMatch);
+                  return true;
                }
             }
 

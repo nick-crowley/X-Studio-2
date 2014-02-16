@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "SearchOperation.h"
 #include <propkey.h>
 #include "Logic/FileStream.h"
 #include "Logic/XFileInfo.h"
@@ -47,17 +48,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNCREATE(ScriptDocument, CDocument)
+   IMPLEMENT_DYNCREATE(ScriptDocument, DocumentBase)
 
-   BEGIN_MESSAGE_MAP(ScriptDocument, CDocument)
+   BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptDocument::ScriptDocument()
+   ScriptDocument::ScriptDocument() 
    {
-	   // TODO: add one-time construction code here
-
+	   Type = DocumentType::Script;
    }
 
    ScriptDocument::~ScriptDocument()
@@ -68,18 +68,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void ScriptDocument::AssertValid() const
-   {
-	   CDocument::AssertValid();
-   }
-
-   void ScriptDocument::Dump(CDumpContext& dc) const
-   {
-	   CDocument::Dump(dc);
-   }
-   #endif //_DEBUG
-
    void  ScriptDocument::AttachEdit(ScriptEdit& edit)
    {
       Edit = &edit;
@@ -87,7 +75,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BOOL ScriptDocument::OnNewDocument()
    {
-	   if (!CDocument::OnNewDocument())
+	   if (!DocumentBase::OnNewDocument())
 		   return FALSE;
 
 	   // TODO: add reinitialization code here
@@ -185,17 +173,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return FALSE;
    }
 
-
-   void ScriptDocument::Serialize(CArchive& ar)
+   bool  ScriptDocument::FindNext(SearchOperation& src)
    {
-	   if (ar.IsStoring())
-	   {
-		   // TODO: add storing code here
-	   }
-	   else
-	   {
-		   // TODO: add loading code here
-	   }
+      return true;
+   }
+
+   void  ScriptDocument::SetSelection(CHARRANGE rng)
+   {
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

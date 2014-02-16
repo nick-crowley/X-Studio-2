@@ -450,14 +450,17 @@
     <ClInclude Include="Logic\DescriptionParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="CommandTooltip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FindDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="DocumentBase.h">
+      <Filter>Header Files\GUI\Documents</Filter>
+    </ClInclude>
     <ClInclude Include="SearchOperation.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandTooltip.h">
+      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -737,17 +740,20 @@
     <ClCompile Include="Logic\Common.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="CommandTooltip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
     <ClCompile Include="FindDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="DocumentBase.cpp">
+      <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
     <ClCompile Include="SearchOperation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTooltip.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

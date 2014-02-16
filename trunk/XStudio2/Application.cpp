@@ -57,6 +57,51 @@ int Application::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+/// <summary>Gets an open document</summary>
+/// <param name="p">Full path.</param>
+/// <returns></returns>
+/// <exception cref="Logic::InvalidOperationException">Document not found</exception>
+DocumentBase*  Application::GetDocument(IO::Path p) const
+{
+   // Iterate thru document templates
+   auto it = this->GetFirstDocTemplatePosition();
+   while (auto docTemplate = this->GetNextDocTemplate(it))
+   {
+      // Iterate thru documents
+      auto it2 = docTemplate->GetFirstDocPosition();
+      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
+      {
+         // Compare path
+         if (doc->GetFullPath() == p)
+            return doc;
+      }
+   }
+
+   throw InvalidOperationException(HERE, L"Document is not open");
+}
+
+/// <summary>Gets an open document</summary>
+/// <param name="p">Full path.</param>
+/// <returns></returns>
+/// <exception cref="Logic::InvalidOperationException">Document not found</exception>
+DocumentList  Application::GetOpenDocuments() const
+{
+   DocumentList docs;
+
+   // Iterate thru document templates
+   auto it = this->GetFirstDocTemplatePosition();
+   while (auto docTemplate = this->GetNextDocTemplate(it))
+   {
+      // Iterate thru documents
+      auto it2 = docTemplate->GetFirstDocPosition();
+      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
+         docs.push_back(doc);
+   }
+
+   // Return open documents
+   return docs;
+}
+
 /// <summary>Gets the main window.</summary>
 /// <returns></returns>
 GUI::Windows::MainWnd*  Application::GetMainWindow() const
@@ -205,6 +250,28 @@ void Application::PreLoadState()
 {
 	GetContextMenuManager()->AddMenu(GuiString(IDS_EDIT_MENU).c_str(), IDM_EDIT_POPUP);
 	GetContextMenuManager()->AddMenu(GuiString(IDR_PROJECT).c_str(), IDM_PROJECT_POPUP);
+}
+
+/// <summary>Query whether a document is open</summary>
+/// <param name="p">Full path</param>
+/// <returns></returns>
+bool Application::IsDocumentOpen(IO::Path p) const
+{
+   // Iterate thru document templates
+   auto it = this->GetFirstDocTemplatePosition();
+   while (auto docTemplate = this->GetNextDocTemplate(it))
+   {
+      // Iterate thru documents
+      auto it2 = docTemplate->GetFirstDocPosition();
+      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
+      {
+         // Compare path
+         if (doc->GetFullPath() == p)
+            return true;
+      }
+   }
+
+   return false;
 }
 
 void Application::LoadCustomState()

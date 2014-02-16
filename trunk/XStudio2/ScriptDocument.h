@@ -1,11 +1,16 @@
 #pragma once
 #include "Logic/ScriptFile.h"
+#include "DocumentBase.h"
 
 /// <summary>Forward declaration</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    class ScriptEdit;
 NAMESPACE_END2(GUI,Controls)
 
+/// <summary>Forward declaration</summary>
+NAMESPACE_BEGIN2(GUI,Utils)
+   class SearchOperation;
+NAMESPACE_END2(GUI,Utils)
 
 /// <summary>Documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -26,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    };
 
    /// <summary>MSCI Script document</summary>
-   class ScriptDocument : public CDocument
+   class ScriptDocument : public DocumentBase
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -50,16 +55,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif
       void  AttachEdit(ScriptEdit& edit);
+      bool  FindNext(SearchOperation& src);
+      void  SetSelection(CHARRANGE rng);
 
 	   virtual BOOL OnNewDocument();
       virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
       virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
-	   virtual void Serialize(CArchive& ar);
    
       // -------------------- REPRESENTATION ---------------------
    public:

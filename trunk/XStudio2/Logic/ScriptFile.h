@@ -3,6 +3,7 @@
 #include "CommandSyntax.h"
 #include "ParameterSyntax.h"
 #include "ScriptCommand.h"
+//#include "../SearchOperation.h"
 #include "MapIterator.hpp"
 #include <algorithm>
 

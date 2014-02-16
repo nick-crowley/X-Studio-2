@@ -18,6 +18,7 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
+         SearchOperation();
          SearchOperation(const wstring& txt, SearchTarget targ);
          virtual ~SearchOperation();
 
@@ -40,7 +41,7 @@ namespace GUI
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         list<Path>    Files;
+         list<IO::Path>    Files;
          CHARRANGE     LastMatch;
          SearchTarget  Target;
          wstring       Term;
