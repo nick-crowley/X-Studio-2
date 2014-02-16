@@ -124,6 +124,12 @@ NAMESPACE_BEGIN2(GUI,Window)
 
       void FindDialog::OnFind_Click()
       {
+         if (Search.Complete)
+         {
+            Search = SearchOperation(L"secondary", SearchTarget::Document);
+            Search.FindNext();
+         }
+
          // Get active document?
          /*auto view = theApp.GetMainWindow()->GetActiveScriptView();
          if (view == nullptr)

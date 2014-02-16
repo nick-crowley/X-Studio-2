@@ -83,6 +83,37 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    #endif //_DEBUG
 
+   /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="src">search data</param>
+   /// <returns>True if found, false otherwise</returns>
+   bool  ScriptView::FindNext(SearchOperation& src)
+   {
+      return false;
+   }
+
+   /// <summary>Sets the text selection.</summary>
+   /// <param name="rng">text range</param>
+   void  ScriptView::SetSelection(CHARRANGE rng)
+   {
+      RichEdit.SetSel(rng);
+   }
+
+   /// <summary>Relay mouse events to tooltip</summary>
+   /// <param name="pMsg">MSG.</param>
+   /// <returns></returns>
+   BOOL ScriptView::PreTranslateMessage(MSG* pMsg)
+   {
+      // Relay mouse messages to tooltip
+      if(pMsg->message== WM_LBUTTONDOWN ||
+         pMsg->message== WM_LBUTTONUP ||
+         pMsg->message== WM_MOUSEMOVE)
+      {
+         ToolTip.RelayEvent(pMsg);
+      }
+
+      return CFormView::PreTranslateMessage(pMsg);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    void  ScriptView::AdjustLayout()
@@ -397,23 +428,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   return CFormView::PreCreateWindow(cs);
    }
    
-
-   /// <summary>Relay mouse events to tooltip</summary>
-   /// <param name="pMsg">MSG.</param>
-   /// <returns></returns>
-   BOOL ScriptView::PreTranslateMessage(MSG* pMsg)
-   {
-      // Relay mouse messages to tooltip
-      if(pMsg->message== WM_LBUTTONDOWN ||
-         pMsg->message== WM_LBUTTONUP ||
-         pMsg->message== WM_MOUSEMOVE)
-      {
-         ToolTip.RelayEvent(pMsg);
-      }
-
-      return CFormView::PreTranslateMessage(pMsg);
-   }
-
    /// <summary>Selects the current scope in the labels dropdown</summary>
    void ScriptView::UpdateScope()
    {

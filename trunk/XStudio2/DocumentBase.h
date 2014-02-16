@@ -35,7 +35,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      bool  FindNext(SearchOperation& src);
+      virtual bool  FindNext(SearchOperation& src);
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:

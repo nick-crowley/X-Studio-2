@@ -45,6 +45,34 @@ Application::Application() : GameDataState(AppState::NoGameData)
 
 // ------------------------------- PUBLIC METHODS -------------------------------
 
+/// <summary>Get document start iterator.</summary>
+/// <returns></returns>
+Application::DocumentIterator  Application::begin()
+{
+   return DocumentIterator(*this, this->GetFirstDocTemplatePosition());
+}
+
+/// <summary>Get document end iterator.</summary>
+/// <returns></returns>
+Application::DocumentIterator  Application::end()
+{
+   return DocumentIterator(*this, nullptr);
+}
+
+/// <summary>Get document start iterator.</summary>
+/// <returns></returns>
+Application::DocumentIterator  Application::cbegin() const
+{
+   return DocumentIterator(*this, this->GetFirstDocTemplatePosition());
+}
+
+/// <summary>Get document end iterator.</summary>
+/// <returns></returns>
+Application::DocumentIterator  Application::cend() const
+{
+   return DocumentIterator(*this, nullptr);
+}
+
 /// <summary>Exits the instance.</summary>
 /// <returns></returns>
 int Application::ExitInstance()
@@ -61,23 +89,15 @@ int Application::ExitInstance()
 /// <param name="p">Full path.</param>
 /// <returns></returns>
 /// <exception cref="Logic::InvalidOperationException">Document not found</exception>
-DocumentBase*  Application::GetDocument(IO::Path p) const
+DocumentBase&  Application::GetDocument(IO::Path p) const
 {
-   // Iterate thru document templates
-   auto it = this->GetFirstDocTemplatePosition();
-   while (auto docTemplate = this->GetNextDocTemplate(it))
-   {
-      // Iterate thru documents
-      auto it2 = docTemplate->GetFirstDocPosition();
-      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
-      {
-         // Compare path
-         if (doc->GetFullPath() == p)
-            return doc;
-      }
-   }
+   // Find by path
+   for (auto doc = cbegin(); doc != cend(); ++doc)
+      if (doc->GetFullPath() == p)
+         return *doc;
 
-   throw InvalidOperationException(HERE, L"Document is not open");
+   // Not found: Error
+   throw InvalidOperationException(HERE, GuiString(L"Cannot find document '%s'", p.c_str()));
 }
 
 /// <summary>Gets an open document</summary>
@@ -88,17 +108,11 @@ DocumentList  Application::GetOpenDocuments() const
 {
    DocumentList docs;
 
-   // Iterate thru document templates
-   auto it = this->GetFirstDocTemplatePosition();
-   while (auto docTemplate = this->GetNextDocTemplate(it))
-   {
-      // Iterate thru documents
-      auto it2 = docTemplate->GetFirstDocPosition();
-      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
-         docs.push_back(doc);
-   }
+   // Enumerate docs
+   for (auto doc = cbegin(); doc != cend(); ++doc)
+      docs.push_back(doc.operator->());
 
-   // Return open documents
+   // Return list
    return docs;
 }
 
@@ -257,20 +271,12 @@ void Application::PreLoadState()
 /// <returns></returns>
 bool Application::IsDocumentOpen(IO::Path p) const
 {
-   // Iterate thru document templates
-   auto it = this->GetFirstDocTemplatePosition();
-   while (auto docTemplate = this->GetNextDocTemplate(it))
-   {
-      // Iterate thru documents
-      auto it2 = docTemplate->GetFirstDocPosition();
-      while (auto doc = (DocumentBase*)docTemplate->GetNextDoc(it2))
-      {
-         // Compare path
-         if (doc->GetFullPath() == p)
-            return true;
-      }
-   }
+   // Find by path
+   for (auto doc = cbegin(); doc != cend(); ++doc)
+      if (doc->GetFullPath() == p)
+         return true;
 
+   // Not found
    return false;
 }
 

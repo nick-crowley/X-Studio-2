@@ -7,6 +7,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class ScriptEdit;
 NAMESPACE_END2(GUI,Controls)
 
+/// <summary>Forward declaration</summary>
+NAMESPACE_BEGIN2(GUI,Views)
+   class ScriptView;
+NAMESPACE_END2(GUI,Views)
+
 
 /// <summary>Documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -48,12 +53,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- PROPERTIES ------------------------
 			
       // ---------------------- ACCESSORS ------------------------			
+   public:
+      ScriptView* GetView();
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  AttachEdit(ScriptEdit& edit);
-      bool  FindNext(SearchOperation& src);
-      void  SetSelection(CHARRANGE rng);
+      void          AttachEdit(ScriptEdit& edit);
+      virtual bool  FindNext(SearchOperation& src);
+      void          SetSelection(CHARRANGE rng);
 
 	   virtual BOOL OnNewDocument();
       virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
