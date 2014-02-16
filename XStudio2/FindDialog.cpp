@@ -8,7 +8,7 @@
 
 
 /// <summary>User interface windows</summary>
-NAMESPACE_BEGIN2(GUI,Window)
+NAMESPACE_BEGIN2(GUI,Windows)
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -223,6 +223,6 @@ NAMESPACE_BEGIN2(GUI,Window)
 
 
 /// <summary>User interface windows</summary>
-NAMESPACE_END2(GUI,Window)
+NAMESPACE_END2(GUI,Windows)
 
 
