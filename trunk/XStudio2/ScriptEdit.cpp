@@ -67,7 +67,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       GuiString  output;
 
-      // Get first/last line
+      // Get first/last line of selection
       LineTextIterator first = sbegin(), last = send();
       
       // Select entire block of lines 
@@ -208,7 +208,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       GuiString  output;
 
-      // Get first/last line
+      // Get first/last line of selection
       LineTextIterator first = sbegin(), last = send();
       
       // Select entire block of lines 
@@ -262,9 +262,78 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Document = doc;
    }
 
+   /// <summary>Finds the next instance of a search term.</summary>
+   /// <param name="term">search term.</param>
+   /// <param name="selectionOnly">Entire file or selection only.</param>
+   /// <param name="includeComments">Whether to include comments.</param>
+   /*void  ScriptEdit::Find(const wstring& term, bool selectionOnly, bool includeComments)
+   {
+   }*/
+   
+   /// <summary>Replaces all instances of a search term.</summary>
+   /// <param name="term">search term.</param>
+   /// <param name="replacement">The replacement.</param>
+   /// <param name="selectionOnly">Entire file or selection only.</param>
+   /// <param name="includeComments">Whether to include comments.</param>
+   //void  ScriptEdit::ReplaceAll(const wstring& term, const wstring& replacement, bool selectionOnly, bool includeComments)
+   //{
+   //   GuiString  output;
+
+   //   // Get first/last line
+   //   LineTextIterator first = begin(), last = end();
+   //   
+   //   // Select entire block of lines 
+   //   //SetSel(first->Start, last->End);
+   //   FreezeWindow(true);
+
+   //   // Choose state based on first line
+   //   //bool comment = !first->Commented;
+
+   //   // Get selected lines
+   //   int length = 0;
+   //   for (auto it = first; it <= last; ++it)
+   //   {
+   //      GuiString txt = it->Text;
+
+   //      // Comment: Add '*' to start of each line
+   //      if (comment && !it->Commented && !it->NOP)
+   //         txt.insert(txt.find_first_not_of(L' '), L"* ");
+
+   //      // Uncomment: Remove '*' from start of each line
+   //      else if (!comment && it->Commented)
+   //      {
+   //         // Erase spaces trailing '*'
+   //         auto end = txt.find_first_not_of(L' ', txt.find(L'*')+1);
+   //         if (end != GuiString::npos)
+   //            txt.erase(txt.find(L'*'), end);
+   //         else
+   //            txt.erase(txt.find(L'*'));
+   //      }
+
+   //      // Add to output
+   //      length += txt.length();
+   //      output += txt;
+
+   //      // CRLF  [except last line]
+   //      if (it != last)
+   //      {
+   //         output += L"\r";
+   //         length++;
+   //      }
+   //   }
+
+   //   // Replace existing selection
+   //   ReplaceSel(output.c_str(), TRUE);
+
+   //   // Unfreeze window
+   //   FreezeWindow(false);
+   //   SetSel(first->Start, last->End);
+   //}
+
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
    /// <exception cref="Logic::InvalidOperationException">No document attached</exception>
+   /// <exception cref="Logic::Win32Exception">Unable to set text</exception>
    void ScriptEdit::SetRtf(const string& rtf)
    {
       if (Document == nullptr)
