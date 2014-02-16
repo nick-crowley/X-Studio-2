@@ -50,6 +50,11 @@ namespace Logic
          Variables.clear();
       }
 
+      bool  ScriptFile::FindNext(SearchOperation& src)
+      {
+         return true;
+      }
+
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>
       /// <param name="line">The 1-based line number</param>
       /// <returns>Label name, or empty string if global</returns>

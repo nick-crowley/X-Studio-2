@@ -2,10 +2,9 @@
 
 #include "Logic/Common.h"
 
-namespace GUI
+namespace Logic
 {
-   namespace Utils
-   {
+   
       /// <summary></summary>
       enum class SearchTarget { Selection, Document, OpenDocuments, ProjectDocuments, ScriptFolder };
 
@@ -48,7 +47,7 @@ namespace GUI
          bool          Complete;
       };
 
-   }
+   
 }
 
-using namespace GUI::Utils;
+using namespace Logic;

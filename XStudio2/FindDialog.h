@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-#include "SearchOperation.h"
+#include "Logic/SearchOperation.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Window)

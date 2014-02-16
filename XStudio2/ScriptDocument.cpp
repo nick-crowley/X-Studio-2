@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
-#include "SearchOperation.h"
 #include <propkey.h>
 #include "Logic/FileStream.h"
 #include "Logic/XFileInfo.h"
