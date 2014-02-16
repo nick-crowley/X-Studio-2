@@ -57,11 +57,11 @@ namespace Logic
       {
          GuiString text;
 
-         // Flatten translated command text. Mimic the format of RichEdit (double-char line break), so char indicies match up
+         // Flatten translated command text. 
          for (const auto& cmd : Commands.Input)
          {
             text += cmd.Text;
-            text += L"\r\n";
+            text += L'\n';
          }
          
          // Find from last match + set location if found

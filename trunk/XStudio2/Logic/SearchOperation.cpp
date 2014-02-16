@@ -81,8 +81,9 @@ namespace Logic
                   {
                      auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
 
-                     // highlight match
-                     doc->SetSelection(LastMatch);
+                     // Perform search again (due to indentation causing different character indicies)
+                     LastMatch = {0,0};
+                     doc->FindNext(*this);
                      return true;
                   }
                }
@@ -92,12 +93,14 @@ namespace Logic
                // Error: Skip file
                auto f = Files.front();
                Files.pop_front();
+               LastMatch = {0,0};
                // Supply filename
                throw GenericException(HERE, GuiString(L"Unable to search '%s' : %s", f.c_str(), e.Message.c_str()));
             }
 
             // No match: search next file
             Files.pop_front();
+            LastMatch = {0,0};
          }
 
          // No match: 
