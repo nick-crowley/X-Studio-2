@@ -12,6 +12,13 @@ enum class AppState  { NoGameData, GameDataPresent };
 typedef Event<AppState>                    AppStateChangedEvent;
 typedef AppStateChangedEvent::DelegatePtr  AppStateChangedHandler;
 
+namespace GUI
+{
+   namespace Windows
+   {
+      class MainWnd;
+   }
+}
 
 /// <summary>Main thread</summary>
 class Application : public CWinAppEx
@@ -38,10 +45,8 @@ public:
    // ---------------------- ACCESSORS ------------------------			
    
 public:
-   AppState  GetState() const
-   {
-      return GameDataState;
-   }
+   GUI::Windows::MainWnd*  GetMainWindow() const;
+   AppState  GetState() const;
    HICON     LoadIconW(UINT nResID, UINT iSize) const;
    CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
@@ -55,11 +60,7 @@ public:
 	virtual void PreLoadState();
 	virtual void SaveCustomState();
 
-   void  SetState(AppState s) 
-   {
-      GameDataState = s;
-      StateChanged.Raise(s);
-   }
+   void  SetState(AppState s);
 
 protected:
 	afx_msg void OnAppAbout();

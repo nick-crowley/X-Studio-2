@@ -84,6 +84,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    #endif //_DEBUG
 
+   /// <summary>Gets the active script view.</summary>
+   /// <returns></returns>
+   ScriptView*  MainWnd::GetActiveScriptView()
+   {
+      return dynamic_cast<ScriptView*>(GetActiveView());
+   }
+
    BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
    {
 	   // base class does the real work

@@ -456,6 +456,9 @@
     <ClInclude Include="FindDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="SearchOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -742,6 +745,9 @@
     </ClCompile>
     <ClCompile Include="FindDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchOperation.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

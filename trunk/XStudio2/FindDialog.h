@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "SearchOperation.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Window)
@@ -11,6 +12,8 @@ NAMESPACE_BEGIN2(GUI,Window)
       public:
          enum { IDD = IDD_FINDREPLACE };
 
+      private:
+         
          // --------------------- CONSTRUCTION ----------------------
       public:
 	      FindDialog(CWnd* pParent = NULL);   // standard constructor
@@ -24,6 +27,8 @@ NAMESPACE_BEGIN2(GUI,Window)
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
+      protected:
+         SearchTarget GetSearchTarget() const;
 
          // ----------------------- MUTATORS ------------------------
       protected:
@@ -44,6 +49,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          // -------------------- REPRESENTATION ---------------------
       
       protected:
+         bool Expanded;
          BOOL UseRegEx;
          BOOL MatchCase;
          BOOL MatchWholeWord;
@@ -56,8 +62,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
-      protected:
-         bool Expanded;
+         SearchOperation Search;
       };
 
 /// <summary>User interface windows</summary>

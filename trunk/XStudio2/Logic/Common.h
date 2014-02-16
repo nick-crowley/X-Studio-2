@@ -50,6 +50,15 @@ namespace Logic
 
       int  Index;
    };
+
+   /// <summary>Text search data object</summary>
+   class TextSearch
+   {
+   public:
+      CHARRANGE  Range,
+                 Result;
+      wstring    Term;
+   };
 }
 
 using namespace Logic;
