@@ -139,6 +139,8 @@
 #define IDC_OPTIONS                     816
 #define IDC_RESULTS1_RADIO              817
 #define IDC_RESULTS2_RADIO              818
+#define IDC_FIND_GROUPBOX               819
+#define IDC_FIND_RESIZE                 820
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

@@ -61,8 +61,6 @@ namespace Logic
       Test_DescriptionReader();
       //Text_DescriptionRegEx();
 
-      CFindReplaceDialog* dlg = new CFindReplaceDialog();
-      dlg->Create(FALSE, L"", L"", FR_DOWN, AfxGetMainWnd());
    }
 
 	// ------------------------------ PROTECTED METHODS -----------------------------

@@ -27,6 +27,8 @@ NAMESPACE_BEGIN2(GUI,Window)
 
          // ----------------------- MUTATORS ------------------------
       protected:
+         void Expand(bool expand);
+
 	      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
          virtual BOOL OnInitDialog();
          
@@ -41,18 +43,21 @@ NAMESPACE_BEGIN2(GUI,Window)
 
          // -------------------- REPRESENTATION ---------------------
       
-      public:
+      protected:
          BOOL UseRegEx;
          BOOL MatchCase;
          BOOL MatchWholeWord;
          CButton FindButton;
-         CButton ReplaceButton;
          CButton FindAllButton;
+         CButton OptionsButton;
+         CButton ReplaceButton;
          CButton ReplaceAllButton;
          CComboBox FindCombo;
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
+      protected:
+         bool Expanded;
       };
 
 /// <summary>User interface windows</summary>
