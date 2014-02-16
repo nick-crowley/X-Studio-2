@@ -17,10 +17,6 @@
 #define IDR_LANGUAGEVIEW                112
 #define IDR_SCRIPTVIEW                  113
 
-///////////////////////////////// DIALOGS //////////////////////////////
-
-#define IDD_ABOUTBOX                    114
-
 ////////////////////////////////// MENUS ///////////////////////////////
 
 #define IDM_EDIT_POPUP                  115
@@ -112,19 +108,37 @@
 #define ID_VIEW_EDITOR                  245
 #define ID_VIEW_DISPLAY                 246
 
+///////////////////////////////// DIALOGS //////////////////////////////
+
+#define IDD_ABOUTBOX                    790
+#define IDD_FINDREPLACE                 791
+
 ///////////////////////////////// CONTROLS //////////////////////////////
 
-#define IDC_LOADSCRIPT                  800
-#define IDC_RUNTESTS                    801
-#define IDC_COMPILE                     802
+// Script View
+#define IDC_SCOPE_COMBO                 800
+#define IDC_VARIABLES_COMBO             801
+#define IDC_SCRIPT_EDIT                 802
 
-#define IDC_SCOPE_COMBO                 803
-#define IDC_VARIABLES_COMBO             804
-#define IDC_SCRIPT_EDIT                 805
+// Language View
+#define IDC_PAGE_LIST                   803
+#define IDC_STRING_LIST                 804
+#define IDC_STRING_EDIT                 805
 
-#define IDC_PAGE_LIST                   806
-#define IDC_STRING_LIST                 807
-#define IDC_STRING_EDIT                 808
+// Find Dialog
+#define IDC_FIND                        806
+#define IDC_REPLACE                     807
+#define IDC_FIND_ALL                    808
+#define IDC_REPLACE_ALL                 809
+#define IDC_FIND_COMBO                  810
+#define IDC_REPLACE_COMBO               811
+#define IDC_TARGET_COMBO                812
+#define IDC_CASE_CHECK                  813
+#define IDC_WORD_CHECK                  814
+#define IDC_REGEX_CHECK                 815
+#define IDC_OPTIONS                     816
+#define IDC_RESULTS1_RADIO              817
+#define IDC_RESULTS2_RADIO              818
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

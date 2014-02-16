@@ -131,6 +131,7 @@
     <ClInclude Include="CommandTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="CustomDrawImpl.hpp" />
+    <ClInclude Include="FindDialog.h" />
     <ClInclude Include="GameDataWnd.h" />
     <ClInclude Include="GameObjectWnd.h" />
     <ClInclude Include="ImageListEx.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="CommandTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
+    <ClCompile Include="FindDialog.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />
     <ClCompile Include="GameObjectWnd.cpp" />
     <ClCompile Include="ImageListEx.cpp" />
