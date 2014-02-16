@@ -301,7 +301,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <returns></returns>
          bool GetNOP() const
          {
-            return Text.find_first_not_of(' ') != wstring::npos;
+            return Text.find_first_not_of(' ') == wstring::npos;
          }
 
          /// <summary>Gets the character index of the start of the line</summary>
