@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Logic/Common.h"
+#include "Common.h"
 
 namespace Logic
 {
@@ -12,7 +12,7 @@ namespace Logic
       wstring  GetString(SearchTarget t);
 
       /// <summary></summary>
-      class SearchOperation
+      class SearchData
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -20,12 +20,12 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         SearchOperation();
-         SearchOperation(const wstring& txt, SearchTarget targ);
-         virtual ~SearchOperation();
+         SearchData();
+         SearchData(const wstring& txt, SearchTarget targ);
+         virtual ~SearchData();
 
-         DEFAULT_COPY(SearchOperation);	// Default copy semantics
-         DEFAULT_MOVE(SearchOperation);	// Default move semantics
+         DEFAULT_COPY(SearchData);	// Default copy semantics
+         DEFAULT_MOVE(SearchData);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
       private:

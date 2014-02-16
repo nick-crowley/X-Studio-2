@@ -17,7 +17,7 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary></summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, Dummy };
+      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindReplace, Dummy };
 
       /// <summary></summary>
       class WorkerProgress
@@ -52,6 +52,12 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Poll whether thread has been commanded to stop</summary>
+         bool  IsAborted() const
+         {
+            return Aborted;
+         }
 
          // ----------------------- MUTATORS ------------------------
          
@@ -86,9 +92,9 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       private:
-         Operation  Operation;
-         CWnd*      MainWnd;
-         bool       Aborted;
+         Operation     Operation;
+         CWnd*         MainWnd;
+         volatile bool Aborted;
       };
 
       /// <summary>Thread function</summary>

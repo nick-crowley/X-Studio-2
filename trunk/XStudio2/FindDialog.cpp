@@ -5,7 +5,7 @@
 #include "FindDialog.h"
 #include "MainWnd.h"
 #include "afxdialogex.h"
-
+#include "FindProgressDialog.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -146,14 +146,24 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
             // Init operation
             Started = true;
-            Search = SearchOperation(GetSearchTerm(), GetSearchTarget());
+            WorkerData.Search = SearchData(GetSearchTerm(), GetSearchTarget());
             FindButton.SetWindowTextW(L"Find Next");
          }
 
          try
          {
             // Find next match
-            if (!Search.FindNext())
+            Worker.Start(&WorkerData);
+            
+            // Show progress dialog 
+            FindProgressDialog ProgressDlg;
+            ProgressDlg.DoModal(&Worker);
+            
+            // Find next match
+            //if (!Search.FindNext())
+
+            // Complete?
+            if (WorkerData.Search.Complete)
             {
                // Feedback
                Console << Cons::Heading << "Search completed" << ENDL;

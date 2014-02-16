@@ -459,7 +459,13 @@
     <ClInclude Include="CommandTooltip.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\SearchOperation.h">
+    <ClInclude Include="FindProgressDialog.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\SearchWorker.h">
+      <Filter>Header Files\Logic\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\SearchData.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
@@ -752,7 +758,13 @@
     <ClCompile Include="CommandTooltip.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\SearchOperation.cpp">
+    <ClCompile Include="FindProgressDialog.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\SearchWorker.cpp">
+      <Filter>Source Files\Logic\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\SearchData.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>

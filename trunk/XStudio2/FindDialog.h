@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
-#include "Logic/SearchOperation.h"
+#include "Logic/SearchData.h"
+#include "Logic/SearchWorker.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -64,8 +65,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
-         SearchOperation Search;
-         bool            Started;
+         SearchWorkerData WorkerData;
+         SearchWorker Worker;
+         bool         Started;
       };
 
 /// <summary>User interface windows</summary>
