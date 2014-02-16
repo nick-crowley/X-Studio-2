@@ -28,12 +28,16 @@ NAMESPACE_BEGIN2(GUI,Window)
          // ----------------------- MUTATORS ------------------------
       protected:
 	      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+         virtual BOOL OnInitDialog();
          
-         afx_msg void OnFind();
-         afx_msg void OnReplace();
-         afx_msg void OnFindAll();
-         afx_msg void OnReplaceAll();
-         afx_msg void OnOptions();
+         afx_msg void OnFind_Click();
+         afx_msg void OnFind_TextChanged();
+         afx_msg void OnFindAll_Click();
+         afx_msg void OnOptions_Click();
+         afx_msg void OnReplace_Click();
+         afx_msg void OnReplace_TextChanged();
+         afx_msg void OnReplaceAll_Click();
+         afx_msg void OnTarget_TextChanged();
 
          // -------------------- REPRESENTATION ---------------------
       
@@ -48,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          CComboBox FindCombo;
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
+         
       };
 
 /// <summary>User interface windows</summary>
