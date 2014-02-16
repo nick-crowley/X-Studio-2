@@ -127,17 +127,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return true;
    }
 
-   /// <summary>Gets all the text.</summary>
+   /// <summary>Gets entire script as a string delimited by single char (vertical tab) line breaks.</summary>
    /// <returns></returns>
    wstring  ScriptEdit::GetAllText() const
    {
-      // Allocate buffer
-      int length = GetTextLength();
-      CharArrayPtr buf(new wchar[length+1]);
-      
+      CString str;
       // Get entire text
-      GetWindowTextW(buf.get(), length);
-      return wstring(buf.get());
+      GetTextRange(0, GetTextLength(), str);
+      return (const wchar*)str;
    }
    
    /// <summary>Gets the character index of the caret with respect to the current line.</summary>
