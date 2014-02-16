@@ -67,9 +67,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Attaches the script edit.</summary>
+   /// <param name="edit">The edit.</param>
    void  ScriptDocument::AttachEdit(ScriptEdit& edit)
    {
       Edit = &edit;
+   }
+
+   /// <summary>Gets the view.</summary>
+   /// <returns></returns>
+   ScriptView* ScriptDocument::GetView()
+   {
+      auto pos = GetFirstViewPosition();
+      return dynamic_cast<ScriptView*>(GetNextView(pos));
    }
 
    BOOL ScriptDocument::OnNewDocument()
@@ -77,13 +87,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   if (!DocumentBase::OnNewDocument())
 		   return FALSE;
 
-	   // TODO: add reinitialization code here
-	   // (SDI documents will reuse this document)
+	   // TODO: add initialization code here
 
 	   return TRUE;
    }
 
 
+   /// <summary>Opens a document.</summary>
+   /// <param name="lpszPathName">path.</param>
+   /// <returns></returns>
    BOOL ScriptDocument::OnOpenDocument(LPCTSTR lpszPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
@@ -112,6 +124,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    
 
+   /// <summary>Saves the document</summary>
+   /// <param name="lpszPathName">path.</param>
+   /// <returns></returns>
    BOOL ScriptDocument::OnSaveDocument(LPCTSTR lpszPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
@@ -172,13 +187,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return FALSE;
    }
 
+   /// <summary>Finds the next text match</summary>
+   /// <param name="src">search data</param>
+   /// <returns></returns>
    bool  ScriptDocument::FindNext(SearchOperation& src)
    {
-      return true;
+      return GetView()->FindNext(src);
    }
 
+   /// <summary>Sets the text selection in the view</summary>
+   /// <param name="rng">text range.</param>
    void  ScriptDocument::SetSelection(CHARRANGE rng)
    {
+      GetView()->SetSelection(rng);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

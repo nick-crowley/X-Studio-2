@@ -50,9 +50,26 @@ namespace Logic
          Variables.clear();
       }
 
+      /// <summary>Finds the location of the next match, if any</summary>
+      /// <param name="src">search data</param>
+      /// <returns>True if found, false otherwise</returns>
       bool  ScriptFile::FindNext(SearchOperation& src)
       {
-         return true;
+         GuiString text;
+
+         // Flatten translated command text. Mimic the format of RichEdit (single char line break), so char indicies match up
+         for (const auto& cmd : Commands.Input)
+         {
+            text += cmd.Text;
+            text += '\n';
+         }
+         
+         // Find from last match + set location if found
+         auto pos = text.find(src.Term, src.LastMatch.cpMax);
+         src.SetMatch(pos != GuiString::npos ? pos : -1);
+         
+         // Return result
+         return pos != GuiString::npos;
       }
 
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>

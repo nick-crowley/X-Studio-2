@@ -25,6 +25,8 @@ namespace Logic
          DEFAULT_MOVE(SearchOperation);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
+      private:
+         static const CHARRANGE  NO_MATCH;
 
          // --------------------- PROPERTIES ------------------------
 
@@ -33,6 +35,7 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          bool  FindNext();
+         void  SetMatch(int pos = -1);
 
       private:
          void  BuildFileList();
@@ -40,11 +43,11 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
 
       public:
-         list<IO::Path>    Files;
-         CHARRANGE     LastMatch;
-         SearchTarget  Target;
-         wstring       Term;
-         bool          Complete;
+         list<IO::Path>  Files;
+         CHARRANGE       LastMatch;
+         SearchTarget    Target;
+         wstring         Term;
+         bool            Complete;
       };
 
    

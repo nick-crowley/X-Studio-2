@@ -31,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    bool  DocumentBase::FindNext(SearchOperation& src)
    {
-      return true;
+      return false;
    }
 
    /// <summary>Get the full document path.</summary>
