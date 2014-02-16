@@ -2,7 +2,7 @@
 #include "afxwin.h"
 
 /// <summary>User interface windows</summary>
-NAMESPACE_BEGIN2(GUI,Window)
+//NAMESPACE_BEGIN2(GUI,Window)
    
       /// <summary>Find text dialog</summary>
       class FindDialog : public CDialogEx
@@ -28,12 +28,6 @@ NAMESPACE_BEGIN2(GUI,Window)
          // ----------------------- MUTATORS ------------------------
       protected:
 	      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-         
-         afx_msg void OnFind();
-         afx_msg void OnReplace();
-         afx_msg void OnFindAll();
-         afx_msg void OnReplaceAll();
-         afx_msg void OnOptions();
 
          // -------------------- REPRESENTATION ---------------------
       
@@ -45,10 +39,15 @@ NAMESPACE_BEGIN2(GUI,Window)
          CButton ReplaceButton;
          CButton FindAllButton;
          CButton ReplaceAllButton;
+         afx_msg void OnBnClickedFind();
+         afx_msg void OnBnClickedReplace();
+         afx_msg void OnBnClickedFindAll();
+         afx_msg void OnBnClickedReplaceAll();
+         afx_msg void OnBnClickedOptions();
          CComboBox FindCombo;
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
       };
 
 /// <summary>User interface windows</summary>
-NAMESPACE_END2(GUI,Window)
+//NAMESPACE_END2(GUI,Window)
