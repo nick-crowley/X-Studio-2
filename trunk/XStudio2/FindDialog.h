@@ -3,7 +3,7 @@
 #include "Logic/SearchOperation.h"
 
 /// <summary>User interface windows</summary>
-NAMESPACE_BEGIN2(GUI,Window)
+NAMESPACE_BEGIN2(GUI,Windows)
    
       /// <summary>Find text dialog</summary>
       class FindDialog : public CDialogEx
@@ -69,4 +69,4 @@ NAMESPACE_BEGIN2(GUI,Window)
       };
 
 /// <summary>User interface windows</summary>
-NAMESPACE_END2(GUI,Window)
+NAMESPACE_END2(GUI,Windows)
