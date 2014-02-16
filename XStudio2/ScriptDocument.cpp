@@ -73,6 +73,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       Edit = &edit;
    }
+   
+   /// <summary>Finds the next text match</summary>
+   /// <param name="src">search data</param>
+   /// <returns></returns>
+   bool  ScriptDocument::FindNext(SearchOperation& src)
+   {
+      return GetView()->FindNext(src);
+   }
 
    /// <summary>Gets the view.</summary>
    /// <returns></returns>
@@ -185,14 +193,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Feedback
       data.SendFeedback(Colour::Red, ProgressType::Failure, 0, L"Failed to save script");
       return FALSE;
-   }
-
-   /// <summary>Finds the next text match</summary>
-   /// <param name="src">search data</param>
-   /// <returns></returns>
-   bool  ScriptDocument::FindNext(SearchOperation& src)
-   {
-      return GetView()->FindNext(src);
    }
 
    /// <summary>Sets the text selection in the view</summary>

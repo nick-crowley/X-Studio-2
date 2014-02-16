@@ -2,6 +2,7 @@
 #include "SearchOperation.h"
 #include "XFileSystem.h"
 #include "ScriptFileReader.h"
+#include "../MainWnd.h"
 #include "../ScriptDocument.h"
 #include "../DocumentBase.h"
 
@@ -27,6 +28,20 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get search target name</summary>
+      wstring  GetString(SearchTarget t)
+      {
+         switch (t)
+         {
+         case SearchTarget::Selection:         return L"Selection";
+         case SearchTarget::Document:          return L"Document";
+         case SearchTarget::OpenDocuments:     return L"OpenDocuments";
+         case SearchTarget::ProjectDocuments:  return L"ProjectDocuments";
+         case SearchTarget::ScriptFolder:      return L"ScriptFolder";
+         }
+         return L"Invalid";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       bool  SearchOperation::FindNext()
@@ -38,29 +53,47 @@ namespace Logic
          // Search thru remaining files for a match
          while (!Files.empty())
          {
-            // Already open: Search document
-            if (theApp.IsDocumentOpen(Files.front()))
+            try
             {
-               // Search document + highlight match
-               if (theApp.GetDocument(Files.front()).FindNext(*this))
-                  return true;
-            }
-            // File on disc: Open in memory and search
-            else
-            {
-               // Read script
-               XFileInfo f(Files.front());
-               ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(f.FullPath, false);
-             
-               // Search translated text
-               if (script.FindNext(*this))
+               // Already open: Search document
+               if (theApp.IsDocumentOpen(Files.front()))
                {
-                  auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
+                  // Feedback
+                  Console << L"Searching document: " << Colour::Yellow << Files.front() << ENDL;
 
-                  // highlight match
-                  doc->SetSelection(LastMatch);
-                  return true;
+                  // Search document + highlight match
+                  auto& doc = (ScriptDocument&)theApp.GetDocument(Files.front());
+                  if (doc.FindNext(*this))
+                     return true;
                }
+               // File on disc: Open in memory and search
+               else
+               {
+                  // Feedback
+                  Console << L"Searching script: " << Colour::Yellow << Files.front() << ENDL;
+
+                  // Read script
+                  XFileInfo f(Files.front());
+                  ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(f.FullPath, false);
+             
+                  // Search translated text
+                  if (script.FindNext(*this))
+                  {
+                     auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
+
+                     // highlight match
+                     doc->SetSelection(LastMatch);
+                     return true;
+                  }
+               }
+            }
+            catch (ExceptionBase& e)
+            {
+               // Error: Skip file
+               auto f = Files.front();
+               Files.pop_front();
+               // Supply filename
+               throw GenericException(HERE, GuiString(L"Unable to search '%s' : %s", f.c_str(), e.Message.c_str()));
             }
 
             // No match: search next file
@@ -93,9 +126,10 @@ namespace Logic
 
          switch (Target)
          {
-         // Document: DEBUG
+         // Document: get active script
          case SearchTarget::Document:
-            Files.push_back(L"D:\\X3 Albion Prelude\\scripts\\!config.faction.plutarch.pck");
+            if (auto view = theApp.GetMainWindow()->GetActiveScriptView())
+               Files.push_back(view->GetDocument()->GetFullPath());
             break;
 
          // OpenDocuments: enumerate documents
@@ -108,8 +142,10 @@ namespace Logic
          case SearchTarget::ScriptFolder:
             vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
 
+            // Use any XML/PCK file
             for (auto& f : vfs.Browse(XFolder::Scripts))
-               Files.push_back(f.FullPath);
+               if (f.FullPath.HasExtension(L".pck") || f.FullPath.HasExtension(L".xml"))
+                  Files.push_back(f.FullPath);
             break;
          }
 

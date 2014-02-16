@@ -18,6 +18,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          , MatchCase(FALSE)
          , MatchWholeWord(FALSE)
          , Expanded(true)
+         , Started(false)
       {
 
       }
@@ -39,6 +40,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          ON_CBN_EDITCHANGE(IDC_FIND_COMBO, &FindDialog::OnFind_TextChanged)
          ON_CBN_EDITCHANGE(IDC_REPLACE_COMBO, &FindDialog::OnReplace_TextChanged)
          ON_CBN_EDITCHANGE(IDC_TARGET_COMBO, &FindDialog::OnTarget_TextChanged)
+         ON_WM_SHOWWINDOW()
       END_MESSAGE_MAP()
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -103,7 +105,18 @@ NAMESPACE_BEGIN2(GUI,Window)
       {
          return (SearchTarget)TargetCombo.GetCurSel();
       }
+
+      /// <summary>Gets the search term.</summary>
+      /// <returns></returns>
+      wstring  FindDialog::GetSearchTerm() const
+      {
+         CString str;
+         FindCombo.GetWindowText(str);
+         return (const wchar*)str;
+      }
       
+      /// <summary>One-time initialization</summary>
+      /// <returns></returns>
       BOOL FindDialog::OnInitDialog()
       {
          CDialogEx::OnInitDialog();
@@ -122,25 +135,38 @@ NAMESPACE_BEGIN2(GUI,Window)
          return TRUE;  // return TRUE unless you set the focus to a control
       }
 
+      /// <summary>Finds the next match, if any</summary>
       void FindDialog::OnFind_Click()
       {
-         if (Search.Complete)
+         // Init: Create operation
+         if (!Started)
          {
-            Search = SearchOperation(L"secondary", SearchTarget::Document);
-            Search.FindNext();
+            // Feedback
+            Console << Cons::Heading << Cons::Bold << L"Searching for '" << GetSearchTerm() << "' in target:" << GetString(GetSearchTarget()) << ENDL;
+
+            // Init operation
+            Started = true;
+            Search = SearchOperation(GetSearchTerm(), GetSearchTarget());
+            FindButton.SetWindowTextW(L"Find Next");
          }
 
-         // Get active document?
-         /*auto view = theApp.GetMainWindow()->GetActiveScriptView();
-         if (view == nullptr)
-            return;
+         try
+         {
+            // Find next match
+            if (!Search.FindNext())
+            {
+               // Feedback
+               Console << Cons::Heading << "Search completed" << ENDL;
 
-         TextSearch src;
-         src.Range = {0,-1};
-         src.Term = L"";
-
-         if (view->FindNext(src))
-            view->SetSelection(Match = src.Result);*/
+               // Stop operation
+               Started = false;
+               FindButton.SetWindowTextW(L"Find");
+               AfxMessageBox(L"Search complete");
+            }
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e, L"Search error");
+         }
       }
 
       
@@ -181,6 +207,16 @@ NAMESPACE_BEGIN2(GUI,Window)
          // TODO: Add your control notification handler code here
       }
       
+
+      void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
+      {
+         CDialogEx::OnShowWindow(bShow, nStatus);
+
+         // Start anew
+         Started = false;
+         FindButton.SetWindowTextW(L"Find");
+      }
+
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 

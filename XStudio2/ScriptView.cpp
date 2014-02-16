@@ -88,7 +88,23 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <returns>True if found, false otherwise</returns>
    bool  ScriptView::FindNext(SearchOperation& src)
    {
-      return false;
+      // Find next match
+      auto pos = RichEdit.GetAllText().find(src.Term, src.LastMatch.cpMax);
+
+      // Found: Return location + Highlight text
+      if (pos != wstring::npos)
+      {
+         src.SetMatch(pos);
+         SetSelection(src.LastMatch);
+      } 
+      else
+      {  // Not found: Clear selection
+         RichEdit.SetSel(src.LastMatch.cpMin, src.LastMatch.cpMin);
+         src.SetMatch(-1);
+      }
+         
+      // Return result
+      return pos != wstring::npos;
    }
 
    /// <summary>Sets the text selection.</summary>

@@ -29,6 +29,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          // ---------------------- ACCESSORS ------------------------			
       protected:
          SearchTarget GetSearchTarget() const;
+         wstring      GetSearchTerm() const;
 
          // ----------------------- MUTATORS ------------------------
       protected:
@@ -44,6 +45,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          afx_msg void OnReplace_Click();
          afx_msg void OnReplace_TextChanged();
          afx_msg void OnReplaceAll_Click();
+         afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
          afx_msg void OnTarget_TextChanged();
 
          // -------------------- REPRESENTATION ---------------------
@@ -63,6 +65,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          CComboBox TargetCombo;
          
          SearchOperation Search;
+         bool            Started;
       };
 
 /// <summary>User interface windows</summary>
