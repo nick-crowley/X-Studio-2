@@ -53,7 +53,7 @@ namespace Logic
       /// <summary>Finds the location of the next match, if any</summary>
       /// <param name="src">search data</param>
       /// <returns>True if found, false otherwise</returns>
-      bool  ScriptFile::FindNext(SearchOperation& src)
+      bool  ScriptFile::FindNext(SearchData& src)
       {
          GuiString text;
 

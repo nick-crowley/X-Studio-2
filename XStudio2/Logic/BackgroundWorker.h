@@ -8,14 +8,13 @@ namespace Logic
    namespace Threads
    {
 
-      /// <summary></summary>
+      /// <summary>Background worker pattern</summary>
       class BackgroundWorker
       {
          // ------------------------ TYPES --------------------------
       private:
 	  
          // --------------------- CONSTRUCTION ----------------------
-      
       protected:
          BackgroundWorker(ThreadProc pfn) : Proc(pfn), Thread(NULL)
          {}
@@ -28,9 +27,19 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 	  
          // ---------------------- ACCESSORS ------------------------			
-      
+      public:
+         /// <summary>Determines whether thread is running.</summary>
+         /// <returns></returns>
+         bool  IsRunning() const
+         {
+            return Thread != nullptr;
+         }
+
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Stops the thread.</summary>
+         /// <returns>true if successful, false otherwise</returns>
+         /// <exception cref="Logic::InvalidOperationException">Thread is not running</exception>
          bool  Stop()
          {
             if (Thread == nullptr)
@@ -46,6 +55,11 @@ namespace Logic
          }
 
       protected:
+         /// <summary>Starts the thread.</summary>
+         /// <param name="param">operation data.</param>
+         /// <returns>true if successful, false otherwise</returns>
+         /// <exception cref="Logic::ArgumentNullException">param is null</exception>
+         /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
          bool  Start(WorkerData* param)
          {
             REQUIRED(param);

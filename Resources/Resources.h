@@ -112,6 +112,7 @@
 
 #define IDD_ABOUTBOX                    790
 #define IDD_FINDREPLACE                 791
+#define IDD_FINDPROGRESS                792
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -141,6 +142,9 @@
 #define IDC_RESULTS2_RADIO              818
 #define IDC_FIND_GROUPBOX               819
 #define IDC_FIND_RESIZE                 820
+
+// Find Progress Dialog
+#define IDC_PROGRESS                    821
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

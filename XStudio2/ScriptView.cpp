@@ -86,7 +86,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Finds and highlights the next match, if any</summary>
    /// <param name="src">search data</param>
    /// <returns>True if found, false otherwise</returns>
-   bool  ScriptView::FindNext(SearchOperation& src)
+   bool  ScriptView::FindNext(SearchData& src)
    {
       // Find next match
       auto pos = RichEdit.GetAllText().find(src.Term, src.LastMatch.cpMax);

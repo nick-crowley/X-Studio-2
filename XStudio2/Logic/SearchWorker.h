@@ -1,61 +1,58 @@
 #pragma once
+
+#include "Common.h"
 #include "BackgroundWorker.h"
+#include "SearchData.h"
 
 namespace Logic
 {
    namespace Threads
    {
-
-      using namespace Logic::IO;
-
-      /// <summary>Data for game data loading worker thread</summary>
-      class GameDataWorkerData : public WorkerData
+      /// <summary>Data for find and replace worker thread</summary>
+      class SearchWorkerData : public WorkerData
       {
       public:
-         GameDataWorkerData(Path folder, GameVersion ver) : WorkerData(Operation::LoadGameData), GameFolder(folder), Version(ver)
+         SearchWorkerData() : WorkerData(Operation::FindReplace)
          {}
 
-         Path         GameFolder;
-         GameVersion  Version;
+         SearchData  Search;
       };
 
-      /// <summary>Worker thread for loading game data</summary>
-      class GameDataWorker : public BackgroundWorker
+      /// <summary>Find and replace worker thread</summary>
+      class SearchWorker : public BackgroundWorker
       {
          // ------------------------ TYPES --------------------------
       private:
-	  
+
          // --------------------- CONSTRUCTION ----------------------
-      
       public:
-	      GameDataWorker();
-	      virtual ~GameDataWorker();
-       
+         SearchWorker();
+         virtual ~SearchWorker();
+
+         DEFAULT_COPY(SearchWorker);	// Default copy semantics
+         DEFAULT_MOVE(SearchWorker);	// Default move semantics
+
          // ------------------------ STATIC -------------------------
-      protected:
-         static DWORD WINAPI ThreadMain(GameDataWorkerData* data);
 
          // --------------------- PROPERTIES ------------------------
-	  
+      protected:
+         static DWORD WINAPI ThreadMain(SearchWorkerData* data);
+
          // ---------------------- ACCESSORS ------------------------			
-      
+
          // ----------------------- MUTATORS ------------------------
       public:
-         bool  Start(GameDataWorkerData* param)
+         bool  Start(SearchWorkerData* param)
          {
             return BackgroundWorker::Start(param);
          }
 
          // -------------------- REPRESENTATION ---------------------
-      protected:
-	   
-      };
 
+      private:
+      };
 
    }
 }
 
 using namespace Logic::Threads;
-
-
-

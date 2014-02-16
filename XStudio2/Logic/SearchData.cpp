@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SearchOperation.h"
+#include "SearchData.h"
 #include "XFileSystem.h"
 #include "ScriptFileReader.h"
 #include "../MainWnd.h"
@@ -8,21 +8,21 @@
 
 namespace Logic
 {
-      const CHARRANGE  SearchOperation::NO_MATCH = {-1,-1};
+      const CHARRANGE  SearchData::NO_MATCH = {-1,-1};
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      SearchOperation::SearchOperation() : Complete(true)
+      SearchData::SearchData() : Complete(true)
       {
       }
 
-      SearchOperation::SearchOperation(const wstring& txt, SearchTarget targ) 
+      SearchData::SearchData(const wstring& txt, SearchTarget targ) 
          : Term(txt), Target(targ), LastMatch({0,0}), Complete(false)
       {
          BuildFileList();
       }
 
-      SearchOperation::~SearchOperation()
+      SearchData::~SearchData()
       {
       }
 
@@ -44,7 +44,7 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      bool  SearchOperation::FindNext()
+      bool  SearchData::FindNext()
       {
          // Check for completion
          if (Complete)
@@ -110,7 +110,7 @@ namespace Logic
 
       /// <summary>Sets the position of the last match.</summary>
       /// <param name="pos">Characater position if found, otherwise -1</param>
-      void  SearchOperation::SetMatch(int pos)
+      void  SearchData::SetMatch(int pos)
       {
          if (pos != -1)
             LastMatch = {pos, pos+Term.length()};
@@ -123,7 +123,7 @@ namespace Logic
       // ------------------------------- PRIVATE METHODS ------------------------------
    
       /// <summary>Builds the list of files to search</summary>
-      void  SearchOperation::BuildFileList()
+      void  SearchData::BuildFileList()
       {
          XFileSystem vfs;
 
