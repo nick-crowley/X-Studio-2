@@ -39,15 +39,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNCREATE(LanguageDocument, CDocument)
+   IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
-   BEGIN_MESSAGE_MAP(LanguageDocument, CDocument)
+   BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
    LanguageDocument::LanguageDocument()
    {
+      Type = DocumentType::Language;
    }
 
    LanguageDocument::~LanguageDocument()
@@ -61,13 +62,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    #ifdef _DEBUG
    void LanguageDocument::AssertValid() const
    {
-	   CDocument::AssertValid();
+	   DocumentBase::AssertValid();
    }
 
    
    void LanguageDocument::Dump(CDumpContext& dc) const
    {
-	   CDocument::Dump(dc);
+	   DocumentBase::Dump(dc);
    }
    #endif //_DEBUG
    
@@ -87,7 +88,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    BOOL LanguageDocument::OnNewDocument()
    {
-	   if (!CDocument::OnNewDocument())
+	   if (!DocumentBase::OnNewDocument())
 		   return FALSE;
 	   return TRUE;
    }

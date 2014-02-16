@@ -1,5 +1,6 @@
 #pragma once
 #include "Logic/LanguageFile.h"
+#include "DocumentBase.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -21,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    };
 
    /// <summary>Language document</summary>
-   class LanguageDocument : public CDocument
+   class LanguageDocument : public DocumentBase
    {
 	   // ------------------------ TYPES --------------------------
    private:

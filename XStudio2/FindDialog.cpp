@@ -125,7 +125,7 @@ NAMESPACE_BEGIN2(GUI,Window)
       void FindDialog::OnFind_Click()
       {
          // Get active document?
-         auto view = theApp.GetMainWindow()->GetActiveScriptView();
+         /*auto view = theApp.GetMainWindow()->GetActiveScriptView();
          if (view == nullptr)
             return;
 
@@ -134,7 +134,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          src.Term = L"";
 
          if (view->FindNext(src))
-            view->SetSelection(Match = src.Result);
+            view->SetSelection(Match = src.Result);*/
       }
 
       
