@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "FindDialog.h"
+#include "MainWnd.h"
 #include "afxdialogex.h"
 
 
@@ -91,9 +92,16 @@ NAMESPACE_BEGIN2(GUI,Window)
 
          // Set options text
          OptionsButton.SetWindowTextW(expand ? L"Hide Options" : L"Show Options");
-
+         
          // Update state
          Expanded = expand;
+      }
+
+      /// <summary>Gets the search target.</summary>
+      /// <returns></returns>
+      SearchTarget  FindDialog::GetSearchTarget() const
+      {
+         return (SearchTarget)TargetCombo.GetCurSel();
       }
       
       BOOL FindDialog::OnInitDialog()
@@ -107,7 +115,7 @@ NAMESPACE_BEGIN2(GUI,Window)
          TargetCombo.AddString(L"All Project Files");
          TargetCombo.AddString(L"Scripts Folder");
          TargetCombo.SetCurSel(0);
-
+         
          // Set output
          this->CheckRadioButton(IDC_RESULTS1_RADIO, IDC_RESULTS2_RADIO, IDC_RESULTS1_RADIO);
 
@@ -116,7 +124,17 @@ NAMESPACE_BEGIN2(GUI,Window)
 
       void FindDialog::OnFind_Click()
       {
-         // TODO: Add your control notification handler code here
+         // Get active document?
+         auto view = theApp.GetMainWindow()->GetActiveScriptView();
+         if (view == nullptr)
+            return;
+
+         TextSearch src;
+         src.Range = {0,-1};
+         src.Term = L"";
+
+         if (view->FindNext(src))
+            view->SetSelection(Match = src.Result);
       }
 
       

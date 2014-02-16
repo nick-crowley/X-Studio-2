@@ -236,6 +236,7 @@
     <ClInclude Include="ScriptView.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="SearchOperation.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="targetver.h" />
@@ -332,6 +333,7 @@
     <ClCompile Include="ScriptView.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="SearchOperation.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

@@ -57,6 +57,20 @@ int Application::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+/// <summary>Gets the main window.</summary>
+/// <returns></returns>
+GUI::Windows::MainWnd*  Application::GetMainWindow() const
+{
+   return dynamic_cast<MainWnd*>(AfxGetMainWnd());
+}
+
+/// <summary>Get game data state.</summary>
+/// <returns></returns>
+AppState  Application::GetState() const
+{
+   return GameDataState;
+}
+
 /// <summary>Initializes the instance.</summary>
 /// <returns></returns>
 BOOL Application::InitInstance()
@@ -199,6 +213,14 @@ void Application::LoadCustomState()
 
 void Application::SaveCustomState()
 {
+}
+
+/// <summary>Sets the game data state.</summary>
+/// <param name="s">state</param>
+void  Application::SetState(AppState s) 
+{
+   GameDataState = s;
+   StateChanged.Raise(s);
 }
 
 /// <summary>Displays and logs an exception</summary>
