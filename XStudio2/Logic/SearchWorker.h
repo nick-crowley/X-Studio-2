@@ -2,7 +2,7 @@
 
 #include "Common.h"
 #include "BackgroundWorker.h"
-#include "SearchData.h"
+#include "MatchData.h"
 
 namespace Logic
 {
@@ -14,101 +14,44 @@ namespace Logic
       /// <summary>Get search target name</summary>
       wstring  GetString(SearchTarget t);
 
+      class SearchWorker;
 
       /// <summary>Data for find and replace worker thread</summary>
       class SearchWorkerData : public WorkerData
       {
+         friend class SearchWorker;
          // ------------------------ TYPES --------------------------
       private:
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchWorkerData(const wstring& txt, SearchTarget targ) : WorkerData(Operation::FindReplace)
+         SearchWorkerData(SearchTarget targ, const MatchData& search, IO::Path folder, GameVersion ver) 
+            : WorkerData(Operation::FindReplace), 
+              Folder(folder), 
+              Version(ver), 
+              Target(targ), 
+              Match(search), 
+              Initialized(false)
          {}
-         SearchWorkerData(const wstring& txt, SearchTarget targ, IO::Path folder, GameVersion ver) : WorkerData(Operation::FindReplace)
+         virtual ~SearchWorkerData()
          {}
+
          // --------------------- PROPERTIES ------------------------
-      public:
-         PROPERTY_GET(IO::Path,CurrentFile,GetCurrentFile);
-         PROPERTY_GET_SET(bool,Initialized,GetInitialized,SetInitialized);
 
-         // ---------------------- ACCESSORS ------------------------			
-      public:
-         /// <summary>Gets the initialized flag</summary>
-         /// <returns></returns>
-         bool  GetInitialized() const
-         {
-            return ListBuilt;
-         }
-
-         /// <summary>Get whether there are any more files to search.</summary>
-         /// <returns></returns>
-         bool  HasCurrentFile() const
-         {
-            return !Files.empty();
-         }
-
-         /// <summary>Gets the full path of the current file being searched.</summary>
-         /// <returns></returns>
-         IO::Path  GetCurrentFile() const
-         {
-            return Files.front();
-         }
-
-         IO::Path  GetFolder() const
-         {
-            return Folder;
-         }
-
-         SearchTarget  GetTarget() const
-         {
-            return Target;
-         }
-
-         GameVersion  GetVersion() const
-         {
-            return Version;
-         }
+         // ---------------------- ACCESSORS ------------------------	
 
          // ----------------------- MUTATORS ------------------------
-      public:
-         /// <summary>Add path to the list of files to search.</summary>
-         /// <param name="p">The p.</param>
-         void  AddFile(IO::Path p)
-         {
-            Files.push_back(p);
-         }
-         
-         /// <summary>Advances to the next file path.</summary>
-         void  Advance()
-         {
-            Files.pop_front();
-         }
-
-         /// <summary>Initializes the match with the current file path</summary>
-         void  InitMatch()
-         {
-            Match.Reset();
-            Match.FullPath = CurrentFile;
-         }
-
-         /// <summary>Sets the initialized flag.</summary>
-         /// <param name="b">The b.</param>
-         void  SetInitialized(bool b)
-         {
-            ListBuilt = b;
-         }
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         SearchData   Match;
-         
-      private:
-         list<IO::Path>  Files;
          IO::Path        Folder;
-         bool            ListBuilt;
+         MatchData       Match;
          SearchTarget    Target;
          GameVersion     Version;
+         
+      private:
+         bool            Initialized;
+         list<IO::Path>  Files;
       };
 
       /// <summary>Find and replace worker thread</summary>

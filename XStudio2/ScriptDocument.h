@@ -59,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          AttachEdit(ScriptEdit& edit);
-      virtual bool  FindNext(SearchData& src);
+      virtual bool  FindNext(MatchData& src);
       void          SetSelection(CHARRANGE rng);
 
 	   virtual BOOL OnNewDocument();

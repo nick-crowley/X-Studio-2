@@ -152,7 +152,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             // Init: Create operation
             if (!Search.IsStarted())
             {
-               Search.Create(GetSearchTerm(), GetSearchTarget());
+               InitSearch();
                FindButton.SetWindowTextW(L"Find Next");
             }
 
@@ -167,36 +167,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          catch (ExceptionBase& e) {
             theApp.ShowError(HERE, e);
          }
-
-         //try
-         //{
-         //   // Find next match
-         //   Worker.Start(&WorkerData);
-         //   
-         //   // Show progress dialog 
-         //   FindProgressDialog ProgressDlg;
-         //   ProgressDlg.DoModal(&Worker);
-         //   
-         //   Worker.Stop();
-         //   // Find next match
-         //   //if (!Search.FindNext())
-
-         //   // Complete?
-         //   if (WorkerData.Search.Complete)
-         //   {
-         //      // Feedback
-         //      Console << Cons::Heading << "Search completed" << ENDL;
-         //      WorkerData.SendFeedback(ProgressType::Succcess, 0, L"Search completed");
-
-         //      // Stop operation
-         //      Started = false;
-         //      FindButton.SetWindowTextW(L"Find");
-         //      AfxMessageBox(L"Search complete");
-         //   }
-         //}
-         //catch (ExceptionBase& e) {
-         //   theApp.ShowError(HERE, e, L"Search error");
-         //}
       }
 
       
@@ -209,8 +179,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
-            Search.Reset();
-            Search.Create(GetSearchTerm(), GetSearchTarget());
+            InitSearch();
             Search.FindAll();
          }
          catch (ExceptionBase& e) {
@@ -231,7 +200,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             // Init: Create operation
             if (!Search.IsStarted())
             {
-               Search.Create(GetSearchTerm(), GetSearchTarget());
+               InitSearch();
                FindButton.SetWindowTextW(L"Find Next");
             }
 
@@ -258,8 +227,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
-            Search.Reset();
-            Search.Create(GetSearchTerm(), GetSearchTarget());
+            InitSearch();
             Search.ReplaceAll(GetReplaceTerm());
          }
          catch (ExceptionBase& e) {
@@ -284,7 +252,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 
-
+      void  FindDialog::InitSearch()
+      {
+         Search.Reset();
+         Search.Create(GetSearchTarget(), GetSearchTerm(), GetReplaceTerm(), MatchCase!=FALSE, MatchWholeWord!=FALSE, UseRegEx!=FALSE);
+      }
 
 /// <summary>User interface windows</summary>
 NAMESPACE_END2(GUI,Windows)

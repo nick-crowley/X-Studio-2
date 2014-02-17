@@ -3,7 +3,7 @@
 #include "CommandSyntax.h"
 #include "ParameterSyntax.h"
 #include "ScriptCommand.h"
-#include "SearchData.h"
+#include "MatchData.h"
 #include "MapIterator.hpp"
 #include <algorithm>
 
@@ -538,7 +538,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
          void    Clear();
-         bool    FindNext(SearchData& src);
+         bool    FindNext(MatchData& src);
          wstring FindScope(UINT line);
 
 		   // -------------------- REPRESENTATION ---------------------

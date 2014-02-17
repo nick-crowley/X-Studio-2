@@ -1,6 +1,6 @@
 #pragma once
 #include "Logic/Path.h"
-#include "Logic/SearchData.h"
+#include "Logic/MatchData.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -35,7 +35,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      virtual bool  FindNext(SearchData& src);
+      virtual bool  FindNext(MatchData& src);
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:

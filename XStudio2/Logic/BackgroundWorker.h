@@ -39,7 +39,6 @@ namespace Logic
                throw Win32Exception(HERE, L"Unable to query thread state");
 
             return code == STILL_ACTIVE;
-            //return Thread != nullptr;
          }
 
          // ----------------------- MUTATORS ------------------------

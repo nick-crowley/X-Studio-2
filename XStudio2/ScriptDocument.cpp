@@ -77,7 +77,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Finds the next text match</summary>
    /// <param name="src">search data</param>
    /// <returns></returns>
-   bool  ScriptDocument::FindNext(SearchData& src)
+   bool  ScriptDocument::FindNext(MatchData& src)
    {
       return GetView()->FindNext(src);
    }
