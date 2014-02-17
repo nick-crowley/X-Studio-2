@@ -5,11 +5,7 @@
 namespace Logic
 {
    
-      /// <summary></summary>
-      enum class SearchTarget { Selection, Document, OpenDocuments, ProjectDocuments, ScriptFolder };
-
-      /// <summary>Get search target name</summary>
-      wstring  GetString(SearchTarget t);
+      
 
       /// <summary></summary>
       class SearchData
@@ -21,7 +17,7 @@ namespace Logic
 
       public:
          SearchData();
-         SearchData(const wstring& txt, SearchTarget targ);
+         SearchData(const wstring& txt);
          virtual ~SearchData();
 
          DEFAULT_COPY(SearchData);	// Default copy semantics
@@ -34,23 +30,22 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         bool       IsComplete() const;
+         CHARRANGE  GetLastMatch() const;
+         wstring    GetTerm() const;
 
          // ----------------------- MUTATORS ------------------------
       public:
-         bool  FindNext();
-         void  SetMatch(int pos = -1);
-
-      private:
-         void  BuildFileList();
+         void  ResetLastMatch();
+         void  SetComplete();
+         void  SetLastMatch(int pos = -1);
 
          // -------------------- REPRESENTATION ---------------------
-
-      public:
-         list<IO::Path>  Files;
-         CHARRANGE       LastMatch;
-         SearchTarget    Target;
-         wstring         Term;
-         bool            Complete;
+      private:
+         bool        Complete;
+         CHARRANGE   LastMatch;
+         wstring     Term;
       };
 
    

@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "SearchData.h"
-#include "XFileSystem.h"
-#include "ScriptFileReader.h"
-#include "../MainWnd.h"
-#include "../ScriptDocument.h"
-#include "../DocumentBase.h"
+
 
 namespace Logic
 {
@@ -12,14 +8,16 @@ namespace Logic
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Default ctor - creates a search already marked as complete</summary>
       SearchData::SearchData() : Complete(true)
       {
       }
 
-      SearchData::SearchData(const wstring& txt, SearchTarget targ) 
-         : Term(txt), Target(targ), LastMatch({0,0}), Complete(false)
+      /// <summary>Create data for a text search</summary>
+      /// <param name="txt">Search term</param>
+      SearchData::SearchData(const wstring& txt)
+         : Term(txt), LastMatch({0,0}), Complete(false)
       {
-         BuildFileList();
       }
 
       SearchData::~SearchData()
@@ -28,84 +26,40 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
-      /// <summary>Get search target name</summary>
-      wstring  GetString(SearchTarget t)
+      // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Determines whether this search is complete.</summary>
+      /// <returns></returns>
+      bool  SearchData::IsComplete() const
       {
-         switch (t)
-         {
-         case SearchTarget::Selection:         return L"Selection";
-         case SearchTarget::Document:          return L"Document";
-         case SearchTarget::OpenDocuments:     return L"OpenDocuments";
-         case SearchTarget::ProjectDocuments:  return L"ProjectDocuments";
-         case SearchTarget::ScriptFolder:      return L"ScriptFolder";
-         }
-         return L"Invalid";
+         return Complete;
       }
 
-      // ------------------------------- PUBLIC METHODS -------------------------------
-
-      bool  SearchData::FindNext()
+      /// <summary>Gets the last match.</summary>
+      /// <returns></returns>
+      CHARRANGE  SearchData::GetLastMatch() const
       {
-         // Check for completion
-         if (Complete)
-            return false;
+         return LastMatch;
+      }
 
-         // Search thru remaining files for a match
-         while (!Files.empty())
-         {
-            try
-            {
-               // Already open: Search document
-               if (theApp.IsDocumentOpen(Files.front()))
-               {
-                  // Feedback
-                  Console << L"Searching document: " << Colour::Yellow << Files.front() << ENDL;
 
-                  // Search document + highlight match
-                  auto& doc = (ScriptDocument&)theApp.GetDocument(Files.front());
-                  if (doc.FindNext(*this))
-                     return true;
-               }
-               // File on disc: Open in memory and search
-               else
-               {
-                  // Feedback
-                  Console << L"Searching script: " << Colour::Yellow << Files.front() << ENDL;
+      /// <summary>Gets the search term.</summary>
+      /// <returns></returns>
+      wstring  SearchData::GetTerm() const
+      {
+         return Term;
+      }
 
-                  // Read script
-                  XFileInfo f(Files.front());
-                  ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(f.FullPath, false);
-             
-                  // Search translated text
-                  if (script.FindNext(*this))
-                  {
-                     auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
+      /// <summary>Resets the last match to zero, in preparation for searching another document/file.</summary>
+      void  SearchData::ResetLastMatch()
+      {
+         LastMatch = {0,0};
+      }
 
-                     // Perform search again (due to indentation causing different character indicies)
-                     LastMatch = {0,0};
-                     doc->FindNext(*this);
-                     return true;
-                  }
-               }
-            }
-            catch (ExceptionBase& e)
-            {
-               // Error: Skip file
-               auto f = Files.front();
-               Files.pop_front();
-               LastMatch = {0,0};
-               // Supply filename
-               throw GenericException(HERE, GuiString(L"Unable to search '%s' : %s", f.c_str(), e.Message.c_str()));
-            }
-
-            // No match: search next file
-            Files.pop_front();
-            LastMatch = {0,0};
-         }
-
-         // No match: 
+      /// <summary>Marks the search as complete.</summary>
+      void  SearchData::SetComplete()
+      {
          Complete = true;
-         return false;
       }
 
       /// <summary>Sets the position of the last match.</summary>
@@ -122,39 +76,7 @@ namespace Logic
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
-      /// <summary>Builds the list of files to search</summary>
-      void  SearchData::BuildFileList()
-      {
-         XFileSystem vfs;
-
-         switch (Target)
-         {
-         // Document: get active script
-         case SearchTarget::Document:
-            if (auto view = theApp.GetMainWindow()->GetActiveScriptView())
-               Files.push_back(view->GetDocument()->GetFullPath());
-            break;
-
-         // OpenDocuments: enumerate documents
-         case SearchTarget::OpenDocuments:
-            for (auto& doc : theApp.GetOpenDocuments())
-               Files.push_back(doc->GetFullPath());
-            break;
-
-         // ScriptFolder: Enumerate scripts
-         case SearchTarget::ScriptFolder:
-            vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
-
-            // Use any XML/PCK file
-            for (auto& f : vfs.Browse(XFolder::Scripts))
-               if (f.FullPath.HasExtension(L".pck") || f.FullPath.HasExtension(L".xml"))
-                  Files.push_back(f.FullPath);
-            break;
-         }
-
-         // Set initial state
-         Complete = Files.empty();
-      }
+      
    
 }
 
