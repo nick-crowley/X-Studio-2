@@ -29,7 +29,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Finds the next.</summary>
    /// <param name="src">The source.</param>
    /// <returns></returns>
-   bool  DocumentBase::FindNext(SearchData& src)
+   bool  DocumentBase::FindNext(MatchData& src)
    {
       return false;
    }

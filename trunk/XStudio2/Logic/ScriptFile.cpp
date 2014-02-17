@@ -53,7 +53,7 @@ namespace Logic
       /// <summary>Finds the location of the next match, if any</summary>
       /// <param name="src">search data</param>
       /// <returns>True if found, false otherwise</returns>
-      bool  ScriptFile::FindNext(SearchData& src)
+      bool  ScriptFile::FindNext(MatchData& m)
       {
          GuiString text;
 
@@ -64,12 +64,17 @@ namespace Logic
             text += L'\n';
          }
          
-         // Find from last match + set location if found
-         auto pos = text.find(src.Term, src.LastMatch.cpMax);
-         src.SetMatch(pos != GuiString::npos ? pos : -1);
+         // Find from last match
+         auto pos = text.find(m.SearchTerm, m.Location.cpMax);
+         
+         // Set/Clear location
+         if (pos != GuiString::npos)
+            m.SetMatch(pos, pos + m.SearchTerm.length());
+         else
+            m.Clear();
          
          // Return result
-         return pos != GuiString::npos;
+         return m.IsMatched;
       }
 
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>

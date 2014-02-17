@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-//#include "Logic/SearchData.h"
+//#include "Logic/MatchData.h"
 #include "Logic/SearchWorker.h"
 
 /// <summary>User interface windows</summary>

@@ -50,6 +50,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
          afx_msg void OnTarget_TextChanged();
 
+      private:
+         void  InitSearch();
+
          // -------------------- REPRESENTATION ---------------------
       protected:
          bool Expanded;

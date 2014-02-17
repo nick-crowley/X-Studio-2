@@ -465,11 +465,11 @@
     <ClInclude Include="Logic\SearchWorker.h">
       <Filter>Header Files\Logic\Threads</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\SearchData.h">
+    <ClInclude Include="Logic\MatchData.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="SearchOperation.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -767,11 +767,8 @@
     <ClCompile Include="Logic\SearchWorker.cpp">
       <Filter>Source Files\Logic\Threads</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\SearchData.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="SearchOperation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
