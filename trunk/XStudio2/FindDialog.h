@@ -1,7 +1,6 @@
 #pragma once
 #include "afxwin.h"
-#include "Logic/SearchData.h"
-#include "Logic/SearchWorker.h"
+#include "SearchOperation.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -29,6 +28,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 			
          // ---------------------- ACCESSORS ------------------------			
       protected:
+         wstring      GetReplaceTerm() const;
          SearchTarget GetSearchTarget() const;
          wstring      GetSearchTerm() const;
 
@@ -50,7 +50,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnTarget_TextChanged();
 
          // -------------------- REPRESENTATION ---------------------
-      
       protected:
          bool Expanded;
          BOOL UseRegEx;
@@ -65,9 +64,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
-         SearchWorkerData WorkerData;
-         SearchWorker Worker;
-         bool         Started;
+         SearchOperation  Search;
       };
 
 /// <summary>User interface windows</summary>
