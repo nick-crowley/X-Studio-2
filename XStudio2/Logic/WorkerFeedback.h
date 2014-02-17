@@ -40,7 +40,9 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         WorkerData(Operation op) : Operation(op), MainWnd(AfxGetMainWnd()), Aborted(false)
+         /// <summary>Creates worker data for an operation</summary>
+         /// <param name="op">operation.</param>
+         WorkerData(Operation op) : ParentWnd(AfxGetMainWnd()), Operation(op), Aborted(false)
          {}
          virtual ~WorkerData()
          {}
@@ -60,7 +62,7 @@ namespace Logic
          }
 
          // ----------------------- MUTATORS ------------------------
-         
+      public:
          /// <summary>Command thread to stop</summary>
          void  Abort()
          {
@@ -70,14 +72,19 @@ namespace Logic
          /// <summary>Inform main window of progress</summary>
          void  SendFeedback(ProgressType t, UINT indent, const wstring& sz) const
          {
-            if (Operation != Operation::Dummy)
-               MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
+            // Dummy: NOP
+            if (Operation == Operation::Dummy || !ParentWnd)
+               return;
+
+            // Output to GUI
+            ParentWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
          }
 
          /// <summary>Inform main window of progress and print message to console</summary>
          void  SendFeedback(Colour c, ProgressType t, UINT indent, const wstring& sz) const
          {
-            if (Operation == Operation::Dummy)
+            // Dummy: NOP
+            if (Operation == Operation::Dummy || !ParentWnd)
                return;
 
             // Output to console 
@@ -86,15 +93,24 @@ namespace Logic
             Console << c << sz << ENDL;
 
             // Output to GUI
-            MainWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
+            ParentWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
+         }
+
+         /// <summary>Sets the feedback window manually.</summary>
+         /// <param name="wnd">The window.</param>
+         /// <exception cref="Logic::ArgumentNullException">window is null</exception>
+         void  SetFeedbackWnd(CWnd* wnd)
+         {
+            REQUIRED(wnd);
+            ParentWnd = wnd;
          }
 
          // -------------------- REPRESENTATION ---------------------
 
       private:
          Operation     Operation;
-         CWnd*         MainWnd;
          volatile bool Aborted;
+         CWnd*         ParentWnd;
       };
 
       /// <summary>Thread function</summary>
