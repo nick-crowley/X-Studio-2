@@ -2,6 +2,7 @@
 #include "afxwin.h"
 #include "SearchOperation.h"
 
+
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
    

@@ -28,24 +28,73 @@ namespace Logic
          static const CHARRANGE  NO_MATCH;
 
          // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(wstring,ReplaceTerm,GetReplaceTerm);
+         PROPERTY_GET(wstring,SearchTerm,GetSearchTerm);
+         PROPERTY_GET_SET(Path,FullPath,GetFullPath,SetFullPath);
+         PROPERTY_GET_SET(CHARRANGE,Location,GetLocation,SetLocation);
+         PROPERTY_GET_SET(bool,Matched,GetMatched,SetMatched);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         bool       IsComplete() const;
-         CHARRANGE  GetLastMatch() const;
-         wstring    GetTerm() const;
+         bool  GetMatched() const
+         {
+            return Successful;
+         }
+
+         Path  GetFullPath() const
+         {
+            return FullPath;
+         }
+
+         CHARRANGE  GetLocation() const
+         {
+            return Location;
+         }
+
+         wstring    GetReplaceTerm() const
+         {
+            return Replace;
+         }
+
+         wstring    GetSearchTerm() const
+         {
+            return Search;
+         }
 
          // ----------------------- MUTATORS ------------------------
       public:
-         void  ResetLastMatch();
-         void  SetComplete();
+         void  Reset()
+         {
+            FullPath = L"";
+            Successful = false;
+            Location = NO_MATCH;
+         }
+
+         void  SetFullPath(Path p) 
+         {
+            FullPath = p;
+         }
+
+         void  SetLocation(CHARRANGE cr)
+         {
+            Location = cr;
+         }
+
+         void  SetMatched(bool b) 
+         {
+            Successful = b;
+         }
+
          void  SetLastMatch(int pos = -1);
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         bool        Complete;
-         CHARRANGE   LastMatch;
-         wstring     Term;
+         bool        Successful;
+         CHARRANGE   Location;
+         wstring     Search,
+                     Replace;
+         IO::Path    FullPath;
       };
 
    

@@ -32,7 +32,7 @@ namespace Logic
          case SearchTarget::Selection:         return L"Selection";
          case SearchTarget::Document:          return L"Current Document";
          case SearchTarget::OpenDocuments:     return L"All Open Documents";
-         case SearchTarget::ProjectDocuments:  return L"Project Files";
+         case SearchTarget::ProjectFiles:  return L"Project Files";
          case SearchTarget::ScriptFolder:      return L"Script Folder";
          }
          return L"Invalid";
@@ -45,21 +45,15 @@ namespace Logic
 
          switch (data->GetTarget())
          {
-         // Document: get active script
+         // Document Based: Invalid
+         case SearchTarget::Selection:
          case SearchTarget::Document:
-            if (auto view = theApp.GetMainWindow()->GetActiveScriptView())
-               data->AddFile(view->GetDocument()->GetFullPath());
-            break;
-
-         // OpenDocuments: enumerate documents
          case SearchTarget::OpenDocuments:
-            for (auto& doc : theApp.GetOpenDocuments())
-               data->AddFile(doc->GetFullPath());
-            break;
+            throw InvalidOperationException(HERE, L"");
 
          // ScriptFolder: Enumerate scripts
          case SearchTarget::ScriptFolder:
-            vfs.Enumerate(L"D:\\X3 Albion Prelude", GameVersion::TerranConflict);
+            vfs.Enumerate(data->GetFolder(), data->GetVersion());
 
             // Use any XML/PCK file
             for (auto& f : vfs.Browse(XFolder::Scripts))
@@ -67,6 +61,9 @@ namespace Logic
                   data->AddFile(f.FullPath);
             break;
          }
+
+         // Mark as initialised
+         data->Initialized = true;
       }
 
       DWORD WINAPI  SearchWorker::ThreadMain(SearchWorkerData* data)
@@ -80,45 +77,28 @@ namespace Logic
                throw ComException(HERE, hr);
 
             // FirstCall: Assemble list of files to search
-            if (!data->HasFiles() && !data->IsComplete())
+            if (data->Initialized)
                BuildFileList(data);
 
             // Search thru remaining files for a match
-            while (data->HasFiles())
+            while (data->HasCurrentFile())
             {
                try
                {
-                  // Already open: Search document
-                  if (theApp.IsDocumentOpen(data->CurrentFile))
-                  {
-                     // Feedback
-                     Console << L"Searching document: " << Colour::Yellow << data->CurrentFile << ENDL;
+                  // Feedback
+                  Console << L"Searching script: " << Colour::Yellow << data->CurrentFile << ENDL;
 
-                     // Search document + highlight match
-                     auto& doc = (ScriptDocument&)theApp.GetDocument(data->CurrentFile);
-                     if (doc.FindNext(data->GetSearchData()))
-                        return 0;
-                  }
-                  // File on disc: Open in memory and search
-                  else
-                  {
-                     // Feedback
-                     Console << L"Searching script: " << Colour::Yellow << data->CurrentFile << ENDL;
-
-                     // Read script
-                     XFileInfo f(data->CurrentFile);
-                     ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(f.FullPath, false);
+                  // Read script
+                  XFileInfo f(data->CurrentFile);
+                  ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(data->CurrentFile, false);
              
-                     // Search translated text
-                     if (script.FindNext(data->GetSearchData()))
-                     {
-                        auto doc = (ScriptDocument*)theApp.OpenDocumentFile(f.FullPath.c_str());
-
-                        // Perform search again (due to indentation causing different character indicies)
-                        data->ResetLastMatch();
-                        doc->FindNext(data->GetSearchData());
-                        return 0;
-                     }
+                  // Search contents
+                  data->InitMatch();
+                  if (script.FindNext(data->Match))
+                  {
+                     // Match: Reset co-ordinates since document co-ordinates are different
+                     data->Match.Reset();
+                     return 0;
                   }
                }
                catch (ExceptionBase& e)
@@ -130,8 +110,7 @@ namespace Logic
                }
 
                // No match: search next file
-               data->NextFile();
-               data->ResetLastMatch();
+               data->Advance();
             }
          }
          catch (ExceptionBase& e) {
@@ -142,7 +121,6 @@ namespace Logic
          }
 
          // Complete: No more matches
-         data->SetComplete();
          CoUninitialize();
          return 0;
       }
