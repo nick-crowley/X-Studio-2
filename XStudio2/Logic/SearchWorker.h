@@ -65,7 +65,7 @@ namespace Logic
       public:
          /// <summary>Adds a file to the list of files to search.</summary>
          /// <param name="p">The p.</param>
-         void  AddFile(Path p)
+         void  AddFile(IO::Path p)
          {
             Files.push_back(p);
          }

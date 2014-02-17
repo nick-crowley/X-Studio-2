@@ -18,7 +18,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          , MatchCase(FALSE)
          , MatchWholeWord(FALSE)
          , Expanded(true)
-         , Started(false)
       {
 
       }
@@ -63,6 +62,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          DDX_Control(pDX, IDC_TARGET_COMBO, TargetCombo);
       }
 
+      /// <summary>Shrinks or Expands the dialog.</summary>
+      /// <param name="expand">True to expand, false to shrink</param>
       void FindDialog::Expand(bool expand)
       {
          vector<int> Buttons  = { IDC_FIND, IDC_REPLACE, IDC_OPTIONS, IDC_FIND_ALL, IDC_REPLACE_ALL };
@@ -115,6 +116,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return (const wchar*)str;
       }
       
+      /// <summary>Gets the replacement term.</summary>
+      /// <returns></returns>
+      wstring  FindDialog::GetReplaceTerm() const
+      {
+         CString str;
+         ReplaceCombo.GetWindowText(str);
+         return (const wchar*)str;
+      }
+      
       /// <summary>One-time initialization</summary>
       /// <returns></returns>
       BOOL FindDialog::OnInitDialog()
@@ -137,60 +147,75 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Finds the next match, if any</summary>
       void FindDialog::OnFind_Click()
       {
-         // Init: Create operation
-         if (!Started)
-         {
-            // Feedback
-            GuiString msg(L"Searching for '%s' in %s", GetSearchTerm().c_str(), GetString(GetSearchTarget()).c_str() );
-            Console << Cons::Heading << Cons::Bold << msg << ENDL;
-            WorkerData.SendFeedback(ProgressType::Operation, 0, msg);
-
-            // Init operation
-            Started = true;
-            WorkerData.Search = SearchData(GetSearchTerm(), GetSearchTarget());
-            FindButton.SetWindowTextW(L"Find Next");
-         }
-
          try
          {
-            // Find next match
-            Worker.Start(&WorkerData);
-            
-            // Show progress dialog 
-            FindProgressDialog ProgressDlg;
-            ProgressDlg.DoModal(&Worker);
-            
-            Worker.Stop();
-            // Find next match
-            //if (!Search.FindNext())
-
-            // Complete?
-            if (WorkerData.Search.Complete)
+            // Init: Create operation
+            if (!Search.IsStarted())
             {
-               // Feedback
-               Console << Cons::Heading << "Search completed" << ENDL;
-               WorkerData.SendFeedback(ProgressType::Succcess, 0, L"Search completed");
+               Search.Create(GetSearchTerm(), GetSearchTarget());
+               FindButton.SetWindowTextW(L"Find Next");
+            }
 
-               // Stop operation
-               Started = false;
+            // FindNext:
+            if (!Search.FindNext())
+            {
+               // Complete
                FindButton.SetWindowTextW(L"Find");
                AfxMessageBox(L"Search complete");
             }
          }
          catch (ExceptionBase& e) {
-            theApp.ShowError(HERE, e, L"Search error");
+            theApp.ShowError(HERE, e);
          }
+
+         //try
+         //{
+         //   // Find next match
+         //   Worker.Start(&WorkerData);
+         //   
+         //   // Show progress dialog 
+         //   FindProgressDialog ProgressDlg;
+         //   ProgressDlg.DoModal(&Worker);
+         //   
+         //   Worker.Stop();
+         //   // Find next match
+         //   //if (!Search.FindNext())
+
+         //   // Complete?
+         //   if (WorkerData.Search.Complete)
+         //   {
+         //      // Feedback
+         //      Console << Cons::Heading << "Search completed" << ENDL;
+         //      WorkerData.SendFeedback(ProgressType::Succcess, 0, L"Search completed");
+
+         //      // Stop operation
+         //      Started = false;
+         //      FindButton.SetWindowTextW(L"Find");
+         //      AfxMessageBox(L"Search complete");
+         //   }
+         //}
+         //catch (ExceptionBase& e) {
+         //   theApp.ShowError(HERE, e, L"Search error");
+         //}
       }
 
       
       void FindDialog::OnFind_TextChanged()
       {
-         // TODO: Add your control notification handler code here
+         Search.Reset();
       }
       
       void FindDialog::OnFindAll_Click()
       {
-         // TODO: Add your control notification handler code here
+         try
+         {
+            Search.Reset();
+            Search.Create(GetSearchTerm(), GetSearchTarget());
+            Search.FindAll();
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e);
+         }
       }
       
       void FindDialog::OnOptions_Click()
@@ -201,39 +226,61 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       void FindDialog::OnReplace_Click()
       {
-         // TODO: Add your control notification handler code here
+         try
+         {
+            // Init: Create operation
+            if (!Search.IsStarted())
+            {
+               Search.Create(GetSearchTerm(), GetSearchTarget());
+               FindButton.SetWindowTextW(L"Find Next");
+            }
+
+            // Replace:
+            if (!Search.Replace(GetReplaceTerm()))
+            {
+               // Complete
+               FindButton.SetWindowTextW(L"Find");
+               AfxMessageBox(L"Search complete");
+            }
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e);
+         }
       }
 
       void FindDialog::OnReplace_TextChanged()
       {
-         // TODO: Add your control notification handler code here
+         Search.Reset();
       }
       
 
       void FindDialog::OnReplaceAll_Click()
       {
-         // TODO: Add your control notification handler code here
+         try
+         {
+            Search.Reset();
+            Search.Create(GetSearchTerm(), GetSearchTarget());
+            Search.ReplaceAll(GetReplaceTerm());
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e);
+         }
       }
       
-      void FindDialog::OnTarget_TextChanged()
-      {
-         // TODO: Add your control notification handler code here
-      }
-      
-
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
          CDialogEx::OnShowWindow(bShow, nStatus);
 
-         // Manually connect worker to main window [this dialog is instantiated before global MainWnd is set]
-         if (bShow)
-            WorkerData.SetFeedbackWnd(AfxGetMainWnd());
-
          // Start anew
-         Started = false;
+         Search.Reset();
          FindButton.SetWindowTextW(L"Find");
       }
-
+      
+      void FindDialog::OnTarget_TextChanged()
+      {
+         Search.Reset();
+      }
+      
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 

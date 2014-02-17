@@ -468,6 +468,9 @@
     <ClInclude Include="Logic\SearchData.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
+    <ClInclude Include="SearchOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\StringResource.cpp">
@@ -766,6 +769,9 @@
     </ClCompile>
     <ClCompile Include="Logic\SearchData.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchOperation.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
