@@ -64,6 +64,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   void AdjustHorzScroll(CListBox& wndListBox);
 
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      handler void onFindReplaceFeedback(const WorkerProgress& wp);
       handler void onGameDataFeedback(const WorkerProgress& wp);
       handler void onLoadSaveFeedback(const WorkerProgress& wp);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -79,6 +80,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ImageListEx Images;
 
       FeedbackHandler fnGameDataFeedback,
+                      fnFindReplaceFeedback,
                       fnLoadSaveFeedback;
    };
 

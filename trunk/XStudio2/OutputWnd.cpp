@@ -43,6 +43,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::onGameDataFeedback)),
+                              fnFindReplaceFeedback(MainWnd::FindReplaceFeedback.Register(this, &COutputWnd::onFindReplaceFeedback)),
                               fnLoadSaveFeedback(MainWnd::LoadSaveFeedback.Register(this, &COutputWnd::onLoadSaveFeedback))
    {
       
@@ -195,6 +196,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
+   void COutputWnd::onFindReplaceFeedback(const WorkerProgress& wp)
+   {
+      // Create item
+      LVItem item(m_wndOutputFind.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
+      item.iImage = (UINT)wp.Type;
+      item.iIndent = wp.Indent;
+
+      // Insert/display
+      m_wndOutputFind.InsertItem(&item);
+      m_wndOutputFind.EnsureVisible(m_wndOutputFind.GetItemCount()-1, FALSE);
+   }
+
    void COutputWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
       // Create item

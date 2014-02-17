@@ -39,6 +39,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    public:
       static FeedbackEvent    GameDataFeedback,
+                              FindReplaceFeedback,
                               LoadSaveFeedback;
 
       // --------------------- PROPERTIES ------------------------

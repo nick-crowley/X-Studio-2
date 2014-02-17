@@ -32,12 +32,19 @@ namespace Logic
          /// <returns></returns>
          bool  IsRunning() const
          {
-            return Thread != nullptr;
+            DWORD code(0);
+
+            // Query thread state
+            if (!GetExitCodeThread(Thread, &code))
+               throw Win32Exception(HERE, L"Unable to query thread state");
+
+            return code == STILL_ACTIVE;
+            //return Thread != nullptr;
          }
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Stops the thread.</summary>
+         /// <summary>Sets the 'abort' flag and closes the thread handle</summary>
          /// <returns>true if successful, false otherwise</returns>
          /// <exception cref="Logic::InvalidOperationException">Thread is not running</exception>
          bool  Stop()

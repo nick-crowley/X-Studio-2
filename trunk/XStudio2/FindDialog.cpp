@@ -129,9 +129,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          TargetCombo.AddString(L"Scripts Folder");
          TargetCombo.SetCurSel(0);
          
-         // Set output
+         // Set output pane
          this->CheckRadioButton(IDC_RESULTS1_RADIO, IDC_RESULTS2_RADIO, IDC_RESULTS1_RADIO);
-
          return TRUE;  // return TRUE unless you set the focus to a control
       }
 
@@ -142,7 +141,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (!Started)
          {
             // Feedback
-            Console << Cons::Heading << Cons::Bold << L"Searching for '" << GetSearchTerm() << "' in target:" << GetString(GetSearchTarget()) << ENDL;
+            GuiString msg(L"Searching for '%s' in %s", GetSearchTerm().c_str(), GetString(GetSearchTarget()).c_str() );
+            Console << Cons::Heading << Cons::Bold << msg << ENDL;
+            WorkerData.SendFeedback(ProgressType::Operation, 0, msg);
 
             // Init operation
             Started = true;
@@ -159,6 +160,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             FindProgressDialog ProgressDlg;
             ProgressDlg.DoModal(&Worker);
             
+            Worker.Stop();
             // Find next match
             //if (!Search.FindNext())
 
@@ -167,6 +169,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             {
                // Feedback
                Console << Cons::Heading << "Search completed" << ENDL;
+               WorkerData.SendFeedback(ProgressType::Succcess, 0, L"Search completed");
 
                // Stop operation
                Started = false;
@@ -221,6 +224,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
          CDialogEx::OnShowWindow(bShow, nStatus);
+
+         // Manually connect worker to main window [this dialog is instantiated before global MainWnd is set]
+         if (bShow)
+            WorkerData.SetFeedbackWnd(AfxGetMainWnd());
 
          // Start anew
          Started = false;

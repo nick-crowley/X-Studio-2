@@ -59,7 +59,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Set polling timer
          SetTimer(42, 250, nullptr);
-
+         ProgressBar.SetMarquee(TRUE, 150);
+         
          return TRUE;  // return TRUE unless you set the focus to a control
       }
 
@@ -77,7 +78,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       void FindProgressDialog::OnTimer(UINT_PTR  id)
       {
-         Console << "DEBUG: OnTimer() received" << ENDL;
+
          if (!Worker->IsRunning())
          {
             KillTimer(42);

@@ -28,7 +28,7 @@ namespace Logic
 
          // Check for completion
          if (search.Complete)
-            return false;
+            return 0;
 
          try
          {
@@ -52,7 +52,7 @@ namespace Logic
                      // Search document + highlight match
                      auto& doc = (ScriptDocument&)theApp.GetDocument(search.Files.front());
                      if (doc.FindNext(search))
-                        return true;
+                        return 0;
                   }
                   // File on disc: Open in memory and search
                   else
@@ -72,19 +72,16 @@ namespace Logic
                         // Perform search again (due to indentation causing different character indicies)
                         search.LastMatch = {0,0};
                         doc->FindNext(search);
-                        return true;
+                        return 0;
                      }
                   }
                }
                catch (ExceptionBase& e)
                {
-                  Console.Log(HERE, e, GuiString(L"Unable to search '%s' : %s", search.Files.front().c_str()) );
-                  // Error: Skip file
-                  //auto f = search.Files.front();
-                  //search.Files.pop_front();
-                  //search.LastMatch = {0,0};
-                  //// Supply filename
-                  //throw GenericException(HERE, GuiString(L"Unable to search '%s' : %s", f.c_str(), e.Message.c_str()));
+                  // Error: Feedback
+                  GuiString msg(L"Cannot read '%s' : %s", search.Files.front().c_str(), e.Message.c_str());
+                  data->SendFeedback(ProgressType::Error, 1, msg);
+                  Console.Log(HERE, e, msg);
                }
 
                // No match: search next file
@@ -93,13 +90,16 @@ namespace Logic
             }
          }
          catch (ExceptionBase& e) {
-            Console.Log(HERE, e);
+            // Feedback
+            GuiString msg(L"Unable to perform search: %s", e.Message.c_str());
+            data->SendFeedback(ProgressType::Error, 1, msg);
+            Console.Log(HERE, e, msg);
          }
 
          // Complete: No more matches
          search.Complete = true;
          CoUninitialize();
-         return false;
+         return 0;
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
