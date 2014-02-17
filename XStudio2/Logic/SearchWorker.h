@@ -9,7 +9,7 @@ namespace Logic
    namespace Threads
    {
       /// <summary></summary>
-      enum class SearchTarget { Selection, Document, OpenDocuments, ProjectDocuments, ScriptFolder };
+      enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
       /// <summary>Get search target name</summary>
       wstring  GetString(SearchTarget t);
@@ -30,12 +30,20 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
       public:
          PROPERTY_GET(IO::Path,CurrentFile,GetCurrentFile);
+         PROPERTY_GET_SET(bool,Initialized,GetInitialized,SetInitialized);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Gets the initialized flag</summary>
+         /// <returns></returns>
+         bool  GetInitialized() const
+         {
+            return ListBuilt;
+         }
+
          /// <summary>Get whether there are any more files to search.</summary>
          /// <returns></returns>
-         bool  HasFiles() const
+         bool  HasCurrentFile() const
          {
             return !Files.empty();
          }
@@ -47,59 +55,60 @@ namespace Logic
             return Files.front();
          }
 
-         /// <summary>Gets the search target.</summary>
-         /// <returns></returns>
+         IO::Path  GetFolder() const
+         {
+            return Folder;
+         }
+
          SearchTarget  GetTarget() const
          {
             return Target;
          }
 
-         /// <summary>Get whether search is complete.</summary>
-         /// <returns></returns>
-         bool  IsComplete() const
+         GameVersion  GetVersion() const
          {
-            return Search.IsComplete();
+            return Version;
          }
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Adds a file to the list of files to search.</summary>
+         /// <summary>Add path to the list of files to search.</summary>
          /// <param name="p">The p.</param>
          void  AddFile(IO::Path p)
          {
             Files.push_back(p);
          }
          
-         /// <summary>Gets the text search data.</summary>
-         /// <returns></returns>
-         SearchData&  GetSearchData()
-         {
-            return Search;
-         }
-
-         /// <summary>Advances to the next file.</summary>
-         void  NextFile()
+         /// <summary>Advances to the next file path.</summary>
+         void  Advance()
          {
             Files.pop_front();
          }
 
-         /// <summary>Resets the last match in prepration for searching a new document.</summary>
-         void  ResetLastMatch()
+         /// <summary>Initializes the match with the current file path</summary>
+         void  InitMatch()
          {
-            Search.ResetLastMatch();
+            Match.Reset();
+            Match.FullPath = CurrentFile;
          }
 
-         /// <summary>Marks search as complete.</summary>
-         void  SetComplete()
+         /// <summary>Sets the initialized flag.</summary>
+         /// <param name="b">The b.</param>
+         void  SetInitialized(bool b)
          {
-            Search.SetComplete();
+            ListBuilt = b;
          }
 
          // -------------------- REPRESENTATION ---------------------
+      public:
+         SearchData   Match;
+         
       private:
-         SearchData      Search;
          list<IO::Path>  Files;
+         IO::Path        Folder;
+         bool            ListBuilt;
          SearchTarget    Target;
+         GameVersion     Version;
       };
 
       /// <summary>Find and replace worker thread</summary>
