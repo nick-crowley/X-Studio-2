@@ -61,17 +61,18 @@ Application::DocumentIterator  Application::end()
 
 /// <summary>Get document start iterator.</summary>
 /// <returns></returns>
-Application::DocumentIterator  Application::cbegin() const
+Application::DocumentIterator  Application::begin() const
 {
    return DocumentIterator(*this, this->GetFirstDocTemplatePosition());
 }
 
 /// <summary>Get document end iterator.</summary>
 /// <returns></returns>
-Application::DocumentIterator  Application::cend() const
+Application::DocumentIterator  Application::end() const
 {
    return DocumentIterator(*this, nullptr);
 }
+
 
 /// <summary>Exits the instance.</summary>
 /// <returns></returns>
@@ -85,6 +86,7 @@ int Application::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+
 /// <summary>Gets an open document</summary>
 /// <param name="p">Full path.</param>
 /// <returns></returns>
@@ -92,29 +94,29 @@ int Application::ExitInstance()
 DocumentBase&  Application::GetDocument(IO::Path p) const
 {
    // Find by path
-   for (auto doc = cbegin(); doc != cend(); ++doc)
-      if (doc->GetFullPath() == p)
-         return *doc;
-
+   for (auto& doc : *this)
+      if (doc.GetFullPath() == p)
+         return doc;
+   
    // Not found: Error
    throw InvalidOperationException(HERE, GuiString(L"Cannot find document '%s'", p.c_str()));
 }
 
-/// <summary>Gets an open document</summary>
-/// <param name="p">Full path.</param>
+
+/// <summary>Get all open documents</summary>
 /// <returns></returns>
-/// <exception cref="Logic::InvalidOperationException">Document not found</exception>
 DocumentList  Application::GetOpenDocuments() const
 {
    DocumentList docs;
 
    // Enumerate docs
-   for (auto doc = cbegin(); doc != cend(); ++doc)
-      docs.push_back(doc.operator->());
+   for (auto& doc : *this)
+      docs.push_back(&doc);
 
    // Return list
    return docs;
 }
+
 
 /// <summary>Gets the main window.</summary>
 /// <returns></returns>
@@ -123,12 +125,14 @@ GUI::Windows::MainWnd*  Application::GetMainWindow() const
    return dynamic_cast<MainWnd*>(AfxGetMainWnd());
 }
 
+
 /// <summary>Get game data state.</summary>
 /// <returns></returns>
 AppState  Application::GetState() const
 {
    return GameDataState;
 }
+
 
 /// <summary>Initializes the instance.</summary>
 /// <returns></returns>
@@ -209,6 +213,37 @@ BOOL Application::InitInstance()
 	return TRUE;
 }
 
+
+/// <summary>Query whether a document is open</summary>
+/// <param name="p">Full path</param>
+/// <returns></returns>
+bool Application::IsDocumentOpen(IO::Path p) const
+{
+   // Find by path
+   for (const auto& doc : *this)
+      if (doc.GetFullPath() == p)
+         return true;
+
+   // Not found
+   return false;
+}
+
+
+/// <summary>Query whether a document is still open</summary>
+/// <param name="doc">Document</param>
+/// <returns></returns>
+bool Application::IsDocumentOpen(DocumentBase* d) const
+{
+   // Find by address
+   for (const auto& doc : *this)
+      if (&doc == d)
+         return true;
+
+   // Not found
+   return false;
+}
+
+
 /// <summary>Loads an icon.</summary>
 /// <param name="nResID">The resource identifier.</param>
 /// <param name="iSize">Size of the icon</param>
@@ -225,6 +260,7 @@ HICON  Application::LoadIconW(UINT nResID, UINT iSize) const
    return icon;
 }
 
+
 /// <summary>Loads a bitmap.</summary>
 /// <param name="nResID">The resource identifier.</param>
 /// <param name="cx">The width.</param>
@@ -239,12 +275,14 @@ CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) cons
    return bmp;
 }
 
+
 /// <summary>Dispay about box</summary>
 void Application::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
+
 
 /// <summary>Opens the string library.</summary>
 /// <returns></returns>
@@ -259,6 +297,7 @@ BOOL  Application::OpenStringLibrary()
    return FALSE;
 }
 
+
 /// <summary>Application customization load/save methods</summary>
 void Application::PreLoadState()
 {
@@ -266,27 +305,6 @@ void Application::PreLoadState()
 	GetContextMenuManager()->AddMenu(GuiString(IDR_PROJECT).c_str(), IDM_PROJECT_POPUP);
 }
 
-/// <summary>Query whether a document is open</summary>
-/// <param name="p">Full path</param>
-/// <returns></returns>
-bool Application::IsDocumentOpen(IO::Path p) const
-{
-   // Find by path
-   for (auto doc = cbegin(); doc != cend(); ++doc)
-      if (doc->GetFullPath() == p)
-         return true;
-
-   // Not found
-   return false;
-}
-
-void Application::LoadCustomState()
-{
-}
-
-void Application::SaveCustomState()
-{
-}
 
 /// <summary>Sets the game data state.</summary>
 /// <param name="s">state</param>
@@ -295,6 +313,7 @@ void  Application::SetState(AppState s)
    GameDataState = s;
    StateChanged.Raise(s);
 }
+
 
 /// <summary>Displays and logs an exception</summary>
 /// <param name="src">The handler location</param>
@@ -307,6 +326,7 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const 
    return AfxMessageBox(GuiString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 
+
 /// <summary>Displays and logs an exception</summary>
 /// <param name="src">The handler location</param>
 /// <param name="e">The exception</param>
@@ -316,6 +336,7 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
    Console.Log(src, e);
    return AfxMessageBox(GuiString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
+
 // ------------------------------ PROTECTED METHODS -----------------------------
 
 // ------------------------------- PRIVATE METHODS ------------------------------
