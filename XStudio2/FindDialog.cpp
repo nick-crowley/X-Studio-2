@@ -19,7 +19,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          , MatchWholeWord(FALSE)
          , Expanded(true)
       {
-
       }
 
       FindDialog::~FindDialog()
@@ -150,17 +149,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          try
          {
             // Init: Create operation
-            if (!Search.IsStarted())
-            {
-               InitSearch();
-               FindButton.SetWindowTextW(L"Find Next");
-            }
+            if (!Search)
+               NewSearch();
 
             // FindNext:
-            if (!Search.FindNext())
+            if (!Search->FindNext())
             {
                // Complete
-               FindButton.SetWindowTextW(L"Find");
+               Reset();
                AfxMessageBox(L"Search complete");
             }
          }
@@ -172,15 +168,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       void FindDialog::OnFind_TextChanged()
       {
-         Search.Reset();
+         Reset();
       }
       
       void FindDialog::OnFindAll_Click()
       {
          try
          {
-            InitSearch();
-            Search.FindAll();
+            NewSearch();
+            Search->FindAll();
+            Reset();
          }
          catch (ExceptionBase& e) {
             theApp.ShowError(HERE, e);
@@ -198,17 +195,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          try
          {
             // Init: Create operation
-            if (!Search.IsStarted())
-            {
-               InitSearch();
-               FindButton.SetWindowTextW(L"Find Next");
-            }
+            if (!Search)
+               NewSearch();
 
             // Replace:
-            if (!Search.Replace(GetReplaceTerm()))
+            if (!Search->Replace(GetReplaceTerm()))
             {
                // Complete
-               FindButton.SetWindowTextW(L"Find");
+               Reset();
                AfxMessageBox(L"Search complete");
             }
          }
@@ -219,7 +213,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       void FindDialog::OnReplace_TextChanged()
       {
-         Search.Reset();
+         Reset();
       }
       
 
@@ -227,8 +221,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
-            InitSearch();
-            Search.ReplaceAll(GetReplaceTerm());
+            NewSearch();
+            Search->ReplaceAll(GetReplaceTerm());
+            Reset();
          }
          catch (ExceptionBase& e) {
             theApp.ShowError(HERE, e);
@@ -240,22 +235,36 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CDialogEx::OnShowWindow(bShow, nStatus);
 
          // Start anew
-         Search.Reset();
-         FindButton.SetWindowTextW(L"Find");
+         Reset();
       }
       
       void FindDialog::OnTarget_TextChanged()
       {
-         Search.Reset();
+         Reset();
       }
       
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 
-      void  FindDialog::InitSearch()
+      void  FindDialog::NewSearch()
       {
-         Search.Reset();
-         Search.Create(GetSearchTarget(), GetSearchTerm(), GetReplaceTerm(), MatchCase!=FALSE, MatchWholeWord!=FALSE, UseRegEx!=FALSE);
+         // Display 'Find Next'
+         FindButton.SetWindowTextW(L"Find Next");
+
+         // Create new search
+         Search.reset(new SearchOperation(GetSearchTarget(), 
+                                          GetSearchTerm(), 
+                                          GetReplaceTerm(), 
+                                          MatchCase != FALSE, 
+                                          MatchWholeWord != FALSE, 
+                                          UseRegEx != FALSE));
+      }
+
+      void  FindDialog::Reset()
+      {
+         // Display 'Find'
+         FindButton.SetWindowTextW(L"Find");
+         Search.reset(nullptr);
       }
 
 /// <summary>User interface windows</summary>

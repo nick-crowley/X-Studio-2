@@ -14,6 +14,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          enum { IDD = IDD_FINDREPLACE };
 
       private:
+         typedef unique_ptr<SearchOperation> OperationPtr;
          
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -51,7 +52,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnTarget_TextChanged();
 
       private:
-         void  InitSearch();
+         void NewSearch();
+         void Reset();
 
          // -------------------- REPRESENTATION ---------------------
       protected:
@@ -68,7 +70,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
-         SearchOperation  Search;
+         OperationPtr  Search;
       };
 
 /// <summary>User interface windows</summary>

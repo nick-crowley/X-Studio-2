@@ -10,9 +10,34 @@ namespace Logic
    /// <param name="name">Name of preference/property</param>
    /// <param name="defVal">Default value when does not exist</param>
    /// <returns></returns>
-   #define PREFERENCE_PROPERTY(valType,funcType,name,defVal)   public: __declspec(property(get=Get##name,put=Set##name)) valType name;   \
-                                                               valType Get##name()  const           { return Get##funcType(L#name, defVal); }  \
-                                                               void    Set##name(valType val) const { Set##funcType(L#name, val); }
+   #define PREFERENCE_PROPERTY(valType,funcType,name,defVal) \
+      public: \
+         __declspec(property(get=Get##name,put=Set##name)) valType name; \
+         \
+         valType  Get##name() const { \
+            return Get##funcType(L#name, defVal); \
+         } \
+         void  Set##name(valType val) const { \
+            Set##funcType(L#name, val); \
+         }
+
+   /// <summary>Generate get/set methods+property for a preference</summary>
+   /// <param name="valueType">Property type</param>
+   /// <param name="storageType">Whether stored as int, string</param>
+   /// <param name="funcType">Registry function to use, must be Bool, Int or String</param>
+   /// <param name="name">Name of preference/property</param>
+   /// <param name="defaultVal">Default value when does not exist</param>
+   /// <returns></returns>
+   #define PREFERENCE_PROPERTY2(valueType,storageType,funcType,name,defaultVal) \
+      public: \
+         __declspec(property(get=Get##name,put=Set##name)) valueType name; \
+         \
+         valueType  Get##name() const { \
+            return (valueType)Get##funcType(L#name, (storageType)defaultVal); \
+         } \
+         void  Set##name(valueType val) const { \
+            Set##funcType(L#name, (storageType)val); \
+         }
 
    /// <summary></summary>
    class PreferencesLibrary
@@ -38,6 +63,8 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false);
       PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false);
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
+      PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
+      PREFERENCE_PROPERTY2(GameVersion,int,Int,GameDataVersion,GameVersion::TerranConflict);
 
       // ---------------------- ACCESSORS ------------------------			
    private:
@@ -90,9 +117,9 @@ namespace Logic
       /// <param name="name">name</param>
       /// <param name="value">value</param>
       /// <returns></returns>
-      void  SetString(const wchar* name, const wchar* value) const
+      void  SetString(const wchar* name, const wstring& value) const
       {
-         theApp.WriteProfileString(L"Settings", name, value);
+         theApp.WriteProfileString(L"Settings", name, value.c_str());
       }
 
       // ----------------------- MUTATORS ------------------------

@@ -8,13 +8,17 @@ namespace Logic
 {
    namespace Threads
    {
+      /// <summary>Forward declaration</summary>
+      class SearchWorker;
+
+
       /// <summary></summary>
       enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
       /// <summary>Get search target name</summary>
       wstring  GetString(SearchTarget t);
 
-      class SearchWorker;
+      
 
       /// <summary>Data for find and replace worker thread</summary>
       class SearchWorkerData : public WorkerData

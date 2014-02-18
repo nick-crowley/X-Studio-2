@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Common.h"
 #include "PreferencesLibrary.h"
 
 namespace Logic
