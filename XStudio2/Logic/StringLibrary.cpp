@@ -56,7 +56,7 @@ namespace Logic
             {
                // Feedback
                data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", f.FullPath.c_str()));
-               Console << L"Reading language file: " << Cons::Yellow << f.FullPath << Cons::White << L"...";
+               Console << L"Reading language file: " << f.FullPath << L"...";
 
                // Parse language file
                LanguageFile file = LanguageFileReader(f.OpenRead()).ReadFile(f.FullPath.FileName);

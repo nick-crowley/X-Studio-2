@@ -56,7 +56,7 @@ namespace Logic
          try
          {
             // Feedback
-            Console << L"Reading descriptions file: " << Cons::Yellow << path << Cons::White << "...";
+            Console << L"Reading descriptions file: " << path << "...";
 
             // Load descriptions file
             StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );

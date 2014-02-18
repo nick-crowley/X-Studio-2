@@ -110,7 +110,7 @@ namespace Logic
 
                // Feedback
                data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading type file '%s'...", f.FullPath.c_str()));
-               Console << L"Reading type file: " << Cons::Yellow << f.FullPath << Cons::White << L"...";
+               Console << L"Reading type file: " << f.FullPath << L"...";
 
                // Create appropriate reader
                TFileReaderPtr reader;
