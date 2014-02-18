@@ -23,6 +23,8 @@ namespace Logic
    enum class Cons { UserAction,
                      Heading, 
                      Normal, 
+                     Error,
+                     Exception,
                      Bold, 
                      Endl,
                      Reset,
@@ -91,16 +93,14 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
          *this << ENDL 
-               << Cons::Bold
-               << Cons::Purple << L"ERROR: " 
-               << Cons::Red    << msg 
-               << Cons::White  << L"...     Source: " 
-               << Cons::Yellow << src << ENDL;
-         *this << Cons::Bold 
-               << Cons::Purple << L"CAUSE: " 
-               << Cons::Red    << e.Message.TrimRight(L"\r\n")
-               << Cons::White  << L"...     Source: " 
-               << Cons::Yellow << e.Source << ENDL;
+               << Cons::Exception << L"ERROR: " 
+               << Cons::Error     << msg 
+               << Cons::White     << L"...     Source: " 
+               << Cons::Yellow    << src << ENDL;
+         *this << Cons::Exception << L"CAUSE: " 
+               << Cons::Error     << e.Message.TrimRight(L"\r\n")
+               << Cons::White     << L"...     Source: " 
+               << Cons::Yellow    << e.Source << ENDL;
       }
 
       /// <summary>Logs an exception to the console.</summary>
@@ -109,14 +109,12 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
          *this << ENDL 
-               << Cons::Bold
-               << Cons::Purple << L"EXCEPTION: " 
-               << Cons::Red    << e.Message.TrimRight(L"\r\n") 
-               << Cons::White  << L"...    Source: " 
-               << Cons::Yellow << src << ENDL;
-         *this << Cons::Bold
-               << Cons::Purple << L"SOURCE: " 
-               << Cons::Yellow << e.Source << ENDL;
+               << Cons::Exception << L"EXCEPTION: " 
+               << Cons::Error     << e.Message.TrimRight(L"\r\n") 
+               << Cons::White     << L"...    Source: " 
+               << Cons::Yellow    << src << ENDL;
+         *this << Cons::Exception << L"SOURCE: " 
+               << Cons::Yellow    << e.Source << ENDL;
       }
 
       /// <summary>Logs an STL exception to the console.</summary>
@@ -125,11 +123,10 @@ namespace Logic
       void  Log(const GuiString& src, const exception&e)
       {
          *this << ENDL 
-               << Cons::Bold 
-               << Cons::Purple << L"STL EXCEPTION: " 
-               << Cons::Red    << e.what()
-               << Cons::White  << L"...    Source: " 
-               << Cons::Yellow << src << ENDL;
+               << Cons::Exception << L"STL EXCEPTION: " 
+               << Cons::Error     << e.what()
+               << Cons::White     << L"...    Source: " 
+               << Cons::Yellow    << src << ENDL;
       }
 
       /// <summary>Inserts associated text colour manipulator, if any</summary>
@@ -183,6 +180,14 @@ namespace Logic
          // User Action: Linebreak + Bold + Cyan
          case Cons::UserAction:  
             return *this << ENDL << Cons::Bold << Cons::Cyan;
+
+         // Exception: Bold + Purple
+         case Cons::Exception:  
+            return *this << Cons::Bold << Cons::Purple;
+
+         // Error: Bold + Red
+         case Cons::Error:  
+            return *this << Cons::Bold << Cons::Red;
 
          // Push attributes: Save current attributes
          case Cons::Push:
@@ -297,7 +302,8 @@ namespace Logic
       /// <param name="e">Exception</param>
       ConsoleWnd& operator<<(const exception&  e)
       {
-         return *this << Cons::Red << L"STL EXCEPTION: " 
+         return *this << ENDL
+                      << Cons::Exception << L"STL EXCEPTION: " 
                       << Cons::Yellow << e.what() << ENDL;
       }
 
