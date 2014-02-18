@@ -435,7 +435,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
    public:
-      wstring   GetAllText() const;
+      GuiString GetAllText() const;
       int       GetCaretIndex() const;
       POINT     GetCaretLocation() const;
       int       GetLineLength(int line = -1) const;

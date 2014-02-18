@@ -88,10 +88,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <returns>True if found, false otherwise</returns>
    bool  ScriptView::FindNext(MatchData& m)
    {
+      // Get all text
       auto text = RichEdit.GetAllText();
       
       // Find next match
-      auto pos = text.find(m.SearchTerm, m.Location.cpMax);
+      auto pos = text.Find(m.SearchTerm, m.Location.cpMax, m.MatchCase);
 
       // Set/Clear match
       if (pos != wstring::npos)

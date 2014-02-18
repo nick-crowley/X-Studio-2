@@ -129,7 +129,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Gets entire script as a string delimited by single char (vertical tab) line breaks.</summary>
    /// <returns></returns>
-   wstring  ScriptEdit::GetAllText() const
+   GuiString  ScriptEdit::GetAllText() const
    {
       CString str;
       // Get entire text
