@@ -37,6 +37,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void          Activate();
       virtual bool  FindNext(MatchData& src);
+      virtual void  SetSelection(CHARRANGE rng);
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:

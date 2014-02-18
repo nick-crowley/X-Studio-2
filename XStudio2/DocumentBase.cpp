@@ -54,6 +54,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return Type;
    }
+
+   /// <summary>Sets the selection.</summary>
+   /// <param name="rng">char range.</param>
+   void  DocumentBase::SetSelection(CHARRANGE rng)
+   {
+   }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    

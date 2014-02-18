@@ -114,14 +114,14 @@ namespace Logic
                      }
                      // FindAll: Feedback
                      else if (data->Operation == Operation::FindAll)
-                        data->SendFeedback(ProgressType::Info, 1, GuiString(L"%04d : %s : %s", 0, CurrentFile.c_str(), data->Match.SearchTerm.c_str()));
+                        data->FeedbackMatch();
                   }
                }
                catch (ExceptionBase& e)
                {
                   // Error: Feedback
                   GuiString msg(L"Cannot read '%s' : %s", CurrentFile.c_str(), e.Message.c_str());
-                  data->SendFeedback(ProgressType::Error, 1, msg);
+                  data->FeedbackError(msg);
                   Console.Log(HERE, e, msg);
                }
             }
@@ -129,7 +129,7 @@ namespace Logic
          catch (ExceptionBase& e) {
             // Feedback
             GuiString msg(L"Unable to perform search: %s", e.Message.c_str());
-            data->SendFeedback(ProgressType::Error, 1, msg);
+            data->FeedbackError(msg);
             Console.Log(HERE, e, msg);
          }
 
