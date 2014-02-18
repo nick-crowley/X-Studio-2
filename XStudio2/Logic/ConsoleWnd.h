@@ -24,6 +24,8 @@ namespace Logic
                      Normal, 
                      Bold, 
                      Endl,
+                     Reset,
+                     
                      White,
                      Blue,
                      Cyan,
@@ -144,9 +146,13 @@ namespace Logic
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes& ~FOREGROUND_INTENSITY); 
             break;
 
-         // Endl: Linebreak + White
+         // Reset: White + Normal
+         case Cons::Reset:
+            return *this << Cons::Normal << Cons::White;
+
+         // Endl: Reset + Linebreak 
          case Cons::Endl:   
-            return *this << Cons::Normal << Cons::White << L"\n";
+            return *this << Cons::Reset << L"\n";
 
          // Heading: Linebreak + Cyan
          case Cons::Heading:  

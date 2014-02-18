@@ -198,6 +198,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    void COutputWnd::onFindReplaceFeedback(const WorkerProgress& wp)
    {
+      // New operation: clear previous content
+      if (wp.Type == ProgressType::Operation)
+         m_wndOutputFind.DeleteAllItems();
+
       // Create item
       LVItem item(m_wndOutputFind.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
       item.iImage = (UINT)wp.Type;
