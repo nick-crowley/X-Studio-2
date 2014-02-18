@@ -32,18 +32,29 @@ namespace Logic
       /// <returns>ScriptFile containing properties only</returns>
       ScriptFile  ScriptFileReader::ReadExternalScript(Path folder, const wstring& script)
       {
-         // Generate path
-         Path path(folder + (script + L".pck"));
+         try
+         {
+            // Feedback
+            Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"...";
 
-         // Check for PCK and XML versions
-         if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
-            throw FileNotFoundException(HERE, folder+script);
+            // Generate path
+            Path path(folder + (script + L".pck"));
 
-         // Feedback
-         Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"..." << ENDL;
+            // Check for PCK and XML versions
+            if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
+               throw FileNotFoundException(HERE, folder+script);
 
-         // Read script
-         return ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
+            // Read script
+            ScriptFile sf = ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
+
+            // Feedback
+            Console << Cons::Green << "Success" << ENDL;
+            return sf;
+         }
+         catch (ExceptionBase& e) {
+            Console << Cons::Red << "Failed: " << e.Message << ENDL;
+            throw;
+         }
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -212,9 +223,9 @@ namespace Logic
                   if (!name.empty() && !script.ScriptCalls.Contains(name))
                      script.ScriptCalls.Add(name, ReadExternalScript(Folder, name));
                }
-               catch (ExceptionBase& e ) {
-                  if (e.ErrorID != ERROR_FILE_NOT_FOUND)
-                     Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
+               catch (ExceptionBase&) {
+                  //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
+                     //Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
                }
             }
 

@@ -102,20 +102,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
 
    /// <summary>Opens a document.</summary>
-   /// <param name="lpszPathName">path.</param>
+   /// <param name="szPathName">path.</param>
    /// <returns></returns>
-   BOOL ScriptDocument::OnOpenDocument(LPCTSTR lpszPathName)
+   BOOL ScriptDocument::OnOpenDocument(LPCTSTR szPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
       
       // Feedback
-      Console << Cons::Heading << "Loading script: " << lpszPathName << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading script '%s'", lpszPathName));
+      Console << Cons::UserAction << "Loading script: " << Path(szPathName) << ENDL;
+      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading script '%s'", szPathName));
 
       try
       {
          // Read/Parse script
-         Script = ScriptFileReader(XFileInfo(lpszPathName).OpenRead()).ReadFile(lpszPathName, false);
+         Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
 
          // Feedback
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
@@ -125,7 +125,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load script");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", lpszPathName));
+         theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", szPathName));
          return FALSE;
       }
    }

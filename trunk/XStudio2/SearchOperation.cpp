@@ -23,7 +23,7 @@ namespace GUI
       {
          // Feedback
          GuiString msg(L"Searching for '%s' in %s", Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
-         Search.SendFeedback(Cons::UserAction, ProgressType::Operation, 0, msg);
+         Search.SendFeedback(ProgressType::Operation, 0, msg);
 
          // Generate documents lists
          switch (Target)

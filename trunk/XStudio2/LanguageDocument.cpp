@@ -7,6 +7,7 @@
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
 #include "Logic/FileIdentifier.h"
+#include "Logic/WorkerFeedback.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -95,9 +96,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BOOL LanguageDocument::OnOpenDocument(LPCTSTR szPathName)
    {
+      WorkerData data(Operation::LoadSaveDocument);
+
       try
       {
-         Console << Cons::Heading << L"Parsing language file: " << szPathName << ENDL;
+         // Feedback
+         Console << Cons::UserAction << L"Loading language file: " << Path(szPathName) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading language file '%s'", szPathName));
 
          // Parse file
          if (GuiString(L"String Library") == szPathName)
@@ -109,14 +114,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
             Virtual = false;
          }
 
-         Console << Cons::Green << L"Language file loaded successfully" << ENDL;
+         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
-         CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", szPathName, e.Message.c_str(), e.Source.c_str());
-         AfxMessageBox(sz);
+         // Feedback/Display error
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
       }
    }
