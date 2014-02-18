@@ -10,7 +10,12 @@ namespace Logic
          // -------------------------------- CONSTRUCTION --------------------------------
 
          CommandLexer::CommandLexer(const wstring& line, bool  skipWhitespace) 
-            : LineStart(line.begin()), LineEnd(line.end()), Position(LineStart), SkipWhitespace(skipWhitespace), Input(line), Tokens(Parse())
+            : Input(line), 
+              LineStart(Input.begin()), 
+              LineEnd(Input.end()), 
+              Position(LineStart), 
+              SkipWhitespace(skipWhitespace), 
+              Tokens(Parse())
          {
             // DEBUG:
             /*Console.WriteLnf(L"\nLexing command: %s", line.c_str());
@@ -124,7 +129,7 @@ namespace Logic
          bool  CommandLexer::MatchConstant() const
          {
             // Match: '[', alpha
-            return ValidPosition && MatchChar(L'[') && Position+1 <= LineEnd && iswalpha(Position[1]);
+            return ValidPosition && MatchChar(L'[') && Position+1 < LineEnd && iswalpha(Position[1]);
          }
 
          /// <summary>Check if current character is a digit</summary>
@@ -138,7 +143,8 @@ namespace Logic
          /// <returns></returns>
          bool  CommandLexer::MatchNumber() const
          {
-            return MatchDigit() || MatchChar(L'-') && Position+1 <= LineEnd && iswdigit(Position[1]);  // minus immediately preceeding digit
+            return MatchDigit() 
+               || (MatchChar(L'-') && Position+1 < LineEnd && iswdigit(Position[1]));  // minus immediately preceeding digit
          }
 
          /// <summary>Check if current char is an operator</summary>

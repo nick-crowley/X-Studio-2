@@ -147,7 +147,9 @@ namespace Logic
             ScriptToken  ReadWhitespace(CharIterator start);
 
             // -------------------- REPRESENTATION ---------------------
-         
+         public:
+            const wstring       Input;
+
          private:
             const CharIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
                                 LineEnd;
@@ -155,7 +157,6 @@ namespace Logic
             const bool          SkipWhitespace;
 
          public:
-            const wstring       Input;
             const TokenArray    Tokens;
          };
       }
