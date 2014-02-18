@@ -90,12 +90,14 @@ namespace Logic
       /// <param name="msg">Handler error message</param>
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
-         *this << ENDL << Cons::Bold
+         *this << ENDL 
+               << Cons::Bold
                << Cons::Purple << L"ERROR: " 
                << Cons::Red    << msg 
                << Cons::White  << L"...     Source: " 
                << Cons::Yellow << src << ENDL;
-         *this << Cons::Purple << L"CAUSE: " 
+         *this << Cons::Bold 
+               << Cons::Purple << L"CAUSE: " 
                << Cons::Red    << e.Message.TrimRight(L"\r\n")
                << Cons::White  << L"...     Source: " 
                << Cons::Yellow << e.Source << ENDL;
@@ -106,12 +108,14 @@ namespace Logic
       /// <param name="e">error</param>
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
-         *this << ENDL << Cons::Bold
+         *this << ENDL 
+               << Cons::Bold
                << Cons::Purple << L"EXCEPTION: " 
                << Cons::Red    << e.Message.TrimRight(L"\r\n") 
                << Cons::White  << L"...    Source: " 
                << Cons::Yellow << src << ENDL;
-         *this << Cons::Purple << L"SOURCE: " 
+         *this << Cons::Bold
+               << Cons::Purple << L"SOURCE: " 
                << Cons::Yellow << e.Source << ENDL;
       }
 
@@ -120,7 +124,8 @@ namespace Logic
       /// <param name="e">error</param>
       void  Log(const GuiString& src, const exception&e)
       {
-         *this << ENDL << Cons::Bold 
+         *this << ENDL 
+               << Cons::Bold 
                << Cons::Purple << L"STL EXCEPTION: " 
                << Cons::Red    << e.what()
                << Cons::White  << L"...    Source: " 
@@ -179,10 +184,10 @@ namespace Logic
          case Cons::UserAction:  
             return *this << ENDL << Cons::Bold << Cons::Cyan;
 
-         // Push attributes: Save current attributes + reset
+         // Push attributes: Save current attributes
          case Cons::Push:
             AttributeStack.push_back(Attributes);
-            return *this << Cons::Reset;
+            return *this;
 
          // Push attributes: Restore previously saved attributes 
          case Cons::Pop:

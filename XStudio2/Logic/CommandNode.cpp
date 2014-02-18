@@ -674,9 +674,9 @@ namespace Logic
                   if (!call.empty() && !script.ScriptCalls.Contains(call))
                      script.ScriptCalls.Add(call, ScriptFileReader::ReadExternalScript(L"D:\\X3 Albion Prelude\\scripts", call));
                }
-               catch (ExceptionBase& e) {
+               catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
-                     Console.Log(HERE, e, GuiString(L"Unable to resolve call to external script '%s'", call.c_str()));
+                     //Console.Log(HERE, e, GuiString(L"Unable to resolve call to external script '%s'", call.c_str()));
                }
             }
 

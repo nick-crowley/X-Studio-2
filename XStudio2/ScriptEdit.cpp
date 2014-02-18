@@ -589,6 +589,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try 
       { 
+         // Feedback
+         Console << Cons::Heading << "Background compiling " << Document->GetFullPath() << ENDL;
+
          // Parse script 
          ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
          

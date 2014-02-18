@@ -148,6 +148,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Feedback
+            Console << Cons::UserAction << (Search ? "Find Next: " : "Find First: ") 
+                    << Cons::Yellow << GetSearchTerm() << Cons::White << " in " 
+                    << Cons::Yellow << GetString(GetSearchTarget()) << ENDL;
+
             // Init: Create operation
             if (!Search)
                NewSearch();
@@ -175,6 +180,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Feedback
+            Console << Cons::UserAction << "Find All: "
+                    << Cons::Yellow << GetSearchTerm() << Cons::White << " in " 
+                    << Cons::Yellow << GetString(GetSearchTarget()) << ENDL;
+
+            // Find All
             NewSearch();
             Search->FindAll();
             Reset();

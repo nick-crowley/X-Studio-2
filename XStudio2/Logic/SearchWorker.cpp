@@ -61,7 +61,7 @@ namespace Logic
                   data->Files.push_back( f.FullPath );
             break;
          }
-
+         
          // Mark as initialised
          data->Initialized = true;
       }
@@ -83,6 +83,9 @@ namespace Logic
                BuildFileList(data);
             }
 
+            // Feedback
+            Console << Cons::Heading << "Searching remaining " << data->Files.size() << " files..." << ENDL;
+
             // Search thru remaining files for a match
             while (!data->Files.empty())
             {
@@ -93,7 +96,7 @@ namespace Logic
                try
                {
                   // Feedback
-                  Console << L"Searching script: " << Cons::Yellow << CurrentFile << ENDL;
+                  Console << L"Searching script: " << CurrentFile << ENDL;
 
                   // Read script
                   XFileInfo f(CurrentFile);
