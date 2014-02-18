@@ -22,8 +22,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
        
       // ------------------------ STATIC -------------------------
    public:
+      static DocumentBase* GetActive();
+
       DECLARE_DYNCREATE(DocumentBase)
-   protected:
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------

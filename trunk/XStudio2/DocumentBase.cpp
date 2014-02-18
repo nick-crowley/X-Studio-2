@@ -24,6 +24,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   DocumentBase*  DocumentBase::GetActive()
+   {
+      CMDIChildWnd* pChild = theApp.GetMainWindow()->MDIGetActive();
+
+      if (!pChild)
+         return nullptr;
+
+      return (DocumentBase*)pChild->GetActiveDocument();
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Activates this document</summary>

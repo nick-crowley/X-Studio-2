@@ -33,11 +33,11 @@ namespace GUI
          case SearchTarget::Selection:
          case SearchTarget::Document:
             // Ensure document exists
-            if (!theApp.GetMainWindow()->GetActiveDocument())
+            if (!DocumentBase::GetActive())
                throw InvalidOperationException(HERE, L"Missing active document");
 
             // Add current document
-            Documents.push_back((DocumentBase*)theApp.GetMainWindow()->GetActiveDocument());
+            Documents.push_back(DocumentBase::GetActive());
             break;
 
          // Remainder: Examine open documents 
@@ -80,6 +80,7 @@ namespace GUI
                Console << L"Searching document: " << doc->GetFullPath() << ENDL;
 
                // Find matches
+               Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
                while (doc->FindNext(Search.Match))
                {
                   // Find: Display document + Highlight match
