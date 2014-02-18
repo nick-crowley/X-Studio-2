@@ -52,7 +52,7 @@ namespace Logic
             return sf;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Red << "Failed: " << e.Message << ENDL;
+            Console << Cons::Error << "Failed: " << e.Message.Remove(L"\r\n") << ENDL;
             throw;
          }
       }

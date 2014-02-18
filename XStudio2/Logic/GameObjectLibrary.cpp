@@ -139,7 +139,7 @@ namespace Logic
                Console << Cons::Green << L"Success" << ENDL;
             }
             catch (ExceptionBase& e) {
-               data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
+               data->SendFeedback(Cons::Error, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
                throw;
             }
          }
@@ -311,7 +311,7 @@ namespace Logic
                {  
                   // Feedback: Failed
                   data->SendFeedback(ProgressType::Error, 2, GuiString(L"Unable to add game object '%s'", obj.Name.c_str()) );
-                  Console << Cons::Red << L"Unable to add game object: " << Cons::White << obj.Name << ENDL;
+                  Console << Cons::Error << L"Unable to add game object: " << Cons::White << obj.Name << ENDL;
                }
          }
 

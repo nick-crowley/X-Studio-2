@@ -264,7 +264,7 @@ namespace Testing
          catch (ExceptionBase& e)
          {
             Console.Log(HERE, e);
-            Console << Cons::Red << "Validation FAILED" << ENDL;
+            Console << Cons::Error << "Validation FAILED" << ENDL;
             return false;
          }
       }

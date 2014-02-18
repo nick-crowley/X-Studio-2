@@ -68,7 +68,7 @@ namespace Logic
             Console << Cons::Green << L"Success: " << Cons::White << file.Ident << ENDL;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+            Console << Cons::Error << L"Failed: " << e.Message << ENDL;
             throw;
          }
 

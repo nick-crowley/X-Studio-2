@@ -94,12 +94,12 @@ namespace Logic
       {
          *this << ENDL 
                << Cons::Exception << L"ERROR: " 
-               << Cons::Error     << msg 
-               << Cons::White     << L"...     Source: " 
+               << Cons::Error     << msg.Remove(L"\r\n")
+               << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << src << ENDL;
          *this << Cons::Exception << L"CAUSE: " 
-               << Cons::Error     << e.Message.TrimRight(L"\r\n")
-               << Cons::White     << L"...     Source: " 
+               << Cons::Error     << e.Message.Remove(L"\r\n")
+               << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << e.Source << ENDL;
       }
 
@@ -110,8 +110,8 @@ namespace Logic
       {
          *this << ENDL 
                << Cons::Exception << L"EXCEPTION: " 
-               << Cons::Error     << e.Message.TrimRight(L"\r\n") 
-               << Cons::White     << L"...    Source: " 
+               << Cons::Error     << e.Message.Remove(L"\r\n") 
+               << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << src << ENDL;
          *this << Cons::Exception << L"SOURCE: " 
                << Cons::Yellow    << e.Source << ENDL;
@@ -125,7 +125,7 @@ namespace Logic
          *this << ENDL 
                << Cons::Exception << L"STL EXCEPTION: " 
                << Cons::Error     << e.what()
-               << Cons::White     << L"...    Source: " 
+               << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << src << ENDL;
       }
 
@@ -296,15 +296,6 @@ namespace Logic
       ConsoleWnd& operator<<(const VersionString& str)
       {
          return *this << Cons::Push << Cons::Yellow << str.c_str() << Cons::Pop;
-      }
-
-      /// <summary>Writes an STL exception to the console</summary>
-      /// <param name="e">Exception</param>
-      ConsoleWnd& operator<<(const exception&  e)
-      {
-         return *this << ENDL
-                      << Cons::Exception << L"STL EXCEPTION: " 
-                      << Cons::Yellow << e.what() << ENDL;
       }
 
       /// <summary>Writes text to the console</summary>

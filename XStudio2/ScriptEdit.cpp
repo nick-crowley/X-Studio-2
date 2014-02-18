@@ -569,7 +569,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
       else 
          // Error: Failed to identify token
-         Console << Cons::Red << "Cannot find suggestion token: " << Cons::White << " caret at " << GetCaretIndex() << " : " << Cons::Yellow << GetLineText(-1) << ENDL;
+         Console << Cons::Error << "Cannot find suggestion token: " << Cons::White << " caret at " << GetCaretIndex() << " : " << Cons::Yellow << GetLineText(-1) << ENDL;
 
       // Close
       CloseSuggestions();
@@ -1025,7 +1025,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Close suggestions if caret has left the token
       if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
       {
-         //Console << Cons::Red << L"Match failed" << ENDL;
+         //Console << Cons::Error << L"Match failed" << ENDL;
          CloseSuggestions();
          return;
       }

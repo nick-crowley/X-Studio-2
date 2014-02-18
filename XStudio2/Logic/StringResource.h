@@ -118,6 +118,22 @@ namespace Logic
       {
          return chars < length() ? GuiString(end()-chars,end()) : *this;
       }
+
+      /// <summary>Removes all instances of given characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
+      GuiString  Remove(const WCHAR* chars) const
+      {
+         GuiString s(*this);
+
+         // Iterate thru characters
+         for (const wchar* ch = chars; ch[0]; ++ch)
+            // Strip all instances of character
+            for (auto pos = s.find_first_of(ch[0]); pos != GuiString::npos; pos = s.find_first_of(ch[0]))
+               s.erase(pos, 1);
+
+         return s;
+      }
       
       /// <summary>Convert string to lower case</summary>
       /// <returns>New string in lower case</returns>
