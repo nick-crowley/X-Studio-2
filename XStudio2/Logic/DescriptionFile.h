@@ -71,8 +71,17 @@ namespace Logic
          // ------------------------ STATIC -------------------------
 
          // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(GuiString,Ident,GetIdent);
 
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Gets ident string</summary>
+         /// <returns></returns>
+         GuiString GetIdent() const
+         {
+            return GuiString(L"%s (%s) %s", Title.c_str(), GetString(Language).c_str(), Version.c_str());
+         }
 
          // ----------------------- MUTATORS ------------------------
 
