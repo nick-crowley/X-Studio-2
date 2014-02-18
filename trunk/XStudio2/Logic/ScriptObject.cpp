@@ -155,6 +155,12 @@ namespace Logic
          return GuiString(L"[%s]", Text.c_str());
       }
 
+      /// <summary>Get {Group:ID} ident string</summary>
+      GuiString  ScriptObject::GetIdent() const
+      {
+         return GuiString(L"{%s:%d}", GetString(Group).c_str(), ID);
+      }
+
       /// <summary>Get whether object should be hidden from GUI</summary>
       bool  ScriptObject::IsHidden() const
       {

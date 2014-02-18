@@ -96,7 +96,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Enumerating type definition files");
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Enumerating type definition files");
 
          // Enumerate type files
          for (XFileInfo& f : vfs.Browse(XFolder::Types))
@@ -110,7 +110,7 @@ namespace Logic
 
                // Feedback
                data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading type file '%s'...", f.FullPath.c_str()));
-               Console << L"Reading type file: " << f.FullPath << L"...";
+               Console << L"Reading type file: " << Cons::Yellow << f.FullPath << Cons::White << L"...";
 
                // Create appropriate reader
                TFileReaderPtr reader;
@@ -135,10 +135,10 @@ namespace Logic
                // Read/store file directly 
                Files[(UINT)fn.Type] = reader->ReadFile(fn.Type, vfs.GetVersion());
 
+               // Feedback
                Console << Cons::Green << L"Success" << ENDL;
             }
-            catch (ExceptionBase& e)
-            {
+            catch (ExceptionBase& e) {
                data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
             }
          }
@@ -274,7 +274,7 @@ namespace Logic
          ObjectList Input;
 
          // Feedback
-         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Generating game objects from type definition files");
+         data->SendFeedback(Cons::Heading, ProgressType::Info, 1, L"Generating game objects from type definition files");
 
          // Extract all objects from files
          for (auto& f : Files)

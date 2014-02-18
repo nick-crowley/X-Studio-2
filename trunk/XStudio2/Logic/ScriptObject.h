@@ -77,8 +77,9 @@ namespace Logic
          static ScriptObjectGroup  IdentifyGroup(DataType type);
 
          // --------------------- PROPERTIES ------------------------
-
+      public:
          PROPERTY_GET(GuiString,DisplayText,GetDisplayText);
+         PROPERTY_GET(GuiString,Ident,GetIdent);
 
          // ---------------------- ACCESSORS ------------------------	
       public:
@@ -87,6 +88,9 @@ namespace Logic
 
          /// <summary>Get text formatted for display</summary>
          GuiString  GetDisplayText() const;
+
+         /// <summary>Get {Group:ID} ident string</summary>
+         GuiString  GetIdent() const;
 
          /// <summary>Get whether object should be hidden from GUI</summary>
          bool  IsHidden() const;

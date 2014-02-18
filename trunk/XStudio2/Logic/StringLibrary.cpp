@@ -37,8 +37,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 1, L"Enumerating language files");
-         Console << Cons::Heading << L"Enumerating language files" << ENDL;
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Enumerating language files");
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))
@@ -57,21 +56,19 @@ namespace Logic
             {
                // Feedback
                data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", f.FullPath.c_str()));
-               Console << L"Reading language file: " << f.FullPath << L"...";
+               Console << L"Reading language file: " << Cons::Yellow << f.FullPath << Cons::White << L"...";
 
                // Parse language file
                LanguageFile file = LanguageFileReader(f.OpenRead()).ReadFile(f.FullPath.FileName);
 
                // Skip files that turn out to be foreign
                if (file.Language == lang)
-                  Files.insert(file);
+                  Files.insert(move(file));
 
                Console << Cons::Green << L"Success" << ENDL;
             }
-            catch (ExceptionBase& e)
-            {
-               data->SendFeedback(ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
-               Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+            catch (ExceptionBase& e) {
+               data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
             }
          }
 

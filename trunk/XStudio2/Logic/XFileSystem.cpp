@@ -85,8 +85,8 @@ namespace Logic
          Version = ver;
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 1, L"Searching for catalogs...");
-         Console << Cons::Heading << L"Building " << VersionString(ver) << L" VFS from " << folder << ENDL;
+         data->SendFeedback(ProgressType::Operation, 1, L"Searching for catalogs...");
+         Console << Cons::Heading << L"Building " << VersionString(ver, true) << L" file system from " << Cons::Yellow << folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())
@@ -99,7 +99,6 @@ namespace Logic
          // Enumerate catalogs/files
          EnumerateCatalogs();
          EnumerateFiles(data);
-         Console << Cons::Green << L"FileSystem enumerated successfully" << ENDL;
 
          // Return count
          return Files.size();
@@ -190,17 +189,27 @@ namespace Logic
          // Iterate thru catalogs (Highest priority -> Lowest)
          for (const XCatalog& cat : Catalogs)
          {
-            CatalogReader  reader(cat.GetReader());
-            wstring        path;
-            DWORD          size;
+            wstring  path;
+            DWORD    size;
 
-            // Feedback
-            Console << Cons::White << L"Reading catalog " << cat.FullPath << ENDL;
-            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
+            try
+            {
+               // Feedback
+               Console << Cons::White << L"Reading catalog " << Cons::Yellow << cat.FullPath << Cons::White << "...";
+               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
 
-            // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
-            for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
-               Files.Add( XFileInfo(*this, cat, path, size, offset) );
+               // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
+               CatalogReader  reader(cat.GetReader());
+               for (DWORD offset = 0; reader.ReadDeclaration(path, size); offset += size)
+                  Files.Add( XFileInfo(*this, cat, path, size, offset) );
+
+               // Feedback
+               Console << Cons::Green << "Success" << ENDL;
+            }
+            catch (ExceptionBase& e) {
+               Console << Cons::Red << "Failed : " << e.Message << ENDL;
+               throw;
+            }
          }
 
          // Enumerate physical files

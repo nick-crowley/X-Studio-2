@@ -76,7 +76,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"String library has not been enumerated");
 
          // Feedback
-         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Generating script objects from language files");
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Generating script objects from language files");
 
          // Populate
          Clear();
@@ -189,8 +189,8 @@ namespace Logic
          if (a.Text == b.Text || Lookup.Contains(a.Text) || Lookup.Contains(b.Text))
             return false;
 
-         // DEBUG: 
-         Console << Cons::Green << L"Resolved: " << Cons::Yellow << a.Text.c_str() << Cons::White << L" and " << Cons::Yellow << b.Text.c_str() << ENDL;
+         // Feedback 
+         Console << Cons::Green << L"Resolved: " << Cons::Yellow << a.Text << Cons::White << L" and " << Cons::Yellow << b.Text << ENDL;
 
          // Insert unique
          Lookup.Add(a);
@@ -245,23 +245,21 @@ namespace Logic
             // Attempt to insert 
             if (!Lookup.Add(obj))
             {
-               // DEBUG: 
-               auto& conf = Lookup.Find(obj.Text);
-               Console << L"Conflict " << Cons::Yellow << obj.Text << Cons::White << " : " << Cons::Yellow << GuiString(L"{%s:%d}",GetString(obj.Group).c_str(),obj.ID) << Cons::White << L" and " << Cons::Yellow << GuiString(L"{%s:%d}",GetString(conf.Group).c_str(),conf.ID) << Cons::White << "...";
-
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
                Lookup.Remove(obj.Text);
+
+               // Feedback
+               Console << Cons::Red << "Conflict: " << Cons::White << obj.Text << " : " 
+                       << Cons::Yellow << obj.Ident << Cons::White << L" vs " << Cons::Yellow << conflict.Ident << Cons::White << "...";
 
                // Mangle them
                if (!MangleConflicts(obj, conflict))
                {
                   // Failed: Feedback
-                  GuiString err(L"Conflicting script objects '%s' detected: {%s:%d} and {%s:%d}", obj.Text.c_str(), GetString(obj.Group).c_str(), obj.ID, GetString(conflict.Group).c_str(), conflict.ID);
+                  GuiString err(L"Conflicting script objects '%s' detected: %s and %s", obj.Text.c_str(), obj.Ident.c_str(), conflict.Ident.c_str());
                   data->SendFeedback(ProgressType::Error, 2, err);
-
-                  // DEBUG:
-                  Console << Cons::Red << L"Unable to resolve" << ENDL;
+                  Console << Cons::Red << L"Failed to resolve" << ENDL;
                }
             }
          }

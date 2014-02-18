@@ -88,8 +88,6 @@ namespace Logic
                return;
 
             // Output to console 
-            if (c == Cons::Cyan)
-               Console << ENDL;
             Console << c << sz << ENDL;
 
             // Output to GUI

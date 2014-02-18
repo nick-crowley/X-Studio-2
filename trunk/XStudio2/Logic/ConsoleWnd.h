@@ -20,7 +20,8 @@ namespace Logic
    };
 
    /// <summary>Console manipulators</summary>
-   enum class Cons { Heading, 
+   enum class Cons { UserAction,
+                     Heading, 
                      Normal, 
                      Bold, 
                      Endl,
@@ -157,6 +158,10 @@ namespace Logic
          // Heading: Linebreak + Cyan
          case Cons::Heading:  
             return *this << ENDL << Cons::Cyan;
+
+         // User Action: Linebreak + Bold + Cyan
+         case Cons::UserAction:  
+            return *this << ENDL << Cons::Bold << Cons::Cyan;
 
          // Colour
          case Cons::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE);                   break;

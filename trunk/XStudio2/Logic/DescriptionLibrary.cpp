@@ -51,22 +51,27 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 1, L"Loading commands and objects tooltips...");
-
-         // Feedback
-         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading commands and objects tooltip file '%s'", path.FileName.c_str()));
-         Console << Cons::Heading << L"Reading descriptions file: " << path << ENDL;
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading commands and objects tooltips...");
          
-         // Load descriptions file
-         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         DescriptionFile file( DescriptionFileReader(fs).ReadFile() );
-         Add(file);
+         try
+         {
+            // Feedback
+            Console << L"Reading descriptions file: " << Cons::Yellow << path << Cons::White << "...";
 
-         // Feedback
-         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded '%s' (%s) %s", file.Title.c_str(), GetString(file.Language).c_str(), file.Version.c_str()));
+            // Load descriptions file
+            StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+            DescriptionFile file( DescriptionFileReader(fs).ReadFile() );
+            Add(file);
 
-         // Return descriptions read
-         Console << Cons::Green << L"Description file loaded successfully" << ENDL;
+            // Feedback
+            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded '%s'", file.Ident.c_str()));
+            Console << Cons::Green << L"Success: " << Cons::White << file.Ident << ENDL;
+         }
+         catch (ExceptionBase& e) {
+            Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+         }
+
+         // Return descriptions count
          return Commands.size() + Constants.size();
       }
 
