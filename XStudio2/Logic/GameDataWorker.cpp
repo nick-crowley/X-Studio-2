@@ -63,7 +63,7 @@ namespace Logic
             SyntaxLib.Enumerate(data);
 
             // Cleanup
-            data->SendFeedback(ProgressType::Succcess, 0, L"Loaded game data successfully");
+            data->SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Loaded game data successfully");
             CoUninitialize();
             return 0;
          }

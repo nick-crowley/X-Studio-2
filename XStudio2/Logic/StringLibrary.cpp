@@ -69,6 +69,7 @@ namespace Logic
             }
             catch (ExceptionBase& e) {
                data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
+               // Do not re-throw
             }
          }
 
