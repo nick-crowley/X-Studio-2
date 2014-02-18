@@ -88,20 +88,19 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <returns>True if found, false otherwise</returns>
    bool  ScriptView::FindNext(MatchData& m)
    {
+      auto text = RichEdit.GetAllText();
+      
       // Find next match
-      auto pos = RichEdit.GetAllText().find(m.SearchTerm, m.Location.cpMax);
+      auto pos = text.find(m.SearchTerm, m.Location.cpMax);
 
-      // Found: Return location + Highlight text
+      // Set/Clear match
       if (pos != wstring::npos)
       {
-         m.SetMatch(pos, pos + m.SearchTerm.length());
-         SetSelection(m.Location);
-      } 
-      else
-      {  // Not found: Clear selection
-         RichEdit.SetSel(m.Location);
-         m.Clear();
+         int line = count_if(text.begin(), text.begin()+pos, [](wchar ch) {return ch=='\v';});
+         m.SetMatch(pos, m.SearchTerm.length(), GuiString(RichEdit.GetLineText(line)).TrimLeft(L" \t"), line+1);
       }
+      else
+         m.Clear();
          
       // Return result
       return m.IsMatched;

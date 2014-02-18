@@ -58,9 +58,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void          AttachEdit(ScriptEdit& edit);
-      virtual bool  FindNext(MatchData& src);
-      void          SetSelection(CHARRANGE rng);
+      void  AttachEdit(ScriptEdit& edit);
+      bool  FindNext(MatchData& src) override;
+      void  SetSelection(CHARRANGE rng) override;
 
 	   virtual BOOL OnNewDocument();
       virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);

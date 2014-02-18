@@ -45,6 +45,25 @@ namespace Logic
          // ---------------------- ACCESSORS ------------------------	
 
          // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Feedbacks the error.</summary>
+         /// <param name="msg">The MSG.</param>
+         void  FeedbackError(wstring msg)
+         {
+            SendFeedback(ProgressType::Error, 1, msg);
+         }
+
+         /// <summary>Feedbacks finish notification.</summary>
+         void  FeedbackFinish()
+         {
+            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Search completed");
+         }
+
+         /// <summary>Feedbacks the match.</summary>
+         void  FeedbackMatch()
+         {
+            SendFeedback(ProgressType::Info, 1, GuiString(L"%d : %s : %s", Match.LineNumber, Match.FullPath.FileName.c_str(), Match.Text.c_str()));
+         }
 
          // -------------------- REPRESENTATION ---------------------
       public:

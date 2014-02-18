@@ -69,7 +69,10 @@ namespace Logic
          
          // Set/Clear location
          if (pos != GuiString::npos)
-            m.SetMatch(pos, pos + m.SearchTerm.length());
+         {
+            int line = count_if(text.begin(), text.begin()+pos, [](wchar ch) {return ch=='\n';});
+            m.SetMatch(pos, m.SearchTerm.length(), Commands.Input[line].Text, line+1);
+         }
          else
             m.Clear();
          

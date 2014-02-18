@@ -18,10 +18,12 @@ namespace Logic
             ReplaceTerm(replace), 
             IsMatched(false), 
             Location({0,0}), 
+            LineNumber(0),
             MatchCase(matchCase), 
             MatchWord(matchWord),
             UseRegEx(regEx)
-      {}
+      {
+      }
 
       //NO_COPY(MatchData);	// Default copy semantics
       //NO_MOVE(MatchData);	// Default move semantics
@@ -40,15 +42,21 @@ namespace Logic
          FullPath = L"";
          IsMatched = false;
          Location = {0,0};
+         Text.empty();
+         LineNumber = 0;
       }
 
       /// <summary>Sets the match.</summary>
-      /// <param name="start">The start.</param>
-      /// <param name="end">The end.</param>
-      void  SetMatch(int start, int end)
+      /// <param name="start">start index.</param>
+      /// <param name="length">length.</param>
+      /// <param name="txt">text.</param>
+      /// <param name="txt">1-based line number.</param>
+      void  SetMatch(int start, int length, const wstring& txt, int line)
       {
-         Location = {start, end};
+         Location = {start, start+length};
          IsMatched = true;
+         LineNumber = line;
+         Text = txt;
       }
 
       // -------------------- REPRESENTATION ---------------------
@@ -56,6 +64,8 @@ namespace Logic
       bool        IsMatched;
       CHARRANGE   Location;
       IO::Path    FullPath;
+      int         LineNumber;
+      wstring     Text;
 
       const wstring  SearchTerm,
                      ReplaceTerm;

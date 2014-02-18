@@ -85,12 +85,18 @@ namespace GUI
                   // Find: Display document + Highlight match
                   if (Search.Operation == Operation::Find)
                   {
+                     // Feedback 
+                     Console << Cons::Cyan << Cons::Bold << "Highlighting Match" << ENDL;
+                     Search.FeedbackMatch();
+
+                     // Highlight+Activate
+                     doc->SetSelection(Search.Match.Location);
                      doc->Activate();
                      return true;
                   }
                   // FindAll: Feedback
                   else if (Search.Operation == Operation::FindAll)
-                     Search.SendFeedback(ProgressType::Info, 1, GuiString(L"%04d : %s : %s", 0, doc->GetFullPath().c_str(), Search.Match.SearchTerm.c_str()));
+                     Search.FeedbackMatch();
                }
             }
 
@@ -105,7 +111,7 @@ namespace GUI
          case SearchTarget::Selection:
          case SearchTarget::Document:
          case SearchTarget::OpenDocuments:
-            OnFinish();
+            Search.FeedbackFinish();
             return false;
          }
 
@@ -130,7 +136,7 @@ namespace GUI
          }
 
          // No more matches
-         OnFinish();
+         Search.FeedbackFinish();
          return false;
       }
 

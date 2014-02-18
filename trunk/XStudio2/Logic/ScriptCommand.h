@@ -65,7 +65,26 @@ namespace Logic
       };
 
       /// <summary>List of script commands</summary>
-      typedef list<ScriptCommand>   CommandList;
+      class CommandList : public list<ScriptCommand>
+      {
+      public:
+         /// <summary>Find command by index.</summary>
+         /// <param name="index">The index.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+         ScriptCommand& operator[](UINT index)
+         {
+            UINT i = 0;
+
+            // Linear search
+            for (auto pos = begin(); pos != end(); ++pos)
+               if (index == i++)
+                  return *pos;
+
+            // Invalid index
+            throw IndexOutOfRangeException(HERE, index, size());
+         }
+      };
 
       /// <summary>Vector of script commands</summary>
       typedef vector<ScriptCommand> CommandArray;
