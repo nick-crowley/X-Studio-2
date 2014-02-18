@@ -89,6 +89,8 @@ namespace Logic
          if (Objects.size() - Lookup.size() > 1)   // Always 1 less in lookup because old [THIS] intentionally removed
             data->SendFeedback(Cons::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
          
+         // Feedback object count
+         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded %d script objects", Lookup.size()));
          return Lookup.size();
       }
 

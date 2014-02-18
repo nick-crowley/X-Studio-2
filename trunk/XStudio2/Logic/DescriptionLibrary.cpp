@@ -69,6 +69,7 @@ namespace Logic
          }
          catch (ExceptionBase& e) {
             Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+            throw;
          }
 
          // Return descriptions count

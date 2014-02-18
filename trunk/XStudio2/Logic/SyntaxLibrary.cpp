@@ -48,20 +48,29 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(ProgressType::Info, 1, L"Loading command syntax...");
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading command syntax...");
 
-         // TODO: Check for new format syntax file
+         try
+         {
+            // TODO: Check for new format syntax file
 
-         // Feedback
-         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loading legacy syntax file '%s'", path.FileName.c_str()));
-         Console << Cons::Heading << L"Reading legacy syntax file: " << path << ENDL;
+            // Feedback
+            Console << L"Reading legacy syntax file: " << Cons::Yellow << path << Cons::White << "...";
          
-         // Load/Merge legacy syntax file
-         StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         Merge( LegacySyntaxReader(fs).ReadFile() );
+            // Load/Merge legacy syntax file
+            StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+            Merge( LegacySyntaxReader(fs).ReadFile() );
 
-         // Return commands read
-         Console << Cons::Green << L"Legacy syntax loaded successfully" << ENDL;
+            // Feedback
+            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded legacy syntax file '%s'", path.FileName.c_str()));
+            Console << Cons::Green << L"Success" << ENDL;
+         }
+         catch (ExceptionBase& e) {
+            Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+            throw;
+         }
+
+         // Return commands count
          return Commands.size();
       }
 

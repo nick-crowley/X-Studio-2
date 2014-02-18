@@ -140,13 +140,15 @@ namespace Logic
             }
             catch (ExceptionBase& e) {
                data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
+               throw;
             }
          }
 
          // Populate object collection
          PopulateObjects(data);
 
-         // Return object count
+         // Feedback object count
+         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded %d game objects", Objects.size()));
          return Objects.size();
       }
 
@@ -274,7 +276,7 @@ namespace Logic
          ObjectList Input;
 
          // Feedback
-         data->SendFeedback(Cons::Heading, ProgressType::Info, 1, L"Generating game objects from type definition files");
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Generating game objects from type definition files");
 
          // Extract all objects from files
          for (auto& f : Files)
