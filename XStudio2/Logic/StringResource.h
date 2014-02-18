@@ -103,6 +103,44 @@ namespace Logic
          return StrCmpI(c_str(), r.c_str()) == 0;
       }
 
+      /// <summary>Find index of a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <param name="matchCase">Whether to perform case sensitive search</param>
+      /// <returns>Offset or npos</returns>
+      int Find(const wstring& str, bool matchCase) const
+      {
+         // Sensitive: Use stl
+         if (matchCase)
+            return find(str);
+
+         // Insensitive: Convert string ptr into char index
+         auto txt = c_str();
+         auto pos = StrStrI(txt, str.c_str());
+         return pos ? pos - txt : npos;
+      }
+
+      /// <summary>Find index of a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <param name="offset">Start offset.</param>
+      /// <param name="matchCase">Whether to perform case sensitive search</param>
+      /// <returns>Offset or npos</returns>
+      /// <exception cref="Logic::IndexOutOfRangeException">Invalid offset</exception>
+      int Find(const wstring& str, int offset, bool matchCase) const
+      {
+         // Validate offset
+         if (offset < 0 || offset >= length())
+            throw IndexOutOfRangeException(HERE, offset, length());
+
+         // Sensitive: Use stl
+         if (matchCase)
+            return find(str, offset);
+
+         // Insensitive: Convert string ptr into char index
+         auto txt = &c_str()[offset];
+         auto pos = StrStrI(txt, str.c_str());
+         return pos ? pos - txt : npos;
+      }
+
       /// <summary>Extracts n characters from start of the string</summary>
       /// <param name="chars">Number of characters</param>
       /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>

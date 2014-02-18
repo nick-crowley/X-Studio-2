@@ -65,7 +65,7 @@ namespace Logic
          }
          
          // Find from last match
-         auto pos = text.find(m.SearchTerm, m.Location.cpMax);
+         auto pos = text.Find(m.SearchTerm, m.Location.cpMax, m.MatchCase);
          
          // Set/Clear location
          if (pos != GuiString::npos)
