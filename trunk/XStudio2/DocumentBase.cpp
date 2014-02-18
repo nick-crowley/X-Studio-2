@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  DocumentBase::Activate()
    {
       auto pos = GetFirstViewPosition();
-      theApp.GetMainWindow()->SetActiveView(GetNextView(pos));
+      GetNextView(pos)->GetParentFrame()->ActivateFrame();
    }
 
    /// <summary>Finds the next.</summary>
