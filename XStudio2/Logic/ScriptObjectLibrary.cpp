@@ -76,7 +76,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"String library has not been enumerated");
 
          // Feedback
-         data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating script objects from language files");
+         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Generating script objects from language files");
 
          // Populate
          Clear();
@@ -87,7 +87,7 @@ namespace Logic
          
          // Feedback number of conflicts
          if (Objects.size() - Lookup.size() > 1)   // Always 1 less in lookup because old [THIS] intentionally removed
-            data->SendFeedback(Colour::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
+            data->SendFeedback(Cons::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
          
          return Lookup.size();
       }
@@ -190,7 +190,7 @@ namespace Logic
             return false;
 
          // DEBUG: 
-         Console << Colour::Green << L"Resolved: " << Colour::Yellow << a.Text.c_str() << Colour::White << L" and " << Colour::Yellow << b.Text.c_str() << ENDL;
+         Console << Cons::Green << L"Resolved: " << Cons::Yellow << a.Text.c_str() << Cons::White << L" and " << Cons::Yellow << b.Text.c_str() << ENDL;
 
          // Insert unique
          Lookup.Add(a);
@@ -247,7 +247,7 @@ namespace Logic
             {
                // DEBUG: 
                auto& conf = Lookup.Find(obj.Text);
-               Console << L"Conflict " << Colour::Yellow << obj.Text << Colour::White << " : " << Colour::Yellow << GuiString(L"{%s:%d}",GetString(obj.Group).c_str(),obj.ID) << Colour::White << L" and " << Colour::Yellow << GuiString(L"{%s:%d}",GetString(conf.Group).c_str(),conf.ID) << Colour::White << "...";
+               Console << L"Conflict " << Cons::Yellow << obj.Text << Cons::White << " : " << Cons::Yellow << GuiString(L"{%s:%d}",GetString(obj.Group).c_str(),obj.ID) << Cons::White << L" and " << Cons::Yellow << GuiString(L"{%s:%d}",GetString(conf.Group).c_str(),conf.ID) << Cons::White << "...";
 
                // Extract conflict
                ScriptObject conflict = Lookup.Find(obj.Text);
@@ -261,7 +261,7 @@ namespace Logic
                   data->SendFeedback(ProgressType::Error, 2, err);
 
                   // DEBUG:
-                  Console << Colour::Red << L"Unable to resolve" << ENDL;
+                  Console << Cons::Red << L"Unable to resolve" << ENDL;
                }
             }
          }

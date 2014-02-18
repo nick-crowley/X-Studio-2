@@ -99,7 +99,7 @@ namespace Logic
          // Enumerate catalogs/files
          EnumerateCatalogs();
          EnumerateFiles(data);
-         Console << Colour::Green << L"FileSystem enumerated successfully" << ENDL;
+         Console << Cons::Green << L"FileSystem enumerated successfully" << ENDL;
 
          // Return count
          return Files.size();
@@ -195,7 +195,7 @@ namespace Logic
             DWORD          size;
 
             // Feedback
-            Console << Colour::White << L"Reading catalog " << cat.FullPath << ENDL;
+            Console << Cons::White << L"Reading catalog " << cat.FullPath << ENDL;
             data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
 
             // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)

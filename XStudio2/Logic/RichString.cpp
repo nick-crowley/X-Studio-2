@@ -39,7 +39,7 @@ namespace Logic
       /// <summary>Output rich-text button to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e)
       {
-         c << "{" << Colour::Yellow << "RichButton" << Colour::White << " Id=" << e.ID << " Text=";
+         c << "{" << Cons::Yellow << "RichButton" << Cons::White << " Id=" << e.ID << " Text=";
 
          // Text
          for (const auto& el : e.Text)
@@ -52,7 +52,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p)
       {
          // Properties
-         c << "{" << Colour::Yellow << "RichParagraph" << Colour::White << " Align=" << GetString(p.Align);
+         c << "{" << Cons::Yellow << "RichParagraph" << Cons::White << " Align=" << GetString(p.Align);
 
          // Elements
          c << ENDL << "Content=";
@@ -66,7 +66,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s)
       {
          // Properties
-         c << "{" << Colour::Yellow << "RichString" << Colour::White;
+         c << "{" << Cons::Yellow << "RichString" << Cons::White;
          c << " Author=" << s.Author << " Title=" << s.Title << " Cols=" << (int)s.Columns << " Width=" << s.Width << " Spacing=" << s.Spacing;
 
          // Elements

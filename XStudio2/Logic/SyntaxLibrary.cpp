@@ -61,7 +61,7 @@ namespace Logic
          Merge( LegacySyntaxReader(fs).ReadFile() );
 
          // Return commands read
-         Console << Colour::Green << L"Legacy syntax loaded successfully" << ENDL;
+         Console << Cons::Green << L"Legacy syntax loaded successfully" << ENDL;
          return Commands.size();
       }
 
@@ -174,7 +174,7 @@ namespace Logic
             }
             catch (ExceptionBase& e)
             {
-               Console << Colour::Red << L"Unable to insert syntax: " << syntax.Text << L" : " << Colour::Yellow << e.Message << ENDL;
+               Console << Cons::Red << L"Unable to insert syntax: " << syntax.Text << L" : " << Cons::Yellow << e.Message << ENDL;
             }
          }
       }

@@ -109,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             Virtual = false;
          }
 
-         Console << Colour::Green << L"Language file loaded successfully" << ENDL;
+         Console << Cons::Green << L"Language file loaded successfully" << ENDL;
          return TRUE;
       }
       catch (ExceptionBase&  e)

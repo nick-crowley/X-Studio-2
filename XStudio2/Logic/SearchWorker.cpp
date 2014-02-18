@@ -93,7 +93,7 @@ namespace Logic
                try
                {
                   // Feedback
-                  Console << L"Searching script: " << Colour::Yellow << CurrentFile << ENDL;
+                  Console << L"Searching script: " << Cons::Yellow << CurrentFile << ENDL;
 
                   // Read script
                   XFileInfo f(CurrentFile);

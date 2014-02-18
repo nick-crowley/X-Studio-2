@@ -37,7 +37,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // DEBUG:
-         Console << "OnDrawIcon: " << Colour::Yellow << "rectImage=" << rectImage << ENDL;
+         Console << "OnDrawIcon: " << Cons::Yellow << "rectImage=" << rectImage << ENDL;
 
          // Draw random icon
          auto icon = theApp.LoadIconW(IDR_GAME_OBJECTS, 24);
@@ -54,7 +54,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // DEBUG:
-         Console << "OnDrawLabel: " << Colour::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
+         Console << "OnDrawLabel: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
 
          // Get random title
          wstring sz = SyntaxLib.Find(133, GameVersion::Threat).Text;
@@ -64,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // DEBUG:
          if (bCalcOnly)
-            Console << "OnDrawLabel: " << Colour::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;
+            Console << "OnDrawLabel: " << Cons::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;
       
          // return size
          return rect.Size();
@@ -79,7 +79,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         Console << "OnDrawDescription: " << Colour::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
+         Console << "OnDrawDescription: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
 
          // Get random description
          wstring sz = DescriptionLib.Commands.Find(133, GameVersion::Threat);
@@ -90,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // DEBUG:
          if (bCalcOnly)
-            Console << "OnDrawDescription: " << Colour::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;
+            Console << "OnDrawDescription: " << Cons::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;
       
          // return size
          return rect.Size();

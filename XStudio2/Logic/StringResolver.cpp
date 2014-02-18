@@ -27,7 +27,7 @@ namespace Logic
       /// <param name="str">The string.</param>
       StringResolver::StringResolver(const LanguageString& str) : Text(str.Text), Page(str.Page)
       {
-         //Console << "Parsing " << Colour::Yellow << str.Text << ENDL;
+         //Console << "Parsing " << Cons::Yellow << str.Text << ENDL;
 
          // Skip parsing if no brackets are present
          if (Text.find_first_of(L"{()}") != wstring::npos)
@@ -80,7 +80,7 @@ namespace Logic
          for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, FullMarker); Position += r.length())
          {
             r = OnFullMarker(match);
-            //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+            //Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
             Text.replace(match[0].first, match[0].second, r);
          }
 
@@ -88,14 +88,14 @@ namespace Logic
          for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, DefaultMarker); Position += r.length())
          {
             r = OnDefaultMarker(match);
-            //Console << "  Replace: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+            //Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
             Text.replace(match[0].first, match[0].second, r);
          }
 
          // Remove all (aaa) markers
          while (regex_search(Text.cbegin(), Text.cend(), match, RemoveComment))
          {
-            //Console << "  Remove: " << Colour::Red << match[0].str() << ENDL;
+            //Console << "  Remove: " << Cons::Red << match[0].str() << ENDL;
             Text.erase(match[0].first, match[0].second);
          }
 

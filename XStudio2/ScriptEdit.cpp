@@ -555,7 +555,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw InvalidOperationException(HERE, L"suggestion list does not exist");
 
       // DEBUG:
-      Console << L"Inserting suggestion: " << Colour::Yellow << SuggestionsList.GetSelected() << ENDL;
+      Console << L"Inserting suggestion: " << Cons::Yellow << SuggestionsList.GetSelected() << ENDL;
 
       // Find token at caret
       CommandLexer lex(GetLineText(-1));
@@ -569,7 +569,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
       else 
          // Error: Failed to identify token
-         Console << Colour::Red << "Cannot find suggestion token: " << Colour::White << " caret at " << GetCaretIndex() << " : " << Colour::Yellow << GetLineText(-1) << ENDL;
+         Console << Cons::Red << "Cannot find suggestion token: " << Cons::White << " caret at " << GetCaretIndex() << " : " << Cons::Yellow << GetLineText(-1) << ENDL;
 
       // Close
       CloseSuggestions();
@@ -607,7 +607,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          for (const auto& err : parser.Errors)
          {
             FormatToken(LineIndex(err.Line-1), err, cf);
-            Console << err.Line << L": " << Colour::Yellow << err.Message << Colour::White << L" : " << err.Text << ENDL;
+            Console << err.Line << L": " << Cons::Yellow << err.Message << Cons::White << L" : " << err.Text << ENDL;
          }
 
          // Raise 'Compile Complete'
@@ -1022,13 +1022,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Close suggestions if caret has left the token
       if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
       {
-         //Console << Colour::Red << L"Match failed" << ENDL;
+         //Console << Cons::Red << L"Match failed" << ENDL;
          CloseSuggestions();
          return;
       }
 
       // Highlight best match
-      //Console << Colour::Green << L"Matching suggestion" << ENDL;
+      //Console << Cons::Green << L"Matching suggestion" << ENDL;
       SuggestionsList.MatchSuggestion(*pos);
    }
 

@@ -66,7 +66,7 @@ namespace Logic
          data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded '%s' (%s) %s", file.Title.c_str(), GetString(file.Language).c_str(), file.Version.c_str()));
 
          // Return descriptions read
-         Console << Colour::Green << L"Description file loaded successfully" << ENDL;
+         Console << Cons::Green << L"Description file loaded successfully" << ENDL;
          return Commands.size() + Constants.size();
       }
 

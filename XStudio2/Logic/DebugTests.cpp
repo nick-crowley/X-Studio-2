@@ -125,7 +125,7 @@ namespace Logic
       }
 
       // Feedback
-      Console << Colour::Yellow << "Validated " << count << " of " << total << " scripts..." << ENDL;
+      Console << Cons::Yellow << "Validated " << count << " of " << total << " scripts..." << ENDL;
    }
 
 
@@ -211,40 +211,40 @@ namespace Logic
                         {QUADRUPLE:first first,second,third third,fourth} \n\
                         {QUINTUPLE:First first FIRST first,second SECOND,third THIRD,fourth fourth FOURTH,fifth fifth}";
 
-         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+         Console << Cons::Heading << "Using source text: " << Cons::White << txt << ENDL;
 
          const wchar* keywords = L"\\b([A-Z_0-9]+)(?![:\\}])\\b" L"|" L"\\{([A-Z_0-9]+)\\}";
          const wregex MatchKeyword(keywords);
 
          // KEYWORDS TEST
-         Console << Cons::Heading << "Matching keywords: " << Colour::White << keywords << ENDL;
+         Console << Cons::Heading << "Matching keywords: " << Cons::White << keywords << ENDL;
 
          // All matches:
          for (wsregex_iterator it(txt.begin(), txt.end(), MatchKeyword), end; it != end; ++it)
          {
             Console << "Instance found:" << ENDL;
             for (auto m : *it)
-               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  Matched: " << m.str().c_str() << ENDL;
          }
 
 
 
 
          // PARAMETERIZED MACROS TEST
-         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+         Console << Cons::Heading << "Using source text: " << Cons::White << txt << ENDL;
 
          const wchar* macros = L"\\{([A-Z_0-9]+):(.+)\\}";
          const wregex MatchMacro(macros);
 
          // Feedback
-         Console << Cons::Heading << "Matching macros: " << Colour::White << macros << ENDL;
+         Console << Cons::Heading << "Matching macros: " << Cons::White << macros << ENDL;
 
          // All matches:
          for (wsregex_iterator it(txt.begin(), txt.end(), MatchMacro), end; it != end; ++it)
          {
             Console << "Instance found:" << ENDL;
             for (auto m : *it)
-               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  Matched: " << m.str().c_str() << ENDL;
          }
 
 
@@ -252,29 +252,29 @@ namespace Logic
          
          // PARAMETERS TEST
          txt = L"First first FIRST first,second SECOND,third THIRD,fourth fourth FOURTH,fifth fifth";
-         Console << Cons::Heading << "Using source text: " << Colour::White << txt << ENDL;
+         Console << Cons::Heading << "Using source text: " << Cons::White << txt << ENDL;
          
          const wchar* params = L"([^,]+)((?=,)[^,]+)*";
          const wregex MatchParams(params);
 
          // Feedback
-         Console << Cons::Heading << "Matching parameters: " << Colour::White << params << ENDL;
+         Console << Cons::Heading << "Matching parameters: " << Cons::White << params << ENDL;
 
          // Match:
          /*wsmatch matches;
          if (!regex_match(txt.cbegin(), txt.cend(), matches, MatchParams))
-            Console << Colour::Red << "Failed" << ENDL;
+            Console << Cons::Red << "Failed" << ENDL;
          else
          {
             Console << "Instance found:" << ENDL;
             for (auto m : matches)
-               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  Matched: " << m.str().c_str() << ENDL;
          }*/
          for (wsregex_iterator it(txt.begin(), txt.end(), MatchParams), end; it != end; ++it)
          {
             Console << "Instance found:" << ENDL;
             for (auto m : *it)
-               Console << (m.matched ? Colour::Green : Colour::Red) << "  Matched: " << m.str().c_str() << ENDL;
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  Matched: " << m.str().c_str() << ENDL;
          }
       }
       catch (regex_error& e)
@@ -311,11 +311,11 @@ namespace Logic
             try
             {
                ExpressionParser(lex.Tokens.begin(), lex.Tokens.end());
-               Console << Colour::Green << "Success" << ENDL;
+               Console << Cons::Green << "Success" << ENDL;
             }
             catch (ExpressionParserException& e)
             {
-               Console << Colour::Red << "Failed: " << e.Message << L" " << (lex.Valid(e.Position) ? e.Position->Text : L"") << ENDL;
+               Console << Cons::Red << "Failed: " << e.Message << L" " << (lex.Valid(e.Position) ? e.Position->Text : L"") << ENDL;
             }
          }
 
@@ -395,7 +395,7 @@ namespace Logic
          // Parse
          for (int i = 0; i < sizeof(expressions)/sizeof(wchar*); ++i)
          {
-            Console << ENDL << "Lexing " << Colour::Yellow << expressions[i] << ENDL;
+            Console << ENDL << "Lexing " << Cons::Yellow << expressions[i] << ENDL;
             CommandLexer lex(expressions[i]);
 
             for (auto tok : lex.Tokens)
@@ -525,12 +525,12 @@ namespace Logic
          wstring txt2 = L"(comment boo)Hello captain, I have \\(twenty\\) seven bears \\(in my head\\). (throw down) Oops i've ( put a bracket here\\)";
          auto expr = L"(?!" backslash L")" open_bracket L"[^" open_bracket close_bracket backslash L"]+" L"(?!" backslash close_bracket L")" close_bracket;
 
-         Console << ENDL << "Matching '" << Colour::Yellow << txt2 << Colour::White << "' against " << Colour::Yellow << expr << ENDL;
+         Console << ENDL << "Matching '" << Cons::Yellow << txt2 << Cons::White << "' against " << Cons::Yellow << expr << ENDL;
 
          // Iterator
          const wregex reg2(expr, wregex::ECMAScript); 
          for (wsregex_iterator it(txt2.cbegin(), txt2.cend(), reg2), eof; it != eof; ++it)
-            Console << "Matched: " << Colour::Green << it->str().c_str() << ENDL;
+            Console << "Matched: " << Cons::Green << it->str().c_str() << ENDL;
 
 
          ///////////////////////////////////
@@ -542,7 +542,7 @@ namespace Logic
          Console << ENDL << "Matching " << txt3 << ENDL;
          
          if (!regex_match(txt3, matches, reg3))
-            Console << Colour::Red << "Failed" << ENDL;
+            Console << Cons::Red << "Failed" << ENDL;
          
          else for (auto m : matches)
             Console << "Matched: " << m.str().c_str() << ENDL;
@@ -573,8 +573,8 @@ namespace Logic
          // Print IDs/Names
          /*for (auto& obj : file.Objects)
          {
-            Console << Colour::Yellow << obj.id << Colour::White << L" : ";
-            Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
+            Console << Cons::Yellow << obj.id << Cons::White << L" : ";
+            Console << (obj.name.Exists()?Cons::Green:Cons::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
          }*/
 
          // Read TLaser
@@ -586,8 +586,8 @@ namespace Logic
          // Print IDs/Names
          /*for (auto& obj : file.Objects)
          {
-            Console << Colour::Yellow << obj.id << Colour::White << L" : ";
-            Console << (obj.name.Exists()?Colour::Green:Colour::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
+            Console << Cons::Yellow << obj.id << Cons::White << L" : ";
+            Console << (obj.name.Exists()?Cons::Green:Cons::Red) << (obj.name.Exists()?obj.name.Text:L"Missing") << ENDL;
          }*/
       }
       catch (ExceptionBase&  e)
@@ -667,7 +667,7 @@ namespace Logic
       {
          try
          {
-            Console << Cons::Heading << "Parsing language string: " << Colour::Yellow << Cons::Bold << str << ENDL;
+            Console << Cons::Heading << "Parsing language string: " << Cons::Yellow << Cons::Bold << str << ENDL;
             StringParser p(str);
             Console << p.Output << ENDL;
          }
@@ -699,26 +699,26 @@ namespace Logic
          wregex IsBasicTag(L"\\[/?([a-z]+)\\]");
          for (auto expr : expressions)
          {
-            Console << Cons::Heading << "Matching basic Tag: " << Colour::White << expr << ENDL;
+            Console << Cons::Heading << "Matching basic Tag: " << Cons::White << expr << ENDL;
          
             if (!regex_match(expr, matches, IsBasicTag))
-               Console << Colour::Red << "Failed" << ENDL;
+               Console << Cons::Red << "Failed" << ENDL;
          
             else for (auto m : matches)
-               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+               Console << Cons::Green << "Matched: " << m.str() << ENDL;
          }
 
          // Open Tag
          wregex IsOpenTag(L"\\[([a-z]+)\\]");
          for (auto expr : expressions)
          {
-            Console << Cons::Heading << "Matching open Tag: " << Colour::White << expr << ENDL;
+            Console << Cons::Heading << "Matching open Tag: " << Cons::White << expr << ENDL;
          
             if (!regex_match(expr, matches, IsOpenTag))
-               Console << Colour::Red << "Failed" << ENDL;
+               Console << Cons::Red << "Failed" << ENDL;
          
             else for (auto m : matches)
-               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+               Console << Cons::Green << "Matched: " << m.str() << ENDL;
          }
 
          // Expressions
@@ -737,13 +737,13 @@ namespace Logic
          wregex IsAuthorTag(L"\\[author\\](.*)\\[/author\\]");
          for (auto expr : expressions)
          {
-            Console << Cons::Heading << "Matching author/title Tag: " << Colour::White << expr << ENDL;
+            Console << Cons::Heading << "Matching author/title Tag: " << Cons::White << expr << ENDL;
          
             if (!regex_search(expr, matches, IsAuthorTag))
-               Console << Colour::Red << "Failed" << ENDL;
+               Console << Cons::Red << "Failed" << ENDL;
          
             else for (auto m : matches)
-               Console << Colour::Green << "Matched: " << m.str() << ENDL;
+               Console << Cons::Green << "Matched: " << m.str() << ENDL;
          }
 
          // Expressions
@@ -763,27 +763,27 @@ namespace Logic
          wregex IsComplexTag(L"\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
          for (auto expr : expressions)
          {
-            Console << Cons::Heading << "Matching complex Tag: " << Colour::White << expr << ENDL;
+            Console << Cons::Heading << "Matching complex Tag: " << Cons::White << expr << ENDL;
          
             if (!regex_search(expr, matches, IsComplexTag))
-               Console << Colour::Red << "Failed" << ENDL;
+               Console << Cons::Red << "Failed" << ENDL;
          
             else 
             {
                // Initial match
                for (auto m : matches)
-                  Console << (m.matched ? Colour::Green : Colour::Red) << "Matched: " << m.str() << ENDL;
+                  Console << (m.matched ? Cons::Green : Cons::Red) << "Matched: " << m.str() << ENDL;
 
                // Properties
                auto properties = matches[0].str();
-               Console << Colour::Yellow << "  Iterating over properties: '" << properties << "'..." << ENDL;
+               Console << Cons::Yellow << "  Iterating over properties: '" << properties << "'..." << ENDL;
                
                wregex IsProperty(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
                for (wsregex_iterator it(properties.begin()+matches[1].length(), properties.end(), IsProperty), eof; it != eof; ++it)
                {
-                  Console << Colour::Green << "  Matched: " << it->str() << ENDL;
+                  Console << Cons::Green << "  Matched: " << it->str() << ENDL;
                   for (auto m : *it)
-                     Console << (m.matched ? Colour::Green : Colour::Red) << "    SubMatch: " << m.str() << ENDL;
+                     Console << (m.matched ? Cons::Green : Cons::Red) << "    SubMatch: " << m.str() << ENDL;
                }
             }
          }

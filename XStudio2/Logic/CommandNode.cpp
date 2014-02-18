@@ -268,7 +268,7 @@ namespace Logic
          {
             if (IsRoot())
             {
-               Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << Cons::Bold << GetString(State);
+               Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << GetString(State);
                Console << ENDL << "-------------------------------------------------------" << ENDL; 
             }
             else
@@ -277,7 +277,7 @@ namespace Logic
                GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
                          logic(::GetString(Logic)),
                          txt(LineText);
-               Colour    colour(Colour::White);
+               Cons      colour(Cons::White);
             
                // Index
                line += GuiString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
@@ -287,7 +287,7 @@ namespace Logic
                {
                // Conditional:
                default: 
-                  colour = Colour::Cyan;
+                  colour = Cons::Cyan;
                   if (JumpTarget)
                      txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
                                               : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->DebugText);
@@ -296,14 +296,14 @@ namespace Logic
                // NOP:
                case BranchLogic::NOP:
                   logic = (!CmdComment ? L"NOP" : L"Cmd");
-                  colour = Colour::Yellow;
+                  colour = Cons::Yellow;
                   break;
 
                // Command:
                case BranchLogic::None:
                   if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
                   {
-                     colour = Colour::Green; 
+                     colour = Cons::Green; 
                      logic = Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
                      txt = L"Unconditional: ";
 
@@ -316,17 +316,17 @@ namespace Logic
                   }
                   else if (Is(CMD_DEFINE_LABEL))
                   {
-                     colour = Colour::Purple;
+                     colour = Cons::Purple;
                      logic = L"Proc";
                   }
                   else if (Is(CMD_RETURN))
                   {
-                     colour = Colour::Cyan;
+                     colour = Cons::Cyan;
                      logic = L"Ret";
                   }
                   else if (Syntax == CommandSyntax::Unrecognised)
                   {  // Print entire line in red
-                     Console << (colour = Colour::Red);
+                     Console << (colour = Cons::Red);
                      logic = L"???";
                   }
                   else
@@ -335,7 +335,7 @@ namespace Logic
                }
 
                // Print
-               Console << line+wstring(depth, L' ') << colour << logic << Colour::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+               Console << line+Indent(depth) << colour << logic << Cons::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
             }
 
             // Print Children

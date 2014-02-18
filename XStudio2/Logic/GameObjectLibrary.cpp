@@ -96,7 +96,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Enumerating type definition files");
+         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Enumerating type definition files");
 
          // Enumerate type files
          for (XFileInfo& f : vfs.Browse(XFolder::Types))
@@ -135,11 +135,11 @@ namespace Logic
                // Read/store file directly 
                Files[(UINT)fn.Type] = reader->ReadFile(fn.Type, vfs.GetVersion());
 
-               Console << Colour::Green << L"Success" << ENDL;
+               Console << Cons::Green << L"Success" << ENDL;
             }
             catch (ExceptionBase& e)
             {
-               data->SendFeedback(Colour::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
+               data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
             }
          }
 
@@ -274,7 +274,7 @@ namespace Logic
          ObjectList Input;
 
          // Feedback
-         data->SendFeedback(Colour::Cyan, ProgressType::Info, 1, L"Generating game objects from type definition files");
+         data->SendFeedback(Cons::Cyan, ProgressType::Info, 1, L"Generating game objects from type definition files");
 
          // Extract all objects from files
          for (auto& f : Files)
@@ -309,7 +309,7 @@ namespace Logic
                {  
                   // Feedback: Failed
                   data->SendFeedback(ProgressType::Error, 2, GuiString(L"Unable to add game object '%s'", obj.Name.c_str()) );
-                  Console << Colour::Red << L"Unable to add game object: " << Colour::White << obj.Name << ENDL;
+                  Console << Cons::Red << L"Unable to add game object: " << Cons::White << obj.Name << ENDL;
                }
          }
 
