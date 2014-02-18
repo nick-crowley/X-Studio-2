@@ -58,8 +58,26 @@ namespace Logic
       // ------------------------ STATIC -------------------------
 
       // --------------------- PROPERTIES ------------------------
-			
+   protected:
+      PROPERTY_GET_SET(WORD,Attributes,GetAttributes,SetAttributes);
+
       // ---------------------- ACCESSORS ------------------------			
+   protected:
+      /// <summary>Sets the attributes.</summary>
+      /// <param name="attr">The attribute.</param>
+      void ConsoleWnd::SetAttributes(WORD attr)
+      {
+         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), attr);
+      }
+
+      /// <summary>Gets the attributes.</summary>
+      /// <returns></returns>
+      WORD ConsoleWnd::GetAttributes()
+      {
+         CONSOLE_SCREEN_BUFFER_INFO info;
+         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+         return info.wAttributes;
+      }
 
       // ----------------------- MUTATORS ------------------------
 
@@ -72,12 +90,12 @@ namespace Logic
       {
          *this << ENDL << Cons::Bold
                << Cons::Purple << L"ERROR: " 
-               << Cons::Red << msg 
-               << Cons::White << L"...     Source: " 
+               << Cons::Red    << msg 
+               << Cons::White  << L"...     Source: " 
                << Cons::Yellow << src << ENDL;
          *this << Cons::Purple << L"CAUSE: " 
-               << Cons::Red << e.Message.TrimRight(L"\r\n")
-               << Cons::White << L"...     Source: " 
+               << Cons::Red    << e.Message.TrimRight(L"\r\n")
+               << Cons::White  << L"...     Source: " 
                << Cons::Yellow << e.Source << ENDL;
       }
 
@@ -88,8 +106,8 @@ namespace Logic
       {
          *this << ENDL << Cons::Bold
                << Cons::Purple << L"EXCEPTION: " 
-               << Cons::Red << e.Message.TrimRight(L"\r\n") 
-               << Cons::White << L"...    Source: " 
+               << Cons::Red    << e.Message.TrimRight(L"\r\n") 
+               << Cons::White  << L"...    Source: " 
                << Cons::Yellow << src << ENDL;
          *this << Cons::Purple << L"SOURCE: " 
                << Cons::Yellow << e.Source << ENDL;
@@ -102,8 +120,8 @@ namespace Logic
       {
          *this << ENDL << Cons::Bold 
                << Cons::Purple << L"STL EXCEPTION: " 
-               << Cons::Red << e.what()
-               << Cons::White << L"...    Source: " 
+               << Cons::Red    << e.what()
+               << Cons::White  << L"...    Source: " 
                << Cons::Yellow << src << ENDL;
       }
 
@@ -131,20 +149,16 @@ namespace Logic
       /// <param name="cl">manipulator</param>
       ConsoleWnd& operator<<(Cons c)
       {
-         CONSOLE_SCREEN_BUFFER_INFO info;
-         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-         WORD bold = (info.wAttributes & FOREGROUND_INTENSITY);
-
          switch (c)
          {
          // Bold: Add bold
          case Cons::Bold:   
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes|FOREGROUND_INTENSITY); 
+            Attributes = Attributes|FOREGROUND_INTENSITY; 
             break;
 
          // Normal: Remove bold
          case Cons::Normal: 
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes& ~FOREGROUND_INTENSITY); 
+            Attributes = Attributes & ~FOREGROUND_INTENSITY; 
             break;
 
          // Reset: White + Normal
@@ -164,13 +178,19 @@ namespace Logic
             return *this << ENDL << Cons::Bold << Cons::Cyan;
 
          // Colour
-         case Cons::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE);                   break;
-         case Cons::Green:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN);                  break;
-         case Cons::Red:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED);                    break;
-         case Cons::Cyan:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_GREEN);  break;
-         case Cons::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_RED);    break;
-         case Cons::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN|FOREGROUND_RED);   break;
-         case Cons::White:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         default:
+            WORD bold = (Attributes & FOREGROUND_INTENSITY);
+
+            switch (c)
+            {
+            case Cons::Blue:   Attributes = bold|FOREGROUND_BLUE;                   break;
+            case Cons::Green:  Attributes = bold|FOREGROUND_GREEN;                  break;
+            case Cons::Red:    Attributes = bold|FOREGROUND_RED;                    break;
+            case Cons::Cyan:   Attributes = bold|FOREGROUND_BLUE|FOREGROUND_GREEN;  break;
+            case Cons::Purple: Attributes = bold|FOREGROUND_BLUE|FOREGROUND_RED;    break;
+            case Cons::Yellow: Attributes = bold|FOREGROUND_GREEN|FOREGROUND_RED;   break;
+            case Cons::White:  Attributes = bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE; break;
+            }
          }
 
          return *this;
@@ -242,16 +262,15 @@ namespace Logic
       /// <param name="path">path</param>
       ConsoleWnd& operator<<(const IO::Path& path)
       {
-         WriteText(path.c_str());
-         return *this;
+         return *this << path.c_str();
       }
 
       /// <summary>Writes an STL exception to the console</summary>
       /// <param name="e">Exception</param>
       ConsoleWnd& operator<<(const exception&  e)
       {
-         *this << Cons::Red << L"STL EXCEPTION: " << Cons::Yellow << e.what() << ENDL;
-         return *this;
+         return *this << Cons::Red << L"STL EXCEPTION: " 
+                      << Cons::Yellow << e.what() << ENDL;
       }
 
       /// <summary>Writes text to the console</summary>
