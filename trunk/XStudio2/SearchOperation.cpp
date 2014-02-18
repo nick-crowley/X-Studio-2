@@ -23,8 +23,7 @@ namespace GUI
       {
          // Feedback
          GuiString msg(L"Searching for '%s' in %s", Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
-         Console << Cons::Heading << Cons::Bold << msg << ENDL;
-         Search.SendFeedback(ProgressType::Operation, 0, msg);
+         Search.SendFeedback(Cons::Heading, ProgressType::Operation, 0, msg);
 
          // Generate documents lists
          switch (Target)
@@ -136,8 +135,7 @@ namespace GUI
       void  SearchOperation::OnFinish()
       {
          // Feedback
-         Console << Cons::Heading << "Search completed" << ENDL;
-         Search.SendFeedback(ProgressType::Succcess, 0, L"Search completed");
+         Search.SendFeedback(Cons::Heading, ProgressType::Succcess, 0, L"Search completed");
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
