@@ -104,11 +104,17 @@ namespace Logic
              
                   // Search contents
                   data->Match.FullPath = CurrentFile;
-                  if (script.FindNext(data->Match))
+                  while (script.FindNext(data->Match))
                   {
-                     // Match: Clear location because document co-ordinates are different
-                     data->Match.Location = {0,0};
-                     return 0;
+                     // Find: Return match
+                     if (data->Operation == Operation::Find)
+                     {
+                        data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
+                        return 0;
+                     }
+                     // FindAll: Feedback
+                     else if (data->Operation == Operation::FindAll)
+                        data->SendFeedback(ProgressType::Info, 1, GuiString(L"%04d : %s : %s", 0, CurrentFile.c_str(), data->Match.SearchTerm.c_str()));
                   }
                }
                catch (ExceptionBase& e)

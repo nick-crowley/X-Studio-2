@@ -17,7 +17,7 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary></summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindReplace, Dummy };
+      enum class Operation : UINT { LoadGameData, LoadSaveDocument, Find, Replace, FindAll, ReplaceAll, Dummy };
 
       /// <summary></summary>
       class WorkerProgress
@@ -104,11 +104,12 @@ namespace Logic
          }
 
          // -------------------- REPRESENTATION ---------------------
+      public:
+         const Operation  Operation;
 
       private:
-         Operation     Operation;
-         volatile bool Aborted;
-         CWnd*         ParentWnd;
+         volatile bool    Aborted;
+         CWnd*            ParentWnd;
       };
 
       /// <summary>Thread function</summary>

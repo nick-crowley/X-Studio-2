@@ -16,7 +16,7 @@ namespace GUI
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchOperation(SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
+         SearchOperation(Operation op, SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
          virtual ~SearchOperation();
 
          NO_COPY(SearchOperation);	// No copy semantics

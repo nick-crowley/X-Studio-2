@@ -29,8 +29,8 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchWorkerData(SearchTarget targ, const MatchData& search, IO::Path folder, GameVersion ver) 
-            : WorkerData(Operation::FindReplace), 
+         SearchWorkerData(Threads::Operation op, SearchTarget targ, const MatchData& search, IO::Path folder, GameVersion ver) 
+            : WorkerData(op), 
               Folder(folder), 
               Version(ver), 
               Target(targ), 

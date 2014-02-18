@@ -155,7 +155,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
             // Init: Create operation
             if (!Search)
-               NewSearch();
+               NewSearch(Operation::Find);
 
             // FindNext:
             if (!Search->FindNext())
@@ -186,7 +186,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                     << Cons::Yellow << GetString(GetSearchTarget()) << ENDL;
 
             // Find All
-            NewSearch();
+            NewSearch(Operation::FindAll);
             Search->FindAll();
             Reset();
          }
@@ -207,7 +207,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          {
             // Init: Create operation
             if (!Search)
-               NewSearch();
+               NewSearch(Operation::Replace);
 
             // Replace:
             if (!Search->Replace(GetReplaceTerm()))
@@ -232,7 +232,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
-            NewSearch();
+            NewSearch(Operation::ReplaceAll);
             Search->ReplaceAll(GetReplaceTerm());
             Reset();
          }
@@ -257,13 +257,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ------------------------------- PRIVATE METHODS ------------------------------
 
-      void  FindDialog::NewSearch()
+      void  FindDialog::NewSearch(Operation operation)
       {
          // Display 'Find Next'
          FindButton.SetWindowTextW(L"Find Next");
 
          // Create new search
-         Search.reset(new SearchOperation(GetSearchTarget(), 
+         Search.reset(new SearchOperation(operation,
+                                          GetSearchTarget(), 
                                           GetSearchTerm(), 
                                           GetReplaceTerm(), 
                                           MatchCase != FALSE, 

@@ -11,15 +11,16 @@ namespace GUI
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create a new search operation</summary>
-      /// <param name="t">Search target.</param>
+      /// <param name="op">Search operation.</param>
+      /// <param name="targ">Search target.</param>
       /// <param name="search">search text.</param>
       /// <param name="replace">replacement text.</param>
       /// <param name="matchCase">match case.</param>
       /// <param name="matchWord">match whole word.</param>
       /// <param name="regEx">Use regular expressions.</param>
-      SearchOperation::SearchOperation(SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
-         : Target(t), 
-           Search(t, MatchData(search, replace, matchCase, matchWord, regEx), PrefsLib.GameDataFolder, PrefsLib.GameDataVersion)
+      SearchOperation::SearchOperation(Operation op, SearchTarget targ, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
+         : Target(targ), 
+           Search(op, targ, MatchData(search, replace, matchCase, matchWord, regEx), PrefsLib.GameDataFolder, PrefsLib.GameDataVersion)
       {
          // Feedback
          GuiString msg(L"Searching for '%s' in %s", Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
@@ -49,7 +50,6 @@ namespace GUI
          }
       }
 
-
       SearchOperation::~SearchOperation()
       {
       }
@@ -61,7 +61,7 @@ namespace GUI
       /// <summary>Finds all matches and prints them to the output window</summary>
       void  SearchOperation::FindAll()
       {
-         
+         FindNext();
       }
 
       /// <summary>Finds the next match and highlights it, opening the document if necessary</summary>
@@ -73,11 +73,25 @@ namespace GUI
          {
             auto doc = Documents.front();
 
-            // Find+Highlight match
-            if (theApp.IsDocumentOpen(doc) && doc->FindNext(Search.Match))
+            // Skip doc if user has since closed it
+            if (theApp.IsDocumentOpen(doc))
             {
-               doc->Activate();
-               return true;
+               // Feedback
+               Console << L"Searching document: " << doc->GetFullPath() << ENDL;
+
+               // Find matches
+               while (doc->FindNext(Search.Match))
+               {
+                  // Find: Display document + Highlight match
+                  if (Search.Operation == Operation::Find)
+                  {
+                     doc->Activate();
+                     return true;
+                  }
+                  // FindAll: Feedback
+                  else if (Search.Operation == Operation::FindAll)
+                     Search.SendFeedback(ProgressType::Info, 1, GuiString(L"%04d : %s : %s", 0, doc->GetFullPath().c_str(), Search.Match.SearchTerm.c_str()));
+               }
             }
 
             // Skip to next document
