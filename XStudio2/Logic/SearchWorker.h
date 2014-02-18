@@ -83,9 +83,14 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
-         bool  Start(SearchWorkerData* param)
+         /// <summary>Starts the thread.</summary>
+         /// <param name="param">operation data.</param>
+         /// <exception cref="Logic::ArgumentNullException">param is null</exception>
+         /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
+         /// <exception cref="Logic::Win32Exception">Failed to start Thread</exception>
+         void  Start(SearchWorkerData* param)
          {
-            return BackgroundWorker::Start(param);
+            BackgroundWorker::Start(param);
          }
 
          // -------------------- REPRESENTATION ---------------------

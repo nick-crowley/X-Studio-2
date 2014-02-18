@@ -58,30 +58,34 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CDialogEx::OnInitDialog();
 
          // Set polling timer
-         SetTimer(42, 250, nullptr);
+         SetTimer(TIMER_ID, 250, nullptr);
          ProgressBar.SetMarquee(TRUE, 150);
+
+         // Centre
+         CenterWindow(nullptr);
          
          return TRUE;  // return TRUE unless you set the focus to a control
       }
 
-      /// <summary>Finds the next match, if any</summary>
+      /// <summary>Aborts the worker thread</summary>
       void FindProgressDialog::OnCancel_Click()
       {
-         // Stop worker
-         Worker->Stop();
+         // Feedback
+         Console << Cons::UserAction << "Aborting search..." << ENDL;
 
-         // Close dialog
-         KillTimer(42);
-         EndDialog(IDOK);
+         // Abort worker
+         Worker->Stop();
       }
 
       
+      /// <summary>Closes when the worker thread ends</summary>
+      /// <param name="id">The identifier.</param>
       void FindProgressDialog::OnTimer(UINT_PTR  id)
       {
-
+         // Close dialog when thread ends
          if (!Worker->IsRunning())
          {
-            KillTimer(42);
+            KillTimer(TIMER_ID);
             EndDialog(IDOK);
          }
       }

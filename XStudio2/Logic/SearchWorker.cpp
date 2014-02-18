@@ -87,7 +87,7 @@ namespace Logic
             Console << Cons::Heading << "Searching remaining " << data->Files.size() << " files..." << ENDL;
 
             // Search thru remaining files for a match
-            while (!data->Files.empty())
+            while (!data->Files.empty() && !data->IsAborted())
             {
                // Get next file
                IO::Path CurrentFile = data->Files.front();

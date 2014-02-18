@@ -96,7 +96,7 @@ namespace GUI
          // Search files for next match
          worker.Start(&Search);
          ProgressDlg.DoModal(&worker);
-         worker.Stop();
+         worker.Close();
             
          // Open+Highlight match
          if (Search.Match.IsMatched)

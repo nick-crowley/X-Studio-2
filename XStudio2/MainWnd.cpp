@@ -294,6 +294,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (wp.Type == ProgressType::Succcess)
       {
          theApp.State = AppState::GameDataPresent;
+         GameDataThread.Close();
 
          // Parse command line for standard shell commands, DDE, file open
 	      CCommandLineInfo cmdInfo;
