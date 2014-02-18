@@ -191,7 +191,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
 
       // Feedback
-      data.SendFeedback(Cons::Red, ProgressType::Failure, 0, L"Failed to save script");
+      data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
       return FALSE;
    }
 

@@ -87,7 +87,7 @@ namespace Logic
          
          // Feedback number of conflicts
          if (Objects.size() - Lookup.size() > 1)   // Always 1 less in lookup because old [THIS] intentionally removed
-            data->SendFeedback(Cons::Red, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
+            data->SendFeedback(Cons::Error, ProgressType::Error, 2, GuiString(L"Unable to process %d script objects", Objects.size()-Lookup.size()-1));
          
          // Feedback object count
          data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded %d script objects", Lookup.size()));
@@ -252,7 +252,7 @@ namespace Logic
                Lookup.Remove(obj.Text);
 
                // Feedback
-               Console << Cons::Red << "Conflict: " << Cons::White << obj.Text << " : " 
+               Console << Cons::Error << "Conflict: " << Cons::Reset << obj.Text << " : " 
                        << Cons::Yellow << obj.Ident << Cons::White << L" vs " << Cons::Yellow << conflict.Ident << Cons::White << "...";
 
                // Mangle them
@@ -261,7 +261,7 @@ namespace Logic
                   // Failed: Feedback
                   GuiString err(L"Conflicting script objects '%s' detected: %s and %s", obj.Text.c_str(), obj.Ident.c_str(), conflict.Ident.c_str());
                   data->SendFeedback(ProgressType::Error, 2, err);
-                  Console << Cons::Red << L"Failed to resolve" << ENDL;
+                  Console << Cons::Error << L"Failed to resolve" << ENDL;
                }
             }
          }

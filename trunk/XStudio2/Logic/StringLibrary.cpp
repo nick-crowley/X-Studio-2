@@ -68,7 +68,7 @@ namespace Logic
                Console << Cons::Green << L"Success" << ENDL;
             }
             catch (ExceptionBase& e) {
-               data->SendFeedback(Cons::Red, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
+               data->SendFeedback(Cons::Error, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
                // Do not re-throw
             }
          }

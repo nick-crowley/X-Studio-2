@@ -66,7 +66,7 @@ namespace Logic
             Console << Cons::Green << L"Success" << ENDL;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Red << L"Failed: " << e.Message << ENDL;
+            Console << Cons::Error << L"Failed: " << e.Message << ENDL;
             throw;
          }
 
@@ -183,7 +183,7 @@ namespace Logic
             }
             catch (ExceptionBase& e)
             {
-               Console << Cons::Red << L"Unable to insert syntax: " << syntax.Text << L" : " << Cons::Yellow << e.Message << ENDL;
+               Console << Cons::Error << L"Unable to insert syntax: " << syntax.Text << L" : " << Cons::Yellow << e.Message << ENDL;
             }
          }
       }
