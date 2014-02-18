@@ -35,6 +35,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void          Activate();
       virtual bool  FindNext(MatchData& src);
 	  
       // -------------------- REPRESENTATION ---------------------

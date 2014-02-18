@@ -71,9 +71,14 @@ namespace GUI
          // Search open documents before files
          while (!Documents.empty())
          {
+            auto doc = Documents.front();
+
             // Find+Highlight match
-            if (Documents.front()->FindNext(Search.Match))
+            if (theApp.IsDocumentOpen(doc) && doc->FindNext(Search.Match))
+            {
+               doc->Activate();
                return true;
+            }
 
             // Skip to next document
             Search.Match.Clear();

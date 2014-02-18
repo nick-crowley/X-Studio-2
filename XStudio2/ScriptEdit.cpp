@@ -616,7 +616,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Raise 'Compile Complete'
          CompileComplete.Raise();
       }
-      catch (ExceptionBase& e) 
+      catch (std::exception& e) 
       { 
          Console.Log(HERE, e); 
       }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DocumentBase.h"
-
+#include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -25,6 +25,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Activates this document</summary>
+   void  DocumentBase::Activate()
+   {
+      auto pos = GetFirstViewPosition();
+      theApp.GetMainWindow()->SetActiveView(GetNextView(pos));
+   }
 
    /// <summary>Finds the next.</summary>
    /// <param name="src">The source.</param>

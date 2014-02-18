@@ -130,9 +130,9 @@ public:
    // ---------------------- ACCESSORS ------------------------			
    
 public:
-   DocumentIterator  cbegin() const;
+   DocumentIterator  begin() const;
    DocumentIterator  begin();
-   DocumentIterator  cend() const;
+   DocumentIterator  end() const;
    DocumentIterator  end();
 
    GUI::Windows::MainWnd*  GetMainWindow() const;
@@ -141,6 +141,7 @@ public:
    DocumentList  GetOpenDocuments() const;
    AppState      GetState() const;
    bool          IsDocumentOpen(IO::Path p) const;
+   bool          IsDocumentOpen(DocumentBase* d) const;
 
    HICON     LoadIconW(UINT nResID, UINT iSize) const;
    CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;
@@ -151,10 +152,8 @@ public:
 public:
    virtual int   ExitInstance();
 	virtual BOOL  InitInstance();
-   virtual void  LoadCustomState();
    BOOL          OpenStringLibrary();
 	virtual void  PreLoadState();
-	virtual void  SaveCustomState();
    void          SetState(AppState s);
    
 protected:
