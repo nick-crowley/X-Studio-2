@@ -13,48 +13,37 @@ namespace GUI
       {
          // ------------------------ TYPES --------------------------
       private:
-         typedef unique_ptr<SearchWorkerData>  SearchData;
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchOperation();
-         //SearchOperation(const wstring& term, SearchTarget t) : Target(t), Search(term, t)
-         //{
-         
-         //}
+         SearchOperation(SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
          virtual ~SearchOperation();
 
-         DEFAULT_COPY(SearchOperation);	// Default copy semantics
-         DEFAULT_MOVE(SearchOperation);	// Default move semantics
+         NO_COPY(SearchOperation);	// No copy semantics
+         NO_MOVE(SearchOperation);	// No move semantics
 
          // ------------------------ STATIC -------------------------
 
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
-      public:
-         bool  IsStarted() const;
-
+      
          // ----------------------- MUTATORS ------------------------
       public:
-         void  Create(SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
-
          void  FindAll();
          bool  FindNext();
 
          bool  Replace(const wstring& term);
          void  ReplaceAll(const wstring& term);
-         void  Reset();
-
+      
       protected:
-         void  OnStart();
          void  OnFinish();
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         DocumentList  Documents;
-         SearchData    Search;
-         SearchTarget  Target;
+         DocumentList      Documents;
+         SearchWorkerData  Search;
+         SearchTarget      Target;
       };
 
    }

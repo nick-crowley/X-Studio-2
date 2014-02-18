@@ -138,9 +138,9 @@ BOOL Application::InitInstance()
    VLDEnable();
    //VLDDisable();
    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
-
+   
    // Load resource library
-   ResourceLibrary = LoadLibrary(_T("XStudio2.Resources.dll"));
+   ResourceLibrary = LoadLibrary(_T("X-Studio II.Resources.dll"));
    if(ResourceLibrary)
       AfxSetResourceHandle(ResourceLibrary);
    else
@@ -175,7 +175,7 @@ BOOL Application::InitInstance()
 	
 	// Set app registry key 
 	SetRegistryKey(L"Bearware");
-	LoadStdProfileSettings(4);  // Load MRU
+	LoadStdProfileSettings(10);  // Load MRU
 
    // Menu manager
 	InitContextMenuManager();
