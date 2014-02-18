@@ -55,7 +55,7 @@ namespace Logic
             // TODO: Check for new format syntax file
 
             // Feedback
-            Console << L"Reading legacy syntax file: " << Cons::Yellow << path << Cons::White << "...";
+            Console << L"Reading legacy syntax file: " << path << "...";
          
             // Load/Merge legacy syntax file
             StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );

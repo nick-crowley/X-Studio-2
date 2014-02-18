@@ -26,6 +26,8 @@ namespace Logic
                      Bold, 
                      Endl,
                      Reset,
+                     Push,
+                     Pop,
                      
                      White,
                      Blue,
@@ -177,6 +179,20 @@ namespace Logic
          case Cons::UserAction:  
             return *this << ENDL << Cons::Bold << Cons::Cyan;
 
+         // Push attributes: Save current attributes + reset
+         case Cons::Push:
+            AttributeStack.push_back(Attributes);
+            return *this << Cons::Reset;
+
+         // Push attributes: Restore previously saved attributes 
+         case Cons::Pop:
+            if (!AttributeStack.empty())
+            {
+               Attributes = AttributeStack.back();
+               AttributeStack.pop_back();
+            }
+            return *this;
+
          // Colour
          default:
             WORD bold = (Attributes & FOREGROUND_INTENSITY);
@@ -258,11 +274,18 @@ namespace Logic
          return *this;
       }
 
-      /// <summary>Writes a path to the console</summary>
+      /// <summary>Writes a path to the console in yellow</summary>
       /// <param name="path">path</param>
       ConsoleWnd& operator<<(const IO::Path& path)
       {
-         return *this << path.c_str();
+         return *this << Cons::Push << Cons::Yellow << path.c_str() << Cons::Pop;
+      }
+
+      /// <summary>Writes a game version string to the console in yellow</summary>
+      /// <param name="str">game version string</param>
+      ConsoleWnd& operator<<(const VersionString& str)
+      {
+         return *this << Cons::Push << Cons::Yellow << str.c_str() << Cons::Pop;
       }
 
       /// <summary>Writes an STL exception to the console</summary>
@@ -343,6 +366,7 @@ namespace Logic
       static ConsoleWnd  Instance;
 
    private:
+      deque<WORD> AttributeStack;
    };
 
    // Provide singleton access

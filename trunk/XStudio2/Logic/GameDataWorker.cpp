@@ -43,7 +43,7 @@ namespace Logic
                throw ComException(HERE, hr);
 
             // Feedback
-            Console << Cons::UserAction << L"Loading " << VersionString(data->Version) << L" game data from " << data->GameFolder.c_str() << ENDL;
+            Console << Cons::UserAction << L"Loading " << VersionString(data->Version) << L" game data from " << data->GameFolder << ENDL;
             data->SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading %s game data from '%s'", VersionString(data->Version).c_str(), data->GameFolder.c_str()));
 
             // Build VFS. 
@@ -63,7 +63,7 @@ namespace Logic
             SyntaxLib.Enumerate(data);
 
             // Cleanup
-            data->SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Loaded game data successfully");
+            data->SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, GuiString(L"Loaded %s game data successfully", VersionString(data->Version).c_str()));
             CoUninitialize();
             return 0;
          }

@@ -86,7 +86,7 @@ namespace Logic
 
          // Feedback
          data->SendFeedback(ProgressType::Operation, 1, L"Searching for catalogs...");
-         Console << Cons::Heading << L"Building " << VersionString(ver, true) << L" file system from " << Cons::Yellow << folder << ENDL;
+         Console << Cons::Heading << L"Building " << VersionString(ver, true) << L" file system from " << folder << ENDL;
 
          // Ensure folder exists
          if (!folder.Exists())
@@ -195,7 +195,7 @@ namespace Logic
             try
             {
                // Feedback
-               Console << Cons::White << L"Reading catalog " << Cons::Yellow << cat.FullPath << Cons::White << "...";
+               Console << Cons::White << L"Reading catalog " << cat.FullPath << "...";
                data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
 
                // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
