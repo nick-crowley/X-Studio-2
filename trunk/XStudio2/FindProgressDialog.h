@@ -42,8 +42,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnTimer(UINT_PTR  id);
          
          // -------------------- REPRESENTATION ---------------------
-      
       protected:
+         const UINT  TIMER_ID = 42;
+
          CProgressCtrl  ProgressBar;
          SearchWorker*  Worker;
       };

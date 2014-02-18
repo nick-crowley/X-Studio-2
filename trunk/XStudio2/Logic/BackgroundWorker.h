@@ -20,7 +20,9 @@ namespace Logic
          {}
       public:
          virtual ~BackgroundWorker()
-         {}
+         {
+            Close();
+         }
       
          // ------------------------ STATIC -------------------------
       
@@ -34,39 +36,46 @@ namespace Logic
          {
             DWORD code(0);
 
+            // Check if closed
+            if (Thread == nullptr)
+               return false;
+
             // Query thread state
             if (!GetExitCodeThread(Thread, &code))
                throw Win32Exception(HERE, L"Unable to query thread state");
 
+            // return true if active
             return code == STILL_ACTIVE;
          }
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Sets the 'abort' flag and closes the thread handle</summary>
-         /// <returns>true if successful, false otherwise</returns>
-         /// <exception cref="Logic::InvalidOperationException">Thread is not running</exception>
-         bool  Stop()
+         /// <summary>Closes the thread handle.</summary>
+         void  Close()
          {
-            if (Thread == nullptr)
+            CloseHandle(Thread);
+            Thread = nullptr;
+         }
+
+         /// <summary>Sets the 'abort' flag and closes the thread handle</summary>
+         /// <exception cref="Logic::InvalidOperationException">Thread is not running</exception>
+         void  Stop()
+         {
+            // Ensure running
+            if (!IsRunning())
                throw InvalidOperationException(HERE, L"Thread not running");
 
             // Request thread stop
             Data->Abort();
-
-            // Close handle
-            CloseHandle(Thread);
-            Thread = nullptr;
-            return true;
          }
 
       protected:
          /// <summary>Starts the thread.</summary>
          /// <param name="param">operation data.</param>
-         /// <returns>true if successful, false otherwise</returns>
          /// <exception cref="Logic::ArgumentNullException">param is null</exception>
          /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
-         bool  Start(WorkerData* param)
+         /// <exception cref="Logic::Win32Exception">Failed to start Thread</exception>
+         void  Start(WorkerData* param)
          {
             REQUIRED(param);
 
@@ -75,8 +84,11 @@ namespace Logic
                throw InvalidOperationException(HERE, L"Thread already running");
 
             // Launch thread
-            Thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Proc, (void*)(Data=param), NULL, NULL);
-            return Thread != NULL;
+            if (Thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Proc, (void*)(Data=param), NULL, NULL))
+               return;
+
+            // Failed:
+            throw Win32Exception(HERE, L"Unable to start thread");
          }
 
          // -------------------- REPRESENTATION ---------------------
