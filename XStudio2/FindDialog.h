@@ -52,7 +52,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnTarget_TextChanged();
 
       private:
-         void NewSearch();
+         void NewSearch(Operation operation);
          void Reset();
 
          // -------------------- REPRESENTATION ---------------------
