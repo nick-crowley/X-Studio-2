@@ -31,7 +31,7 @@ namespace Testing
       /// <param name="truePath">true path.</param>
       void  ScriptValidator::CompileScript(ScriptFile& s, Path truePath)
       {
-         Console << "Parsing and compiling..." << Colour::Yellow << truePath << ENDL;
+         Console << "Parsing and compiling..." << Cons::Yellow << truePath << ENDL;
 
          // Parse command text
          auto ln = GetAllLines(s.Commands.Input);
@@ -74,7 +74,7 @@ namespace Testing
          IndentationStack indent;
 
          // Header
-         Console << ENDL << "Ln  Index  Logic            Text        " << Colour::Purple << Cons::Bold << L"DIRECT TRANSLATION";
+         Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << L"DIRECT TRANSLATION";
          Console << ENDL << "-------------------------------------------------------" << ENDL; 
       
          // Print commands
@@ -84,7 +84,7 @@ namespace Testing
             // Logic/Text
             GuiString logic(::GetString(cmd.Logic)),
                       txt(cmd.Text);
-            Colour    colour(Colour::White);
+            Cons      colour(Cons::White);
             
             // Line#
             Console << GuiString(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber);
@@ -93,14 +93,14 @@ namespace Testing
             if (cmd.Is(CommandType::Standard) && !cmd.Commented)
                Console << GuiString(L"%03d: ", stdIndex);
             else
-               Console << Colour::Yellow << GuiString(L"%03d: ", auxIndex) << Colour::White;
+               Console << Cons::Yellow << GuiString(L"%03d: ", auxIndex) << Cons::White;
             
             // Logic
             switch (cmd.Logic)
             {
             // Conditional:
             default: 
-               colour = Colour::Cyan;
+               colour = Cons::Cyan;
                for (auto ps : cmd.Syntax.Parameters)
                   if (ps.IsRetVar())
                   {
@@ -113,7 +113,7 @@ namespace Testing
 
             // NOP:
             case BranchLogic::NOP:
-               colour = Colour::Yellow;
+               colour = Cons::Yellow;
                logic = cmd.Commented ? L"Cmd" : L"NOP";
                break;
 
@@ -121,23 +121,23 @@ namespace Testing
             case BranchLogic::None:
                if (cmd.Is(CMD_HIDDEN_JUMP) || cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB))
                {
-                  colour = Colour::Green; 
+                  colour = Cons::Green; 
                   logic = cmd.Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
                   txt = GuiString(L"Unconditional: %s", cmd.Parameters[0].Value.ToString().c_str());
                }
                else if (cmd.Is(CMD_DEFINE_LABEL))
                {
-                  colour = Colour::Purple;
+                  colour = Cons::Purple;
                   logic = L"Proc";
                }
                else if (cmd.Is(CMD_RETURN))
                {
-                  colour = Colour::Cyan;
+                  colour = Cons::Cyan;
                   logic = L"Ret";
                }
                else if (cmd.Syntax == CommandSyntax::Unrecognised)
                {  // Print entire line in red
-                  Console << (colour = Colour::Red);
+                  Console << (colour = Cons::Red);
                   logic = L"???";
                }
                else
@@ -147,7 +147,7 @@ namespace Testing
 
             // Print
             indent.PreDisplay(cmd);
-            Console << wstring(indent.Size, L' ') << colour << logic << Colour::White << L" : " << colour << txt << ENDL;
+            Console << Indent(indent.Size) << colour << logic << Cons::White << L" : " << colour << txt << ENDL;
             indent.PostDisplay(cmd);
 
             // Advance line/index
@@ -170,7 +170,7 @@ namespace Testing
       /// <returns></returns>
       ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool dropJMPs)
       {
-         Console << "Reading: " << Colour::Yellow << truePath << ENDL;
+         Console << "Reading: " << Cons::Yellow << truePath << ENDL;
 
          // Read input file
          ScriptFileReader r(XFileInfo(truePath).OpenRead());
@@ -201,7 +201,7 @@ namespace Testing
          {
             TempPath tmp;  
 
-            Console << Cons::Heading << L"Validating: " << Colour::Yellow << FullPath << ENDL;
+            Console << Cons::Heading << L"Validating: " << Cons::Yellow << FullPath << ENDL;
 
             // Read script, including JMPs
             auto orig = ReadScript(FullPath, FullPath, false);
@@ -215,7 +215,7 @@ namespace Testing
             CompileScript(orig, FullPath);
 
             // Write copy
-            Console << "Writing validation script: " << Colour::Yellow << tmp << Colour::White << "..." << ENDL;
+            Console << "Writing validation script: " << Cons::Yellow << tmp << Cons::White << "..." << ENDL;
             ScriptFileWriter w(StreamPtr(new FileStream(tmp, FileMode::CreateAlways, FileAccess::Write)));
             w.Write(orig);
             w.Close();
@@ -246,10 +246,10 @@ namespace Testing
             // Failed: Print trees
             catch (ExceptionBase&)
             {
-               Console << ENDL << "Raw Input tree: " << Colour::Yellow << FullPath;
+               Console << ENDL << "Raw Input tree: " << Cons::Yellow << FullPath;
                PrintTree(orig_cmds);
 
-               Console << ENDL << "Compiled Output tree: " << Colour::Yellow << FullPath;
+               Console << ENDL << "Compiled Output tree: " << Cons::Yellow << FullPath;
                ScriptParser copy_parser(copy, GetAllLines(copy_cmds), copy.Game);
                if (copy_parser.Errors.empty()) 
                   copy_parser.Compile();
@@ -258,13 +258,13 @@ namespace Testing
             }
 
             // Success!
-            Console << Colour::Green << "Validation Successful" << ENDL;
+            Console << Cons::Green << "Validation Successful" << ENDL;
             return true;
          }
          catch (ExceptionBase& e)
          {
             Console.Log(HERE, e);
-            Console << Colour::Red << "Validation FAILED" << ENDL;
+            Console << Cons::Red << "Validation FAILED" << ENDL;
             return false;
          }
       }

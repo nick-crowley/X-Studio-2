@@ -88,15 +88,15 @@ namespace Logic
             }
 
 #ifdef PRINT_CONSOLE
-            Console << Colour::Cyan << Indent(depth) << "Matched Macro: " << Colour::Yellow << match[0].str() 
-                    << Colour::White << " with " << Colour::Yellow << FormatBuffer.get() << ENDL;
+            Console << Cons::Cyan << Indent(depth) << "Matched Macro: " << Cons::Yellow << match[0].str() 
+                    << Cons::White << " with " << Cons::Yellow << FormatBuffer.get() << ENDL;
 #endif
             // Recursively parse
             return Parse(FormatBuffer.get(), depth+1);
          }
 
 #ifdef PRINT_CONSOLE
-         Console << Colour::Red << Indent(depth) << "Ignored Macro: " << Colour::White << match[0].str() << ENDL;
+         Console << Cons::Red << Indent(depth) << "Ignored Macro: " << Cons::White << match[0].str() << ENDL;
 #endif
 
          // Failed: Return verbatim
@@ -116,15 +116,15 @@ namespace Logic
          if (DescriptionLib.Macros.TryFind(name, m))
          {
 #ifdef PRINT_CONSOLE
-            Console << Colour::Cyan << Indent(depth) << "Matched Keyword: " << Colour::Yellow << match[0].str()
-                    << Colour::White << " with " << Colour::Yellow << m->Text << ENDL;
+            Console << Cons::Cyan << Indent(depth) << "Matched Keyword: " << Cons::Yellow << match[0].str()
+                    << Cons::White << " with " << Cons::Yellow << m->Text << ENDL;
 #endif
 
             return m->Recursive ? Parse(m->Text, depth+1) : m->Text;
          }
 
 #ifdef PRINT_CONSOLE
-         Console << Colour::Red << Indent(depth) << "Ignored Keyword: " << Colour::White << match[0].str() << ENDL;
+         Console << Cons::Red << Indent(depth) << "Ignored Keyword: " << Cons::White << match[0].str() << ENDL;
 #endif
 
          // Failed: Return match
@@ -147,7 +147,7 @@ namespace Logic
          try
          {
 #ifdef PRINT_CONSOLE
-            Console << Colour::Cyan << Indent(depth) << "Parsing: " << Colour::White << text << ENDL;
+            Console << Cons::Cyan << Indent(depth) << "Parsing: " << Cons::White << text << ENDL;
 #endif
 
             // Find/Replace all macros:  {AAAA:bbb}, {AAAA:bbb,ccc}, {AAAA:bbb,ccc,ddd} ...
@@ -157,7 +157,7 @@ namespace Logic
                r = onMatchMacro(match, depth);
 
 #ifdef PRINT_CONSOLE
-               Console << Indent(depth) << "Replacing text: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               Console << Indent(depth) << "Replacing text: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
 #endif
 
                // Advance position to beyond inserted text, and insert text
@@ -172,7 +172,7 @@ namespace Logic
                r = onMatchKeyword(match, depth);
 
 #ifdef PRINT_CONSOLE
-               Console << Indent(depth) << "Replacing text: " << Colour::Yellow << match[0].str() << Colour::White << " with " << Colour::Green << r << ENDL;
+               Console << Indent(depth) << "Replacing text: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
 #endif
 
                // Advance position to beyond inserted text, and insert text

@@ -81,14 +81,14 @@ namespace Logic
          }
 
          /// <summary>Inform main window of progress and print message to console</summary>
-         void  SendFeedback(Colour c, ProgressType t, UINT indent, const wstring& sz) const
+         void  SendFeedback(Cons c, ProgressType t, UINT indent, const wstring& sz) const
          {
             // Dummy: NOP
             if (Operation == Operation::Dummy || !ParentWnd)
                return;
 
             // Output to console 
-            if (c == Colour::Cyan)
+            if (c == Cons::Cyan)
                Console << ENDL;
             Console << c << sz << ENDL;
 

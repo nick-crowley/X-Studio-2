@@ -66,12 +66,12 @@ namespace Logic
                if (file.Language == lang)
                   Files.insert(file);
 
-               Console << Colour::Green << L"Success" << ENDL;
+               Console << Cons::Green << L"Success" << ENDL;
             }
             catch (ExceptionBase& e)
             {
                data->SendFeedback(ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
-               Console << Colour::Red << L"Failed: " << e.Message << ENDL;
+               Console << Cons::Red << L"Failed: " << e.Message << ENDL;
             }
          }
 

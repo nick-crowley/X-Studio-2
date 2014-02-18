@@ -118,7 +118,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Script = ScriptFileReader(XFileInfo(lpszPathName).OpenRead()).ReadFile(lpszPathName, false);
 
          // Feedback
-         data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
+         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
@@ -182,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             Script.Name = orig_name;
 
             // Feedback
-            data.SendFeedback(Colour::Green, ProgressType::Succcess, 0, L"Script saved successfully");
+            data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script saved successfully");
             return TRUE;
          }
       }
@@ -191,7 +191,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
 
       // Feedback
-      data.SendFeedback(Colour::Red, ProgressType::Failure, 0, L"Failed to save script");
+      data.SendFeedback(Cons::Red, ProgressType::Failure, 0, L"Failed to save script");
       return FALSE;
    }
 

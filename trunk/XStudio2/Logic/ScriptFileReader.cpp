@@ -40,7 +40,7 @@ namespace Logic
             throw FileNotFoundException(HERE, folder+script);
 
          // Feedback
-         Console << L"  Resolving script call: " << Colour::Yellow << script << Colour::White << L"..." << ENDL;
+         Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"..." << ENDL;
 
          // Read script
          return ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);

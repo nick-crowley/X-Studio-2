@@ -20,7 +20,18 @@ namespace Logic
    };
 
    /// <summary>Console manipulators</summary>
-   enum class Cons { Heading, Normal, Bold, Endl };
+   enum class Cons { Heading, 
+                     Normal, 
+                     Bold, 
+                     Endl,
+                     White,
+                     Blue,
+                     Cyan,
+                     Green,
+                     Red,
+                     Yellow,
+                     Purple
+   };
 
    /// <summary>Shorthand for console end-of-line manipulator</summary>
    const Cons ENDL = Cons::Endl;
@@ -57,14 +68,14 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
          *this << ENDL << Cons::Bold
-               << Colour::Purple << L"ERROR: " 
-               << Colour::Red << msg 
-               << Colour::White << L"...     Source: " 
-               << Colour::Yellow << src << ENDL;
-         *this << Colour::Purple << L"CAUSE: " 
-               << Colour::Red << e.Message.TrimRight(L"\r\n")
-               << Colour::White << L"...     Source: " 
-               << Colour::Yellow << e.Source << ENDL;
+               << Cons::Purple << L"ERROR: " 
+               << Cons::Red << msg 
+               << Cons::White << L"...     Source: " 
+               << Cons::Yellow << src << ENDL;
+         *this << Cons::Purple << L"CAUSE: " 
+               << Cons::Red << e.Message.TrimRight(L"\r\n")
+               << Cons::White << L"...     Source: " 
+               << Cons::Yellow << e.Source << ENDL;
       }
 
       /// <summary>Logs an exception to the console.</summary>
@@ -73,12 +84,12 @@ namespace Logic
       void  Log(const GuiString& src, const ExceptionBase&e)
       {
          *this << ENDL << Cons::Bold
-               << Colour::Purple << L"EXCEPTION: " 
-               << Colour::Red << e.Message.TrimRight(L"\r\n") 
-               << Colour::White << L"...    Source: " 
-               << Colour::Yellow << src << ENDL;
-         *this << Colour::Purple << L"SOURCE: " 
-               << Colour::Yellow << e.Source << ENDL;
+               << Cons::Purple << L"EXCEPTION: " 
+               << Cons::Red << e.Message.TrimRight(L"\r\n") 
+               << Cons::White << L"...    Source: " 
+               << Cons::Yellow << src << ENDL;
+         *this << Cons::Purple << L"SOURCE: " 
+               << Cons::Yellow << e.Source << ENDL;
       }
 
       /// <summary>Logs an STL exception to the console.</summary>
@@ -87,32 +98,29 @@ namespace Logic
       void  Log(const GuiString& src, const exception&e)
       {
          *this << ENDL << Cons::Bold 
-               << Colour::Purple << L"STL EXCEPTION: " 
-               << Colour::Red << e.what()
-               << Colour::White << L"...    Source: " 
-               << Colour::Yellow << src << ENDL;
+               << Cons::Purple << L"STL EXCEPTION: " 
+               << Cons::Red << e.what()
+               << Cons::White << L"...    Source: " 
+               << Cons::Yellow << src << ENDL;
       }
 
-      /// <summary>Sets the text colour</summary>
-      /// <param name="cl">The colour</param>
-      ConsoleWnd& operator<<(Colour cl)
+      /// <summary>Inserts associated text colour manipulator, if any</summary>
+      /// <param name="c">Colour</param>
+      ConsoleWnd& operator<<(Colour c)
       {
-         CONSOLE_SCREEN_BUFFER_INFO info;
-
-         // Preserve bold attribute
-         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-         WORD bold = (info.wAttributes & FOREGROUND_INTENSITY);
-
-         switch (cl)
+         switch (c)
          {
-         case Colour::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE);                   break;
-         case Colour::Green:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN);                  break;
-         case Colour::Red:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED);                    break;
-         case Colour::Cyan:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_GREEN);  break;
-         case Colour::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_RED);    break;
-         case Colour::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN|FOREGROUND_RED);   break;
-         case Colour::White:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
+         // Supported
+         case Colour::Blue:   return *this << Cons::Blue;
+         case Colour::Green:  return *this << Cons::Green;
+         case Colour::Red:    return *this << Cons::Red;
+         case Colour::Cyan:   return *this << Cons::Cyan;
+         case Colour::Purple: return *this << Cons::Purple;
+         case Colour::Yellow: return *this << Cons::Yellow;
+         case Colour::White:  return *this << Cons::White;
          }
+
+         // Unsupported
          return *this;
       }
 
@@ -121,28 +129,37 @@ namespace Logic
       ConsoleWnd& operator<<(Cons c)
       {
          CONSOLE_SCREEN_BUFFER_INFO info;
+         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+         WORD bold = (info.wAttributes & FOREGROUND_INTENSITY);
 
          switch (c)
          {
          // Bold: Add bold
          case Cons::Bold:   
-            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes|FOREGROUND_INTENSITY); 
             break;
 
          // Normal: Remove bold
          case Cons::Normal: 
-            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), info.wAttributes& ~FOREGROUND_INTENSITY); 
             break;
 
          // Endl: Linebreak + White
          case Cons::Endl:   
-            return *this << Cons::Normal << Colour::White << L"\n";
+            return *this << Cons::Normal << Cons::White << L"\n";
 
          // Heading: Linebreak + Cyan
          case Cons::Heading:  
-            return *this << ENDL << Colour::Cyan;
+            return *this << ENDL << Cons::Cyan;
+
+         // Colour
+         case Cons::Blue:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE);                   break;
+         case Cons::Green:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN);                  break;
+         case Cons::Red:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED);                    break;
+         case Cons::Cyan:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_GREEN);  break;
+         case Cons::Purple: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_BLUE|FOREGROUND_RED);    break;
+         case Cons::Yellow: SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_GREEN|FOREGROUND_RED);   break;
+         case Cons::White:  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE); break;
          }
 
          return *this;
@@ -222,7 +239,7 @@ namespace Logic
       /// <param name="e">Exception</param>
       ConsoleWnd& operator<<(const exception&  e)
       {
-         *this << Colour::Red << L"STL EXCEPTION: " << Colour::Yellow << e.what() << ENDL;
+         *this << Cons::Red << L"STL EXCEPTION: " << Cons::Yellow << e.what() << ENDL;
          return *this;
       }
 
