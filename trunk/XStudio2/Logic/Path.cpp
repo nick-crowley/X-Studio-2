@@ -117,11 +117,12 @@ namespace Logic
       }
 
       /// <summary>Get the file name</summary>
-      /// <returns>Filename if found, otherwise empty string</returns>
+      /// <returns>Filename if found, otherwise whole path</returns>
       wstring  Path::GetFileName() const
       {
          WCHAR* fn = PathFindFileName(Buffer.get());
-         return (fn != Buffer.get() ? fn : L"");
+         //return (fn != Buffer.get() ? fn : L"");
+         return fn;
       }
 
       /// <summary>Gets the folder portion of the path only</summary>

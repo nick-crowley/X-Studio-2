@@ -87,6 +87,7 @@ namespace GUI
    
       // ------------------------------ PROTECTED METHODS -----------------------------
 
+
       bool  SearchOperation::Find()
       {
          // Search open documents before files
@@ -94,41 +95,44 @@ namespace GUI
          {
             auto doc = Documents.front();
 
-            // Skip doc if user has since closed it
+            // Document may have been closed since initial call
             if (theApp.IsDocumentOpen(doc))
             {
                // Feedback
                Console << L"Searching document: " << doc->GetFullPath() << ENDL;
+               Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
 
                // Replace: Replace current match
                if (Search.Operation == Operation::Replace)
                   doc->Replace(Search.Match);
 
-               // Find matches
-               Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
+               // Find next match(s)
                while (doc->FindNext(Search.Match))
                {
                   // Find/Replace: Display document + Highlight match
-                  if (Search.Operation == Operation::Find || Search.Operation == Operation::Replace)
+                  switch (Search.Operation)
                   {
+                  case Operation::Find:
+                  case Operation::Replace:
                      // Feedback 
-                     Console << Cons::Cyan << Cons::Bold << "Highlighting Match" << ENDL;
+                     Console << Cons::Cyan << Cons::Bold << "Activating " << Search.Match.FullPath << " line " << Search.Match.LineNumber << ENDL;
                      Search.FeedbackMatch();
 
                      // Highlight+Activate
                      doc->SetSelection(Search.Match.Location);
                      doc->Activate();
                      return true;
-                  }
-                  // FindAll: Feedback
-                  else if (Search.Operation == Operation::FindAll)
-                     Search.FeedbackMatch();
+                  
+                  // Find/ReplaceAll: Feedback [+Replace]
+                  case Operation::FindAll:
+                  case Operation::ReplaceAll:
+                     // Replace
+                     if (Search.Operation == Operation::ReplaceAll)
+                        doc->Replace(Search.Match);
 
-                  // ReplaceAll: Replace + Feedback
-                  else if (Search.Operation == Operation::ReplaceAll)
-                  {
-                     doc->Replace(Search.Match);
+                     // Feedback
                      Search.FeedbackMatch();
+                     break;
                   }
                }
             }
@@ -156,7 +160,7 @@ namespace GUI
          ProgressDlg.DoModal(&worker);
          worker.Close();
             
-         // Open+Highlight match
+         // Match:
          if (Search.Match.IsMatched)
          {
             // Open document
