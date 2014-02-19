@@ -23,7 +23,8 @@ namespace GUI
            Search(op, targ, MatchData(search, replace, matchCase, matchWord, regEx), PrefsLib.GameDataFolder, PrefsLib.GameDataVersion)
       {
          // Feedback
-         GuiString msg(L"Searching for '%s' in %s", Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
+         auto txt = (!regEx ? L"Searching for '%s' in %s" : L"Searching for '%s' in %s using regular expressions");
+         GuiString msg(txt, Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
          Search.SendFeedback(ProgressType::Operation, 0, msg);
 
          // Generate documents lists

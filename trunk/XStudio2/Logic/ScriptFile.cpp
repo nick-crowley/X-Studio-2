@@ -56,25 +56,17 @@ namespace Logic
       bool  ScriptFile::FindNext(MatchData& m)
       {
          GuiString text;
-
-         // Flatten translated command text. 
+         
+         // Flatten translated command text into a single block so regEx can be used to match line breaks
          for (const auto& cmd : Commands.Input)
          {
             text += cmd.Text;
             text += L'\n';
          }
-         
-         // Find from last match
-         auto pos = text.Find(m.SearchTerm, m.Location.cpMax, m.MatchCase);
-         
-         // Set/Clear location
-         if (pos != GuiString::npos)
-         {
-            int line = count_if(text.begin(), text.begin()+pos, [](wchar ch) {return ch=='\n';});
-            m.SetMatch(pos, m.SearchTerm.length(), Commands.Input[line].Text, line+1);
-         }
-         else
-            m.Clear();
+
+         // Find next match, and supply line text
+         if (m.FindNext(text, '\n'))
+            m.LineText = Commands.Input[m.LineNumber-1].Text;
          
          // Return result
          return m.IsMatched;

@@ -149,9 +149,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          try
          {
             // Feedback
-            Console << Cons::UserAction << (Search ? "Find Next: " : "Find First: ") 
-                    << Cons::Yellow << GetSearchTerm() << Cons::White << " in " 
-                    << Cons::Yellow << GetString(GetSearchTarget()) << ENDL;
+            Feedback(Search ? L"Find Next" : L"Find First");
 
             // Init: Create operation
             if (!Search)
@@ -181,9 +179,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          try
          {
             // Feedback
-            Console << Cons::UserAction << "Find All: "
-                    << Cons::Yellow << GetSearchTerm() << Cons::White << " in " 
-                    << Cons::Yellow << GetString(GetSearchTarget()) << ENDL;
+            Feedback(L"Find All");
 
             // Find All
             NewSearch(Operation::FindAll);
@@ -205,6 +201,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Feedback
+            Feedback(L"Replace");
+
             // Init: Create operation
             if (!Search)
                NewSearch(Operation::Replace);
@@ -232,6 +231,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Feedback
+            Feedback(L"Replace All");
+
+            // Replace All
             NewSearch(Operation::ReplaceAll);
             Search->ReplaceAll(GetReplaceTerm());
             Reset();
@@ -256,7 +259,24 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
 
       // ------------------------------- PRIVATE METHODS ------------------------------
+      
+      /// <summary>Feedbacks the operation name.</summary>
+      /// <param name="operation">The operation.</param>
+      void  FindDialog::Feedback(const wstring& operation)
+      {
+         UpdateData();
 
+         // Feedback
+         Console << Cons::UserAction << (Search ? "Find Next: " : "Find First: ") 
+                 << Cons::Yellow     << GetSearchTerm() 
+                 << Cons::White      << " in " 
+                 << Cons::Yellow     << GetString(GetSearchTarget()) 
+                 << Cons::White      << (UseRegEx ? L" using Regular Expressions" : L"") 
+                 << ENDL;
+      }
+
+      /// <summary>News the search.</summary>
+      /// <param name="operation">The operation.</param>
       void  FindDialog::NewSearch(Operation operation)
       {
          // Display 'Find Next'
@@ -272,6 +292,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                                           UseRegEx != FALSE));
       }
 
+      /// <summary>Resets this instance.</summary>
       void  FindDialog::Reset()
       {
          // Display 'Find'

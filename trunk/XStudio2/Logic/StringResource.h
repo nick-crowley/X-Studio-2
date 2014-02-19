@@ -125,21 +125,7 @@ namespace Logic
       /// <param name="matchCase">Whether to perform case sensitive search</param>
       /// <returns>Offset or npos</returns>
       /// <exception cref="Logic::IndexOutOfRangeException">Invalid offset</exception>
-      int Find(const wstring& str, int offset, bool matchCase) const
-      {
-         // Validate offset
-         if (offset < 0 || offset >= length())
-            throw IndexOutOfRangeException(HERE, offset, length());
-
-         // Sensitive: Use stl
-         if (matchCase)
-            return find(str, offset);
-
-         // Insensitive: Convert string ptr into char index
-         auto txt = &c_str()[offset];
-         auto pos = StrStrI(txt, str.c_str());
-         return pos ? pos - txt : npos;
-      }
+      int Find(const wstring& str, UINT offset, bool matchCase) const;
 
       /// <summary>Extracts n characters from start of the string</summary>
       /// <param name="chars">Number of characters</param>
