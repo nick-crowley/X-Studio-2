@@ -12,6 +12,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
+      /// <summary>Creates the dialog</summary>
+      /// <param name="parent">Parent window</param>
       FindDialog::FindDialog(CWnd* pParent /*=NULL*/)
 	      : CDialogEx(FindDialog::IDD, pParent)
          , UseRegEx(FALSE)
@@ -168,12 +170,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
 
-      
+      /// <summary>Resets the operation</summary>
       void FindDialog::OnFind_TextChanged()
       {
          Reset();
       }
       
+      /// <summary>Finds all matches</summary>
       void FindDialog::OnFindAll_Click()
       {
          try
@@ -191,12 +194,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
       
+      /// <summary>Shows/Hides options</summary>
       void FindDialog::OnOptions_Click()
       {
          // Toggle window size
          Expand(!Expanded);
       }
 
+      /// <summary>Replaces the current match, if any, and finds the next</summary>
       void FindDialog::OnReplace_Click()
       {
          try
@@ -221,12 +226,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
 
+      /// <summary>Resets the operation</summary>
       void FindDialog::OnReplace_TextChanged()
       {
          Reset();
       }
       
-
+      /// <summary>Replaces all matches</summary>
       void FindDialog::OnReplaceAll_Click()
       {
          try
@@ -244,6 +250,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
       
+      /// <summary>Resets the operation</summary>
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
          CDialogEx::OnShowWindow(bShow, nStatus);
@@ -252,6 +259,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Reset();
       }
       
+      /// <summary>Resets the operation</summary>
       void FindDialog::OnTarget_TextChanged()
       {
          Reset();
@@ -260,7 +268,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ------------------------------- PRIVATE METHODS ------------------------------
       
-      /// <summary>Feedbacks the operation name.</summary>
+      /// <summary>Writes the operation name to the console</summary>
       /// <param name="operation">The operation.</param>
       void  FindDialog::Feedback(const wstring& operation)
       {
@@ -278,6 +286,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Creates a new search.</summary>
       void  FindDialog::NewSearch()
       {
+         // Text Selection
+         if (GetSearchTarget() == SearchTarget::Selection)
+            throw NotImplementedException(HERE, L"Find operations on the current selection has not been implemented");
+
          // Display 'Find Next'
          FindButton.SetWindowTextW(L"Find Next");
 
@@ -290,7 +302,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                                           UseRegEx != FALSE));
       }
 
-      /// <summary>Resets this instance.</summary>
+      /// <summary>Resets the operation.</summary>
       void  FindDialog::Reset()
       {
          // Display 'Find'
