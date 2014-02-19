@@ -2,7 +2,7 @@
 #include <richole.h>
 #include <Richedit.h>
 #include <tom.h> 
-#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
+//#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
 
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
@@ -44,7 +44,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    };
 
-   // <summary>Character format helper</summary>
+   /// <summary>Character format helper</summary>
    class ParaFormat : public PARAFORMAT
    {
    public:
@@ -75,6 +75,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       /// <summary>COM interface</summary>
       _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
+      _COM_SMARTPTR_TYPEDEF(ITextDocument, __uuidof(ITextDocument));
 
       /// <summary>Records state of text selection, view position, event mask</summary>
       class DisplayState
@@ -470,7 +471,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   CommentSelection();
       bool   EnsureVisible(int line);
       void   IndentSelection(bool indent);
-      void   SetDocument(ScriptDocument* doc);
+      void   Initialize(ScriptDocument* doc);
       void   SetRtf(const string& rtf);
       void   SuspendUndo(bool suspend);
 
@@ -494,7 +495,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-      afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -515,7 +515,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
-      Tom::ITextDocumentPtr TextDocument;
+      ITextDocumentPtr TextDocument;
    };
    
 
