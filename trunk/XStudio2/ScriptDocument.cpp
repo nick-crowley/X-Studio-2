@@ -74,12 +74,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       Edit = &edit;
    }
    
-   /// <summary>Finds the next match, if any</summary>
+   /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="start">Starting offset</param>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
-   bool  ScriptDocument::FindNext(MatchData& m) const
+   /// <returns>True if found, false otherwise</returns>
+   bool  ScriptDocument::FindNext(UINT start, MatchData& m) const
    {
-      return GetView()->FindNext(m);
+      return GetView()->FindNext(start, m);
    }
 
    /// <summary>Gets the text selection.</summary>
@@ -89,9 +90,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return GetView()->GetSelection();
    }
 
-   /// <summary>Replaces the current match, if any</summary>
+   /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
    bool  ScriptDocument::Replace(MatchData& m)
    {
       return GetView()->Replace(m);

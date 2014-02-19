@@ -31,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      virtual bool      FindNext(MatchData& src) const;
+      virtual bool      FindNext(UINT start, MatchData& m) const;
       virtual CHARRANGE GetSelection() const;
       IO::Path          GetFullPath() const;
       DocumentType      GetType() const;
@@ -39,7 +39,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
-      virtual bool  Replace(MatchData& src);
+      virtual bool  Replace(MatchData& m);
       virtual void  SetSelection(CHARRANGE rng);
 	   
       // -------------------- REPRESENTATION ---------------------

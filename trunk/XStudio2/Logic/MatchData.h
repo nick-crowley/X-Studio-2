@@ -59,6 +59,13 @@ namespace Logic
       // --------------------- PROPERTIES ------------------------
 
       // ---------------------- ACCESSORS ------------------------	
+   public:
+      /// <summary>Get the length of the match</summary>
+      /// <returns></returns>
+      UINT  Length() const
+      {
+         return Location.cpMax - Location.cpMin;
+      }
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -74,32 +81,35 @@ namespace Logic
 
       /// <summary>Finds the next match</summary>
       /// <param name="input">input text</param>
+      /// <param name="input">starting offset</param>
       /// <param name="lineBreak">line break character</param>
       /// <returns></returns>
-      bool  FindNext(const GuiString& input, wchar lineBreak)
+      bool  FindNext(const GuiString& input, UINT start, wchar lineBreak)
       {
-         int pos = GuiString::npos, 
-             len = 0;
+         int pos = GuiString::npos, len = 0;
 
          // Validate position in case text has shrunk
-         if ((UINT)Location.cpMax < input.length())
+         if (start >= input.length())
          {
-            // RegEx: Find from last match using regEx
-            if (UseRegEx)
+            Clear();
+            return false;
+         }
+         
+         // RegEx: Find from last match using regEx
+         if (UseRegEx)
+         {
+            wsmatch matches;
+            if (regex_search(input.cbegin()+start, input.cend(), matches, RegEx, regex_constants::match_default))
             {
-               wsmatch matches;
-               if (regex_search(input.cbegin()+Location.cpMax, input.cend(), matches, RegEx, regex_constants::match_default))
-               {
-                  pos = matches[0].first - input.cbegin();
-                  len = matches[0].length();
-               }
+               pos = matches[0].first - input.cbegin();
+               len = matches[0].length();
             }
-            // Basic: Find from last match using wstring
-            else
-            {
-               pos = input.Find(SearchTerm, Location.cpMax, MatchCase);
-               len = SearchTerm.length();
-            }
+         }
+         // Basic: Find from last match using wstring
+         else
+         {
+            pos = input.Find(SearchTerm, start, MatchCase);
+            len = SearchTerm.length();
          }
          
          // Set/Clear line text, line#, location
@@ -115,61 +125,24 @@ namespace Logic
          return IsMatched;
       }
 
-      /// <summary>Replaces the last match, if any</summary>
+      /// <summary>Get the replacement text for the current match</summary>
       /// <param name="input">input text</param>
-      /// <param name="lineBreak">line break character</param>
       /// <returns></returns>
-      bool  Replace(GuiString& input, wchar lineBreak)
+      wstring  Replace(const GuiString& input) const
       {
-         int pos = GuiString::npos, 
-             len = 0;
+         // Basic: Return replacement text
+         if (!UseRegEx)
+            return ReplaceTerm;
 
-         // Validate position in case text has shrunk
-         if ((UINT)Location.cpMax < input.length())
-         {
-            // RegEx: Find from last match using regEx
-            if (UseRegEx)
-            {
-               wsmatch matches;
-               // Verify last match
-               if (regex_match(input.cbegin()+Location.cpMin, input.cbegin()+Location.cpMax, matches, RegEx))
-               {
-                  // Format replacement
-                  auto r = matches.format(ReplaceTerm);
-
-                  // Set location of replacement
-                  pos = Location.cpMin;
-                  len = r.length();
-
-                  // Replace text
-                  input.replace(pos, len, r);
-               }
-            }
-            // Basic: Find from last match using wstring
-            else
-            {
-               // Verify last match
-               if (input.Find(SearchTerm, Location.cpMin, MatchCase) == Location.cpMin)
-               {
-                  // Set location of replacement
-                  pos = Location.cpMin;
-                  len = ReplaceTerm.length();
-
-                  // Replace text
-                  input.replace(pos, len, ReplaceTerm);
-               }
-            }
-         }
+         // RegEx: Find from last match using regEx
+         wsmatch matches;
          
-         // Replaced: Update location 
-         if (pos != GuiString::npos)
-         {
-            Location = {pos, pos+len};
-            return true;
-         }
-         
-         // Not Replaced: 
-         return false;
+         // Format replacement
+         if (regex_match(input.cbegin()+Location.cpMin, input.cbegin()+Location.cpMax, matches, RegEx))
+            return matches.format(ReplaceTerm);
+
+         // Error: Match didn't match
+         throw AlgorithmException(HERE, L"Previously matched text does not match regEx");
       }
 
    private:

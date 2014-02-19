@@ -109,8 +109,11 @@ namespace GUI
                if (cmd == SearchCommand::Replace)
                   doc->Replace(Search.Match);
 
+               // ActiveDocument: Search from caret, not previous match
+               UINT start = (doc == DocumentBase::GetActive() ? doc->GetSelection().cpMax : Search.Match.Location.cpMax);
+
                // Find next match(s)
-               while (doc->FindNext(Search.Match))
+               while (doc->FindNext(start, Search.Match))
                {
                   // Find/Replace: Display document + Highlight match
                   switch (cmd)
@@ -132,6 +135,9 @@ namespace GUI
                      // Replace
                      if (cmd == SearchCommand::ReplaceAll)
                         doc->Replace(Search.Match);
+
+                     // Continue search from current match
+                     start = Search.Match.Location.cpMax;
 
                      // Feedback
                      Search.FeedbackMatch();

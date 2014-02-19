@@ -545,9 +545,9 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
       public:
          void    Clear();
-         bool    FindNext(MatchData& src);
+         bool    FindNext(UINT start, MatchData& m);
          wstring FindScope(UINT line);
-         bool    Replace(MatchData& m);
+         void    Replace(MatchData& m);
          
 		   // -------------------- REPRESENTATION ---------------------
       public:

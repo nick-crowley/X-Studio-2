@@ -109,7 +109,8 @@ namespace Logic
                   // Find/Replace: Return match for display
                   case SearchCommand::Find:
                   case SearchCommand::Replace:
-                     if (script.FindNext(data->Match))
+                     // Search from beginning of file
+                     if (script.FindNext(0, data->Match))
                      {
                         data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
                         return 0;
@@ -119,7 +120,8 @@ namespace Logic
                   // FindAll/ReplaceAll: Feedback [+Replace]
                   case SearchCommand::FindAll:
                   case SearchCommand::ReplaceAll:
-                     while (script.FindNext(data->Match))
+                     // Search thru all matches
+                     for (UINT start = 0; script.FindNext(start, data->Match); start = data->Match.Location.cpMax)
                      {
                         // Replace match
                         if (data->Command == SearchCommand::ReplaceAll)

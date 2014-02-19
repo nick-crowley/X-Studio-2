@@ -60,7 +60,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void  AttachEdit(ScriptEdit& edit);
-      bool  FindNext(MatchData& src) const override;
+      bool  FindNext(UINT start, MatchData& src) const override;
       bool  Replace(MatchData& m) override;
       void  SetSelection(CHARRANGE rng) override;
 

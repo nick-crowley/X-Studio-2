@@ -84,11 +84,12 @@ NAMESPACE_BEGIN2(GUI,Views)
    #endif //_DEBUG
 
    /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="start">Starting offset</param>
    /// <param name="m">Match data</param>
    /// <returns>True if found, false otherwise</returns>
-   bool  ScriptView::FindNext(MatchData& m) const
+   bool  ScriptView::FindNext(UINT start, MatchData& m) const
    {
-      return RichEdit.FindNext(m);
+      return RichEdit.FindNext(start, m);
    }
 
    /// <summary>Gets the selection.</summary>
@@ -98,9 +99,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       return RichEdit.GetSelection();
    }
 
-   /// <summary>Replaces the current match, if any</summary>
+   /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
    bool  ScriptView::Replace(MatchData& m)
    {
       return RichEdit.Replace(m);
