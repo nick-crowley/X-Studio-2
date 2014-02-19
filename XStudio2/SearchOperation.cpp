@@ -121,7 +121,7 @@ namespace GUI
                   case SearchCommand::Find:
                   case SearchCommand::Replace:
                      // Feedback 
-                     Console << Cons::Cyan << Cons::Bold << "Activating " << Search.Match.FullPath << " line " << Search.Match.LineNumber << ENDL;
+                     Console << Cons::Cyan << Cons::Bold << "Found match in " << Search.Match.FullPath << " on line " << Search.Match.LineNumber << ENDL;
                      Search.FeedbackMatch();
 
                      // Highlight+Activate

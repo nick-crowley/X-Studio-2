@@ -169,7 +169,7 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
-         static ScriptFile  ReadExternalScript(Path folder, const wstring& script);
+         static ScriptFile  ReadExternalScript(Path folder, const wstring& script, bool silent = true);
 
          // --------------------- PROPERTIES ------------------------
 			
