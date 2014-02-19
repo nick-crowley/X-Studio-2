@@ -48,12 +48,13 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void AssertValid() const;
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
-
+   public:
+      bool            FindNext(MatchData& m) const;
 	   ScriptDocument* GetDocument() const;
+      CHARRANGE       GetSelection() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
-      bool          FindNext(MatchData& m);
       bool          Replace(MatchData& m);
       void          SetSelection(CHARRANGE rng);
       virtual BOOL  PreTranslateMessage(MSG* pMsg);
@@ -101,6 +102,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       EventHandler fnCompileComplete;
+   public:
+      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
    };
 
    #ifndef _DEBUG  

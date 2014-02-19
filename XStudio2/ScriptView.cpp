@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
+      ON_WM_CREATE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -86,9 +87,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Finds and highlights the next match, if any</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if found, false otherwise</returns>
-   bool  ScriptView::FindNext(MatchData& m)
+   bool  ScriptView::FindNext(MatchData& m) const
    {
       return RichEdit.FindNext(m);
+   }
+
+   /// <summary>Gets the selection.</summary>
+   /// <returns></returns>
+   CHARRANGE  ScriptView::GetSelection() const
+   {
+      return RichEdit.GetSelection();
    }
 
    /// <summary>Replaces the current match, if any</summary>
@@ -197,6 +205,22 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateVariables();
       PopulateScope();
    }
+   
+   /// <summary>Called when [create].</summary>
+   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <returns></returns>
+   int ScriptView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+   {
+      try
+      {
+         return CFormView::OnCreate(lpCreateStruct);
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e, L"Unable to create script view");
+         return -1;
+      }
+   }
 
    /// <summary>Toggle comment on selected commands</summary>
    void ScriptView::OnEditComment()
@@ -273,6 +297,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Setup RichEdit
          RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
          RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
+         RichEdit.SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
+         RichEdit.SetUndoLimit(100);
 
          // Display script text
          RichEdit.SetDocument(GetDocument());
@@ -328,6 +354,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnQueryEditUndo(CCmdUI *pCmdUI)
    {
       pCmdUI->Enable(RichEdit.CanUndo());
+      pCmdUI->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetRedoName())).c_str() );
    }
 
    /// <summary>Query state of REDO context menu command</summary>
@@ -335,6 +362,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnQueryEditRedo(CCmdUI *pCmdUI)
    {
       pCmdUI->Enable(RichEdit.CanRedo());
+      pCmdUI->SetText( GuiString(RichEdit.CanRedo() ? L"Redo %s" : L"Redo", GetString(RichEdit.GetRedoName())).c_str() );
    }
 
    /// <summary>Invoke context menu</summary>

@@ -1,5 +1,9 @@
 #pragma once
+#include <richole.h>
 #include <Richedit.h>
+#include <tom.h> 
+#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
+
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
 
@@ -12,6 +16,7 @@ NAMESPACE_END2(GUI,Documents)
 NAMESPACE_BEGIN2(GUI,Controls)
 
    
+
    /// <summary>Character format helper</summary>
    struct CHARFORMAT3 : public CHARFORMAT2
    {
@@ -58,6 +63,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    };
 
+   /// <summary>Get undo operation name</summary>
+   const wchar* GetString(UNDONAMEID id);
 
    /// <summary>Script editing control</summary>
    class ScriptEdit : public CRichEditCtrl
@@ -66,6 +73,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ------------------------ TYPES --------------------------
    private:
+      /// <summary>COM interface</summary>
+      _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
+
       /// <summary>Records state of text selection, view position, event mask</summary>
       class DisplayState
       {
@@ -462,6 +472,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   IndentSelection(bool indent);
       void   SetDocument(ScriptDocument* doc);
       void   SetRtf(const string& rtf);
+      void   SuspendUndo(bool suspend);
 
    protected:
       LineTextIterator begin(int line = 0);
@@ -504,6 +515,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
+      Tom::ITextDocumentPtr TextDocument;
    };
    
 

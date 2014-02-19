@@ -77,9 +77,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Finds the next match, if any</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if match found, false otherwise</returns>
-   bool  ScriptDocument::FindNext(MatchData& m)
+   bool  ScriptDocument::FindNext(MatchData& m) const
    {
       return GetView()->FindNext(m);
+   }
+
+   /// <summary>Gets the text selection.</summary>
+   /// <returns></returns>
+   CHARRANGE ScriptDocument::GetSelection() const
+   {
+      return GetView()->GetSelection();
    }
 
    /// <summary>Replaces the current match, if any</summary>
@@ -89,10 +96,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return GetView()->Replace(m);
    }
+   
+   /// <summary>Sets the text selection in the view</summary>
+   /// <param name="rng">text range.</param>
+   void  ScriptDocument::SetSelection(CHARRANGE rng)
+   {
+      GetView()->SetSelection(rng);
+   }
 
    /// <summary>Gets the view.</summary>
    /// <returns></returns>
-   ScriptView* ScriptDocument::GetView()
+   ScriptView* ScriptDocument::GetView() const
    {
       auto pos = GetFirstViewPosition();
       return dynamic_cast<ScriptView*>(GetNextView(pos));
@@ -201,13 +215,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Feedback
       data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
       return FALSE;
-   }
-
-   /// <summary>Sets the text selection in the view</summary>
-   /// <param name="rng">text range.</param>
-   void  ScriptDocument::SetSelection(CHARRANGE rng)
-   {
-      GetView()->SetSelection(rng);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

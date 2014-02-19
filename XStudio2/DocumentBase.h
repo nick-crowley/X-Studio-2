@@ -31,16 +31,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      IO::Path     GetFullPath() const;
-      DocumentType GetType() const;
+      virtual bool      FindNext(MatchData& src) const;
+      virtual CHARRANGE GetSelection() const;
+      IO::Path          GetFullPath() const;
+      DocumentType      GetType() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
-      virtual bool  FindNext(MatchData& src);
       virtual bool  Replace(MatchData& src);
       virtual void  SetSelection(CHARRANGE rng);
-	  
+	   
       // -------------------- REPRESENTATION ---------------------
    protected:
       DocumentType  Type;

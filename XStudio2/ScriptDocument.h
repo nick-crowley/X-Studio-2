@@ -54,12 +54,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 			
       // ---------------------- ACCESSORS ------------------------			
    public:
-      ScriptView* GetView();
+      ScriptView* GetView() const;
+      CHARRANGE   GetSelection() const override;
 
       // ----------------------- MUTATORS ------------------------
    public:
       void  AttachEdit(ScriptEdit& edit);
-      bool  FindNext(MatchData& src) override;
+      bool  FindNext(MatchData& src) const override;
       bool  Replace(MatchData& m) override;
       void  SetSelection(CHARRANGE rng) override;
 

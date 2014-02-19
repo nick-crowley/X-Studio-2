@@ -46,9 +46,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Finds the next match, if any</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if match found, false otherwise</returns>
-   bool  DocumentBase::FindNext(MatchData& m)
+   bool  DocumentBase::FindNext(MatchData& m) const
    {
       return false;
+   }
+
+   /// <summary>Gets the text selection.</summary>
+   /// <returns></returns>
+   CHARRANGE DocumentBase::GetSelection() const
+   {
+      return {0,0};
    }
 
    /// <summary>Replaces the current match, if any</summary>
