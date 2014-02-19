@@ -267,7 +267,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          UpdateData();
 
          // Feedback
-         Console << Cons::UserAction << (Search ? "Find Next: " : "Find First: ") 
+         Console << Cons::UserAction << operation << " "
                  << Cons::Yellow     << GetSearchTerm() 
                  << Cons::White      << " in " 
                  << Cons::Yellow     << GetString(GetSearchTarget()) 

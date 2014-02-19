@@ -134,7 +134,10 @@ namespace GUI
                   case SearchCommand::ReplaceAll:
                      // Replace
                      if (cmd == SearchCommand::ReplaceAll)
+                     {
+                        doc->SetSelection(Search.Match.Location);
                         doc->Replace(Search.Match);
+                     }
 
                      // Continue search from current match
                      start = Search.Match.Location.cpMax;
