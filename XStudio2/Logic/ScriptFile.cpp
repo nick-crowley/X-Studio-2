@@ -50,27 +50,26 @@ namespace Logic
          Variables.clear();
       }
 
-      /// <summary>Finds the location of the next match, if any</summary>
+      /// <summary>Finds and highlights the next match, if any</summary>
+      /// <param name="start">starting offset</param>
       /// <param name="m">Match data</param>
       /// <returns>True if found, false otherwise</returns>
-      bool  ScriptFile::FindNext(MatchData& m)
+      bool  ScriptFile::FindNext(UINT start, MatchData& m)
       {
          // Find next match, and supply line text
-         if (m.FindNext(OfflineBuffer, '\n'))
+         if (m.FindNext(OfflineBuffer, start, '\n'))
             m.LineText = Commands.Input[m.LineNumber-1].Text;
          
          // Return result
          return m.IsMatched;
       }
 
-      /// <summary>Replaces the current match, if any</summary>
+      /// <summary>Replaces the current match</summary>
       /// <param name="m">Match data</param>
-      /// <returns>True if match found, false otherwise</returns>
-      bool  ScriptFile::Replace(MatchData& m)
+      void  ScriptFile::Replace(MatchData& m)
       {
-         // Replace current match, if any
-         if (!m.Replace(OfflineBuffer, '\n'))
-            return false;
+         // Perform replacement
+         OfflineBuffer.replace(m.Location.cpMin, m.Length(), m.Replace(OfflineBuffer));
 
          // Clear line text
          UINT ln = 0;
@@ -83,8 +82,6 @@ namespace Logic
             else if (ln == m.LineNumber-1)
                m.LineText += ch;
          });
-
-         return true;
       }
 
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>

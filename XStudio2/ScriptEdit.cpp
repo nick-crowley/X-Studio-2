@@ -42,12 +42,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Get suggestion type name</summary>
    const wchar*  ScriptEdit::GetString(Suggestion& s) 
    {
       static const wchar* str[] = { L"None", L"Variable", L"Command", L"GameObject", L"ScriptObject", L"Label" };
       return str[(UINT)s];
    }
 
+   /// <summary>Get undo operation name</summary>
    const wchar*  GetString(UNDONAMEID id)
    {
       switch (id)
@@ -61,6 +63,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //case UID_AUTOTABLE:  return L"Table";
       }
       return L"Invalid";
+   }
+
+   /// <summary>Compare character ranges</summary>
+   bool operator==(const CHARRANGE& a, const CHARRANGE& b)
+   {
+      return a.cpMax == b.cpMax && a.cpMin == b.cpMin;
+   }
+
+   /// <summary>Compare character ranges</summary>
+   bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
+   {
+      return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -78,41 +92,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
    #endif //_DEBUG
    
    /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="start">starting offset</param>
    /// <param name="m">Match data</param>
    /// <returns>True if found, false otherwise</returns>
-   bool  ScriptEdit::FindNext(MatchData& m) const
+   bool  ScriptEdit::FindNext(UINT start, MatchData& m) const
    {
       // Get document text as a block,
       auto text = GetAllText();
       
-      // Find next match, and supply line text
-      if (m.FindNext(text, '\v'))
+      // Find next match
+      if (m.FindNext(text, start, '\v'))
+         // Found: Supply line text (for feedback)
          m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
 
       // Return result
       return m.IsMatched;
    }
 
-   /// <summary>Replaces the current match, if any</summary>
+   /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
    bool  ScriptEdit::Replace(MatchData& m)
    {
+      // Do nothing if match no longer selected
+      if (m.Location != GetSelection())
+         return false;
+
       // Get document text as a block,
       GuiString text = GetAllText();
       
-      // Replace current match, if any
-      auto original = m.Location;
-      if (!m.Replace(text, '\v'))
-         return false;
-      
-      // Update edit
-      SetSel(original);
-      ReplaceSel(text.substr(m.Location.cpMin, m.Location.cpMax-m.Location.cpMin).c_str(), TRUE);
+      // Replace selection
+      ReplaceSel(m.Replace(text).c_str(), TRUE);
 
-      // Re-supply line text
+      // Re-supply line text (for feedback)
       m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
-
       return true;
    }
 

@@ -49,7 +49,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif
    public:
-      bool            FindNext(MatchData& m) const;
+      bool            FindNext(UINT start, MatchData& m) const;
 	   ScriptDocument* GetDocument() const;
       CHARRANGE       GetSelection() const;
 

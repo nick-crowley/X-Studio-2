@@ -66,6 +66,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Get undo operation name</summary>
    const wchar* GetString(UNDONAMEID id);
 
+   /// <summary>Compare character ranges</summary>
+   bool operator==(const CHARRANGE& a, const CHARRANGE& b);
+   bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
+
    /// <summary>Script editing control</summary>
    class ScriptEdit : public CRichEditCtrl
    {
@@ -446,7 +450,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
    public:
-      bool      FindNext(MatchData& m) const;
+      bool      FindNext(UINT start, MatchData& m) const;
       wstring   GetAllText() const;
       int       GetCaretIndex() const;
       POINT     GetCaretLocation() const;

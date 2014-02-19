@@ -43,10 +43,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       GetNextView(pos)->GetParentFrame()->ActivateFrame();
    }
 
-   /// <summary>Finds the next match, if any</summary>
+   /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="start">Starting offset</param>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
-   bool  DocumentBase::FindNext(MatchData& m) const
+   /// <returns>True if found, false otherwise</returns>
+   bool  DocumentBase::FindNext(UINT start, MatchData& m) const
    {
       return false;
    }
@@ -58,9 +59,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return {0,0};
    }
 
-   /// <summary>Replaces the current match, if any</summary>
+   /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
-   /// <returns>True if match found, false otherwise</returns>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
    bool  DocumentBase::Replace(MatchData& m)
    {
       return false;
