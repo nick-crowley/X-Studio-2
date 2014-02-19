@@ -102,8 +102,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       EventHandler fnCompileComplete;
-   public:
-      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
    };
 
    #ifndef _DEBUG  

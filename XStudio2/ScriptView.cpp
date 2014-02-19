@@ -48,7 +48,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
-      ON_WM_CREATE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -206,22 +205,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
    
-   /// <summary>Called when [create].</summary>
-   /// <param name="lpCreateStruct">The lp create structure.</param>
-   /// <returns></returns>
-   int ScriptView::OnCreate(LPCREATESTRUCT lpCreateStruct)
-   {
-      try
-      {
-         return CFormView::OnCreate(lpCreateStruct);
-      }
-      catch (ExceptionBase& e)
-      {
-         Console.Log(HERE, e, L"Unable to create script view");
-         return -1;
-      }
-   }
-
    /// <summary>Toggle comment on selected commands</summary>
    void ScriptView::OnEditComment()
    {
@@ -294,14 +277,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          w.Write(GetDocument()->Script);
          w.Close();
 
-         // Setup RichEdit
-         RichEdit.SetBackgroundColor(FALSE, RGB(0,0,0));
-         RichEdit.SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS); 
-         RichEdit.SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
-         RichEdit.SetUndoLimit(100);
-
          // Display script text
-         RichEdit.SetDocument(GetDocument());
+         RichEdit.Initialize(GetDocument());
          RichEdit.SetRtf(txt);
 
          // Populate variables/scope

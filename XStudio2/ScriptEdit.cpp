@@ -319,11 +319,36 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CRichEditCtrl::LineLength(nChar);
    }
 
-   /// <summary>Sets the source document for this control</summary>
+   /// <summary>Initializes the control</summary>
    /// <param name="doc">The document.</param>
-   void  ScriptEdit::SetDocument(ScriptDocument* doc)
+   /// <exception cref="Logic::ArgumentNullException">document is null</exception>
+   /// <exception cref="Logic::Win32Exception">Unable to retrieve COM pointers</exception>
+   void  ScriptEdit::Initialize(ScriptDocument* doc)
    {
+      REQUIRED(doc);
+
+      // Set document
       Document = doc;
+
+      // Set background colour
+      SetBackgroundColor(FALSE, RGB(0,0,0));
+
+      // Notify on change/scroll/input
+      SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS);
+
+      // Set undo limit + options
+      SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
+      SetUndoLimit(100);
+
+      // Get IRichEditOle interface
+      IRichEditOlePtr edit(GetIRichEditOle(), false);
+      if (!edit)
+         throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
+
+      // Get ITextDocument interface
+      TextDocument = edit;
+      if (!TextDocument)
+         throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
    }
 
    /// <summary>Replace entire contents with RTF.</summary>
@@ -354,14 +379,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="suspend">enable/disable</param>
    void  ScriptEdit::SuspendUndo(bool suspend)
    {
-      try
-      {
-         if (TextDocument)
-            TextDocument->Undo(suspend ? tomSuspend : tomResume);
-      }
-      catch (_com_error& e) {
-         Console.Log(HERE, ComException(HERE, e));
-      }
+      if (FAILED(TextDocument->Undo(suspend ? tomSuspend : tomResume, nullptr)))
+         Console << Cons::Error << "Error: Unable to suspend/resume undo mechanism" << ENDL;
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -579,12 +598,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnBackgroundCompile()
    {
       CWaitCursor c;
-      //Console << L"Background compiler activated" << ENDL;
 
       // Stop compiler timer
       SetCompilerTimer(false);
         
       // Freeze window
+      SuspendUndo(true);
       FreezeWindow(true);
 
       try 
@@ -623,38 +642,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // UnFreeze window
       FreezeWindow(false);
+      SuspendUndo(false);
    }
 
-   /// <summary>Setup control</summary>
-   /// <param name="lpCreateStruct">The create structure.</param>
-   /// <returns></returns>
-   int ScriptEdit::OnCreate(LPCREATESTRUCT lpCreateStruct)
-   {
-      if (CRichEditCtrl::OnCreate(lpCreateStruct) == -1)
-         return -1;
-
-      // Set background colour
-      SetBackgroundColor(FALSE, RGB(0,0,0));
-
-      // Notify on change/scroll/input
-      SetEventMask(ENM_CHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS);
-
-      // Set undo limit + options
-      SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
-      SetUndoLimit(100);
-
-      // Get COM pointer
-      IRichEditOlePtr edit(GetIRichEditOle(), false);
-      TextDocument = edit;
-
-      if (!edit)
-         throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
-      else if (!TextDocument)
-         throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
-
-      return 0;
-   }
-   
 
    /// <summary>Shows/updates the suggestion list in response to character input</summary>
    /// <param name="nChar">The character.</param>
