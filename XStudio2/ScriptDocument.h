@@ -60,6 +60,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void  AttachEdit(ScriptEdit& edit);
       bool  FindNext(MatchData& src) override;
+      bool  Replace(MatchData& m) override;
       void  SetSelection(CHARRANGE rng) override;
 
 	   virtual BOOL OnNewDocument();

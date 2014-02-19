@@ -67,6 +67,14 @@ namespace Logic
                                                                            Match.LineText.c_str()));
          }
 
+         /// <summary>Feedbacks start notification.</summary>
+         void  FeedbackStart()
+         {
+            // Feedback
+            auto txt = (Match.UseRegEx ? L"Searching for '%s' in %s using regular expressions" : L"Searching for '%s' in %s");
+            SendFeedback(ProgressType::Operation, 0, GuiString(txt, Match.SearchTerm.c_str(), GetString(Target).c_str()) );
+         }
+
          // -------------------- REPRESENTATION ---------------------
       public:
          IO::Path        Folder;

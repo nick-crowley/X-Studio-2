@@ -62,6 +62,47 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
    
+   /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if found, false otherwise</returns>
+   bool  ScriptEdit::FindNext(MatchData& m) const
+   {
+      // Get document text as a block,
+      auto text = GetAllText();
+      
+      // Find next match, and supply line text
+      if (m.FindNext(text, '\v'))
+         m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
+
+      // Return result
+      return m.IsMatched;
+   }
+
+   /// <summary>Replaces the current match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  ScriptEdit::Replace(MatchData& m)
+   {
+      // Get document text as a block,
+      auto text = GetAllText();
+      
+      // Replace current match, if any
+      auto original = m.Location;
+      if (!m.Replace(text, '\v'))
+         return false;
+      
+      // Update edit
+      FreezeWindow(true);
+      SetSel(original);
+      ReplaceSel(text.substr(m.Location.cpMin, m.Location.cpMax-m.Location.cpMin).c_str());
+      FreezeWindow(false);
+
+      // Re-supply line text
+      m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
+
+      return true;
+   }
+
    /// <summary>Toggles comment on the selected lines.</summary>
    void  ScriptEdit::CommentSelection()
    {

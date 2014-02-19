@@ -84,19 +84,19 @@ NAMESPACE_BEGIN2(GUI,Views)
    #endif //_DEBUG
 
    /// <summary>Finds and highlights the next match, if any</summary>
-   /// <param name="src">search data</param>
+   /// <param name="m">Match data</param>
    /// <returns>True if found, false otherwise</returns>
    bool  ScriptView::FindNext(MatchData& m)
    {
-      // Get document text as a block, so regEx can be used to match line breaks
-      auto text = RichEdit.GetAllText();
-      
-      // Find next match, and supply line text
-      if (m.FindNext(text, '\v'))
-         m.LineText = GuiString(RichEdit.GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
+      return RichEdit.FindNext(m);
+   }
 
-      // Return result
-      return m.IsMatched;
+   /// <summary>Replaces the current match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  ScriptView::Replace(MatchData& m)
+   {
+      return RichEdit.Replace(m);
    }
 
    /// <summary>Sets the text selection.</summary>

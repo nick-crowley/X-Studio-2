@@ -31,8 +31,7 @@ namespace Logic
            MatchCase(regEx ? matchCase : false), 
            MatchWord(regEx ? matchWord : false),
            UseRegEx(regEx),
-           SearchRegEx(GetSafeRegEx(regEx ? search : L"")),
-           ReplaceRegEx(GetSafeRegEx(regEx ? replace : L""))
+           RegEx(GetSafeRegEx(regEx ? search : L""))
       {
          /*if (MatchWord && UseRegEx)
             throw NotSupportedException(HERE, L"Can't use match whole word only and regular expressions together. Use \\b.");*/
@@ -82,21 +81,25 @@ namespace Logic
          int pos = GuiString::npos, 
              len = 0;
 
-         // RegEx: Find from last match using regEx
-         if (UseRegEx)
+         // Validate position in case text has shrunk
+         if ((UINT)Location.cpMax < input.length())
          {
-            wsmatch matches;
-            if (regex_search(input.cbegin()+Location.cpMax, input.cend(), matches, SearchRegEx, regex_constants::match_default))
+            // RegEx: Find from last match using regEx
+            if (UseRegEx)
             {
-               pos = matches[0].first - input.cbegin();
-               len = matches[0].length();
+               wsmatch matches;
+               if (regex_search(input.cbegin()+Location.cpMax, input.cend(), matches, RegEx, regex_constants::match_default))
+               {
+                  pos = matches[0].first - input.cbegin();
+                  len = matches[0].length();
+               }
             }
-         }
-         // Basic: Find from last match using wstring
-         else
-         {
-            pos = input.Find(SearchTerm, Location.cpMax, MatchCase);
-            len = SearchTerm.length();
+            // Basic: Find from last match using wstring
+            else
+            {
+               pos = input.Find(SearchTerm, Location.cpMax, MatchCase);
+               len = SearchTerm.length();
+            }
          }
          
          // Set/Clear line text, line#, location
@@ -110,6 +113,63 @@ namespace Logic
          
          // Return result
          return IsMatched;
+      }
+
+      /// <summary>Replaces the last match, if any</summary>
+      /// <param name="input">input text</param>
+      /// <param name="lineBreak">line break character</param>
+      /// <returns></returns>
+      bool  Replace(GuiString& input, wchar lineBreak)
+      {
+         int pos = GuiString::npos, 
+             len = 0;
+
+         // Validate position in case text has shrunk
+         if ((UINT)Location.cpMax < input.length())
+         {
+            // RegEx: Find from last match using regEx
+            if (UseRegEx)
+            {
+               wsmatch matches;
+               // Verify last match
+               if (regex_match(input.cbegin()+Location.cpMin, input.cbegin()+Location.cpMax, matches, RegEx))
+               {
+                  // Format replacement
+                  auto r = matches.format(ReplaceTerm);
+
+                  // Set location of replacement
+                  pos = Location.cpMin;
+                  len = r.length();
+
+                  // Replace text
+                  input.replace(pos, len, r);
+               }
+            }
+            // Basic: Find from last match using wstring
+            else
+            {
+               // Verify last match
+               if (input.Find(SearchTerm, Location.cpMin, MatchCase) == Location.cpMin)
+               {
+                  // Set location of replacement
+                  pos = Location.cpMin;
+                  len = ReplaceTerm.length();
+
+                  // Replace text
+                  input.replace(pos, len, ReplaceTerm);
+               }
+            }
+         }
+         
+         // Replaced: Update location 
+         if (pos != GuiString::npos)
+         {
+            Location = {pos, pos+len};
+            return true;
+         }
+         
+         // Not Replaced: 
+         return false;
       }
 
    private:
@@ -139,8 +199,7 @@ namespace Logic
       const bool     MatchCase,
                      MatchWord,
                      UseRegEx;
-      const wregex   SearchRegEx,
-                     ReplaceRegEx;
+      const wregex   RegEx;
    };
 
    

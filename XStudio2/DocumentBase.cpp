@@ -43,10 +43,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       GetNextView(pos)->GetParentFrame()->ActivateFrame();
    }
 
-   /// <summary>Finds the next.</summary>
-   /// <param name="src">The source.</param>
-   /// <returns></returns>
-   bool  DocumentBase::FindNext(MatchData& src)
+   /// <summary>Finds the next match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  DocumentBase::FindNext(MatchData& m)
+   {
+      return false;
+   }
+
+   /// <summary>Replaces the current match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  DocumentBase::Replace(MatchData& m)
    {
       return false;
    }
