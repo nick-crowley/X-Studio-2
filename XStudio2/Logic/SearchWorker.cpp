@@ -104,24 +104,31 @@ namespace Logic
              
                   // Search contents
                   data->Match.FullPath = CurrentFile;
-                  while (script.FindNext(data->Match))
+                  switch (data->Operation)
                   {
-                     // Find/Replace: Return match for display
-                     if (data->Operation == Operation::Find || data->Operation == Operation::Replace)
+                  // Find/Replace: Return match for display
+                  case Operation::Find:
+                  case Operation::Replace:
+                     if (script.FindNext(data->Match))
                      {
                         data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
                         return 0;
                      }
-                     // FindAll: Feedback
-                     else if (data->Operation == Operation::FindAll)
-                        data->FeedbackMatch();
+                     break;
 
-                     // ReplaceAll: Replace + Feedback
-                     else if (data->Operation == Operation::ReplaceAll)
+                  // FindAll/ReplaceAll: Feedback [+Replace]
+                  case Operation::FindAll:
+                  case Operation::ReplaceAll:
+                     while (script.FindNext(data->Match))
                      {
-                        script.Replace(data->Match);
+                        // Replace match
+                        if (data->Operation == Operation::ReplaceAll)
+                           script.Replace(data->Match);
+
+                        // Feedback
                         data->FeedbackMatch();
                      }
+                     break;
                   }
                }
                catch (ExceptionBase& e)

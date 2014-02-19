@@ -56,7 +56,7 @@ namespace Logic
          /// <summary>Feedbacks finish notification.</summary>
          void  FeedbackFinish()
          {
-            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Search completed");
+            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Not more matches");
          }
 
          /// <summary>Feedbacks the match.</summary>
