@@ -29,13 +29,15 @@ namespace Logic
       /// <summary>Reads the properties of an external script</summary>
       /// <param name="folder">folder to search</param>
       /// <param name="script">script name WITHOUT extension</param>
+      /// <param name="silent">Skip feedback to console</param>
       /// <returns>ScriptFile containing properties only</returns>
-      ScriptFile  ScriptFileReader::ReadExternalScript(Path folder, const wstring& script)
+      ScriptFile  ScriptFileReader::ReadExternalScript(Path folder, const wstring& script, bool silent)
       {
          try
          {
             // Feedback
-            Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"...";
+            if (!silent)
+               Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"...";
 
             // Generate path
             Path path(folder + (script + L".pck"));
@@ -48,11 +50,14 @@ namespace Logic
             ScriptFile sf = ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, true);
 
             // Feedback
-            Console << Cons::Green << "Success" << ENDL;
+            if (!silent)
+               Console << Cons::Green << "Success" << ENDL;
             return sf;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Error << "Failed: " << e.Message.Remove(L"\r\n") << ENDL;
+            // Feedback
+            if (!silent)
+               Console << Cons::Error << "Failed: " << e.Message.Remove(L"\r\n") << ENDL;
             throw;
          }
       }
@@ -221,7 +226,7 @@ namespace Logic
 
                   // Read unless previously read
                   if (!name.empty() && !script.ScriptCalls.Contains(name))
-                     script.ScriptCalls.Add(name, ReadExternalScript(Folder, name));
+                     script.ScriptCalls.Add(name, ReadExternalScript(Folder, name, false));
                }
                catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
