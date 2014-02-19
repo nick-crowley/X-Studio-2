@@ -132,6 +132,28 @@ namespace Logic
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   /// <summary>Find index of a substring</summary>
+   /// <param name="str">The substring.</param>
+   /// <param name="offset">Start offset.</param>
+   /// <param name="matchCase">Whether to perform case sensitive search</param>
+   /// <returns>Offset or npos</returns>
+   /// <exception cref="Logic::IndexOutOfRangeException">Invalid offset</exception>
+   int  GuiString::Find(const wstring& str, UINT offset, bool matchCase) const
+   {
+      // Validate offset
+      if (offset >= length())
+         throw IndexOutOfRangeException(HERE, offset, length());
+
+      // Sensitive: Use stl
+      if (matchCase)
+         return find(str, offset);
+
+      // Insensitive: Convert string ptr into char index
+      auto txt = c_str();
+      auto pos = StrStrI(&txt[offset], str.c_str());
+      return pos ? pos - txt : npos;
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 

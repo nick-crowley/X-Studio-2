@@ -52,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnTarget_TextChanged();
 
       private:
+         void Feedback(const wstring& operation);
          void NewSearch(Operation operation);
          void Reset();
 

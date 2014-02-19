@@ -62,7 +62,9 @@ namespace Logic
          /// <summary>Feedbacks the match.</summary>
          void  FeedbackMatch()
          {
-            SendFeedback(ProgressType::Info, 1, GuiString(L"%d : %s : %s", Match.LineNumber, Match.FullPath.FileName.c_str(), Match.Text.c_str()));
+            SendFeedback(ProgressType::Info, 1, GuiString(L"%d : %s : %s", Match.LineNumber, 
+                                                                           Match.FullPath.FileName.c_str(), 
+                                                                           Match.LineText.c_str()));
          }
 
          // -------------------- REPRESENTATION ---------------------

@@ -88,21 +88,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <returns>True if found, false otherwise</returns>
    bool  ScriptView::FindNext(MatchData& m)
    {
-      // Get all text
+      // Get document text as a block, so regEx can be used to match line breaks
       auto text = RichEdit.GetAllText();
       
-      // Find next match
-      auto pos = text.Find(m.SearchTerm, m.Location.cpMax, m.MatchCase);
+      // Find next match, and supply line text
+      if (m.FindNext(text, '\v'))
+         m.LineText = GuiString(RichEdit.GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
 
-      // Set/Clear match
-      if (pos != wstring::npos)
-      {
-         int line = count_if(text.begin(), text.begin()+pos, [](wchar ch) {return ch=='\v';});
-         m.SetMatch(pos, m.SearchTerm.length(), GuiString(RichEdit.GetLineText(line)).TrimLeft(L" \t"), line+1);
-      }
-      else
-         m.Clear();
-         
       // Return result
       return m.IsMatched;
    }
