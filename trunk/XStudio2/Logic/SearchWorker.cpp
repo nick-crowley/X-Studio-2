@@ -106,8 +106,8 @@ namespace Logic
                   data->Match.FullPath = CurrentFile;
                   while (script.FindNext(data->Match))
                   {
-                     // Find: Return match
-                     if (data->Operation == Operation::Find)
+                     // Find/Replace: Return match for display
+                     if (data->Operation == Operation::Find || data->Operation == Operation::Replace)
                      {
                         data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
                         return 0;
@@ -115,6 +115,13 @@ namespace Logic
                      // FindAll: Feedback
                      else if (data->Operation == Operation::FindAll)
                         data->FeedbackMatch();
+
+                     // ReplaceAll: Replace + Feedback
+                     else if (data->Operation == Operation::ReplaceAll)
+                     {
+                        script.Replace(data->Match);
+                        data->FeedbackMatch();
+                     }
                   }
                }
                catch (ExceptionBase& e)

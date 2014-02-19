@@ -74,12 +74,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
       Edit = &edit;
    }
    
-   /// <summary>Finds the next text match</summary>
-   /// <param name="src">search data</param>
-   /// <returns></returns>
-   bool  ScriptDocument::FindNext(MatchData& src)
+   /// <summary>Finds the next match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  ScriptDocument::FindNext(MatchData& m)
    {
-      return GetView()->FindNext(src);
+      return GetView()->FindNext(m);
+   }
+
+   /// <summary>Replaces the current match, if any</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if match found, false otherwise</returns>
+   bool  ScriptDocument::Replace(MatchData& m)
+   {
+      return GetView()->Replace(m);
    }
 
    /// <summary>Gets the view.</summary>

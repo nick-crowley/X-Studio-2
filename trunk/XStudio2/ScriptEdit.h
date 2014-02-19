@@ -435,6 +435,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   virtual void Dump(CDumpContext& dc) const;
    #endif  
    public:
+      bool      FindNext(MatchData& m) const;
       GuiString GetAllText() const;
       int       GetCaretIndex() const;
       POINT     GetCaretLocation() const;
@@ -455,6 +456,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      bool   Replace(MatchData& m);
       void   CommentSelection();
       bool   EnsureVisible(int line);
       void   IndentSelection(bool indent);

@@ -37,7 +37,7 @@ namespace GUI
          void  ReplaceAll(const wstring& term);
       
       protected:
-         void  OnFinish();
+         bool  Find();
 
          // -------------------- REPRESENTATION ---------------------
       private:

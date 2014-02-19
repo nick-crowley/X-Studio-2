@@ -23,9 +23,7 @@ namespace GUI
            Search(op, targ, MatchData(search, replace, matchCase, matchWord, regEx), PrefsLib.GameDataFolder, PrefsLib.GameDataVersion)
       {
          // Feedback
-         auto txt = (!regEx ? L"Searching for '%s' in %s" : L"Searching for '%s' in %s using regular expressions");
-         GuiString msg(txt, Search.Match.SearchTerm.c_str(), GetString(Target).c_str() );
-         Search.SendFeedback(ProgressType::Operation, 0, msg);
+         Search.FeedbackStart();
 
          // Generate documents lists
          switch (Target)
@@ -62,12 +60,34 @@ namespace GUI
       /// <summary>Finds all matches and prints them to the output window</summary>
       void  SearchOperation::FindAll()
       {
-         FindNext();
+         Find();
       }
 
       /// <summary>Finds the next match and highlights it, opening the document if necessary</summary>
       /// <returns>True if found, False if no more matches</returns>
       bool  SearchOperation::FindNext()
+      {
+         return Find();
+      }
+
+      /// <summary>Replaces the current match, if any, otherwise finds and replaces the next match</summary>
+      /// <param name="term">Replacement term.</param>
+      /// <returns></returns>
+      bool  SearchOperation::Replace(const wstring& term)
+      {
+         return Find();
+      }
+
+      /// <summary>Finds and replaces all matches and prints them to the output window.</summary>
+      /// <param name="term">The term.</param>
+      void  SearchOperation::ReplaceAll(const wstring& term)
+      {
+         Find();
+      }
+   
+      // ------------------------------ PROTECTED METHODS -----------------------------
+
+      bool  SearchOperation::Find()
       {
          // Search open documents before files
          while (!Documents.empty())
@@ -80,12 +100,16 @@ namespace GUI
                // Feedback
                Console << L"Searching document: " << doc->GetFullPath() << ENDL;
 
+               // Replace: Replace current match
+               if (Search.Operation == Operation::Replace)
+                  doc->Replace(Search.Match);
+
                // Find matches
                Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
                while (doc->FindNext(Search.Match))
                {
-                  // Find: Display document + Highlight match
-                  if (Search.Operation == Operation::Find)
+                  // Find/Replace: Display document + Highlight match
+                  if (Search.Operation == Operation::Find || Search.Operation == Operation::Replace)
                   {
                      // Feedback 
                      Console << Cons::Cyan << Cons::Bold << "Highlighting Match" << ENDL;
@@ -99,6 +123,13 @@ namespace GUI
                   // FindAll: Feedback
                   else if (Search.Operation == Operation::FindAll)
                      Search.FeedbackMatch();
+
+                  // ReplaceAll: Replace + Feedback
+                  else if (Search.Operation == Operation::ReplaceAll)
+                  {
+                     doc->Replace(Search.Match);
+                     Search.FeedbackMatch();
+                  }
                }
             }
 
@@ -133,36 +164,13 @@ namespace GUI
             Documents.push_back(doc);
 
             // Highlight first match
-            FindNext();
+            Find();
             return true;
          }
 
          // No more matches
          Search.FeedbackFinish();
          return false;
-      }
-
-      /// <summary>Replaces the current match, if any, otherwise finds and replaces the next match</summary>
-      /// <param name="term">Replacement term.</param>
-      /// <returns></returns>
-      bool  SearchOperation::Replace(const wstring& term)
-      {
-         return false;
-      }
-
-      /// <summary>Finds and replaces all matches and prints them to the output window.</summary>
-      /// <param name="term">The term.</param>
-      void  SearchOperation::ReplaceAll(const wstring& term)
-      {
-         
-      }
-   
-      // ------------------------------ PROTECTED METHODS -----------------------------
-
-      void  SearchOperation::OnFinish()
-      {
-         // Feedback
-         Search.SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Search completed");
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------

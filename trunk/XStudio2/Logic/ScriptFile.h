@@ -7,6 +7,8 @@
 #include "MapIterator.hpp"
 #include <algorithm>
 
+namespace Logic { namespace IO { class ScriptFileReader; } }
+
 namespace Logic
 {
    namespace Scripts
@@ -39,6 +41,7 @@ namespace Logic
       /// <summary>Get variable type string</summary>
       GuiString  GetString(VariableType t);
 
+
       /// <summary>An argument or variable used within a script</summary>
       class ScriptVariable
       {
@@ -62,6 +65,7 @@ namespace Logic
 
       /// <summary>Write script variable to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v);
+
 
       /// <summary>Vector of script variables</summary>
       class VariableArray : public vector<ScriptVariable>
@@ -118,9 +122,12 @@ namespace Logic
          {}
       };
 
+
       /// <summary></summary>
       class ScriptFile
       {
+         friend class ScriptFileReader;
+
          // ------------------------ TYPES -------------------------
       public:
          /// <summary></summary>
@@ -536,13 +543,14 @@ namespace Logic
          wstring GetCommandName() const;
 
 		   // ----------------------- MUTATORS ------------------------
-
+      public:
          void    Clear();
          bool    FindNext(MatchData& src);
          wstring FindScope(UINT line);
-
+         bool    Replace(MatchData& m);
+         
 		   // -------------------- REPRESENTATION ---------------------
-
+      public:
          // Properties
          wstring        Name,
                         Description;
@@ -556,7 +564,9 @@ namespace Logic
          LabelCollection      Labels;
          VariableCollection   Variables;
          ScriptCallCollection ScriptCalls;
+
       private:
+         GuiString   OfflineBuffer;    // Used for in-memory editing of script text
       };
 
    }

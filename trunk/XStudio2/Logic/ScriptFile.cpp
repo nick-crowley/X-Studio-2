@@ -51,25 +51,40 @@ namespace Logic
       }
 
       /// <summary>Finds the location of the next match, if any</summary>
-      /// <param name="src">search data</param>
+      /// <param name="m">Match data</param>
       /// <returns>True if found, false otherwise</returns>
       bool  ScriptFile::FindNext(MatchData& m)
       {
-         GuiString text;
-         
-         // Flatten translated command text into a single block so regEx can be used to match line breaks
-         for (const auto& cmd : Commands.Input)
-         {
-            text += cmd.Text;
-            text += L'\n';
-         }
-
          // Find next match, and supply line text
-         if (m.FindNext(text, '\n'))
+         if (m.FindNext(OfflineBuffer, '\n'))
             m.LineText = Commands.Input[m.LineNumber-1].Text;
          
          // Return result
          return m.IsMatched;
+      }
+
+      /// <summary>Replaces the current match, if any</summary>
+      /// <param name="m">Match data</param>
+      /// <returns>True if match found, false otherwise</returns>
+      bool  ScriptFile::Replace(MatchData& m)
+      {
+         // Replace current match, if any
+         if (!m.Replace(OfflineBuffer, '\n'))
+            return false;
+
+         // Clear line text
+         UINT ln = 0;
+         m.LineText.clear();
+
+         // Manually extract updated line text
+         for_each(OfflineBuffer.begin(), OfflineBuffer.end(), [&](wchar ch) {
+            if (ch == '\n')
+               ++ln;
+            else if (ln == m.LineNumber-1)
+               m.LineText += ch;
+         });
+
+         return true;
       }
 
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>

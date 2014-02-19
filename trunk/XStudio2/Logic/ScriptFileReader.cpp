@@ -232,6 +232,10 @@ namespace Logic
             // Translate
             cmd.Translate(script);
             ++line;
+
+            // Append to offline buffer
+            script.OfflineBuffer += cmd.Text;
+            script.OfflineBuffer += L'\n';
          }
       }
 
