@@ -436,7 +436,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    #endif  
    public:
       bool      FindNext(MatchData& m) const;
-      GuiString GetAllText() const;
+      wstring   GetAllText() const;
       int       GetCaretIndex() const;
       POINT     GetCaretLocation() const;
       int       GetLineLength(int line = -1) const;

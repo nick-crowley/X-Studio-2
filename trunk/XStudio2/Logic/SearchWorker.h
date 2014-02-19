@@ -11,6 +11,8 @@ namespace Logic
       /// <summary>Forward declaration</summary>
       class SearchWorker;
 
+      /// <summary></summary>
+      enum class SearchCommand { Find, Replace, FindAll, ReplaceAll };
 
       /// <summary></summary>
       enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
@@ -35,7 +37,8 @@ namespace Logic
               Version(ver), 
               Target(targ), 
               Match(search), 
-              Initialized(false)
+              Initialized(false),
+              Command(SearchCommand::Find)
          {}
          virtual ~SearchWorkerData()
          {}
@@ -56,7 +59,7 @@ namespace Logic
          /// <summary>Feedbacks finish notification.</summary>
          void  FeedbackFinish()
          {
-            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Not more matches");
+            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"No more matches");
          }
 
          /// <summary>Feedbacks the match.</summary>
@@ -81,6 +84,7 @@ namespace Logic
          MatchData       Match;
          SearchTarget    Target;
          GameVersion     Version;
+         SearchCommand   Command;
          
       private:
          bool            Initialized;

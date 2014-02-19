@@ -69,12 +69,15 @@ namespace Logic
    /// <param name="format">Formatting string</param>
    /// <param name="args">Formatting arguments</param>
    /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
    wstring  StringResource::FormatV(const WCHAR*  format, va_list  args)
    {
       WCHAR  szBuffer[512];
 
-      // Format + Return
-      StringCchVPrintf(szBuffer, 512, format, args);
+      // Format string
+      if (StringCchVPrintf(szBuffer, 512, format, args) == STRSAFE_E_INSUFFICIENT_BUFFER)
+         throw ArgumentException(HERE, L"format", L"Formatting string exceeds 512 characters");
+
       return szBuffer;
    }
 
@@ -92,6 +95,7 @@ namespace Logic
    /// <param name="id">The resource identifier</param>
    /// <param name="pArgs">Variable arguments</param>
    /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
    wstring  StringResource::LoadV(UINT  id, va_list  pArgs)
    {
       WCHAR    szBuffer[512],
@@ -102,7 +106,8 @@ namespace Logic
          return Missing(id);
          
       // Format + Return
-      StringCchVPrintf(szBuffer, 512, szFormat, pArgs);
+      if (StringCchVPrintf(szBuffer, 512, szFormat, pArgs) == STRSAFE_E_INSUFFICIENT_BUFFER)
+         throw ArgumentException(HERE, L"format", L"Formatting string exceeds 512 characters");
       return szBuffer;
    }
 

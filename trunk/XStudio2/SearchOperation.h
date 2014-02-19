@@ -7,6 +7,7 @@ namespace GUI
 {
    namespace Utils
    {
+      
 
       /// <summary></summary>
       class SearchOperation
@@ -16,7 +17,7 @@ namespace GUI
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchOperation(Operation op, SearchTarget t, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
+         SearchOperation(SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
          virtual ~SearchOperation();
 
          NO_COPY(SearchOperation);	// No copy semantics
@@ -37,7 +38,7 @@ namespace GUI
          void  ReplaceAll(const wstring& term);
       
       protected:
-         bool  Find();
+         bool  Find(SearchCommand cmd);
 
          // -------------------- REPRESENTATION ---------------------
       private:

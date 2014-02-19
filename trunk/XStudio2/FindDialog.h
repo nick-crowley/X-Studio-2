@@ -53,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       private:
          void Feedback(const wstring& operation);
-         void NewSearch(Operation operation);
+         void NewSearch();
          void Reset();
 
          // -------------------- REPRESENTATION ---------------------
