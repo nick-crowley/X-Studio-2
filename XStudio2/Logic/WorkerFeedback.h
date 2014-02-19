@@ -17,7 +17,7 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary></summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, Find, Replace, FindAll, ReplaceAll, Dummy };
+      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace, Dummy };
 
       /// <summary></summary>
       class WorkerProgress

@@ -104,11 +104,11 @@ namespace Logic
              
                   // Search contents
                   data->Match.FullPath = CurrentFile;
-                  switch (data->Operation)
+                  switch (data->Command)
                   {
                   // Find/Replace: Return match for display
-                  case Operation::Find:
-                  case Operation::Replace:
+                  case SearchCommand::Find:
+                  case SearchCommand::Replace:
                      if (script.FindNext(data->Match))
                      {
                         data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
@@ -117,12 +117,12 @@ namespace Logic
                      break;
 
                   // FindAll/ReplaceAll: Feedback [+Replace]
-                  case Operation::FindAll:
-                  case Operation::ReplaceAll:
+                  case SearchCommand::FindAll:
+                  case SearchCommand::ReplaceAll:
                      while (script.FindNext(data->Match))
                      {
                         // Replace match
-                        if (data->Operation == Operation::ReplaceAll)
+                        if (data->Command == SearchCommand::ReplaceAll)
                            script.Replace(data->Match);
 
                         // Feedback

@@ -84,7 +84,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    bool  ScriptEdit::Replace(MatchData& m)
    {
       // Get document text as a block,
-      auto text = GetAllText();
+      GuiString text = GetAllText();
       
       // Replace current match, if any
       auto original = m.Location;
@@ -92,10 +92,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          return false;
       
       // Update edit
-      FreezeWindow(true);
       SetSel(original);
       ReplaceSel(text.substr(m.Location.cpMin, m.Location.cpMax-m.Location.cpMin).c_str());
-      FreezeWindow(false);
 
       // Re-supply line text
       m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
@@ -170,12 +168,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Gets entire script as a string delimited by single char (vertical tab) line breaks.</summary>
    /// <returns></returns>
-   GuiString  ScriptEdit::GetAllText() const
+   wstring  ScriptEdit::GetAllText() const
    {
-      CString str;
+      CStringW str;
       // Get entire text
       GetTextRange(0, GetTextLength(), str);
-      return (const wchar*)str;
+      return str.GetString();
    }
    
    /// <summary>Gets the character index of the caret with respect to the current line.</summary>

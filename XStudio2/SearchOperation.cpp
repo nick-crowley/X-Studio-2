@@ -11,16 +11,19 @@ namespace GUI
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create a new search operation</summary>
-      /// <param name="op">Search operation.</param>
-      /// <param name="targ">Search target.</param>
+      /// <param name="target">Search target.</param>
       /// <param name="search">search text.</param>
       /// <param name="replace">replacement text.</param>
       /// <param name="matchCase">match case.</param>
       /// <param name="matchWord">match whole word.</param>
       /// <param name="regEx">Use regular expressions.</param>
-      SearchOperation::SearchOperation(Operation op, SearchTarget targ, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
-         : Target(targ), 
-           Search(op, targ, MatchData(search, replace, matchCase, matchWord, regEx), PrefsLib.GameDataFolder, PrefsLib.GameDataVersion)
+      SearchOperation::SearchOperation(SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
+         : Target(target), 
+           Search(Operation::FindAndReplace, 
+                  target, 
+                  MatchData(search, replace, matchCase, matchWord, regEx), 
+                  PrefsLib.GameDataFolder, 
+                  PrefsLib.GameDataVersion)
       {
          // Feedback
          Search.FeedbackStart();
@@ -60,14 +63,14 @@ namespace GUI
       /// <summary>Finds all matches and prints them to the output window</summary>
       void  SearchOperation::FindAll()
       {
-         Find();
+         Find(SearchCommand::FindAll);
       }
 
       /// <summary>Finds the next match and highlights it, opening the document if necessary</summary>
       /// <returns>True if found, False if no more matches</returns>
       bool  SearchOperation::FindNext()
       {
-         return Find();
+         return Find(SearchCommand::Find);
       }
 
       /// <summary>Replaces the current match, if any, otherwise finds and replaces the next match</summary>
@@ -75,20 +78,20 @@ namespace GUI
       /// <returns></returns>
       bool  SearchOperation::Replace(const wstring& term)
       {
-         return Find();
+         return Find(SearchCommand::Replace);
       }
 
       /// <summary>Finds and replaces all matches and prints them to the output window.</summary>
       /// <param name="term">The term.</param>
       void  SearchOperation::ReplaceAll(const wstring& term)
       {
-         Find();
+         Find(SearchCommand::ReplaceAll);
       }
    
       // ------------------------------ PROTECTED METHODS -----------------------------
 
 
-      bool  SearchOperation::Find()
+      bool  SearchOperation::Find(SearchCommand cmd)
       {
          // Search open documents before files
          while (!Documents.empty())
@@ -103,17 +106,17 @@ namespace GUI
                Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
 
                // Replace: Replace current match
-               if (Search.Operation == Operation::Replace)
+               if (cmd == SearchCommand::Replace)
                   doc->Replace(Search.Match);
 
                // Find next match(s)
                while (doc->FindNext(Search.Match))
                {
                   // Find/Replace: Display document + Highlight match
-                  switch (Search.Operation)
+                  switch (cmd)
                   {
-                  case Operation::Find:
-                  case Operation::Replace:
+                  case SearchCommand::Find:
+                  case SearchCommand::Replace:
                      // Feedback 
                      Console << Cons::Cyan << Cons::Bold << "Activating " << Search.Match.FullPath << " line " << Search.Match.LineNumber << ENDL;
                      Search.FeedbackMatch();
@@ -124,10 +127,10 @@ namespace GUI
                      return true;
                   
                   // Find/ReplaceAll: Feedback [+Replace]
-                  case Operation::FindAll:
-                  case Operation::ReplaceAll:
+                  case SearchCommand::FindAll:
+                  case SearchCommand::ReplaceAll:
                      // Replace
-                     if (Search.Operation == Operation::ReplaceAll)
+                     if (cmd == SearchCommand::ReplaceAll)
                         doc->Replace(Search.Match);
 
                      // Feedback
@@ -168,7 +171,7 @@ namespace GUI
             Documents.push_back(doc);
 
             // Highlight first match
-            Find();
+            Find(cmd);
             return true;
          }
 
