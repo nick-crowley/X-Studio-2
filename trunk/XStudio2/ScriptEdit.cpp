@@ -2,7 +2,7 @@
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
 #include "ScriptDocument.h"
-   
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
@@ -46,6 +46,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       static const wchar* str[] = { L"None", L"Variable", L"Command", L"GameObject", L"ScriptObject", L"Label" };
       return str[(UINT)s];
+   }
+
+   const wchar*  GetString(UNDONAMEID id)
+   {
+      switch (id)
+      {
+      case UID_UNKNOWN:    return L"Unknown";
+      case UID_TYPING:     return L"Typing";
+      case UID_DELETE:     return L"Delete";
+      case UID_DRAGDROP:   return L"Drag n Drop";
+      case UID_CUT:        return L"Cut";
+      case UID_PASTE:      return L"Paste";
+      //case UID_AUTOTABLE:  return L"Table";
+      }
+      return L"Invalid";
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -93,7 +108,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // Update edit
       SetSel(original);
-      ReplaceSel(text.substr(m.Location.cpMin, m.Location.cpMax-m.Location.cpMin).c_str());
+      ReplaceSel(text.substr(m.Location.cpMin, m.Location.cpMax-m.Location.cpMin).c_str(), TRUE);
 
       // Re-supply line text
       m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
@@ -311,74 +326,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Document = doc;
    }
 
-   /// <summary>Finds the next instance of a search term.</summary>
-   /// <param name="term">search term.</param>
-   /// <param name="selectionOnly">Entire file or selection only.</param>
-   /// <param name="includeComments">Whether to include comments.</param>
-   /*void  ScriptEdit::Find(const wstring& term, bool selectionOnly, bool includeComments)
-   {
-   }*/
-   
-   /// <summary>Replaces all instances of a search term.</summary>
-   /// <param name="term">search term.</param>
-   /// <param name="replacement">The replacement.</param>
-   /// <param name="selectionOnly">Entire file or selection only.</param>
-   /// <param name="includeComments">Whether to include comments.</param>
-   //void  ScriptEdit::ReplaceAll(const wstring& term, const wstring& replacement, bool selectionOnly, bool includeComments)
-   //{
-   //   GuiString  output;
-
-   //   // Get first/last line
-   //   LineTextIterator first = begin(), last = end();
-   //   
-   //   // Select entire block of lines 
-   //   //SetSel(first->Start, last->End);
-   //   FreezeWindow(true);
-
-   //   // Choose state based on first line
-   //   //bool comment = !first->Commented;
-
-   //   // Get selected lines
-   //   int length = 0;
-   //   for (auto it = first; it <= last; ++it)
-   //   {
-   //      GuiString txt = it->Text;
-
-   //      // Comment: Add '*' to start of each line
-   //      if (comment && !it->Commented && !it->NOP)
-   //         txt.insert(txt.find_first_not_of(L' '), L"* ");
-
-   //      // Uncomment: Remove '*' from start of each line
-   //      else if (!comment && it->Commented)
-   //      {
-   //         // Erase spaces trailing '*'
-   //         auto end = txt.find_first_not_of(L' ', txt.find(L'*')+1);
-   //         if (end != GuiString::npos)
-   //            txt.erase(txt.find(L'*'), end);
-   //         else
-   //            txt.erase(txt.find(L'*'));
-   //      }
-
-   //      // Add to output
-   //      length += txt.length();
-   //      output += txt;
-
-   //      // CRLF  [except last line]
-   //      if (it != last)
-   //      {
-   //         output += L"\r";
-   //         length++;
-   //      }
-   //   }
-
-   //   // Replace existing selection
-   //   ReplaceSel(output.c_str(), TRUE);
-
-   //   // Unfreeze window
-   //   FreezeWindow(false);
-   //   SetSel(first->Start, last->End);
-   //}
-
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
    /// <exception cref="Logic::InvalidOperationException">No document attached</exception>
@@ -401,6 +348,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Clear 'Undo' buffer
       EmptyUndoBuffer();
+   }
+
+   /// <summary>Suspend or resumes undo buffer</summary>
+   /// <param name="suspend">enable/disable</param>
+   void  ScriptEdit::SuspendUndo(bool suspend)
+   {
+      try
+      {
+         if (TextDocument)
+            TextDocument->Undo(suspend ? tomSuspend : tomResume);
+      }
+      catch (_com_error& e) {
+         Console.Log(HERE, ComException(HERE, e));
+      }
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -635,8 +596,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
          
          // DEBUG:
-         if (!parser.Errors.empty())
-            parser.Print();
+         /*if (!parser.Errors.empty())
+            parser.Print();*/
          Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
 
          // Define error underline
@@ -677,6 +638,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Notify on change/scroll/input
       SetEventMask(ENM_CHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS);
+
+      // Set undo limit + options
+      SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
+      SetUndoLimit(100);
+
+      // Get COM pointer
+      IRichEditOlePtr edit(GetIRichEditOle(), false);
+      TextDocument = edit;
+
+      if (!edit)
+         throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
+      else if (!TextDocument)
+         throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
 
       return 0;
    }
@@ -892,8 +866,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnTextChange()
    {
       // Freeze window
+      SuspendUndo(true);
       FreezeWindow(true);
-      
+
       // Set/Reset background compiler timer
       SetCompilerTimer(true);
 
@@ -904,7 +879,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Lex current line
          CommandLexer lex(GetLineText(-1));
-         
+
          // Format tokens
          for (const auto& tok : lex.Tokens)
          {
@@ -933,6 +908,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Restore selection
       FreezeWindow(false);
+      SuspendUndo(false);
    }
    
    /// <summary>Compiles the current text</summary>
