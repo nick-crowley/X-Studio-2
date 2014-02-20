@@ -51,11 +51,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          afx_msg void OnReplaceAll_Click();
          afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
          afx_msg void OnTarget_TextChanged();
+         afx_msg void OnOptions_Changed(UINT nID);
 
       private:
          void Feedback(const wstring& operation);
          void NewSearch();
          void Reset();
+         void SetState(bool active);
 
          // -------------------- REPRESENTATION ---------------------
       protected:

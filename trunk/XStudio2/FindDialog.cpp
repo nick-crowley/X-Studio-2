@@ -21,6 +21,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          , MatchWholeWord(FALSE)
          , Expanded(true)
       {
+         // Show/Hide options
+         if (!PrefsLib.ShowFindOptions)
+            Expand(false);
       }
 
       FindDialog::~FindDialog()
@@ -37,9 +40,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ON_BN_CLICKED(IDC_FIND_ALL, &FindDialog::OnFindAll_Click)
          ON_BN_CLICKED(IDC_REPLACE_ALL, &FindDialog::OnReplaceAll_Click)
          ON_BN_CLICKED(IDC_OPTIONS, &FindDialog::OnOptions_Click)
-         ON_CBN_EDITCHANGE(IDC_FIND_COMBO, &FindDialog::OnFind_TextChanged)
-         ON_CBN_EDITCHANGE(IDC_REPLACE_COMBO, &FindDialog::OnReplace_TextChanged)
-         ON_CBN_EDITCHANGE(IDC_TARGET_COMBO, &FindDialog::OnTarget_TextChanged)
+         ON_CONTROL_RANGE(CBN_EDITCHANGE,IDC_FIND_COMBO,IDC_TARGET_COMBO,&FindDialog::OnOptions_Changed)
+         ON_CONTROL_RANGE(BN_CLICKED,IDC_CASE_CHECK,IDC_REGEX_CHECK,&FindDialog::OnOptions_Changed)
          ON_WM_SHOWWINDOW()
       END_MESSAGE_MAP()
 
@@ -178,7 +180,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       /// <summary>Resets the operation</summary>
-      void FindDialog::OnFind_TextChanged()
+      void FindDialog::OnOptions_Changed(UINT nID)
       {
          Reset();
       }
@@ -233,12 +235,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
 
-      /// <summary>Resets the operation</summary>
-      void FindDialog::OnReplace_TextChanged()
-      {
-         Reset();
-      }
-      
       /// <summary>Replaces all matches</summary>
       void FindDialog::OnReplaceAll_Click()
       {
@@ -266,13 +262,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Reset();
       }
       
-      /// <summary>Resets the operation</summary>
-      void FindDialog::OnTarget_TextChanged()
-      {
-         Reset();
-      }
-      
-
       // ------------------------------- PRIVATE METHODS ------------------------------
       
       /// <summary>Writes the operation name to the console</summary>
@@ -297,8 +286,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (GetSearchTarget() == SearchTarget::ProjectFiles)
             throw NotImplementedException(HERE, L"Find operations on project files has not been implemented");
 
-         // Display 'Find Next'
-         FindButton.SetWindowTextW(L"Find Next");
+         // Set dialog state to active
+         SetState(true);
 
          // Create new search
          Search.reset(new SearchOperation(GetOutputPane(),
@@ -313,9 +302,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Resets the operation.</summary>
       void  FindDialog::Reset()
       {
-         // Display 'Find'
-         FindButton.SetWindowTextW(L"Find");
+         // Set dialog state to inactive
+         SetState(false);
+
+         // Clear search
          Search.reset(nullptr);
+      }
+
+      /// <summary>Sets the state of the dialog.</summary>
+      /// <param name="active">Whether operation is in progress.</param>
+      void  FindDialog::SetState(bool active)
+      {
+         FindButton.SetWindowTextW(active ? L"Find Next" : L"Find");
+         GetDlgItem(IDC_RESULTS1_RADIO)->EnableWindow(!active);
+         GetDlgItem(IDC_RESULTS2_RADIO)->EnableWindow(!active);
       }
 
 /// <summary>User interface windows</summary>

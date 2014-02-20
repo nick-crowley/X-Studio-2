@@ -60,10 +60,22 @@ namespace Logic
 
       // --------------------- PROPERTIES ------------------------
    public:
+      /// <summary>Show large menus throughout app</summary>
       PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false);
+
+      /// <summary>Show large toolbars throughout app</summary>
       PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false);
+
+      /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
+
+      /// <summary>Show options in the find dialog</summary>
+      PREFERENCE_PROPERTY(bool,Bool,ShowFindOptions,true);
+
+      /// <summary>Game data folder</summary>
       PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
+
+      /// <summary>Game data version</summary>
       PREFERENCE_PROPERTY2(GameVersion,int,Int,GameDataVersion,GameVersion::TerranConflict);
 
       // ---------------------- ACCESSORS ------------------------			
