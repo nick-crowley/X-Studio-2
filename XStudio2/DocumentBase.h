@@ -28,7 +28,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      PROPERTY_GET_SET(IO::Path,FullPath,GetFullPath,SetFullPath);
+
       // ---------------------- ACCESSORS ------------------------			
    public:
       virtual bool      FindNext(UINT start, MatchData& m) const;
@@ -40,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void          Activate();
       virtual bool  Replace(MatchData& m);
+      void          SetFullPath(IO::Path path);
       virtual void  SetSelection(CHARRANGE rng);
 	   
       // -------------------- REPRESENTATION ---------------------

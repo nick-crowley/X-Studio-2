@@ -42,7 +42,8 @@ namespace Logic
          bool     IsDirectory() const;
          Path     RemoveBackslash() const;
          Path     RemoveExtension() const;
-         Path     RenameExtension(wstring  ext) const;
+         Path     RenameExtension(wstring ext) const;
+         Path     RenameFileName(wstring name) const;
 
          // Operators
          Path& operator=(const WCHAR* path)     { return Assign(path);               }
@@ -75,7 +76,8 @@ namespace Logic
          int  Compare(const WCHAR* path) const;
       
 		   // ----------------------- MUTATORS ------------------------
-   
+      public:
+
       protected:
          Path&  Assign(const WCHAR*  text);
       
