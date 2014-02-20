@@ -98,7 +98,9 @@ namespace GUI
    
       // ------------------------------ PROTECTED METHODS -----------------------------
 
-
+      /// <summary>Finds the next matching document/file, or all matches in all documents/files.</summary>
+      /// <param name="cmd">The command.</param>
+      /// <returns></returns>
       bool  SearchOperation::Find(SearchCommand cmd)
       {
          // Search open documents before files

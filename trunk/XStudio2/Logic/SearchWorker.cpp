@@ -66,6 +66,9 @@ namespace Logic
          data->Initialized = true;
       }
 
+      /// <summary>Finds either the next matching file, or all matches in all files.</summary>
+      /// <param name="data">The data.</param>
+      /// <returns></returns>
       DWORD WINAPI  SearchWorker::ThreadMain(SearchWorkerData* data)
       {
          try
