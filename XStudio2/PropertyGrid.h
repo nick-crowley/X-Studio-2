@@ -15,31 +15,54 @@ NAMESPACE_BEGIN2(GUI,Controls)
          : CMFCPropertyGridProperty(strName, varValue, lpszDescr, dwData, lpszEditMask, lpszEditTemplate, lpszValidChars)
       {}
 
-
+   protected:
       BOOL OnUpdateValue() override
       {
          CString strText;
-	      m_pWndInPlace->GetWindowText(strText);
-         
-         // Validate value
-         if (!OnValidateValue((const wchar*)strText))
-            return FALSE;
 
-         // Success: Update property
-         CMFCPropertyGridProperty::OnUpdateValue();
-         OnValueChanged((const wchar*)strText);
-         return TRUE;
+         // Get editing text
+	      m_pWndInPlace->GetWindowText(strText);
+         GuiString value((const wchar*)strText);
+         
+         try
+         {
+            // Validate/Modify value
+            if (!OnValidateValue(value))
+               return FALSE;
+
+            // Replace input
+            m_pWndInPlace->SetWindowTextW(value.c_str());
+
+            // Success: Update property
+            CMFCPropertyGridProperty::OnUpdateValue();
+            OnValueChanged(value);
+            return TRUE;
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e, GuiString(L"Unable to update %s property with value '%s'", GetName(), (const wchar*)strText));
+            return FALSE;
+         }
       }
 
-      virtual bool OnValidateValue(wstring value)
+   
+      /// <summary>Validates and optionally modifies the value being input</summary>
+      /// <param name="value">The value.</param>
+      /// <returns>True to accept, false to reject</returns>
+      virtual bool OnValidateValue(GuiString& value)
       {
          return true;
       }
 
-      virtual void OnValueChanged(wstring value)
+      /// <summary>Called when value changed.</summary>
+      /// <param name="value">value text.</param>
+      virtual void OnValueChanged(GuiString value)
       {
       }
 
+   
+      /// <summary>Query whether an option exists (case insensitive)</summary>
+      /// <param name="value">item text.</param>
+      /// <returns></returns>
       bool Contains(const wstring& value)
       {
          auto val = value.c_str();
@@ -52,18 +75,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
          return false;
       }
 
-      UINT Find(const wstring& value)
+      /// <summary>Finds the index of an option from it's text  (case insensitive)</summary>
+      /// <param name="value">item text</param>
+      /// <returns>Index if found, otherwise -1</returns>
+      int Find(const wstring& value)
       {
          auto val = value.c_str();
 
          // Search options
-         UINT i = 0;
+         int i = 0;
          for (auto pos = m_lstOptions.GetHeadPosition(); pos; ++i)
             if (!StrCmpI(m_lstOptions.GetNext(pos), val))
                return i;
 
-         // Error
-         throw AlgorithmException(HERE, L"Property value not found");
+         // Not found
+         return -1;
+      }
+
+      bool  TryFind(const wstring& value, int& index)
+      {
+         index = Find(value);
+         return index != -1;
       }
    };
 

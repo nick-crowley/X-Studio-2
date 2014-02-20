@@ -127,6 +127,17 @@ namespace Logic
       /// <exception cref="Logic::IndexOutOfRangeException">Invalid offset</exception>
       int Find(const wstring& str, UINT offset, bool matchCase) const;
 
+      /// <summary>Get whether string is numeric.</summary>
+      /// <returns>False if empty or non-numeric, otherwise true</returns>
+      bool IsNumeric() const
+      {
+         for (wchar ch : *this)
+            if (!iswdigit(ch))
+               return false;
+
+         return true;
+      }
+
       /// <summary>Extracts n characters from start of the string</summary>
       /// <param name="chars">Number of characters</param>
       /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>
@@ -157,6 +168,13 @@ namespace Logic
                s.erase(pos, 1);
 
          return s;
+      }
+
+      /// <summary>Convert to int.</summary>
+      /// <returns></returns>
+      int ToInt() const
+      {
+         return _ttoi(c_str());
       }
       
       /// <summary>Convert string to lower case</summary>
