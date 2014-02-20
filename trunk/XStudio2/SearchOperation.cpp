@@ -21,7 +21,7 @@ namespace GUI
          : Target(target), 
            Search(Operation::FindAndReplace, 
                   target, 
-                  MatchData(search, replace, matchCase, matchWord, regEx), 
+                  MatchData(target, search, replace, matchCase, matchWord, regEx), 
                   PrefsLib.GameDataFolder, 
                   PrefsLib.GameDataVersion)
       {
@@ -31,21 +31,29 @@ namespace GUI
          // Generate documents lists
          switch (Target)
          {
-         // Document/Selection: Examine the active document
+         // Selection: Use active document + set search range
          case SearchTarget::Selection:
-         case SearchTarget::Document:
-            // Ensure document exists
-            if (!DocumentBase::GetActive())
-               throw InvalidOperationException(HERE, L"Missing active document");
+            Search.Match.SearchRange = DocumentBase::GetActive()->GetSelection();
+            Search.Match.Location = {Search.Match.SearchRange.cpMin, Search.Match.SearchRange.cpMin};
+            // Fall thru...
 
-            // Add current document
+         // Document: Use active document
+         case SearchTarget::Document:
+            if (!DocumentBase::GetActive())
+               throw InvalidOperationException(HERE, L"Search requires an active document");
+
             Documents.push_back(DocumentBase::GetActive());
             break;
 
-         // Remainder: Examine open documents 
+         // OpenDocuments: Examine open documents 
+         case SearchTarget::OpenDocuments:
+            if (!DocumentBase::GetActive())
+               throw InvalidOperationException(HERE, L"Search requires an active document");
+            // Fall thru..
+
+         // Project/ScriptFiles: Also examine open documents
          case SearchTarget::ProjectFiles:
          case SearchTarget::ScriptFolder:
-         case SearchTarget::OpenDocuments:
             for (auto& doc : theApp)
                Documents.push_back(&doc);
             break;
@@ -110,7 +118,8 @@ namespace GUI
                   doc->Replace(Search.Match);
 
                // ActiveDocument: Search from caret, not previous match
-               UINT start = (doc == DocumentBase::GetActive() ? doc->GetSelection().cpMax : Search.Match.Location.cpMax);
+               UINT start = (doc != DocumentBase::GetActive() || Target == SearchTarget::Selection ? Search.Match.Location.cpMax 
+                                                                                                   : doc->GetSelection().cpMax);
 
                // Iterate thru matches
                for (UINT pos = start; doc->FindNext(start, Search.Match); start = Search.Match.Location.cpMax)
@@ -125,7 +134,7 @@ namespace GUI
                      Search.FeedbackMatch();
 
                      // Highlight+Activate
-                     doc->SetSelection(Search.Match.Location);
+                     //doc->SetSelection(Search.Match.Location);
                      doc->Activate();
                      return true;
                   
@@ -135,7 +144,7 @@ namespace GUI
                      // Replace
                      if (cmd == SearchCommand::ReplaceAll)
                      {
-                        doc->SetSelection(Search.Match.Location);
+                        //doc->SetSelection(Search.Match.Location);
                         doc->Replace(Search.Match);
                      }
 

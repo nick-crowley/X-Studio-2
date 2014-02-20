@@ -7,6 +7,9 @@
 namespace Logic
 {
    
+   /// <summary>Area being searched</summary>
+   enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
+
    /// <summary></summary>
    class MatchData
    {
@@ -16,18 +19,21 @@ namespace Logic
       // --------------------- CONSTRUCTION ----------------------
    public:
       /// <summary>Create empty match data</summary>
+      /// <param name="target">search target.</param>
       /// <param name="search">search term or expression.</param>
       /// <param name="replace">replacement term or expression</param>
       /// <param name="matchCase">match case flag.</param>
       /// <param name="matchWord">match whole word flag.</param>
       /// <param name="regEx">Whether terms are strings or regEx</param>
       /// <exception cref="Logic::Language::RegularExpressionException">Error in expression</exception>
-      MatchData(const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
-         : SearchTerm(search), 
+      MatchData(SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
+         : Target(target),
+           SearchTerm(search), 
            ReplaceTerm(replace), 
            IsMatched(false), 
            Location({0,0}), 
            LineNumber(0),
+           SearchRange({0,0}),
            MatchCase(regEx ? matchCase : false), 
            MatchWord(regEx ? matchWord : false),
            UseRegEx(regEx),
@@ -148,7 +154,6 @@ namespace Logic
          throw AlgorithmException(HERE, L"Previously matched text does not match regEx");
       }
 
-   private:
       /// <summary>Sets the match.</summary>
       /// <param name="start">start index.</param>
       /// <param name="length">length.</param>
@@ -163,17 +168,19 @@ namespace Logic
       // -------------------- REPRESENTATION ---------------------
    public:
       bool        IsMatched;        // Whether match was successful
-      CHARRANGE   Location;         // Location of match
+      CHARRANGE   Location,         // Location of match
+                  SearchRange;      // Range of Text selection to search
       IO::Path    FullPath;         // File: Fullpath   Document: Title
       int         LineNumber;       // 1-based line number of match
       wstring     LineText;         // Text of line containing match
 
-      const wstring   SearchTerm,    // Search term/expression
-                      ReplaceTerm;   // Replacement term/expression
-      const bool      MatchCase,     // Match case 
-                      MatchWord,     // Match whole word
-                      UseRegEx;      // Search and replacement terms are regular expressions
-      const wregex    RegEx;         // Search RegEx, if 'UseRegEx'
+      const SearchTarget Target;        // Search target
+      const wstring      SearchTerm,    // Search term/expression
+                         ReplaceTerm;   // Replacement term/expression
+      const bool         MatchCase,     // Match case 
+                         MatchWord,     // Match whole word
+                         UseRegEx;      // Search and replacement terms are regular expressions
+      const wregex       RegEx;         // Search RegEx, if 'UseRegEx'
    };
 
    

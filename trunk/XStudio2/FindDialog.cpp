@@ -287,8 +287,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void  FindDialog::NewSearch()
       {
          // Text Selection
-         if (GetSearchTarget() == SearchTarget::Selection)
-            throw NotImplementedException(HERE, L"Find operations on the current selection has not been implemented");
+         /*if (GetSearchTarget() == SearchTarget::Selection)
+            throw NotImplementedException(HERE, L"Find operations on the current selection has not been implemented");*/
 
          // Display 'Find Next'
          FindButton.SetWindowTextW(L"Find Next");
