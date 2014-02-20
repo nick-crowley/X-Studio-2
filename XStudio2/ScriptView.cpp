@@ -164,7 +164,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       
       // Raise 'DISPLAY PROPERTIES'
       if (bActivate != FALSE)
-         CPropertiesWnd::DisplayProperties.Raise(this, PropertyTarget::ScriptView);
+         CPropertiesWnd::Connect(this, true);
 
       // Handle
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);

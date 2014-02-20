@@ -1,18 +1,14 @@
 
 #pragma once
 #include "Logic/Event.h"
+#include "ToolBarEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------------ ENUMS -----------------------------------
 
-   enum class PropertyTarget  { ScriptView, LanguageEditView, Project };
-
    // ----------------------------- EVENTS AND DELEGATES ---------------------------
-
-   typedef Event<CWnd*, PropertyTarget>   PropertiesEvent;
-   typedef PropertiesEvent::DelegatePtr   PropertiesHandler;
 
    // ----------------------------------- CLASSES ----------------------------------
 
@@ -34,6 +30,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
    };
 
 
+   /// <summary>Defines a source of Properties</summary>
+   class PropertiesSource
+   {
+   public:
+      virtual void  OnDisplayProperties(CMFCPropertyGridCtrl& grid);
+      virtual void  OnPropertyUpdated(CMFCPropertyGridProperty* p);
+      virtual bool  OnValidateProperty(CMFCPropertyGridProperty* p);
+   };
+
 
    /// <summary>Dockable properties window</summary>
    class CPropertiesWnd : public CDockablePane
@@ -42,15 +47,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
    public:
       
       // --------------------- CONSTRUCTION ----------------------
-      
    public:
       CPropertiesWnd();
       virtual ~CPropertiesWnd();
        
       // ------------------------ STATIC -------------------------
-      
+   private:
+      static CPropertiesWnd*  Instance;
+
    public:
-      static PropertiesEvent   DisplayProperties;
+      static void  Connect(PropertiesSource* src, bool connect);
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -59,6 +65,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+      void ConnectSource(PropertiesSource* src, bool connect);
       void InitPropList();
 	   void SetPropListFont();
       void SetVSDotNetLook(BOOL bSet);
@@ -78,16 +85,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   DECLARE_MESSAGE_MAP()
 
-      void  OnDisplayProperties(CWnd* pWnd, PropertyTarget type);
-
       // -------------------- REPRESENTATION ---------------------
    protected:
       CFont                m_fntPropList;
 	   CPropertiesToolBar   m_wndToolBar;
 	   CMFCPropertyGridCtrl m_wndPropList;
 
-      PropertiesHandler    fnDisplayProperties;
-   
+      PropertiesSource*    Source;
    };
 
 
