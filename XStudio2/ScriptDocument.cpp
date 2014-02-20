@@ -112,7 +112,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto pos = GetFirstViewPosition();
       return dynamic_cast<ScriptView*>(GetNextView(pos));
    }
+   
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   void  ScriptDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      // Group: General
+      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
 
+      // Name/Description/Version/CommandID/Signature:
+      general->AddSubItem(new NameProperty(Script));
+      general->AddSubItem(new DescriptionProperty(Script));
+      general->AddSubItem(new VersionProperty(Script));
+      general->AddSubItem(new CommandIDProperty(Script));
+      general->AddSubItem(new GameVersionProperty(Script));
+      general->AddSubItem(new SignedProperty(false));
+      grid.AddProperty(general);
+      
+      // Group: Arguments
+      CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
+
+      // Arguments
+      for (ScriptVariable& v : Script.Variables)
+         if (v.Type == VariableType::Argument)
+            arguments->AddSubItem(new ArgumentProperty(v));
+      
+      grid.AddProperty(arguments);
+   }
+
+
+   /// <summary>Called when new document.</summary>
+   /// <returns></returns>
    BOOL ScriptDocument::OnNewDocument()
    {
 	   if (!DocumentBase::OnNewDocument())

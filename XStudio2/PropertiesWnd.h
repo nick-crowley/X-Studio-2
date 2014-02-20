@@ -2,7 +2,7 @@
 #pragma once
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
-#include "PropertyGrid.h"
+#include "PropertySource.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -31,31 +31,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    };
 
    
-   /// <summary>Defines a source of Properties</summary>
-   class PropertySource
-   {
-   public:
-      /// <summary>Called to populate properties.</summary>
-      /// <param name="p">The p.</param>
-      virtual void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) PURE;
-
-      /// <summary>Called when property updated.</summary>
-      /// <param name="p">The p.</param>
-      virtual bool  OnPropertyUpdated(CMFCPropertyGridProperty* p)
-      {
-         return true;
-      }
-
-      /// <summary>Called when property needs validating.</summary>
-      /// <param name="p">The p.</param>
-      /// <returns></returns>
-      virtual bool  OnValidateProperty(CMFCPropertyGridProperty* p)
-      {
-         return true;
-      }
-   };
-
-
 
    /// <summary>Dockable properties window</summary>
    class CPropertiesWnd : public CDockablePane
@@ -83,7 +58,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void AdjustLayout();
       void ConnectSource(PropertySource* src, bool connect);
-      //void InitPropList();
 	   void SetPropListFont();
       void SetVSDotNetLook(BOOL bSet);
 
@@ -107,7 +81,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       CFont                m_fntPropList;
 	   CPropertiesToolBar   m_wndToolBar;
-	   PropertyGrid         m_wndPropList;
+	   CMFCPropertyGridCtrl m_wndPropList;
 
       PropertySource*    Source;
    };

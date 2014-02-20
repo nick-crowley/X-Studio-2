@@ -480,6 +480,9 @@
     <ClInclude Include="PropertyGrid.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="PropertySource.h">
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">

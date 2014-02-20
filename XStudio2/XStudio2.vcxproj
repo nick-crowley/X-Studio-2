@@ -237,6 +237,7 @@
     <ClInclude Include="MainWnd.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="PropertyGrid.h" />
+    <ClInclude Include="PropertySource.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="RichTextRenderer.h" />
     <ClInclude Include="ScriptDocument.h" />
