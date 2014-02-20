@@ -5,9 +5,8 @@
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
 
-//#undef FindText
-//#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
-
+#undef FindText
+#import "Msftedit.dll" rename_namespace(_T("TOM"))
 
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
@@ -77,9 +76,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ------------------------ TYPES --------------------------
    private:
-      /// <summary>COM interface</summary>
+      /// <summary>RichEdit COM interface</summary>
       _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
-      _COM_SMARTPTR_TYPEDEF(ITextDocument, __uuidof(ITextDocument));
+      //_COM_SMARTPTR_TYPEDEF(ITextDocument, __uuidof(ITextDocument));
+
+      /// <summary>TOM COM interface</summary>
+      typedef TOM::ITextDocumentPtr  TextDocument;
+      typedef TOM::ITextRangePtr     TextRange;
 
       /// <summary>Records state of text selection, view position, event mask</summary>
       class DisplayState
@@ -519,7 +522,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
-      ITextDocumentPtr TextDocument;
+      TextDocument    TomDocument;
    };
    
 
