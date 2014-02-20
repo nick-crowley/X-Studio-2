@@ -107,7 +107,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       CFont                m_fntPropList;
 	   CPropertiesToolBar   m_wndToolBar;
-	   CMFCPropertyGridCtrl m_wndPropList;
+	   PropertyGrid         m_wndPropList;
 
       PropertySource*    Source;
    };

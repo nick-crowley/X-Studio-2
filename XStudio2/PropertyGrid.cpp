@@ -33,10 +33,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   BOOL  PropertyGrid::ValidateItemData(CMFCPropertyGridProperty* pProp) 
+   /*BOOL  PropertyGrid::ValidateItemData(CMFCPropertyGridProperty* prop) 
    {
+      if (auto p = dynamic_cast<ValidatingProperty*>(prop))
+         return p->OnValidateValue() ? TRUE : FALSE;
+
       return TRUE;
-   }
+   }*/
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    

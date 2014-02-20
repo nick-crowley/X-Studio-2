@@ -43,40 +43,71 @@ NAMESPACE_BEGIN2(GUI,Views)
             for (const ScriptObject& obj : ScriptObjectLib)
                if (obj.Group == ScriptObjectGroup::ParameterType && !obj.IsHidden())
                   AddOption(obj.Text.c_str(), FALSE);
+
+            AllowEdit(FALSE);
          }
       };
 
       /// <summary>Command ID property grid item</summary>
-      class CommandIDProperty : public CMFCPropertyGridProperty
+      class CommandIDProperty : public ValidatingProperty
       {
       public:
          /// <summary>Create command ID property.</summary>
          /// <param name="name">Command name.</param>
          CommandIDProperty(const wstring& name)
-            : CMFCPropertyGridProperty(L"Command", name.c_str(), L"ID of ship/station command implemented by the script")
+            : ValidatingProperty(L"Command", name.c_str(), L"ID of ship/station command implemented by the script")
          {
             // Add all command IDs as options
             for (const ScriptObject& obj : ScriptObjectLib)
                if (obj.Group == ScriptObjectGroup::ObjectCommand)
                   AddOption(obj.Text.c_str(), FALSE);
+
+            AllowEdit(FALSE);
          }
+
+         /// <summary>Ensure command ID, if present, is valid</summary>
+         /// <param name="value">New value.</param>
+         /*bool OnValidateValue(wstring value) override
+         {
+            return !value.length() || Contains(value);
+         }*/
+
       };
 
       /// <summary>Game version property grid item</summary>
-      class GameVersionProperty : public CMFCPropertyGridProperty
+      class GameVersionProperty : public ValidatingProperty
       {
       public:
          /// <summary>Create game version property.</summary>
          /// <param name="ver">Version.</param>
-         GameVersionProperty(GameVersion ver)
-            : CMFCPropertyGridProperty(L"Game Required", VersionString(ver).c_str(),  L"Minimum version of game required")
+         GameVersionProperty(ScriptFile& s, GameVersion ver)
+            : ValidatingProperty(L"Game Required", VersionString(ver).c_str(),  L"Minimum version of game required"),
+              Script(s)
          {
             // Add all versions as options
-            AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
-            AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
-            AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
             AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
+            AllowEdit(FALSE);
          }
+
+         /// <summary>Ensure value is a game version</summary>
+         /// <param name="value">New value.</param>
+         /*bool OnValidateValue(wstring value) override
+         {
+            return Contains(value);
+         }*/
+         
+         /// <summary>Save game version</summary>
+         /// <param name="text">value text</param>
+         void OnValueChanged(wstring text) override
+         {
+            Script.Game = GameVersionIndex(Find(text.c_str())).Version;
+         }
+
+      private:
+         ScriptFile&  Script;
       };
 
       /// <summary>Egosoft signature grid item</summary>
