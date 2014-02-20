@@ -5,10 +5,10 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
-#include "PropertiesWnd.h"
 #include "Logic/DebugTests.h"
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
+#include "Logic/ScriptObjectLibrary.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,24 +65,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void ScriptView::AssertValid() const
-   {
-	   CFormView::AssertValid();
-   }
-
-   void ScriptView::Dump(CDumpContext& dc) const
-   {
-	   CFormView::Dump(dc);
-   }
-
-   ScriptDocument* ScriptView::GetDocument() const // non-debug version is inline
-   {
-	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(ScriptDocument)));
-	   return (ScriptDocument*)m_pDocument;
-   }
-   #endif //_DEBUG
-
    /// <summary>Finds and highlights the next match, if any</summary>
    /// <param name="start">Starting offset</param>
    /// <param name="m">Match data</param>
@@ -91,12 +73,53 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       return RichEdit.FindNext(start, m);
    }
+   
+   /// <summary>Gets the document.</summary>
+   /// <returns></returns>
+   ScriptDocument* ScriptView::GetDocument() const
+   { 
+      return dynamic_cast<ScriptDocument*>(m_pDocument); 
+   }
+
+   /// <summary>Gets the script.</summary>
+   /// <returns></returns>
+   ScriptFile&  ScriptView::GetScript() const
+   {
+      return GetDocument()->Script;
+   }
 
    /// <summary>Gets the selection.</summary>
    /// <returns></returns>
    CHARRANGE  ScriptView::GetSelection() const
    {
       return RichEdit.GetSelection();
+   }
+
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   void  ScriptView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      // Group: General
+      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
+
+      // Name/Description/Version/CommandID/Signature:
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Name", GetScript().Name.c_str(), L"How script is referenced throughout the game"));
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Description", GetScript().Description.c_str(), L"Short description of functionality"));
+      general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)GetScript().Version, L"Current version number"));
+      general->AddSubItem(new CommandIDProperty(GetScript().CommandName));
+      general->AddSubItem(new GameVersionProperty(GetScript().Game));
+      general->AddSubItem(new SignedProperty(false));
+
+      // Group: Arguments
+      CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
+
+      // Arguments
+      for (ScriptVariable& v : GetScript().Variables.Arguments)
+         arguments->AddSubItem(new ArgumentProperty(v));
+      
+      // Add nodes
+      grid.AddProperty(general);
+      grid.AddProperty(arguments);
    }
 
    /// <summary>Replaces the current match</summary>
@@ -275,7 +298,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Convert script to RTF (ansi)
          string txt;
          RtfScriptWriter w(txt);
-         w.Write(GetDocument()->Script);
+         w.Write(GetScript());
          w.Close();
 
          // Display script text
@@ -359,7 +382,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Ensure item selected
       if (ScopeCombo.GetCurSel() > 0)
          // Scroll to a couple of lines preceeding the label 
-         RichEdit.EnsureVisible( GetDocument()->Script.Labels[ScopeCombo.GetCurSel()-1].LineNumber - 4 );
+         RichEdit.EnsureVisible( GetScript().Labels[ScopeCombo.GetCurSel()-1].LineNumber - 4 );
    }
    
    /// <summary>Set the focus to the script Edit</summary>
@@ -409,7 +432,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       VariablesCombo.AddString(L"(Variables)");
 
       // Populate variables
-      for (auto& var : GetDocument()->Script.Variables)
+      for (auto& var : GetScript().Variables)
          VariablesCombo.AddString(var.Name.c_str());
 
       // Select heading
@@ -424,7 +447,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ScopeCombo.AddString(L"(Global scope)");
 
       // Populate labels
-      for (auto& label : GetDocument()->Script.Labels)
+      for (auto& label : GetScript().Labels)
          ScopeCombo.AddString(label.Name.c_str());
 
       // Select current scope
@@ -446,7 +469,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::UpdateScope()
    {
       // Set/clear scope
-      wstring label = GetDocument()->Script.FindScope( RichEdit.GetCaretLocation().y );
+      wstring label = GetScript().FindScope( RichEdit.GetCaretLocation().y );
 
       if (!label.empty())
          ScopeCombo.SelectString(-1, label.c_str());

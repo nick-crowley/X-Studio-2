@@ -1,14 +1,16 @@
 
-// MFC Test 1View.h : interface of the ScriptView class
+// ScriptView.h : interface of the ScriptView class
 //
 
 #pragma once
 
 #include "afxcmn.h"
 #include "Logic/Common.h"
+#include "Logic/ScriptObjectLibrary.h"
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
 #include "CommandTooltip.h"
+#include "PropertiesWnd.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -21,11 +23,74 @@ NAMESPACE_BEGIN2(GUI,Views)
    // ------------------------ CLASSES ------------------------
 
    /// <summary>Script view</summary>
-   class ScriptView : public CFormView
+   class ScriptView : public CFormView, public PropertySource
    {
       // ------------------------ TYPES --------------------------
    public:
 	   enum{ IDD = IDR_SCRIPTVIEW };
+
+   private:
+      /// <summary>Script argument property grid item</summary>
+      class ArgumentProperty : public CMFCPropertyGridProperty
+      {
+      public:
+         /// <summary>Create argument property.</summary>
+         /// <param name="arg">Argument.</param>
+         ArgumentProperty(const ScriptVariable& arg)
+            : CMFCPropertyGridProperty(arg.Name.c_str(), _variant_t(GetString(arg.ValueType).c_str()), arg.Description.c_str())
+         {
+            // Add all parameter types as options
+            for (const ScriptObject& obj : ScriptObjectLib)
+               if (obj.Group == ScriptObjectGroup::ParameterType && !obj.IsHidden())
+                  AddOption(obj.Text.c_str(), FALSE);
+         }
+      };
+
+      /// <summary>Command ID property grid item</summary>
+      class CommandIDProperty : public CMFCPropertyGridProperty
+      {
+      public:
+         /// <summary>Create command ID property.</summary>
+         /// <param name="name">Command name.</param>
+         CommandIDProperty(const wstring& name)
+            : CMFCPropertyGridProperty(L"Command", name.c_str(), L"ID of ship/station command implemented by the script")
+         {
+            // Add all command IDs as options
+            for (const ScriptObject& obj : ScriptObjectLib)
+               if (obj.Group == ScriptObjectGroup::ObjectCommand)
+                  AddOption(obj.Text.c_str(), FALSE);
+         }
+      };
+
+      /// <summary>Game version property grid item</summary>
+      class GameVersionProperty : public CMFCPropertyGridProperty
+      {
+      public:
+         /// <summary>Create game version property.</summary>
+         /// <param name="ver">Version.</param>
+         GameVersionProperty(GameVersion ver)
+            : CMFCPropertyGridProperty(L"Game Required", VersionString(ver).c_str(),  L"Minimum version of game required")
+         {
+            // Add all versions as options
+            AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
+            AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
+         }
+      };
+
+      /// <summary>Egosoft signature grid item</summary>
+      class SignedProperty : public CMFCPropertyGridProperty
+      {
+      public:
+         /// <summary>Create read-only Egosoft signature property.</summary>
+         /// <param name="val">Signed property.</param>
+         SignedProperty(bool val)
+            : CMFCPropertyGridProperty(L"Signed", (_variant_t)val, L"Whether script has been signed by Egosoft")
+         {
+            Enable(FALSE);
+         }
+      };
       
       // --------------------- CONSTRUCTION ----------------------
    protected: 
@@ -44,17 +109,14 @@ NAMESPACE_BEGIN2(GUI,Views)
 			
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif
-   public:
       bool            FindNext(UINT start, MatchData& m) const;
 	   ScriptDocument* GetDocument() const;
+      ScriptFile&     GetScript() const;
       CHARRANGE       GetSelection() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void          OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       bool          Replace(MatchData& m);
       void          SetSelection(CHARRANGE rng);
       virtual BOOL  PreTranslateMessage(MSG* pMsg);
@@ -104,10 +166,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       EventHandler fnCompileComplete;
    };
 
-   #ifndef _DEBUG  
-   inline ScriptDocument* ScriptView::GetDocument() const
-      { return reinterpret_cast<ScriptDocument*>(m_pDocument); }
-   #endif
 
    
 NAMESPACE_END2(GUI,Views)
