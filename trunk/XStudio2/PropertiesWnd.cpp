@@ -14,6 +14,9 @@ static char THIS_FILE[]=__FILE__;
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
+   /// <summary>Properties window instance.</summary>
+   CPropertiesWnd*  CPropertiesWnd::Instance = nullptr;
+
    // --------------------------------- APP WIZARD ---------------------------------
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
@@ -31,26 +34,34 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
 
-   // ----------------------------------- GLOBAL ----------------------------------
-
-   PropertiesEvent   CPropertiesWnd::DisplayProperties;
-   
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CPropertiesWnd::CPropertiesWnd() : fnDisplayProperties(DisplayProperties.Register(this, &CPropertiesWnd::OnDisplayProperties))
+   CPropertiesWnd::CPropertiesWnd() 
    {
+      Instance = this;
    }
 
    CPropertiesWnd::~CPropertiesWnd()
    {
+      Instance = nullptr;
    }
 
    // ------------------------------- STATIC METHODS -------------------------------
+
+   /// <summary>Connects a source of properties to the properties window.</summary>
+   /// <param name="src">The source.</param>
+   /// <param name="connect">Connect or disconnect.</param>
+   void  CPropertiesWnd::Connect(PropertiesSource* src, bool connect)
+   {
+      if (Instance)
+         Instance->ConnectSource(src, connect);
+   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 
+   /// <summary>Adjusts the layout.</summary>
    void CPropertiesWnd::AdjustLayout()
    {
 	   if (GetSafeHwnd () == NULL || (AfxGetMainWnd() != NULL && AfxGetMainWnd()->IsIconic()))
@@ -61,12 +72,36 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   CRect rectClient;
 	   GetClientRect(rectClient);
 
+      // Toolbar height
 	   int barHeight = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
+      // Snap toolbar to top, stretch grid over remainder
 	   m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
 	   m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
+   /// <summary>Connects a source of properties.</summary>
+   /// <param name="src">The source.</param>
+   /// <param name="connect">Connect or disconnect.</param>
+   /// <exception cref="Logic::ArgumentNullException">Source is null</exception>
+   void  CPropertiesWnd::ConnectSource(PropertiesSource* src, bool connect)
+   {
+      REQUIRED(src);
+
+      // Clear 
+      m_wndPropList.RemoveAll();
+
+      // Disconnect
+      if (!connect)
+         Source = nullptr;
+      
+      // Connect + Populate
+      else if (src != Source)
+      {
+         Source = src;
+         Source->OnDisplayProperties(m_wndPropList);
+      }
+   }
 
    /// <summary>Create child controls</summary>
    /// <param name="lpCreateStruct">create params</param>
