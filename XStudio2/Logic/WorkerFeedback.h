@@ -13,13 +13,13 @@ namespace Logic
 
       // ------------------------ CLASSES ------------------------
 
-      /// <summary></summary>
+      /// <summary>Defines the icon used by output window feedback</summary>
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
-      /// <summary></summary>
+      /// <summary>Defines the output window used by various operations</summary>
       enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, Dummy };
 
-      /// <summary></summary>
+      /// <summary>Base class for output window feedback items</summary>
       class WorkerProgress
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -35,7 +35,7 @@ namespace Logic
          const UINT          Indent;
       };
 
-      /// <summary></summary>
+      /// <summary>Base class for background worker thread data</summary>
       class WorkerData
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -92,15 +92,6 @@ namespace Logic
 
             // Output to GUI
             ParentWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
-         }
-
-         /// <summary>Sets the feedback window manually.</summary>
-         /// <param name="wnd">The window.</param>
-         /// <exception cref="Logic::ArgumentNullException">window is null</exception>
-         void  SetFeedbackWnd(CWnd* wnd)
-         {
-            REQUIRED(wnd);
-            ParentWnd = wnd;
          }
 
          // -------------------- REPRESENTATION ---------------------
