@@ -105,26 +105,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return false;
 
          // Get search range  (Use entire document if not searching selection)
-         TextRange range = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.SearchRange.cpMax);
+         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.SearchRange.cpMax);
          
          // Convert TOM search flags
          UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
 
          // Find next match
-         if (!range->FindText(m.SearchTerm.c_str(), tomForward, flags))
+         TextRange match(limits->Duplicate);
+         if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
          {
             // Clear match/selection
-            const_cast<ScriptEdit*>(this)->SetSel(range->Start, range->Start);
+            const_cast<ScriptEdit*>(this)->SetSel(m.Location.cpMax, m.Location.cpMax);
             m.Clear();
             return false;
          }
 
          // Set match location
-         m.SetMatch(range->Start, range->End - range->Start, LineFromChar(range->Start));
+         m.SetMatch(match->Start, match->End - match->Start, LineFromChar(match->Start));
          m.LineText = GetLineTextEx(m.LineNumber-1);
 
          // Select text
-         range->Select();
+         match->Select();
          return true;
       }
       catch (_com_error& e) {
