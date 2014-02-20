@@ -221,7 +221,25 @@ namespace Logic
       
          return buf.get();
       }
-   
+      
+      /// <summary>Renames the filename only</summary>
+      /// <param name="name">The new filename</param>
+      /// <returns>New path with renamed extension</returns>
+      /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+      Path  Path::RenameFileName(wstring  name) const
+      {
+         CharArrayPtr buf( Copy() );
+
+         // Find filename
+         auto fn = PathFindFileName(buf.get());
+
+         // Replace filename
+         if (StringCchCopy(fn, MAX_PATH - (fn-buf.get()), name.c_str()) == STRSAFE_E_INSUFFICIENT_BUFFER)
+            throw IOException(HERE, L"New filename exceeds path character limit");
+      
+         return buf.get();
+      }
+      
       // ------------------------------ PROTECTED METHODS -----------------------------
 
 	   // ------------------------------- PRIVATE METHODS ------------------------------

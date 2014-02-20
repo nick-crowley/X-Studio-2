@@ -80,6 +80,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return Type;
    }
+   
+   /// <summary>Changes the fullpath of the document.</summary>
+   /// <returns></returns>
+   void  DocumentBase::SetFullPath(IO::Path path) 
+   {
+      SetPathName(path.c_str(), FALSE);
+   }
 
    /// <summary>Sets the selection.</summary>
    /// <param name="rng">char range.</param>
