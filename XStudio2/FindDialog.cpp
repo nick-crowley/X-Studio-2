@@ -286,9 +286,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Creates a new search.</summary>
       void  FindDialog::NewSearch()
       {
-         // Text Selection
-         /*if (GetSearchTarget() == SearchTarget::Selection)
-            throw NotImplementedException(HERE, L"Find operations on the current selection has not been implemented");*/
+         // NotImpl: Projects
+         if (GetSearchTarget() == SearchTarget::ProjectFiles)
+            throw NotImplementedException(HERE, L"Find operations on project files has not been implemented");
 
          // Display 'Find Next'
          FindButton.SetWindowTextW(L"Find Next");
