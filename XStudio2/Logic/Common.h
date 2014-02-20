@@ -21,16 +21,9 @@ namespace Logic
    wstring  GetString(GameLanguage l);
 
 
+
    /// <summary>Defines the available game versions</summary>
    enum class GameVersion : UINT { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
-
-   
-   /// <summary>Paragraph alignment</summary>
-   enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
-
-   /// <summary>Get paragraph alignment string</summary>
-   wstring  GetString(Alignment a);
-
 
    /// <summary>Map Game version into zero-based index</summary>
    class GameVersionIndex
@@ -51,14 +44,19 @@ namespace Logic
       int  Index;
    };
 
-   /// <summary>Text search data object</summary>
-   class TextSearch
-   {
-   public:
-      CHARRANGE  Range,
-                 Result;
-      wstring    Term;
-   };
+
+   
+   /// <summary>Paragraph alignment</summary>
+   enum class Alignment { Left = PFA_LEFT, Centre = PFA_CENTER, Right = PFA_RIGHT, Justify = PFA_FULL_INTERWORD };
+
+   /// <summary>Get paragraph alignment string</summary>
+   wstring  GetString(Alignment a);
+
+
+
+   /// <summary>Compare character ranges</summary>
+   bool operator==(const CHARRANGE& a, const CHARRANGE& b);
+   bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
 }
 
 using namespace Logic;
