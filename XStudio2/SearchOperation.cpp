@@ -11,15 +11,16 @@ namespace GUI
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create a new search operation</summary>
+      /// <param name="output">Output window to use.</param>
       /// <param name="target">Search target.</param>
       /// <param name="search">search text.</param>
       /// <param name="replace">replacement text.</param>
       /// <param name="matchCase">match case.</param>
       /// <param name="matchWord">match whole word.</param>
       /// <param name="regEx">Use regular expressions.</param>
-      SearchOperation::SearchOperation(SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
+      SearchOperation::SearchOperation(Operation output, SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
          : Target(target), 
-           Search(Operation::FindAndReplace, 
+           Search(output, 
                   target, 
                   MatchData(target, search, replace, matchCase, matchWord, regEx), 
                   PrefsLib.GameDataFolder, 
@@ -161,7 +162,7 @@ namespace GUI
          case SearchTarget::Selection:
          case SearchTarget::Document:
          case SearchTarget::OpenDocuments:
-            Search.FeedbackFinish();
+            Search.FeedbackFinish(false);
             return false;
          }
 
@@ -186,7 +187,7 @@ namespace GUI
          }
 
          // No more matches
-         Search.FeedbackFinish();
+         Search.FeedbackFinish(Search.IsAborted());
          return false;
       }
 

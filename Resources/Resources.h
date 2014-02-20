@@ -148,11 +148,6 @@
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
-// Output window
-#define IDS_BUILD_TAB                   1010
-#define IDS_DEBUG_TAB                   1011
-#define IDS_FIND_TAB                    1012
-
 // Customization
 #define IDS_EDIT_MENU                   1014
 

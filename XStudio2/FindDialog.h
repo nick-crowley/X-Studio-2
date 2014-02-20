@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 			
          // ---------------------- ACCESSORS ------------------------			
       protected:
+         Operation    GetOutputPane() const;
          wstring      GetReplaceTerm() const;
          SearchTarget GetSearchTarget() const;
          wstring      GetSearchTerm() const;

@@ -54,16 +54,19 @@ namespace Logic
          }
 
          /// <summary>Feedbacks finish notification.</summary>
-         void  FeedbackFinish()
+         void  FeedbackFinish(bool cancelled)
          {
-            SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"No more matches");
+            if (!cancelled)
+               SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"No more matches");
+            else
+               SendFeedback(Cons::UserAction, ProgressType::Failure, 0, L"Operation cancelled");
          }
 
          /// <summary>Feedbacks the match.</summary>
          void  FeedbackMatch()
          {
-            SendFeedback(ProgressType::Info, 1, GuiString(L"%d : %s : %s", Match.LineNumber, 
-                                                                           Match.FullPath.FileName.c_str(), 
+            SendFeedback(ProgressType::Info, 1, GuiString(L"%s (%d) : %s", Match.FullPath.FileName.c_str(), 
+                                                                           Match.LineNumber, 
                                                                            Match.LineText.c_str()));
          }
 
