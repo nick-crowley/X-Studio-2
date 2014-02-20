@@ -6,7 +6,18 @@
 
 namespace Logic
 {
-   
+   /// <summary>Compare character ranges</summary>
+   bool operator==(const CHARRANGE& a, const CHARRANGE& b)
+   {
+      return a.cpMax == b.cpMax && a.cpMin == b.cpMin;
+   }
+
+   /// <summary>Compare character ranges</summary>
+   bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
+   {
+      return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
+   }
+
    /// <summary>Area being searched</summary>
    enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
@@ -32,15 +43,13 @@ namespace Logic
            ReplaceTerm(replace), 
            IsMatched(false), 
            Location({0,0}), 
-           LineNumber(0),
+           _LineNumber(0),
            SearchRange({0,0}),
            MatchCase(regEx ? matchCase : false), 
            MatchWord(regEx ? matchWord : false),
            UseRegEx(regEx),
            RegEx(GetSafeRegEx(regEx ? search : L""))
       {
-         /*if (MatchWord && UseRegEx)
-            throw NotSupportedException(HERE, L"Can't use match whole word only and regular expressions together. Use \\b.");*/
       }
 
       NO_MOVE(MatchData);	      // Immutable
@@ -63,14 +72,88 @@ namespace Logic
       }
 
       // --------------------- PROPERTIES ------------------------
+   public:
+      PROPERTY_GET(long,Start,GetStart);
+      PROPERTY_GET(long,End,GetEnd);
+      PROPERTY_GET(IO::Path,FullPath,GetFullPath);
+      PROPERTY_GET(UINT,Length,GetLength);
+      PROPERTY_GET(UINT,LineNumber,GetLineNumber);
+      PROPERTY_GET(wstring,LineText,GetLineText);
+      PROPERTY_GET(bool,Matched,GetMatched);
+      PROPERTY_GET(long,RangeStart,GetRangeStart);
+      PROPERTY_GET(long,RangeEnd,GetRangeEnd);
 
       // ---------------------- ACCESSORS ------------------------	
    public:
+      /// <summary>Compares a range exactly with the location of the match.</summary>
+      /// <param name="cr">range.</param>
+      /// <returns></returns>
+      bool  Compare(CHARRANGE cr) const
+      {
+         return Location == cr;
+      }
+
+      /// <summary>Get the start index of the match</summary>
+      /// <returns></returns>
+      long  GetStart() const
+      {
+         return Location.cpMin;
+      }
+
+      /// <summary>Get the finish index of the match</summary>
+      /// <returns></returns>
+      long  GetEnd() const
+      {
+         return Location.cpMax;
+      }
+
+      /// <summary>Get the path or document title</summary>
+      /// <returns></returns>
+      IO::Path  GetFullPath() const
+      {
+         return _FullPath;
+      }
+
       /// <summary>Get the length of the match</summary>
       /// <returns></returns>
-      UINT  Length() const
+      UINT  GetLength() const
       {
          return Location.cpMax - Location.cpMin;
+      }
+      
+      /// <summary>Get the 1-based line number</summary>
+      /// <returns></returns>
+      UINT  GetLineNumber() const
+      {
+         return _LineNumber;
+      }
+
+      /// <summary>Get the line text</summary>
+      /// <returns></returns>
+      wstring  GetLineText() const
+      {
+         return _LineText;
+      }
+      
+      /// <summary>Get whether match was successful</summary>
+      /// <returns></returns>
+      bool  GetMatched() const
+      {
+         return IsMatched;
+      }
+
+      /// <summary>Get the start index of the match</summary>
+      /// <returns></returns>
+      long  GetRangeStart() const
+      {
+         return SearchRange.cpMin;
+      }
+
+      /// <summary>Get the finish index of the match</summary>
+      /// <returns></returns>
+      long  GetRangeEnd() const
+      {
+         return SearchRange.cpMax;
       }
 
       // ----------------------- MUTATORS ------------------------
@@ -78,34 +161,75 @@ namespace Logic
       /// <summary>Clears the match.</summary>
       void  Clear()
       {
-         FullPath = L"";
-         IsMatched = false;
-         Location = {0,0};
-         LineText.empty();
-         LineNumber = 0;
+         _FullPath   = L"";
+         IsMatched   = false;
+         Location    = {0,0};
+         _LineNumber = 0;
+         _LineText.empty();
       }
 
+      /// <summary>Clears only the location of the match.</summary>
+      void  ClearLocation()
+      {
+         Location = {0,0};
+      }
+
+      
       /// <summary>Sets the match.</summary>
       /// <param name="start">start index.</param>
       /// <param name="length">length.</param>
       /// <param name="line">1-based line number.</param>
+      /// <param name="lineText">Line text.</param>
       void  SetMatch(int start, int length, int line, wstring lineText)
       {
-         Location = {start, start+length};
-         IsMatched = true;
-         LineNumber = line;
-         LineText = lineText;
+         Location    = {start, start+length};
+         IsMatched   = true;
+         _LineNumber = line;
+         _LineText   = lineText;
+      }
+
+      /// <summary>Sets the file-path or document title</summary>
+      /// <param name="p">path/title.</param>
+      void  SetPath(IO::Path p)
+      {
+         _FullPath = p;
+      }
+
+      /// <summary>Sets the range of the text selection being searched</summary>
+      /// <param name="cr">range.</param>
+      void  SetRange(CHARRANGE cr)
+      {
+         // Ensure 'TextSelection'
+         if (Target != SearchTarget::Selection)
+            throw InvalidOperationException(HERE, L"Search target must be text-selection to set a range");
+
+         // Set range. Set initial match to start of range.
+         SearchRange = cr;
+         Location = {cr.cpMin, cr.cpMin};
+      }
+
+      /// <summary>Updates the line text after a replacement.</summary>
+      /// <param name="lineText">Line text.</param>
+      void  UpdateLineText(wstring lineText)
+      {
+         _LineText = lineText;
+      }
+
+      /// <summary>Updates the range of the text selection, in response to making text replacements</summary>
+      /// <param name="start">start.</param>
+      /// <param name="end">end.</param>
+      void  UpdateRange(long start, long end)
+      {
+         // Ensure 'TextSelection'
+         if (Target != SearchTarget::Selection)
+            throw InvalidOperationException(HERE, L"Search target must be text-selection to set a range");
+
+         // Set range
+         SearchRange = {start, end};
       }
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      bool        IsMatched;        // Whether match was successful
-      CHARRANGE   Location,         // Location of match
-                  SearchRange;      // Range of Text selection to search
-      IO::Path    FullPath;         // File: Fullpath   Document: Title
-      int         LineNumber;       // 1-based line number of match
-      wstring     LineText;         // Text of line containing match
-
       const SearchTarget Target;        // Search target
       const wstring      SearchTerm,    // Search term/expression
                          ReplaceTerm;   // Replacement term/expression
@@ -113,6 +237,15 @@ namespace Logic
                          MatchWord,     // Match whole word
                          UseRegEx;      // Search and replacement terms are regular expressions
       const wregex       RegEx;         // Search RegEx, if 'UseRegEx'
+
+
+   private:
+      bool        IsMatched;         // Whether match was successful
+      CHARRANGE   Location,          // Location of match
+                  SearchRange;       // Range of Text selection to search
+      int         _LineNumber;       // 1-based line number of match
+      wstring     _LineText;         // Text of line containing match
+      IO::Path    _FullPath;         // File: Fullpath   Document: Title
    };
 
    

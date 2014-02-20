@@ -91,7 +91,7 @@ namespace Logic
             m.Clear();
          
          // Return whether matched
-         return m.IsMatched;
+         return m.Matched;
       }
 
       /// <summary>Replaces the current match</summary>
@@ -109,26 +109,17 @@ namespace Logic
             wsmatch matches;
          
             // RegEx: Format replacement expression
-            if (regex_match(OfflineBuffer.cbegin()+m.Location.cpMin, OfflineBuffer.cbegin()+m.Location.cpMax, matches, m.RegEx))
+            if (regex_match(OfflineBuffer.cbegin()+m.Start, OfflineBuffer.cbegin()+m.End, matches, m.RegEx))
                r = matches.format(m.ReplaceTerm);
             else
                throw AlgorithmException(HERE, L"Previously matched text does not match regEx");
          }
 
          // Perform replacement
-         OfflineBuffer.replace(m.Location.cpMin, m.Length(), r);
+         OfflineBuffer.replace(m.Start, m.Length, r);
 
-         // Clear line text
-         UINT ln = 0;
-         m.LineText.clear();
-
-         // Manually extract updated line text
-         for_each(OfflineBuffer.begin(), OfflineBuffer.end(), [&](wchar ch) {
-            if (ch == '\n')
-               ++ln;
-            else if (ln == m.LineNumber-1)
-               m.LineText += ch;
-         });
+         // Refresh line text
+         m.UpdateLineText( GetLineText(m.LineNumber-1) );
       }
 
       /// <summary>Finds the name of the label that represents the scope of a line number</summary>
@@ -164,5 +155,23 @@ namespace Logic
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
 
+      /// <summary>Gets line text from the offline buffer</summary>
+      /// <param name="line">Zero-based line number.</param>
+      /// <returns></returns>
+      wstring  ScriptFile::GetLineText(UINT line) const
+      {
+         wstring text;
+         UINT ln = 0;
+
+         // Manually extract updated line text
+         for_each(OfflineBuffer.begin(), OfflineBuffer.end(), [&](wchar ch) {
+            if (ch == '\n')
+               ++ln;
+            else if (ln == line)
+               text += ch;
+         });
+
+         return text;
+      }
    }
 }

@@ -65,17 +65,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return L"Invalid";
    }
 
-   /// <summary>Compare character ranges</summary>
-   bool operator==(const CHARRANGE& a, const CHARRANGE& b)
-   {
-      return a.cpMax == b.cpMax && a.cpMin == b.cpMin;
-   }
-
-   /// <summary>Compare character ranges</summary>
-   bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
-   {
-      return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
-   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -101,11 +90,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // Selection: Validate search position
-         if (m.Target == SearchTarget::Selection && (start < (UINT)m.SearchRange.cpMin || start >= (UINT)m.SearchRange.cpMax))
+         if (m.Target == SearchTarget::Selection && (start < (UINT)m.RangeStart || start >= (UINT)m.RangeEnd))
             return false;
 
          // Get search range  (Use entire document if not searching selection)
-         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.SearchRange.cpMax);
+         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
          
          // Convert TOM search flags
          UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
@@ -115,7 +104,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
          {
             // Clear match/selection
-            const_cast<ScriptEdit*>(this)->SetSel(m.Location.cpMax, m.Location.cpMax);
+            const_cast<ScriptEdit*>(this)->SetSel(m.End, m.End);
             m.Clear();
             return false;
          }
@@ -142,11 +131,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // Do nothing if match no longer selected
-         if (m.Location != GetSelection())
+         if (!m.Compare(GetSelection()))
             return false;
 
          // Selection: Preserve text selection range
-         TextRange range = TomDocument->Range(m.SearchRange.cpMin, m.SearchRange.cpMax);
+         TextRange range = TomDocument->Range(m.RangeStart, m.RangeEnd);
 
          // RegEx: Format replacement using regEx
          if (m.UseRegEx)
@@ -164,10 +153,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Selection: Use TOM to maintain the text selection range
          if (m.Target == SearchTarget::Selection)
-            m.SearchRange = {range->Start, range->End};
+            m.UpdateRange(range->Start, range->End);
       
          // Re-supply line text (for feedback)
-         m.LineText = GetLineTextEx(m.LineNumber-1);
+         m.UpdateLineText(GetLineTextEx(m.LineNumber-1));
          return true;
       }
       catch (_com_error& e) {

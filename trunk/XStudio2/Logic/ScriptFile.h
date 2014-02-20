@@ -539,8 +539,11 @@ namespace Logic
          PROPERTY_GET(wstring,CommandName,GetCommandName);
 
 		   // ---------------------- ACCESSORS ------------------------
-			
+      public:
          wstring GetCommandName() const;
+
+      private:
+         wstring GetLineText(UINT line) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

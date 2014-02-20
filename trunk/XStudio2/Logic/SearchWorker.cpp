@@ -103,7 +103,7 @@ namespace Logic
                   ScriptFile script = ScriptFileReader(f.OpenRead()).ReadFile(CurrentFile, false);
              
                   // Search contents
-                  data->Match.FullPath = CurrentFile;
+                  data->Match.SetPath(CurrentFile);
                   switch (data->Command)
                   {
                   // Find/Replace: Return match for display
@@ -112,7 +112,7 @@ namespace Logic
                      // Search from beginning of file
                      if (script.FindNext(0, data->Match))
                      {
-                        data->Match.Location = {0,0};    // Clear location because document co-ordinates are different
+                        data->Match.ClearLocation();   // Clear location because document co-ordinates are different
                         return 0;
                      }
                      break;
@@ -121,7 +121,7 @@ namespace Logic
                   case SearchCommand::FindAll:
                   case SearchCommand::ReplaceAll:
                      // Search thru all matches
-                     for (UINT start = 0; script.FindNext(start, data->Match); start = data->Match.Location.cpMax)
+                     for (UINT start = 0; script.FindNext(start, data->Match); start = data->Match.End)
                      {
                         // Replace match
                         if (data->Command == SearchCommand::ReplaceAll)

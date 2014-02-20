@@ -33,8 +33,7 @@ namespace GUI
          {
          // Selection: Use active document + set search range
          case SearchTarget::Selection:
-            Search.Match.SearchRange = DocumentBase::GetActive()->GetSelection();
-            Search.Match.Location = {Search.Match.SearchRange.cpMin, Search.Match.SearchRange.cpMin};
+            Search.Match.SetRange(DocumentBase::GetActive()->GetSelection());
             // Fall thru...
 
          // Document: Use active document
@@ -111,30 +110,29 @@ namespace GUI
             {
                // Feedback
                Console << L"Searching document: " << doc->GetFullPath() << ENDL;
-               Search.Match.FullPath = (LPCWSTR)doc->GetTitle();
+               Search.Match.SetPath((LPCWSTR)doc->GetTitle());
 
                // Replace: Replace current match
                if (cmd == SearchCommand::Replace)
                   doc->Replace(Search.Match);
 
                // ActiveDocument: Search from caret, not previous match
-               UINT start = (doc != DocumentBase::GetActive() || Target == SearchTarget::Selection ? Search.Match.Location.cpMax 
+               UINT start = (doc != DocumentBase::GetActive() || Target == SearchTarget::Selection ? Search.Match.End
                                                                                                    : doc->GetSelection().cpMax);
 
                // Iterate thru matches
-               for (UINT pos = start; doc->FindNext(start, Search.Match); start = Search.Match.Location.cpMax)
+               for (UINT pos = start; doc->FindNext(start, Search.Match); start = Search.Match.End)
                {
                   // Find/Replace: Display document + Highlight match
                   switch (cmd)
                   {
                   case SearchCommand::Find:
                   case SearchCommand::Replace:
-                     // Feedback 
+                     // Feedback match
                      Console << Cons::Cyan << Cons::Bold << "Found match in " << Search.Match.FullPath << " on line " << Search.Match.LineNumber << ENDL;
                      Search.FeedbackMatch();
 
-                     // Highlight+Activate
-                     //doc->SetSelection(Search.Match.Location);
+                     // Activate document
                      doc->Activate();
                      return true;
                   
@@ -143,12 +141,9 @@ namespace GUI
                   case SearchCommand::ReplaceAll:
                      // Replace
                      if (cmd == SearchCommand::ReplaceAll)
-                     {
-                        //doc->SetSelection(Search.Match.Location);
                         doc->Replace(Search.Match);
-                     }
 
-                     // Feedback
+                     // Feedback replacement
                      Search.FeedbackMatch();
                      break;
                   }
@@ -179,7 +174,7 @@ namespace GUI
          worker.Close();
             
          // Match:
-         if (Search.Match.IsMatched)
+         if (Search.Match.Matched)
          {
             // Open document
             auto doc = (DocumentBase*)theApp.OpenDocumentFile(Search.Match.FullPath.c_str());

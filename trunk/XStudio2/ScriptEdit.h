@@ -65,9 +65,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Get undo operation name</summary>
    const wchar* GetString(UNDONAMEID id);
 
-   /// <summary>Compare character ranges</summary>
-   bool operator==(const CHARRANGE& a, const CHARRANGE& b);
-   bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
 
    /// <summary>Script editing control</summary>
    class ScriptEdit : public CRichEditCtrl
@@ -78,7 +75,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       /// <summary>RichEdit COM interface</summary>
       _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
-      //_COM_SMARTPTR_TYPEDEF(ITextDocument, __uuidof(ITextDocument));
 
       /// <summary>TOM COM interface</summary>
       typedef TOM::ITextDocumentPtr  TextDocument;
