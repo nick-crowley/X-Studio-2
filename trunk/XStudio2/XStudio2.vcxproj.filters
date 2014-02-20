@@ -474,6 +474,9 @@
     <ClInclude Include="OutputList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="FindComboBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -775,6 +778,9 @@
     </ClCompile>
     <ClCompile Include="Logic\StringResource.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="FindComboBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
