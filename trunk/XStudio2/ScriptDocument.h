@@ -31,15 +31,36 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // ------------------------ TYPES --------------------------
    private:
+      /// <summary>Script property base</summary>
+      class ScriptProperty : public ValidatingProperty
+      {
+      public:
+         ScriptProperty(ScriptDocument& d, wstring name, _variant_t val, wstring desc)
+            : Document(d), Script(d.Script), ValidatingProperty(name.c_str(), val, desc.c_str(), NULL, nullptr, nullptr, nullptr)
+         {}
+
+      protected:
+         /// <summary>Modify document</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Document.SetModifiedFlag(TRUE);
+         }
+
+      protected:
+         ScriptDocument&  Document;
+         ScriptFile&      Script;
+      };
+
       /// <summary>Script argument property grid item</summary>
-      class ArgumentProperty : public ValidatingProperty
+      class ArgumentProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create argument property.</summary>
          /// <param name="arg">Argument.</param>
-         ArgumentProperty(ScriptVariable& arg)
-            : Argument(arg), ValidatingProperty(arg.Name.c_str(), _variant_t(GetString(arg.ValueType).c_str()), arg.Description.c_str())
+         ArgumentProperty(ScriptDocument& doc, ScriptVariable& arg)
+            : Argument(arg), ScriptProperty(doc, arg.Name, GetString(arg.ValueType).c_str(), arg.Description)
          {
             // Populate parameter types 
             for (const ScriptObject& obj : ScriptObjectLib)
@@ -59,6 +80,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             Argument.ValueType = (ParameterType)ScriptObjectLib.Find(value).ID;
+            
+            ScriptProperty::OnValueChanged(value);       // Modify document
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -67,14 +90,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
       /// <summary>Command ID property grid item</summary>
-      class CommandIDProperty : public ValidatingProperty
+      class CommandIDProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create command ID property.</summary>
          /// <param name="s">Script.</param>
-         CommandIDProperty(ScriptFile& s)
-            : Script(s), ValidatingProperty(L"Command", s.CommandName.c_str(), L"ID of ship/station command implemented by the script")
+         CommandIDProperty(ScriptDocument& doc)
+            : ScriptProperty(doc, L"Command", doc.Script.CommandName.c_str(), L"ID of ship/station command implemented by the script")
          {
             // Populate command IDs 
             for (const ScriptObject& obj : ScriptObjectLib)
@@ -117,22 +140,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
                Script.CommandID = value.ToInt();
             else
                Script.CommandID = value;
+
+            ScriptProperty::OnValueChanged(value);    // Modify document
          }
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptFile&  Script;
       };
 
       /// <summary>Script description property grid item</summary>
-      class DescriptionProperty : public ValidatingProperty
+      class DescriptionProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create description property.</summary>
          /// <param name="s">Script.</param>
-         DescriptionProperty(ScriptFile& s)
-            : Script(s), ValidatingProperty(L"Description", s.Description.c_str(), L"Short description of functionality")
+         DescriptionProperty(ScriptDocument& doc)
+            : ScriptProperty(doc, L"Description", doc.Script.Description.c_str(), L"Short description of functionality")
          {
          }
 
@@ -145,23 +169,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             Script.Description = value;
+            
+            ScriptProperty::OnValueChanged(value);    // Modify document
          }
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptFile&  Script;
       };
 
       /// <summary>Game version property grid item</summary>
-      class GameVersionProperty : public ValidatingProperty
+      class GameVersionProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create game version property.</summary>
          /// <param name="s">Script.</param>
-         GameVersionProperty(ScriptFile& s)
-            : ValidatingProperty(L"Game Required", VersionString(s.Game).c_str(),  L"Minimum version of game required"),
-              Script(s)
+         GameVersionProperty(ScriptDocument& doc)
+            : ScriptProperty(doc, L"Game Required", VersionString(doc.Script.Game).c_str(),  L"Minimum version of game required")
+              
          {
             // Populate game versions
             AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
@@ -182,22 +207,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             Script.Game = GameVersionIndex(Find(value.c_str())).Version;      // Convert zero-based index into GameVersion
+            
+            ScriptProperty::OnValueChanged(value);    // Modify document
          }
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptFile&  Script;
       };
 
       /// <summary>Script name property grid item</summary>
-      class NameProperty : public ValidatingProperty
+      class NameProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create name property.</summary>
          /// <param name="s">Script.</param>
-         NameProperty(ScriptFile& s)
-            : Script(s), ValidatingProperty(L"Name", s.Name.c_str(), L"How script is referenced throughout the game")
+         NameProperty(ScriptDocument& doc)
+            : ScriptProperty(doc, L"Name", doc.Script.Name.c_str(), L"How script is referenced throughout the game")
          {
          }
 
@@ -210,11 +236,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             Script.Name = value;
+
+            ScriptProperty::OnValueChanged(value);    // Modify document
+            //Document.SetPathName = Document.GetFullPath().FileName
+            Document.SetTitle(value.c_str());
          }
          
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptFile&  Script;
       };
 
       /// <summary>Egosoft signature grid item</summary>
@@ -232,14 +261,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
       /// <summary>Script name property grid item</summary>
-      class VersionProperty : public ValidatingProperty
+      class VersionProperty : public ScriptProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create version property.</summary>
          /// <param name="s">Script.</param>
-         VersionProperty(ScriptFile& s)
-            : Script(s), ValidatingProperty(L"Version", (_variant_t)s.Version, L"Current version number")
+         VersionProperty(ScriptDocument& doc)
+            : ScriptProperty(doc, L"Version", doc.Script.Version, L"Current version number")
          {
          }
 
@@ -260,11 +289,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             Script.Version = value.length() ? value.ToInt() : 0;
+
+            // Modify document
+            ScriptProperty::OnValueChanged(value);
          }
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         ScriptFile&  Script;
       };
       
       // --------------------- CONSTRUCTION ----------------------

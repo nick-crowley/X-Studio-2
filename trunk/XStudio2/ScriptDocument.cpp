@@ -121,11 +121,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
 
       // Name/Description/Version/CommandID/Signature:
-      general->AddSubItem(new NameProperty(Script));
-      general->AddSubItem(new DescriptionProperty(Script));
-      general->AddSubItem(new VersionProperty(Script));
-      general->AddSubItem(new CommandIDProperty(Script));
-      general->AddSubItem(new GameVersionProperty(Script));
+      general->AddSubItem(new NameProperty(*this));
+      general->AddSubItem(new DescriptionProperty(*this));
+      general->AddSubItem(new VersionProperty(*this));
+      general->AddSubItem(new CommandIDProperty(*this));
+      general->AddSubItem(new GameVersionProperty(*this));
       general->AddSubItem(new SignedProperty(false));
       grid.AddProperty(general);
       
@@ -135,7 +135,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Arguments
       for (ScriptVariable& v : Script.Variables)
          if (v.Type == VariableType::Argument)
-            arguments->AddSubItem(new ArgumentProperty(v));
+            arguments->AddSubItem(new ArgumentProperty(*this, v));
       
       grid.AddProperty(arguments);
    }
