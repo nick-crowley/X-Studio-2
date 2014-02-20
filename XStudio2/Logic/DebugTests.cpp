@@ -51,15 +51,18 @@ namespace Logic
       //theApp.WriteProfileStringW(L"Settings", L"example 1", L"WriteProfileStringW");
       //theApp.WriteSectionString(L"Settings", L"example 2", L"WriteSectionString");
       
-      PrefsLib.LargeToolbars = true;
-      AfxGetMainWnd()->SendMessageToDescendants(WM_SETTINGCHANGE, NULL, NULL);
+      //PrefsLib.LargeToolbars = true;
+      //AfxGetMainWnd()->SendMessageToDescendants(WM_SETTINGCHANGE, NULL, NULL);
+
       //Test_ScriptCompiler();
       
       //Test_StringParser();
       //Test_StringParserRegEx();
 
-      Test_DescriptionReader();
+      //Test_DescriptionReader();
       //Text_DescriptionRegEx();
+
+      Console << theApp.GetRegSectionPath(L"Settings") << ENDL;
 
    }
 

@@ -40,6 +40,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ON_CONTROL_RANGE(CBN_EDITCHANGE,IDC_FIND_COMBO,IDC_TARGET_COMBO,&FindDialog::OnOptions_Changed)
          ON_CONTROL_RANGE(BN_CLICKED,IDC_CASE_CHECK,IDC_REGEX_CHECK,&FindDialog::OnOptions_Changed)
          ON_WM_SHOWWINDOW()
+         ON_WM_CLOSE()
+         ON_WM_DESTROY()
       END_MESSAGE_MAP()
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -132,6 +134,34 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return (const wchar*)str;
       }
       
+
+      void FindDialog::OnClose()
+      {
+         
+
+         // Close
+         CDialogEx::OnClose();
+      }
+      
+
+      void FindDialog::OnDestroy()
+      {
+         try
+         {
+            // Store search terms
+            PrefsLib.SearchTerms = FindCombo.GetAllStrings();
+            PrefsLib.ReplaceTerms = ReplaceCombo.GetAllStrings();
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e);
+            Console.Log(HERE, e);
+         }
+
+         CDialogEx::OnDestroy();
+
+         // TODO: Add your message handler code here
+      }
+
       /// <summary>One-time initialization</summary>
       /// <returns></returns>
       BOOL FindDialog::OnInitDialog()
@@ -146,9 +176,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
          TargetCombo.AddString(L"Scripts Folder");
          TargetCombo.SetCurSel(0);
          
-         // Set output pane
+         // Select 'FindResults1'
          this->CheckRadioButton(IDC_RESULTS1_RADIO, IDC_RESULTS2_RADIO, IDC_RESULTS1_RADIO);
-         return TRUE;  // return TRUE unless you set the focus to a control
+
+         // Populate search terms
+         for (auto str : PrefsLib.SearchTerms)
+            FindCombo.AddString(str.c_str());
+
+         // Populate replace terms
+         for (auto str : PrefsLib.ReplaceTerms)
+            ReplaceCombo.AddString(str.c_str());
+
+         // Display: Expand/Contract appropriately
+         if (!PrefsLib.ShowFindOptions)
+            Expand(false);
+
+         return TRUE;  
       }
 
       /// <summary>Finds the next match, if any</summary>
@@ -165,8 +208,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
             // Init: Create operation
             if (!Search)
-               NewSearch();
-
+               NewSearch(SearchCommand::Find);
+            
             // FindNext:
             if (!Search->FindNext())
             {
@@ -199,7 +242,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Feedback(L"Find All");
 
             // Find All
-            NewSearch();
+            NewSearch(SearchCommand::FindAll);
             Search->FindAll();
             Reset();
          }
@@ -229,7 +272,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
             // Init: Create operation
             if (!Search)
-               NewSearch();
+               NewSearch(SearchCommand::Replace);
 
             // Replace:
             if (!Search->Replace(GetReplaceTerm()))
@@ -257,7 +300,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Feedback(L"Replace All");
 
             // Replace All
-            NewSearch();
+            NewSearch(SearchCommand::ReplaceAll);
             Search->ReplaceAll(GetReplaceTerm());
             Reset();
          }
@@ -269,10 +312,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Resets the operation</summary>
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
-         // Display: Expand/Contract appropriately
-         if (bShow && !PrefsLib.ShowFindOptions)
-            Expand(false);
-
          // Show/Hide window
          CDialogEx::OnShowWindow(bShow, nStatus);
 
@@ -298,7 +337,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       /// <summary>Creates a new search.</summary>
-      void  FindDialog::NewSearch()
+      void  FindDialog::NewSearch(SearchCommand cmd)
       {
          // NotImpl: Projects
          if (GetSearchTarget() == SearchTarget::ProjectFiles)
@@ -318,6 +357,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Activate appropriate output window
          theApp.GetMainWindow()->ActivateOutputPane(GetOutputPane());
+
+         // Add new terms to ComboBox
+         switch (cmd)
+         {
+         case SearchCommand::Find:
+         case SearchCommand::FindAll:
+            if (!FindCombo.Contains(GetSearchTerm(), true))
+               FindCombo.AddString(GetSearchTerm().c_str());
+            break;
+
+         case SearchCommand::Replace:
+         case SearchCommand::ReplaceAll:
+            if (!ReplaceCombo.Contains(GetReplaceTerm(), true))
+               ReplaceCombo.AddString(GetReplaceTerm().c_str());
+            break;
+         }
       }
 
       /// <summary>Resets the operation.</summary>

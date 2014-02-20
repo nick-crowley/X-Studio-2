@@ -134,6 +134,7 @@
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="CustomDrawImpl.hpp" />
     <ClInclude Include="DocumentBase.h" />
+    <ClInclude Include="FindComboBox.h" />
     <ClInclude Include="FindDialog.h" />
     <ClInclude Include="FindProgressDialog.h" />
     <ClInclude Include="GameDataWnd.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="CommandTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
     <ClCompile Include="DocumentBase.cpp" />
+    <ClCompile Include="FindComboBox.cpp" />
     <ClCompile Include="FindDialog.cpp" />
     <ClCompile Include="FindProgressDialog.cpp" />
     <ClCompile Include="GameDataWnd.cpp" />

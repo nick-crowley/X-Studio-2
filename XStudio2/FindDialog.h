@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "SearchOperation.h"
-
+#include "FindComboBox.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       private:
          void Feedback(const wstring& operation);
-         void NewSearch();
+         void NewSearch(SearchCommand cmd);
          void Reset();
          void SetState(bool active);
          bool ValidateState(SearchCommand cmd);
@@ -71,11 +71,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CButton OptionsButton;
          CButton ReplaceButton;
          CButton ReplaceAllButton;
-         CComboBox FindCombo;
-         CComboBox ReplaceCombo;
+         FindComboBox FindCombo;
+         FindComboBox ReplaceCombo;
          CComboBox TargetCombo;
          
          OperationPtr  Search;
+      public:
+         afx_msg void OnClose();
+         afx_msg void OnDestroy();
       };
 
 /// <summary>User interface windows</summary>

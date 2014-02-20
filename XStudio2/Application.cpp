@@ -126,6 +126,23 @@ GUI::Windows::MainWnd*  Application::GetMainWindow() const
 }
 
 
+/// <summary>Gets the registry path of section</summary>
+/// <param name="section">section name</param>
+/// <returns></returns>
+GuiString  Application::GetProfileSectionPath(const wstring& section) const
+{
+   return GuiString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
+}
+
+/// <summary>Gets the registry path of section</summary>
+/// <param name="section">section name</param>
+/// <param name="subsection">sub-section name</param>
+/// <returns></returns>
+GuiString  Application::GetProfileSectionPath(const wstring& section, const wstring& subsection) const
+{
+   return GuiString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
+}
+
 /// <summary>Get game data state.</summary>
 /// <returns></returns>
 AppState  Application::GetState() const
