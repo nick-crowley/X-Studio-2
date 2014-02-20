@@ -31,81 +31,187 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    private:
       /// <summary>Script argument property grid item</summary>
-      class ArgumentProperty : public CMFCPropertyGridProperty
+      class ArgumentProperty : public ValidatingProperty
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create argument property.</summary>
          /// <param name="arg">Argument.</param>
-         ArgumentProperty(const ScriptVariable& arg)
-            : CMFCPropertyGridProperty(arg.Name.c_str(), _variant_t(GetString(arg.ValueType).c_str()), arg.Description.c_str())
+         ArgumentProperty(ScriptVariable& arg)
+            : Argument(arg), ValidatingProperty(arg.Name.c_str(), _variant_t(GetString(arg.ValueType).c_str()), arg.Description.c_str())
          {
-            // Add all parameter types as options
+            // Populate parameter types 
             for (const ScriptObject& obj : ScriptObjectLib)
                if (obj.Group == ScriptObjectGroup::ParameterType && !obj.IsHidden())
                   AddOption(obj.Text.c_str(), FALSE);
 
+            // Strict dropdown
             AllowEdit(FALSE);
          }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update parameter type</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Argument.ValueType = (ParameterType)ScriptObjectLib.Find(value).ID;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptVariable& Argument;
       };
 
       /// <summary>Command ID property grid item</summary>
       class CommandIDProperty : public ValidatingProperty
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create command ID property.</summary>
-         /// <param name="name">Command name.</param>
-         CommandIDProperty(const wstring& name)
-            : ValidatingProperty(L"Command", name.c_str(), L"ID of ship/station command implemented by the script")
+         /// <param name="s">Script.</param>
+         CommandIDProperty(ScriptFile& s)
+            : Script(s), ValidatingProperty(L"Command", s.CommandName.c_str(), L"ID of ship/station command implemented by the script")
          {
-            // Add all command IDs as options
+            // Populate command IDs 
             for (const ScriptObject& obj : ScriptObjectLib)
                if (obj.Group == ScriptObjectGroup::ObjectCommand)
                   AddOption(obj.Text.c_str(), FALSE);
-
-            AllowEdit(FALSE);
          }
 
-         /// <summary>Ensure command ID, if present, is valid</summary>
-         /// <param name="value">New value.</param>
-         /*bool OnValidateValue(wstring value) override
-         {
-            return !value.length() || Contains(value);
-         }*/
+         // ---------------------- ACCESSORS ------------------------	
 
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Validates and optionally modifies the value being input</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            const ScriptObject* obj = nullptr;
+            int index = 0;
+            
+            // Command ID: Allow manually input numeric IDs
+            if (value.IsNumeric())
+            {
+               // Replace with name if possible
+               if (ScriptObjectLib.TryFind(ScriptObjectGroup::ObjectCommand, value.ToInt(), obj))
+                  value = obj->Text;
+            }
+            // Command Name: Replace with exact match if present
+            else if (TryFind(value, index))
+               value = GetOption(index);
+
+            // Always accept values
+            return true;
+         }
+
+         /// <summary>Update command ID</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            if (value.IsNumeric())
+               Script.CommandID = value.ToInt();
+            else
+               Script.CommandID = value;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptFile&  Script;
+      };
+
+      /// <summary>Script description property grid item</summary>
+      class DescriptionProperty : public ValidatingProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create description property.</summary>
+         /// <param name="s">Script.</param>
+         DescriptionProperty(ScriptFile& s)
+            : Script(s), ValidatingProperty(L"Description", s.Description.c_str(), L"Short description of functionality")
+         {
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update description</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Script.Description = value;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptFile&  Script;
       };
 
       /// <summary>Game version property grid item</summary>
       class GameVersionProperty : public ValidatingProperty
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create game version property.</summary>
-         /// <param name="ver">Version.</param>
-         GameVersionProperty(ScriptFile& s, GameVersion ver)
-            : ValidatingProperty(L"Game Required", VersionString(ver).c_str(),  L"Minimum version of game required"),
+         /// <param name="s">Script.</param>
+         GameVersionProperty(ScriptFile& s)
+            : ValidatingProperty(L"Game Required", VersionString(s.Game).c_str(),  L"Minimum version of game required"),
               Script(s)
          {
-            // Add all versions as options
+            // Populate game versions
             AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
             AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
             AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
             AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
+
+            // Strict dropdown
             AllowEdit(FALSE);
          }
 
-         /// <summary>Ensure value is a game version</summary>
-         /// <param name="value">New value.</param>
-         /*bool OnValidateValue(wstring value) override
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update game version</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
          {
-            return Contains(value);
-         }*/
-         
-         /// <summary>Save game version</summary>
-         /// <param name="text">value text</param>
-         void OnValueChanged(wstring text) override
-         {
-            Script.Game = GameVersionIndex(Find(text.c_str())).Version;
+            Script.Game = GameVersionIndex(Find(value.c_str())).Version;      // Convert zero-based index into GameVersion
          }
 
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptFile&  Script;
+      };
+
+      /// <summary>Script name property grid item</summary>
+      class NameProperty : public ValidatingProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create name property.</summary>
+         /// <param name="s">Script.</param>
+         NameProperty(ScriptFile& s)
+            : Script(s), ValidatingProperty(L"Name", s.Name.c_str(), L"How script is referenced throughout the game")
+         {
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update name</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Script.Name = value;
+         }
+         
+         // -------------------- REPRESENTATION ---------------------
       private:
          ScriptFile&  Script;
       };
@@ -113,6 +219,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       /// <summary>Egosoft signature grid item</summary>
       class SignedProperty : public CMFCPropertyGridProperty
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create read-only Egosoft signature property.</summary>
          /// <param name="val">Signed property.</param>
@@ -121,6 +228,42 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
             Enable(FALSE);
          }
+      };
+
+      /// <summary>Script name property grid item</summary>
+      class VersionProperty : public ValidatingProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create version property.</summary>
+         /// <param name="s">Script.</param>
+         VersionProperty(ScriptFile& s)
+            : Script(s), ValidatingProperty(L"Version", (_variant_t)s.Version, L"Current version number")
+         {
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Ensures version is numeric</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            return !value.length() || (value.IsNumeric() && value.ToInt() > 0);
+         }
+
+         /// <summary>Update version</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Script.Version = value.length() ? value.ToInt() : 0;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         ScriptFile&  Script;
       };
       
       // --------------------- CONSTRUCTION ----------------------

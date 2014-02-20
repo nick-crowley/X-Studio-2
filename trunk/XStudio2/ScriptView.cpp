@@ -104,22 +104,23 @@ NAMESPACE_BEGIN2(GUI,Views)
       CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
 
       // Name/Description/Version/CommandID/Signature:
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Name", GetScript().Name.c_str(), L"How script is referenced throughout the game"));
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Description", GetScript().Description.c_str(), L"Short description of functionality"));
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)GetScript().Version, L"Current version number"));
-      general->AddSubItem(new CommandIDProperty(GetScript().CommandName));
-      general->AddSubItem(new GameVersionProperty(GetScript(), GetScript().Game));
+      auto& s = GetScript();
+      general->AddSubItem(new NameProperty(s));
+      general->AddSubItem(new DescriptionProperty(s));
+      general->AddSubItem(new VersionProperty(s));
+      general->AddSubItem(new CommandIDProperty(s));
+      general->AddSubItem(new GameVersionProperty(s));
       general->AddSubItem(new SignedProperty(false));
+      grid.AddProperty(general);
       
       // Group: Arguments
       CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
 
       // Arguments
-      for (ScriptVariable& v : GetScript().Variables.Arguments)
-         arguments->AddSubItem(new ArgumentProperty(v));
+      for (ScriptVariable& v : GetScript().Variables)
+         if (v.Type == VariableType::Argument)
+            arguments->AddSubItem(new ArgumentProperty(v));
       
-      // Add nodes
-      grid.AddProperty(general);
       grid.AddProperty(arguments);
    }
 
