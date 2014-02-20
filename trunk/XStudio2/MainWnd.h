@@ -54,6 +54,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    
    public:
+      void         ActivateOutputPane(Operation pane);
       ScriptView*  GetActiveScriptView();
       virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

@@ -58,6 +58,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          void NewSearch();
          void Reset();
          void SetState(bool active);
+         bool ValidateState(SearchCommand cmd);
 
          // -------------------- REPRESENTATION ---------------------
       protected:

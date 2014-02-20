@@ -85,6 +85,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    #endif //_DEBUG
 
+   /// <summary>Activates an output window pane.</summary>
+   /// <param name="pane">The pane.</param>
+   void  MainWnd::ActivateOutputPane(Operation pane)
+   {
+      m_wndOutput.ActivatePane(pane);
+   }
+
    /// <summary>Gets the active script view.</summary>
    /// <returns></returns>
    ScriptView*  MainWnd::GetActiveScriptView()

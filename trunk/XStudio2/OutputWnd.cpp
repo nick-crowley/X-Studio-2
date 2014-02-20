@@ -45,6 +45,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Activates a pane.</summary>
+   /// <param name="op">The pane.</param>
+   void COutputWnd::ActivatePane(Operation op)
+   {
+      TabCtrl.SetActiveTab((int)op);
+   }
 
    /// <summary>REM: Adjusts the column headers to fit the length of item text.</summary>
    /// <param name="wndListBox">ListBox.</param>

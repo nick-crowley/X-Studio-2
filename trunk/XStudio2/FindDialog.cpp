@@ -21,9 +21,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          , MatchWholeWord(FALSE)
          , Expanded(true)
       {
-         // Show/Hide options
-         if (!PrefsLib.ShowFindOptions)
-            Expand(false);
       }
 
       FindDialog::~FindDialog()
@@ -99,8 +96,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Set options text
          OptionsButton.SetWindowTextW(expand ? L"Hide Options" : L"Show Options");
          
-         // Update state
-         Expanded = expand;
+         // Update/Save state
+         PrefsLib.ShowFindOptions = (Expanded = expand);
       }
 
       /// <summary>Gets the feedback pane.</summary>
@@ -159,6 +156,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Validate
+            if (!ValidateState(SearchCommand::Find))
+               return;
+
             // Feedback
             Feedback(Search ? L"Find Next" : L"Find First");
 
@@ -190,6 +191,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Validate
+            if (!ValidateState(SearchCommand::FindAll))
+               return;
+
             // Feedback
             Feedback(L"Find All");
 
@@ -215,6 +220,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Validate
+            if (!ValidateState(SearchCommand::Replace))
+               return;
+
             // Feedback
             Feedback(L"Replace");
 
@@ -240,6 +249,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          try
          {
+            // Validate
+            if (!ValidateState(SearchCommand::ReplaceAll))
+               return;
+
             // Feedback
             Feedback(L"Replace All");
 
@@ -256,6 +269,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Resets the operation</summary>
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
+         // Display: Expand/Contract appropriately
+         if (bShow && !PrefsLib.ShowFindOptions)
+            Expand(false);
+
+         // Show/Hide window
          CDialogEx::OnShowWindow(bShow, nStatus);
 
          // Start anew
@@ -297,6 +315,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
                                           MatchCase != FALSE, 
                                           MatchWholeWord != FALSE, 
                                           UseRegEx != FALSE));
+
+         // Activate appropriate output window
+         theApp.GetMainWindow()->ActivateOutputPane(GetOutputPane());
       }
 
       /// <summary>Resets the operation.</summary>
@@ -313,9 +334,42 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <param name="active">Whether operation is in progress.</param>
       void  FindDialog::SetState(bool active)
       {
+         BOOL enabled = GetSearchTerm().length() ? TRUE : FALSE;
+
+         // Set 'find' text
          FindButton.SetWindowTextW(active ? L"Find Next" : L"Find");
+
+         // Require 'find' text before allowing operations
+         FindButton.EnableWindow(enabled);
+         FindAllButton.EnableWindow(enabled);
+         ReplaceButton.EnableWindow(enabled);
+         ReplaceAllButton.EnableWindow(enabled);
+
+         // Disable output radios once operation has begun
          GetDlgItem(IDC_RESULTS1_RADIO)->EnableWindow(!active);
          GetDlgItem(IDC_RESULTS2_RADIO)->EnableWindow(!active);
+      }
+
+      /// <summary>Validates the app and dialog state before starting a command</summary>
+      /// <param name="cmd">The command.</param>
+      /// <returns>True if successful, False if operation should not be started</returns>
+      bool  FindDialog::ValidateState(SearchCommand cmd)
+      {
+         // Require game data + search term
+         if (theApp.State == AppState::NoGameData || !GetSearchTerm().length())
+            return false;
+
+         // Ensure document present for those that require it
+         switch (GetSearchTarget())
+         {
+         case SearchTarget::Selection:
+         case SearchTarget::Document:
+         case SearchTarget::OpenDocuments:
+            return DocumentBase::GetActive() != nullptr;
+
+         default:
+            return true;
+         }
       }
 
 /// <summary>User interface windows</summary>
