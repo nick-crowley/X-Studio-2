@@ -131,6 +131,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       
 
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      afx_msg void OnDestroy();
       afx_msg void OnEditComment();
       afx_msg void OnEditIndent();
       afx_msg void OnEditOutdent();
@@ -164,7 +165,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       EventHandler fnCompileComplete;
-   };
+
+};
 
 
    

@@ -477,6 +477,9 @@
     <ClInclude Include="FindComboBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyGrid.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -780,6 +783,9 @@
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="FindComboBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyGrid.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>

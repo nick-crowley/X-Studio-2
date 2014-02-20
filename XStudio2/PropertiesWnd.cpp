@@ -23,15 +23,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
 	   ON_COMMAND(ID_EXPAND_ALL, OnExpandAllProperties)
-	   ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnUpdateExpandAllProperties)
-	   ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
-	   ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnUpdateSortProperties)
-	   ON_COMMAND(ID_PROPERTIES1, OnProperties1)
-	   ON_UPDATE_COMMAND_UI(ID_PROPERTIES1, OnUpdateProperties1)
-	   ON_COMMAND(ID_PROPERTIES2, OnProperties2)
-	   ON_UPDATE_COMMAND_UI(ID_PROPERTIES2, OnUpdateProperties2)
+	   ON_COMMAND(ID_PROPERTIES1, OnCommand1)
+	   ON_COMMAND(ID_PROPERTIES2, OnCommand2)
+      ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
+	   ON_UPDATE_COMMAND_UI(ID_PROPERTIES1, OnQueryCommand1)
+      ON_UPDATE_COMMAND_UI(ID_PROPERTIES2, OnQueryCommand2)
+      ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnQueryExpandAllProperties)
+      ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnQuerySortProperties)
 	   ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
+      ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyUpdated)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -88,6 +89,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       REQUIRED(src);
 
+      // Ignore if already disconnected
+      if (!connect && Source != src)
+         return;
+
       // Clear 
       m_wndPropList.RemoveAll();
 
@@ -96,11 +101,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Source = nullptr;
       
       // Connect + Populate
-      else //if (src != Source)
+      else 
       {
          Source = src;
          Source->OnDisplayProperties(m_wndPropList);
       }
+
+      // Redraw
+      m_wndPropList.Invalidate();
+      m_wndPropList.UpdateWindow();
    }
 
    /// <summary>Create child controls</summary>
@@ -108,58 +117,97 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <returns></returns>
    int CPropertiesWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-	   if (CDockablePane::OnCreate(lpCreateStruct) == -1)
-		   return -1;
+      try
+      {
+	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
+		      throw Win32Exception(HERE, L"Failed to create dockable pane");
 
-	   CRect rectDummy;
-	   rectDummy.SetRectEmpty();
+	      CRect rectDummy;
+	      rectDummy.SetRectEmpty();
 
-      // Create property grid
-	   if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, 2))
-	   {
-		   TRACE0("Failed to create Properties Grid \n");
-		   return -1;      // fail to create
-	   }
+         // Create property grid
+	      if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, 2))
+	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
-      SetPropListFont();
-	   //InitPropList();
-      m_wndPropList.EnableHeaderCtrl(FALSE);
-	   m_wndPropList.EnableDescriptionArea();
-	   m_wndPropList.SetVSDotNetLook();
-	   m_wndPropList.MarkModifiedProperties();
-      //m_wndPropList.RemoveAll();
+         SetPropListFont();
 
-	   m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
-	   m_wndToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE /* Is locked */);
-	   m_wndToolBar.CleanUpLockedImages();
-	   m_wndToolBar.LoadBitmap(IDR_PROPERTIES, 0, 0, TRUE /* Locked */);
+	      // Grid
+         m_wndPropList.EnableHeaderCtrl(FALSE);
+	      m_wndPropList.EnableDescriptionArea();
+	      m_wndPropList.SetVSDotNetLook();
+	      m_wndPropList.MarkModifiedProperties();
 
-	   m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
-	   m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
-	   m_wndToolBar.SetOwner(this);
+         // Toolbar
+         m_wndToolBar.Create(this, IDR_PROPERTIES);
 
-	   // All commands will be routed via this control , not via the parent frame:
-	   m_wndToolBar.SetRouteCommandsViaFrame(FALSE);
-
-	   AdjustLayout();
-	   return 0;
+         // Layout
+	      AdjustLayout();
+	      return 0;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return -1;
+      }
    }
 
+   void CPropertiesWnd::OnCommand1()
+   {
+	   // TODO: Add your command handler code here
+   }
+   
+   void CPropertiesWnd::OnCommand2()
+   {
+	   // TODO: Add your command handler code here
+   }
+   
    void CPropertiesWnd::OnExpandAllProperties()
    {
 	   m_wndPropList.ExpandAll();
    }
 
-   void CPropertiesWnd::OnProperties1()
+   LRESULT CPropertiesWnd::OnPropertyUpdated(WPARAM wParam, LPARAM lParam)
    {
-	   // TODO: Add your command handler code here
+      CMFCPropertyGridProperty* p = reinterpret_cast<CMFCPropertyGridProperty*>(lParam);
+
+      if (Source)
+         Source->OnPropertyUpdated(p);
+
+      return 0;
    }
-   
-   void CPropertiesWnd::OnProperties2()
+
+   void CPropertiesWnd::OnQueryCommand1(CCmdUI* pCmdUI)
    {
-	   // TODO: Add your command handler code here
+	   pCmdUI->Enable(FALSE);
    }
+
+   void CPropertiesWnd::OnQueryCommand2(CCmdUI* pCmdUI)
+   {
+	   pCmdUI->Enable(FALSE);
+   }
+
    
+   void CPropertiesWnd::OnQueryExpandAllProperties(CCmdUI* /* pCmdUI */)
+   {
+   }
+
+   void CPropertiesWnd::OnQuerySortProperties(CCmdUI* pCmdUI)
+   {
+	   pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+   }
+
+   
+   void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
+   {
+	   CDockablePane::OnSetFocus(pOldWnd);
+	   m_wndPropList.SetFocus();
+   }
+
+   void CPropertiesWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+	   CDockablePane::OnSettingChange(uFlags, lpszSection);
+	   SetPropListFont();
+   }
+
    void CPropertiesWnd::OnSize(UINT nType, int cx, int cy)
    {
 	   CDockablePane::OnSize(nType, cx, cy);
@@ -171,9 +219,35 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
    }
    
-   void CPropertiesWnd::InitPropList()
+   void CPropertiesWnd::SetPropListFont()
    {
-	   
+	   ::DeleteObject(m_fntPropList.Detach());
+
+	   LOGFONT lf;
+	   afxGlobalData.fontRegular.GetLogFont(&lf);
+
+	   NONCLIENTMETRICS info;
+	   info.cbSize = sizeof(info);
+
+	   afxGlobalData.GetNonClientMetrics(info);
+
+	   lf.lfHeight = info.lfMenuFont.lfHeight;
+	   lf.lfWeight = info.lfMenuFont.lfWeight;
+	   lf.lfItalic = info.lfMenuFont.lfItalic;
+
+	   m_fntPropList.CreateFontIndirect(&lf);
+
+	   m_wndPropList.SetFont(&m_fntPropList);
+   }
+   
+   void CPropertiesWnd::SetVSDotNetLook(BOOL bSet)
+	{
+		m_wndPropList.SetVSDotNetLook(bSet);
+		m_wndPropList.SetGroupNameFullWidth(bSet);
+	}
+   
+   /*void CPropertiesWnd::InitPropList()
+   {
 	   CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Appearance"));
 
 	   pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("3D Look"), (_variant_t) false, _T("Specifies the window's font will be non-bold and controls will have a 3D border")));
@@ -246,67 +320,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   pGroup4->Expand(FALSE);
 	   m_wndPropList.AddProperty(pGroup4);
-   }
-
-   void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
-   {
-	   CDockablePane::OnSetFocus(pOldWnd);
-	   m_wndPropList.SetFocus();
-   }
-
-   void CPropertiesWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
-   {
-	   CDockablePane::OnSettingChange(uFlags, lpszSection);
-	   SetPropListFont();
-   }
-
-   void CPropertiesWnd::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */)
-   {
-   }
-
-   void CPropertiesWnd::OnUpdateSortProperties(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
-   }
-
-   void CPropertiesWnd::OnUpdateProperties1(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->Enable(FALSE);
-   }
-
-   void CPropertiesWnd::OnUpdateProperties2(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->Enable(FALSE);
-   }
-
+   }*/
    
-   void CPropertiesWnd::SetPropListFont()
-   {
-	   ::DeleteObject(m_fntPropList.Detach());
-
-	   LOGFONT lf;
-	   afxGlobalData.fontRegular.GetLogFont(&lf);
-
-	   NONCLIENTMETRICS info;
-	   info.cbSize = sizeof(info);
-
-	   afxGlobalData.GetNonClientMetrics(info);
-
-	   lf.lfHeight = info.lfMenuFont.lfHeight;
-	   lf.lfWeight = info.lfMenuFont.lfWeight;
-	   lf.lfItalic = info.lfMenuFont.lfItalic;
-
-	   m_fntPropList.CreateFontIndirect(&lf);
-
-	   m_wndPropList.SetFont(&m_fntPropList);
-   }
-   
-   void CPropertiesWnd::SetVSDotNetLook(BOOL bSet)
-	{
-		m_wndPropList.SetVSDotNetLook(bSet);
-		m_wndPropList.SetGroupNameFullWidth(bSet);
-	}
-
    
    // ------------------------------- PRIVATE METHODS ------------------------------
 
