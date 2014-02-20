@@ -459,6 +459,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       POINT     GetCaretLocation() const;
       int       GetLineLength(int line = -1) const;
       wstring   GetLineText(int line) const;
+      GuiString GetLineTextEx(int line) const;
       LineArray GetLines() const;
       CHARRANGE GetSelection() const;
       bool      HasSelection() const;

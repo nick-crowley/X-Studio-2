@@ -95,38 +95,94 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="start">starting offset</param>
    /// <param name="m">Match data</param>
    /// <returns>True if found, false otherwise</returns>
+   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
    bool  ScriptEdit::FindNext(UINT start, MatchData& m) const
    {
-      // Get document text as a block,
-      auto text = GetAllText();
-      
-      // Find next match
-      if (m.FindNext(text, start, '\v'))
-         // Found: Supply line text (for feedback)
-         m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
+      try
+      {
+         // Selection: Validate search position
+         if (m.Target == SearchTarget::Selection && (start < (UINT)m.SearchRange.cpMin || start >= (UINT)m.SearchRange.cpMax))
+            return false;
 
-      // Return result
-      return m.IsMatched;
+         // Get search range  (Use entire document if not searching selection)
+         TextRange range = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.SearchRange.cpMax);
+         
+         // Convert TOM search flags
+         UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
+
+         // Find next match
+         if (!range->FindText(m.SearchTerm.c_str(), tomForward, flags))
+         {
+            // Clear match/selection
+            const_cast<ScriptEdit*>(this)->SetSel(range->Start, range->Start);
+            m.Clear();
+            return false;
+         }
+
+         // Set match location
+         m.SetMatch(range->Start, range->End - range->Start, LineFromChar(range->Start));
+         m.LineText = GetLineTextEx(m.LineNumber-1);
+
+         // Select text
+         range->Select();
+         return true;
+      }
+      catch (_com_error& e) {
+         throw ComException(HERE, e);
+      }
+
+      //// Get document text as a block,
+      //auto text = GetAllText();
+      //
+      //// Find next match
+      //if (m.FindNext(text, start, '\v'))
+      //   // Found: Supply line text (for feedback)
+      //   m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
+
+      //// Return result
+      //return m.IsMatched;
    }
 
    /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if replaced, false if match was no longer selected</returns>
+   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
    bool  ScriptEdit::Replace(MatchData& m)
    {
-      // Do nothing if match no longer selected
-      if (m.Location != GetSelection())
-         return false;
+      try
+      {
+         // Do nothing if match no longer selected
+         if (m.Location != GetSelection())
+            return false;
 
-      // Get document text as a block,
-      GuiString text = GetAllText();
+         // Selection: Preserve text selection range
+         TextRange range = TomDocument->Range(m.SearchRange.cpMin, m.SearchRange.cpMax);
+
+         // RegEx: Format replacement using regEx
+         if (m.UseRegEx)
+         {
+            wsmatch matches;
+            wstring text = (const wchar*)GetSelText();
+         
+            // Format replacement
+            if (regex_match(text, matches, m.RegEx))
+               ReplaceSel(matches.format(m.ReplaceTerm).c_str(), TRUE);
+         }
+         else
+            // Basic: Replace selection
+            ReplaceSel(m.ReplaceTerm.c_str(), TRUE);
+
+         // Selection: Use TOM to maintain the text selection range
+         if (m.Target == SearchTarget::Selection)
+            m.SearchRange = {range->Start, range->End};
       
-      // Replace selection
-      ReplaceSel(m.Replace(text).c_str(), TRUE);
-
-      // Re-supply line text (for feedback)
-      m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
-      return true;
+         // Re-supply line text (for feedback)
+         m.LineText = GetLineTextEx(m.LineNumber-1);
+         return true;
+      }
+      catch (_com_error& e) {
+         throw ComException(HERE, e);
+      }
    }
 
    /// <summary>Toggles comment on the selected lines.</summary>
@@ -250,7 +306,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       txt.get()[len] = '\0';
       return txt.get();
    }
-
+   
+   /// <summary>Get line text without indentation</summary>
+   /// <param name="line">zero based line index, or -1 for current line</param>
+   /// <returns></returns>
+   GuiString ScriptEdit::GetLineTextEx(int line) const
+   {
+      return GuiString(GetLineText(line)).TrimLeft(L" \t");
+   }
+   
    /// <summary>Gets entire script as array of plain-text lines.</summary>
    /// <returns></returns>
    LineArray ScriptEdit::GetLines() const

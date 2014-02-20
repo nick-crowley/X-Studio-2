@@ -11,11 +11,8 @@ namespace Logic
       /// <summary>Forward declaration</summary>
       class SearchWorker;
 
-      /// <summary></summary>
+      /// <summary>Type of search being performed</summary>
       enum class SearchCommand { Find, Replace, FindAll, ReplaceAll };
-
-      /// <summary></summary>
-      enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
       /// <summary>Get search target name</summary>
       wstring  GetString(SearchTarget t);
