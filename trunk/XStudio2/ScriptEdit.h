@@ -2,15 +2,15 @@
 #include <richole.h>
 #include <Richedit.h>
 #include <tom.h> 
-//#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
-
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
 
+//#undef FindText
+//#import "Msftedit.dll" rename("FindText","FindText2") rename_namespace(_T("Tom"))
+
+
 /// <summary>Forward declaration</summary>
-NAMESPACE_BEGIN2(GUI,Documents)
-   class ScriptDocument;
-NAMESPACE_END2(GUI,Documents)
+FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

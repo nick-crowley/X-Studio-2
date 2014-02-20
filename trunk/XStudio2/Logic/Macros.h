@@ -56,3 +56,9 @@
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN2(n1,n2)     namespace n1 {  namespace n2 {
 #define NAMESPACE_END2(n1,n2)       } }  using namespace n1::n2;
+
+// Macro: Forward declarations nested in namespaces
+#define FORWARD_DECLARATION(ns,decl)  namespace ns { decl }
+#define FORWARD_DECLARATION2(outer, inner,decl)  namespace outer { namespace inner { decl; } }
+
+
