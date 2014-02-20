@@ -31,12 +31,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
    /// <summary>Defines a source of Properties</summary>
-   class PropertiesSource
+   class PropertySource
    {
    public:
-      virtual void  OnDisplayProperties(CMFCPropertyGridCtrl& grid);
-      virtual void  OnPropertyUpdated(CMFCPropertyGridProperty* p);
-      virtual bool  OnValidateProperty(CMFCPropertyGridProperty* p);
+      virtual void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) PURE;
+
+      virtual void  OnPropertyUpdated(CMFCPropertyGridProperty* p)
+      {}
+
+      virtual bool  OnValidateProperty(CMFCPropertyGridProperty* p)
+      {
+         return true;
+      }
    };
 
 
@@ -56,7 +62,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       static CPropertiesWnd*  Instance;
 
    public:
-      static void  Connect(PropertiesSource* src, bool connect);
+      static void  Connect(PropertySource* src, bool connect);
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -65,7 +71,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      void ConnectSource(PropertiesSource* src, bool connect);
+      void ConnectSource(PropertySource* src, bool connect);
       void InitPropList();
 	   void SetPropListFont();
       void SetVSDotNetLook(BOOL bSet);
@@ -91,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   CPropertiesToolBar   m_wndToolBar;
 	   CMFCPropertyGridCtrl m_wndPropList;
 
-      PropertiesSource*    Source;
+      PropertySource*    Source;
    };
 
 

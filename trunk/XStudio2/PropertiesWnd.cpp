@@ -51,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Connects a source of properties to the properties window.</summary>
    /// <param name="src">The source.</param>
    /// <param name="connect">Connect or disconnect.</param>
-   void  CPropertiesWnd::Connect(PropertiesSource* src, bool connect)
+   void  CPropertiesWnd::Connect(PropertySource* src, bool connect)
    {
       if (Instance)
          Instance->ConnectSource(src, connect);
@@ -84,7 +84,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="src">The source.</param>
    /// <param name="connect">Connect or disconnect.</param>
    /// <exception cref="Logic::ArgumentNullException">Source is null</exception>
-   void  CPropertiesWnd::ConnectSource(PropertiesSource* src, bool connect)
+   void  CPropertiesWnd::ConnectSource(PropertySource* src, bool connect)
    {
       REQUIRED(src);
 
@@ -96,7 +96,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Source = nullptr;
       
       // Connect + Populate
-      else if (src != Source)
+      else //if (src != Source)
       {
          Source = src;
          Source->OnDisplayProperties(m_wndPropList);
@@ -143,67 +143,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   AdjustLayout();
 	   return 0;
-   }
-
-   void CPropertiesWnd::OnDisplayProperties(CWnd* pWnd, PropertyTarget type)
-   {
-      list<ScriptObject> command_names, param_types;
-      
-      // Clear contents
-      m_wndPropList.RemoveAll();
-
-      // TODO: Examine document type
-      ScriptDocument* doc = dynamic_cast<ScriptView*>(pWnd)->GetDocument();
-      
-      // Get script objects used in combo boxes
-      for (const ScriptObject& obj : ScriptObjectLib)
-         if (obj.Group == ScriptObjectGroup::ObjectCommand)
-            command_names.push_back(obj);
-         else if (obj.Group == ScriptObjectGroup::ParameterType)
-            param_types.push_back(obj);
-
-      // GENERAL
-      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Name", doc->Script.Name.c_str(), L"How script is referenced throughout the game"));
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Description", doc->Script.Description.c_str(), L"Short description of functionality"));
-      general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)doc->Script.Version, L"Current version number"));
-
-      // Command ID
-      CMFCPropertyGridProperty* option = new CMFCPropertyGridProperty(L"Command", doc->Script.CommandName.c_str(), L"ID of ship/station command implemented by the script");
-      for (const ScriptObject& obj : command_names)
-         option->AddOption(obj.Text.c_str(), FALSE);
-      general->AddSubItem(option);
-
-      // EngineVersion
-      option = new CMFCPropertyGridProperty(L"Game Required", VersionString(doc->Script.Game).c_str(),  L"Minimum version of game required");
-      option->AddOption(VersionString(GameVersion::AlbionPrelude).c_str(), FALSE);
-      option->AddOption(VersionString(GameVersion::TerranConflict).c_str(), FALSE);
-      option->AddOption(VersionString(GameVersion::Reunion).c_str(), FALSE);
-      option->AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
-      general->AddSubItem(option);
-
-      // Signed:
-      general->AddSubItem(option = new CMFCPropertyGridProperty(L"Signed", (_variant_t)false, L"Version number"));
-      option->Enable(FALSE);
-
-
-
-      // ARGUMENTS
-      CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
-
-      for (ScriptVariable& v : doc->Script.Variables)
-         if (v.Type == VariableType::Argument)
-         {
-            option = new CMFCPropertyGridProperty(v.Name.c_str(), _variant_t(GetString(v.ValueType).c_str()), v.Description.c_str());
-            // Argument type
-            for (const ScriptObject& obj : param_types)
-               option->AddOption(obj.Text.c_str(), FALSE);
-            arguments->AddSubItem(option);
-         }
-
-      // Add nodes
-      m_wndPropList.AddProperty(general);
-      m_wndPropList.AddProperty(arguments);
    }
 
    void CPropertiesWnd::OnExpandAllProperties()
