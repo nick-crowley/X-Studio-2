@@ -56,20 +56,67 @@ namespace Logic
       /// <returns>True if found, false otherwise</returns>
       bool  ScriptFile::FindNext(UINT start, MatchData& m)
       {
-         // Find next match, and supply line text
-         if (m.FindNext(OfflineBuffer, start, '\n'))
-            m.LineText = Commands.Input[m.LineNumber-1].Text;
+         int pos = GuiString::npos, len = 0;
+
+         // Validate position 
+         if (start >= OfflineBuffer.length())
+            m.Clear();
          
-         // Return result
+         // RegEx: Find + determine match length
+         else if (m.UseRegEx)
+         {
+            wsmatch matches;
+
+            // Search remainder of text
+            if (regex_search(OfflineBuffer.cbegin()+start, OfflineBuffer.cend(), matches, m.RegEx))  //, regex_constants::match_default))
+            {
+               pos = matches[0].first - OfflineBuffer.cbegin();
+               len = matches[0].length();
+            }
+         }
+         // Basic: Linear search
+         else
+         {
+            pos = OfflineBuffer.Find(m.SearchTerm, start, m.MatchCase);
+            len = m.SearchTerm.length();
+         }
+         
+         // Found: Set location, length, line number, line text
+         if (pos != GuiString::npos)
+         {
+            int line = count_if(OfflineBuffer.begin(), OfflineBuffer.begin()+pos, [](wchar ch) {return ch=='\n';} );
+            m.SetMatch(pos, len, line+1, Commands.Input[line].Text);
+         }
+         else
+            m.Clear();
+         
+         // Return whether matched
          return m.IsMatched;
       }
 
       /// <summary>Replaces the current match</summary>
       /// <param name="m">Match data</param>
+      /// <exception cref="Logic::AlgorithmException">Previous match no longer matches</exception>
       void  ScriptFile::Replace(MatchData& m)
       {
+         wstring r;
+
+         // Basic: Use replacement term
+         if (!m.UseRegEx)
+            r = m.ReplaceTerm;
+         else
+         {
+            wsmatch matches;
+         
+            // RegEx: Format replacement expression
+            if (regex_match(OfflineBuffer.cbegin()+m.Location.cpMin, OfflineBuffer.cbegin()+m.Location.cpMax, matches, m.RegEx))
+               r = matches.format(m.ReplaceTerm);
+            else
+               throw AlgorithmException(HERE, L"Previously matched text does not match regEx");
+         }
+
          // Perform replacement
-         OfflineBuffer.replace(m.Location.cpMin, m.Length(), m.Replace(OfflineBuffer));
+         OfflineBuffer.replace(m.Location.cpMin, m.Length(), r);
 
          // Clear line text
          UINT ln = 0;
