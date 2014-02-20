@@ -169,7 +169,7 @@ namespace GUI
          SearchWorker worker;
 
          // Search files for next match
-         worker.Start(&Search);
+         worker.Start(cmd, &Search);
          ProgressDlg.DoModal(&worker);
          worker.Close();
             

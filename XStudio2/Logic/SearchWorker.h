@@ -118,8 +118,12 @@ namespace Logic
          /// <exception cref="Logic::ArgumentNullException">param is null</exception>
          /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
          /// <exception cref="Logic::Win32Exception">Failed to start Thread</exception>
-         void  Start(SearchWorkerData* param)
+         void  Start(SearchCommand cmd, SearchWorkerData* param)
          {
+            REQUIRED(param);
+
+            // Set command + Start.
+            param->Command = cmd;
             BackgroundWorker::Start(param);
          }
 
