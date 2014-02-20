@@ -6,18 +6,7 @@
 
 namespace Logic
 {
-   /// <summary>Compare character ranges</summary>
-   bool operator==(const CHARRANGE& a, const CHARRANGE& b)
-   {
-      return a.cpMax == b.cpMax && a.cpMin == b.cpMin;
-   }
-
-   /// <summary>Compare character ranges</summary>
-   bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
-   {
-      return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
-   }
-
+   
    /// <summary>Area being searched</summary>
    enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
