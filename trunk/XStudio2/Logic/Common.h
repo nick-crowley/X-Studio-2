@@ -29,7 +29,7 @@ namespace Logic
    class GameVersionIndex
    {
    public:
-      GameVersionIndex(GameVersion v) : Index(0)
+      GameVersionIndex(GameVersion v) : Index(0), Version(v)
       {
          switch (v)
          {
@@ -41,7 +41,20 @@ namespace Logic
          }
       }
 
-      int  Index;
+      GameVersionIndex(UINT index) : Index(index), Version(GameVersion::Threat)
+      {
+         switch (index)
+         {
+         case 0:  Version = GameVersion::Threat;          break;
+         case 1:  Version = GameVersion::Reunion;         break;
+         case 2:  Version = GameVersion::TerranConflict;  break;
+         case 3:  Version = GameVersion::AlbionPrelude;   break;
+         case 4:  Version = GameVersion::Rebirth;         break;
+         }
+      }
+
+      int          Index;
+      GameVersion  Version;
    };
 
 

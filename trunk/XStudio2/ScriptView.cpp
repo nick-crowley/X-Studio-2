@@ -108,9 +108,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       general->AddSubItem(new CMFCPropertyGridProperty(L"Description", GetScript().Description.c_str(), L"Short description of functionality"));
       general->AddSubItem(new CMFCPropertyGridProperty(L"Version", (_variant_t)GetScript().Version, L"Current version number"));
       general->AddSubItem(new CommandIDProperty(GetScript().CommandName));
-      general->AddSubItem(new GameVersionProperty(GetScript().Game));
+      general->AddSubItem(new GameVersionProperty(GetScript(), GetScript().Game));
       general->AddSubItem(new SignedProperty(false));
-
+      
       // Group: Arguments
       CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
 
