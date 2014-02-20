@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
+      ON_WM_DESTROY()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -181,15 +182,17 @@ NAMESPACE_BEGIN2(GUI,Views)
       DDX_Control(pDX, IDC_VARIABLES_COMBO, VariablesCombo);
    }
 
+   /// <summary>Show properties</summary>
+   /// <param name="bActivate">whether activating.</param>
+   /// <param name="pActivateView">The activate view.</param>
+   /// <param name="pDeactiveView">The deactive view.</param>
    void ScriptView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
-      //Console << L"OnActivateView: bActivate=" << bActivate << (pActivateView==this?L" this":L" another") << ENDL;
-      
-      // Raise 'DISPLAY PROPERTIES'
-      if (bActivate != FALSE)
+      // Show properties
+      if (bActivate)
          CPropertiesWnd::Connect(this, true);
 
-      // Handle
+
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
@@ -222,6 +225,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    }
 
+
    void ScriptView::OnCompileComplete()
    {
       // Re-Populate variables/scope
@@ -229,6 +233,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
    
+
+   /// <summary>Clear properties</summary>
+   void ScriptView::OnDestroy()
+   {
+      // Hide properties
+      CPropertiesWnd::Connect(this, false);
+
+      CFormView::OnDestroy();
+   }
+
    /// <summary>Toggle comment on selected commands</summary>
    void ScriptView::OnEditComment()
    {

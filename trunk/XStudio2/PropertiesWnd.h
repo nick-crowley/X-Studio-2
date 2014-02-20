@@ -2,6 +2,7 @@
 #pragma once
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
+#include "PropertyGrid.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -13,7 +14,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ----------------------------------- CLASSES ----------------------------------
 
    /// <summary>Properties window toolbar</summary>
-   class CPropertiesToolBar : public CMFCToolBar
+   class CPropertiesToolBar : public ToolBarEx
    {
       // --------------------- CONSTRUCTION ----------------------
 
@@ -29,21 +30,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
    };
 
-
+   
    /// <summary>Defines a source of Properties</summary>
    class PropertySource
    {
    public:
+      /// <summary>Called to populate properties.</summary>
+      /// <param name="p">The p.</param>
       virtual void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) PURE;
 
-      virtual void  OnPropertyUpdated(CMFCPropertyGridProperty* p)
-      {}
+      /// <summary>Called when property updated.</summary>
+      /// <param name="p">The p.</param>
+      virtual bool  OnPropertyUpdated(CMFCPropertyGridProperty* p)
+      {
+         return true;
+      }
 
+      /// <summary>Called when property needs validating.</summary>
+      /// <param name="p">The p.</param>
+      /// <returns></returns>
       virtual bool  OnValidateProperty(CMFCPropertyGridProperty* p)
       {
          return true;
       }
    };
+
 
 
    /// <summary>Dockable properties window</summary>
@@ -72,22 +83,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void AdjustLayout();
       void ConnectSource(PropertySource* src, bool connect);
-      void InitPropList();
+      //void InitPropList();
 	   void SetPropListFont();
       void SetVSDotNetLook(BOOL bSet);
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnSize(UINT nType, int cx, int cy);
-	   afx_msg void OnExpandAllProperties();
-	   afx_msg void OnUpdateExpandAllProperties(CCmdUI* pCmdUI);
-	   afx_msg void OnSortProperties();
-	   afx_msg void OnUpdateSortProperties(CCmdUI* pCmdUI);
-	   afx_msg void OnProperties1();
-	   afx_msg void OnUpdateProperties1(CCmdUI* pCmdUI);
-	   afx_msg void OnProperties2();
-	   afx_msg void OnUpdateProperties2(CCmdUI* pCmdUI);
+	   afx_msg void OnCommand1();
+	   afx_msg void OnCommand2();
+      afx_msg void OnExpandAllProperties();
+      afx_msg void OnQueryCommand1(CCmdUI* pCmdUI);
+	   afx_msg void OnQueryCommand2(CCmdUI* pCmdUI);
+      afx_msg void OnQueryExpandAllProperties(CCmdUI* pCmdUI);
+      afx_msg void OnQuerySortProperties(CCmdUI* pCmdUI);
+      afx_msg LRESULT OnPropertyUpdated(WPARAM wParam, LPARAM lParam);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+      afx_msg void OnSize(UINT nType, int cx, int cy);
+      afx_msg void OnSortProperties();
 
 	   DECLARE_MESSAGE_MAP()
 
