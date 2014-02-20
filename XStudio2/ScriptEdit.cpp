@@ -121,8 +121,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
 
          // Set match location
-         m.SetMatch(match->Start, match->End - match->Start, LineFromChar(match->Start));
-         m.LineText = GetLineTextEx(m.LineNumber-1);
+         auto line = LineFromChar(match->Start);
+         m.SetMatch(match->Start, match->End - match->Start, line, GetLineTextEx(line));
 
          // Select text
          match->Select();
@@ -131,17 +131,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       catch (_com_error& e) {
          throw ComException(HERE, e);
       }
-
-      //// Get document text as a block,
-      //auto text = GetAllText();
-      //
-      //// Find next match
-      //if (m.FindNext(text, start, '\v'))
-      //   // Found: Supply line text (for feedback)
-      //   m.LineText = GuiString(GetLineText(m.LineNumber-1)).TrimLeft(L" \t");
-
-      //// Return result
-      //return m.IsMatched;
    }
 
    /// <summary>Replaces the current match</summary>
