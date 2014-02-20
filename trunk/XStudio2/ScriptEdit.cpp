@@ -357,10 +357,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       IRichEditOlePtr edit(GetIRichEditOle(), false);
       if (!edit)
          throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
-
+      
       // Get ITextDocument interface
-      TextDocument = edit;
-      if (!TextDocument)
+      TomDocument = edit;
+      if (!TomDocument)
          throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
    }
 
@@ -392,8 +392,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="suspend">enable/disable</param>
    void  ScriptEdit::SuspendUndo(bool suspend)
    {
-      if (FAILED(TextDocument->Undo(suspend ? tomSuspend : tomResume, nullptr)))
-         Console << Cons::Error << "Error: Unable to suspend/resume undo mechanism" << ENDL;
+      try
+      {
+         TomDocument->Undo(suspend ? tomSuspend : tomResume);
+      }
+      catch (_com_error& e) {
+         Console.Log(HERE, ComException(HERE, e));
+      }
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
