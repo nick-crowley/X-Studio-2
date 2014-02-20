@@ -5,10 +5,10 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "PropertiesWnd.h"
 #include "Logic/DebugTests.h"
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
-#include "Logic/ScriptObjectLibrary.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,34 +96,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       return RichEdit.GetSelection();
    }
 
-   /// <summary>Populates the properties window</summary>
-   /// <param name="grid">The grid.</param>
-   void  ScriptView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
-   {
-      // Group: General
-      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
-
-      // Name/Description/Version/CommandID/Signature:
-      auto& s = GetScript();
-      general->AddSubItem(new NameProperty(s));
-      general->AddSubItem(new DescriptionProperty(s));
-      general->AddSubItem(new VersionProperty(s));
-      general->AddSubItem(new CommandIDProperty(s));
-      general->AddSubItem(new GameVersionProperty(s));
-      general->AddSubItem(new SignedProperty(false));
-      grid.AddProperty(general);
-      
-      // Group: Arguments
-      CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
-
-      // Arguments
-      for (ScriptVariable& v : GetScript().Variables)
-         if (v.Type == VariableType::Argument)
-            arguments->AddSubItem(new ArgumentProperty(v));
-      
-      grid.AddProperty(arguments);
-   }
-
    /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if replaced, false if match was no longer selected</returns>
@@ -191,7 +163,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Show properties
       if (bActivate)
-         CPropertiesWnd::Connect(this, true);
+         CPropertiesWnd::Connect(GetDocument(), true);
 
 
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
@@ -239,7 +211,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnDestroy()
    {
       // Hide properties
-      CPropertiesWnd::Connect(this, false);
+      CPropertiesWnd::Connect(GetDocument(), false);
 
       CFormView::OnDestroy();
    }
