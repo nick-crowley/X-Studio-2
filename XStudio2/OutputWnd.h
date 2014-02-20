@@ -29,6 +29,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      void ActivatePane(Operation op);
       void UpdateFonts();
 
    protected:
