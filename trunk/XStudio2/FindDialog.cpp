@@ -101,6 +101,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Expanded = expand;
       }
 
+      /// <summary>Gets the feedback pane.</summary>
+      /// <returns></returns>
+      Operation  FindDialog::GetOutputPane() const
+      {
+         return IsDlgButtonChecked(IDC_RESULTS1_RADIO) ? Operation::FindAndReplace1 : Operation::FindAndReplace2;
+      }
+
       /// <summary>Gets the search target.</summary>
       /// <returns></returns>
       SearchTarget  FindDialog::GetSearchTarget() const
@@ -294,7 +301,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          FindButton.SetWindowTextW(L"Find Next");
 
          // Create new search
-         Search.reset(new SearchOperation(GetSearchTarget(), 
+         Search.reset(new SearchOperation(GetOutputPane(),
+                                          GetSearchTarget(), 
                                           GetSearchTerm(), 
                                           GetReplaceTerm(), 
                                           MatchCase != FALSE, 

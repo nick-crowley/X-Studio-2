@@ -380,7 +380,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
       case Operation::LoadGameData:       GameDataFeedback.Raise(*p);      break;
       case Operation::LoadSaveDocument:   LoadSaveFeedback.Raise(*p);      break;
-      case Operation::FindAndReplace:     FindReplaceFeedback.Raise(*p);   break;
+      case Operation::FindAndReplace1:
+      case Operation::FindAndReplace2:    FindReplaceFeedback.Raise(*p);   break;
       }
       
       // Delete data

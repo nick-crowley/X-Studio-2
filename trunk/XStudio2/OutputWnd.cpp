@@ -1,7 +1,6 @@
-
 #include "stdafx.h"
 
-#include "OutputWnd.h"
+#include "OutputList.h"
 #include "MainWnd.h"
 #include "Helpers.h"
 
@@ -17,30 +16,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // --------------------------------- APP WIZARD ---------------------------------
    
-   BEGIN_MESSAGE_MAP(COutputList, CListCtrl)
-      ON_WM_CREATE()
-	   ON_WM_CONTEXTMENU()
-	   ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
-	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
-	   ON_COMMAND(ID_VIEW_OUTPUT, OnViewOutput)
-	   ON_WM_WINDOWPOSCHANGING()
-      ON_WM_SIZE()
-   END_MESSAGE_MAP()
-
    BEGIN_MESSAGE_MAP(COutputWnd, CDockablePane)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
-
-   COutputList::COutputList()
-   {
-   }
-
-   COutputList::~COutputList()
-   {
-   }
 
    COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::onGameDataFeedback)),
                               fnFindReplaceFeedback(MainWnd::FindReplaceFeedback.Register(this, &COutputWnd::onFindReplaceFeedback)),
@@ -56,86 +37,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   void COutputWnd::UpdateFonts()
+   {
+	   
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   int COutputList::OnCreate(LPCREATESTRUCT lpCreateStruct)
-   {
-	   if (CListCtrl::OnCreate(lpCreateStruct) == -1)
-		   return -1;
 
-      // Set font
-      SetFont(&afxGlobalData.fontRegular);
-
-      // Insert column
-      InsertColumn(0, L"Text");
-      
-      SetExtendedStyle(LVS_EX_FULLROWSELECT);
-
-      // Load view images:
-	   /*Images.Create(IDB_OUTPUT_ICONS, 16, 0, RGB(255, 0, 255));
-	   m_wndOutputBuild.SetImageList(&Images, LVSIL_NORMAL);*/
-	   return 0;
-   }
-
-   void COutputList::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
-   {
-	   CMenu menu;
-	   menu.LoadMenu(IDM_OUTPUT_POPUP);
-
-	   CMenu* pSumMenu = menu.GetSubMenu(0);
-
-	   if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx)))
-	   {
-		   CMFCPopupMenu* pPopupMenu = new CMFCPopupMenu;
-
-		   if (!pPopupMenu->Create(this, point.x, point.y, (HMENU)pSumMenu->m_hMenu, FALSE, TRUE))
-			   return;
-
-		   ((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(pPopupMenu);
-		   UpdateDialogControls(this, FALSE);
-	   }
-
-	   SetFocus();
-   }
-
-   void COutputList::OnEditCopy()
-   {
-	   MessageBox(_T("Copy output"));
-   }
-
-   void COutputList::OnEditClear()
-   {
-	   MessageBox(_T("Clear output"));
-   }
-
-   void COutputList::OnViewOutput()
-   {
-	   CDockablePane* pParentBar = DYNAMIC_DOWNCAST(CDockablePane, GetOwner());
-	   CMDIFrameWndEx* pMainFrame = DYNAMIC_DOWNCAST(CMDIFrameWndEx, GetTopLevelFrame());
-
-	   if (pMainFrame != NULL && pParentBar != NULL)
-	   {
-		   pMainFrame->SetFocus();
-		   pMainFrame->ShowPane(pParentBar, FALSE, FALSE, FALSE);
-		   pMainFrame->RecalcLayout();
-
-	   }
-   }
-
-   
-   void COutputList::OnSize(UINT nType, int cx, int cy)
-   {
-      CListCtrl::OnSize(nType, cx, cy);
-
-      // Adjust column
-      CRect  rc;
-      GetClientRect(&rc);
-      SetColumnWidth(0, rc.Width());
-   }
-
-
-
+   /// <summary>REM: Adjusts the column headers to fit the length of item text.</summary>
+   /// <param name="wndListBox">ListBox.</param>
    void COutputWnd::AdjustHorzScroll(CListBox& wndListBox)
    {
 	   CClientDC dc(this);
@@ -166,27 +78,30 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
 	      // Create tabs window:
-	      if (!m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, rectDummy, this, 1))
+	      if (!TabCtrl.Create(CMFCTabCtrl::STYLE_FLAT, rectDummy, this, 1))
             throw Win32Exception(HERE, L"Unable to create output window tab control");
-	      
-	      // Create output panes:
-	      const DWORD dwStyle = LVS_REPORT | LVS_NOCOLUMNHEADER | LVS_SHAREIMAGELISTS | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
-
-	      if (!m_wndOutputBuild.CreateEx(LVS_EX_FULLROWSELECT, dwStyle, rectDummy, &m_wndTabs, 2) ||
-		      !m_wndOutputDebug.CreateEx(LVS_EX_FULLROWSELECT, dwStyle, rectDummy, &m_wndTabs, 3) ||
-		      !m_wndOutputFind.CreateEx(LVS_EX_FULLROWSELECT, dwStyle, rectDummy, &m_wndTabs, 4))
-            throw Win32Exception(HERE, L"Unable to create output window listview");
 	      
          // Setup ImageList:
          Images.Create(IDB_OUTPUT_ICONS, 16, 6, RGB(255,0,255));
-	      m_wndOutputBuild.SetImageList(&Images, LVSIL_SMALL);
-         m_wndOutputDebug.SetImageList(&Images, LVSIL_SMALL);
-         m_wndOutputFind.SetImageList(&Images, LVSIL_SMALL);
+
+	      // Create output panes:
+	      const DWORD dwStyle = LVS_REPORT | LVS_NOCOLUMNHEADER | LVS_SHAREIMAGELISTS | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
+
+         // Create output panes:
+         UINT nID = 2;
+         for (CListCtrl* c : { &GameDataList, &OutputList, &FindList1, &FindList2 })
+         {
+            if (!c->CreateEx(LVS_EX_FULLROWSELECT, dwStyle, rectDummy, &TabCtrl, nID++))
+               throw Win32Exception(HERE, L"Unable to create output window listview");
+
+            c->SetImageList(&Images, LVSIL_SMALL);
+         }
 
 	      // Attach list windows to tab:
-	      m_wndTabs.AddTab(&m_wndOutputBuild, GuiString(IDS_BUILD_TAB).c_str(), (UINT)0);
-	      m_wndTabs.AddTab(&m_wndOutputDebug, GuiString(IDS_DEBUG_TAB).c_str(), (UINT)1);
-	      m_wndTabs.AddTab(&m_wndOutputFind, GuiString(IDS_FIND_TAB).c_str(), (UINT)2);
+	      TabCtrl.AddTab(&GameDataList, L"Game Data", (UINT)0);
+	      TabCtrl.AddTab(&OutputList, L"Compiler", (UINT)1);
+	      TabCtrl.AddTab(&FindList1, L"Find Results 1", (UINT)2);
+         TabCtrl.AddTab(&FindList2, L"Find Results 2", (UINT)3);
 	      return 0;
       }
       catch (ExceptionBase& e)
@@ -198,42 +113,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    void COutputWnd::onFindReplaceFeedback(const WorkerProgress& wp)
    {
+      auto findList = (wp.Operation == Operation::FindAndReplace1 ? &FindList1 : &FindList2);
+
       // New operation: clear previous content
       if (wp.Type == ProgressType::Operation)
-         m_wndOutputFind.DeleteAllItems();
+         findList->DeleteAllItems();
 
-      // Create item
-      LVItem item(m_wndOutputFind.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
-      item.iImage = (UINT)wp.Type;
-      item.iIndent = wp.Indent;
-
-      // Insert/display
-      m_wndOutputFind.InsertItem(&item);
-      m_wndOutputFind.EnsureVisible(m_wndOutputFind.GetItemCount()-1, FALSE);
+      // Insert item
+      findList->InsertItem(wp);
    }
 
    void COutputWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
-      // Create item
-      LVItem item(m_wndOutputBuild.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
-      item.iImage = (UINT)wp.Type;
-      item.iIndent = wp.Indent;
-
-      // Insert/display
-      m_wndOutputBuild.InsertItem(&item);
-      m_wndOutputBuild.EnsureVisible(m_wndOutputBuild.GetItemCount()-1, FALSE);
+      // Insert item
+      GameDataList.InsertItem(wp);
    }
 
    void COutputWnd::onLoadSaveFeedback(const WorkerProgress& wp)
    {
-      // Create item
-      LVItem item(m_wndOutputDebug.GetItemCount(), wp.Text, NULL, LVIF_TEXT | LVIF_IMAGE | LVIF_INDENT);
-      item.iImage = (UINT)wp.Type;
-      item.iIndent = wp.Indent;
-
-      // Insert/display
-      m_wndOutputDebug.InsertItem(&item);
-      m_wndOutputDebug.EnsureVisible(m_wndOutputDebug.GetItemCount()-1, FALSE);
+      // Insert item
+      OutputList.InsertItem(wp);
    }
 
    void COutputWnd::OnSize(UINT nType, int cx, int cy)
@@ -241,12 +140,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   CDockablePane::OnSize(nType, cx, cy);
 
 	   // Tab control should cover the whole client area:
-	   m_wndTabs.SetWindowPos (NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
-   }
-
-   void COutputWnd::UpdateFonts()
-   {
-	   
+	   TabCtrl.SetWindowPos (NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

@@ -1,39 +1,10 @@
 
 #pragma once
-#include "Logic/WorkerFeedback.h"
+#include "OutputList.h"
 #include "ImageListEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
-
-   
-   /// <summary>Output window list</summary>
-   class COutputList : public CListCtrl
-   {
-      // ------------------------ TYPES --------------------------
-   private:
-	  
-      // --------------------- CONSTRUCTION ----------------------
-      
-   public:
-      COutputList();
-	   virtual ~COutputList();
-
-      // ------------------------ STATIC -------------------------
-   protected:
-	   DECLARE_MESSAGE_MAP()
-
-      // ----------------------- MUTATORS ------------------------
-   protected:
-      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	   afx_msg void OnEditCopy();
-	   afx_msg void OnEditClear();
-	   afx_msg void OnViewOutput();
-   public:
-      afx_msg void OnSize(UINT nType, int cx, int cy);
-   };
-
 
 
    /// <summary>Dockable output window</summary>
@@ -72,11 +43,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-	   CMFCTabCtrl	m_wndTabs;
-
-	   COutputList m_wndOutputBuild;
-	   COutputList m_wndOutputDebug;
-	   COutputList m_wndOutputFind;
+	   CMFCTabCtrl	TabCtrl;
+	   OutputList  GameDataList,
+	               OutputList,
+	               FindList1,
+                  FindList2;
       ImageListEx Images;
 
       FeedbackHandler fnGameDataFeedback,

@@ -471,11 +471,11 @@
     <ClInclude Include="SearchOperation.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="OutputList.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Logic\StringResource.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\XCatalog.cpp">
       <Filter>Source Files\Logic\FileSystem</Filter>
     </ClCompile>
@@ -769,6 +769,12 @@
     </ClCompile>
     <ClCompile Include="SearchOperation.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputList.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\StringResource.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
