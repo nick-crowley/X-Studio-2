@@ -309,10 +309,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   virtual ~ScriptDocument();
 
       // ------------------------ STATIC -------------------------
-
    protected:
       DECLARE_DYNCREATE(ScriptDocument)
 	   DECLARE_MESSAGE_MAP()
+
+   public:
+      static ScriptDocument*  GetActive();
 
       // --------------------- PROPERTIES ------------------------
 			

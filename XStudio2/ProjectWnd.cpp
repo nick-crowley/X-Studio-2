@@ -47,6 +47,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 
+   /// <summary>Adjusts the layout.</summary>
    void CProjectWnd::AdjustLayout()
    {
 	   if (GetSafeHwnd() == NULL)

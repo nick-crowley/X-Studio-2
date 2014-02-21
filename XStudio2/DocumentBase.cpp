@@ -24,6 +24,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Gets the active script or language document</summary>
+   /// <returns></returns>
    DocumentBase*  DocumentBase::GetActive()
    {
       CMDIChildWnd* pChild = theApp.GetMainWindow()->MDIGetActive();

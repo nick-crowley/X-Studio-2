@@ -38,9 +38,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual ~ProjectDocument();
        
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNCREATE(ProjectDocument)
       DECLARE_MESSAGE_MAP()
+
+   public:
+      static ProjectDocument*  GetActive();
 	  
       // --------------------- PROPERTIES ------------------------
    public:
