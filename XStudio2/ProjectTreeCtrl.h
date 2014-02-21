@@ -1,10 +1,6 @@
 #pragma once
 #include "Helpers.h"
 #include "ProjectDocument.h"
-//#include "Logic/ProjectFile.h"
-
-/// <summary>User interface</summary>
-//FORWARD_DECLARATION2(Logic,Projects,class ProjectItem)
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -14,13 +10,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    private:
-      /// <summary>Item in the tree</summary>
+      /// <summary>Wrapper for Items in the tree</summary>
 	   class TreeItem : public TVItem
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create empty item for storing drag'n'drop info</summary>
+         TreeItem(HTREEITEM node) : TVItem(node, MAX_PATH)
+         {}
+         
+         /// <summary>Create item wrapper</summary>
+         /// <param name="item">The item.</param>
+         TreeItem(const TVITEM& item) : TVItem(item)
+         {
+         }
+
          /// <summary>Create from project document</summary>
          /// <param name="item">The item.</param>
-         TreeItem(ProjectDocument* doc) : TVItem(MAX_PATH), Data(nullptr)
+         TreeItem(ProjectDocument* doc) : TVItem(nullptr, MAX_PATH)
          {
             // Use document title
             SetText((LPCWSTR)doc->GetTitle());
@@ -34,7 +41,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          /// <summary>Create from project item</summary>
          /// <param name="item">The item.</param>
-         TreeItem(ProjectItem* item) : TVItem(MAX_PATH), Data(item)
+         TreeItem(ProjectItem* item) : TVItem(nullptr, MAX_PATH)
          {
             // Generate name
             if (auto var = dynamic_cast<ProjectVariableItem*>(item))
@@ -67,9 +74,55 @@ NAMESPACE_BEGIN2(GUI,Controls)
             lParam = reinterpret_cast<LPARAM>(item);
          }
 
+         // --------------------- PROPERTIES ------------------------
       public:
-         const ProjectItem*  Data;
+         PROPERTY_GET(ProjectItem*,Data,GetData);
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Gets the item data (if any).</summary>
+         /// <returns></returns>
+         ProjectItem*  GetData() const
+         {
+            return mask & TVIF_PARAM ? reinterpret_cast<ProjectItem*>(lParam) : nullptr;
+         }
+
+         /// <summary>Allow any unfixed file/folder/variable to be dragged</summary>
+         /// <returns></returns>
+         bool IsDragSource() const
+         {
+            return Data && !Data->Fixed;
+         }
+
+         /// <summary>Allow items to be dropped onto folders</summary>
+         /// <returns></returns>
+         bool IsDropTarget() const
+         {
+            return Data && Data->Type == ProjectItemType::Folder;
+         }
+
+         /// <summary>Allow root and unfixed files/folder/variables to be renamed</summary>
+         /// <returns></returns>
+         bool IsEditable() const
+         {
+            return !Data || !Data->Fixed;
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Assign from tree item</summary>
+         /// <param name="r">The r.</param>
+         /// <returns></returns>
+         TreeItem& operator=(const TVITEM& r)
+         {
+            TVItem::operator=(r);
+            return *this;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
       };
+
 
       // --------------------- CONSTRUCTION ----------------------
 
@@ -87,19 +140,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // --------------------- PROPERTIES ------------------------
 			
       // ---------------------- ACCESSORS ------------------------			
-
+   
       // ----------------------- MUTATORS ------------------------
    public:
       void  Populate();
 
    protected:
-      HTREEITEM InsertItem(TreeItem& item, HTREEITEM parent);
-      BOOL      OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
+      HTREEITEM     InsertItem(TreeItem& item, HTREEITEM parent);
+
+      afx_msg void  OnDragBegin(NMHDR *pNMHDR, LRESULT *pResult);
+      handler void  OnDragEnd(const TreeItem& target);
+      afx_msg void  OnLabelEditBegin(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void  OnLabelEditEnd(NMHDR *pNMHDR, LRESULT *pResult);
+      handler BOOL  OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 
       // -------------------- REPRESENTATION ---------------------
 
    private:
-   };
+      CImageList*  DragIcon;
+      TreeItem     DragSource;
+      
+      
+   public:
+      afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+      afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+};
    
 /// <summary>User interface controls</summary>
 NAMESPACE_END2(GUI,Controls)

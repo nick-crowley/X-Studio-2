@@ -77,7 +77,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
 	      // Create view:
-	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
+	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_EDITLABELS | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
 
 	      if (!TreeView.Create(dwViewStyle, rectDummy, this, 4))
             throw Win32Exception(HERE, L"Unable to create project window tree view");

@@ -29,7 +29,19 @@ namespace GUI
       // ----------------------- MUTATORS ------------------------
 
       // -------------------- REPRESENTATION ---------------------
+   };
 
+   /// <summary>Position of mouse cursor</summary>
+   class CursorPoint : public CPoint
+   {
+   public:
+      CursorPoint(CWnd* wnd) : CPoint(0,0)
+      {
+         // Get position in screen co-ords
+         if (GetCursorPos(this) && wnd)
+            // Window: Convert to client co-ords
+            ScreenToClient(*wnd, this);
+      }
    };
 
    /// <summary>Write rectangle to the console</summary>
