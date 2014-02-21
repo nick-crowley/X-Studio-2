@@ -12,6 +12,7 @@
 
 #include "ScriptDocument.h"
 #include "LanguageDocument.h"
+#include "ProjectDocument.h"
 
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
@@ -213,6 +214,7 @@ BOOL Application::InitInstance()
 	// document templates
 	AddDocTemplate(new ScriptDocTemplate());
 	AddDocTemplate(new LanguageDocTemplate());
+   AddDocTemplate(new ProjectDocTemplate());
 
 	// Frame window
 	MainWnd* pMainFrame = new MainWnd;

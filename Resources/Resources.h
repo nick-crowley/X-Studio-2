@@ -18,21 +18,22 @@
 
 #define IDR_LANGUAGEVIEW                114
 #define IDR_SCRIPTVIEW                  115
+#define IDR_PROJECTVIEW                 116
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  116
-#define IDM_PROJECT_POPUP               117
-#define IDM_OUTPUT_POPUP                118
+#define IDM_EDIT_POPUP                  117
+#define IDM_PROJECT_POPUP               118
+#define IDM_OUTPUT_POPUP                119
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_16_GREY              119
-#define IDB_EDITOR_24_GREY              120
-#define IDB_PROJECT_ICONS               121
-#define IDB_OUTPUT_ICONS                122
-#define IDB_GAMEDATA_ICONS              123
-#define IDB_LANGUAGE_ICONS              124
+#define IDB_EDITOR_16_GREY              120
+#define IDB_EDITOR_24_GREY              121
+#define IDB_PROJECT_ICONS               122
+#define IDB_OUTPUT_ICONS                123
+#define IDB_GAMEDATA_ICONS              124
+#define IDB_LANGUAGE_ICONS              125
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

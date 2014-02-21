@@ -34,7 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CPropertiesWnd::CPropertiesWnd() 
+   CPropertiesWnd::CPropertiesWnd() : Source(nullptr)
    {
       Instance = this;
    }

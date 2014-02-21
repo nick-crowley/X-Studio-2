@@ -51,10 +51,19 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Closes the thread handle.</summary>
-         void  Close()
+         /// <param name="deleteData">Delete thread data.</param>
+         void  Close(bool deleteData = false)
          {
+            // Close thread
             CloseHandle(Thread);
             Thread = nullptr;
+
+            // Delete data
+            if (deleteData && Data)
+            {
+               delete Data;
+               Data = nullptr;
+            }
          }
 
          /// <summary>Sets the 'abort' flag and closes the thread handle</summary>
