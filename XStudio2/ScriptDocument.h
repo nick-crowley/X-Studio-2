@@ -341,6 +341,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    private:
       GUI::Controls::ScriptEdit* Edit;
+      list<ArgumentProperty*>    ArgumentProperties;
    };
 
 
