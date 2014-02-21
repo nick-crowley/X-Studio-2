@@ -51,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
       ON_COMMAND(ID_INSERT_ARGUMENT, OnInsertArgument)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
+      //ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -135,9 +135,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
 
       // Arguments
+      ArgumentProperties.clear();
       for (ScriptVariable& v : Script.Variables)
          if (v.Type == VariableType::Argument)
-            arguments->AddSubItem(new ArgumentProperty(*this, v));
+         {
+            ArgumentProperties.push_back(new ArgumentProperty(*this, v));
+            arguments->AddSubItem(ArgumentProperties.back());
+         }
       
       grid.AddProperty(arguments);
    }
@@ -193,7 +197,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="pCmd">Command</param>
    void  ScriptDocument::OnQueryCustomCommand(CCmdUI* pCmd) 
    {
-      pCmd->Enable(TRUE);
+      static function<bool (ArgumentProperty*)> IsSelected = [](ArgumentProperty* p) {return p->IsSelected() != FALSE;};
+
+      // Set state
+      switch (pCmd->m_nID)
+      {
+      case ID_INSERT_ARGUMENT:
+         pCmd->Enable(TRUE);
+         break;
+
+      case ID_REORDER_ARGUMENT_UP:
+      case ID_REORDER_ARGUMENT_DOWN:
+      case ID_EDIT_ARGUMENT:
+      case ID_REMOVE_ARGUMENT:
+         pCmd->Enable(any_of(ArgumentProperties.begin(), ArgumentProperties.end(), IsSelected) ? TRUE : FALSE);
+         break;
+      }
    }   
 
    /// <summary>Saves the document</summary>
