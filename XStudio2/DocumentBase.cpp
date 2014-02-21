@@ -18,6 +18,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
    }
 
+   DocumentBase::DocumentBase(DocumentType t) : Type(t)
+   {
+   }
+
    DocumentBase::~DocumentBase()
    {
    }

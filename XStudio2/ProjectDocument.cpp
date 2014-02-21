@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "ProjectDocument.h"
 #include "Logic/FileIdentifier.h"
+#include "Logic/LegacyProjectReader.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
    
+   /// <summary>Project document has chnaged</summary>
+   SimpleEvent   ProjectDocument::Changed;
+
    // ---------------------------------- TEMPLATE ----------------------------------
 
    IMPLEMENT_DYNAMIC(ProjectDocTemplate, CSingleDocTemplate)
@@ -178,8 +182,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ProjectDocument::ProjectDocument()
+   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project)
    {
+
    }
 
    ProjectDocument::~ProjectDocument()
@@ -193,7 +198,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    ProjectDocument*  ProjectDocument::GetActive()
    {
       // Linear search: (Only one project can ever be open at a time)
-      for (DocumentBase doc : theApp)
+      for (DocumentBase& doc : theApp)
          if (doc.GetType() == DocumentType::Project)
             return dynamic_cast<ProjectDocument*>(&doc);
 
@@ -201,6 +206,47 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
+   {
+      // Raise 'PROJECT CHANGED'
+      if (deEvent == CDocument::onAfterOpenDocument)
+         Changed.Raise();
+   }
+
+   BOOL ProjectDocument::OnNewDocument()
+   {
+      // Raise 'PROJECT CHANGED'
+      Changed.Raise();
+
+      return DocumentBase::OnNewDocument();
+   }
+
+
+   BOOL ProjectDocument::OnOpenDocument(LPCTSTR szPath)
+   {
+      try
+      {
+         // Read file
+         auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
+         Project = LegacyProjectReader(fs).ReadFile(szPath);
+
+         // Success: 
+         return TRUE;
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+         return FALSE;
+      }
+   }
+
+
+   BOOL ProjectDocument::OnSaveDocument(LPCTSTR lpszPathName)
+   {
+      // TODO: Add your specialized code here and/or call the base class
+
+      return DocumentBase::OnSaveDocument(lpszPathName);
+   }
 
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -211,3 +257,4 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
 /// <summary>User interface documents</summary>
 NAMESPACE_END2(GUI,Documents)
+

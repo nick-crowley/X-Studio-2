@@ -16,7 +16,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
-      DocumentBase();    // Protected constructor used by dynamic creation
+      DocumentBase();
+      DocumentBase(DocumentType t);
    public:
       virtual ~DocumentBase();
        

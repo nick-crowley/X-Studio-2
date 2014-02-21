@@ -38,9 +38,10 @@ namespace Logic
       protected:
          virtual void  LoadDocument();
 
-         wstring  ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
-         void     ReadElement(XmlNodePtr&  node, const WCHAR*  name);
-         bool     TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name, wstring& val);
+         XmlNodePtr  GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         wstring     ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
+         void        ReadElement(XmlNodePtr&  node, const WCHAR*  name);
+         bool        TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name, wstring& val);
 
 		   // -------------------- REPRESENTATION ---------------------
 

@@ -495,6 +495,9 @@
     <ClInclude Include="Logic\ProjectFile.h">
       <Filter>Header Files\Logic\Projects</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\LegacyProjectReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -808,6 +811,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ProjectFile.cpp">
       <Filter>Source Files\Logic\Projects</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LegacyProjectReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
