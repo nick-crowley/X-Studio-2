@@ -103,6 +103,12 @@
     <Filter Include="Source Files\GUI\Utils">
       <UniqueIdentifier>{b099d206-09b5-4acb-93c3-73269b31bc55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Logic\Projects">
+      <UniqueIdentifier>{a1f948c8-8edd-470d-ba65-3868aa10d04c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\Projects">
+      <UniqueIdentifier>{f6b294a6-c4bc-483e-bb12-226753d932cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -486,6 +492,9 @@
     <ClInclude Include="ProjectDocument.h">
       <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\ProjectFile.h">
+      <Filter>Header Files\Logic\Projects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -796,6 +805,9 @@
     </ClCompile>
     <ClCompile Include="ProjectDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ProjectFile.cpp">
+      <Filter>Source Files\Logic\Projects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

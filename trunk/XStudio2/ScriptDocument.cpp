@@ -67,6 +67,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Gets the active script document, if any</summary>
+   /// <returns></returns>
+   ScriptDocument*  ScriptDocument::GetActive()
+   {
+      return dynamic_cast<ScriptDocument*>(DocumentBase::GetActive());
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Attaches the script edit.</summary>
