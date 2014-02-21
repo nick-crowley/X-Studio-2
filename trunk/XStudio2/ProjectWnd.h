@@ -49,9 +49,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // ----------------------- MUTATORS ------------------------
    protected:
-      void AdjustLayout();
-      void InsertItem(ProjectItem* item, HTREEITEM parent);
-	   void Populate();
+      void       AdjustLayout();
+      HTREEITEM  InsertItem(ProjectItem* item, HTREEITEM parent);
+	   void       Populate();
       
       handler void OnChangeVisualStyle();
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -68,6 +68,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnEditCopy();
 	   afx_msg void OnEditClear();
 	   afx_msg void OnProperties();
+
+   private:
+      int  GetItemIcon(ProjectItem* item);
 
       // -------------------- REPRESENTATION ---------------------
    protected:

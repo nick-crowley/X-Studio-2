@@ -65,33 +65,62 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
-   void CProjectWnd::InsertItem(ProjectItem* item, HTREEITEM parent)
+   /// <summary>Gets the item icon.</summary>
+   /// <param name="item">The item.</param>
+   /// <returns></returns>
+   int CProjectWnd::GetItemIcon(ProjectItem* item)
    {
       int icon = -1;
 
-      // Choose item
+      // Choose icon
       switch (item->Type)
       {
       case ProjectItemType::Folder:    icon = 0;  break;
-      case ProjectItemType::File:      icon = 1;  break;
-      case ProjectItemType::Variable:  icon = 2;  break;
+      case ProjectItemType::Variable:  icon = 6;  break;
+      case ProjectItemType::File:      
+         switch (dynamic_cast<ProjectFileItem*>(item)->FileType)
+         {
+         case FileType::Script:   icon = 2;  break;
+         case FileType::Language: icon = 3;  break;
+         case FileType::Mission:  icon = 4;  break;
+         case FileType::Unknown:  icon = 5;  break;
+         }
+         break;
       }
 
+      return icon;
+   }
+
+   /// <summary>Inserts an item and it's children</summary>
+   /// <param name="item">The item.</param>
+   /// <param name="parent">The parent.</param>
+   HTREEITEM CProjectWnd::InsertItem(ProjectItem* item, HTREEITEM parent)
+   {
+      wstring name;
+
+      // Generate name
+      if (auto var = dynamic_cast<ProjectVariableItem*>(item))
+         name = GuiString(L"%s = %d", var->Name.c_str(), var->Value);
+      else
+         name = item->Name;
+      
       // Add item
-      HTREEITEM node = TreeView.InsertItem(item->Name.c_str(), icon, icon, parent);
+      HTREEITEM node = TreeView.InsertItem(name.c_str(), GetItemIcon(item), GetItemIcon(item), parent);
 
       // Fixed: Display in bold
       if (item->Fixed)
 	      TreeView.SetItemState(node, TVIS_BOLD, TVIS_BOLD);
 
-      // Folder: Display children
+      // Folder: Insert children
       for (auto child : item->Children)
          InsertItem(child, node);
 
       // Fixed: Expand
       TreeView.Expand(node, TVE_EXPAND);
+      return node;
    }
 
+   /// <summary>Populates the entire treeview from the active project.</summary>
    void CProjectWnd::Populate()
    {
       // Clear
@@ -101,12 +130,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (auto doc = ProjectDocument::GetActive())
       {
          // Root: Project Name
-         HTREEITEM root = TreeView.InsertItem(doc->GetTitle(), 0, 0);
+         HTREEITEM root = TreeView.InsertItem(doc->GetTitle(), 1, 1);
 	      TreeView.SetItemState(root, TVIS_BOLD, TVIS_BOLD);
 
          // Items: Populate recursively
          for (auto item : doc->Project.Items)
-            InsertItem(item, root);
+            TreeView.SortChildren( InsertItem(item, root) );
 
          // Expand root
          TreeView.Expand(root, TVE_EXPAND);
@@ -118,7 +147,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
 	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
-		      throw Win32Exception(HERE, L"Unable to create base pane");
+		      throw Win32Exception(HERE, L"Unable to create project window base pane");
 
 	      CRect rectDummy;
 	      rectDummy.SetRectEmpty();
@@ -127,19 +156,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
 
 	      if (!TreeView.Create(dwViewStyle, rectDummy, this, 4))
-            throw Win32Exception(HERE, L"Unable to create tree view");
+            throw Win32Exception(HERE, L"Unable to create project window tree view");
 	      
 	      // ImageList:
-	      Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255));
+	      if (!Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255)))
+            throw Win32Exception(HERE, L"Unable to create project window imageList");
 	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
          // Toolbar:
-         Toolbar.Create(this, IDR_PROJECT);
+         if (!Toolbar.Create(this, IDR_PROJECT))
+            throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
 	      // Populate
 	      Populate();
 	      AdjustLayout();
-
 	      return 0;
       }
       catch (ExceptionBase& e) {
