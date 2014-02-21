@@ -5,32 +5,34 @@
 #define IDR_MAINFRAME_16                101
 #define IDR_MAINFRAME_24                102
 #define IDR_PROPERTIES                  103
-#define IDR_PROJECT                     104
-#define IDR_OUTPUT                      105
-#define IDR_COMMANDS                    106
-#define IDR_GAME_OBJECTS                107
-#define IDR_SCRIPT_OBJECTS              108
-#define IDR_EDITOR_16                   109
-#define IDR_EDITOR_24                   110
-#define IDR_CUSTOM                      111
+#define IDR_PROPERTIES_16               104
+#define IDR_PROPERTIES_24               105
+#define IDR_PROJECT                     106
+#define IDR_OUTPUT                      107
+#define IDR_COMMANDS                    108
+#define IDR_GAME_OBJECTS                109
+#define IDR_SCRIPT_OBJECTS              110
+#define IDR_EDITOR_16                   111
+#define IDR_EDITOR_24                   112
+#define IDR_CUSTOM                      113
 
-#define IDR_LANGUAGEVIEW                112
-#define IDR_SCRIPTVIEW                  113
+#define IDR_LANGUAGEVIEW                114
+#define IDR_SCRIPTVIEW                  115
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  115
-#define IDM_PROJECT_POPUP               116
-#define IDM_OUTPUT_POPUP                117
+#define IDM_EDIT_POPUP                  116
+#define IDM_PROJECT_POPUP               117
+#define IDM_OUTPUT_POPUP                118
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_16_GREY              118
-#define IDB_EDITOR_24_GREY              119
-#define IDB_PROJECT_ICONS               120
-#define IDB_OUTPUT_ICONS                121
-#define IDB_GAMEDATA_ICONS              122
-#define IDB_LANGUAGE_ICONS              123
+#define IDB_EDITOR_16_GREY              119
+#define IDB_EDITOR_24_GREY              120
+#define IDB_PROJECT_ICONS               121
+#define IDB_OUTPUT_ICONS                122
+#define IDB_GAMEDATA_ICONS              123
+#define IDB_LANGUAGE_ICONS              124
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -75,38 +77,41 @@
 // PropertiesWnd Context
 #define ID_EXPAND_ALL                   221
 #define ID_SORTPROPERTIES               222
-#define ID_PROPERTIES1                  223
-#define ID_PROPERTIES2                  224
+#define ID_INSERT_ARGUMENT              223
+#define ID_REORDER_ARGUMENT_UP          224
+#define ID_EDIT_ARGUMENT                225
+#define ID_REORDER_ARGUMENT_DOWN        226
+#define ID_REMOVE_ARGUMENT              227
 
 // ProjectWnd Context menu
-#define ID_OPEN                         225
-#define ID_OPEN_WITH                    226
-#define ID_DUMMY_COMPILE                227
-#define ID_CLASS_ADD_MEMBER_FUNCTION    228
-#define ID_CLASS_ADD_MEMBER_VARIABLE    229
-#define ID_CLASS_DEFINITION             230
-#define ID_CLASS_PROPERTIES             231
-#define ID_NEW_FOLDER                   232
-#define ID_PROPERTIES                   233
+#define ID_OPEN                         228
+#define ID_OPEN_WITH                    229
+#define ID_DUMMY_COMPILE                230
+#define ID_CLASS_ADD_MEMBER_FUNCTION    231
+#define ID_CLASS_ADD_MEMBER_VARIABLE    232
+#define ID_CLASS_DEFINITION             233
+#define ID_CLASS_PROPERTIES             234
+#define ID_NEW_FOLDER                   235
+#define ID_PROPERTIES                   236
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 
 // Toolbar Customization
-#define ID_TOOLS_MACRO                  234
+#define ID_TOOLS_MACRO                  237
 
 // LanguageEditor
-#define ID_EDIT_BOLD                    235
-#define ID_EDIT_ITALIC                  236
-#define ID_EDIT_UNDERLINE               237
-#define ID_EDIT_COLOUR                  238
-#define ID_EDIT_LEFT                    239
-#define ID_EDIT_CENTRE                  240
-#define ID_EDIT_RIGHT                   241
-#define ID_EDIT_JUSTIFY                 242
-#define ID_EDIT_ADD_BUTTON              243
-#define ID_VIEW_SOURCE                  244
-#define ID_VIEW_EDITOR                  245
-#define ID_VIEW_DISPLAY                 246
+#define ID_EDIT_BOLD                    238
+#define ID_EDIT_ITALIC                  239
+#define ID_EDIT_UNDERLINE               240
+#define ID_EDIT_COLOUR                  241
+#define ID_EDIT_LEFT                    242
+#define ID_EDIT_CENTRE                  243
+#define ID_EDIT_RIGHT                   244
+#define ID_EDIT_JUSTIFY                 245
+#define ID_EDIT_ADD_BUTTON              246
+#define ID_VIEW_SOURCE                  247
+#define ID_VIEW_EDITOR                  248
+#define ID_VIEW_DISPLAY                 249
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 

@@ -50,6 +50,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(ScriptDocument, DocumentBase)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
+      ON_COMMAND(ID_INSERT_ARGUMENT, OnInsertArgument)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -140,6 +142,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       grid.AddProperty(arguments);
    }
 
+   void ScriptDocument::OnInsertArgument()
+   {
+      AfxMessageBox(L"ScriptDocument::OnInsertArgument");
+   }
 
    /// <summary>Called when new document.</summary>
    /// <returns></returns>
@@ -183,7 +189,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   
+   /// <summary>Queries the state of a properties toolbar command.</summary>
+   /// <param name="pCmd">Command</param>
+   void  ScriptDocument::OnQueryCustomCommand(CCmdUI* pCmd) 
+   {
+      pCmd->Enable(TRUE);
+   }   
 
    /// <summary>Saves the document</summary>
    /// <param name="lpszPathName">path.</param>
