@@ -42,73 +42,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (auto doc = ProjectDocument::GetActive())
       {
          // Root: Project Name
-         HTREEITEM root = __super::InsertItem(doc->GetTitle(), 1, 1);
-	      SetItemState(root, TVIS_BOLD, TVIS_BOLD);
+         auto root = InsertItem(TreeItem(doc), nullptr);
 
-         // Items: Populate recursively
+         // Folders: Populate recursively
          for (auto item : doc->Project.Items)
-            SortChildren( InsertItem(item, root) );
-
-         // Expand root
-         Expand(root, TVE_EXPAND);
+            InsertItem(TreeItem(item), root);
       }
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
-   
-   /// <summary>Gets the item icon.</summary>
-   /// <param name="item">The item.</param>
-   /// <returns></returns>
-   int ProjectTreeCtrl::GetItemIcon(ProjectItem* item)
-   {
-      int icon = -1;
-
-      // Choose icon
-      switch (item->Type)
-      {
-      case ProjectItemType::Folder:    icon = 0;  break;
-      case ProjectItemType::Variable:  icon = 6;  break;
-      case ProjectItemType::File:      
-         switch (dynamic_cast<ProjectFileItem*>(item)->FileType)
-         {
-         case FileType::Script:   icon = 2;  break;
-         case FileType::Language: icon = 3;  break;
-         case FileType::Mission:  icon = 4;  break;
-         case FileType::Unknown:  icon = 5;  break;
-         }
-         break;
-      }
-
-      return icon;
-   }
 
    /// <summary>Inserts an item and it's children</summary>
    /// <param name="item">The item.</param>
    /// <param name="parent">The parent.</param>
-   HTREEITEM ProjectTreeCtrl::InsertItem(ProjectItem* item, HTREEITEM parent)
+   HTREEITEM ProjectTreeCtrl::InsertItem(TreeItem& item, HTREEITEM parent)
    {
-      wstring name;
+      // Insert item/folder
+      auto node = CTreeCtrl::InsertItem(item.mask, item.pszText, item.iImage, item.iSelectedImage, item.state, item.stateMask, item.lParam, parent, TVI_SORT);
 
-      // Generate name
-      if (auto var = dynamic_cast<ProjectVariableItem*>(item))
-         name = GuiString(L"%s = %d", var->Name.c_str(), var->Value);
-      else
-         name = item->Name;
-      
-      // Add item
-      HTREEITEM node = __super::InsertItem(name.c_str(), GetItemIcon(item), GetItemIcon(item), parent);
+      // Children: Insert children
+      if (item.Data)
+         for (auto it : item.Data->Children)
+            InsertItem(TreeItem(it), node);
 
-      // Fixed: Display in bold
-      if (item->Fixed)
-	      SetItemState(node, TVIS_BOLD, TVIS_BOLD);
-
-      // Folder: Insert children
-      for (auto child : item->Children)
-         InsertItem(child, node);
-
-      // Fixed: Expand
-      if (item->Fixed)
-         Expand(node, TVE_EXPAND);
+      // Return item
       return node;
    }
 
