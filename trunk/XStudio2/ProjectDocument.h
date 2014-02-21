@@ -1,6 +1,7 @@
 #pragma once
 #include "DocumentBase.h"
-
+#include "Logic/ProjectFile.h"
+#include "Logic/Event.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -42,6 +43,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 
    public:
+      static SimpleEvent       Changed;
+
       static ProjectDocument*  GetActive();
 	  
       // --------------------- PROPERTIES ------------------------
@@ -52,9 +55,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void OnDocumentEvent(DocumentEvent deEvent) override;
+      BOOL OnNewDocument() override;
+      BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+      BOOL OnSaveDocument(LPCTSTR lpszPathName) override;
 
       // -------------------- REPRESENTATION ---------------------
+   public:
+      ProjectFile  Project;
+
    protected:
+   
    };
 
    

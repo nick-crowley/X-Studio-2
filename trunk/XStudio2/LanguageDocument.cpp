@@ -47,9 +47,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageDocument::LanguageDocument()
+   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language)
    {
-      Type = DocumentType::Language;
    }
 
    LanguageDocument::~LanguageDocument()

@@ -3,6 +3,7 @@
 #include "MainWnd.h"
 #include "ProjectWnd.h"
 #include "Application.h"
+//#include "ProjectDocument.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -33,7 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CProjectWnd::CProjectWnd()
+   CProjectWnd::CProjectWnd() : fnProjectChanged(ProjectDocument::Changed.Register(this, &CProjectWnd::OnProjectChanged))
    {
    }
 
@@ -64,105 +65,111 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
-   void CProjectWnd::FillFileView()
+   void CProjectWnd::InsertItem(ProjectItem* item, HTREEITEM parent)
    {
-	   HTREEITEM hRoot = TreeView.InsertItem(_T("FakeApp files"), 0, 0);
-	   TreeView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
+      int icon = -1;
 
-	   HTREEITEM hSrc = TreeView.InsertItem(_T("FakeApp Source Files"), 0, 0, hRoot);
+      // Choose item
+      switch (item->Type)
+      {
+      case ProjectItemType::Folder:    icon = 0;  break;
+      case ProjectItemType::File:      icon = 1;  break;
+      case ProjectItemType::Variable:  icon = 2;  break;
+      }
 
-	   TreeView.InsertItem(_T("FakeApp.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeApp.rc"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeAppDoc.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("FakeAppView.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("MainFrm.cpp"), 1, 1, hSrc);
-	   TreeView.InsertItem(_T("StdAfx.cpp"), 1, 1, hSrc);
+      // Add item
+      HTREEITEM node = TreeView.InsertItem(item->Name.c_str(), icon, icon, parent);
 
-	   HTREEITEM hInc = TreeView.InsertItem(_T("FakeApp Header Files"), 0, 0, hRoot);
+      // Fixed: Display in bold
+      if (item->Fixed)
+	      TreeView.SetItemState(node, TVIS_BOLD, TVIS_BOLD);
 
-	   TreeView.InsertItem(_T("FakeApp.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("FakeAppDoc.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("FakeAppView.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("Resource.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("MainFrm.h"), 2, 2, hInc);
-	   TreeView.InsertItem(_T("StdAfx.h"), 2, 2, hInc);
+      // Folder: Display children
+      for (auto child : item->Children)
+         InsertItem(child, node);
 
-	   HTREEITEM hRes = TreeView.InsertItem(_T("FakeApp Resource Files"), 0, 0, hRoot);
+      // Fixed: Expand
+      TreeView.Expand(node, TVE_EXPAND);
+   }
 
-	   TreeView.InsertItem(_T("FakeApp.ico"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeApp.rc2"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeAppDoc.ico"), 2, 2, hRes);
-	   TreeView.InsertItem(_T("FakeToolbar.bmp"), 2, 2, hRes);
+   void CProjectWnd::Populate()
+   {
+      // Clear
+      TreeView.DeleteAllItems();
+      
+      // Repopulate
+      if (auto doc = ProjectDocument::GetActive())
+      {
+         // Root: Project Name
+         HTREEITEM root = TreeView.InsertItem(doc->GetTitle(), 0, 0);
+	      TreeView.SetItemState(root, TVIS_BOLD, TVIS_BOLD);
 
-	   TreeView.Expand(hRoot, TVE_EXPAND);
-	   TreeView.Expand(hSrc, TVE_EXPAND);
-	   TreeView.Expand(hInc, TVE_EXPAND);
+         // Items: Populate recursively
+         for (auto item : doc->Project.Items)
+            InsertItem(item, root);
+
+         // Expand root
+         TreeView.Expand(root, TVE_EXPAND);
+      }
    }
 
    int CProjectWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-	   if (CDockablePane::OnCreate(lpCreateStruct) == -1)
-		   return -1;
+      try
+      {
+	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
+		      throw Win32Exception(HERE, L"Unable to create base pane");
 
-	   CRect rectDummy;
-	   rectDummy.SetRectEmpty();
+	      CRect rectDummy;
+	      rectDummy.SetRectEmpty();
 
-	   // Create view:
-	   const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS;
+	      // Create view:
+	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
 
-	   if (!TreeView.Create(dwViewStyle, rectDummy, this, 4))
-	   {
-		   TRACE0("Failed to create file view\n");
-		   return -1;      // fail to create
-	   }
+	      if (!TreeView.Create(dwViewStyle, rectDummy, this, 4))
+            throw Win32Exception(HERE, L"Unable to create tree view");
+	      
+	      // ImageList:
+	      Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255));
+	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
-	   // Load view images:
-	   Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255));
-	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
+         // Toolbar:
+         Toolbar.Create(this, IDR_PROJECT);
 
-	   Toolbar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROJECT);
-	   Toolbar.LoadToolBar(IDR_PROJECT, 0, 0, TRUE /* Is locked */);
+	      // Populate
+	      Populate();
+	      AdjustLayout();
 
-	   OnChangeVisualStyle();
-
-	   Toolbar.SetPaneStyle(Toolbar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
-
-	   Toolbar.SetPaneStyle(Toolbar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
-
-	   Toolbar.SetOwner(this);
-
-	   // All commands will be routed via this control , not via the parent frame:
-	   Toolbar.SetRouteCommandsViaFrame(FALSE);
-
-	   // Fill in some static tree view data (dummy code, nothing magic here)
-	   FillFileView();
-	   AdjustLayout();
-
-	   return 0;
+	      return 0;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return -1;
+      }
    }
 
    void CProjectWnd::OnChangeVisualStyle()
    {
-	   Toolbar.CleanUpLockedImages();
-	   Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
+	   //Toolbar.CleanUpLockedImages();
+	   //Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
 
-	   Images.DeleteImageList();
+	   //Images.DeleteImageList();
 
-	   CBitmap bmp;
-	   if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
-	   {
-		   TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
-		   ASSERT(FALSE);
-		   return;
-	   }
+	   //CBitmap bmp;
+	   //if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
+	   //{
+		  // TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
+		  // ASSERT(FALSE);
+		  // return;
+	   //}
 
-	   BITMAP bmpObj;
-	   bmp.GetBitmap(&bmpObj);
+	   //BITMAP bmpObj;
+	   //bmp.GetBitmap(&bmpObj);
 
-	   Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
-	   Images.Add(&bmp, RGB(255, 0, 255));
+	   //Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
+	   //Images.Add(&bmp, RGB(255, 0, 255));
 
-	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
+	   //TreeView.SetImageList(&Images, TVSIL_NORMAL);
    }
 
    void CProjectWnd::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -194,6 +201,43 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
    }
 
+   void CProjectWnd::OnPaint()
+   {
+	   CPaintDC dc(this); // device context for painting
+
+	   CRect rectTree;
+	   TreeView.GetWindowRect(rectTree);
+	   ScreenToClient(rectTree);
+
+	   rectTree.InflateRect(1, 1);
+	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
+   }
+
+   void CProjectWnd::OnProjectChanged()
+   {
+      Populate();
+   }
+
+   void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
+   {
+	   CDockablePane::OnSetFocus(pOldWnd);
+
+	   TreeView.SetFocus();
+   }
+
+   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
+   {
+	   CDockablePane::OnSize(nType, cx, cy);
+	   AdjustLayout();
+   }
+
+
+
+   
+
+
+
+
    void CProjectWnd::OnFileOpen()
    {
 	   // TODO: Add your command handler code here
@@ -224,35 +268,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   // TODO: Add your command handler code here
    }
 
-   void CProjectWnd::OnPaint()
-   {
-	   CPaintDC dc(this); // device context for painting
-
-	   CRect rectTree;
-	   TreeView.GetWindowRect(rectTree);
-	   ScreenToClient(rectTree);
-
-	   rectTree.InflateRect(1, 1);
-	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
-   }
-
+   
    void CProjectWnd::OnProperties()
    {
 	   AfxMessageBox(_T("Properties...."));
 
-   }
-
-   void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
-   {
-	   CDockablePane::OnSetFocus(pOldWnd);
-
-	   TreeView.SetFocus();
-   }
-
-   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
-   {
-	   CDockablePane::OnSize(nType, cx, cy);
-	   AdjustLayout();
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

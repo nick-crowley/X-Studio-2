@@ -49,7 +49,6 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
-         XmlNodePtr     GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
          int            ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help);
          int            ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help);
          wstring        ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help);

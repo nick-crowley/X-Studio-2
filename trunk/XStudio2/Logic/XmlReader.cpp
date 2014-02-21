@@ -50,6 +50,27 @@ namespace Logic
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
+      /// <summary>Retrieves the child of a node</summary>
+      /// <param name="parent">The node</param>
+      /// <param name="index">Zero-based index</param>
+      /// <param name="help">Meaning of node</param>
+      /// <returns>Child node</returns>
+      /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
+      /// <exception cref="Logic::FileFormatException">Invalid index</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      XmlNodePtr  XmlReader::GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      {
+         REQUIRED(parent);
+
+         // Verify index
+         if (index >= (UINT)parent->childNodes->length)
+            throw FileFormatException(HERE, GuiString(L"Cannot read %s from node %d of %d", help, index+1, parent->childNodes->length));
+
+         // Retrieve child
+         return parent->childNodes->item[index];
+      }
+
+
       /// <summary>Parses the entire contents of the input stream</summary>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Error in the XML</exception>

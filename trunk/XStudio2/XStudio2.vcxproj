@@ -158,6 +158,7 @@
     <ClInclude Include="Logic\GameObject.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
     <ClInclude Include="Logic\IndentationStack.h" />
+    <ClInclude Include="Logic\LegacyProjectReader.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
     <ClInclude Include="Logic\ParameterTypes.h" />
     <ClInclude Include="Logic\PreferencesLibrary.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="Logic\GameObject.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
     <ClCompile Include="Logic\LanguageString.cpp" />
+    <ClCompile Include="Logic\LegacyProjectReader.cpp" />
     <ClCompile Include="Logic\PreferencesLibrary.cpp" />
     <ClCompile Include="Logic\ProjectFile.cpp" />
     <ClCompile Include="Logic\RichString.cpp" />

@@ -1,13 +1,19 @@
-
 #pragma once
 
 #include "FileTreeCtrl.h"
+#include "ToolBarEx.h"
+#include "ImageListEx.h"
+#include "Logic/Event.h"
+#include "ProjectDocument.h"
+
+/// <summary>User interface</summary>
+FORWARD_DECLARATION2(Logic,Projects,class ProjectItem)
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>Project explorer toolbar</summary>
-   class CProjectToolBar : public CMFCToolBar
+   class CProjectToolBar : public ToolBarEx
    {
       // --------------------- CONSTRUCTION ----------------------
 
@@ -16,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
 	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	   {
-		   CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
+		   ToolBarEx::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
 	   }
 
 	   virtual BOOL AllowShowOnList() const { return FALSE; }
@@ -44,27 +50,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-	   void FillFileView();
-      void OnChangeVisualStyle();
-
-	   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+      void InsertItem(ProjectItem* item, HTREEITEM parent);
+	   void Populate();
+      
+      handler void OnChangeVisualStyle();
+	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnPaint();
+      handler void OnProjectChanged();
+      afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
-	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	   afx_msg void OnProperties();
+	   
 	   afx_msg void OnFileOpen();
 	   afx_msg void OnFileOpenWith();
 	   afx_msg void OnDummyCompile();
 	   afx_msg void OnEditCut();
 	   afx_msg void OnEditCopy();
 	   afx_msg void OnEditClear();
-	   afx_msg void OnPaint();
-	   afx_msg void OnSetFocus(CWnd* pOldWnd);
+	   afx_msg void OnProperties();
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-	   CImageList      Images;
+	   ImageListEx     Images;
       CFileTreeCtrl   TreeView;
 	   CProjectToolBar Toolbar;
+      EventHandler    fnProjectChanged;
    };
 
 

@@ -116,6 +116,19 @@ namespace Testing
             // ---------------------- ACCESSORS ------------------------			
 
             // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Retrieves the child of a node</summary>
+            /// <param name="parent">The node</param>
+            /// <param name="index">Zero-based index</param>
+            /// <param name="help">Meaning of node</param>
+            /// <returns>Child node</returns>
+            /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
+            /// <exception cref="Logic::FileFormatException">Invalid index</exception>
+            /// <exception cref="Logic::ComException">COM Error</exception>
+            XmlNodePtr  GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help)
+            {
+               return SourceValueReader::GetChild(parent, index, help);
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
