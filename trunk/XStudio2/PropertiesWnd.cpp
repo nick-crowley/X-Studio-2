@@ -23,11 +23,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
 	   ON_COMMAND(ID_EXPAND_ALL, OnExpandAllProperties)
-	   ON_COMMAND(ID_PROPERTIES1, OnCommand1)
-	   ON_COMMAND(ID_PROPERTIES2, OnCommand2)
       ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
-	   ON_UPDATE_COMMAND_UI(ID_PROPERTIES1, OnQueryCommand1)
-      ON_UPDATE_COMMAND_UI(ID_PROPERTIES2, OnQueryCommand2)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
       ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnQueryExpandAllProperties)
       ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnQuerySortProperties)
 	   ON_WM_SETFOCUS()
@@ -138,7 +135,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      m_wndPropList.MarkModifiedProperties();
 
          // Toolbar
-         m_wndToolBar.Create(this, IDR_PROPERTIES);
+         m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_PROPERTIES_24 : IDR_PROPERTIES_16);
 
          // Layout
 	      AdjustLayout();
@@ -150,16 +147,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   void CPropertiesWnd::OnCommand1()
-   {
-	   // TODO: Add your command handler code here
-   }
-   
-   void CPropertiesWnd::OnCommand2()
-   {
-	   // TODO: Add your command handler code here
-   }
-   
    void CPropertiesWnd::OnExpandAllProperties()
    {
 	   m_wndPropList.ExpandAll();
@@ -175,14 +162,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return 0;
    }
 
-   void CPropertiesWnd::OnQueryCommand1(CCmdUI* pCmdUI)
+   void CPropertiesWnd::OnQueryCustomCommand(CCmdUI* pCmdUI)
    {
-	   pCmdUI->Enable(FALSE);
-   }
-
-   void CPropertiesWnd::OnQueryCommand2(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->Enable(FALSE);
+      if (Source)
+         Source->OnQueryCustomCommand(pCmdUI);
+	   
+      //pCmdUI->Enable(TRUE);
+      //pCmdUI->ContinueRouting();
    }
 
    

@@ -62,11 +62,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void SetVSDotNetLook(BOOL bSet);
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnCommand1();
-	   afx_msg void OnCommand2();
       afx_msg void OnExpandAllProperties();
-      afx_msg void OnQueryCommand1(CCmdUI* pCmdUI);
-	   afx_msg void OnQueryCommand2(CCmdUI* pCmdUI);
+      afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryExpandAllProperties(CCmdUI* pCmdUI);
       afx_msg void OnQuerySortProperties(CCmdUI* pCmdUI);
       afx_msg LRESULT OnPropertyUpdated(WPARAM wParam, LPARAM lParam);

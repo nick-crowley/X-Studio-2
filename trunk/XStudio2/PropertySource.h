@@ -25,6 +25,12 @@ NAMESPACE_BEGIN2(GUI,Utils)
          return true;
       }
 
+      /// <summary>Queries the state of a properties toolbar command.</summary>
+      /// <param name="cmd">Command</param>
+      virtual void  OnQueryCustomCommand(CCmdUI* cmd)
+      {
+      }
+
       /// <summary>Called when property needs validating.</summary>
       /// <param name="p">The p.</param>
       /// <returns></returns>

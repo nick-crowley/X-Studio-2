@@ -329,8 +329,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetSelection(CHARRANGE rng) override;
 
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
-	   virtual BOOL OnNewDocument();
-      virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+      afx_msg void OnInsertArgument();
+	   handler BOOL OnNewDocument() override;
+      handler BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+      handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
    
       // -------------------- REPRESENTATION ---------------------
