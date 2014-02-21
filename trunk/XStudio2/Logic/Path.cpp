@@ -270,7 +270,7 @@ namespace Logic
          return StrCmpI(Buffer.get(), path);
       }
 
-      /// <summary>Duplicate the buffer into a MAX_PATH chara array<summary>
+      /// <summary>Duplicate the buffer into a MAX_PATH char array</summary>
       /// <returns></returns>
       CharArrayPtr  Path::Copy() const
       {

@@ -175,6 +175,7 @@
     <ClInclude Include="Logic\TShip.h" />
     <ClInclude Include="Logic\WorkerFeedback.h" />
     <ClInclude Include="OutputList.h" />
+    <ClInclude Include="ProjectDocument.h" />
     <ClInclude Include="ProjectWnd.h" />
     <ClInclude Include="LanguageDocument.h" />
     <ClInclude Include="LanguageEditView.h" />
@@ -294,6 +295,7 @@
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="Logic\TShipReader.cpp" />
     <ClCompile Include="OutputList.cpp" />
+    <ClCompile Include="ProjectDocument.cpp" />
     <ClCompile Include="ProjectWnd.cpp" />
     <ClCompile Include="LanguageDocument.cpp" />
     <ClCompile Include="LanguageEditView.cpp" />

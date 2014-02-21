@@ -43,7 +43,7 @@ namespace Logic
             if (StrStrIA((char*)buf.get(), "<director>") != nullptr)
                return FileType::Mission;
 
-            if (StrStrIA((char*)buf.get(), "<project>") != nullptr)
+            if (StrStrIA((char*)buf.get(), "<project") != nullptr)
                return FileType::Project;
 
             if (StrStrIA((char*)buf.get(), "<universe>") != nullptr)

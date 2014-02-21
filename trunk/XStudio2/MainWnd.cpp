@@ -300,8 +300,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Success: Change app state
       if (wp.Type == ProgressType::Succcess)
       {
+         // Change state + cleanup thread
          theApp.State = AppState::GameDataPresent;
-         GameDataThread.Close();
+         GameDataThread.Close(true);
 
          // Parse command line for standard shell commands, DDE, file open
 	      CCommandLineInfo cmdInfo;

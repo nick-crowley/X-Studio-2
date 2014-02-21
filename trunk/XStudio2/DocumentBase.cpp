@@ -40,7 +40,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  DocumentBase::Activate()
    {
       auto pos = GetFirstViewPosition();
-      GetNextView(pos)->GetParentFrame()->ActivateFrame();
+
+      // Activate parent frame of view (if any)
+      if (auto view = GetNextView(pos))
+         if (auto parent = view->GetParentFrame())
+            parent->ActivateFrame();
    }
 
    /// <summary>Finds and highlights the next match, if any</summary>
