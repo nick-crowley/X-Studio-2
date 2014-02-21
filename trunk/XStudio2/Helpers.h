@@ -110,7 +110,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 
    /// <summary>TreeView item helper</summary>
-   class TVItem : public TVITEMEX
+   class TVItem : public TVITEM
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -122,9 +122,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <param name="node">node</param>
       /// <param name="bufLen">buffer length</param>
       /// <param name="flags">desired properties</param>
-      TVItem(UINT bufLen, UINT flags = TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM)
+      TVItem(HTREEITEM node, UINT bufLen, UINT flags = TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM)
       {
-         ZeroMemory(dynamic_cast<TVITEMEX*>(this), sizeof(TVITEMEX));
+         ZeroMemory(dynamic_cast<TVITEM*>(this), sizeof(TVITEM));
 
          // Allocate text buffer
          Text = CharArrayPtr(new wchar[bufLen+1]);
@@ -132,33 +132,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Set properties
          mask       = flags;
+         hItem      = node;
          pszText    = Text.get();
          cchTextMax = bufLen;
       }
 
-      /// <summary>Create a populated item for setting text and properties</summary>
+      /// <summary>Create a wrapper for an existing item</summary>
       /// <param name="node">node</param>
       /// <param name="txt">text.</param>
       /// <param name="flags">properties.</param>
-      /*TVItem(const wstring& txt, UINT flags = TVIF_TEXT) : Text(CopyText(txt))
+      explicit TVItem(const TVITEM& item) : TVITEM(item), Text(nullptr)
       {
-         ZeroMemory(dynamic_cast<TVITEMEX*>(this), sizeof(TVITEMEX));
-
-         mask     = flags;
-         pszText  = Text.get();
-      }*/
+      }
       
       // ------------------------ STATIC -------------------------
    private:
-      /// <summary>Duplicates the input string.</summary>
-      /// <param name="str">The string.</param>
-      /// <returns>new wide char array</returns>
-      /*static wchar* CopyText(const wstring& str)
-      {
-         wchar* buf = new wchar[str.length()+1];
-         StringCchCopy(buf, str.length()+1, str.c_str());
-         return buf;
-      }*/
 
       // --------------------- PROPERTIES ------------------------
 	   
@@ -167,6 +155,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      /// <summary>Copy data from another item</summary>
+      /// <param name="r">The r.</param>
+      /// <returns></returns>
+      TVItem& operator=(const TVITEM& r)
+      {
+         mask = r.mask;
+
+         // Copy handle/data
+         hItem  = (r.mask & TVIF_HANDLE ? r.hItem  : 0);
+         lParam = (r.mask & TVIF_PARAM  ? r.lParam : 0);
+
+         // Copy/Erase text
+         SetText((r.mask & TVIF_TEXT) && r.pszText ? r.pszText : L"");
+
+         // Copy remaining properties
+         iSelectedImage = (r.mask & TVIF_SELECTEDIMAGE ? r.iSelectedImage : 0);
+         iImage    = (r.mask & TVIF_IMAGE ? r.iImage    : 0);
+         state     = (r.mask & TVIF_STATE ? r.state     : 0);
+         stateMask = (r.mask & TVIF_STATE ? r.stateMask : 0);
+         return *this;
+      }
+
       /// <summary>Sets the text</summary>
       /// <param name="str">The string.</param>
       void  SetText(const wstring& str)
