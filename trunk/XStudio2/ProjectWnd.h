@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FileTreeCtrl.h"
+#include "ProjectTreeCtrl.h"
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
 #include "Logic/Event.h"
@@ -50,8 +50,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    protected:
       void       AdjustLayout();
-      HTREEITEM  InsertItem(ProjectItem* item, HTREEITEM parent);
-	   void       Populate();
       
       handler void OnChangeVisualStyle();
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -70,12 +68,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnProperties();
 
    private:
-      int  GetItemIcon(ProjectItem* item);
 
       // -------------------- REPRESENTATION ---------------------
    protected:
 	   ImageListEx     Images;
-      CFileTreeCtrl   TreeView;
+      ProjectTreeCtrl TreeView;
 	   CProjectToolBar Toolbar;
       EventHandler    fnProjectChanged;
    };

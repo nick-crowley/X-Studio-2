@@ -253,7 +253,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
@@ -360,7 +360,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="FileTreeCtrl.cpp" />
+    <ClCompile Include="ProjectTreeCtrl.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
     <ClCompile Include="Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="Testing\ScriptTextValidator.cpp" />

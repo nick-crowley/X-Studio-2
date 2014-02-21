@@ -65,82 +65,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
-   /// <summary>Gets the item icon.</summary>
-   /// <param name="item">The item.</param>
-   /// <returns></returns>
-   int CProjectWnd::GetItemIcon(ProjectItem* item)
-   {
-      int icon = -1;
-
-      // Choose icon
-      switch (item->Type)
-      {
-      case ProjectItemType::Folder:    icon = 0;  break;
-      case ProjectItemType::Variable:  icon = 6;  break;
-      case ProjectItemType::File:      
-         switch (dynamic_cast<ProjectFileItem*>(item)->FileType)
-         {
-         case FileType::Script:   icon = 2;  break;
-         case FileType::Language: icon = 3;  break;
-         case FileType::Mission:  icon = 4;  break;
-         case FileType::Unknown:  icon = 5;  break;
-         }
-         break;
-      }
-
-      return icon;
-   }
-
-   /// <summary>Inserts an item and it's children</summary>
-   /// <param name="item">The item.</param>
-   /// <param name="parent">The parent.</param>
-   HTREEITEM CProjectWnd::InsertItem(ProjectItem* item, HTREEITEM parent)
-   {
-      wstring name;
-
-      // Generate name
-      if (auto var = dynamic_cast<ProjectVariableItem*>(item))
-         name = GuiString(L"%s = %d", var->Name.c_str(), var->Value);
-      else
-         name = item->Name;
-      
-      // Add item
-      HTREEITEM node = TreeView.InsertItem(name.c_str(), GetItemIcon(item), GetItemIcon(item), parent);
-
-      // Fixed: Display in bold
-      if (item->Fixed)
-	      TreeView.SetItemState(node, TVIS_BOLD, TVIS_BOLD);
-
-      // Folder: Insert children
-      for (auto child : item->Children)
-         InsertItem(child, node);
-
-      // Fixed: Expand
-      TreeView.Expand(node, TVE_EXPAND);
-      return node;
-   }
-
-   /// <summary>Populates the entire treeview from the active project.</summary>
-   void CProjectWnd::Populate()
-   {
-      // Clear
-      TreeView.DeleteAllItems();
-      
-      // Repopulate
-      if (auto doc = ProjectDocument::GetActive())
-      {
-         // Root: Project Name
-         HTREEITEM root = TreeView.InsertItem(doc->GetTitle(), 1, 1);
-	      TreeView.SetItemState(root, TVIS_BOLD, TVIS_BOLD);
-
-         // Items: Populate recursively
-         for (auto item : doc->Project.Items)
-            TreeView.SortChildren( InsertItem(item, root) );
-
-         // Expand root
-         TreeView.Expand(root, TVE_EXPAND);
-      }
-   }
 
    int CProjectWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -168,7 +92,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
 	      // Populate
-	      Populate();
+	      TreeView.Populate();
 	      AdjustLayout();
 	      return 0;
       }
@@ -245,7 +169,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    void CProjectWnd::OnProjectChanged()
    {
-      Populate();
+      TreeView.Populate();
    }
 
    void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
