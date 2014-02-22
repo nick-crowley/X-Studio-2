@@ -58,7 +58,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       handler void OnProjectLoaded();
       afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
-	   
+	   afx_msg void OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
 	   afx_msg void OnCreateFolder();
 	   afx_msg void OnAddExisting();
 	   afx_msg void OnOpenItem();
