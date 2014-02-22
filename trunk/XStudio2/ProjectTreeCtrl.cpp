@@ -23,7 +23,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ProjectTreeCtrl::ProjectTreeCtrl() : DragIcon(nullptr), DragSource((HTREEITEM)nullptr)
+   ProjectTreeCtrl::ProjectTreeCtrl() 
+      : DragIcon(nullptr), 
+        DragSource((HTREEITEM)nullptr),
+        fnItemAdded(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemAdded)),
+        fnItemRemoved(ProjectDocument::ItemRemoved.Register(this, &ProjectTreeCtrl::OnItemRemoved))
    {
    }
 
@@ -35,6 +39,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Adds a new folder as a child of the currently selected folder.</summary>
    void ProjectTreeCtrl::AddFolder()
    {
       // Require selected item
@@ -49,10 +54,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (!selected.Data || selected.Data->Type != ProjectItemType::Folder)
          return;
 
-      // Insert project + treeView
-      auto folder = new ProjectFolderItem(L"New Folder", false);
-      selected.Data->Add(folder);
-      InsertItem(TreeItem(folder), selected.hItem);
+      // Feedback
+      Console << Cons::UserAction << "Adding new folder to project item " << selected.Data->Name << ENDL;
+
+      // Insert new folder
+      ProjectDocument::GetActive()->AddFolder(L"New Folder", dynamic_cast<ProjectFolderItem*>(selected.Data));
    }
 
    /// <summary>Populates the entire treeview from the active project.</summary>
@@ -80,6 +86,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Reverse lookup a tree item from project item data</summary>
+   /// <param name="item">item data.</param>
+   /// <returns></returns>
+   HTREEITEM ProjectTreeCtrl::FindItem(const ProjectItem* item) const
+   {
+      return FindItem(GetRootItem(), item);
+   }
+
+   /// <summary>Finds a tree item from data.</summary>
+   /// <param name="item">item to search</param>
+   /// <param name="data">data</param>
+   /// <returns></returns>
+   HTREEITEM ProjectTreeCtrl::FindItem(HTREEITEM item, const ProjectItem* data) const
+   {
+      // Search item
+      if (reinterpret_cast<const ProjectItem*>(GetItemData(item)) == data)
+         return item;
+
+      // Perform depth first search from input item
+      for (item = CTreeCtrl::GetNextItem(item, TVGN_CHILD); item != nullptr; item = CTreeCtrl::GetNextItem(item, TVGN_NEXT))
+         if (HTREEITEM match = FindItem(item, data))
+            return match;
+
+      // Not found
+      return nullptr;
+   }
 
    /// <summary>Inserts an item and it's children</summary>
    /// <param name="item">The item.</param>
@@ -98,8 +131,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return node;
    }
 
-   // ------------------------------- PRIVATE METHODS ------------------------------
-   
    /// <summary>Allow user to reposition items by dragging</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
    /// <param name="pResult">The result.</param>
@@ -113,9 +144,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          try
          {
-            // DEBUG:
-            //Console << "Beginning drag operation" << ENDL;
-
             // Highlight item
             if (!SelectDropTarget(DragSource.hItem))
                throw Win32Exception(HERE, L"Unable to select drop target");
@@ -156,10 +184,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ProjectDocument::GetActive()->MoveItem(DragSource.Data, dynamic_cast<ProjectFolderItem*>(target.Data));
 
       // Move item in tree
-      DeleteItem(DragSource.hItem);
-      InsertItem(TreeItem(DragSource.Data), target.hItem);
+      /*DeleteItem(DragSource.hItem);
+      InsertItem(TreeItem(DragSource.Data), target.hItem);*/
    }
 
+   /// <summary>Called when item added.</summary>
+   /// <param name="item">The item.</param>
+   /// <param name="parent">Parent of item</param>
+   void  ProjectTreeCtrl::OnItemAdded(ProjectItem* item, ProjectItem* parent)
+   {
+      InsertItem(TreeItem(item), FindItem(parent));
+   }
+
+   /// <summary>Called when item added.</summary>
+   /// <param name="item">The item.</param>
+   /// <param name="parent">Always null</param>
+   void  ProjectTreeCtrl::OnItemRemoved(ProjectItem* item, ProjectItem* /*parent = nullptr*/)
+   {
+      DeleteItem(FindItem(item));
+   }
 
    /// <summary>Allow user to rename the root and non-fixed items</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
@@ -302,7 +345,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 	   return bRes;
    }
-
+   
+   // ------------------------------- PRIVATE METHODS ------------------------------
+   
 /// <summary>User interface controls</summary>
 NAMESPACE_END2(GUI,Controls)
 

@@ -34,7 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CProjectWnd::CProjectWnd() : fnProjectChanged(ProjectDocument::Changed.Register(this, &CProjectWnd::OnProjectChanged))
+   CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded))
    {
    }
 
@@ -167,7 +167,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
-   void CProjectWnd::OnProjectChanged()
+   /// <summary>Called when project loaded or unloaded.</summary>
+   void CProjectWnd::OnProjectLoaded()
    {
       TreeView.Populate();
    }
