@@ -35,50 +35,16 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         //static function<bool (const ProjectItem&)>  IsEqual;
 
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         /// <summary>Checks whether a child item is present</summary>
+         /// <summary>Removes a child without destroying it</summary>
          /// <param name="p">item</param>
-         /// <returns></returns>
-         bool  Contains(ProjectItem* p)
-         {
-            // Search children
-            for (auto& c : Children)
-               if (c.get() == p || c->Contains(p))
-                  return true;
-
-            return false;
-         }
-
-         /// <summary>Finds a child</summary>
-         /// <param name="p">item</param>
-         /// <returns></returns>
-         /// <exception cref="Logic::AlgorithmException">Item does not exist</exception>
-         ProjectItemPtr  Find(ProjectItem* p)
-         {
-            // Depth first search. 
-            for (auto& c : Children)
-            {
-               // Found: Remove child
-               if (p == c.get())
-                  return c;
-               
-               // Failed: Search grandchildren
-               else if (c->Contains(p))
-                  return c->Find(p);
-            }
-
-            throw AlgorithmException(HERE, GuiString(L"Project item '%s' not found", p->Name.c_str()));
-         }
-
-         /// <summary>Removes a child</summary>
-         /// <param name="p">item</param>
-         /// <returns>True if found, false if not</returns>
-         bool  Remove(ProjectItem* p)
+         /// <returns>Item if found, otherwise nullptr</returns>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+         ProjectItemPtr  Remove(ProjectItem* p)
          {
             // Depth first search. 
             for (auto pos = Children.begin(), end = Children.end(); pos != end; ++pos)
@@ -86,16 +52,17 @@ namespace Logic
                // Found: Remove child
                if (p == pos->get())
                {
+                  ProjectItemPtr ptr(*pos);
                   Children.erase(pos);
-                  return true;
+                  return ptr;
                }
                // Failed: Search grandchildren
-               else if ((*pos)->Remove(p))
-                  return true;
+               else if (ProjectItemPtr ptr = pos->get()->Remove(p))
+                  return ptr;
             }
 
             // Not found
-            return false;
+            return ProjectItemPtr(nullptr);
          }
 
       protected:
@@ -111,9 +78,22 @@ namespace Logic
       public:
          /// <summary>Append child item</summary>
          /// <param name="p">item</param>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
          void  Add(ProjectItem* p)
          {
+            REQUIRED(p);
+
             Children.push_back(ProjectItemPtr(p));
+         }
+
+         /// <summary>Append child item</summary>
+         /// <param name="p">item</param>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+         void  Add(ProjectItemPtr& p)
+         {
+            REQUIRED(p);
+
+            Children.push_back(p);
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -212,57 +192,48 @@ namespace Logic
          class ItemCollection : public ProjectItemArray
          {
          public:
-            /// <summary>Append child item</summary>
-            /// <param name="p">item</param>
-            void  Add(ProjectItem* p)
-            {
-               push_back(ProjectItemPtr(p));
-            }
+            ItemCollection()
+            {}
+            ~ItemCollection()
+            {}
 
-            /// <summary>Finds an item</summary>
+            /// <summary>Add base folder</summary>
             /// <param name="p">item</param>
-            /// <returns></returns>
             /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-            /// <exception cref="Logic::AlgorithmException">Item does not exist</exception>
-            ProjectItemPtr  Find(ProjectItem* p)
+            /// <exception cref="Logic::AlgorithmException">Item is not fixed</exception>
+            void  Add(ProjectItem* p)
             {
                REQUIRED(p);
 
-               // Search folders
-               for (auto& folder : *this)
-               {
-                  if (folder.get() == p)
-                     return folder;
+               // Ensure base folder
+               if (!p->Fixed || p->Type != ProjectItemType::Folder)
+                  throw AlgorithmException(HERE, GuiString(L"Cannot add '%s' - not a base folder", p->Name.c_str()));
 
-                  if (folder->Contains(p))
-                     return folder->Find(p);
-               }
-
-               // Not found
-               throw AlgorithmException(HERE, GuiString(L"Project item '%s' not found", p->Name.c_str()));
+               push_back(ProjectItemPtr(p));
             }
 
             /// <summary>Finds an removes an item</summary>
             /// <param name="p">item</param>
-            /// <returns></returns>
+            /// <returns>Item removed, or nullptr</returns>
             /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-            bool  Remove(ProjectItem* p)
+            /// <exception cref="Logic::AlgorithmException">Item is fixed</exception>
+            ProjectItemPtr  Remove(ProjectItem* p)
             {
                REQUIRED(p);
 
-               // Search/Remove from folders
+               // Cannot remove base folders
+               if (p->Fixed)
+                  throw AlgorithmException(HERE, GuiString(L"Cannot remove fixed item '%s'", p->Name.c_str()));
+
+               // Find and remove
                for (auto& folder : *this)
                {
-                  if (folder.get() == p)
-                     throw AlgorithmException(HERE, GuiString(L"Cannot remove project base folder '%s'", p->Name.c_str()));
-
-                  // Search folder
-                  if (folder->Remove(p))
-                     return true;
+                  if (ProjectItemPtr ptr = folder->Remove(p))
+                     return ptr;
                }
 
                // Not found
-               return false;
+               return ProjectItemPtr(nullptr);
             }
          };
 

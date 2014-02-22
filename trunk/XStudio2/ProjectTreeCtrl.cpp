@@ -50,8 +50,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             auto root = InsertItem(TreeItem(doc), nullptr);
 
             // Folders: Populate recursively
-            for (auto& item : doc->Project.Items)
-               InsertItem(TreeItem(item.get()), root);
+            for (auto& folder : doc->Project.Items)
+               InsertItem(TreeItem(folder.get()), root);
          }
       }
       catch (ExceptionBase& e) {
@@ -71,8 +71,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Children: Insert children
       if (item.Data)
-         for (auto& it : item.Data->Children)
-            InsertItem(TreeItem(it.get()), node);
+         for (auto& ch : item.Data->Children)
+            InsertItem(TreeItem(ch.get()), node);
 
       // Return item
       return node;
