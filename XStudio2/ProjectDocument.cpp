@@ -212,14 +212,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       REQUIRED(item);
       REQUIRED(folder);
 
-      //ProjectItemPtr it(item);
-
-      // Remove (prevent delete)
-      auto ptr = Project.Items.Find(item);
-      Project.Items.Remove(item);
-
-      // Add
-      folder->Add(item);
+      // Remove and re-insert
+      folder->Add(Project.Items.Remove(item));
    }
 
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 

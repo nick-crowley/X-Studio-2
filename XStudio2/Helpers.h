@@ -137,12 +137,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          cchTextMax = bufLen;
       }
 
-      /// <summary>Create a wrapper for an existing item</summary>
-      /// <param name="node">node</param>
-      /// <param name="txt">text.</param>
-      /// <param name="flags">properties.</param>
-      explicit TVItem(const TVITEM& item) : TVITEM(item), Text(nullptr)
+      /// <summary>Create a wrapper for an existing item, duplicating the text into internal buffer</summary>
+      /// <param name="item">item</param>
+      explicit TVItem(const TVITEM& item) : TVITEM(item), Text(new wchar[256])
       {
+         cchTextMax = 256;
+         Assign(item);
       }
       
       // ------------------------ STATIC -------------------------
@@ -160,6 +160,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <returns></returns>
       TVItem& operator=(const TVITEM& r)
       {
+         Assign(r);
+         return *this;
+      }
+
+      /// <summary>Sets the text</summary>
+      /// <param name="str">The string.</param>
+      void  SetText(const wstring& str)
+      {
+         StringCchCopy(pszText=Text.get(), cchTextMax, str.c_str());
+      }
+
+   private:
+      /// <summary>Copy data from another item</summary>
+      /// <param name="r">The r.</param>
+      /// <returns></returns>
+      void  Assign(const TVITEM& r)
+      {
          mask = r.mask;
 
          // Copy handle/data
@@ -174,14 +191,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          iImage    = (r.mask & TVIF_IMAGE ? r.iImage    : 0);
          state     = (r.mask & TVIF_STATE ? r.state     : 0);
          stateMask = (r.mask & TVIF_STATE ? r.stateMask : 0);
-         return *this;
-      }
-
-      /// <summary>Sets the text</summary>
-      /// <param name="str">The string.</param>
-      void  SetText(const wstring& str)
-      {
-         StringCchCopy(pszText=Text.get(), cchTextMax, str.c_str());
       }
 
       // -------------------- REPRESENTATION ---------------------
