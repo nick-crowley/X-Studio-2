@@ -176,16 +176,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="target">The target.</param>
    void  ProjectTreeCtrl::OnDragEnd(const TreeItem& target)
    {
+      // Ensure source != target
+      if (DragSource == target)
+         return;
+
       // Feedback
       Console << Cons::UserAction << "Moving project item " << Cons::Yellow << DragSource.Data->Name 
               << Cons::White << " to " << Cons::Yellow << target.Data->Name << ENDL;
 
-      // Move item in project
+      // Move item 
       ProjectDocument::GetActive()->MoveItem(DragSource.Data, dynamic_cast<ProjectFolderItem*>(target.Data));
-
-      // Move item in tree
-      /*DeleteItem(DragSource.hItem);
-      InsertItem(TreeItem(DragSource.Data), target.hItem);*/
    }
 
    /// <summary>Called when item added.</summary>

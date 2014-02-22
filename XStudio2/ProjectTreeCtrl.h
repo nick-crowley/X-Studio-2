@@ -114,6 +114,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return !Data || !Data->Fixed;
          }
 
+         /// <summary>Compare item handles</summary>
+         /// <param name="r">other.</param>
+         /// <returns></returns>
+         bool operator==(const TreeItem& r) const
+         {
+            return hItem == r.hItem;
+         }
+
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Assign from tree item</summary>
