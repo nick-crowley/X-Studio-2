@@ -43,10 +43,10 @@ namespace Logic
             LoadDocument();
 
             // Create folders
-            file.Items.push_back(new ProjectFolderItem(L"Language Files", true));
-            file.Items.push_back(new ProjectFolderItem(L"MD Scripts", true));
-            file.Items.push_back(new ProjectFolderItem(L"MSCI Scripts", true));
-            file.Items.push_back(new ProjectFolderItem(L"Variables", true));
+            file.Items.Add(new ProjectFolderItem(L"Language Files", true));
+            file.Items.Add(new ProjectFolderItem(L"MD Scripts", true));
+            file.Items.Add(new ProjectFolderItem(L"MSCI Scripts", true));
+            file.Items.Add(new ProjectFolderItem(L"Variables", true));
 
             // Read documents/variables
             for (int i = 0; i < Root->childNodes->length; i++)

@@ -207,6 +207,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   void ProjectDocument::MoveItem(ProjectItem* item, ProjectFolderItem* folder)
+   {
+      REQUIRED(item);
+      REQUIRED(folder);
+
+      //ProjectItemPtr it(item);
+
+      // Remove (prevent delete)
+      auto ptr = Project.Items.Find(item);
+      Project.Items.Remove(item);
+
+      // Add
+      folder->Add(item);
+   }
+
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
    {
       // Raise 'PROJECT CHANGED'

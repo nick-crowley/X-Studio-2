@@ -40,16 +40,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // Clear
       DeleteAllItems();
-      
-      // Repopulate
-      if (auto doc = ProjectDocument::GetActive())
+    
+      try
       {
-         // Root: Project Name
-         auto root = InsertItem(TreeItem(doc), nullptr);
+         // Repopulate
+         if (auto doc = ProjectDocument::GetActive())
+         {
+            // Root: Project Name
+            auto root = InsertItem(TreeItem(doc), nullptr);
 
-         // Folders: Populate recursively
-         for (auto item : doc->Project.Items)
-            InsertItem(TreeItem(item), root);
+            // Folders: Populate recursively
+            for (auto& item : doc->Project.Items)
+               InsertItem(TreeItem(item.get()), root);
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
       }
    }
 
@@ -65,8 +71,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Children: Insert children
       if (item.Data)
-         for (auto it : item.Data->Children)
-            InsertItem(TreeItem(it), node);
+         for (auto& it : item.Data->Children)
+            InsertItem(TreeItem(it.get()), node);
 
       // Return item
       return node;
@@ -88,7 +94,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          try
          {
             // DEBUG:
-            Console << "Beginning drag operation" << ENDL;
+            //Console << "Beginning drag operation" << ENDL;
 
             // Highlight item
             if (!SelectDropTarget(DragSource.hItem))
@@ -122,8 +128,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="target">The target.</param>
    void  ProjectTreeCtrl::OnDragEnd(const TreeItem& target)
    {
-      // DEBUG:
-      Console << "Ending drag operation" << ENDL;
+      // Feedback
+      Console << Cons::UserAction << "Moving project item " << Cons::Yellow << DragSource.Data->Name 
+              << Cons::White << " to " << Cons::Yellow << target.Data->Name << ENDL;
+
+      // Move item in project
+      ProjectDocument::GetActive()->MoveItem(DragSource.Data, dynamic_cast<ProjectFolderItem*>(target.Data));
+
+      // Move item in tree
+      DeleteItem(DragSource.hItem);
+      InsertItem(TreeItem(DragSource.Data), target.hItem);
    }
 
 

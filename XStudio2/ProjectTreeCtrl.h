@@ -27,8 +27,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          /// <summary>Create from project document</summary>
          /// <param name="item">The item.</param>
+         /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
          TreeItem(ProjectDocument* doc) : TVItem(nullptr, MAX_PATH)
          {
+            REQUIRED(doc);
+
             // Use document title
             SetText((LPCWSTR)doc->GetTitle());
 
@@ -41,8 +44,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          /// <summary>Create from project item</summary>
          /// <param name="item">The item.</param>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
          TreeItem(ProjectItem* item) : TVItem(nullptr, MAX_PATH)
          {
+            REQUIRED(item);
+
             // Generate name
             if (auto var = dynamic_cast<ProjectVariableItem*>(item))
                SetText(GuiString(L"%s = %d", var->Name.c_str(), var->Value));

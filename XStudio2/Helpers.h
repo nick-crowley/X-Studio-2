@@ -181,7 +181,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <param name="str">The string.</param>
       void  SetText(const wstring& str)
       {
-         StringCchCopy(Text.get(), cchTextMax, str.c_str());
+         StringCchCopy(pszText=Text.get(), cchTextMax, str.c_str());
       }
 
       // -------------------- REPRESENTATION ---------------------
