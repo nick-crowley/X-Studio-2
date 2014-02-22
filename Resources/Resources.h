@@ -85,15 +85,13 @@
 #define ID_REMOVE_ARGUMENT              227
 
 // ProjectWnd Context menu
-#define ID_OPEN                         228
-#define ID_OPEN_WITH                    229
-#define ID_DUMMY_COMPILE                230
-#define ID_CLASS_ADD_MEMBER_FUNCTION    231
-#define ID_CLASS_ADD_MEMBER_VARIABLE    232
-#define ID_CLASS_DEFINITION             233
-#define ID_CLASS_PROPERTIES             234
-#define ID_NEW_FOLDER                   235
-#define ID_PROPERTIES                   236
+#define ID_PROJECT_OPEN                 228
+#define ID_PROJECT_ADD_FILE             229
+#define ID_PROJECT_ADD_FOLDER           230
+#define ID_PROJECT_RENAME               231
+#define ID_PROJECT_REMOVE               232
+#define ID_PROJECT_DELETE               233
+#define ID_PROJECT_PROPERTIES           234
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 

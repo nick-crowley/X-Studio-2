@@ -152,15 +152,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
-			
+   public:
+      PROPERTY_GET(ProjectItem*,SelectedItem,GetSelectedItemData);
+
       // ---------------------- ACCESSORS ------------------------			
+   public:
+      ProjectItem*  GetSelectedItemData() const;
+
    protected:
       HTREEITEM     FindItem(const ProjectItem* item) const;
       HTREEITEM     FindItem(HTREEITEM item, const ProjectItem* data) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  AddFolder();
+      //void  AddFolder();
       void  Populate();
 
    protected:

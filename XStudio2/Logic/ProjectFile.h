@@ -34,12 +34,38 @@ namespace Logic
          {}
 
          // ------------------------ STATIC -------------------------
-      private:
-
+      
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Query whether any child contains a given path</summary>
+         /// <param name="path">The path.</param>
+         /// <returns></returns>
+         virtual bool Contains(IO::Path path) const PURE;
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Append child item</summary>
+         /// <param name="p">item</param>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+         void  Add(ProjectItem* p)
+         {
+            REQUIRED(p);
+
+            Children.push_back(ProjectItemPtr(p));
+         }
+
+         /// <summary>Append child item</summary>
+         /// <param name="p">item</param>
+         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+         void  Add(ProjectItemPtr& p)
+         {
+            REQUIRED(p);
+
+            Children.push_back(p);
+         }
+
          /// <summary>Removes a child without destroying it</summary>
          /// <param name="p">item</param>
          /// <returns>Item if found, otherwise nullptr</returns>
@@ -63,37 +89,6 @@ namespace Logic
 
             // Not found
             return ProjectItemPtr(nullptr);
-         }
-
-      protected:
-         /// <summary>Equality test</summary>
-         /// <param name="r">other item.</param>
-         /// <returns></returns>
-         virtual bool  Equals(const ProjectItem& r)
-         {
-            return Type == r.Type && Name == r.Name;
-         }
-
-         // ----------------------- MUTATORS ------------------------
-      public:
-         /// <summary>Append child item</summary>
-         /// <param name="p">item</param>
-         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         void  Add(ProjectItem* p)
-         {
-            REQUIRED(p);
-
-            Children.push_back(ProjectItemPtr(p));
-         }
-
-         /// <summary>Append child item</summary>
-         /// <param name="p">item</param>
-         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         void  Add(ProjectItemPtr& p)
-         {
-            REQUIRED(p);
-
-            Children.push_back(p);
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -120,6 +115,14 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Variables cannot contain a path</summary>
+         /// <param name="path">The path.</param>
+         /// <returns></returns>
+         bool Contains(IO::Path path) const override
+         {
+            return false;
+         }
 
          // ----------------------- MUTATORS ------------------------
 
@@ -143,14 +146,13 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
-      protected:
-         /// <summary>Equality test</summary>
-         /// <param name="r">other item.</param>
+      public:
+         /// <summary>Compare path</summary>
+         /// <param name="path">The path.</param>
          /// <returns></returns>
-         bool  Equals(const ProjectItem& r) override
+         bool Contains(IO::Path path) const override
          {
-            auto r2 = dynamic_cast<const ProjectFileItem&>(r);
-            return ProjectItem::Equals(r) && FullPath == r2.FullPath;
+            return FullPath == path;
          }
 
          // ----------------------- MUTATORS ------------------------
@@ -176,6 +178,14 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Check for child with matching path</summary>
+         /// <param name="path">The path.</param>
+         /// <returns></returns>
+         bool Contains(IO::Path path) const override
+         {
+            return any_of(Children.begin(), Children.end(), [path](const ProjectItemPtr& it) {return it->Contains(path);} );
+         }
 
          // ----------------------- MUTATORS ------------------------
 

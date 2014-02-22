@@ -21,13 +21,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
 	   ON_WM_CONTEXTMENU()
-	   ON_COMMAND(ID_PROPERTIES, OnProperties)
-	   ON_COMMAND(ID_OPEN, OnAddFolder)
-	   ON_COMMAND(ID_OPEN_WITH, OnFileOpenWith)
-	   ON_COMMAND(ID_DUMMY_COMPILE, OnDummyCompile)
-	   ON_COMMAND(ID_EDIT_CUT, OnEditCut)
-	   ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
-	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
+	   ON_COMMAND(ID_PROJECT_ADD_FOLDER, OnCreateFolder)
+	   ON_COMMAND(ID_PROJECT_ADD_FILE, OnAddExisting)
+      ON_COMMAND(ID_PROJECT_OPEN, OnOpenItem)
+	   ON_COMMAND(ID_PROJECT_RENAME, OnRenameItem)
+	   ON_COMMAND(ID_PROJECT_REMOVE, OnRemoveItem)
+	   ON_COMMAND(ID_PROJECT_DELETE, OnDeleteItem)
+	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnViewProperties)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
@@ -193,38 +193,139 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
 
-   void CProjectWnd::OnAddFolder()
+   /// <summary>Insert new folder as child of selected item</summary>
+   void CProjectWnd::OnCreateFolder()
    {
-	   TreeView.AddFolder();
+      try
+      {
+	      // Get selected folder, if any
+         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
+         if (!folder)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Adding new folder to project item " << Cons::Yellow << folder->Name << ENDL;
+
+         // Insert new folder
+         ProjectDocument::GetActive()->AddFolder(L"New Folder", folder);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
-   void CProjectWnd::OnFileOpenWith()
+   /// <summary>Display common dialog and insert file as child of selected item.</summary>
+   void CProjectWnd::OnAddExisting()
    {
-	   // TODO: Add your command handler code here
+      auto filter = L"Uncompressed Files (*.xml)|*.xml|" 
+                    L"Compressed Files (*.pck)|*.pck|" 
+                    L"All files (*.*)|*.*||";
+
+      try
+      {
+         // Get selected folder
+         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
+         if (!folder)
+            return;
+
+         // Query for file
+	      CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST, filter, this, 0, TRUE);
+         if (dlg.DoModal() == IDOK)
+         {
+            IO::Path path = (LPCWSTR)dlg.GetPathName();
+
+            // Feedback
+            Console << Cons::UserAction << "Adding " << path << " to project item " << Cons::Yellow << folder->Name << "...";
+
+            // Attempt to insert
+            bool added = ProjectDocument::GetActive()->AddFile(path, folder);
+
+            // Feedback
+            Console << (added ? Cons::Success : Cons::Failure) << ENDL;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
-   void CProjectWnd::OnDummyCompile()
+   /// <summary>Load and display the selected item.</summary>
+   void CProjectWnd::OnOpenItem()
    {
-	   // TODO: Add your command handler code here
+      try
+      {
+         // Get selected file, if any
+         auto file = dynamic_cast<ProjectFileItem*>(TreeView.SelectedItem);
+         if (!file)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Opening project item: " << Cons::Yellow << file->Name << ENDL;
+
+         // Open document
+         theApp.OpenDocumentFile(file->FullPath.c_str(), TRUE);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
-   void CProjectWnd::OnEditCut()
+   /// <summary>Rename the selected item.</summary>
+   void CProjectWnd::OnRenameItem()
    {
-	   // TODO: Add your command handler code here
+	   // Rename selected item
+      TreeView.EditLabel(TreeView.GetSelectedItem());
    }
 
-   void CProjectWnd::OnEditCopy()
+   /// <summary>Removes the selected item.</summary>
+   void CProjectWnd::OnRemoveItem()
    {
-	   // TODO: Add your command handler code here
+      try
+      {
+         // Get selected unfixed file/folder
+         auto item = TreeView.SelectedItem;
+         if (!item || item->Fixed)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Removing project item: " << Cons::Yellow << item->Name << ENDL;
+
+         // Remove item
+         ProjectDocument::GetActive()->RemoveItem(item);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
-   void CProjectWnd::OnEditClear()
+   /// <summary>Removes and deletes the selected item.</summary>
+   void CProjectWnd::OnDeleteItem()
    {
-	   // TODO: Add your command handler code here
+      try
+      {
+         // Get selected unfixed file/folder
+         auto item = TreeView.SelectedItem;
+         if (!item || item->Fixed)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Deleting project item: " << Cons::Yellow << item->Name << ENDL;
+
+         // Remove item
+         auto ptr = ProjectDocument::GetActive()->RemoveItem(item);
+
+         // File: Ensure path exists, then delete
+         if (auto file = dynamic_cast<ProjectFileItem*>(item))
+            if (file->FullPath.Exists() && !DeleteFile(file->FullPath.c_str()))
+               throw Win32Exception(HERE, GuiString(L"Unable to delete '%s'", file->FullPath.c_str()));
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
-   
-   void CProjectWnd::OnProperties()
+   /// <summary>TODO: Display properties</summary>
+   void CProjectWnd::OnViewProperties()
    {
 	   AfxMessageBox(_T("Properties...."));
 

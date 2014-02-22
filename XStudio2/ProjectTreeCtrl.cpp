@@ -40,25 +40,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Adds a new folder as a child of the currently selected folder.</summary>
-   void ProjectTreeCtrl::AddFolder()
-   {
-      // Require selected item
-      if (!GetSelectedItem())
-         return;
+   //void ProjectTreeCtrl::AddFolder()
+   //{
+   //   // Require selected item
+   //   if (!GetSelectedItem())
+   //      return;
 
-      // Examine selected item
+   //   // Examine selected item
+   //   TreeItem selected(GetSelectedItem());
+   //   GetItem(&selected);
+
+   //   // Ensure a folder is selected
+   //   if (!selected.Data || selected.Data->Type != ProjectItemType::Folder)
+   //      return;
+
+   //   // Feedback
+   //   Console << Cons::UserAction << "Adding new folder to project item " << selected.Data->Name << ENDL;
+
+   //   // Insert new folder
+   //   ProjectDocument::GetActive()->AddFolder(L"New Folder", dynamic_cast<ProjectFolderItem*>(selected.Data));
+   //}
+   
+   ProjectItem*  ProjectTreeCtrl::GetSelectedItemData() const
+   {
+      // Lookup selected item
       TreeItem selected(GetSelectedItem());
       GetItem(&selected);
 
-      // Ensure a folder is selected
-      if (!selected.Data || selected.Data->Type != ProjectItemType::Folder)
-         return;
-
-      // Feedback
-      Console << Cons::UserAction << "Adding new folder to project item " << selected.Data->Name << ENDL;
-
-      // Insert new folder
-      ProjectDocument::GetActive()->AddFolder(L"New Folder", dynamic_cast<ProjectFolderItem*>(selected.Data));
+      // Get data
+      return selected.Data;
    }
 
    /// <summary>Populates the entire treeview from the active project.</summary>
@@ -217,6 +227,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Ensure Root or non-fixed item/folder
       if ((*pResult = item.IsEditable() ? ENABLE : DISABLE) == ENABLE)
       {
+         // Feedback
+         Console << Cons::UserAction << "Renaming project item: " << Cons::Yellow << (item.Data ? item.Data->Name : L"<unknown>") << ENDL;
+
+         // Setup edit
          if (auto edit = GetEditControl())
             edit->SetLimitText(MAX_PATH);
       }
