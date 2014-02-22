@@ -14,8 +14,6 @@ static char THIS_FILE[]=__FILE__;
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
-   /// <summary>Treeview child ID</summary>
-   #define IDC_TREEVIEW  4
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -23,14 +21,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
 	   ON_WM_CONTEXTMENU()
-	   ON_COMMAND(ID_PROJECT_ADD_FOLDER, OnCreateFolder)
-	   ON_COMMAND(ID_PROJECT_ADD_FILE, OnAddExisting)
-      ON_COMMAND(ID_PROJECT_OPEN, OnOpenItem)
-	   ON_COMMAND(ID_PROJECT_RENAME, OnRenameItem)
-	   ON_COMMAND(ID_PROJECT_REMOVE, OnRemoveItem)
-	   ON_COMMAND(ID_PROJECT_DELETE, OnDeleteItem)
-	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnViewProperties)
-      ON_NOTIFY(NM_DBLCLK, IDC_TREEVIEW, OnTreeView_DoubleClick)
+	   ON_COMMAND(ID_PROJECT_ADD_FOLDER, OnCommand_CreateFolder)
+	   ON_COMMAND(ID_PROJECT_ADD_FILE, OnCommand_AddExisting)
+      ON_COMMAND(ID_PROJECT_OPEN, OnCommand_OpenItem)
+	   ON_COMMAND(ID_PROJECT_RENAME, OnCommand_RenameItem)
+	   ON_COMMAND(ID_PROJECT_REMOVE, OnCommand_RemoveItem)
+	   ON_COMMAND(ID_PROJECT_DELETE, OnCommand_DeleteItem)
+	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnCommand_ViewProperties)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_PROJECT_OPEN, ID_PROJECT_PROPERTIES, OnQueryCommand)
+      ON_NOTIFY(NM_DBLCLK, IDC_PROJECT_TREE, OnTreeView_DoubleClick)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
@@ -39,6 +38,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded))
    {
+      Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECT));
    }
 
    CProjectWnd::~CProjectWnd()
@@ -68,6 +68,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
+   /// <summary>Determines whether window/treeview has focus.</summary>
+   /// <returns></returns>
+   /// <remarks>this was an experiment, it's no longer used</remarks>
+   bool  CProjectWnd::HasFocus() const
+   {
+      return GetFocus() && (*GetFocus() == *this || *GetFocus() == TreeView);
+   }
+
 
    int CProjectWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
@@ -82,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Create view:
 	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_EDITLABELS | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
 
-	      if (!TreeView.Create(dwViewStyle, rectDummy, this, IDC_TREEVIEW))
+	      if (!TreeView.Create(dwViewStyle, rectDummy, this, IDC_PROJECT_TREE))
             throw Win32Exception(HERE, L"Unable to create project window tree view");
 	      
 	      // ImageList:
@@ -105,6 +113,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
+
+   /// <summary>App-wizard generated.</summary>
    void CProjectWnd::OnChangeVisualStyle()
    {
 	   //Toolbar.CleanUpLockedImages();
@@ -129,6 +139,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   //TreeView.SetImageList(&Images, TVSIL_NORMAL);
    }
 
+
    void CProjectWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
 	   CTreeCtrl* pWndTree = (CTreeCtrl*) &TreeView;
@@ -142,90 +153,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   if (point != CPoint(-1, -1))
 	   {
-		   // Select clicked item:
+		   // Get position
 		   CPoint ptTree = point;
 		   pWndTree->ScreenToClient(&ptTree);
 
-		   UINT flags = 0;
-		   HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
-		   if (hTreeItem != NULL)
-		   {
-			   pWndTree->SelectItem(hTreeItem);
-		   }
+         // Select item
+		   UINT flags = TVHT_ONITEM;
+		   if (auto item = pWndTree->HitTest(ptTree, &flags))
+            pWndTree->SelectItem(item);
 	   }
 
 	   pWndTree->SetFocus();
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
    }
 
-   void CProjectWnd::OnPaint()
-   {
-	   CPaintDC dc(this); // device context for painting
-
-	   CRect rectTree;
-	   TreeView.GetWindowRect(rectTree);
-	   ScreenToClient(rectTree);
-
-	   rectTree.InflateRect(1, 1);
-	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
-   }
-
-   /// <summary>Called when project loaded or unloaded.</summary>
-   void CProjectWnd::OnProjectLoaded()
-   {
-      TreeView.Populate();
-   }
-
-   void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
-   {
-	   CDockablePane::OnSetFocus(pOldWnd);
-
-	   TreeView.SetFocus();
-   }
-
-   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
-   {
-	   CDockablePane::OnSize(nType, cx, cy);
-	   AdjustLayout();
-   }
-
-   /// <summary>Open the selected item on double click</summary>
-   /// <param name="pNMHDR">The NMHDR.</param>
-   /// <param name="pResult">The result.</param>
-   void CProjectWnd::OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult)
-   {
-      OnOpenItem();
-
-      *pResult = 0;
-   }
    
-
-
-
-
-   /// <summary>Insert new folder as child of selected item</summary>
-   void CProjectWnd::OnCreateFolder()
-   {
-      try
-      {
-	      // Get selected folder, if any
-         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
-         if (!folder)
-            return;
-
-         // Feedback
-         Console << Cons::UserAction << "Adding new folder to project item " << Cons::Yellow << folder->Name << ENDL;
-
-         // Insert new folder
-         ProjectDocument::GetActive()->AddFolder(L"New Folder", folder);
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-      }
-   }
-
    /// <summary>Display common dialog and insert file as child of selected item.</summary>
-   void CProjectWnd::OnAddExisting()
+   void CProjectWnd::OnCommand_AddExisting()
    {
       auto filter = L"Uncompressed Files (*.xml)|*.xml|" 
                     L"Compressed Files (*.pck)|*.pck|" 
@@ -258,51 +202,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
          theApp.ShowError(HERE, e);
       }
    }
-
-   /// <summary>Load and display the selected item.</summary>
-   void CProjectWnd::OnOpenItem()
+   
+   /// <summary>Insert new folder as child of selected item</summary>
+   void CProjectWnd::OnCommand_CreateFolder()
    {
       try
       {
-         // Get selected file, if any
-         auto file = dynamic_cast<ProjectFileItem*>(TreeView.SelectedItem);
-         if (!file)
+	      // Get selected folder, if any
+         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
+         if (!folder)
             return;
 
          // Feedback
-         Console << Cons::UserAction << "Opening project item: " << Cons::Yellow << file->Name << ENDL;
+         Console << Cons::UserAction << "Adding new folder to project item " << Cons::Yellow << folder->Name << ENDL;
 
-         // Open document
-         theApp.OpenDocumentFile(file->FullPath.c_str(), TRUE);
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-      }
-   }
-
-   /// <summary>Rename the selected item.</summary>
-   void CProjectWnd::OnRenameItem()
-   {
-	   // Rename selected item
-      if (auto item = TreeView.GetSelectedItem())
-         TreeView.EditLabel(item);
-   }
-
-   /// <summary>Removes the selected item.</summary>
-   void CProjectWnd::OnRemoveItem()
-   {
-      try
-      {
-         // Get selected unfixed file/folder
-         auto item = TreeView.SelectedItem;
-         if (!item || item->Fixed)
-            return;
-
-         // Feedback
-         Console << Cons::UserAction << "Removing project item: " << Cons::Yellow << item->Name << ENDL;
-
-         // Remove item
-         ProjectDocument::GetActive()->RemoveItem(item);
+         // Insert new folder
+         ProjectDocument::GetActive()->AddFolder(L"New Folder", folder);
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
@@ -310,7 +225,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    /// <summary>Removes and deletes the selected item.</summary>
-   void CProjectWnd::OnDeleteItem()
+   void CProjectWnd::OnCommand_DeleteItem()
    {
       try
       { 
@@ -335,14 +250,177 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
+   /// <summary>Load and display the selected item.</summary>
+   void CProjectWnd::OnCommand_OpenItem()
+   {
+      try
+      {
+         // Get selected file, if any
+         auto file = dynamic_cast<ProjectFileItem*>(TreeView.SelectedItem);
+         if (!file)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Opening project item: " << Cons::Yellow << file->Name << ENDL;
+
+         // Open document
+         theApp.OpenDocumentFile(file->FullPath.c_str(), TRUE);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+
+   /// <summary>Rename the selected item.</summary>
+   void CProjectWnd::OnCommand_RenameItem()
+   {
+	   // Rename selected item
+      if (auto item = TreeView.GetSelectedItem())
+         TreeView.EditLabel(item);
+   }
+
+   /// <summary>Removes the selected item.</summary>
+   void CProjectWnd::OnCommand_RemoveItem()
+   {
+      try
+      {
+         // Get selected unfixed file/folder
+         auto item = TreeView.SelectedItem;
+         if (!item || item->Fixed)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Removing project item: " << Cons::Yellow << item->Name << ENDL;
+
+         // Remove item
+         ProjectDocument::GetActive()->RemoveItem(item);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+
    /// <summary>TODO: Display properties</summary>
-   void CProjectWnd::OnViewProperties()
+   void CProjectWnd::OnCommand_ViewProperties()
    {
 	   AfxMessageBox(_T("Properties...."));
 
    }
 
+
+   void CProjectWnd::OnPaint()
+   {
+	   CPaintDC dc(this); // device context for painting
+
+	   CRect rectTree;
+	   TreeView.GetWindowRect(rectTree);
+	   ScreenToClient(rectTree);
+
+	   rectTree.InflateRect(1, 1);
+	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
+   }
+
+
+   /// <summary>Called when project loaded or unloaded.</summary>
+   void CProjectWnd::OnProjectLoaded()
+   {
+      TreeView.Populate();
+   }
+
+
+   /// <summary>Set command states</summary>
+   void CProjectWnd::OnQueryCommand(CCmdUI* pCmd)
+   {
+      bool State = true;
+
+      // Require selection
+      if (!TreeView.GetSelectedItem())
+         State = false;
+      
+      else 
+      {
+         auto item = TreeView.SelectedItem;
+         switch (pCmd->m_nID)
+         {
+         // Open: Require file
+         case ID_PROJECT_OPEN:   
+            State = item && item->Type == ProjectItemType::File; 
+            break;
+
+         // AddFile/Folder: Require folder
+         case ID_PROJECT_ADD_FILE:    
+         case ID_PROJECT_ADD_FOLDER:  
+            State = item && item->Type == ProjectItemType::Folder;  
+            break;
+
+         // Rename: Not fixed folder
+         case ID_PROJECT_RENAME:
+            State = !item || !item->Fixed;
+            break;
+
+         // Remove: Not project + not fixed folder
+         case ID_PROJECT_REMOVE:
+            State = item && item->Fixed;  
+            break;
+
+         // Delete: Require file   
+         case ID_PROJECT_DELETE:   
+            State = item && item->Type == ProjectItemType::File;    
+            break;
+
+         // Properties: Not folder
+         case ID_PROJECT_PROPERTIES:  
+            State = !item || item->Type != ProjectItemType::Folder;    
+            break;
+         }
+      }
+
+      // Enable
+      pCmd->Enable(State ? TRUE : FALSE);
+   }
+
+
+   /// <summary>Set focus to the tree</summary>
+   /// <param name="pOldWnd">The old WND.</param>
+   void CProjectWnd::OnSetFocus(CWnd* pOldWnd)
+   {
+	   CDockablePane::OnSetFocus(pOldWnd);
+
+	   TreeView.SetFocus();
+   }
+
+
+   /// <summary>Adjust layout.</summary>
+   /// <param name="nType">Type of the n.</param>
+   /// <param name="cx">The width.</param>
+   /// <param name="cy">The height.</param>
+   void CProjectWnd::OnSize(UINT nType, int cx, int cy)
+   {
+	   CDockablePane::OnSize(nType, cx, cy);
+	   AdjustLayout();
+   }
+
+
+   /// <summary>Open the selected item on double click</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CProjectWnd::OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      OnCommand_OpenItem();
+      *pResult = 0;
+   }
+   
+
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)
 
+
+
+BOOL CProjectWnd::PreTranslateMessage(MSG* pMsg)
+{
+   if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+	   return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
+
+   return CDockablePane::PreTranslateMessage(pMsg);
+}

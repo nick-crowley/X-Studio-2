@@ -46,26 +46,34 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
-      
+   public:
+      bool  HasFocus() const;
+
       // ----------------------- MUTATORS ------------------------
+   public:
+      BOOL PreTranslateMessage(MSG* pMsg) override;
+
    protected:
       void       AdjustLayout();
       
       handler void OnChangeVisualStyle();
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnCommand_AddExisting();
+      afx_msg void OnCommand_CreateFolder();
+      afx_msg void OnCommand_DeleteItem();
+	   afx_msg void OnCommand_OpenItem();
+	   afx_msg void OnCommand_RenameItem();
+	   afx_msg void OnCommand_RemoveItem();
+	   afx_msg void OnCommand_ViewProperties();
       afx_msg void OnPaint();
       handler void OnProjectLoaded();
+      afx_msg void OnQueryCommand(CCmdUI* pCmd);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
-	   afx_msg void OnCreateFolder();
-	   afx_msg void OnAddExisting();
-	   afx_msg void OnOpenItem();
-	   afx_msg void OnRenameItem();
-	   afx_msg void OnRemoveItem();
-	   afx_msg void OnDeleteItem();
-	   afx_msg void OnViewProperties();
+	   
+	   
 
    private:
 
@@ -75,6 +83,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ProjectTreeCtrl TreeView;
 	   CProjectToolBar Toolbar;
       EventHandler    fnProjectLoaded;
+      HACCEL          Accelerators;
    };
 
 

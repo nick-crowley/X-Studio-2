@@ -58,6 +58,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ScriptView*  GetActiveScriptView();
       virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 	   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+      void         PushAccelerators(UINT nID);
+      void         PopAccelerators();
 
    protected:
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -68,9 +70,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void onScriptViewCaretMoved(POINT pt);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
-      afx_msg void OnViewCustomize();
-      afx_msg void OnViewStringLibrary();
-      afx_msg void OnWindowManager();
+      afx_msg void    OnViewCustomize();
+      afx_msg void    OnViewStringLibrary();
+      afx_msg void    OnWindowManager();
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------
@@ -92,6 +94,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       FeedbackHandler   fnGameDataFeedback;
       CaretMovedHandler fnCaretMoved;
+
+      HACCEL PrevTable;
    };
 
 

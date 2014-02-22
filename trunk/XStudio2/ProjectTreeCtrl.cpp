@@ -326,7 +326,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          try
          {
             // Find item
-            auto item = HitTest(point);
+            UINT flags = TVHT_ONITEM;
+            auto item = HitTest(point, &flags);
             TVItem data(item, MAX_PATH);
 
             // Unlock / Highlight item / Lock
