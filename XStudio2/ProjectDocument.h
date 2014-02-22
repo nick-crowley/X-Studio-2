@@ -26,6 +26,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible) override;
    };
 
+   /// <summary>Project item added/removed events</summary>
+   /// <typeparam name="item">Item added or removed</typeparam>
+   /// <typeparam name="parent">Parent of item (may be null)</typeparam>
+   typedef Event<ProjectItem*, ProjectItem*> ProjectChangedEvent;
+
+   /// <summary>Project item added/removed event handler</summary>
+   typedef ProjectChangedEvent::DelegatePtr  ProjectChangedHandler;
+
    /// <summary></summary>
    class ProjectDocument : public DocumentBase
    {
@@ -43,7 +51,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static SimpleEvent       Changed;
+      static SimpleEvent          Loaded;
+      static ProjectChangedEvent  ItemAdded,
+                                  ItemRemoved;
 
       static ProjectDocument*  GetActive();
 	  
@@ -55,11 +65,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void MoveItem(ProjectItem* item, ProjectFolderItem* folder);
-      void OnDocumentEvent(DocumentEvent deEvent) override;
-      BOOL OnNewDocument() override;
-      BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
-      BOOL OnSaveDocument(LPCTSTR lpszPathName) override;
+      void  AddFolder(const wstring& name, ProjectFolderItem* parent);
+      void  MoveItem(ProjectItem* item, ProjectFolderItem* folder);
+      void  OnDocumentEvent(DocumentEvent deEvent) override;
+      BOOL  OnNewDocument() override;
+      BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
+      BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
 
       // -------------------- REPRESENTATION ---------------------
    public:

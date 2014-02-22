@@ -7,8 +7,12 @@
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
    
-   /// <summary>Project document has chnaged</summary>
-   SimpleEvent   ProjectDocument::Changed;
+   /// <summary>Project has been loaded/unloaded</summary>
+   SimpleEvent   ProjectDocument::Loaded;
+
+   /// <summary>Project item has been added or removed</summary>
+   ProjectChangedEvent  ProjectDocument::ItemAdded,
+                        ProjectDocument::ItemRemoved;
 
    // ---------------------------------- TEMPLATE ----------------------------------
 
@@ -53,23 +57,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   // already have a document - reinit it
 		   pDocument = m_pOnlyDoc;
 		   if (!pDocument->SaveModified())
-		   {
-			   // set a flag to indicate that the document being opened should not
-			   // be removed from the MRU list, if it was being opened from there
-			   //g_bRemoveFromMRU = FALSE;
-			   return NULL;        // leave the original one
-		   }
-
-		   /*pFrame = (CFrameWnd*)AfxGetMainWnd();
-		   ASSERT(pFrame != NULL);
-		   ASSERT_KINDOF(CFrameWnd, pFrame);
-		   ASSERT_VALID(pFrame);*/
+		      return NULL;        // leave the original one
 	   }
 	   else
 	   {
 		   // create a new document
 		   pDocument = CreateNewDocument();
-		   //ASSERT(pFrame == NULL);     // will be created below
 		   bCreated = TRUE;
 	   }
 
@@ -80,27 +73,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   }
 	   ASSERT(pDocument == m_pOnlyDoc);
 
-	   //if (pFrame == NULL)
-	   //{
-	   //	ASSERT(bCreated);
-
-	   //	// create frame - set as main document frame
-	   //	BOOL bAutoDelete = pDocument->m_bAutoDelete;
-	   //	pDocument->m_bAutoDelete = FALSE;
-	   //				// don't destroy if something goes wrong
-	   //	pFrame = CreateNewFrame(pDocument, NULL);
-	   //	pDocument->m_bAutoDelete = bAutoDelete;
-	   //	if (pFrame == NULL)
-	   //	{
-	   //		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-	   //		delete pDocument;       // explicit delete on error
-	   //		return NULL;
-	   //	}
-	   //}
-
+      // create a new document
 	   if (lpszPathName == NULL)
 	   {
-		   // create a new document
 		   SetDefaultTitle(pDocument);
 
 		   // avoid creating temporary compound file when starting up invisible
@@ -115,7 +90,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
             {
                delete pDocument;
                m_pOnlyDoc = NULL;
-               //pFrame->DestroyWindow();    // will destroy document
             }
 				
 			   return NULL;
@@ -137,7 +111,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 			   {
                delete pDocument;
                m_pOnlyDoc = NULL;
-				   //pFrame->DestroyWindow();    // will destroy document
 			   }
 			   else if (!pDocument->IsModified())
 			   {
@@ -160,15 +133,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   pDocument->SetPathName(lpszPathName, bAddToMRU);
 		   pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 	   }
-
-	   //CWinThread* pThread = AfxGetThread();
-	   //ASSERT(pThread);
-	   //if (bCreated && pThread->m_pMainWnd == NULL)
-	   //{
-	   //	// set as main frame (InitialUpdateFrame will show the window)
-	   //	pThread->m_pMainWnd = pFrame;
-	   //}
-	   //InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
 
 	   return pDocument;
    }
@@ -207,26 +171,57 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Adds a new folder.</summary>
+   /// <param name="name">name.</param>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
+   void ProjectDocument::AddFolder(const wstring& name, ProjectFolderItem* parent)
+   {
+      REQUIRED(parent);
+
+      // Modify
+      SetModifiedFlag(TRUE);
+
+      // Add new folder
+      auto folder = new ProjectFolderItem(name, false);
+      parent->Add(folder);
+
+      // Raise 'ITEM ADDED'
+      ItemAdded.Raise(folder, parent);
+   }
+
+   /// <summary>Moves an item to a new folder</summary>
+   /// <param name="item">item.</param>
+   /// <param name="folder">Destination.</param>
+   /// <exception cref="Logic::ArgumentNullException">Item/folder is null</exception>
    void ProjectDocument::MoveItem(ProjectItem* item, ProjectFolderItem* folder)
    {
       REQUIRED(item);
       REQUIRED(folder);
 
-      // Remove and re-insert
-      folder->Add(Project.Items.Remove(item));
+      // Modify
+      SetModifiedFlag(TRUE);
+
+      // Remove item. Raise 'ITEM REMOVED'
+      auto ptr = Project.Items.Remove(item);
+      ItemRemoved.Raise(ptr.get(), nullptr);
+
+      // Add to folder. Raise 'ITEM ADDED'
+      folder->Add(ptr);
+      ItemAdded.Raise(ptr.get(), folder);
    }
 
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
    {
-      // Raise 'PROJECT CHANGED'
+      // Raise 'PROJECT LOADED'
       if (deEvent == CDocument::onAfterOpenDocument)
-         Changed.Raise();
+         Loaded.Raise();
    }
 
    BOOL ProjectDocument::OnNewDocument()
    {
-      // Raise 'PROJECT CHANGED'
-      Changed.Raise();
+      // Raise 'PROJECT LOADED'
+      Loaded.Raise();
 
       return DocumentBase::OnNewDocument();
    }

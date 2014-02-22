@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnPaint();
-      handler void OnProjectChanged();
+      handler void OnProjectLoaded();
       afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   
@@ -74,7 +74,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ImageListEx     Images;
       ProjectTreeCtrl TreeView;
 	   CProjectToolBar Toolbar;
-      EventHandler    fnProjectChanged;
+      EventHandler    fnProjectLoaded;
    };
 
 

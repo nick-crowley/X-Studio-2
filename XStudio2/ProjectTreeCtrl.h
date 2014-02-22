@@ -146,7 +146,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // --------------------- PROPERTIES ------------------------
 			
       // ---------------------- ACCESSORS ------------------------			
-   
+   protected:
+      HTREEITEM     FindItem(const ProjectItem* item) const;
+      HTREEITEM     FindItem(HTREEITEM item, const ProjectItem* data) const;
+
       // ----------------------- MUTATORS ------------------------
    public:
       void  AddFolder();
@@ -155,11 +158,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       HTREEITEM     InsertItem(TreeItem& item, HTREEITEM parent);
 
+   protected:
       afx_msg void  OnDragBegin(NMHDR *pNMHDR, LRESULT *pResult);
       handler void  OnDragEnd(const TreeItem& target);
+      handler void  OnItemAdded(ProjectItem* item, ProjectItem* parent);
+      handler void  OnItemRemoved(ProjectItem* item, ProjectItem* parent);
       afx_msg void  OnLabelEditBegin(NMHDR* pNMHDR, LRESULT* pResult);
       afx_msg void  OnLabelEditEnd(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void  OnLButtonUp(UINT nFlags, CPoint point);
       handler BOOL  OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
+      afx_msg void  OnMouseMove(UINT nFlags, CPoint point);
 
       // -------------------- REPRESENTATION ---------------------
 
@@ -167,10 +175,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CImageList*  DragIcon;
       TreeItem     DragSource;
       
+      ProjectChangedHandler  fnItemAdded, 
+                             fnItemRemoved;
       
    public:
-      afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-      afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+      
+      
 };
    
 /// <summary>User interface controls</summary>
