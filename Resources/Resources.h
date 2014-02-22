@@ -150,6 +150,9 @@
 // Find Progress Dialog
 #define IDC_PROGRESS                    821
 
+// Project Dialog
+#define IDC_PROJECT_TREE                822
+
 ///////////////////////////////// STRINGS ///////////////////////////////
 
 // Customization

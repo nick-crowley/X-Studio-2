@@ -60,7 +60,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
-                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptViewCaretMoved))
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptViewCaretMoved)),
+                        PrevTable(nullptr)
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -126,6 +127,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   //  the CREATESTRUCT cs
 
 	   return TRUE;
+   }
+
+   /// <summary>Load temporary accelerator table.</summary>
+   /// <param name="nID">Resource identifier.</param>
+   void  MainWnd::PushAccelerators(UINT nID)
+   {
+      PrevTable = this->m_hAccelTable;
+      LoadAccelTable(MAKEINTRESOURCE(nID));
+   }
+
+   /// <summary>Unload temporary accelerator table.</summary>
+   void  MainWnd::PopAccelerators()
+   {
+      LoadAccelTable(MAKEINTRESOURCE(PrevTable));
+      PrevTable = nullptr;
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
