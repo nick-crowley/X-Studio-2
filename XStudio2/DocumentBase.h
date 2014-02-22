@@ -42,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
+      virtual void  Rename(const wstring& name);
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(IO::Path path);
       virtual void  SetSelection(CHARRANGE rng);

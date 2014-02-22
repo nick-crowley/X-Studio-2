@@ -26,13 +26,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible) override;
    };
 
-   /// <summary>Project item added/removed events</summary>
-   /// <typeparam name="item">Item added or removed</typeparam>
-   /// <typeparam name="parent">Parent of item (may be null)</typeparam>
-   typedef Event<ProjectItem*, ProjectItem*> ProjectChangedEvent;
-
-   /// <summary>Project item added/removed event handler</summary>
-   typedef ProjectChangedEvent::DelegatePtr  ProjectChangedHandler;
+   /// <summary>Project item added/changed/removed event</summary>
+   /// <typeparam name="item">Item added/changed/removed</typeparam>
+   /// <typeparam name="parent">Parent of item added (otherwise nullptr)</typeparam>
+   typedef Event<ProjectItem*, ProjectItem*>   ProjectItemEvent;
+   typedef ProjectItemEvent::DelegatePtr       ProjectItemHandler;
 
    /// <summary></summary>
    class ProjectDocument : public DocumentBase
@@ -51,9 +49,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static SimpleEvent          Loaded;
-      static ProjectChangedEvent  ItemAdded,
-                                  ItemRemoved;
+      static SimpleEvent       Loaded;
+      static ProjectItemEvent  ItemAdded,
+                               ItemChanged,
+                               ItemRemoved;
 
       static ProjectDocument*  GetActive();
 	  
@@ -69,11 +68,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  AddFolder(const wstring& name, ProjectFolderItem* parent);
       bool  Contains(IO::Path path) const;
       void  MoveItem(ProjectItem* item, ProjectFolderItem* folder);
-      ProjectItemPtr  RemoveItem(ProjectItem* item);
+      
       void  OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
+
+      ProjectItemPtr  RemoveItem(ProjectItem* item);
+      void  Rename(const wstring& name) override;
+      void  RenameItem(ProjectItem* item, const wstring& name);
 
       // -------------------- REPRESENTATION ---------------------
    public:

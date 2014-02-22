@@ -137,7 +137,7 @@ public:
 
    GUI::Windows::MainWnd*  GetMainWindow() const;
 
-   DocumentBase& GetDocument(IO::Path p) const;
+   DocumentBase* GetOpenDocument(IO::Path p) const;
    DocumentList  GetOpenDocuments() const;
    GuiString     GetProfileSectionPath(const wstring& section) const;
    GuiString     GetProfileSectionPath(const wstring& section, const wstring& subsection) const;

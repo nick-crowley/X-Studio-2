@@ -90,17 +90,16 @@ int Application::ExitInstance()
 
 /// <summary>Gets an open document</summary>
 /// <param name="p">Full path.</param>
-/// <returns></returns>
-/// <exception cref="Logic::InvalidOperationException">Document not found</exception>
-DocumentBase&  Application::GetDocument(IO::Path p) const
+/// <returns>Document if open, otherwise nullptr</returns>
+DocumentBase*  Application::GetOpenDocument(IO::Path p) const
 {
    // Find by path
    for (auto& doc : *this)
       if (doc.GetFullPath() == p)
-         return doc;
+         return &doc;
    
-   // Not found: Error
-   throw InvalidOperationException(HERE, GuiString(L"Cannot find document '%s'", p.c_str()));
+   // Not found: 
+   return nullptr;
 }
 
 

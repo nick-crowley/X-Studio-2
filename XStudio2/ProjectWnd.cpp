@@ -274,7 +274,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CProjectWnd::OnRenameItem()
    {
 	   // Rename selected item
-      TreeView.EditLabel(TreeView.GetSelectedItem());
+      if (auto item = TreeView.GetSelectedItem())
+         TreeView.EditLabel(item);
    }
 
    /// <summary>Removes the selected item.</summary>

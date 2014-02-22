@@ -15,7 +15,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create empty item for storing drag'n'drop info</summary>
+         /// <summary>Create empty item for storing label edit or drag'n'drop info</summary>
+         TreeItem() : TVItem(nullptr, MAX_PATH)
+         {}
+
+         /// <summary>Create empty item for retrieving properties</summary>
          TreeItem(HTREEITEM node) : TVItem(node, MAX_PATH)
          {}
          
@@ -91,6 +95,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
          ProjectItem*  GetData() const
          {
             return mask & TVIF_PARAM ? reinterpret_cast<ProjectItem*>(lParam) : nullptr;
+         }
+
+         /// <summary>Gets the item name used for debugging output.</summary>
+         /// <returns></returns>
+         wstring  GetDebugName() const
+         {
+            return Data ? Data->Name : (LPCWSTR)ProjectDocument::GetActive()->GetTitle();
          }
 
          /// <summary>Allow any unfixed file/folder/variable to be dragged</summary>
@@ -175,7 +186,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void  OnDragBegin(NMHDR *pNMHDR, LRESULT *pResult);
       handler void  OnDragEnd(const TreeItem& target);
       handler void  OnItemAdded(ProjectItem* item, ProjectItem* parent);
-      handler void  OnItemRemoved(ProjectItem* item, ProjectItem* parent);
+      handler void  OnItemRemoved(ProjectItem* item, ProjectItem*);
+      handler void  OnItemChanged(ProjectItem* item, ProjectItem*);
       afx_msg void  OnLabelEditBegin(NMHDR* pNMHDR, LRESULT* pResult);
       afx_msg void  OnLabelEditEnd(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void  OnLButtonUp(UINT nFlags, CPoint point);
@@ -186,10 +198,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    private:
       CImageList*  DragIcon;
-      TreeItem     DragSource;
+      TreeItem     DragSource,
+                   LabelItem;
       
-      ProjectChangedHandler  fnItemAdded, 
-                             fnItemRemoved;
+      ProjectItemHandler  fnItemAdded, 
+                          fnItemChanged,
+                          fnItemRemoved;
       
    public:
       

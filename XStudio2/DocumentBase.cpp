@@ -91,11 +91,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return Type;
    }
    
-   /// <summary>Changes the fullpath of the document.</summary>
+   /// <summary>Changes the document filename and updates the title.</summary>
+   /// <param name="name">New filename.</param>
+   void DocumentBase::Rename(const wstring& name)
+   {
+      FullPath = FullPath.RenameFileName(name);
+   }
+
+   /// <summary>Changes the path of the document.</summary>
    /// <returns></returns>
    void  DocumentBase::SetFullPath(IO::Path path) 
    {
+      // Change path. (Don't add to MRU - will cause argument exception if file doesn't exist)
       SetPathName(path.c_str(), FALSE);
+      SetModifiedFlag(TRUE);
+
+      // Update title
+      SetTitle(path.FileName.c_str());
    }
 
    /// <summary>Sets the selection.</summary>
