@@ -240,9 +240,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // Modify document
             ScriptProperty::OnValueChanged(value);    
             
-            // Change path + title
-            Document.FullPath = Document.FullPath.RenameFileName(value + Document.FullPath.Extension);
-            Document.SetTitle(Document.FullPath.FileName.c_str());
+            // Change path [+title]
+            Document.Rename(value + Document.FullPath.Extension);
          }
          
          // -------------------- REPRESENTATION ---------------------

@@ -25,8 +25,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    ProjectTreeCtrl::ProjectTreeCtrl() 
       : DragIcon(nullptr), 
-        DragSource((HTREEITEM)nullptr),
         fnItemAdded(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemAdded)),
+        fnItemChanged(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemChanged)),
         fnItemRemoved(ProjectDocument::ItemRemoved.Register(this, &ProjectTreeCtrl::OnItemRemoved))
    {
    }
@@ -39,28 +39,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   /// <summary>Adds a new folder as a child of the currently selected folder.</summary>
-   //void ProjectTreeCtrl::AddFolder()
-   //{
-   //   // Require selected item
-   //   if (!GetSelectedItem())
-   //      return;
-
-   //   // Examine selected item
-   //   TreeItem selected(GetSelectedItem());
-   //   GetItem(&selected);
-
-   //   // Ensure a folder is selected
-   //   if (!selected.Data || selected.Data->Type != ProjectItemType::Folder)
-   //      return;
-
-   //   // Feedback
-   //   Console << Cons::UserAction << "Adding new folder to project item " << selected.Data->Name << ENDL;
-
-   //   // Insert new folder
-   //   ProjectDocument::GetActive()->AddFolder(L"New Folder", dynamic_cast<ProjectFolderItem*>(selected.Data));
-   //}
-   
+   /// <summary>Gets the item data for the selected item</summary>
+   /// <returns></returns>
    ProjectItem*  ProjectTreeCtrl::GetSelectedItemData() const
    {
       // Lookup selected item
@@ -206,6 +186,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       InsertItem(TreeItem(item), FindItem(parent));
    }
 
+   /// <summary>Called when item or project renamed.</summary>
+   /// <param name="item">The item, or nullptr for project</param>
+   /// <param name="parent">Always null</param>
+   void  ProjectTreeCtrl::OnItemChanged(ProjectItem* item, ProjectItem* /*parent = nullptr*/)
+   {
+      if (item)
+         SetItemText(FindItem(item), item->Name.c_str());
+      else
+         SetItemText(GetRootItem(), ProjectDocument::GetActive()->GetTitle());
+   }
+
    /// <summary>Called when item added.</summary>
    /// <param name="item">The item.</param>
    /// <param name="parent">Always null</param>
@@ -221,16 +212,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       static const LRESULT  ENABLE = 0, 
                             DISABLE = 1;
-      // Get item
-      TreeItem item(reinterpret_cast<NMTVDISPINFO*>(pNMHDR)->item);
+      
+      // Get/store item
+      LabelItem = reinterpret_cast<NMTVDISPINFO*>(pNMHDR)->item;
     
       // Ensure Root or non-fixed item/folder
-      if ((*pResult = item.IsEditable() ? ENABLE : DISABLE) == ENABLE)
+      if ((*pResult = LabelItem.IsEditable() ? ENABLE : DISABLE) == ENABLE)
       {
          // Feedback
-         Console << Cons::UserAction << "Renaming project item: " << Cons::Yellow << (item.Data ? item.Data->Name : L"<unknown>") << ENDL;
+         /*auto name = (item.Data ? item.Data->Name : (LPCWSTR)ProjectDocument::GetActive()->GetTitle());
+         Console << Cons::UserAction << "Renaming project item: " << Cons::Yellow << name << ENDL;*/
 
-         // Setup edit
+         // TODO: Customize/Setup edit
          if (auto edit = GetEditControl())
             edit->SetLimitText(MAX_PATH);
       }
@@ -243,18 +236,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       static const LRESULT  ACCEPT = 1, 
                             REJECT = 0;
-
-      // Get item
-      TreeItem item(reinterpret_cast<LPNMTVDISPINFO>(pNMHDR)->item);
-
-      // Rejected: Ignore
-      if (!item.pszText)
-         *pResult = REJECT;
-      else
+      try
       {
-         // TODO: Validate + Update
-         *pResult = ACCEPT;
-      }  
+         // Get new item text
+         const wchar* newText = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR)->item.pszText;
+
+         // Cancelled: Ignore
+         if (newText == nullptr)
+            *pResult = REJECT;
+         else
+         {
+            // Feedback
+            Console << Cons::UserAction << "Renaming project item " << Cons::Yellow << LabelItem.GetDebugName() 
+                    << Cons::White << " to " << Cons::Yellow << newText << ENDL;
+
+            // Item: Rename item
+            if (LabelItem.Data)
+               ProjectDocument::GetActive()->RenameItem(LabelItem.Data, newText);
+            else
+               // Project: Rename project
+               ProjectDocument::GetActive()->Rename(newText);
+
+            // Accept
+            *pResult = ACCEPT;
+         }  
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+         *pResult = REJECT;
+      }
    }
    
 

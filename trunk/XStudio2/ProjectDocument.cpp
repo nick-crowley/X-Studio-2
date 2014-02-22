@@ -10,9 +10,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Project has been loaded/unloaded</summary>
    SimpleEvent   ProjectDocument::Loaded;
 
-   /// <summary>Project item has been added or removed</summary>
-   ProjectChangedEvent  ProjectDocument::ItemAdded,
-                        ProjectDocument::ItemRemoved;
+   /// <summary>Project item has been added, changed or removed</summary>
+   ProjectItemEvent  ProjectDocument::ItemAdded,
+                     ProjectDocument::ItemChanged,
+                     ProjectDocument::ItemRemoved;
 
    // ---------------------------------- TEMPLATE ----------------------------------
 
@@ -266,6 +267,56 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ItemRemoved.Raise(ptr.get(), nullptr);
 
       return ptr;
+   }
+
+   /// <summary>Changes the project filename and title</summary>
+   /// <param name="name">New name.</param>
+   void  ProjectDocument::Rename(const wstring& name)
+   {
+      // Rename document/title
+      DocumentBase::Rename(name);
+
+      // Raise 'ITEM CHANGED'
+      ItemChanged.Raise(nullptr, nullptr);
+   }
+
+   /// <summary>Renames a project item.</summary>
+   /// <param name="item">The item.</param>
+   /// <param name="name">New name.</param>
+   /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+   /// <exception cref="Logic::Win32Exception">Unable to rename file</exception>
+   void  ProjectDocument::RenameItem(ProjectItem* item, const wstring& name)
+   {
+      REQUIRED(item);
+
+      // Modify
+      SetModifiedFlag(TRUE);
+
+      // Update name
+      item->Name = name;
+
+      // File: Rename file/document
+      if (auto file = dynamic_cast<ProjectFileItem*>(item))
+      {
+         // Open: Rename document
+         if (auto doc = theApp.GetOpenDocument(file->FullPath))
+            doc->Rename(name);
+         else
+         {
+            // New file path
+            IO::Path newPath = file->FullPath.RenameFileName(name);
+            
+            // Closed: Rename file on disc
+            if (newPath.Exists() || !MoveFile(file->FullPath.c_str(), newPath.c_str()))
+               throw Win32Exception(HERE, GuiString(L"Unable to rename '%s' to '%s'", file->FullPath.FileName.c_str(), newPath.FileName.c_str()));
+
+            // Set new path
+            file->FullPath = newPath;
+         }
+      }
+
+      // Raise 'ITEM CHANGED'
+      ItemChanged.Raise(item, nullptr);
    }
 
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
