@@ -14,6 +14,8 @@ static char THIS_FILE[]=__FILE__;
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
+   /// <summary>Treeview child ID</summary>
+   #define IDC_TREEVIEW  4
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -28,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_COMMAND(ID_PROJECT_REMOVE, OnRemoveItem)
 	   ON_COMMAND(ID_PROJECT_DELETE, OnDeleteItem)
 	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnViewProperties)
+      ON_NOTIFY(NM_DBLCLK, IDC_TREEVIEW, OnTreeView_DoubleClick)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
@@ -79,7 +82,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Create view:
 	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_EDITLABELS | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
 
-	      if (!TreeView.Create(dwViewStyle, rectDummy, this, 4))
+	      if (!TreeView.Create(dwViewStyle, rectDummy, this, IDC_TREEVIEW))
             throw Win32Exception(HERE, L"Unable to create project window tree view");
 	      
 	      // ImageList:
@@ -186,8 +189,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   AdjustLayout();
    }
 
+   /// <summary>Open the selected item on double click</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CProjectWnd::OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      OnOpenItem();
 
-
+      *pResult = 0;
+   }
    
 
 
@@ -303,7 +313,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CProjectWnd::OnDeleteItem()
    {
       try
-      {
+      { 
          // Get selected unfixed file/folder
          auto item = TreeView.SelectedItem;
          if (!item || item->Fixed)
