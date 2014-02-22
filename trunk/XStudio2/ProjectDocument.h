@@ -55,6 +55,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void MoveItem(ProjectItem* item, ProjectFolderItem* folder);
       void OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL OnNewDocument() override;
       BOOL OnOpenDocument(LPCTSTR lpszPathName) override;

@@ -13,8 +13,11 @@ namespace Logic
       enum class ProjectItemType  { File, Folder, Variable };
 
       
+      /// <summary>Shared pointer to a project item</summary>
+      typedef shared_ptr<ProjectItem>  ProjectItemPtr;
+
       /// <summary>Vector of project items</summary>
-      typedef vector<ProjectItem*>  ProjectItemArray;
+      typedef vector<ProjectItemPtr>  ProjectItemArray;
 
       /// <summary>Base class for all items/folders within a project</summary>
       class ProjectItem
@@ -38,29 +41,62 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         /*bool  Contains(ProjectItemType t, wstring name, bool recurse)
+         /// <summary>Checks whether a child item is present</summary>
+         /// <param name="p">item</param>
+         /// <returns></returns>
+         bool  Contains(ProjectItem* p)
          {
-            
-            auto item = any_of(Children.begin(), Children.end(), IsEqual);
-            if (item != Children.end())
-               return true;
+            // Search children
+            for (auto& c : Children)
+               if (c.get() == p || c->Contains(p))
+                  return true;
 
-            
+            return false;
          }
 
-         ProjectItem&  Find(ProjectItemType t, wstring name, bool recurse)
+         /// <summary>Finds a child</summary>
+         /// <param name="p">item</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::AlgorithmException">Item does not exist</exception>
+         ProjectItemPtr  Find(ProjectItem* p)
          {
+            // Depth first search. 
+            for (auto& c : Children)
+            {
+               // Found: Remove child
+               if (p == c.get())
+                  return c;
+               
+               // Failed: Search grandchildren
+               else if (c->Contains(p))
+                  return c->Find(p);
+            }
+
+            throw AlgorithmException(HERE, GuiString(L"Project item '%s' not found", p->Name.c_str()));
          }
 
-         bool operator==(const ProjectItem& r)
+         /// <summary>Removes a child</summary>
+         /// <param name="p">item</param>
+         /// <returns>True if found, false if not</returns>
+         bool  Remove(ProjectItem* p)
          {
-            return Equals(r);
-         }
+            // Depth first search. 
+            for (auto pos = Children.begin(), end = Children.end(); pos != end; ++pos)
+            {
+               // Found: Remove child
+               if (p == pos->get())
+               {
+                  Children.erase(pos);
+                  return true;
+               }
+               // Failed: Search grandchildren
+               else if ((*pos)->Remove(p))
+                  return true;
+            }
 
-         bool operator!=(const ProjectItem& r)
-         {
-            return !Equals(r);
-         }*/
+            // Not found
+            return false;
+         }
 
       protected:
          /// <summary>Equality test</summary>
@@ -73,9 +109,11 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Append child item</summary>
+         /// <param name="p">item</param>
          void  Add(ProjectItem* p)
          {
-            Children.push_back(p);
+            Children.push_back(ProjectItemPtr(p));
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -174,6 +212,58 @@ namespace Logic
          class ItemCollection : public ProjectItemArray
          {
          public:
+            /// <summary>Append child item</summary>
+            /// <param name="p">item</param>
+            void  Add(ProjectItem* p)
+            {
+               push_back(ProjectItemPtr(p));
+            }
+
+            /// <summary>Finds an item</summary>
+            /// <param name="p">item</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+            /// <exception cref="Logic::AlgorithmException">Item does not exist</exception>
+            ProjectItemPtr  Find(ProjectItem* p)
+            {
+               REQUIRED(p);
+
+               // Search folders
+               for (auto& folder : *this)
+               {
+                  if (folder.get() == p)
+                     return folder;
+
+                  if (folder->Contains(p))
+                     return folder->Find(p);
+               }
+
+               // Not found
+               throw AlgorithmException(HERE, GuiString(L"Project item '%s' not found", p->Name.c_str()));
+            }
+
+            /// <summary>Finds an removes an item</summary>
+            /// <param name="p">item</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+            bool  Remove(ProjectItem* p)
+            {
+               REQUIRED(p);
+
+               // Search/Remove from folders
+               for (auto& folder : *this)
+               {
+                  if (folder.get() == p)
+                     throw AlgorithmException(HERE, GuiString(L"Cannot remove project base folder '%s'", p->Name.c_str()));
+
+                  // Search folder
+                  if (folder->Remove(p))
+                     return true;
+               }
+
+               // Not found
+               return false;
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------
