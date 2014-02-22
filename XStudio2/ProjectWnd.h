@@ -59,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   
-	   afx_msg void OnFileOpen();
+	   afx_msg void OnAddFolder();
 	   afx_msg void OnFileOpenWith();
 	   afx_msg void OnDummyCompile();
 	   afx_msg void OnEditCut();

@@ -149,6 +149,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
+      void  AddFolder();
       void  Populate();
 
    protected:

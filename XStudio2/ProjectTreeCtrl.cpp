@@ -35,6 +35,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   void ProjectTreeCtrl::AddFolder()
+   {
+      // Require selected item
+      if (!GetSelectedItem())
+         return;
+
+      // Examine selected item
+      TreeItem selected(GetSelectedItem());
+      GetItem(&selected);
+
+      // Ensure a folder is selected
+      if (!selected.Data || selected.Data->Type != ProjectItemType::Folder)
+         return;
+
+      // Insert project + treeView
+      auto folder = new ProjectFolderItem(L"New Folder", false);
+      selected.Data->Add(folder);
+      InsertItem(TreeItem(folder), selected.hItem);
+   }
+
    /// <summary>Populates the entire treeview from the active project.</summary>
    void ProjectTreeCtrl::Populate()
    {

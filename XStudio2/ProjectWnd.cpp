@@ -22,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SIZE()
 	   ON_WM_CONTEXTMENU()
 	   ON_COMMAND(ID_PROPERTIES, OnProperties)
-	   ON_COMMAND(ID_OPEN, OnFileOpen)
+	   ON_COMMAND(ID_OPEN, OnAddFolder)
 	   ON_COMMAND(ID_OPEN_WITH, OnFileOpenWith)
 	   ON_COMMAND(ID_DUMMY_COMPILE, OnDummyCompile)
 	   ON_COMMAND(ID_EDIT_CUT, OnEditCut)
@@ -192,9 +192,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 
 
-   void CProjectWnd::OnFileOpen()
+   void CProjectWnd::OnAddFolder()
    {
-	   // TODO: Add your command handler code here
+	   TreeView.AddFolder();
    }
 
    void CProjectWnd::OnFileOpenWith()
