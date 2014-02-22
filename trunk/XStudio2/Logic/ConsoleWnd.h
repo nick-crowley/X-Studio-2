@@ -25,6 +25,8 @@ namespace Logic
                      Normal, 
                      Error,
                      Exception,
+                     Success,
+                     Failure,
                      Bold, 
                      Endl,
                      Reset,
@@ -188,6 +190,14 @@ namespace Logic
          // Error: Bold + Red
          case Cons::Error:  
             return *this << Cons::Bold << Cons::Red;
+
+         // Error: Bold + Green
+         case Cons::Success:  
+            return *this << Cons::Bold << Cons::Green << "Success";
+
+         // Error: Bold + Red
+         case Cons::Failure:  
+            return *this << Cons::Bold << Cons::Red << "Failed: ";
 
          // Push attributes: Save current attributes
          case Cons::Push:

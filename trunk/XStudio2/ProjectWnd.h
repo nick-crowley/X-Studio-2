@@ -59,13 +59,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   
-	   afx_msg void OnAddFolder();
-	   afx_msg void OnFileOpenWith();
-	   afx_msg void OnDummyCompile();
-	   afx_msg void OnEditCut();
-	   afx_msg void OnEditCopy();
-	   afx_msg void OnEditClear();
-	   afx_msg void OnProperties();
+	   afx_msg void OnCreateFolder();
+	   afx_msg void OnAddExisting();
+	   afx_msg void OnOpenItem();
+	   afx_msg void OnRenameItem();
+	   afx_msg void OnRemoveItem();
+	   afx_msg void OnDeleteItem();
+	   afx_msg void OnViewProperties();
 
    private:
 

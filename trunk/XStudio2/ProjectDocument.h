@@ -65,8 +65,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      bool  AddFile(IO::Path path, ProjectFolderItem* parent);
       void  AddFolder(const wstring& name, ProjectFolderItem* parent);
+      bool  Contains(IO::Path path) const;
       void  MoveItem(ProjectItem* item, ProjectFolderItem* folder);
+      ProjectItemPtr  RemoveItem(ProjectItem* item);
       void  OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;

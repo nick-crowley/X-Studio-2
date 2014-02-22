@@ -171,6 +171,32 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Adds a file item.</summary>
+   /// <param name="path">Full path.</param>
+   /// <param name="parent">parent item.</param>
+   /// <returns>True if added, False if already existed</returns>
+   /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
+   bool ProjectDocument::AddFile(IO::Path path, ProjectFolderItem* parent)
+   {
+      REQUIRED(parent);
+
+      // Ensure not already present
+      if (Contains(path))
+         return false;
+
+      // Identify type
+      FileType type = FileIdentifier::Identify(path);
+
+      // Modify
+      SetModifiedFlag(TRUE);
+
+      // Raise 'ITEM ADDED'
+      auto item = new ProjectFileItem(path, type);
+      parent->Add(item);
+      ItemAdded.Raise(item, parent);
+      return true;
+   }
+
    /// <summary>Adds a new folder.</summary>
    /// <param name="name">name.</param>
    /// <param name="parent">The parent.</param>
@@ -188,6 +214,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Raise 'ITEM ADDED'
       ItemAdded.Raise(folder, parent);
+   }
+
+   /// <summary>Check whether document contains a file</summary>
+   /// <param name="path">The path.</param>
+   /// <returns></returns>
+   bool ProjectDocument::Contains(IO::Path path) const
+   {
+      // Search folders
+      for (auto& folder : Project.Items)
+         if (folder->Contains(path))
+            return true;
+
+      // Not found
+      return false;
    }
 
    /// <summary>Moves an item to a new folder</summary>
@@ -209,6 +249,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Add to folder. Raise 'ITEM ADDED'
       folder->Add(ptr);
       ItemAdded.Raise(ptr.get(), folder);
+   }
+
+   /// <summary>Removes an item from the project</summary>
+   /// <param name="item">item.</param>
+   /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
+   ProjectItemPtr ProjectDocument::RemoveItem(ProjectItem* item)
+   {
+      REQUIRED(item);
+
+      // Modify
+      SetModifiedFlag(TRUE);
+
+      // Remove item. Raise 'ITEM REMOVED'
+      auto ptr = Project.Items.Remove(item);
+      ItemRemoved.Raise(ptr.get(), nullptr);
+
+      return ptr;
    }
 
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
