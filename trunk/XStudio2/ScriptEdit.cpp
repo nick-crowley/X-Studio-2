@@ -557,6 +557,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
    
+   /// <summary>Gets the character co-ordinates of the cursor.</summary>
+   /// <returns>Character index within the line, and zero-based line number</returns>
+   CPoint  ScriptEdit::GetCursorLocation() const
+   {
+      // Get char index + line number
+      UINT charPos = CharFromPos(CursorPoint(this)),
+           line = LineFromChar(charPos);
+
+      // Localise char index within line
+      return CPoint(charPos-LineIndex(line), line);
+   }
+
    /// <summary>Gets the character index of the end of a line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
    /// <returns></returns>
@@ -1023,10 +1035,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="data">The data.</param>
    void ScriptEdit::OnRequestTooltip(CommandTooltip::TooltipData* data)
    {
-      // Get random description
-      data->Description = DescriptionLib.Commands.Find(133, GameVersion::Threat);
-      data->Label = SyntaxLib.Find(133, GameVersion::Threat).Text;
-      data->Icon = 1;
+      auto cursor = GetCursorLocation();
+      
+      // Find token beneath cursor
+      CommandLexer lex(GetLineText(cursor.y));
+      if (auto tok = lex.Tokens.Find(cursor.x))
+      {
+         // Get random description
+         data->Description = DescriptionLib.Commands.Find(133, GameVersion::Threat);
+         data->Label = SyntaxLib.Find(133, GameVersion::Threat).Text;
+         data->Icon = 1;
+      }
+      else
+      {
+         data->Description.clear();
+         data->Label = L"No information";
+      }
+      
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>

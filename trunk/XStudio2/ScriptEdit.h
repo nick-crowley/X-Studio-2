@@ -477,6 +477,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void      PasteFormat(UINT nClipFormat);
 
    protected:
+      CPoint     GetCursorLocation() const;
       int        GetLineEnd(int line = -1) const;
       int        GetLineStart(int line = -1) const;
       CPoint     GetScrollCoordinates() const;

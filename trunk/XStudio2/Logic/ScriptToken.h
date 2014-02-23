@@ -147,12 +147,23 @@ namespace Logic
             {
                return count_if(cbegin(), cend(), [](const ScriptToken& t) {return t.Type != TokenType::Whitespace;} );
             }
+            
+            /// <summary>Finds the token at a character index.</summary>
+            /// <param name="pos">character index.</param>
+            /// <returns>Token if found, otherwise nullptr</returns>
+            const ScriptToken* Find(UINT pos) const
+            {
+               auto tok = find_if(cbegin(), cend(), [pos](const ScriptToken& t) {return t.Contains(pos);} );
+               return tok != cend() ? &*tok : nullptr;
+            }
 
+            /// <summary>Append token</summary>
             TokenArray& operator+=(const ScriptToken& tok)
             {
                push_back(tok);
                return *this;
             }
+
          };
 
          /// <summary>List of script tokens</summary>
