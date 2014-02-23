@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CommandTooltip.h"
-#include "Logic/DescriptionLibrary.h"
-#include "Logic/SyntaxLibrary.h"
+
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -39,7 +38,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"");
 
       // Add tool
-      AddTool(edit, L"Title placeholder"); 
+      AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
 
       // Set display parameters
       CMFCToolTipInfo params;
@@ -91,21 +90,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         // DEBUG:
-         Console << "OnDrawLabel: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
-         
-         if (bCalcOnly)
-            rect.SetRect(0,0,400,100);
+         // FIX: Preserve drawing rect. Set correct height
+         if (!bCalcOnly)
+         {
+            DrawRect = rect;
+            rect.bottom = rect.top + LabelHeight;
+         }
 
-         // Get random title
-         wstring sz = SyntaxLib.Find(133, GameVersion::Threat).Text;
-      
+         // DEBUG:
+         //Console << "OnDrawLabel: " << Cons::Yellow << rect << ENDL;
+
          // Draw/Calculate rectangle
-         pDC->DrawText(sz.c_str(), rect, DT_LEFT|DT_WORDBREAK | (bCalcOnly?DT_CALCRECT:NULL));
+         pDC->DrawText(Data.Label.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+
+         // FIX: Store height of label
+         if (bCalcOnly)
+            LabelHeight = rect.Height();
 
          // DEBUG:
          /*if (bCalcOnly)
-            Console << "OnDrawLabel: " << Cons::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;*/
+            Console << "OnDrawLabel: " << Cons::Green << rect << ENDL;*/
       
          // return size
          return rect.Size();
@@ -120,21 +124,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       { 
-         Console << "OnDrawDescription: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
+         // FIX: Use correct drawing rect. Set correct height
+         if (!bCalcOnly)
+         {
+            rect = DrawRect;
+            rect.top += LabelHeight;
+         }
 
-         // Get random description
-         wstring sz = DescriptionLib.Commands.Find(133, GameVersion::Threat);
-         //Console << sz << ENDL << ENDL;
-
-         if (bCalcOnly)
-            rect.SetRect(0,0,400,300);
+         //Console << "OnDrawDescription: " << Cons::Yellow << rect << ENDL;
       
          // Draw/Calculate rectangle
-         pDC->DrawText(sz.c_str(), rect, DT_LEFT|DT_WORDBREAK | (bCalcOnly?DT_CALCRECT:NULL));
+         pDC->DrawText(Data.Description.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
 
          // DEBUG:
          /*if (bCalcOnly)
-            Console << "OnDrawDescription: " << Cons::Yellow << "Calculated Rect=" << rect << " Size=" << rect.Size() << ENDL;*/
+            Console << "OnDrawDescription: " << Cons::Green << rect << ENDL;*/
       
          // return size
          return rect.Size();
@@ -149,11 +153,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       Console << "CommandTooltip::OnShow() received" << ENDL;
 
-      // Set size + description
-      SetDescription(L"Placeholder description");
+      // Request data
+      RequestData.Raise(&Data);
+
+      // Set description
+      SetDescription(L"Description placeholder: Quick brown bear jumped over the lazy fox");
+
+      // Set size?
       //SetFixedWidth(400, 600);
 
-      // Show
+      // Show tooltip
       __super::OnShow(pNMHDR, pResult);
    }
 
