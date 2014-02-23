@@ -185,7 +185,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnClipboardPaste()
    {
       if (RichEdit.CanPaste(CF_UNICODETEXT))
-         RichEdit.PasteSpecial(CF_UNICODETEXT);
+         RichEdit.PasteFormat(CF_UNICODETEXT);
    }
 
    /// <summary>Display script edit context window</summary>

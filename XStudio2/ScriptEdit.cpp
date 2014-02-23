@@ -8,10 +8,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- CONSTANTS ----------------------------------
 
-   #define ALLOW_INPUT  FALSE
-   #define BLOCK_INPUT  TRUE
-
-   #define COMPILE_TIMER      42
+   /// <summary>Background compiler timer ID</summary>
+   const UINT  ScriptEdit::COMPILE_TIMER = 42;
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -28,6 +26,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_PAINT()
       ON_WM_HSCROLL()
       ON_WM_VSCROLL()
+      ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -80,90 +79,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    #endif //_DEBUG
    
-   /// <summary>Finds and highlights the next match, if any</summary>
-   /// <param name="start">starting offset</param>
-   /// <param name="m">Match data</param>
-   /// <returns>True if found, false otherwise</returns>
-   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
-   bool  ScriptEdit::FindNext(UINT start, MatchData& m) const
-   {
-      try
-      {
-         // Selection: Validate search position
-         if (m.Target == SearchTarget::Selection && (start < (UINT)m.RangeStart || start >= (UINT)m.RangeEnd))
-            return false;
-
-         // Get search range  (Use entire document if not searching selection)
-         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
-         
-         // Convert TOM search flags
-         UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
-
-         // Find next match
-         TextRange match(limits->Duplicate);
-         if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
-         {
-            // Clear match/selection
-            const_cast<ScriptEdit*>(this)->SetSel(m.End, m.End);
-            m.Clear();
-            return false;
-         }
-
-         // Set match location
-         auto line = LineFromChar(match->Start);
-         m.SetMatch(match->Start, match->End - match->Start, line, GetLineTextEx(line));
-
-         // Select text
-         match->Select();
-         return true;
-      }
-      catch (_com_error& e) {
-         throw ComException(HERE, e);
-      }
-   }
-
-   /// <summary>Replaces the current match</summary>
-   /// <param name="m">Match data</param>
-   /// <returns>True if replaced, false if match was no longer selected</returns>
-   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
-   bool  ScriptEdit::Replace(MatchData& m)
-   {
-      try
-      {
-         // Do nothing if match no longer selected
-         if (!m.Compare(GetSelection()))
-            return false;
-
-         // Selection: Preserve text selection range
-         TextRange range = TomDocument->Range(m.RangeStart, m.RangeEnd);
-
-         // RegEx: Format replacement using regEx
-         if (m.UseRegEx)
-         {
-            wsmatch matches;
-            wstring text = (const wchar*)GetSelText();
-         
-            // Format replacement
-            if (regex_match(text, matches, m.RegEx))
-               ReplaceSel(matches.format(m.ReplaceTerm).c_str(), TRUE);
-         }
-         else
-            // Basic: Replace selection
-            ReplaceSel(m.ReplaceTerm.c_str(), TRUE);
-
-         // Selection: Use TOM to maintain the text selection range
-         if (m.Target == SearchTarget::Selection)
-            m.UpdateRange(range->Start, range->End);
-      
-         // Re-supply line text (for feedback)
-         m.UpdateLineText(GetLineTextEx(m.LineNumber-1));
-         return true;
-      }
-      catch (_com_error& e) {
-         throw ComException(HERE, e);
-      }
-   }
-
    /// <summary>Toggles comment on the selected lines.</summary>
    void  ScriptEdit::CommentSelection()
    {
@@ -227,6 +142,48 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       SetScrollCoordinates(CPoint(0, max(0,line)));
       return true;
+   }
+   
+   /// <summary>Finds and highlights the next match, if any</summary>
+   /// <param name="start">starting offset</param>
+   /// <param name="m">Match data</param>
+   /// <returns>True if found, false otherwise</returns>
+   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
+   bool  ScriptEdit::FindNext(UINT start, MatchData& m) const
+   {
+      try
+      {
+         // Selection: Validate search position
+         if (m.Target == SearchTarget::Selection && (start < (UINT)m.RangeStart || start >= (UINT)m.RangeEnd))
+            return false;
+
+         // Get search range  (Use entire document if not searching selection)
+         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
+         
+         // Convert TOM search flags
+         UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
+
+         // Find next match
+         TextRange match(limits->Duplicate);
+         if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
+         {
+            // Clear match/selection
+            const_cast<ScriptEdit*>(this)->SetSel(m.End, m.End);
+            m.Clear();
+            return false;
+         }
+
+         // Set match location
+         auto line = LineFromChar(match->Start);
+         m.SetMatch(match->Start, match->End - match->Start, line, GetLineTextEx(line));
+
+         // Select text
+         match->Select();
+         return true;
+      }
+      catch (_com_error& e) {
+         throw ComException(HERE, e);
+      }
    }
 
    /// <summary>Gets entire script as a string delimited by single char (vertical tab) line breaks.</summary>
@@ -375,6 +332,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CRichEditCtrl::LineLength(nChar);
    }
 
+
    /// <summary>Initializes the control</summary>
    /// <param name="doc">The document.</param>
    /// <exception cref="Logic::ArgumentNullException">document is null</exception>
@@ -389,8 +347,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Set background colour
       SetBackgroundColor(FALSE, RGB(0,0,0));
 
-      // Notify on change/scroll/input
-      SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS);
+      // Notify on change/scroll/input/paste
+      SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS | ENM_PROTECTED);
 
       // Set undo limit + options
       SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
@@ -405,6 +363,49 @@ NAMESPACE_BEGIN2(GUI,Controls)
       TomDocument = edit;
       if (!TomDocument)
          throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
+   }
+
+   
+   /// <summary>Replaces the current match</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
+   /// <exception cref="Logic::ComException">Text Object Model error</<exception>
+   bool  ScriptEdit::Replace(MatchData& m)
+   {
+      try
+      {
+         // Do nothing if match no longer selected
+         if (!m.Compare(GetSelection()))
+            return false;
+
+         // Selection: Preserve text selection range
+         TextRange range = TomDocument->Range(m.RangeStart, m.RangeEnd);
+
+         // RegEx: Format replacement using regEx
+         if (m.UseRegEx)
+         {
+            wsmatch matches;
+            wstring text = (const wchar*)GetSelText();
+         
+            // Format replacement
+            if (regex_match(text, matches, m.RegEx))
+               ReplaceSel(matches.format(m.ReplaceTerm).c_str(), TRUE);
+         }
+         else
+            // Basic: Replace selection
+            ReplaceSel(m.ReplaceTerm.c_str(), TRUE);
+
+         // Selection: Use TOM to maintain the text selection range
+         if (m.Target == SearchTarget::Selection)
+            m.UpdateRange(range->Start, range->End);
+      
+         // Re-supply line text (for feedback)
+         m.UpdateLineText(GetLineTextEx(m.LineNumber-1));
+         return true;
+      }
+      catch (_com_error& e) {
+         throw ComException(HERE, e);
+      }
    }
 
    /// <summary>Replace entire contents with RTF.</summary>
@@ -423,6 +424,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
       if (!SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
          throw Win32Exception(HERE, L"Unable to set script text");
+
+      // Protect text
+      CharFormat cf(CFM_PROTECTED, CFE_PROTECTED);
+      SendMessage(EM_SETCHARFORMAT, SCF_ALL, (LPARAM)(CHARFORMAT*)&cf);
 
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width()+10);
@@ -749,6 +754,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="pResult">message result</param>
    void ScriptEdit::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
    {
+      static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
+
+      // Get character
       MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
       wchar chr = pFilter->wParam;
    
@@ -900,6 +908,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    }
    
+   /// <summary>Called when a message would change protected text.</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void ScriptEdit::OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
+
+      // Get message
+      ENPROTECTED *pProtected = reinterpret_cast<ENPROTECTED *>(pNMHDR);
+      
+      // Block RichEdit from invoking paste itself, then invoke manually so we can highlight text
+      switch (pProtected->msg)
+      {
+      case WM_PASTE:
+         PasteFormat(CF_UNICODETEXT);
+         *pResult = BLOCK_INPUT;
+         break;
+
+      default:
+         *pResult = ALLOW_INPUT;
+         break;
+      }
+   }
+
    /// <summary>Called when tab key pressed.</summary>
    /// <param name="shift">whether SHIFT key is pressed</param>
    void ScriptEdit::OnTabKeyDown(bool shift)
@@ -916,50 +948,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
    {
-      // Freeze window
-      SuspendUndo(true);
-      FreezeWindow(true);
-
       // Set/Reset background compiler timer
       SetCompilerTimer(true);
 
-      try 
-      {
-         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
-         UINT start = LineIndex(-1);
-
-         // Lex current line
-         CommandLexer lex(GetLineText(-1));
-
-         // Format tokens
-         for (const auto& tok : lex.Tokens)
-         {
-            // Set colour
-            switch (tok.Type)
-            {
-            case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
-            case TokenType::Label:        cf.crTextColor = RGB(255,0,255);    break;
-            case TokenType::Null:
-            case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
-            case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;
-            case TokenType::Number:  
-            case TokenType::String:       cf.crTextColor = RGB(255,0,0);      break;
-            case TokenType::ScriptObject: cf.crTextColor = RGB(255,255,0);    break;
-            case TokenType::GameObject:   cf.crTextColor = RGB(0,255,255);    break;
-            default:                      cf.crTextColor = RGB(255,255,255);  break;
-            }
-
-            // Set format
-            FormatToken(start, tok, cf);
-         }
-      }
-      catch (ExceptionBase& e) { 
-         Console.Log(HERE, e); 
-      }
-
-      // Restore selection
-      FreezeWindow(false);
-      SuspendUndo(false);
+      // Update current line
+      UpdateHighlighting(-1, -1);
    }
    
    /// <summary>Compiles the current text</summary>
@@ -1001,6 +994,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return false;
    }
    
+   /// <summary>Pastes text from clipboard.</summary>
+   /// <param name="nClipFormat">The clipboard format.</param>
+   void  ScriptEdit::PasteFormat(UINT nClipFormat)
+   {
+      auto prevLine = LineFromChar(-1);
+
+      // Paste
+      if (CanPaste(nClipFormat))
+         PasteSpecial(nClipFormat);
+
+      // DEBUG:
+      Console << "inital line=" << prevLine << " newLine=" << LineFromChar(-1) << ENDL;
+
+      // Highlight pasted text
+      UpdateHighlighting(prevLine, LineFromChar(-1));
+   }
+
    /// <summary>Invalidates the line number gutter.</summary>
    void ScriptEdit::RefreshGutter()
    {
@@ -1074,6 +1084,63 @@ NAMESPACE_BEGIN2(GUI,Controls)
       State = InputState::Suggestions;
    }
 
+   
+   /// <summary>Updates the highlighting.</summary>
+   /// <param name="first">first zero-based line number</param>
+   /// <param name="last">last zero-based line number.</param>
+   void ScriptEdit::UpdateHighlighting(int first, int last)
+   {
+      // Freeze window
+      SuspendUndo(true);
+      FreezeWindow(true);
+
+      try 
+      {
+         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
+         
+         // Caret:
+         if (first == -1)
+            first = last = LineFromChar(-1);
+
+         // Format lines
+         for (int i = first; i <= last; i++)
+         {
+            UINT offset = LineIndex(i);
+
+            // Lex current line
+            CommandLexer lex(GetLineText(i));
+
+            // Format tokens
+            for (const auto& tok : lex.Tokens)
+            {
+               // Set colour
+               switch (tok.Type)
+               {
+               case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
+               case TokenType::Label:        cf.crTextColor = RGB(255,0,255);    break;
+               case TokenType::Null:
+               case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
+               case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;
+               case TokenType::Number:  
+               case TokenType::String:       cf.crTextColor = RGB(255,0,0);      break;
+               case TokenType::ScriptObject: cf.crTextColor = RGB(255,255,0);    break;
+               case TokenType::GameObject:   cf.crTextColor = RGB(0,255,255);    break;
+               default:                      cf.crTextColor = RGB(255,255,255);  break;
+               }
+
+               // Set format
+               FormatToken(offset, tok, cf);
+            }
+         }
+      }
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e); 
+      }
+
+      // Restore selection
+      FreezeWindow(false);
+      SuspendUndo(false);
+   }
 
    /// <summary>Scrolls/closes the suggestion list in response to caret movement or character input</summary>
    void ScriptEdit::UpdateSuggestions()
@@ -1107,7 +1174,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    
 NAMESPACE_END2(GUI,Controls)
-
 
 
 
