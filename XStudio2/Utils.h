@@ -35,7 +35,7 @@ namespace GUI
    class CursorPoint : public CPoint
    {
    public:
-      CursorPoint(CWnd* wnd) : CPoint(0,0)
+      CursorPoint(const CWnd* wnd) : CPoint(0,0)
       {
          // Get position in screen co-ords
          if (GetCursorPos(this) && wnd)
