@@ -59,22 +59,24 @@ namespace Logic
                return find(CommandID(id,ver)) != end();
             }
 
-            /// <summary>Finds a script command.</summary>
+            /// <summary>Finds a script command description.</summary>
             /// <param name="id">command ID</param>
-            /// <param name="ver">Lowest compatible game version</param>
+            /// <param name="ver">game version</param>
             /// <returns>Description text</returns>
             /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
             /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
             /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
             wstring  Find(UINT id, GameVersion ver) const
             {
-               // Lookup object
-               auto it = find(CommandID(id,ver));
-
-               // Parse text
-               if (it != end())
-                  return DescriptionParser(it->second.Text).Text;
-
+               // Find description for a lower or equal version
+               for (int i = GameVersionIndex(ver).Index; i >= 0; --i)
+               {
+                  // Lookup and parse text
+                  auto it = find(CommandID(id,GameVersionIndex(i).Version));
+                  if (it != end())
+                     return DescriptionParser(it->second.Text).Text;
+               }
+               
                // Missing: Error
                throw DescriptionNotFoundException(HERE, id, ver);
             }
