@@ -28,6 +28,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
+	   BOOL Create(CWnd* view, CWnd* edit);
+
       CSize GetIconSize() override;
       BOOL  OnDrawIcon(CDC* pDC, CRect rectImage) override;
 	   CSize OnDrawLabel(CDC* pDC, CRect rect, BOOL bCalcOnly) override;
@@ -38,6 +40,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // -------------------- REPRESENTATION ---------------------
       
    private:
+   public:
+      afx_msg void OnShow(NMHDR *pNMHDR, LRESULT *pResult);
    };
    
 

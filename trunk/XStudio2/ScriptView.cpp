@@ -19,6 +19,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // --------------------------------- STATIC DATA --------------------------------
 
+   /// <summary>Caret movement event</summary>
    CaretMovedEvent   ScriptView::CaretMoved;
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -26,13 +27,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    IMPLEMENT_DYNCREATE(ScriptView, CFormView)
 
    BEGIN_MESSAGE_MAP(ScriptView, CFormView)
-      ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
-      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
       ON_WM_ACTIVATE()
       ON_WM_CONTEXTMENU()
+      ON_WM_DESTROY()
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_SETFOCUS()
+      ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
       ON_COMMAND(ID_EDIT_COMMENT, &ScriptView::OnEditComment)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
       ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
@@ -41,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
       ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
       ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
+      ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryClipboardPaste)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, &ScriptView::OnQueryEditComment)
@@ -48,7 +50,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
-      ON_WM_DESTROY()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -210,9 +211,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Clear properties</summary>
    void ScriptView::OnDestroy()
    {
-      // Hide properties
+      // Hide properties info
       CPropertiesWnd::Connect(GetDocument(), false);
 
+      // Destroy
       CFormView::OnDestroy();
    }
 
@@ -259,28 +261,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       try
       {
          // Create tooltip
-         ToolTip.Create(this);
-         ToolTip.AddTool(&RichEdit, L"This is supposed to be the title of the tooltip", CRect(0,0,500,500), 42);
-         ToolTip.Activate(TRUE);
-         
-
-         CMFCToolTipInfo params;
-         params.m_bBoldLabel = TRUE;
-         params.m_bDrawDescription = TRUE;
-         params.m_bDrawIcon = TRUE;
-         params.m_bRoundedCorners = TRUE;
-         params.m_bDrawSeparator = TRUE;
-
-         /*params.m_clrFill = RGB(255, 255, 255);
-         params.m_clrFillGradient = RGB(228, 228, 240);
-         params.m_clrText = RGB(61, 83, 80);
-         params.m_clrBorder = RGB(144, 149, 168);*/
-         ToolTip.SetParams(&params);
-         ToolTip.SetDescription(L"The quick brown fox jumped over the lazy dog.");
-         ToolTip.SetFixedWidth(400, 600);
-         ToolTip.SetDelayTime(TTDT_INITIAL, 1500);
-         ToolTip.SetDelayTime(TTDT_AUTOPOP, 30*1000);
-         ToolTip.SetDelayTime(TTDT_RESHOW, 3000);
+         ToolTip.Create(this, &RichEdit);
 
          // Convert script to RTF (ansi)
          string txt;
@@ -380,8 +361,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       RichEdit.SetFocus();
    }
-
-   
    /// <summary>Adjusts the layout</summary>
    /// <param name="nType">Type of resize.</param>
    /// <param name="cx">The width.</param>
@@ -391,6 +370,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       CFormView::OnSize(nType, cx, cy);
       AdjustLayout();
    }
+   
 
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>
    /// <param name="pNMHDR">Message header</param>
