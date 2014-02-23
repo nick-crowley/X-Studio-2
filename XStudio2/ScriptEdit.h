@@ -6,9 +6,6 @@
 #include "SuggestionList.h"
 #include "CommandTooltip.h"
 
-#undef FindText
-#import "Msftedit.dll" rename_namespace(_T("TOM"))
-
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 

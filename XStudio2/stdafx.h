@@ -5,44 +5,56 @@
 
 #pragma once
 
+// Exclude rarely-used stuff from Windows headers
 #ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
+#define VC_EXTRALEAN            
 #endif
 
 #include "targetver.h"
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
+// some CString constructors will be explicit
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      
 
 // turns off MFC's hiding of some common and often safely ignored warning messages
 #define _AFX_ALL_WARNINGS
 
-#include <afxwin.h>         // MFC core and standard components
+ // MFC core and standard components
+#include <afxwin.h>        
 
 // Failed Attempt at redefining CHARFORMAT2 struct with all fields, but not present in richEdit.h :(
 #undef _RICHEDIT_VER
 #define _RICHEDIT_VER 0x0500
 
-#include <afxext.h>         // MFC extensions
+// MFC extensions
+#include <afxext.h>         
 
-
-
-
-
+// MFC support for Internet Explorer 4 Common Controls
 #ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdtctl.h>           // MFC support for Internet Explorer 4 Common Controls
+#include <afxdtctl.h>           
 #endif
+// MFC support for Windows Common Controls
 #ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>             // MFC support for Windows Common Controls
+#include <afxcmn.h>             
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
+// MFC support for ribbons and control bars
+#include <afxcontrolbars.h>     
+
+// MFC socket extensions
+#include <afxsock.h>    
+
+// MFC CtrlView
+#include <afxcview.h>
 
 
-#include <afxsock.h>            // MFC socket extensions
+// Import MS-XML library
+#include "Logic/msxml.h"
+
+// Import tom
+#include "TextObjectModel.h"
 
 // Win32 
 #include <Windowsx.h>
-
 
 // Visual Leak Detector
 #include <vld.h>
@@ -73,8 +85,6 @@ using namespace std;
 #include "D:/My Projects/XStudio2/Resources/Resources.h"
 
 
-
-#include <afxcview.h>
 
 
 
