@@ -355,6 +355,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
       SetUndoLimit(100);
 
+      // Create tooltip
+      ToolTip.Create(this, this);
+
       // Get IRichEditOle interface
       IRichEditOlePtr edit(GetIRichEditOle(), false);
       if (!edit)
@@ -366,7 +369,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
    }
 
-   
+   /// <summary>Relay mouse events to tooltip</summary>
+   /// <param name="pMsg">MSG.</param>
+   /// <returns></returns>
+   BOOL ScriptEdit::PreTranslateMessage(MSG* pMsg)
+   {
+      // Relay mouse messages to tooltip
+      if(pMsg->message== WM_LBUTTONDOWN ||
+         pMsg->message== WM_LBUTTONUP ||
+         pMsg->message== WM_MOUSEMOVE)
+      {
+         ToolTip.RelayEvent(pMsg);
+      }
+
+      return __super::PreTranslateMessage(pMsg);
+   }
+
    /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if replaced, false if match was no longer selected</returns>

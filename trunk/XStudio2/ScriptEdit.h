@@ -4,6 +4,7 @@
 #include <tom.h> 
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
+#include "CommandTooltip.h"
 
 #undef FindText
 #import "Msftedit.dll" rename_namespace(_T("TOM"))
@@ -494,6 +495,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       bool   EnsureVisible(int line);
       void   IndentSelection(bool indent);
       void   Initialize(ScriptDocument* doc);
+      BOOL   PreTranslateMessage(MSG* pMsg) override;
       void   SetRtf(const string& rtf);
       void   SuspendUndo(bool suspend);
 
@@ -542,6 +544,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
       TextDocument    TomDocument;
+      CommandTooltip  ToolTip;
    };
    
 

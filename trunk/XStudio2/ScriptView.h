@@ -4,7 +4,6 @@
 #include "Logic/Common.h"
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
-#include "CommandTooltip.h"
 
 
 /// <summary>User interface</summary>
@@ -48,9 +47,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      bool          Replace(MatchData& m);
-      void          SetSelection(CHARRANGE rng);
-      virtual BOOL  PreTranslateMessage(MSG* pMsg);
+      bool  Replace(MatchData& m);
+      void  SetSelection(CHARRANGE rng);
+      BOOL  PreTranslateMessage(MSG* pMsg) override;
 
    protected:
       void AdjustLayout();
@@ -92,7 +91,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       ScriptEdit RichEdit;
       CComboBox  ScopeCombo;
       CComboBox  VariablesCombo;
-      CommandTooltip  ToolTip;
 
    protected:
       EventHandler fnCompileComplete;
