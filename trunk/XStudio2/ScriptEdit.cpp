@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_VSCROLL()
       ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
       ON_WM_KEYUP()
+      ON_WM_SETFOCUS()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -974,6 +975,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Close suggestions, unless they're gaining focus
          if (State == InputState::Suggestions && (!pNewWnd || SuggestionsList != *pNewWnd))
             CloseSuggestions();
+
+         // Deactivate tooltip
+         Tooltip.Activate(FALSE);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e); 
@@ -1069,7 +1073,38 @@ NAMESPACE_BEGIN2(GUI,Controls)
             *data = CommandTooltip::UndocumentedTooltip;
          }
          break;
+
+      case TokenType::Label:
+         try
+         {
+            list<wstring> desc;
+            
+            // Locate declaration
+            UINT label = Document->Script.Labels[tok->ValueText].LineNumber-1;
+            data->Label = GetLineText(label);
+            
+            // Assemble preceeding line comments
+            data->Description.clear();
+            for (auto line = begin(label-1); line >= begin(0) && line->Commented; --line)
+               data->Description.insert(0, line->Text + L"\r\n");
+         }
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
+            *data = CommandTooltip::NoTooltip;
+         }
+         break;
       }  
+   }
+   
+
+   /// <summary>Enable tooltip.</summary>
+   /// <param name="pOldWnd">The old WND.</param>
+   void ScriptEdit::OnSetFocus(CWnd* pOldWnd)
+   {
+      CRichEditCtrl::OnSetFocus(pOldWnd);
+
+      // Activate tooltip
+      Tooltip.Activate(TRUE);
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>
