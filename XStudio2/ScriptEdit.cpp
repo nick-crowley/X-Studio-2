@@ -27,6 +27,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_HSCROLL()
       ON_WM_VSCROLL()
       ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
+      ON_WM_KEYUP()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -53,7 +54,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       switch (id)
       {
-      case UID_UNKNOWN:    return L"Unknown";
+      case UID_UNKNOWN:    return L"Last Action";
       case UID_TYPING:     return L"Typing";
       case UID_DELETE:     return L"Delete";
       case UID_DRAGDROP:   return L"Drag n Drop";
@@ -559,6 +560,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return CPoint(pos-LineIndex(pos), LineFromChar(pos));
    }
 
+   /// <summary>Starts or complets an undo group.</summary>
+   /// <param name="start">start/stop.</param>
+   void  ScriptEdit::GroupUndo(bool start)
+   {
+      try
+      {
+         if (start)
+            TomDocument->BeginEditCollection();
+         else
+            TomDocument->EndEditCollection();
+      }
+      catch (_com_error& e) {
+         Console.Log(HERE, ComException(HERE, e));
+      }
+   }
+
    /// <summary>Determines whether document is connected</summary>
    /// <returns></returns>
    bool  ScriptEdit::HasDocument() const
@@ -738,6 +755,36 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console.Log(HERE, e, GuiString(L"Unable to process '%c' character", (wchar)nChar)); 
       }
    }
+   
+   /// <summary>Called when ENTER is pressed.</summary>
+   void ScriptEdit::OnCharNewLine()
+   {
+      //GroupUndo(true);  Not implemented
+
+      // Insert newline
+      ReplaceSel(L"\n", TRUE);
+
+      // Get line now preceeding the caret
+      LineProxy line(*this, LineFromChar(-1) - 1);
+
+      // Insert similar amount of indentation
+      ReplaceSel(Indent(line.Indent).c_str(), TRUE);
+
+      //GroupUndo(false);  Not implemented
+   }
+
+   /// <summary>Replaces hard tabs with spaces.</summary>
+   /// <param name="shift">whether SHIFT key is pressed</param>
+   void ScriptEdit::OnCharTab(bool shift)
+   {
+      // No selection: Insert spaces
+      if (!HasSelection())
+         ReplaceSel(L"    ", TRUE);
+      
+      // Indent/Outdent
+      else 
+         IndentSelection(!shift);
+   }
 
    /// <summary>Refreshes the line numbers after a scroll</summary>
    void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -837,10 +884,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="nFlags">The flags.</param>
    void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      // Trap Tab/Shift+Tab (but not ctrl+Tab)
+      // [Shift]+Tab: Invoke indentation handler   (exclude 'switch document' ctrl+Tab)
       if (nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
-         OnTabKeyDown(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
-      else
+         OnCharTab(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
+
+      // Enter: Invoke newline indentation handler
+      else if (nChar == VK_RETURN)
+         OnCharNewLine();
+
+      else  // Pass to RichEdit
          CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
       
       // Suggestions: Update in response to caret movement
@@ -864,6 +916,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
          catch (ExceptionBase& e) {
             Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
          }
+   }
+   
+   /// <summary>Not used</summary>
+   /// <param name="nChar">The character.</param>
+   /// <param name="nRepCnt">The repeat count.</param>
+   /// <param name="nFlags">The flags.</param>
+   void ScriptEdit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+   {
+      CRichEditCtrl::OnKeyUp(nChar, nRepCnt, nFlags);
+
+      // Enter: Invoke newline indentation handler
+      /*if (nChar == VK_RETURN)
+         OnCharNewLine();*/
    }
 
    /// <summary>Closes the suggestion when focus lost</summary>
@@ -932,19 +997,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
-   /// <summary>Called when tab key pressed.</summary>
-   /// <param name="shift">whether SHIFT key is pressed</param>
-   void ScriptEdit::OnTabKeyDown(bool shift)
-   {
-      // No selection: Insert spaces
-      if (!HasSelection())
-         ReplaceSel(L"    ", TRUE);
-      
-      // Indent/Outdent
-      else 
-         IndentSelection(!shift);
-   }
-
    /// <summary>Performs syntax colouring on the current line</summary>
    void ScriptEdit::OnTextChange()
    {
@@ -1005,7 +1057,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          PasteSpecial(nClipFormat);
 
       // DEBUG:
-      Console << "inital line=" << prevLine << " newLine=" << LineFromChar(-1) << ENDL;
+      //Console << "inital line=" << prevLine << " newLine=" << LineFromChar(-1) << ENDL;
 
       // Highlight pasted text
       UpdateHighlighting(prevLine, LineFromChar(-1));
@@ -1174,7 +1226,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    
 NAMESPACE_END2(GUI,Controls)
-
 
 
 
