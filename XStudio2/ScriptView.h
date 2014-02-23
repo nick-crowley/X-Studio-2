@@ -31,11 +31,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       virtual ~ScriptView();   
 	  
       // ------------------------ STATIC -------------------------
-   public:
-      static CaretMovedEvent   CaretMoved;
-   
       DECLARE_DYNCREATE(ScriptView)
       DECLARE_MESSAGE_MAP()
+
+   public:
+      static CaretMovedEvent   CaretMoved;
    
       // --------------------- PROPERTIES ------------------------
 			
@@ -97,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    protected:
       EventHandler fnCompileComplete;
 
-};
+   };
 
 
    
