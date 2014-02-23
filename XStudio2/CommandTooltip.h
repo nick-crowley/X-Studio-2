@@ -1,5 +1,6 @@
 #pragma once
 #include "Logic/Event.h"
+#include "Logic/RichString.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -90,7 +91,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Event<TooltipData*>  RequestData;
 
    private:
-      TooltipData   Data;
+      RichString    Description,
+                    Label;
+      //TooltipData   Data;
       UINT          LabelHeight;
       CRect         DrawRect;
    };
