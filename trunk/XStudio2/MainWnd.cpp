@@ -119,6 +119,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   return TRUE;
    }
    
+   /// <summary>App-wizard generated</summary>
+   /// <param name="cs">The cs.</param>
+   /// <returns></returns>
    BOOL MainWnd::PreCreateWindow(CREATESTRUCT& cs)
    {
 	   if( !CMDIFrameWndEx::PreCreateWindow(cs) )
@@ -127,6 +130,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   //  the CREATESTRUCT cs
 
 	   return TRUE;
+   }
+
+   
+   /// <summary>Removed: Used in debugging source of PASTE messages to RichEdit</summary>
+   /// <param name="pMsg">The MSG.</param>
+   /// <returns></returns>
+   BOOL MainWnd::PreTranslateMessage(MSG* pMsg)
+   {
+      return CMDIFrameWndEx::PreTranslateMessage(pMsg);
    }
 
    /// <summary>Load temporary accelerator table.</summary>
@@ -310,7 +322,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
    }
-
+   
    void MainWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
       // Success: Change app state
@@ -417,4 +429,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)
+
+
 

@@ -433,12 +433,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       virtual ~ScriptEdit();
        
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNAMIC(ScriptEdit)
-   protected:
       DECLARE_MESSAGE_MAP()
 
+   public:
       static const wchar*  GetString(Suggestion& s);
+
+   private:
+      static const UINT    COMPILE_TIMER;
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -460,6 +462,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CHARRANGE GetSelection() const;
       bool      HasSelection() const;
       int       LineLength(int nChar = -1) const;
+      void      PasteFormat(UINT nClipFormat);
 
    protected:
       int        GetLineEnd(int line = -1) const;
@@ -495,6 +498,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SetCompilerTimer(bool set);
       void   SetGutterWidth(UINT twips);
       void   ShowSuggestions();
+      void   UpdateHighlighting(int first, int last);
       void   UpdateSuggestions();
       
       handler void OnBackgroundCompile();
@@ -504,6 +508,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
+      afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
       handler void OnTabKeyDown(bool shift);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -520,7 +525,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
       TextDocument    TomDocument;
-   };
+};
    
 
 NAMESPACE_END2(GUI,Controls)
