@@ -272,6 +272,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          PROPERTY_GET_SET(wstring,Text,GetText,SetText);
          PROPERTY_GET(bool,Commented,GetCommented);
          PROPERTY_GET(int,End,GetEnd);
+         PROPERTY_GET(int,Indent,GetIndent);
          PROPERTY_GET(int,Length,GetLength);
          PROPERTY_GET(int,Line,GetLine);
          PROPERTY_GET(bool,NOP,GetNOP);
@@ -288,6 +289,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // Check for '*' as first character
             int pos = txt.find_first_not_of(L' ');
             return pos != wstring::npos && txt[pos] == L'*';
+         }
+
+         /// <summary>Gets the amount of indentation.</summary>
+         /// <returns></returns>
+         int GetIndent() const
+         {
+            // Find first non-space
+            auto txt = GetText();
+            int pos = txt.find_first_not_of(L' ');
+
+            // Return position / entire line
+            return pos != wstring::npos ? pos : txt.length();
          }
 
          /// <summary>Gets the character index of the end of the line</summary>
@@ -359,6 +372,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             LineNumber = line;
          }
+
          // -------------------- REPRESENTATION ---------------------
       private:
          ScriptEdit& Edit;
@@ -468,6 +482,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int        GetLineEnd(int line = -1) const;
       int        GetLineStart(int line = -1) const;
       CPoint     GetScrollCoordinates() const;
+      void       GroupUndo(bool start);
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
@@ -503,13 +518,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+      handler void OnCharNewLine();
+      handler void OnCharTab(bool shift);
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+      afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnTabKeyDown(bool shift);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -525,7 +542,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
       TextDocument    TomDocument;
-};
+   };
    
 
 NAMESPACE_END2(GUI,Controls)
