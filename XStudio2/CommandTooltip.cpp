@@ -92,7 +92,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // DEBUG:
-         //Console << "OnDrawLabel: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
+         Console << "OnDrawLabel: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
          
          if (bCalcOnly)
             rect.SetRect(0,0,400,100);
@@ -119,8 +119,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	CSize  CommandTooltip::OnDrawDescription(CDC* pDC, CRect rect, BOOL bCalcOnly)
    {
       try
-      {
-         //Console << "OnDrawDescription: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
+      { 
+         Console << "OnDrawDescription: " << Cons::Yellow << "rect=" << rect << " Size=" << rect.Size() << " bCalcOnly=" << bCalcOnly << ENDL;
 
          // Get random description
          wstring sz = DescriptionLib.Commands.Find(133, GameVersion::Threat);

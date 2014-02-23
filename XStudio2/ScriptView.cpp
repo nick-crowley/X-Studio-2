@@ -112,19 +112,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       RichEdit.SetSel(rng);
    }
 
-   /// <summary>Relay mouse events to tooltip</summary>
+   /// <summary>No longer used</summary>
    /// <param name="pMsg">MSG.</param>
    /// <returns></returns>
    BOOL ScriptView::PreTranslateMessage(MSG* pMsg)
    {
-      // Relay mouse messages to tooltip
-      if(pMsg->message== WM_LBUTTONDOWN ||
-         pMsg->message== WM_LBUTTONUP ||
-         pMsg->message== WM_MOUSEMOVE)
-      {
-         ToolTip.RelayEvent(pMsg);
-      }
-
       return CFormView::PreTranslateMessage(pMsg);
    }
 
@@ -260,9 +252,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try
       {
-         // Create tooltip
-         ToolTip.Create(this, &RichEdit);
-
          // Convert script to RTF (ansi)
          string txt;
          RtfScriptWriter w(txt);
