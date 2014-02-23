@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CommandTooltip.h"
-
+#include "RichTextRenderer.h"
+#include "Logic/StringParser.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -110,7 +111,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Draw/Calculate rectangle
          auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
-         pDC->DrawText(Data.Label.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         //pDC->DrawText(Data.Label.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
          pDC->SelectObject(prev);
 
          // FIX: Store height of label
@@ -145,7 +147,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
          // Draw/Calculate rectangle
          auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
-         pDC->DrawText(Data.Description.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         //pDC->DrawText(Data.Description.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         RichTextRenderer::DrawLines(pDC, rect, Description, (bCalcOnly ? DT_CALCRECT : NULL));
          pDC->SelectObject(prev);
 
          // DEBUG:
@@ -166,9 +169,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Console << "CommandTooltip::OnShow() received" << ENDL;
 
       // Request data
-      RequestData.Raise(&Data);
+      TooltipData data;
+      RequestData.Raise(&data);
 
-      // Set description
+      // Parse
+      Description = StringParser(data.Description).Output;
+      Label = StringParser(data.Label).Output;
+
+      // Set description placeholder
       SetDescription(L"Description placeholder: Quick brown bear jumped over the lazy fox");
 
       // Set size?
