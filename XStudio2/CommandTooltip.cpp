@@ -43,6 +43,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (!__super::Create(view, 0))
          throw Win32Exception(HERE, L"");
 
+      SetFont(&afxGlobalData.fontRegular);
+
       // Add tool
       AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
 
@@ -107,7 +109,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          //Console << "OnDrawLabel: " << Cons::Yellow << rect << ENDL;
 
          // Draw/Calculate rectangle
+         auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
          pDC->DrawText(Data.Label.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         pDC->SelectObject(prev);
 
          // FIX: Store height of label
          if (bCalcOnly)
@@ -134,13 +138,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
          if (!bCalcOnly)
          {
             rect = DrawRect;
-            rect.top += LabelHeight;
+            rect.top += LabelHeight + 6;  // +6 for separator
          }
 
          //Console << "OnDrawDescription: " << Cons::Yellow << rect << ENDL;
       
          // Draw/Calculate rectangle
+         auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
          pDC->DrawText(Data.Description.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         pDC->SelectObject(prev);
 
          // DEBUG:
          /*if (bCalcOnly)
