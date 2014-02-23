@@ -41,6 +41,7 @@ namespace Logic
             /// <summary>Nodes keyed by token text</summary>
             typedef map<wstring, SyntaxNode> NodeMap;
 
+            /// <summary>Shared pointer to a command syntax</summary>
             typedef shared_ptr<CommandSyntax> CommandSyntaxPtr;
 
             // --------------------- CONSTRUCTION ----------------------

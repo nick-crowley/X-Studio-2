@@ -5,6 +5,12 @@
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
+   /// <summary>Sentinel for displaying no tooltip</summary>
+   const CommandTooltip::TooltipData  CommandTooltip::NoTooltip(L"Nothing", L"Nothing", 1);
+
+   /// <summary>Undocumented command tooltip</summary>
+   const CommandTooltip::TooltipData  CommandTooltip::UndocumentedTooltip(L"Command has no description", L"", 1);
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(CommandTooltip, CMFCToolTipCtrl)

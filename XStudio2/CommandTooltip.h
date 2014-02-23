@@ -26,6 +26,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       public:
          TooltipData()
          {}
+         TooltipData(wstring lab, wstring desc, int icon) : Label(lab), Description(desc), Icon(icon)
+         {}
          virtual ~TooltipData()
          {}
 		 
@@ -33,13 +35,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
 		   DEFAULT_MOVE(TooltipData);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
-
+      
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
 
          // ----------------------- MUTATORS ------------------------
-
+      public:
+         /// <summary>Clears this instance.</summary>
+         void  Clear()
+         {
+            Label = L"No further information";
+            Description.clear();
+         }
          // -------------------- REPRESENTATION ---------------------
       public:
          wstring  Label, 
@@ -55,7 +63,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ------------------------ STATIC -------------------------
       DECLARE_DYNCREATE(CommandTooltip)
       DECLARE_MESSAGE_MAP()
-	  
+	
+   public:
+      const static TooltipData NoTooltip,
+                               UndocumentedTooltip;
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			

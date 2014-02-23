@@ -18,7 +18,8 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         /// <summary>Creates a script parser</summary>
+         /// <summary>Creates a parser for an entire script</summary>
+         /// <param name="file">Script</param>
          /// <param name="lines">The lines to parse</param>
          /// <param name="v">The game version</param>
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
@@ -59,6 +60,30 @@ namespace Logic
          ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
          {
             return ErrorToken(msg, LineNumber, *tok);
+         }
+
+         /// <summary>Identifies the command from line of text.</summary>
+         /// <param name="line">line text.</param>
+         /// <param name="ver">game version.</param>
+         /// <returns>Command syntax or Unknown sentinel</returns>
+         CommandSyntaxRef  ScriptParser::Parse(const wstring& line, GameVersion ver)
+         {
+            try
+            {
+               ScriptFile dummy;
+               ScriptParser parser(dummy, {line}, ver);
+
+               // Sanity check
+               if (parser.Root->Children.empty())
+                  throw AlgorithmException(HERE, L"Parse tree has children");
+
+               // Retrieve syntax of single node
+               return parser.Root->Children.front()->Syntax;
+            }
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+               return CommandSyntax::Unrecognised;
+            }
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------

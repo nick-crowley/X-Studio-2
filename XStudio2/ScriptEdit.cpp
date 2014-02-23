@@ -1035,23 +1035,41 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="data">The data.</param>
    void ScriptEdit::OnRequestTooltip(CommandTooltip::TooltipData* data)
    {
+      // Initialise
       auto cursor = GetCursorLocation();
+      auto text = GetLineText(cursor.y);
       
       // Find token beneath cursor
-      CommandLexer lex(GetLineText(cursor.y));
-      if (auto tok = lex.Tokens.Find(cursor.x))
-      {
-         // Get random description
-         data->Description = DescriptionLib.Commands.Find(133, GameVersion::Threat);
-         data->Label = SyntaxLib.Find(133, GameVersion::Threat).Text;
-         data->Icon = 1;
-      }
-      else
-      {
-         data->Description.clear();
-         data->Label = L"No information";
-      }
+      CommandLexer lex(text);
+      auto tok = lex.Tokens.Find(cursor.x);
       
+      // None: show nothing
+      if (!tok)
+         *data = CommandTooltip::NoTooltip;
+
+      // Provide approriate data
+      else switch (tok->Type)
+      {
+      // Command: Get random description
+      case TokenType::Text:
+         try
+         {
+            auto cmd = ScriptParser::Parse(text, Document->Script.Game);
+            if (cmd == CommandSyntax::Unrecognised)
+               *data = CommandTooltip::UndocumentedTooltip;
+            else
+            {
+               data->Description = DescriptionLib.Commands.Find(cmd.ID, Document->Script.Game);
+               data->Label = SyntaxLib.Find(cmd.ID, Document->Script.Game).Text;
+               data->Icon = 1;
+            }
+         }
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
+            *data = CommandTooltip::UndocumentedTooltip;
+         }
+         break;
+      }  
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>
