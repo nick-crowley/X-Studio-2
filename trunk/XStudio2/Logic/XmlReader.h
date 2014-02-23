@@ -1,9 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Stream.h"
-#include "msxml.h"
-
-//using namespace XML;
+//#include "msxml.h"
 
 namespace Logic
 {

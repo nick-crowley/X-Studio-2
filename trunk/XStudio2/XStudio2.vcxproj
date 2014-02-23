@@ -255,6 +255,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
+    <ClInclude Include="TextObjectModel.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
