@@ -2,6 +2,8 @@
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
 #include "ScriptDocument.h"
+#include "Logic/DescriptionLibrary.h"
+#include "Logic/SyntaxLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -32,7 +34,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit() : SuggestionType(Suggestion::None), Document(nullptr)
+   ScriptEdit::ScriptEdit() : Document(nullptr),
+                              SuggestionType(Suggestion::None),
+                              fnShowTooltip(Tooltip.RequestData.Register(this, &ScriptEdit::OnRequestTooltip))
    {
    }
 
@@ -356,7 +360,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetUndoLimit(100);
 
       // Create tooltip
-      ToolTip.Create(this, this);
+      Tooltip.Create(this, this);
 
       // Get IRichEditOle interface
       IRichEditOlePtr edit(GetIRichEditOle(), false);
@@ -379,7 +383,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          pMsg->message== WM_LBUTTONUP ||
          pMsg->message== WM_MOUSEMOVE)
       {
-         ToolTip.RelayEvent(pMsg);
+         Tooltip.RelayEvent(pMsg);
       }
 
       return __super::PreTranslateMessage(pMsg);
@@ -1013,6 +1017,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
          *pResult = ALLOW_INPUT;
          break;
       }
+   }
+
+   /// <summary>Supply tooltip data</summary>
+   /// <param name="data">The data.</param>
+   void ScriptEdit::OnRequestTooltip(CommandTooltip::TooltipData* data)
+   {
+      // Get random description
+      data->Description = DescriptionLib.Commands.Find(133, GameVersion::Threat);
+      data->Label = SyntaxLib.Find(133, GameVersion::Threat).Text;
+      data->Icon = 1;
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>

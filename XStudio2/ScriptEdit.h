@@ -526,6 +526,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
+      handler void OnRequestTooltip(CommandTooltip::TooltipData* data);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -541,7 +542,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
       TextDocument    TomDocument;
-      CommandTooltip  ToolTip;
+
+      CommandTooltip        Tooltip;
+      TooltipEvent::Handler fnShowTooltip;
    };
    
 

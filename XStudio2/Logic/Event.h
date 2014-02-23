@@ -122,11 +122,14 @@ namespace Logic
       // ------------------------ TYPES --------------------------
    private:
       /// <summary>Event delegate with matching signature (but no class type)</summary>
-      typedef VargDelegate<Args...> DelegateBase;
+      typedef VargDelegate<Args...>  DelegateBase;
 
    public:
       /// <summary>Delegate smart pointer</summary>
       typedef shared_ptr<DelegateBase>  DelegatePtr;
+
+      /// <summary>Friendly name for a delegate</summary>
+      typedef DelegatePtr  Handler;
       
       // --------------------- CONSTRUCTION ----------------------
    public:
