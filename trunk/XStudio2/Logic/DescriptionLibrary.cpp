@@ -2,6 +2,7 @@
 #include "DescriptionLibrary.h"
 #include "DescriptionFileReader.h"
 #include "FileStream.h"
+#include "SyntaxLibrary.h"
 
 namespace Logic
 {

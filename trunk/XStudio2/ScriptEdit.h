@@ -403,6 +403,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Create script command tooltip</summary>
          /// <param name="lineText">The line text.</param>
          /// <param name="ver">The version</param>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
+         /// <exception cref="Logic::FileFormatException">Description Macro contains wrong number of parameters</exception>
+         /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
+         /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
          CommandTooltipData(wstring lineText, GameVersion ver) : TooltipData(IDR_GAME_OBJECTS, 32)
          {
             try
@@ -415,10 +419,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   ResetTo(ScriptEditTooltip::NoTooltip);
                else
                {  
-                  // Lookup title / description
-                  DescriptionSource = DescriptionLib.Commands.Find(cmd.ID, ver);
-                  LabelSource = SyntaxLib.Find(cmd.ID, ver).Text;
-                  
+                  // Lookup description 
+                  DescriptionSource = DescriptionLib.Commands.Find(cmd);
+                  LabelSource = cmd.Text;
+
                   // TODO: Supply icon
                }
             }
@@ -437,6 +441,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Creates label reference tooltip data.</summary>
          /// <param name="edit">script edit.</param>
          /// <param name="label">label name WITHOUT operator</param>
+         /// <exception cref="Logic::LabelNotFoundException">Not found</exception>
          LabelTooltipData(ScriptEdit& edit, wstring label) : TooltipData(0, 0)
          {
             try

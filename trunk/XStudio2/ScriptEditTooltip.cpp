@@ -75,6 +75,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------ PROTECTED METHODS -----------------------------   
    
    /// <summary>Gets the tooltip data from the parent</summary>
+   /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
+   /// <exception cref="Logic::FileFormatException">Description Macro contains wrong number of parameters</exception>
+   /// <exception cref="Logic::LabelNotFoundException">Label Not found</exception>
+   /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
+   /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
    void ScriptEditTooltip::GetTooltipData()
    {
       // Request data

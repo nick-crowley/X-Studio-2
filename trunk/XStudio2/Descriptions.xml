@@ -4515,7 +4515,7 @@ All {PROPERTY:jump distances} are zero-based.</command>
 
 
 <!--VANILLA:  VARIATION   $0 find station: product $1 with best price random:  max.price=$2x, amount=$3y, max.jumps=$4z, startsector=$5, trader=$6, exclude array=$7-->
-<!--XSTUDIO:  VARIATION   $0 find random factory: sells $1 with best price:  max.price=$2x, amount=$3y, max.jumps=$4z, startsector=$5, trader=$, exclude array=$76-->
+<!--XSTUDIO:  VARIATION   $0 find random factory: sells $1 with best price:  max.price=$2x, amount=$3y, max.jumps=$4z, startsector=$5, trader=$6, exclude array=$7-->
 <command id="1176" version="X3TC">Finds and returns a random FACTORY with the best combination of low {PROPERTY:ware price} and low {PROPERTY:jump distance} that is selling the WARE $1.  {SEARCH_RANGE:FACTORY,4z,5}
 
 {SEARCH_SYNTAX:FACTORY}

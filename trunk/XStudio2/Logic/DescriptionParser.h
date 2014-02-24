@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Descriptions.h"
+#include "CommandSyntax.h"
 #include <regex>
 
 namespace Logic
@@ -19,6 +20,7 @@ namespace Logic
 
       public:
          DescriptionParser(const wstring& txt);
+         DescriptionParser(const wstring& txt, CommandSyntaxRef cmd);
          virtual ~DescriptionParser();
 
          NO_COPY(DescriptionParser);	// No copy semantics
@@ -28,7 +30,12 @@ namespace Logic
       private:
          static const wregex  MatchKeyword,
                               MatchMacro,
-                              MatchParameters;
+                              MatchParameters,
+                              MartchParameterMarker;
+
+      private:
+         static wstring  Populate(wstring source, CommandSyntaxRef cmd);
+         static wstring  onParameterMarker(wsmatch& match, CommandSyntaxRef cmd);
 
          // --------------------- PROPERTIES ------------------------
 
@@ -37,7 +44,6 @@ namespace Logic
          wstring  onMatchKeyword(const wsmatch& match, int depth) const;
          wstring  onMatchMacro(const wsmatch& match, int depth) const;
          wstring  Parse(wstring text, int depth = 0) const;
-         wstring  PostProcess(wstring text) const;
 
          // ----------------------- MUTATORS ------------------------
 
