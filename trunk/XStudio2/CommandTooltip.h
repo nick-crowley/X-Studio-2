@@ -101,6 +101,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       CSize GetIconSize();
+      void  GetTooltipData();
 
       void  OnDrawBackground(CDC* dc, CRect wnd);
       CSize OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly);
@@ -109,8 +110,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       BOOL  OnEraseBkgnd(CDC* pDC);
       void  OnPaint();
       void  OnShow(NMHDR *pNMHDR, LRESULT *pResult);
-      void  GetTooltipData();
-
+      
       // -------------------- REPRESENTATION ---------------------
    public:
       Event<TooltipData*>  RequestData;
@@ -118,9 +118,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       RichString    Description,
                     Label;
-      /*CSize         DescriptionSize,
-                    LabelSize;
-      CRect         DrawRect;*/
 };
 
    /// <summary></summary>
