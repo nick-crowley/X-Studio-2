@@ -78,6 +78,9 @@ namespace Logic
          /// <summary>Get populated display text</summary>
          wstring GetDisplayText() const;
 
+         /// <summary>Get populated display richtext</summary>
+         wstring GetRichText(bool boldParams) const;
+
          /// <summary>Get parameter syntax in display order</summary>
          ParamSyntaxArray  GetParametersByDisplay() const;
 

@@ -112,6 +112,32 @@ namespace Logic
          return output;
       }
 
+      /// <summary>Get populated display richtext</summary>
+      wstring  CommandSyntax::GetRichText(bool boldParams) const
+      {
+         CommandLexer lex(Text, false);
+         wstring      output(Text);
+
+         if (!boldParams)
+            throw NotImplementedException(HERE, L"Rich title text has not been implemented");
+
+         // Iterate backwards thru tokens
+         for (auto tok = lex.Tokens.rbegin(); tok < lex.Tokens.rend(); ++tok)
+         {
+            if (tok->Type == TokenType::Variable)
+            {
+               // Lookup parameter name
+               auto param = Parameters[tok->Text[1]-48];
+               GuiString name(L"[b]«%s»[/b]", GetString(param.Type).c_str());
+
+               // Replace $n marker with parameter text
+               output.replace(tok->Start, tok->Length, name.c_str());
+            }
+         }
+
+         return output;
+      }
+
       /// <summary>Gets the parameter syntax sorted by display index</summary>
       /// <returns></returns>
       ParamSyntaxArray  CommandSyntax::GetParametersByDisplay() const
