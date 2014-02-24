@@ -37,6 +37,7 @@ namespace Logic
          wstring  onMatchKeyword(const wsmatch& match, int depth) const;
          wstring  onMatchMacro(const wsmatch& match, int depth) const;
          wstring  Parse(wstring text, int depth = 0) const;
+         wstring  PostProcess(wstring text) const;
 
          // ----------------------- MUTATORS ------------------------
 
