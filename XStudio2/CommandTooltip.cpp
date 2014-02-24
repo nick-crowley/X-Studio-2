@@ -3,6 +3,9 @@
 #include "RichTextRenderer.h"
 #include "Logic/StringParser.h"
 
+/// <summary>Print debugging stuff</summary>
+//#define PRINT_CONSOLE
+
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
@@ -46,8 +49,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (!__super::Create(view, 0))
          throw Win32Exception(HERE, L"");
 
-      //SetFont(&afxGlobalData.fontRegular);
-
       // Add tool
       AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
 
@@ -63,11 +64,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Gets the icon size.</summary>
+   /// <returns></returns>
    CSize  CommandTooltip::GetIconSize()
    {
       return CSize(24,24);
    }
    
+   /// <summary>Gets the tooltip data from the parent</summary>
    void CommandTooltip::GetTooltipData()
    {
       // Request data
@@ -83,22 +87,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << Cons::Green << Description << ENDL << ENDL;
    }
    
+   /// <summary>Draws the background</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <param name="rect">The rect.</param>
    void CommandTooltip::OnDrawBackground(CDC* dc, CRect wnd)
    {
-      //CDrawingManager dm(*dc);
-		//dm.FillGradient2(wnd, ::GetSysColor(COLOR_INFOTEXT), ::GetSysColor(COLOR_INFOTEXT), 90);
-
-      //dc->FillRect(wnd, 
-      dc->FillSolidRect(wnd, ::GetSysColor(COLOR_INFOBK));
+      if (HTHEME theme = OpenThemeData(m_hWnd, L"TOOLTIP"))
+      {
+         DrawThemeBackground(theme, dc->m_hDC, TTP_STANDARD, TTSS_NORMAL, wnd, nullptr);
+         CloseThemeData(theme);
+      }
+      else
+         dc->FillSolidRect(wnd, ::GetSysColor(COLOR_INFOBK));
    }
 
+
+   /// <summary>Draws the description</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <param name="rect">The rect.</param>
+   /// <param name="bCalcOnly">calculate only.</param>
+   /// <returns>Description size</returns>
 	CSize  CommandTooltip::OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly)
    {
       TooltipRect rc(rect);
 
-      // DEBUG
+#ifdef PRINT_CONSOLE
       Console << "Desc: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rc << ENDL;
-
+#endif
 
       // Draw/Calculate 
       RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? DT_CALCRECT : NULL);
@@ -114,38 +129,59 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
 
-      // DEBUG
+#ifdef PRINT_CONSOLE
       Console << "Desc: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rc << ENDL;
+#endif
          
       // return size
       return rc.Size();   
    }
    
+   /// <summary>Draws the icon</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <param name="rect">The rect.</param>
    void  CommandTooltip::OnDrawIcon(CDC* pDC, CRect rectImage)
    {
-      // DEBUG
+#ifdef PRINT_CONSOLE
       Console << "Icon: " << rectImage << ENDL;
+#endif
 
       // Draw random icon
-      auto icon = theApp.LoadIconW(IDR_GAME_OBJECTS, 24);
-      pDC->DrawIcon(rectImage.TopLeft(), icon);
+      CImageList il;
+      il.Create(24, 24, ILC_COLOR24|ILC_MASK, 1, 1);
+      il.Add(theApp.LoadIconW(IDR_GAME_OBJECTS, 24));
+      il.Draw(pDC, 0, rectImage.TopLeft(), ILD_TRANSPARENT);
+
+      /*auto icon = theApp.LoadIconW(IDR_GAME_OBJECTS, 24);
+      pDC->DrawIcon(rectImage.TopLeft(), icon);*/
+      
    }
 
-	CSize  CommandTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
+   /// <summary>Draws the label</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <param name="rect">The rect.</param>
+   /// <param name="bCalcOnly">calculate only.</param>
+   /// <returns>Label size</returns>
+   CSize  CommandTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
    {
-      // DEBUG
+#ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
+#endif
 
       // Draw/Calculate rectangle
       RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
 
-      // DEBUG
+#ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
+#endif
 
       // return size
       return rect.Size();
    }
    
+   /// <summary>Erases the background.</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <returns></returns>
    BOOL CommandTooltip::OnEraseBkgnd(CDC* pDC)
    {
       OnDrawBackground(pDC, ClientRect(this));
@@ -153,6 +189,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
+   /// <summary>Resizes the tooltip accordingly</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
    void CommandTooltip::OnShow(NMHDR *pNMHDR, LRESULT *pResult)
    {
       static const UINT  MOVED = 1, UNMOVED = 0;
@@ -196,6 +235,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
 
 
+   /// <summary>Paints the tooltip</summary>
    void CommandTooltip::OnPaint()
    {
       CPaintDC dc(this); 
