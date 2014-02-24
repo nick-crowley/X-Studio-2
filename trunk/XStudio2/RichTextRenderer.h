@@ -21,12 +21,14 @@ namespace GUI
          /// <summary>List of phrases</summary>   
          typedef list<RichPhrase>  PhraseList;
 
+         typedef PhraseList::iterator  PhraseIterator;
+
          /// <summary>Block of text with contiguous formatting</summary>   
          class RichPhrase
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour)
+            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false)
             {
                Text.push_back(ch.Char);
             }
@@ -73,6 +75,14 @@ namespace GUI
                return f;
             }
 
+            /// <summary>Gets the text extent.</summary>
+            /// <param name="pDC">The dc.</param>
+            /// <returns></returns>
+            CSize  GetSize(CDC* pDC) const
+            {
+               return pDC->GetTextExtent(Text.c_str(), Text.length());
+            }
+
             /// <summary>Determines whether text is whitespace.</summary>
             /// <returns></returns>
             bool IsWhitespace() const
@@ -85,12 +95,20 @@ namespace GUI
             }
 
             // ----------------------- MUTATORS ------------------------
+         public:
+            void  Offset(int cx) 
+            {
+               Rect.OffsetRect(cx, 0);
+            }
 
             // -------------------- REPRESENTATION ---------------------
-
+         public:
             wstring Text;
             UINT    Format;
             Colour  Colour;
+            CRect   Rect;
+            bool    Skip;
+            FontPtr Font;
          };
 
          /// <summary>Line rectangle</summary>   
@@ -128,6 +146,8 @@ namespace GUI
       protected:
          static PhraseList  GetPhrases(const RichString& str);
          static PhraseList  GetWords(const RichParagraph& para);
+         static int         MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line);
+         static void        RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end);
 
          // --------------------- PROPERTIES ------------------------
 

@@ -55,7 +55,7 @@ namespace Logic
          c << "{" << Cons::Yellow << "RichParagraph" << Cons::White << " Align=" << GetString(p.Align);
 
          // Elements
-         c << ENDL << "Content=";
+         c << " Content=";
          for (const auto& el : p.Content)
             c << *el;
          
@@ -71,8 +71,8 @@ namespace Logic
 
          // Elements
          c << ENDL << "Paragraphs=";
-         for (const auto& el : s.Paragraphs)
-            c << el;
+         for (const auto& para : s.Paragraphs)
+            c << para << ENDL;
          
          return c << "}";
       }

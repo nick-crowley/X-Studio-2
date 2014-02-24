@@ -143,7 +143,11 @@ namespace Logic
          case Colour::Red:    return *this << Cons::Red;
          case Colour::Cyan:   return *this << Cons::Cyan;
          case Colour::Purple: return *this << Cons::Purple;
+         case Colour::Orange:
          case Colour::Yellow: return *this << Cons::Yellow;
+         case Colour::Default:
+         case Colour::Silver:
+         case Colour::Black:
          case Colour::White:  return *this << Cons::White;
          }
 

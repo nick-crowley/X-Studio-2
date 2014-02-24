@@ -18,8 +18,9 @@ namespace GUI
       {
       }
 
-      // ------------------------------- STATIC METHODS -------------------------------
+      // ---------------------------- PUBLIC STATIC METHODS ---------------------------
 
+      
       /// <summary>Draw rich text in a single line</summary>
       /// <param name="dc">dc.</param>
       /// <param name="line">line rect</param>
@@ -57,7 +58,6 @@ namespace GUI
                break;
          }
       }
-
       /// <summary>Draw multiple lines of rich text</summary>
       /// <param name="dc">dc.</param>
       /// <param name="rect">drawing rectangle</param>
@@ -69,7 +69,7 @@ namespace GUI
          LOGFONT  fontData;
          CFont*   oldFont;
          LineRect line(rect, dc->GetTextExtent(L"ABC").cy);
-         bool     Draw = (flags & DT_CALCRECT) == 0;
+         bool     Calculate = (flags & DT_CALCRECT) != 0;
 
          // Get original font properties
          oldFont = dc->GetCurrentFont();
@@ -77,49 +77,156 @@ namespace GUI
             throw Win32Exception(HERE, L"Unable to get logical font");
          
          // Draw paragraphs
-         CRect remaining(line);
          for (auto& para : str.Paragraphs)
          {
+            auto words(GetWords(para));
+
             // Draw words
-            for (auto& w : GetWords(para))
+            for (auto w = words.begin(); w != words.end(); )
             {
-               // Newline:
-               if (w.Text == L"\n") {
-                  remaining = line.Advance();
-                  continue;
+               CRect remaining(line);
+
+               // Determine size of words on this line
+               if (Calculate)
+                  MeasureLine(dc, w, words.end(), line);
+               else
+               {
+                  // Measure words on line
+                  auto first = w;
+                  int line_remaining = MeasureLine(dc, w, words.end(), line);
+
+                  // Alignment: Offset all word rectangles
+                  for (auto word = first; word != w; ++word)
+                  {
+                     switch (para.Align)
+                     {
+                     case Alignment::Right:   word->Offset(line_remaining);    break;
+                     case Alignment::Centre:
+                     case Alignment::Justify: word->Offset(line_remaining/2);  break;
+                     }
+                  }
+
+                  // Render words
+                  RenderLine(dc, first, w);
                }
 
-               // Select font/colour
-               auto font = w.GetFont(fontData);
-               dc->SelectObject(font.get());
-               if (Draw)
-                  dc->SetTextColor(w.GetColour(true));
-
-               // Start a new line if word won't fit
-               auto word = dc->GetTextExtent(w.Text.c_str(), w.Text.length());
-               if (word.cx > remaining.Width())
-                  remaining = line.Advance();
-
-               // Skip leading whitespace
-               if (remaining.left == line.left && w.IsWhitespace)
-                  continue;
-
-               // Draw word
-               if (Draw)
-                  dc->DrawText(w.Text.c_str(), w.Text.length(), remaining, DT_LEFT);
-               remaining.left += word.cx;
-
-               // Restore font
-               dc->SelectObject(oldFont);
+               // NewLine
+               if (w != words.end())
+                  line.Advance();
             }
 
             // Start each paragraph on a separate line
-            remaining = line.Advance();
+            line.Advance();
          }
 
          // Set drawing extent
          rect.bottom = line.bottom;
       }
+
+
+      // -------------------------- PROTECTED STATIC METHODS -------------------------------
+
+      /// <summary>Calculates the amount of words that will fit in the line rectangle, and sets their word rectangles</summary>
+      /// <param name="dc">The dc.</param>
+      /// <param name="start">position of first word, this will be advanced to beyond the last word.</param>
+      /// <param name="end">end of words.</param>
+      /// <param name="line">line rectangle.</param>
+      /// <returns>Line length remaining</returns>
+      int  RichTextRenderer::MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line)
+      {
+         LOGFONT fontData;
+         CRect   remaining(line);
+         PhraseIterator w;
+
+         // Get original font properties
+         CFont* oldFont = dc->GetCurrentFont();
+         oldFont->GetLogFont(&fontData);
+
+         // Determine total length of words on this line
+         bool firstWord = true;
+         for (w = start; w != end; ++w)
+         {
+            // Newline: Consume but don't measure
+            if (w->Text == L"\n") {
+               w->Skip = true;
+               ++w;
+               break;
+            }
+
+            // Create word font
+            w->Font = w->GetFont(fontData);
+            dc->SelectObject(w->Font.get());
+            // Measure word
+            auto word = w->GetSize(dc);
+            dc->SelectObject(oldFont);
+
+            // EndOfLine: stop
+            if (word.cx > remaining.Width()) 
+               break;
+
+            // Skip whitespace at start of line
+            if (firstWord && w->IsWhitespace())
+               w->Skip = true;
+            else
+            {
+               // Set word rectangle
+               w->Rect.SetRect(remaining.left, remaining.top, remaining.left + word.cx, remaining.bottom);
+
+               // Include in measurement
+               remaining.left += word.cx;
+               firstWord = false;
+            }
+         }
+
+         // Check for words too long to fit on a line
+         if (w == start)
+            throw AlgorithmException(HERE, GuiString(L"Unable to fit '%s' on a single line", start->Text.c_str()));
+
+         // Consume words + Return remaining line length
+         start = w;
+         return remaining.Width();
+      }
+      
+
+      /// <summary>Renders previously measured words.</summary>
+      /// <param name="dc">The dc.</param>
+      /// <param name="pos">position of first word.</param>
+      /// <param name="end">position after the last word.</param>
+      void  RichTextRenderer::RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end)
+      {
+         LOGFONT fontData;
+
+         // Get original font properties
+         CFont* oldFont = dc->GetCurrentFont();
+         oldFont->GetLogFont(&fontData);
+
+         // Draw words
+         for (PhraseIterator w = pos; w != end; ++w)
+         {
+            // Newline: Consume but don't draw
+            if (w->Text == L"\n") {
+               ++w;
+               break;
+            }
+            // Skip leading whitespace
+            else if (w->Skip)
+               continue;
+
+            // Select font/colour
+            dc->SelectObject(w->Font.get());
+            dc->SetTextColor(w->GetColour(true));
+            dc->SelectObject(oldFont);
+
+            // DEBUG:
+            //Console << Cons::Yellow << GuiString(L"RenderLine: {'%s', %d}", w->Text.c_str(), w->Rect.Width()) << ENDL;
+
+            // Draw word
+            dc->SelectObject(w->Font.get());
+            dc->DrawText(w->Text.c_str(), w->Text.length(), w->Rect, DT_LEFT);
+            dc->SelectObject(oldFont);
+         }
+      }
+      
 
       
       /// <summary>Convert string into a list of phrases with contiguous formatting</summary>
@@ -197,10 +304,6 @@ namespace GUI
          // return words
          return phrases;
       }
-
-      // ------------------------------- PUBLIC METHODS -------------------------------
-
-      // ------------------------------ PROTECTED METHODS -----------------------------
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
