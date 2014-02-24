@@ -209,7 +209,6 @@ namespace Logic
       {
          RichParagraph* Paragraph = &FirstParagraph;     // Current paragraph (output)
          Colour         TextColour = Colour::Default;    // Current colour
-         bool           Escaped = false;                 // Whether current char is escaped
 
          // Iterate thru input
          for (auto ch = Input.begin(); ch != Input.end(); ++ch)
@@ -222,24 +221,32 @@ namespace Logic
                if (MatchColourCode(ch))
                   TextColour = ReadColourCode(ch);
                
-               // NewLine/Tab: Convert to character representation
-               else if (ch+1 < Input.end() && (ch[1] == 'n' || ch[1] == 't'))
-               {
-                  *Paragraph += new RichCharacter(ch[1] == 'n' ? '\n' : '\t', TextColour, Formatting.Current);
-                  ++ch;
-               }
-               else
-               {  
-                  // Backslash: Append as text, escape next character
-                  Escaped = true;
+               // Final char: Add verbatim
+               else if (ch+1 == Input.end())
                   *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);
+
+               // Escaped: Convert/De-escape character
+               else switch (ch[1])
+               {
+               // NewLine/Tab: Convert to character representation
+               case 'n':   *Paragraph += new RichCharacter('\n', TextColour, Formatting.Current);  ++ch;  break;
+               case 't':   *Paragraph += new RichCharacter('\t', TextColour, Formatting.Current);  ++ch;  break;
+               // Escaped bracket: Strip escape
+               case '{':
+               case '}':
+               case '[':
+               case ']':
+               case '(':
+               case ')':   *Paragraph += new RichCharacter(ch[1], TextColour, Formatting.Current);  ++ch;  break;
+               // Unknown
+               default:    *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);  ++ch;   break;
                }
                continue;
 
             // Open/Close tag:
             case '[':
-               // Escaped/Not-a-tag: Append as text
-               if (Escaped || !MatchTag(ch))
+               // Not-a-tag: Append as text
+               if (!MatchTag(ch))
                   *Paragraph += new RichCharacter('[', TextColour, Formatting.Current);
                else 
                {
@@ -301,9 +308,6 @@ namespace Logic
                *Paragraph += new RichCharacter(*ch, TextColour, Formatting.Current);
                break;
             }
-
-            // Revert to de-escaped
-            Escaped = false;
          }
       }
 
