@@ -4,6 +4,8 @@
 #include "StringLibrary.h"
 #include <initializer_list>
 
+//#define PRINT_CONSOLE
+
 // Define reg.ex characters that are difficult to understand using C-style escape codes
 #define open_bracket   L"\\("
 #define close_bracket  L"\\)"
@@ -27,7 +29,9 @@ namespace Logic
       /// <param name="str">The string.</param>
       StringResolver::StringResolver(const LanguageString& str) : Text(str.Text), Page(str.Page)
       {
-         //Console << "Parsing " << Cons::Yellow << str.Text << ENDL;
+#ifdef PRINT_CONSOLE
+         Console << "Parsing " << Cons::Yellow << str.Text << ENDL;
+#endif
 
          // Skip parsing if no brackets are present
          if (Text.find_first_of(L"{()}") != wstring::npos)
@@ -77,30 +81,42 @@ namespace Logic
          wstring r;
          
          // Replace all {aaa,bbb} markers.  Manually track position for in-place replacement + avoid infinite loop
-         for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, FullMarker); Position += r.length())
+         for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, FullMarker); )
          {
             r = OnFullMarker(match);
-            //Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
+
+#ifdef PRINT_CONSOLE            
+            Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
+#endif
+            // Advance position + perform replacement
+            Position = (match[0].first - Text.cbegin()) + r.length();
             Text.replace(match[0].first, match[0].second, r);
          }
 
          // Replace all {aaa} markers.  Manually track position for in-place replacement + avoid infinite loop
-         for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, DefaultMarker); Position += r.length())
+         for (Position = 0; regex_search(Text.cbegin()+Position, Text.cend(), match, DefaultMarker); )
          {
             r = OnDefaultMarker(match);
-            //Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
+
+#ifdef PRINT_CONSOLE
+            Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
+#endif
+            // Advance position + perform replacement
+            Position = (match[0].first - Text.cbegin()) + r.length();
             Text.replace(match[0].first, match[0].second, r);
          }
 
-         // Remove all (aaa) markers
+         // Remove all (aaa) comments
          while (regex_search(Text.cbegin(), Text.cend(), match, RemoveComment))
          {
-            //Console << "  Remove: " << Cons::Red << match[0].str() << ENDL;
+#ifdef PRINT_CONSOLE
+            Console << "  Remove: " << Cons::Red << match[0].str() << ENDL;
+#endif
             Text.erase(match[0].first, match[0].second);
          }
 
          // De-escape brackets
-         for (auto chr : {L"\\(", L"\\)", L"\\{", L"\\}"})
+         for (auto chr : {L"\\(", L"\\)", L"\\{", L"\\}", L"\\[", L"\\]"})
             for (int pos = Text.find(chr); pos != wstring::npos; pos = Text.find(chr))
                Text.erase(pos, 1);
       }

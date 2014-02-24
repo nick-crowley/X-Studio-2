@@ -34,6 +34,7 @@ namespace Logic
 
          // Parse
          Text = Parse(txt, 0);
+         //Text = PostProcess(Text);
       }
 
 
@@ -187,7 +188,18 @@ namespace Logic
          }
       }
 
+      /// <summary>Posts the process.</summary>
+      /// <param name="text">The text.</param>
+      /// <returns></returns>
+      wstring  DescriptionParser::PostProcess(wstring text) const
+      {
+         // De-escape brackets
+         for (auto chr : {L"\\(", L"\\)", L"\\{", L"\\}", L"\\[", L"\\]"})
+            for (int pos = text.find(chr); pos != wstring::npos; pos = text.find(chr))
+               text.erase(pos, 1);
 
+         return text;
+      }
    }
 }
 
