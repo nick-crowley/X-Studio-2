@@ -15,6 +15,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class CommandTooltip : public CMFCToolTipCtrl
    {
       // ------------------------ TYPES --------------------------
+   private:
+      /// <summary></summary>
+      class TooltipRect : public CRect
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         TooltipRect(const CRect& r) : CRect(r)
+         {}
+         
+         // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(float,Ratio,GetRatio);
+         
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         float GetRatio() const
+         {
+            return (float)Width() / (float)Height();
+         }
+      };
+
    public:
 	   /// <summary></summary>
       class TooltipData

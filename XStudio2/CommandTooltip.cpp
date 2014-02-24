@@ -56,6 +56,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       params.m_bDrawIcon = TRUE;
       params.m_bRoundedCorners = TRUE;
       params.m_bDrawSeparator = TRUE;
+      params.m_nMaxDescrWidth = 800;
 
       /*params.m_clrFill = RGB(255, 255, 255);
       params.m_clrFillGradient = RGB(228, 228, 240);
@@ -82,9 +83,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         // DEBUG:
-         //Console << "OnDrawIcon: " << Cons::Yellow << "rectImage=" << rectImage << ENDL;
-
          // Draw random icon
          auto icon = theApp.LoadIconW(IDR_GAME_OBJECTS, 24);
          return pDC->DrawIcon(rectImage.TopLeft(), icon);
@@ -99,32 +97,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         // FIX: Preserve drawing rect. Set correct height
-         if (!bCalcOnly)
-         {
-            DrawRect = rect;
-            rect.bottom = rect.top + LabelHeight;
-         }
-         else if (rect.Width() < 400)
-            rect.right = rect.left + 400;
-
-         // DEBUG:
-         //Console << "OnDrawLabel: " << Cons::Yellow << rect << ENDL;
-
          // Draw/Calculate rectangle
-         auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
-         //pDC->DrawText(Data.Label.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
+         auto prev = pDC->SelectObject(&afxGlobalData.fontTooltip);
          RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
          pDC->SelectObject(prev);
 
-         // FIX: Store height of label
+         // CMFCTooltip Fix: Store height of label
          if (bCalcOnly)
             LabelHeight = rect.Height();
 
-         // DEBUG:
-         /*if (bCalcOnly)
-            Console << "OnDrawLabel: " << Cons::Green << rect << ENDL;*/
-      
          // return size
          return rect.Size();
       }
@@ -136,35 +117,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 	CSize  CommandTooltip::OnDrawDescription(CDC* pDC, CRect rect, BOOL bCalcOnly)
    {
+      auto prev = pDC->SelectObject(&afxGlobalData.fontTooltip);
+
       try
       { 
-         // FIX: Use correct drawing rect. Set correct height
+         // Draw/Calculate 
+         TooltipRect rc(rect);
+         RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? DT_CALCRECT : NULL);
+
+         // Calculate: Adjust rectangle
          if (!bCalcOnly)
          {
-            rect = DrawRect;
-            rect.top += LabelHeight + 6;  // +6 for separator
+            // Too high: Widen
+            while (rc.Ratio < 0.66f)
+            {
+               rc.right += 50;
+               RichTextRenderer::DrawLines(pDC, rc, Description, DT_CALCRECT);
+            }
+            // Too wide: thin
+            while (rc.Ratio > 1.33f)
+            {
+               rc.right -= 50;
+               RichTextRenderer::DrawLines(pDC, rc, Description, DT_CALCRECT);
+            }
          }
-         else if (rect.Width() < 400)
-            rect.right = rect.left + 400;
-
-         //Console << "OnDrawDescription: " << Cons::Yellow << rect << ENDL;
-      
-         // Draw/Calculate rectangle
-         auto prev = pDC->SelectObject(&afxGlobalData.fontRegular);
-         //pDC->DrawText(Data.Description.c_str(), rect, DT_LEFT | DT_WORDBREAK | (bCalcOnly ? DT_CALCRECT : NULL));
-         RichTextRenderer::DrawLines(pDC, rect, Description, (bCalcOnly ? DT_CALCRECT : NULL));
-         pDC->SelectObject(prev);
-
-         // DEBUG:
-         /*if (bCalcOnly)
-            Console << "OnDrawDescription: " << Cons::Green << rect << ENDL;*/
-      
+         
          // return size
-         return rect.Size();
+         pDC->SelectObject(prev);
+         return rc.Size();   
       }
-      catch (ExceptionBase& e) {
+      catch (ExceptionBase& e) 
+      {
          Console.Log(HERE, e, L"Unable to draw description tooltip text");
-         return CSize();
+         pDC->SelectObject(prev);
+         return rect.Size();
       }
    }
    
