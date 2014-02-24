@@ -421,7 +421,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                {  
                   // Lookup description 
                   DescriptionSource = DescriptionLib.Commands.Find(cmd);
-                  LabelSource = cmd.Text;
+                  LabelSource = cmd.GetRichText(true);
 
                   // TODO: Supply icon
                }
