@@ -105,6 +105,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             DrawRect = rect;
             rect.bottom = rect.top + LabelHeight;
          }
+         else if (rect.Width() < 400)
+            rect.right = rect.left + 400;
 
          // DEBUG:
          //Console << "OnDrawLabel: " << Cons::Yellow << rect << ENDL;
@@ -142,6 +144,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             rect = DrawRect;
             rect.top += LabelHeight + 6;  // +6 for separator
          }
+         else if (rect.Width() < 400)
+            rect.right = rect.left + 400;
 
          //Console << "OnDrawDescription: " << Cons::Yellow << rect << ENDL;
       
@@ -175,6 +179,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Parse
       Description = StringParser(data.Description).Output;
       Label = StringParser(data.Label).Output;
+
+      // DEBUG:
+      Console << Cons::Yellow << data.Description << ENDL << ENDL;
+      Console << Cons::Green << Description << ENDL << ENDL;
 
       // Set description placeholder
       SetDescription(L"Description placeholder: Quick brown bear jumped over the lazy fox");

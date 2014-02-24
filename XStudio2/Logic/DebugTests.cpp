@@ -56,13 +56,13 @@ namespace Logic
 
       //Test_ScriptCompiler();
       
-      //Test_StringParser();
+      Test_StringParser();
       //Test_StringParserRegEx();
 
       //Test_DescriptionReader();
       //Text_DescriptionRegEx();
 
-      Console << theApp.GetRegSectionPath(L"Settings") << ENDL;
+      //Console << theApp.GetRegSectionPath(L"Settings") << ENDL;
 
    }
 
@@ -663,6 +663,8 @@ namespace Logic
          L"[text colwidth='40']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
          L"[text cols='3' colwidth='40']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
          L"[text cols='3' colwidth='40' colspacing='50']quick brown fox [b]jumped over[/b] the lazy dog[/text]",
+
+         L"something something[right]aligned aligned[/right][b]bold bold[/b]"
       };
 
       // Parse strings

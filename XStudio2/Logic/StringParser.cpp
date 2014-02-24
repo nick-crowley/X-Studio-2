@@ -250,16 +250,21 @@ namespace Logic
                   // Paragraph: Add/Remove alignment. Append new paragraph?
                   case TagClass::Paragraph:
                      Alignments.PushPop(tag);
-                     if (tag.Opening)
-                     {
-                        // SpecialCase: First tag - Adjust existing alignment 
-                        if (Output.Paragraphs.size() == 1 && FirstParagraph.Content.empty())
-                           FirstParagraph.Align = GetAlignment(tag.Type);
-                        else
-                        {  // Append new
-                           Output += RichParagraph(GetAlignment(tag.Type));
-                           Paragraph = &FirstParagraph;
-                        }
+                     // Open+Empty: Adjust existing alignment
+                     if (tag.Opening && Paragraph->Content.empty())
+                        Paragraph->Align = GetAlignment(tag.Type);
+
+                     // Open: Append new 
+                     else if (tag.Opening)
+                     {  
+                        Output += RichParagraph(GetAlignment(tag.Type));
+                        Paragraph = &Output.Paragraphs.back();
+                     }
+                     // Close: Append empty left-aligned (unless EOF)
+                     else if (!tag.Opening && ch+1 < Input.end())
+                     {  
+                        Output += RichParagraph(Alignment::Left);
+                        Paragraph = &Output.Paragraphs.back();
                      }
                      break;
 
