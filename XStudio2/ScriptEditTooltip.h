@@ -5,14 +5,14 @@
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
-   /*class CommandTooltip;
-   class CommandTooltip::TooltipData;*/
+   /*class ScriptEditTooltip;
+   class ScriptEditTooltip::TooltipData;*/
    
    
    
 
    /// <summary></summary>
-   class CommandTooltip : public CToolTipCtrl
+   class ScriptEditTooltip : public CToolTipCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -79,11 +79,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      CommandTooltip();    
-      virtual ~CommandTooltip();
+      ScriptEditTooltip();    
+      virtual ~ScriptEditTooltip();
        
       // ------------------------ STATIC -------------------------
-      DECLARE_DYNCREATE(CommandTooltip)
+      DECLARE_DYNCREATE(ScriptEditTooltip)
       DECLARE_MESSAGE_MAP()
 	
    public:
@@ -118,10 +118,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       RichString    Description,
                     Label;
+      CRect  rcIcon, rcLabel, rcDesc;
 };
 
    /// <summary></summary>
-   typedef Event<CommandTooltip::TooltipData*>    TooltipEvent;
+   typedef Event<ScriptEditTooltip::TooltipData*>    TooltipEvent;
    
 
 NAMESPACE_END2(GUI,Controls)

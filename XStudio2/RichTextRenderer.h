@@ -88,7 +88,7 @@ namespace GUI
             bool IsWhitespace() const
             {
                for (auto ch : Text)
-                  if (!iswspace(ch))
+                  if (!iswspace(ch))  
                      return false;
 
                return true;

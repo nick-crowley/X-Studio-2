@@ -77,9 +77,9 @@ namespace GUI
             throw Win32Exception(HERE, L"Unable to get logical font");
          
          // Draw paragraphs
-         for (auto& para : str.Paragraphs)
+         for (auto para = str.Paragraphs.begin(); para != str.Paragraphs.end(); )
          {
-            auto words(GetWords(para));
+            auto words(GetWords(*para));
 
             // Draw words
             for (auto w = words.begin(); w != words.end(); )
@@ -98,7 +98,7 @@ namespace GUI
                   // Alignment: Offset all word rectangles
                   for (auto word = first; word != w; ++word)
                   {
-                     switch (para.Align)
+                     switch (para->Align)
                      {
                      case Alignment::Right:   word->Offset(line_remaining);    break;
                      case Alignment::Centre:
@@ -116,7 +116,8 @@ namespace GUI
             }
 
             // Start each paragraph on a separate line
-            line.Advance();
+            if (++para != str.Paragraphs.end())
+               line.Advance();
          }
 
          // Set drawing extent
@@ -160,8 +161,8 @@ namespace GUI
             auto word = w->GetSize(dc);
             dc->SelectObject(oldFont);
 
-            // EndOfLine: stop
-            if (word.cx > remaining.Width()) 
+            // EndOfLine: stop      // SpecialCase: Punctuation - never start new line with punctuation
+            if (word.cx > remaining.Width() && !iswpunct(w->Text.front()))    
                break;
 
             // Skip whitespace at start of line
@@ -293,8 +294,8 @@ namespace GUI
              || ch->Format != current.Format)
                 phrases.push_back(RichPhrase(*ch));
 
-            // Create new word on line/word break
-            else if (ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
+            // Create new word on punctuation, line-break and word-break
+            else if (iswpunct(ch->Char) || ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
                phrases.push_back(RichPhrase(*ch));
             else
                // Otherwise append to last phrase

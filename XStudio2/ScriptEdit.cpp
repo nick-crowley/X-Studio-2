@@ -1037,7 +1037,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
-   void ScriptEdit::OnRequestTooltip(CommandTooltip::TooltipData* data)
+   void ScriptEdit::OnRequestTooltip(ScriptEditTooltip::TooltipData* data)
    {
       // Initialise
       auto cursor = GetCursorLocation();
@@ -1049,7 +1049,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // None: show nothing
       if (!tok)
-         *data = CommandTooltip::NoTooltip;
+         *data = ScriptEditTooltip::NoTooltip;
 
       // Provide approriate data
       else switch (tok->Type)
@@ -1060,7 +1060,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             auto cmd = ScriptParser::Parse(text, Document->Script.Game);
             if (cmd == CommandSyntax::Unrecognised)
-               *data = CommandTooltip::UndocumentedTooltip;
+               *data = ScriptEditTooltip::UndocumentedTooltip;
             else
             {
                data->Description = DescriptionLib.Commands.Find(cmd.ID, Document->Script.Game);
@@ -1070,7 +1070,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
          catch (ExceptionBase& e) {
             Console.Log(HERE, e);
-            *data = CommandTooltip::UndocumentedTooltip;
+            *data = ScriptEditTooltip::UndocumentedTooltip;
          }
          break;
 
@@ -1090,7 +1090,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
          catch (ExceptionBase& e) {
             Console.Log(HERE, e);
-            *data = CommandTooltip::NoTooltip;
+            *data = ScriptEditTooltip::NoTooltip;
          }
          break;
       }  
