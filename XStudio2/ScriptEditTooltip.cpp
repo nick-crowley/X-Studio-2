@@ -10,10 +10,10 @@
 NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Sentinel for displaying no tooltip</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoTooltip(L"Nothing", L"Nothing", 1);
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoTooltip(L"Nothing", L"");
 
-   /// <summary>Undocumented command tooltip</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::UndocumentedTooltip(L"Command has no description", L"", 1);
+   /// <summary>Sentinel tooltip for commands with no documentation</summary>
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentation(L"Command has no description", L"");
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -39,15 +39,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   /// <summary>Creates the tooltip</summary>
+   /// <summary>Creates or re-creates the tooltip</summary>
    /// <param name="pParentWnd">The parent WND.</param>
    /// <param name="dwStyle">The style.</param>
    /// <returns></returns>
    bool  ScriptEditTooltip::Create(CWnd* view, CWnd* edit)
    {
+      // Destroy if exists
+      if (m_hWnd && !DestroyWindow())
+         throw Win32Exception(HERE, L"Unable to destroy tooltip");
+
       // Create window
       if (!__super::Create(view, 0))
-         throw Win32Exception(HERE, L"");
+         throw Win32Exception(HERE, L"Unable to create tooltip");
 
       // Add tool
       AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
@@ -62,26 +66,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
-   // ------------------------------ PROTECTED METHODS -----------------------------
-   
-   /// <summary>Gets the icon size.</summary>
-   /// <returns></returns>
-   CSize  ScriptEditTooltip::GetIconSize()
+   void  ScriptEditTooltip::Reset()
    {
-      return CSize(24,24);
+      Activate(FALSE);
+      Activate(TRUE);
    }
+
+   // ------------------------------ PROTECTED METHODS -----------------------------   
    
    /// <summary>Gets the tooltip data from the parent</summary>
    void ScriptEditTooltip::GetTooltipData()
    {
       // Request data
-      TooltipData data;
+      TooltipData data(0,0);
       RequestData.Raise(&data);
 
-      // Parse
-      Description = StringParser(data.Description).Output;
-      Label = StringParser(data.Label).Output;
+      // Icon
+      IconSize = data.IconSize;
+      IconID = data.IconID;
 
+      // Parse
+      HasDescription = !data.DescriptionSource.empty();
+      Description = StringParser(data.DescriptionSource).Output;
+      Label       = StringParser(data.LabelSource).Output;
+      
       // DEBUG:
       //Console << Cons::Yellow << data.Description << ENDL << ENDL;
       //Console << Cons::Green << Description << ENDL << ENDL;
@@ -146,15 +154,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Console << "Icon: " << rectImage << ENDL;
 #endif
 
-      // Draw random icon
       CImageList il;
-      il.Create(24, 24, ILC_COLOR24|ILC_MASK, 1, 1);
-      il.Add(theApp.LoadIconW(IDR_GAME_OBJECTS, 24));
-      il.Draw(pDC, 0, rectImage.TopLeft(), ILD_TRANSPARENT);
 
-      /*auto icon = theApp.LoadIconW(IDR_GAME_OBJECTS, 24);
-      pDC->DrawIcon(rectImage.TopLeft(), icon);*/
-      
+      // Load icon
+      il.Create(IconSize, IconSize, ILC_COLOR24|ILC_MASK, 1, 1);
+      il.Add(theApp.LoadIconW(IconID, IconSize));
+
+      // Draw icon
+      il.Draw(pDC, 0, rectImage.TopLeft(), ILD_TRANSPARENT);
    }
 
    /// <summary>Draws the label</summary>
@@ -169,14 +176,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 #endif
 
       // Draw/Calculate rectangle
-      RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
+      int width = RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
 
 #ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
 #endif
 
       // return size
-      return rect.Size();
+      return CSize(width, rect.Height());
    }
    
    /// <summary>Erases the background.</summary>
@@ -188,6 +195,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       return TRUE;
    }
+
 
    /// <summary>Resizes the tooltip accordingly</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
@@ -211,18 +219,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
          auto desc = OnDrawDescription(&dc, wnd, true);
 
          // Set header height according to icon/label height
-         auto label = CRect(GetIconSize().cx, 0, desc.cx, GetIconSize().cy);
+         auto label = CRect(IconSize, 0, desc.cx, IconSize);
          auto header = OnDrawLabel(&dc, label, true);
-         header.cy = max(GetIconSize().cy, header.cy);
+         header.cy = max(IconSize, header.cy);
 
          // Set window dimensions
-         wnd.right = desc.cx;
-         wnd.bottom = header.cy + desc.cy;
+         wnd.right = HasDescription ? desc.cx : header.cx;
+         wnd.bottom = HasDescription ? header.cy + desc.cy : header.cy;
 
          // Set drawing rectangles
-         rcIcon = CRect(CPoint(0, 0), GetIconSize());
+         rcIcon = CRect(CPoint(0, 0), CSize(IconSize,IconSize));
          rcLabel = label;
-         rcDesc = CRect(CPoint(0, GetIconSize().cy), desc);
+         rcDesc = CRect(CPoint(0, header.cy), desc);
 
          // Set margins
          wnd.InflateRect(2*MARGIN, 2*MARGIN);
@@ -260,8 +268,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         OnDrawIcon(&dc, rcIcon);
+         // Icon
+         if (IconID)
+            OnDrawIcon(&dc, rcIcon);
+
+         // Label
          OnDrawLabel(&dc, rcLabel, false);
+
+         // Description
          OnDrawDescription(&dc, rcDesc, false);
       }
       catch (ExceptionBase& e) {

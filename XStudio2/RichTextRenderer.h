@@ -28,7 +28,7 @@ namespace GUI
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false)
+            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false), Rect(0,0,0,0)
             {
                Text.push_back(ch.Char);
             }
@@ -141,7 +141,7 @@ namespace GUI
          // ------------------------ STATIC -------------------------
       public:
          static void  DrawLine(CDC* dc, CRect line, const RichString& str);
-         static void  DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags);
+         static int   DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags);
 
       protected:
          static PhraseList  GetPhrases(const RichString& str);
