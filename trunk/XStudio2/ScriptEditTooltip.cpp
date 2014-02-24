@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTooltip.h"
+#include "ScriptEditTooltip.h"
 #include "RichTextRenderer.h"
 #include "Logic/StringParser.h"
 
@@ -10,28 +10,28 @@
 NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Sentinel for displaying no tooltip</summary>
-   const CommandTooltip::TooltipData  CommandTooltip::NoTooltip(L"Nothing", L"Nothing", 1);
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoTooltip(L"Nothing", L"Nothing", 1);
 
    /// <summary>Undocumented command tooltip</summary>
-   const CommandTooltip::TooltipData  CommandTooltip::UndocumentedTooltip(L"Command has no description", L"", 1);
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::UndocumentedTooltip(L"Command has no description", L"", 1);
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNCREATE(CommandTooltip, CToolTipCtrl)
+   IMPLEMENT_DYNCREATE(ScriptEditTooltip, CToolTipCtrl)
 
-   BEGIN_MESSAGE_MAP(CommandTooltip, CToolTipCtrl)
-      ON_NOTIFY_REFLECT(TTN_SHOW, &CommandTooltip::OnShow)
+   BEGIN_MESSAGE_MAP(ScriptEditTooltip, CToolTipCtrl)
+      ON_NOTIFY_REFLECT(TTN_SHOW, &ScriptEditTooltip::OnShow)
       ON_WM_PAINT()
       ON_WM_ERASEBKGND()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CommandTooltip::CommandTooltip()
+   ScriptEditTooltip::ScriptEditTooltip()
    {
    }
 
-   CommandTooltip::~CommandTooltip()
+   ScriptEditTooltip::~ScriptEditTooltip()
    {
    }
 
@@ -43,7 +43,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="pParentWnd">The parent WND.</param>
    /// <param name="dwStyle">The style.</param>
    /// <returns></returns>
-   bool  CommandTooltip::Create(CWnd* view, CWnd* edit)
+   bool  ScriptEditTooltip::Create(CWnd* view, CWnd* edit)
    {
       // Create window
       if (!__super::Create(view, 0))
@@ -66,13 +66,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Gets the icon size.</summary>
    /// <returns></returns>
-   CSize  CommandTooltip::GetIconSize()
+   CSize  ScriptEditTooltip::GetIconSize()
    {
       return CSize(24,24);
    }
    
    /// <summary>Gets the tooltip data from the parent</summary>
-   void CommandTooltip::GetTooltipData()
+   void ScriptEditTooltip::GetTooltipData()
    {
       // Request data
       TooltipData data;
@@ -90,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Draws the background</summary>
    /// <param name="pDC">The dc.</param>
    /// <param name="rect">The rect.</param>
-   void CommandTooltip::OnDrawBackground(CDC* dc, CRect wnd)
+   void ScriptEditTooltip::OnDrawBackground(CDC* dc, CRect wnd)
    {
       if (HTHEME theme = OpenThemeData(m_hWnd, L"TOOLTIP"))
       {
@@ -107,7 +107,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="rect">The rect.</param>
    /// <param name="bCalcOnly">calculate only.</param>
    /// <returns>Description size</returns>
-	CSize  CommandTooltip::OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly)
+	CSize  ScriptEditTooltip::OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly)
    {
       TooltipRect rc(rect);
 
@@ -140,7 +140,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Draws the icon</summary>
    /// <param name="pDC">The dc.</param>
    /// <param name="rect">The rect.</param>
-   void  CommandTooltip::OnDrawIcon(CDC* pDC, CRect rectImage)
+   void  ScriptEditTooltip::OnDrawIcon(CDC* pDC, CRect rectImage)
    {
 #ifdef PRINT_CONSOLE
       Console << "Icon: " << rectImage << ENDL;
@@ -162,7 +162,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="rect">The rect.</param>
    /// <param name="bCalcOnly">calculate only.</param>
    /// <returns>Label size</returns>
-   CSize  CommandTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
+   CSize  ScriptEditTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
    {
 #ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
@@ -182,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Erases the background.</summary>
    /// <param name="pDC">The dc.</param>
    /// <returns></returns>
-   BOOL CommandTooltip::OnEraseBkgnd(CDC* pDC)
+   BOOL ScriptEditTooltip::OnEraseBkgnd(CDC* pDC)
    {
       OnDrawBackground(pDC, ClientRect(this));
 
@@ -192,9 +192,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Resizes the tooltip accordingly</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
    /// <param name="pResult">The result.</param>
-   void CommandTooltip::OnShow(NMHDR *pNMHDR, LRESULT *pResult)
+   void ScriptEditTooltip::OnShow(NMHDR *pNMHDR, LRESULT *pResult)
    {
-      static const UINT  MOVED = 1, UNMOVED = 0;
+      static const UINT  MOVED = 1, UNMOVED = 0, MARGIN = 4;
 
       ClientRect wnd(this);
       CClientDC  dc(this);
@@ -209,16 +209,29 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Set window width according to description 
          auto desc = OnDrawDescription(&dc, wnd, true);
+
+         // Set header height according to icon/label height
+         auto label = CRect(GetIconSize().cx, 0, desc.cx, GetIconSize().cy);
+         auto header = OnDrawLabel(&dc, label, true);
+         header.cy = max(GetIconSize().cy, header.cy);
+
+         // Set window dimensions
          wnd.right = desc.cx;
+         wnd.bottom = header.cy + desc.cy;
 
-         // get label rect
-         auto labelRect = CRect(GetIconSize().cx, 0, wnd.right, GetIconSize().cy);
+         // Set drawing rectangles
+         rcIcon = CRect(CPoint(0, 0), GetIconSize());
+         rcLabel = label;
+         rcDesc = CRect(CPoint(0, GetIconSize().cy), desc);
 
-         // Ensure enough height for label/icon 
-         auto label = OnDrawLabel(&dc, labelRect, true);
-         wnd.bottom = max(GetIconSize().cy, label.cy) + desc.cy;
+         // Set margins
+         wnd.InflateRect(2*MARGIN, 2*MARGIN);
+         for (CRect* r : {&rcIcon,&rcLabel,&rcDesc})
+            r->OffsetRect(MARGIN,MARGIN);
 
-         // TODO: Adjust for margins
+         // Set internal margins
+         rcLabel.OffsetRect(MARGIN,0);
+         rcDesc.OffsetRect(0,MARGIN);
 
          // Size window
          SetWindowPos(nullptr, -1, -1, wnd.Width(), wnd.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
@@ -236,7 +249,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 
    /// <summary>Paints the tooltip</summary>
-   void CommandTooltip::OnPaint()
+   void ScriptEditTooltip::OnPaint()
    {
       CPaintDC dc(this); 
       ClientRect wnd(this);
@@ -247,20 +260,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         // Background
-         //OnDrawBackground(&dc, wnd);
-
-         // Icon
-         CRect icon(CPoint(0,0), GetIconSize());
-         OnDrawIcon(&dc, icon);
-
-         // Label
-         CRect label(icon.right, 0, wnd.right, icon.bottom);
-         auto height = OnDrawLabel(&dc, label, false).cy;
-
-         // Description
-         CRect desc(0, max(height, icon.Height()), wnd.right, wnd.bottom);
-         OnDrawDescription(&dc, desc, false);
+         OnDrawIcon(&dc, rcIcon);
+         OnDrawLabel(&dc, rcLabel, false);
+         OnDrawDescription(&dc, rcDesc, false);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);

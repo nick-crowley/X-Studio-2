@@ -130,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
-    <ClInclude Include="CommandTooltip.h" />
+    <ClInclude Include="ScriptEditTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
     <ClInclude Include="CustomDrawImpl.hpp" />
     <ClInclude Include="DocumentBase.h" />
@@ -261,7 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
-    <ClCompile Include="CommandTooltip.cpp" />
+    <ClCompile Include="ScriptEditTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
     <ClCompile Include="DocumentBase.cpp" />
     <ClCompile Include="FindComboBox.cpp" />

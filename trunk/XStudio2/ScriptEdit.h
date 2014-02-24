@@ -4,7 +4,7 @@
 #include <tom.h> 
 #include "Logic/ScriptParser.h"
 #include "SuggestionList.h"
-#include "CommandTooltip.h"
+#include "ScriptEditTooltip.h"
 
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
@@ -527,7 +527,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnRequestTooltip(CommandTooltip::TooltipData* data);
+      handler void OnRequestTooltip(ScriptEditTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnTextChange();
       afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -545,7 +545,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ScriptDocument* Document;
       TextDocument    TomDocument;
 
-      CommandTooltip        Tooltip;
+      ScriptEditTooltip        Tooltip;
       TooltipEvent::Handler fnShowTooltip;
 };
    
