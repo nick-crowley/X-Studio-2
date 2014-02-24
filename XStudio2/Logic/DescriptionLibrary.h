@@ -15,18 +15,16 @@ namespace Logic
       public:
          /// <summary>Create a DescriptionNotFoundException for a command</summary>
          /// <param name="src">Location of throw</param>
-         /// <param name="id">Command ID</param>
-         /// <param name="ver">Game version</param>
-         DescriptionNotFoundException(wstring  src, UINT id, GameVersion ver) 
-            : ExceptionBase(src, GuiString(L"Missing description for %s script command with id %d", VersionString(ver).c_str(), id))
+         /// <param name="cmd">Command syntax</param>
+         DescriptionNotFoundException(wstring  src, CommandSyntaxRef cmd) 
+            : ExceptionBase(src, GuiString(L"No tooltip for '%s'", cmd.Text.c_str()))
          {}
 
          /// <summary>Create a DescriptionNotFoundException for a script object</summary>
          /// <param name="src">Location of throw</param>
-         /// <param name="grp">Object group</param>
-         /// <param name="id">Object ID</param>
-         DescriptionNotFoundException(wstring  src, ScriptObjectGroup grp, UINT id) 
-            : ExceptionBase(src, GuiString(L"Missing description for %s script object with id %d", GetString(grp).c_str(), id))
+         /// <param name="obj">Object</param>
+         DescriptionNotFoundException(wstring  src, const ScriptObject& obj) 
+            : ExceptionBase(src, GuiString(L"No tooltip for %s script object '%s'", GetString(obj.Group).c_str(), obj.Text.c_str()))
          {}
       };
 
@@ -54,9 +52,15 @@ namespace Logic
             /// <param name="id">command ID</param>
             /// <param name="ver">Lowest compatible game version</param>
             /// <returns></returns>
-            bool  Contains(UINT id, GameVersion ver) const
+            bool  Contains(CommandSyntaxRef cmd) const
             {
-               return find(CommandID(id,ver)) != end();
+               // Iterate thru compatible versions
+               for (GameVersion v : {GameVersion::Threat, GameVersion::Reunion, GameVersion::TerranConflict, GameVersion::AlbionPrelude})
+                  // Lookup description
+                  if ((cmd.Versions & (UINT)v) && find(CommandID(cmd.ID, v)) != end())
+                     return true;
+
+               return false;
             }
 
             /// <summary>Finds a script command description.</summary>
@@ -66,19 +70,20 @@ namespace Logic
             /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
             /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
             /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
-            wstring  Find(UINT id, GameVersion ver) const
+            wstring  Find(CommandSyntaxRef cmd) const
             {
-               // Find description for a lower or equal version
-               for (int i = GameVersionIndex(ver).Index; i >= 0; --i)
-               {
-                  // Lookup and parse text
-                  auto it = find(CommandID(id,GameVersionIndex(i).Version));
-                  if (it != end())
-                     return DescriptionParser(it->second.Text).Text;
-               }
-               
+               // Iterate thru compatible versions
+               for (GameVersion v : {GameVersion::Threat, GameVersion::Reunion, GameVersion::TerranConflict, GameVersion::AlbionPrelude})
+                  // Lookup description
+                  if ((cmd.Versions & (UINT)v) && find(CommandID(cmd.ID, v)) != end())
+                  {
+                     // Parse and Populate description source
+                     wstring src = find(CommandID(cmd.ID, v))->second.Text;
+                     return DescriptionParser(src, cmd).Text;
+                  }
+
                // Missing: Error
-               throw DescriptionNotFoundException(HERE, id, ver);
+               throw DescriptionNotFoundException(HERE, cmd);
             }
          };
 
@@ -98,32 +103,30 @@ namespace Logic
             }
 
             /// <summary>Query whether script object description exists</summary>
-            /// <param name="group">script object group</param>
-            /// <param name="id">object id</param>
+            /// <param name="obj">script object</param>
             /// <returns></returns>
-            bool  Contains(ScriptObjectGroup group, UINT id) const
+            bool  Contains(const ScriptObject& obj) const
             {
-               return find(ConstantID(group,id)) != end();
+               return find(ConstantID(obj.Group, obj.ID)) != end();
             }
 
             /// <summary>Finds a script object description</summary>
-            /// <param name="group">script object group</param>
-            /// <param name="id">object id</param>
+            /// <param name="obj">script object</param>
             /// <returns>Description text</returns>
             /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
             /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
             /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
-            wstring  Find(ScriptObjectGroup group, UINT id) const
+            wstring  Find(const ScriptObject& obj) const
             {
                // Lookup object
-               auto it = find(ConstantID(group,id));
+               auto it = find(ConstantID(obj.Group, obj.ID));
 
                // Parse text
                if (it != end())
                   return DescriptionParser(it->second.Text).Text;
 
                // Missing: Error
-               throw DescriptionNotFoundException(HERE, group, id);
+               throw DescriptionNotFoundException(HERE, obj);
             }
          };
 

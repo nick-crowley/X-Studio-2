@@ -66,6 +66,7 @@ namespace Logic
          /// <param name="line">line text.</param>
          /// <param name="ver">game version.</param>
          /// <returns>Command syntax or Unknown sentinel</returns>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          CommandSyntaxRef  ScriptParser::Parse(const wstring& line, GameVersion ver)
          {
             try
@@ -75,7 +76,7 @@ namespace Logic
 
                // Sanity check
                if (parser.Root->Children.empty())
-                  throw AlgorithmException(HERE, L"Parse tree has children");
+                  throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve syntax of single node
                return parser.Root->Children.front()->Syntax;

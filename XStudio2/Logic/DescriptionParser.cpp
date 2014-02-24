@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "DescriptionParser.h"
-#include <strsafe.h>
 #include "StringResolver.h"      // RegEx exception
 #include "DescriptionLibrary.h"
+#include "StringLibrary.h"
+#include <strsafe.h>
+#include <regex>
 
 /// <summary>Turn console debugging output on/off</summary>
 //#define PRINT_CONSOLE
@@ -20,9 +22,12 @@ namespace Logic
       /// <summary>Matches each parameter in a comma delimited string</summary>
       const wregex  DescriptionParser::MatchParameters(L"([^,]+)((?=,)[^,]+)*");
 
+      /// <summary>Matches a parameter insertion marker</summary>
+      const wregex DescriptionParser::MartchParameterMarker(L"\\$(\\d)[xyzaoº¹²³ª]*");
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Creates a parser and parses the input text</summary>
+      /// <summary>Parses the source text of a script object description</summary>
       /// <param name="txt">Input text.</param>
       /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
       /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
@@ -33,16 +38,76 @@ namespace Logic
          FormatBuffer.get()[0] = L'\0';
 
          // Parse
-         Text = Parse(txt, 0);
-         //Text = PostProcess(Text);
+         Text = Parse(txt);
       }
 
+      /// <summary>Parses the source text of a command description</summary>
+      /// <param name="txt">Input text.</param>
+      /// <param name="cmd">Command syntax.</param>
+      /// <exception cref="Logic::FileFormatException">Macro contains wrong number of parameters</exception>
+      /// <exception cref="Logic::IndexOutOfRangeException">Parameter does not exist</exception>
+      /// <exception cref="Logic::PageNotFoundException">Parameter types Page does not exist</exception>
+      /// <exception cref="Logic::StringNotFoundException">Parameter type string does not exist</exception>
+      /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
+      DescriptionParser::DescriptionParser(const wstring& txt, CommandSyntaxRef cmd) : DescriptionParser(txt)
+      {
+         // Populate parameters macros, then re-parse
+         Text = Parse(Populate(Text, cmd));
+      }
 
       DescriptionParser::~DescriptionParser()
       {
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
+
+      /// <summary>Called for each occurrence of {aaa} markers</summary>
+      /// <param name="match">The match.</param>
+      /// <returns>Replacement text</returns>
+      /// <exception cref="Logic::IndexOutOfRangeException">Parameter does not exist</exception>
+      /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+      /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+      wstring  DescriptionParser::onParameterMarker(wsmatch& match, CommandSyntaxRef cmd)
+      {
+         UINT index = _wtoi( match[1].str().c_str() );
+
+         // Verify index
+         if (index > cmd.Parameters.size())
+            throw IndexOutOfRangeException(HERE, index, cmd.Parameters.size());
+
+         // Lookup type name
+         wstring type = StringLib.Find(KnownPage::PARAMETER_TYPES, (UINT)cmd.Parameters[index].Type).Text;
+
+         // Format appropriately
+         return GuiString(L"{PARAMETER:%s}", type.c_str());
+      }
+
+      
+      /// <summary>Populates the parameters markers within the description source text.</summary>
+      /// <param name="src">source text.</param>
+      /// <param name="cmd">command syntax.</param>
+      /// <returns></returns>
+      wstring  DescriptionParser::Populate(wstring src, CommandSyntaxRef cmd)
+      {
+         wsmatch match;
+         wstring r;
+         
+         // Replace all {aaa,bbb} markers.  Manually track position for in-place replacement + avoid infinite loop
+         for (int Position = 0; regex_search(src.cbegin()+Position, src.cend(), match, MartchParameterMarker); )
+         {
+            r = onParameterMarker(match, cmd);
+
+#ifdef PRINT_CONSOLE            
+            Console << "  Replace: " << Cons::Yellow << match[0].str() << Cons::White << " with " << Cons::Green << r << ENDL;
+#endif
+            // Advance position + perform replacement
+            Position = (match[0].first - src.cbegin()) + r.length();
+            src.replace(match[0].first, match[0].second, r);
+         }
+
+         return src;
+      }
+
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -188,35 +253,6 @@ namespace Logic
          }
       }
 
-      /// <summary>Posts the process.</summary>
-      /// <param name="text">The text.</param>
-      /// <returns></returns>
-      wstring  DescriptionParser::PostProcess(wstring text) const
-      {
-         list<wchar> chars(text.begin(), text.end());
-
-         for (auto ch = chars.begin(); ch != chars.end(); ++ch)
-         {
-            if (*ch == '\\')
-            {
-               auto prev = ch++;
-               switch (*ch)
-               {
-               case '(':
-               case ')':
-               case '{':
-               case '}':
-               case '[':
-               case ']':
-               case '\\':
-                  chars.erase(prev);
-                  break;
-               }
-            }
-         }
-
-         return wstring(chars.begin(), chars.end());
-      }
    }
 }
 
