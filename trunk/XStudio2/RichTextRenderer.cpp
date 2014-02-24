@@ -165,7 +165,7 @@ namespace GUI
             dc->SelectObject(oldFont);
 
             // EndOfLine: stop      // SpecialCase: Punctuation - never start new line with punctuation
-            if (word.cx > remaining.Width() && !iswpunct(w->Text.front()))    
+            if (word.cx > remaining.Width()) // && !iswpunct(w->Text.front()))    
                break;
 
             // Skip whitespace at start of line
@@ -298,7 +298,7 @@ namespace GUI
                 phrases.push_back(RichPhrase(*ch));
 
             // Create new word on punctuation, line-break and word-break
-            else if (iswpunct(ch->Char) || ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
+            else if (/*iswpunct(ch->Char) ||*/ ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
                phrases.push_back(RichPhrase(*ch));
             else
                // Otherwise append to last phrase
