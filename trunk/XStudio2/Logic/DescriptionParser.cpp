@@ -193,12 +193,29 @@ namespace Logic
       /// <returns></returns>
       wstring  DescriptionParser::PostProcess(wstring text) const
       {
-         // De-escape brackets
-         for (auto chr : {L"\\(", L"\\)", L"\\{", L"\\}", L"\\[", L"\\]"})
-            for (int pos = text.find(chr); pos != wstring::npos; pos = text.find(chr))
-               text.erase(pos, 1);
+         list<wchar> chars(text.begin(), text.end());
 
-         return text;
+         for (auto ch = chars.begin(); ch != chars.end(); ++ch)
+         {
+            if (*ch == '\\')
+            {
+               auto prev = ch++;
+               switch (*ch)
+               {
+               case '(':
+               case ')':
+               case '{':
+               case '}':
+               case '[':
+               case ']':
+               case '\\':
+                  chars.erase(prev);
+                  break;
+               }
+            }
+         }
+
+         return wstring(chars.begin(), chars.end());
       }
    }
 }
