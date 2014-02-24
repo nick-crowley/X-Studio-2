@@ -12,7 +12,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
 
    /// <summary></summary>
-   class CommandTooltip : public CMFCToolTipCtrl
+   class CommandTooltip : public CToolTipCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -32,7 +32,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       public:
          float GetRatio() const
          {
-            return (float)Width() / (float)Height();
+            return (float)Height() / (float)Width();
          }
       };
 
@@ -97,15 +97,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
-	   BOOL Create(CWnd* view, CWnd* edit);
-
-      CSize GetIconSize() override;
-      BOOL  OnDrawIcon(CDC* pDC, CRect rectImage) override;
-	   CSize OnDrawLabel(CDC* pDC, CRect rect, BOOL bCalcOnly) override;
-	   CSize OnDrawDescription(CDC* pDC, CRect rect, BOOL bCalcOnly) override;
-      void  OnShow(NMHDR *pNMHDR, LRESULT *pResult);
+	   bool Create(CWnd* view, CWnd* edit);
 
    protected:
+      CSize GetIconSize();
+
+      void  OnDrawBackground(CDC* dc, CRect wnd);
+      CSize OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly);
+      void  OnDrawIcon(CDC* pDC, CRect rectImage);
+	   CSize OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly);
+      BOOL  OnEraseBkgnd(CDC* pDC);
+      void  OnPaint();
+      void  OnShow(NMHDR *pNMHDR, LRESULT *pResult);
+      void  GetTooltipData();
 
       // -------------------- REPRESENTATION ---------------------
    public:
@@ -114,10 +118,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
       RichString    Description,
                     Label;
-      //TooltipData   Data;
-      UINT          LabelHeight;
-      CRect         DrawRect;
-   };
+      /*CSize         DescriptionSize,
+                    LabelSize;
+      CRect         DrawRect;*/
+};
 
    /// <summary></summary>
    typedef Event<CommandTooltip::TooltipData*>    TooltipEvent;
