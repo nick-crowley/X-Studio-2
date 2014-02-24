@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
-#include "ScriptDocument.h"
-#include "Logic/DescriptionLibrary.h"
-#include "Logic/SyntaxLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -18,19 +15,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
    IMPLEMENT_DYNAMIC(ScriptEdit, CRichEditCtrl)
 
    BEGIN_MESSAGE_MAP(ScriptEdit, CRichEditCtrl)
-      ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_WM_CREATE()
       ON_WM_TIMER()
-      ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
       ON_WM_KILLFOCUS()
       ON_WM_CHAR()
       ON_WM_KEYDOWN()
       ON_WM_PAINT()
       ON_WM_HSCROLL()
       ON_WM_VSCROLL()
-      ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
       ON_WM_KEYUP()
       ON_WM_SETFOCUS()
+      //ON_NOTIFY(TTN_POP, 42, &ScriptEdit::OnTooltipHide)
+      ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
+      ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
+      ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -458,6 +456,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Clear 'Undo' buffer
       EmptyUndoBuffer();
+
+      Tooltip.Reset();
    }
 
    /// <summary>Suspend or resumes undo buffer</summary>
@@ -977,7 +977,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             CloseSuggestions();
 
          // Deactivate tooltip
-         Tooltip.Activate(FALSE);
+         Tooltip.Activate(FALSE);      //Tooltip.DestroyWindow();      //Tooltip.Activate(FALSE);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e); 
@@ -1054,45 +1054,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Provide approriate data
       else switch (tok->Type)
       {
-      // Command: Get random description
-      case TokenType::Text:
-         try
-         {
-            auto cmd = ScriptParser::Parse(text, Document->Script.Game);
-            if (cmd == CommandSyntax::Unrecognised)
-               *data = ScriptEditTooltip::UndocumentedTooltip;
-            else
-            {
-               data->Description = DescriptionLib.Commands.Find(cmd.ID, Document->Script.Game);
-               data->Label = SyntaxLib.Find(cmd.ID, Document->Script.Game).Text;
-               data->Icon = 1;
-            }
-         }
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e);
-            *data = ScriptEditTooltip::UndocumentedTooltip;
-         }
-         break;
+      case TokenType::Text:  data->ResetTo(CommandTooltipData(text, Document->Script.Game));  break;
+      case TokenType::Label: data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
 
-      case TokenType::Label:
-         try
-         {
-            list<wstring> desc;
-            
-            // Locate declaration
-            UINT label = Document->Script.Labels[tok->ValueText].LineNumber-1;
-            data->Label = GetLineText(label);
-            
-            // Assemble preceeding line comments
-            data->Description.clear();
-            for (auto line = begin(label-1); line >= begin(0) && line->Commented; --line)
-               data->Description.insert(0, line->Text + L"\r\n");
-         }
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e);
-            *data = ScriptEditTooltip::NoTooltip;
-         }
-         break;
+      // TODO: Other types
+      default: data->ResetTo(ScriptEditTooltip::NoTooltip); break;
       }  
    }
    
@@ -1104,7 +1070,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::OnSetFocus(pOldWnd);
 
       // Activate tooltip
-      Tooltip.Activate(TRUE);
+      Tooltip.Activate(TRUE);    //Tooltip.Create(this, this);    
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>
@@ -1115,6 +1081,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Update current line
       UpdateHighlighting(-1, -1);
+
+      // Reset tooltip
+      Tooltip.Reset();
    }
    
    /// <summary>Compiles the current text</summary>
@@ -1136,6 +1105,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (nSBCode == SB_ENDSCROLL)
          RefreshGutter();
 
+      // Reset tooltip
+      Tooltip.Reset();
+
+      // Scroll
       CRichEditCtrl::OnVScroll(nSBCode, nPos, pScrollBar);
    }
 

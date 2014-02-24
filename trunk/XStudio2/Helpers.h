@@ -198,4 +198,53 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CharArrayPtr  Text;
    };
 
+
+   
+   /// <summary>Character format helper</summary>
+   struct CHARFORMAT3 : public CHARFORMAT2
+   {
+   public:
+      BYTE bUnderlineColor;   // Undocumented index into RTF colour table
+   };
+
+   /// <summary>Character format helper</summary>
+   class CharFormat : public CHARFORMAT3
+   {
+   public:
+      CharFormat() { Clear(); }
+      CharFormat(DWORD mask, DWORD effects) 
+      {
+         Clear();
+         dwMask = mask;
+         dwEffects = effects;
+      }
+
+      /// <summary>Clear formatting</summary>
+      void  Clear()
+      {
+         ZeroMemory((CHARFORMAT3*)this, sizeof(CHARFORMAT2));
+         cbSize = sizeof(CHARFORMAT2);
+      }
+   };
+
+   /// <summary>Character format helper</summary>
+   class ParaFormat : public PARAFORMAT
+   {
+   public:
+      ParaFormat() { Clear(); }
+      ParaFormat(DWORD mask) 
+      {
+         Clear();
+         dwMask = mask;
+      }
+
+      /// <summary>Clear formatting</summary>
+      void  Clear()
+      {
+         ZeroMemory((PARAFORMAT*)this, sizeof(PARAFORMAT));
+         cbSize = sizeof(PARAFORMAT);
+      }
+   };
+
+
 NAMESPACE_END2(GUI,Controls)

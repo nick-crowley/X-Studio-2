@@ -5,18 +5,14 @@
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
-   /*class ScriptEditTooltip;
-   class ScriptEditTooltip::TooltipData;*/
-   
-   
-   
 
-   /// <summary></summary>
+
+   /// <summary>Custom tooltip for the script editor</summary>
    class ScriptEditTooltip : public CToolTipCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
-      /// <summary></summary>
+      /// <summary>Rectangle used for modifying the tooltip rectangle</summary>
       class TooltipRect : public CRect
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -37,18 +33,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
       };
 
    public:
-	   /// <summary></summary>
+	   /// <summary>Data used for displaying a tooltip</summary>
       class TooltipData
       {
          // ------------------------ TYPES --------------------------
-      private:
-	  
+      protected:
          // --------------------- CONSTRUCTION ----------------------
-
       public:
-         TooltipData()
+         /// <summary>Set initial icon</summary>
+         /// <param name="iconID">The icon identifier.</param>
+         /// <param name="iconSize">Size of the icon.</param>
+         TooltipData(int iconID, int iconSize) : IconID(iconID), IconSize(iconSize)
          {}
-         TooltipData(wstring lab, wstring desc, int icon) : Label(lab), Description(desc), Icon(icon)
+         /// <summary>Set icon and text</summary>
+         /// <param name="label">RichText label source.</param>
+         /// <param name="desc">RichText description source.</param>
+         /// <param name="nIcon">Icon resource ID.</param>
+         /// <param name="iconSize">Size of the icon.</param>
+         TooltipData(wstring label, wstring desc, int nIcon = 0, int iconSize = 0)
+            : LabelSource(label), DescriptionSource(desc), IconID(nIcon), IconSize(iconSize)
          {}
          virtual ~TooltipData()
          {}
@@ -56,25 +59,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
 		   DEFAULT_COPY(TooltipData);	// Default copy semantics
 		   DEFAULT_MOVE(TooltipData);	// Default move semantics
 
-         // ------------------------ STATIC -------------------------
-      
-         // --------------------- PROPERTIES ------------------------
-			
          // ---------------------- ACCESSORS ------------------------			
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Clears this instance.</summary>
-         void  Clear()
+         /// <summary>Sets data to a sentinel value</summary>
+         /// <param name="r">The r.</param>
+         void  ResetTo(const TooltipData& r)
          {
-            Label = L"No further information";
-            Description.clear();
+            *this = r;
          }
+
          // -------------------- REPRESENTATION ---------------------
       public:
-         wstring  Label, 
-                  Description;
-         int      Icon;
+         wstring  LabelSource, 
+                  DescriptionSource;
+         int      IconID,
+                  IconSize;
       };
 
       // --------------------- CONSTRUCTION ----------------------
@@ -88,7 +89,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	
    public:
       const static TooltipData NoTooltip,
-                               UndocumentedTooltip;
+                               NoDocumentation;
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -98,9 +99,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    public:
 	   bool Create(CWnd* view, CWnd* edit);
+      void Reset();
 
    protected:
-      CSize GetIconSize();
       void  GetTooltipData();
 
       void  OnDrawBackground(CDC* dc, CRect wnd);
@@ -116,9 +117,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Event<TooltipData*>  RequestData;
 
    private:
+      int           IconID,
+                    IconSize;
       RichString    Description,
                     Label;
-      CRect  rcIcon, rcLabel, rcDesc;
+      bool          HasDescription;
+
+      CRect         rcIcon,      // Drawing rectangle
+                    rcLabel, 
+                    rcDesc;
 };
 
    /// <summary></summary>

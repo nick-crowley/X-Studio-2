@@ -153,6 +153,12 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
 
+         /// <summary>Get whether empty</summary>
+         bool empty() const
+         {
+            return Content.empty();
+         }
+
          /// <summary>Gets content as list of characters</summary>
          /// <returns></returns>
          RichCharList GetCharacters() const
@@ -184,8 +190,26 @@ namespace Logic
             operator+=( RichParagraph(Alignment::Left) );
          }
 
+         // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(RichParagraph&,FirstParagraph,GetFirstParagraph);
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get first paragraph</summary>
+         const RichParagraph& GetFirstParagraph() const
+         {
+            return Paragraphs.front();
+         }
+
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Get first paragraph</summary>
+         RichParagraph& GetFirstParagraph()
+         {
+            return Paragraphs.front();
+         }
+
          /// <summary>Append paragraph</summary>
          RichString& operator+=(const RichParagraph& p)
          {

@@ -64,12 +64,14 @@ namespace GUI
       /// <param name="str">string.</param>
       /// <param name="flags">DrawText flags.</param>
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-      void  RichTextRenderer::DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags)
+      /// <returns>Width of widest line</returns>
+      int  RichTextRenderer::DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags)
       {
          LOGFONT  fontData;
          CFont*   oldFont;
          LineRect line(rect, dc->GetTextExtent(L"ABC").cy);
          bool     Calculate = (flags & DT_CALCRECT) != 0;
+         long     rightMargin = rect.left;
 
          // Get original font properties
          oldFont = dc->GetCurrentFont();
@@ -86,29 +88,27 @@ namespace GUI
             {
                CRect remaining(line);
 
-               // Determine size of words on this line
-               if (Calculate)
-                  MeasureLine(dc, w, words.end(), line);
-               else
-               {
-                  // Measure words on line
-                  auto first = w;
-                  int line_remaining = MeasureLine(dc, w, words.end(), line);
+               // Measure words on line
+               auto first = w;
+               int line_remaining = MeasureLine(dc, w, words.end(), line);
 
-                  // Alignment: Offset all word rectangles
-                  for (auto word = first; word != w; ++word)
+               // Alignment: Offset all word rectangles
+               for (auto word = first; word != w; ++word)
+               {
+                  switch (para->Align)
                   {
-                     switch (para->Align)
-                     {
-                     case Alignment::Right:   word->Offset(line_remaining);    break;
-                     case Alignment::Centre:
-                     case Alignment::Justify: word->Offset(line_remaining/2);  break;
-                     }
+                  case Alignment::Right:   word->Offset(line_remaining);    break;
+                  case Alignment::Centre:
+                  case Alignment::Justify: word->Offset(line_remaining/2);  break;
                   }
 
-                  // Render words
-                  RenderLine(dc, first, w);
+                  // Set rightmost margin
+                  rightMargin = max(rightMargin, word->Rect.right);
                }
+
+               // Render words
+               if (!Calculate)
+                  RenderLine(dc, first, w);
 
                // NewLine
                if (w != words.end())
@@ -121,7 +121,10 @@ namespace GUI
          }
 
          // Set drawing extent
-         rect.bottom = line.bottom;
+         rect.bottom = (!str.FirstParagraph.empty() ? line.bottom : line.top);
+
+         // Return width of widest line of text
+         return rightMargin - rect.left;
       }
 
 

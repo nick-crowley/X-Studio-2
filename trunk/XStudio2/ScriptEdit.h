@@ -2,9 +2,13 @@
 #include <richole.h>
 #include <Richedit.h>
 #include <tom.h> 
-#include "Logic/ScriptParser.h"
+#include "Helpers.h"
 #include "SuggestionList.h"
 #include "ScriptEditTooltip.h"
+#include "ScriptDocument.h"
+#include "Logic/ScriptParser.h"
+#include "Logic/DescriptionLibrary.h"
+#include "Logic/SyntaxLibrary.h"
 
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
@@ -13,53 +17,6 @@ FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 NAMESPACE_BEGIN2(GUI,Controls)
 
    
-
-   /// <summary>Character format helper</summary>
-   struct CHARFORMAT3 : public CHARFORMAT2
-   {
-   public:
-      BYTE bUnderlineColor;   // Undocumented index into RTF colour table
-   };
-
-   /// <summary>Character format helper</summary>
-   class CharFormat : public CHARFORMAT3
-   {
-   public:
-      CharFormat() { Clear(); }
-      CharFormat(DWORD mask, DWORD effects) 
-      {
-         Clear();
-         dwMask = mask;
-         dwEffects = effects;
-      }
-
-      /// <summary>Clear formatting</summary>
-      void  Clear()
-      {
-         ZeroMemory((CHARFORMAT3*)this, sizeof(CHARFORMAT2));
-         cbSize = sizeof(CHARFORMAT2);
-      }
-   };
-
-   /// <summary>Character format helper</summary>
-   class ParaFormat : public PARAFORMAT
-   {
-   public:
-      ParaFormat() { Clear(); }
-      ParaFormat(DWORD mask) 
-      {
-         Clear();
-         dwMask = mask;
-      }
-
-      /// <summary>Clear formatting</summary>
-      void  Clear()
-      {
-         ZeroMemory((PARAFORMAT*)this, sizeof(PARAFORMAT));
-         cbSize = sizeof(PARAFORMAT);
-      }
-   };
-
    /// <summary>Get undo operation name</summary>
    const wchar* GetString(UNDONAMEID id);
 
@@ -437,6 +394,70 @@ NAMESPACE_BEGIN2(GUI,Controls)
          LineProxy   Line;
          ScriptEdit& Edit;
          int         LineNumber;
+      };
+
+      /// <summary>Tooltip data for a script command</summary>
+      class CommandTooltipData : public ScriptEditTooltip::TooltipData
+      {
+      public:
+         /// <summary>Create script command tooltip</summary>
+         /// <param name="lineText">The line text.</param>
+         /// <param name="ver">The version</param>
+         CommandTooltipData(wstring lineText, GameVersion ver) : TooltipData(IDR_GAME_OBJECTS, 32)
+         {
+            try
+            {
+               // Identify command
+               auto cmd = ScriptParser::Parse(lineText, ver);
+
+               // Unknown: Display nothing
+               if (cmd == CommandSyntax::Unrecognised)
+                  ResetTo(ScriptEditTooltip::NoTooltip);
+               else
+               {  
+                  // Lookup title / description
+                  DescriptionSource = DescriptionLib.Commands.Find(cmd.ID, ver);
+                  LabelSource = SyntaxLib.Find(cmd.ID, ver).Text;
+                  
+                  // TODO: Supply icon
+               }
+            }
+            // No description: Hasn't been documented
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+               ResetTo(ScriptEditTooltip::NoDocumentation);
+            }
+         }
+      };
+
+      /// <summary>Tooltip data for a label reference</summary>
+      class LabelTooltipData : public ScriptEditTooltip::TooltipData
+      {
+      public:
+         /// <summary>Creates label reference tooltip data.</summary>
+         /// <param name="edit">script edit.</param>
+         /// <param name="label">label name WITHOUT operator</param>
+         LabelTooltipData(ScriptEdit& edit, wstring label) : TooltipData(0, 0)
+         {
+            try
+            {
+               // Label: declaration line text
+               UINT declaration = edit.Document->Script.Labels[label].LineNumber-1;
+               LabelSource = edit.GetLineText(declaration);
+            
+               // Prepare
+               list<wstring> desc;
+               DescriptionSource.clear();
+               
+               // Description: preceeding line comments
+               for (auto line = edit.begin(declaration-1); line >= edit.begin(0) && line->Commented; --line)
+                  DescriptionSource.insert(0, line->Text + L"\r\n");
+            }
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+               ResetTo(ScriptEditTooltip::NoTooltip);
+            }
+         }
       };
 
       // --------------------- CONSTRUCTION ----------------------
