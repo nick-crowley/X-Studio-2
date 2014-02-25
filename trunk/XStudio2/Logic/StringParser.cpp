@@ -358,7 +358,7 @@ namespace Logic
       bool  StringParser::MatchColourCode(CharIterator pos) const
       {
          // Check for EOF?
-         if (pos+4 >= Input.end())
+         if (distance(pos, Input.end()) <= 4)      //if (pos+4 >= Input.end())
             return false;
 
          // Match '\\033'

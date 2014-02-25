@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RichTextRenderer.h"
-#include "Logic/RtfStringWriter.h"
+
 
 namespace GUI
 {
