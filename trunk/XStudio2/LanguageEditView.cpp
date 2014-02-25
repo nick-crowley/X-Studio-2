@@ -88,13 +88,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="pCmd">The command.</param>
    void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd)
    {
+      // Disable if no string displayed
+      pCmd->Enable(RichEdit.IsWindowEnabled());
+
+      // Check correct state
       switch (pCmd->m_nID)
       {
       case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
       case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
       case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
       }
-      pCmd->Enable(TRUE);
    }
 
    
@@ -167,13 +170,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::onStringSelectionChanged()
    {
       // Clear text
-      RichEdit.SetWindowTextW(L"");
+      //RichEdit.SetWindowTextW(L"");
 
       try 
       {
          // Display new string
          if (LanguageString* str = GetStringView()->GetSelectedString())
             RichEdit.SetString(str);
+         else
+            RichEdit.Clear(true);
       }
       catch (ExceptionBase& e) { 
          Console.Log(HERE, e); 

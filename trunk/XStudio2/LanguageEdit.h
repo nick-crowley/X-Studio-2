@@ -14,6 +14,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       enum class EditMode { Source, Edit, Display };
 
    protected:
+      class DefaultCharFormat : public CharFormat
+      {
+      public:
+         DefaultCharFormat() : CharFormat(CFM_FACE|CFM_COLOR|CFM_PROTECTED|CFM_SIZE, CFE_PROTECTED)
+         {
+            crTextColor = RGB(255,255,255);
+            yHeight = 10*20;
+            StringCchCopy(szFaceName, LF_FACESIZE, L"Arial");
+         }
+      };
 
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -43,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  Clear();
+      void  Clear(bool disable);
       void  SetEditMode(EditMode m);
       void  SetString(LanguageString* str);
 

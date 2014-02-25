@@ -33,8 +33,9 @@ namespace Logic
          wstring  Write();
 
       protected:
+         void  WriteChar(wchar ch);
          void  WriteChar(TextRangePtr chr, TextRangePtr prev);
-         void  WriteChar(TextRangePtr chr, bool open);
+         void  WriteState(TextRangePtr chr, bool open);
 
          // -------------------- REPRESENTATION ---------------------
 

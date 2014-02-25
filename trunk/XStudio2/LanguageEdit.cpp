@@ -78,6 +78,29 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   /// <summary>Clears text, resets font to Arial 10pt, and optionally clears the string</summary>
+   /// <param name="disable">True to clear the string and disable the window.</param>
+   void  LanguageEdit::Clear(bool disable)
+   {
+      FreezeWindow(true);
+
+      // Clear
+      __super::Clear();
+      SetDefaultCharFormat(DefaultCharFormat());
+
+      // Reset Undo
+      EmptyUndoBuffer();
+
+      // Clear string
+      if (disable)
+      {
+         String = nullptr;
+         EnableWindow(FALSE);
+      }
+
+      FreezeWindow(false);
+   }
 
    /// <summary>Gets contents as a string delimited by single char (\n) line breaks.</summary>
    /// <returns></returns>
@@ -100,7 +123,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return Mode;
    }
 
-   /// <summary>Sets the edit mode.</summary>
+   /// <summary>Changes the edit mode.</summary>
    /// <param name="m">mode.</param>
    void  LanguageEdit::SetEditMode(EditMode m)
    {
@@ -108,8 +131,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         // Skip if already set
-         if (m == prev)
+         // Skip if already set, or edit disabled
+         if (m == prev || !HasString())
             return;
 
          // Change mode + redisplay   
@@ -124,17 +147,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
-   /// <summary>Sets the string.</summary>
+   /// <summary>Changes the current string and displays it</summary>
    /// <param name="str">The string.</param>
    void  LanguageEdit::SetString(LanguageString* str)
    {
       auto prev = String;
-
+      
       try
       {
+         REQUIRED(str);
+         
          // Change string + redisplay
          String = str;
          DisplayString();
+       
+         // Enable window
+         EnableWindow(TRUE);
       }
       // Error: Revert string
       catch (ExceptionBase& e) {
@@ -146,19 +174,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Clears contents and resets font to Arial 10pt</summary>
-   void  LanguageEdit::Clear()
-   {
-      CharFormat cf(CFM_FACE|CFM_COLOR|CFM_PROTECTED|CFM_SIZE, CFE_PROTECTED);
-      cf.crTextColor = RGB(255,255,255);
-      cf.yHeight = 10*20;
-      StringCchCopy(cf.szFaceName, LF_FACESIZE, L"Arial");
-
-      // Clear
-      __super::Clear();
-      SetDefaultCharFormat(cf);
-   }
-
    /// <summary>Displays the current string in the current mode.</summary>
    void  LanguageEdit::DisplayString()
    {
@@ -166,10 +181,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // Empty:
          if (!HasString())
-            Clear();
+            throw AlgorithmException(HERE, L"No string to display");
 
          // Edit:
-         else if (Mode == EditMode::Edit)
+         if (Mode == EditMode::Edit)
          {
             string rtf; 
             // Convert string into RTF
@@ -179,6 +194,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
             // Replace contents with RTF
             SetRtf(rtf);
+
+            // DEBUG:
+            //Console << GetSourceText() << ENDL;
          }
          // Display:
          else if (Mode == EditMode::Display)
@@ -187,14 +205,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Source:
          else if (Mode == EditMode::Source)
          {
-            Clear();
+            // Clear formatting
+            Clear(false);
+
+            // Display text
             SetWindowText(String->Text.c_str());
             UpdateHighlighting();
          }
       }
       // Error: Clear contents
       catch (ExceptionBase& ) {
-         Clear();
+         Clear(true);
          throw;
       }
    }
@@ -253,7 +274,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Edit: Generate source
       case EditMode::Edit:
-         String->Text = GetSourceText();
+         //String->Text = GetSourceText();
+         Console << GetSourceText() << ENDL;
          break;
       }
 
