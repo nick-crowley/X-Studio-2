@@ -127,7 +127,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 #endif
 
       // Draw/Calculate 
-      RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? DT_CALCRECT : NULL);
+      int width = RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? DT_CALCRECT : NULL);
 
       // Calculate: Adjust rectangle
       if (bCalcOnly)
@@ -136,7 +136,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          while (rc.Ratio > 0.8f)
          {
             rc.right += 100;
-            RichTextRenderer::DrawLines(pDC, rc, Description, DT_CALCRECT);
+            width = RichTextRenderer::DrawLines(pDC, rc, Description, DT_CALCRECT);
          }
       }
 
@@ -145,7 +145,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 #endif
          
       // return size
-      return rc.Size();   
+      return CSize(width, rc.Height());   
    }
    
    /// <summary>Draws the icon</summary>
@@ -220,9 +220,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Set window width according to description 
          auto desc = OnDrawDescription(&dc, wnd, true);
+         desc.cx = max(100, desc.cx);
 
          // Set header height according to icon/label height
-         auto label = CRect(IconSize, 0, desc.cx, IconSize);
+         auto label = CRect(IconSize, 0, HasDescription ? desc.cx : 300, IconSize);
          auto header = OnDrawLabel(&dc, label, true);
          header.cy = max(IconSize, header.cy);
 

@@ -135,7 +135,7 @@ namespace Logic
             }
          }
 
-         return output;
+         return L"[center]" + output + L"[/center]";
       }
 
       /// <summary>Gets the parameter syntax sorted by display index</summary>
