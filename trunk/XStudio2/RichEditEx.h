@@ -3,7 +3,7 @@
 #include <Richedit.h>
 #include <tom.h> 
 #include "Helpers.h"
-#include "ScriptEditTooltip.h"
+#include "CustomTooltip.h"
 #include "Logic/ScriptToken.h"
 
 /// <summary>User interface controls</summary>
@@ -88,7 +88,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      virtual void OnRequestTooltip(ScriptEditTooltip::TooltipData* data);
+      virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
       virtual void OnTextChange();
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -98,7 +98,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       TextDocument       TomDocument;
-      ScriptEditTooltip  Tooltip;
+      CustomTooltip  Tooltip;
       
    private:
       TooltipEvent::Handler fnShowTooltip;

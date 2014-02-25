@@ -8,7 +8,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 
    /// <summary>Custom tooltip for the script editor</summary>
-   class ScriptEditTooltip : public CToolTipCtrl
+   class CustomTooltip : public CToolTipCtrl
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -80,11 +80,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      ScriptEditTooltip();    
-      virtual ~ScriptEditTooltip();
+      CustomTooltip();    
+      virtual ~CustomTooltip();
        
       // ------------------------ STATIC -------------------------
-      DECLARE_DYNCREATE(ScriptEditTooltip)
+      DECLARE_DYNCREATE(CustomTooltip)
       DECLARE_MESSAGE_MAP()
 	
    public:
@@ -130,7 +130,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 };
 
    /// <summary></summary>
-   typedef Event<ScriptEditTooltip::TooltipData*>    TooltipEvent;
+   typedef Event<CustomTooltip::TooltipData*>    TooltipEvent;
    
 
 NAMESPACE_END2(GUI,Controls)

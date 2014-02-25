@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ScriptEditTooltip.h"
+#include "CustomTooltip.h"
 #include "RichTextRenderer.h"
 #include "Logic/StringParser.h"
 
@@ -10,31 +10,31 @@
 NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Sentinel for displaying no tooltip</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoTooltip(L"Nothing", L"");
+   const CustomTooltip::TooltipData  CustomTooltip::NoTooltip(L"Nothing", L"");
 
    /// <summary>Sentinel tooltip for commands with no documentation</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentationCmd(L"Command has no description", L"");
+   const CustomTooltip::TooltipData  CustomTooltip::NoDocumentationCmd(L"Command has no description", L"");
 
    /// <summary>Sentinel tooltip for commands with no documentation</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentationObj(L"Script object has no description", L"");
+   const CustomTooltip::TooltipData  CustomTooltip::NoDocumentationObj(L"Script object has no description", L"");
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNCREATE(ScriptEditTooltip, CToolTipCtrl)
+   IMPLEMENT_DYNCREATE(CustomTooltip, CToolTipCtrl)
 
-   BEGIN_MESSAGE_MAP(ScriptEditTooltip, CToolTipCtrl)
-      ON_NOTIFY_REFLECT(TTN_SHOW, &ScriptEditTooltip::OnShow)
+   BEGIN_MESSAGE_MAP(CustomTooltip, CToolTipCtrl)
+      ON_NOTIFY_REFLECT(TTN_SHOW, &CustomTooltip::OnShow)
       ON_WM_PAINT()
       ON_WM_ERASEBKGND()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEditTooltip::ScriptEditTooltip()
+   CustomTooltip::CustomTooltip()
    {
    }
 
-   ScriptEditTooltip::~ScriptEditTooltip()
+   CustomTooltip::~CustomTooltip()
    {
    }
 
@@ -46,7 +46,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="pParentWnd">The parent WND.</param>
    /// <param name="dwStyle">The style.</param>
    /// <returns></returns>
-   bool  ScriptEditTooltip::Create(CWnd* view, CWnd* edit)
+   bool  CustomTooltip::Create(CWnd* view, CWnd* edit)
    {
       // Destroy if exists
       if (m_hWnd && !DestroyWindow())
@@ -69,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
-   void  ScriptEditTooltip::Reset()
+   void  CustomTooltip::Reset()
    {
       Activate(FALSE);
       Activate(TRUE);
@@ -78,7 +78,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------ PROTECTED METHODS -----------------------------   
    
    /// <summary>Gets the tooltip data from the parent</summary>
-   void ScriptEditTooltip::GetTooltipData()
+   void CustomTooltip::GetTooltipData()
    {
       // Request data
       TooltipData data(0,0);
@@ -101,7 +101,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Draws the background</summary>
    /// <param name="pDC">The dc.</param>
    /// <param name="rect">The rect.</param>
-   void ScriptEditTooltip::OnDrawBackground(CDC* dc, CRect wnd)
+   void CustomTooltip::OnDrawBackground(CDC* dc, CRect wnd)
    {
       if (HTHEME theme = OpenThemeData(m_hWnd, L"TOOLTIP"))
       {
@@ -118,7 +118,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="rect">The rect.</param>
    /// <param name="bCalcOnly">calculate only.</param>
    /// <returns>Description size</returns>
-	CSize  ScriptEditTooltip::OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly)
+	CSize  CustomTooltip::OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly)
    {
       TooltipRect rc(rect);
 
@@ -151,7 +151,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Draws the icon</summary>
    /// <param name="pDC">The dc.</param>
    /// <param name="rect">The rect.</param>
-   void  ScriptEditTooltip::OnDrawIcon(CDC* pDC, CRect rectImage)
+   void  CustomTooltip::OnDrawIcon(CDC* pDC, CRect rectImage)
    {
 #ifdef PRINT_CONSOLE
       Console << "Icon: " << rectImage << ENDL;
@@ -172,7 +172,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="rect">The rect.</param>
    /// <param name="bCalcOnly">calculate only.</param>
    /// <returns>Label size</returns>
-   CSize  ScriptEditTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
+   CSize  CustomTooltip::OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly)
    {
 #ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
@@ -192,7 +192,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Erases the background.</summary>
    /// <param name="pDC">The dc.</param>
    /// <returns></returns>
-   BOOL ScriptEditTooltip::OnEraseBkgnd(CDC* pDC)
+   BOOL CustomTooltip::OnEraseBkgnd(CDC* pDC)
    {
       OnDrawBackground(pDC, ClientRect(this));
 
@@ -203,7 +203,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Resizes the tooltip accordingly</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
    /// <param name="pResult">The result.</param>
-   void ScriptEditTooltip::OnShow(NMHDR *pNMHDR, LRESULT *pResult)
+   void CustomTooltip::OnShow(NMHDR *pNMHDR, LRESULT *pResult)
    {
       static const UINT  MOVED = 1, UNMOVED = 0, MARGIN = 4;
 
@@ -261,7 +261,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 
    /// <summary>Paints the tooltip</summary>
-   void ScriptEditTooltip::OnPaint()
+   void CustomTooltip::OnPaint()
    {
       CPaintDC dc(this); 
       ClientRect wnd(this);

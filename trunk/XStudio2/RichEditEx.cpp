@@ -470,10 +470,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
-   void RichEditEx::OnRequestTooltip(ScriptEditTooltip::TooltipData* data)
+   void RichEditEx::OnRequestTooltip(CustomTooltip::TooltipData* data)
    {
       // None: show nothing
-      *data = ScriptEditTooltip::NoTooltip;
+      *data = CustomTooltip::NoTooltip;
    }
    
    /// <summary>Enable tooltip.</summary>
