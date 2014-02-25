@@ -14,7 +14,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    private:
-	   class StringCustomDraw : public ListViewCustomDraw
+      /// <summary>Custom draw implementation</summary>
+      class StringCustomDraw : public ListViewCustomDraw
       {
       public:
          StringCustomDraw(LanguageStringView* view) : ListViewCustomDraw(view, view->GetListCtrl())
@@ -31,22 +32,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       virtual ~LanguageStringView();
        
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNCREATE(LanguageStringView)
-   protected:
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
       LanguageDocument* GetDocument() const;
       LanguagePageView* GetPageView() const;
-      LanguageString*   GetSelectedString() const;
+      LanguageString*   GetSelected() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
@@ -68,9 +63,5 @@ NAMESPACE_BEGIN2(GUI,Views)
       StringCustomDraw         CustomDraw;
    };
    
-   #ifndef _DEBUG  
-   inline LanguageDocument* LanguageStringView::GetDocument() const
-      { return reinterpret_cast<LanguageDocument*>(m_pDocument); }
-   #endif
 
 NAMESPACE_END2(GUI,Views)

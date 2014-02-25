@@ -31,23 +31,16 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void LanguageStringView::AssertValid() const
+   /// <summary>Gets the document.</summary>
+   /// <returns></returns>
+   LanguageDocument* LanguageStringView::GetDocument() const 
    {
-	   CListView::AssertValid();
+#ifdef _DEBUG
+	   return dynamic_cast<LanguageDocument*>(m_pDocument);
+#else
+      return reinterpret_cast<LanguageDocument*>(m_pDocument);
+#endif
    }
-   
-   void LanguageStringView::Dump(CDumpContext& dc) const
-   {
-	   CListView::Dump(dc);
-   }
-
-   LanguageDocument* LanguageStringView::GetDocument() const // non-debug version is inline
-   {
-	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(LanguageDocument)));
-	   return (LanguageDocument*)m_pDocument;
-   }
-   #endif //_DEBUG
    
    /// <summary>Gets the language page view</summary>
    /// <returns></returns>
@@ -68,10 +61,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Gets the currently selected string.</summary>
    /// <returns>Selected string if any, otherwise nullptr</returns>
    /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
-   LanguageString*   LanguageStringView::GetSelectedString() const
+   LanguageString*   LanguageStringView::GetSelected() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetPageView()->GetSelectedPage()->Strings.FindByIndex(item) : nullptr;
+      return item != -1 ? &GetPageView()->GetSelected()->Strings.FindByIndex(item) : nullptr;
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -128,9 +121,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
       
-      // Raise 'SELECTION CHANGED'
+      // Selection (not focus) has changed
       if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+      {
+         // Update document
+         GetDocument()->SelectedString = GetSelected();
+
+         // Raise SELECTION CHANGED
          SelectionChanged.Raise();
+      }
 
       *pResult = 0;
    }
@@ -146,7 +145,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetListCtrl().DeleteAllItems();
 
          // Get selection, if any
-         if (LanguagePage* page = GetPageView()->GetSelectedPage())
+         if (LanguagePage* page = GetDocument()->SelectedPage)
          {
             int item = -1;
             //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;

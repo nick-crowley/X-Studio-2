@@ -26,9 +26,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       DECLARE_DYNCREATE(LanguageEditView)
       DECLARE_MESSAGE_MAP()
 
-   protected:
-      static const COLORREF  MessageBackground = RGB(22,31,46);
-
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			

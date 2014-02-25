@@ -38,7 +38,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Gets the language document</summary>
    LanguageDocument* LanguageEditView::GetDocument() const 
    {
+#ifdef _DEBUG
 	   return dynamic_cast<LanguageDocument*>(m_pDocument);
+#else
+      return reinterpret_cast<LanguageDocument*>(m_pDocument);
+#endif
    }
 
    /// <summary>Gets the language string view</summary>
@@ -84,32 +88,21 @@ NAMESPACE_BEGIN2(GUI,Views)
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
    }
    
-   /// <summary>Called when query edit mode.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd)
-   {
-      // Disable if no string displayed
-      pCmd->Enable(RichEdit.IsWindowEnabled());
-
-      // Check correct state
-      switch (pCmd->m_nID)
-      {
-      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
-      }
-   }
-
-   
    /// <summary>Changes the edit mode.</summary>
    /// <param name="nID">The command identifier.</param>
    void LanguageEditView::OnCommandEditMode(UINT nID)
    {
-      switch (nID)
+      try
       {
-      case ID_VIEW_SOURCE:    RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
+         switch (nID)
+         {
+         case ID_VIEW_SOURCE:    RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
+         case ID_VIEW_EDITOR:    RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
+         case ID_VIEW_DISPLAY:   RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
+         }
+      }
+      catch (ExceptionBase& e) { 
+         theApp.ShowError(HERE, e, L"Unable to change editor mode");
       }
    }
 
@@ -147,7 +140,23 @@ NAMESPACE_BEGIN2(GUI,Views)
       fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
       
       // Init RichEdit
-      RichEdit.Initialize(MessageBackground);
+      RichEdit.Initialize(GetDocument());
+   }
+   
+   /// <summary>Called when query edit mode.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd)
+   {
+      // Disable if no string displayed
+      pCmd->Enable(RichEdit.IsWindowEnabled());
+
+      // Check correct state
+      switch (pCmd->m_nID)
+      {
+      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+      }
    }
 
    /// <summary>Re-creates toolbar</summary>
@@ -166,23 +175,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
-   /// <summary>Populates the text of the currently selected string</summary>
+   /// <summary>Display the currently selected string</summary>
    void LanguageEditView::onStringSelectionChanged()
    {
-      // Clear text
-      //RichEdit.SetWindowTextW(L"");
-
       try 
       {
          // Display new string
-         if (LanguageString* str = GetStringView()->GetSelectedString())
-            RichEdit.SetString(str);
-         else
-            RichEdit.Clear(true);
+         RichEdit.Refresh();
       }
       catch (ExceptionBase& e) { 
-         Console.Log(HERE, e); 
-         RichEdit.SetWindowTextW(GuiString(L"Error: %s", e.Message.c_str()).c_str());
+         theApp.ShowError(HERE, e, L"Unable to display selected string");
       }
    }
 

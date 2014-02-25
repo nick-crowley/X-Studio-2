@@ -34,31 +34,36 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   virtual ~LanguageDocument();
 
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNCREATE(LanguageDocument)
-   protected:
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
+      PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
+
       // ---------------------- ACCESSORS ------------------------			
-     public:
-	#ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif
+   public:
+      LanguagePage*   GetSelectedPage() const;
+      LanguageString* GetSelectedString() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
-      virtual void Serialize(CArchive& ar);      
+      void  SetSelectedPage(LanguagePage* p);
+      void  SetSelectedString(LanguageString* s);
 
    protected:
-	   virtual BOOL OnNewDocument();
-      virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+	   BOOL OnNewDocument() override;
+      BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      LanguageFile  Content;
-      bool          Virtual;
+      LanguageFile     Content;
+      bool             Virtual;
+
+   protected:
+      LanguageString*  CurrentString;
+      LanguagePage*    CurrentPage;
    };
 
 
