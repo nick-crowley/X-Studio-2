@@ -4,7 +4,6 @@
 #include <tom.h> 
 #include "Helpers.h"
 #include "CustomTooltip.h"
-#include "Logic/ScriptToken.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -12,7 +11,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Get undo operation name</summary>
    const wchar* GetString(UNDONAMEID id);
 
-   /// <summary>Script editing control</summary>
+   /// <summary>RichEdit extension class</summary>
    class RichEditEx : public CRichEditCtrl
    {
       // ------------------------ TYPES --------------------------
@@ -80,7 +79,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SuspendUndo(bool suspend);
 
    protected:
-      void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze, bool invalidate = true);
       void   SelectLine(int line = -1);
       void   SetScrollCoordinates(const CPoint& pt);

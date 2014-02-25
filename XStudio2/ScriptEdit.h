@@ -499,6 +499,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       LineTextIterator send();
 
       void   CloseSuggestions();
+      void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   InsertSuggestion();
       void   RefreshGutter();
       void   SetCompilerTimer(bool set);
