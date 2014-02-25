@@ -1,5 +1,6 @@
 #pragma once
 #include "RichEditEx.h"
+#include <regex>
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
