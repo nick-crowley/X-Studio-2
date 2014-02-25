@@ -495,9 +495,6 @@
     <ClInclude Include="ProjectTreeCtrl.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="TextObjectModel.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="RichEditEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -506,6 +503,12 @@
     </ClInclude>
     <ClInclude Include="LanguageEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\TextObjectModel.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RichStringWriter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -829,6 +832,9 @@
     </ClCompile>
     <ClCompile Include="LanguageEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RichStringWriter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

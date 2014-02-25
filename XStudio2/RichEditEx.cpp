@@ -73,13 +73,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return false;
 
          // Get search range  (Use entire document if not searching selection)
-         TextRange limits = TomDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
+         TextRangePtr limits = TextDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
          
          // Convert TOM search flags
          UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
 
          // Find next match
-         TextRange match(limits->Duplicate);
+         TextRangePtr match(limits->Duplicate);
          if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
          {
             // Clear match/selection
@@ -231,8 +231,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
       
       // Get ITextDocument interface
-      TomDocument = edit;
-      if (!TomDocument)
+      TextDocument = edit;
+      if (!TextDocument)
          throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
    }
 
@@ -265,7 +265,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             return false;
 
          // Selection: Preserve text selection range
-         TextRange range = TomDocument->Range(m.RangeStart, m.RangeEnd);
+         TextRangePtr range = TextDocument->Range(m.RangeStart, m.RangeEnd);
 
          // RegEx: Format replacement using regEx
          if (m.UseRegEx)
@@ -321,7 +321,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         TomDocument->Undo(suspend ? tomSuspend : tomResume);
+         TextDocument->Undo(suspend ? tomSuspend : tomResume);
       }
       catch (_com_error& e) {
          Console.Log(HERE, ComException(HERE, e));
@@ -403,9 +403,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          if (start)
-            TomDocument->BeginEditCollection();
+            TextDocument->BeginEditCollection();
          else
-            TomDocument->EndEditCollection();
+            TextDocument->EndEditCollection();
       }
       catch (_com_error& e) {
          Console.Log(HERE, ComException(HERE, e));

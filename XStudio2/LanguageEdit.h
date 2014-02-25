@@ -35,6 +35,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
+      wstring   GetAllText() const;
       EditMode  GetEditMode() const;
 
    protected:
@@ -47,9 +48,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  SetString(LanguageString* str);
 
    protected:
-      void  DisplayString();
-      void  HighlightMatch(UINT pos, UINT length, CharFormat& cf);
-      void  UpdateHighlighting();
+      void    DisplayString();
+      wstring GetSourceText();
+      void    HighlightMatch(UINT pos, UINT length, CharFormat& cf);
+      void    UpdateHighlighting();
 
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       virtual void OnTextChange();

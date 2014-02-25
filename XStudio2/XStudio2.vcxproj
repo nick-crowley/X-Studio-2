@@ -131,6 +131,8 @@
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="LanguageEdit.h" />
+    <ClInclude Include="Logic\RichStringWriter.h" />
+    <ClInclude Include="Logic\TextObjectModel.h" />
     <ClInclude Include="RichEditEx.h" />
     <ClInclude Include="CustomTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
@@ -257,13 +259,13 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
-    <ClInclude Include="TextObjectModel.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
+    <ClCompile Include="Logic\RichStringWriter.cpp" />
     <ClCompile Include="RichEditEx.cpp" />
     <ClCompile Include="CustomTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />

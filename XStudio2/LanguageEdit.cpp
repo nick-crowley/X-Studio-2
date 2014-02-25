@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
 #include "Logic/RtfStringWriter.h"
+#include "Logic/RichStringWriter.h"
 #include "Logic/LanguagePage.h"
 
 /// <summary>User interface controls</summary>
@@ -77,6 +78,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Gets contents as a string delimited by single char (\n) line breaks.</summary>
+   /// <returns></returns>
+   wstring  LanguageEdit::GetAllText() const
+   {
+      auto txt = __super::GetAllText();
+
+      // Convert '\v' to '\n'
+      for (auto& ch : txt)
+         if (ch == '\v')
+            ch = '\n';
+
+      return txt;
+   }
 
    /// <summary>Gets the edit mode.</summary>
    /// <returns></returns>
@@ -184,6 +199,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
+
+   /// <summary>Generates the source text.</summary>
+   /// <returns></returns>
+   wstring  LanguageEdit::GetSourceText()
+   { 
+      try
+      {
+         return RichStringWriter(TextDocument).Write();
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return String->Text;
+      }
+   }
+
    /// <summary>Determines whether this instance has string.</summary>
    /// <returns></returns>
    bool  LanguageEdit::HasString() const
@@ -212,9 +242,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Performs syntax colouring on the current line</summary>
    void LanguageEdit::OnTextChange()
    {
-      // Perform highlighting
-      if (GetEditMode() == EditMode::Source)
+      // Save contents
+      switch (GetEditMode())
+      {
+      // Source: Save + highlight
+      case EditMode::Source:
+         String->Text = GetAllText();
          UpdateHighlighting();
+         break;
+
+      // Edit: Generate source
+      case EditMode::Edit:
+         String->Text = GetSourceText();
+         break;
+      }
 
       // Reset tootlip
       __super::OnTextChange();
