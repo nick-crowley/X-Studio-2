@@ -12,6 +12,13 @@ typedef unique_ptr<WCHAR, default_delete<WCHAR[]>>  CharArrayPtr;
 /// <summary>Wide char</summary>
 typedef wchar_t wchar;
 
+/// <summary>Vector of strings</summary>
+typedef vector<wstring>  LineArray;
+
+/// <summary>Constant line iterator</summary>
+typedef LineArray::const_iterator  LineIterator;
+
+
 namespace Logic
 {
    /// <summary>Defines the available game data languages</summary>
@@ -70,6 +77,9 @@ namespace Logic
    /// <summary>Compare character ranges</summary>
    bool operator==(const CHARRANGE& a, const CHARRANGE& b);
    bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
+
+
+   
 }
 
 using namespace Logic;

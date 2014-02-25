@@ -501,6 +501,9 @@
     <ClInclude Include="ScriptEditTooltip.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="RichEditEx.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -816,6 +819,9 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="ScriptEditTooltip.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="RichEditEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
