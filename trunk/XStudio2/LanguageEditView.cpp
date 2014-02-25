@@ -34,23 +34,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void LanguageEditView::AssertValid() const
+   /// <summary>Gets the language document</summary>
+   LanguageDocument* LanguageEditView::GetDocument() const 
    {
-	   CFormView::AssertValid();
+	   return dynamic_cast<LanguageDocument*>(m_pDocument);
    }
-
-   void LanguageEditView::Dump(CDumpContext& dc) const
-   {
-	   CFormView::Dump(dc);
-   }
-
-   LanguageDocument* LanguageEditView::GetDocument() const // non-debug version is inline
-   {
-	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(LanguageDocument)));
-	   return (LanguageDocument*)m_pDocument;
-   }
-   #endif //_DEBUG
 
    /// <summary>Gets the language string view</summary>
    /// <returns></returns>
@@ -87,20 +75,35 @@ NAMESPACE_BEGIN2(GUI,Views)
       RichEdit.SetWindowPos(nullptr, view.left, view.top+barHeight, view.Width(), view.Height()-barHeight, SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
+   /// <summary>Does the data exchange.</summary>
+   /// <param name="pDX">The p dx.</param>
    void LanguageEditView::DoDataExchange(CDataExchange* pDX)
    {
       CFormView::DoDataExchange(pDX);
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
    }
    
+   /// <summary>Creates the toolbar</summary>
+   /// <param name="lpCreateStruct">The create structure.</param>
+   /// <returns></returns>
    int LanguageEditView::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-      if (CFormView::OnCreate(lpCreateStruct) == -1)
-         return -1;
+      try
+      {
+         // Create view
+         if (CFormView::OnCreate(lpCreateStruct) == -1)
+            throw Win32Exception(HERE, L"Unable to base view");
 
-      // Create toolbar
-      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
-      return 0;
+         // Create toolbar
+         if (!ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
+            throw Win32Exception(HERE, L"Unable to create toolbar");
+
+         return 0;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return -1;
+      }
    }
 
    /// <summary>Initialise control</summary>
@@ -112,10 +115,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
       
       // Init RichEdit
-      RichEdit.SetBackgroundColor(FALSE, MessageBackground);
-      RichEdit.LimitText(256*1024);
+      RichEdit.Initialize(MessageBackground);
    }
 
+   /// <summary>Re-creates toolbar</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void LanguageEditView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      CFormView::OnSettingChange(uFlags, lpszSection);
+
+      // Re-create toolbar
+      ToolBar.DestroyWindow();
+      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
+
+      // Adjust layout
+      AdjustLayout();
+   }
+
+   
    /// <summary>Populates the text of the currently selected string</summary>
    void LanguageEditView::onStringSelectionChanged()
    {
@@ -146,22 +164,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
-   /// <summary>Re-creates toolbar</summary>
-   /// <param name="uFlags">The flags.</param>
-   /// <param name="lpszSection">The section.</param>
-   void LanguageEditView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
-   {
-      CFormView::OnSettingChange(uFlags, lpszSection);
-
-      // Re-create toolbar
-      ToolBar.DestroyWindow();
-      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
-
-      // Adjust layout
-      AdjustLayout();
-   }
-
-   
    /// <summary>Adjusts layout</summary>
    /// <param name="nType">Type of the resize</param>
    /// <param name="cx">The new width</param>
