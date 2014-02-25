@@ -121,6 +121,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Clears contents and resets font to Arial 10pt</summary>
+   void  LanguageEdit::Clear()
+   {
+      CharFormat cf(CFM_FACE|CFM_COLOR|CFM_PROTECTED|CFM_SIZE, CFE_PROTECTED);
+      cf.crTextColor = RGB(255,255,255);
+      cf.yHeight = 10*20;
+      StringCchCopy(cf.szFaceName, LF_FACESIZE, L"Arial");
+
+      // Clear
+      __super::Clear();
+      SetDefaultCharFormat(cf);
+   }
+
    /// <summary>Displays the current string in the current mode.</summary>
    void  LanguageEdit::DisplayString()
    {
