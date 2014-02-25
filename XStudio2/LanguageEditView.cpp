@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "LanguageEditView.h"
-#include "Logic/RtfStringWriter.h"
 #include "Helpers.h"
 #include "afxcview.h"
 
@@ -30,6 +29,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnQueryEditMode)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -83,6 +83,19 @@ NAMESPACE_BEGIN2(GUI,Views)
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
    }
    
+   /// <summary>Called when query edit mode.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd)
+   {
+      switch (pCmd->m_nID)
+      {
+      case ID_VIEW_SOURCE:    pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Source);   break;
+      case ID_VIEW_EDITOR:    pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:   pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Display);  break;
+      }
+   }
+
+
    /// <summary>Creates the toolbar</summary>
    /// <param name="lpCreateStruct">The create structure.</param>
    /// <returns></returns>
@@ -97,6 +110,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Create toolbar
          if (!ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
             throw Win32Exception(HERE, L"Unable to create toolbar");
+
+         ToolBar.SetRouteCommandsViaFrame(TRUE);
 
          return 0;
       }
@@ -142,21 +157,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try 
       {
-         // Re-populate
+         // Display new string
          if (LanguageString* str = GetStringView()->GetSelectedString())
-         {
-            string rtf; 
-
-            // Convert string into RTF
-            RtfStringWriter w(rtf);
-            w.Write(str->RichText);
-            w.Close();
-
-            // Replace contents with RTF
-            SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-            if (!RichEdit.SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
-               throw Win32Exception(HERE, L"Unable to set rich-edit text");
-         }
+            RichEdit.SetString(str);
       }
       catch (ExceptionBase& e) { 
          Console.Log(HERE, e); 

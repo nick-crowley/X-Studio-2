@@ -41,8 +41,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       void AdjustLayout();
       void DoDataExchange(CDataExchange* pDX) override;   
 
+      //afx_msg void OnCommandEditMode(UINT nID);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       virtual void OnInitialUpdate();
+      afx_msg void OnQueryEditMode(CCmdUI* pCmd);
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void onStringSelectionChanged();
