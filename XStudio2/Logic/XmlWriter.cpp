@@ -60,6 +60,7 @@ namespace Logic
       /// <summary>Writes the Xml to the output stream</summary>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+      /// <remarks>See http://support.microsoft.com/kb/275883 for further details</remarks>
       void  XmlWriter::Close()
       {
          try
