@@ -51,7 +51,7 @@
 #include "Logic/msxml.h"
 
 // Import tom
-#include "TextObjectModel.h"
+#include "Logic/TextObjectModel.h"
 
 // Win32 
 #include <Windowsx.h>

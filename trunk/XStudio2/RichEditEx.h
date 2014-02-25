@@ -19,10 +19,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>RichEdit COM interface</summary>
       _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
 
-      /// <summary>TOM COM interface</summary>
-      typedef TOM::ITextDocumentPtr  TextDocument;
-      typedef TOM::ITextRangePtr     TextRange;
-
       /// <summary>Records state of text selection, view position, event mask</summary>
       class DisplayState
       {
@@ -95,8 +91,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
 
    protected:
-      TextDocument       TomDocument;
-      CustomTooltip  Tooltip;
+      TextDocumentPtr  TextDocument;
+      CustomTooltip    Tooltip;
       
    private:
       TooltipEvent::Handler fnShowTooltip;
