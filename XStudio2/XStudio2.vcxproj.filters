@@ -498,10 +498,10 @@
     <ClInclude Include="TextObjectModel.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptEditTooltip.h">
+    <ClInclude Include="RichEditEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="RichEditEx.h">
+    <ClInclude Include="CustomTooltip.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
@@ -818,10 +818,10 @@
     <ClCompile Include="ProjectTreeCtrl.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptEditTooltip.cpp">
+    <ClCompile Include="RichEditEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="RichEditEx.cpp">
+    <ClCompile Include="CustomTooltip.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>

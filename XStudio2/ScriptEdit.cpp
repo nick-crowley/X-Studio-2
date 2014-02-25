@@ -632,7 +632,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
-   void ScriptEdit::OnRequestTooltip(ScriptEditTooltip::TooltipData* data)
+   void ScriptEdit::OnRequestTooltip(CustomTooltip::TooltipData* data)
    {
       // Initialise
       auto cursor = GetCursorLocation();
@@ -644,7 +644,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // None: show nothing
       if (!tok)
-         *data = ScriptEditTooltip::NoTooltip;
+         *data = CustomTooltip::NoTooltip;
 
       // Provide approriate data
       else switch (tok->Type)
@@ -652,7 +652,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case TokenType::Text:         data->ResetTo(CommandTooltipData(text, Document->Script.Game));   break;
       case TokenType::Label:        data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
       case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));           break;
-      default:                      data->ResetTo(ScriptEditTooltip::NoTooltip);                      break;
+      default:                      data->ResetTo(CustomTooltip::NoTooltip);                      break;
       }  
    }
    

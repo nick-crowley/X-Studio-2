@@ -1,7 +1,7 @@
 #pragma once
 #include "RichEditEx.h"
 #include "SuggestionList.h"
-#include "ScriptEditTooltip.h"
+#include "CustomTooltip.h"
 #include "ScriptDocument.h"
 #include "Logic/ScriptParser.h"
 #include "Logic/DescriptionLibrary.h"
@@ -369,7 +369,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       };
 
       /// <summary>Tooltip data for a script command</summary>
-      class CommandTooltipData : public ScriptEditTooltip::TooltipData
+      class CommandTooltipData : public CustomTooltip::TooltipData
       {
       public:
          /// <summary>Create script command tooltip</summary>
@@ -384,7 +384,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
                // Unknown: Display nothing
                if (cmd == CommandSyntax::Unrecognised)
-                  ResetTo(ScriptEditTooltip::NoTooltip);
+                  ResetTo(CustomTooltip::NoTooltip);
                else
                {  
                   // Lookup description 
@@ -397,13 +397,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // No description: Hasn't been documented
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(ScriptEditTooltip::NoDocumentationCmd);
+               ResetTo(CustomTooltip::NoDocumentationCmd);
             }
          }
       };
 
       /// <summary>Tooltip data for a label reference</summary>
-      class LabelTooltipData : public ScriptEditTooltip::TooltipData
+      class LabelTooltipData : public CustomTooltip::TooltipData
       {
       public:
          /// <summary>Creates label reference tooltip data.</summary>
@@ -427,13 +427,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(ScriptEditTooltip::NoTooltip);
+               ResetTo(CustomTooltip::NoTooltip);
             }
          }
       };
       
       /// <summary>Tooltip data for a script-object</summary>
-      class ScriptObjectTooltipData : public ScriptEditTooltip::TooltipData
+      class ScriptObjectTooltipData : public CustomTooltip::TooltipData
       {
       public:
          /// <summary>Creates script object tooltip data.</summary>
@@ -454,7 +454,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // No description: Hasn't been documented
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(ScriptEditTooltip::NoDocumentationObj);
+               ResetTo(CustomTooltip::NoDocumentationObj);
             }
          }
       };
@@ -518,7 +518,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnRequestTooltip(ScriptEditTooltip::TooltipData* data) override;
+      handler void OnRequestTooltip(CustomTooltip::TooltipData* data) override;
       afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
