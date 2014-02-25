@@ -230,6 +230,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"Unable to destroy suggestion list");
    }
    
+   /// <summary>Selects and formats a token.</summary>
+   /// <param name="offset">The character index of the line</param>
+   /// <param name="t">The token</param>
+   /// <param name="cf">The formatting characteristics</param>
+   void  ScriptEdit::FormatToken(UINT offset, const TokenBase& t, CharFormat& cf)
+   {
+      SetSel(offset+t.Start, offset+t.End);
+      SetSelectionCharFormat(cf);
+   }
+
    /// <summary>Determines whether document is connected</summary>
    /// <returns></returns>
    bool  ScriptEdit::HasDocument() const

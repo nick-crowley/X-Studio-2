@@ -330,16 +330,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Selects and formats a token.</summary>
-   /// <param name="offset">The character index of the line</param>
-   /// <param name="t">The token</param>
-   /// <param name="cf">The formatting characteristics</param>
-   void RichEditEx::FormatToken(UINT offset, const TokenBase& t, CharFormat& cf)
-   {
-      SetSel(offset+t.Start, offset+t.End);
-      SetSelectionCharFormat(cf);
-   }
-
    /// <summary>Freezes or unfreezes the window.</summary>
    /// <param name="freeze">True to freeze, false to restore</param>
    /// <param name="invalidate">True to invalidate after unfreezing</param>
