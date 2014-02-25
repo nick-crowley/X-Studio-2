@@ -129,7 +129,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
       
       // Raise 'SELECTION CHANGED'
-      SelectionChanged.Raise();
+      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+         SelectionChanged.Raise();
 
       *pResult = 0;
    }

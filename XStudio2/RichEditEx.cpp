@@ -299,20 +299,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <exception cref="Logic::Win32Exception">Unable to set text</exception>
    void RichEditEx::SetRtf(const string& rtf)
    {
-      // Replace contents with RTF
-      SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
-      if (!SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
-         throw Win32Exception(HERE, L"Unable to set script text");
+      try
+      {
+         FreezeWindow(true);
 
-      // Protect text
-      CharFormat cf(CFM_PROTECTED, CFE_PROTECTED);
-      SendMessage(EM_SETCHARFORMAT, SCF_ALL, (LPARAM)(CHARFORMAT*)&cf);
+         // Replace contents with RTF
+         SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
+         if (!SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
+            throw Win32Exception(HERE, L"Unable to set script text");
 
-      // Clear 'Undo' buffer
-      EmptyUndoBuffer();
+         // Protect text
+         CharFormat cf(CFM_PROTECTED, CFE_PROTECTED);
+         SendMessage(EM_SETCHARFORMAT, SCF_ALL, (LPARAM)(CHARFORMAT*)&cf);
 
-      // Reset tooltip
-      Tooltip.Reset();
+         // Clear 'Undo' buffer
+         EmptyUndoBuffer();
+
+         // Reset tooltip
+         Tooltip.Reset();
+
+         FreezeWindow(false);
+      }
+      catch (ExceptionBase&) {
+         FreezeWindow(false);
+         throw;
+      }
+
+      
    }
 
    /// <summary>Suspend or resumes undo buffer</summary>
