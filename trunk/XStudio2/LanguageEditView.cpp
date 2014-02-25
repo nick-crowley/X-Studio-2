@@ -90,10 +90,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       switch (pCmd->m_nID)
       {
-      case ID_VIEW_SOURCE:    pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   pCmd->Enable(RichEdit.GetEditMode() != LanguageEdit::EditMode::Display);  break;
+      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
       }
+      pCmd->Enable(TRUE);
    }
 
    
