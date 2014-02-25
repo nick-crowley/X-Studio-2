@@ -89,7 +89,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	
    public:
       const static TooltipData NoTooltip,
-                               NoDocumentation;
+                               NoDocumentationCmd,
+                               NoDocumentationObj;
 
       // --------------------- PROPERTIES ------------------------
 	  

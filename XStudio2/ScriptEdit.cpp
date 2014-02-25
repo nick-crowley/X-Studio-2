@@ -25,7 +25,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_VSCROLL()
       ON_WM_KEYUP()
       ON_WM_SETFOCUS()
-      //ON_NOTIFY(TTN_POP, 42, &ScriptEdit::OnTooltipHide)
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
       ON_NOTIFY_REFLECT(EN_PROTECTED, &ScriptEdit::OnProtectedMessage)
@@ -1054,11 +1053,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Provide approriate data
       else switch (tok->Type)
       {
-      case TokenType::Text:  data->ResetTo(CommandTooltipData(text, Document->Script.Game));  break;
-      case TokenType::Label: data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
-
-      // TODO: Other types
-      default: data->ResetTo(ScriptEditTooltip::NoTooltip); break;
+      case TokenType::Text:         data->ResetTo(CommandTooltipData(text, Document->Script.Game));   break;
+      case TokenType::Label:        data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
+      case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));           break;
+      default:                      data->ResetTo(ScriptEditTooltip::NoTooltip);                      break;
       }  
    }
    

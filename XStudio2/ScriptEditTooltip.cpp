@@ -13,7 +13,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoTooltip(L"Nothing", L"");
 
    /// <summary>Sentinel tooltip for commands with no documentation</summary>
-   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentation(L"Command has no description", L"");
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentationCmd(L"Command has no description", L"");
+
+   /// <summary>Sentinel tooltip for commands with no documentation</summary>
+   const ScriptEditTooltip::TooltipData  ScriptEditTooltip::NoDocumentationObj(L"Script object has no description", L"");
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -75,11 +78,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------ PROTECTED METHODS -----------------------------   
    
    /// <summary>Gets the tooltip data from the parent</summary>
-   /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
-   /// <exception cref="Logic::FileFormatException">Description Macro contains wrong number of parameters</exception>
-   /// <exception cref="Logic::LabelNotFoundException">Label Not found</exception>
-   /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
-   /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
    void ScriptEditTooltip::GetTooltipData()
    {
       // Request data

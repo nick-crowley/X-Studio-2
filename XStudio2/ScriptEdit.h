@@ -403,10 +403,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Create script command tooltip</summary>
          /// <param name="lineText">The line text.</param>
          /// <param name="ver">The version</param>
-         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
-         /// <exception cref="Logic::FileFormatException">Description Macro contains wrong number of parameters</exception>
-         /// <exception cref="Logic::Language::RegularExpressionException">RegEx error</exception>
-         /// <exception cref="Logic::Language::DescriptionNotFoundException">Description not present</exception>
          CommandTooltipData(wstring lineText, GameVersion ver) : TooltipData(IDR_GAME_OBJECTS, 32)
          {
             try
@@ -429,7 +425,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // No description: Hasn't been documented
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(ScriptEditTooltip::NoDocumentation);
+               ResetTo(ScriptEditTooltip::NoDocumentationCmd);
             }
          }
       };
@@ -441,7 +437,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Creates label reference tooltip data.</summary>
          /// <param name="edit">script edit.</param>
          /// <param name="label">label name WITHOUT operator</param>
-         /// <exception cref="Logic::LabelNotFoundException">Not found</exception>
          LabelTooltipData(ScriptEdit& edit, wstring label) : TooltipData(0, 0)
          {
             try
@@ -461,6 +456,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
                ResetTo(ScriptEditTooltip::NoTooltip);
+            }
+         }
+      };
+      
+      /// <summary>Tooltip data for a script-object</summary>
+      class ScriptObjectTooltipData : public ScriptEditTooltip::TooltipData
+      {
+      public:
+         /// <summary>Creates script object tooltip data.</summary>
+         /// <param name="name">object name</param>
+         ScriptObjectTooltipData(wstring name) : TooltipData(IDR_SCRIPT_OBJECTS, 32)
+         {
+            try
+            {
+               // Identify object
+               auto obj = ScriptObjectLib.Find(name);
+
+               // Lookup description 
+               DescriptionSource = DescriptionLib.Constants.Find(obj);
+               LabelSource = GuiString(L"[center][b]%s[/b][/center]", obj.Text.c_str());
+
+               // TODO: Supply icon
+            }
+            // No description: Hasn't been documented
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+               ResetTo(ScriptEditTooltip::NoDocumentationObj);
             }
          }
       };
