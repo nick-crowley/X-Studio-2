@@ -41,6 +41,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  Clear();
       void  SetEditMode(EditMode m);
       void  SetString(LanguageString* str);
 
