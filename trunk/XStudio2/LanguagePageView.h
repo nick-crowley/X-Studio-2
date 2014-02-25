@@ -38,12 +38,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
       LanguageDocument* GetDocument() const;
-      LanguagePage*     GetSelectedPage() const;
+      LanguagePage*     GetSelected() const;
       PageCollection&   GetDataSource() const;
 
       // ----------------------- MUTATORS ------------------------
@@ -66,9 +62,5 @@ NAMESPACE_BEGIN2(GUI,Views)
       
    };
    
-   #ifndef _DEBUG  
-   inline LanguageDocument* LanguagePageView::GetDocument() const
-      { return reinterpret_cast<LanguageDocument*>(m_pDocument); }
-   #endif
 
 NAMESPACE_END2(GUI,Views)

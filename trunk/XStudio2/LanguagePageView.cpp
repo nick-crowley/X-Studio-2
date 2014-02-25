@@ -29,28 +29,21 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void LanguagePageView::AssertValid() const
+   /// <summary>Gets the document.</summary>
+   /// <returns></returns>
+   LanguageDocument* LanguagePageView::GetDocument() const 
    {
-	   CListView::AssertValid();
+#ifdef _DEBUG
+	   return dynamic_cast<LanguageDocument*>(m_pDocument);
+#else
+      return reinterpret_cast<LanguageDocument*>(m_pDocument);
+#endif
    }
-   
-   void LanguagePageView::Dump(CDumpContext& dc) const
-   {
-	   CListView::Dump(dc);
-   }
-
-   LanguageDocument* LanguagePageView::GetDocument() const // non-debug version is inline
-   {
-	   ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(LanguageDocument)));
-	   return (LanguageDocument*)m_pDocument;
-   }
-   #endif //_DEBUG
 
    /// <summary>Gets the currently selected page.</summary>
    /// <returns>Selected page if any, otherwise nullptr</returns>
    /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
-   LanguagePage*   LanguagePageView::GetSelectedPage() const
+   LanguagePage*   LanguagePageView::GetSelected() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
       return item != -1 ? &GetDataSource().FindByIndex(item) : nullptr;
@@ -151,8 +144,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
       
-      // Raise SELECTION CHANGED
-      SelectionChanged.Raise();
+      // Selection (not focus) has changed
+      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+      {
+         // Update document
+         GetDocument()->SelectedPage = GetSelected();
+
+         // Raise SELECTION CHANGED
+         SelectionChanged.Raise();
+      }
+
       *pResult = 0;
    }
 

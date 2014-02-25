@@ -67,7 +67,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageEdit::LanguageEdit() : Mode(EditMode::Edit), String(nullptr)
+   LanguageEdit::LanguageEdit() : Mode(EditMode::Edit), Document(nullptr)
    {
    }
 
@@ -79,26 +79,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   /// <summary>Clears text, resets font to Arial 10pt, and optionally clears the string</summary>
-   /// <param name="disable">True to clear the string and disable the window.</param>
-   void  LanguageEdit::Clear(bool disable)
+   /// <summary>Clears the text and resets font to Arial 10pt without firing EN_CHANGED</summary>
+   void  LanguageEdit::Clear()
    {
+      // Pause updates
       FreezeWindow(true);
 
       // Clear
       __super::Clear();
       SetDefaultCharFormat(DefaultCharFormat());
-
+      
       // Reset Undo
       EmptyUndoBuffer();
 
-      // Clear string
-      if (disable)
-      {
-         String = nullptr;
-         EnableWindow(FALSE);
-      }
-
+      // Resume updates
       FreezeWindow(false);
    }
 
@@ -123,125 +117,111 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return Mode;
    }
 
+   /// <summary>Initializes the specified document.</summary>
+   /// <param name="doc">The document.</param>
+   /// <exception cref="Logic::ArgumentNullException">doc is nullptr</exception>
+   void  LanguageEdit::Initialize(LanguageDocument* doc)
+   {
+      REQUIRED(doc);
+
+      // Store document
+      Document = doc;
+
+      // Initially disable
+      EnableWindow(FALSE);
+
+      // Initialize
+      __super::Initialize(MessageBackground);
+   }
+
+   /// <summary>Displays the currently selected string in the manner appropriate to the editing mode.</summary>
+   /// <exception cref="Logic::ArgumentNullException">Not initialized</exception>
+   /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
+   void  LanguageEdit::Refresh()
+   {
+      REQUIRED(Document);  // Ensure initialized
+
+      // Disable when no string selected
+      EnableWindow(Document->SelectedString ? TRUE : FALSE);
+
+      // Nothing: Clear text
+      if (!Document->SelectedString)
+         Clear();
+
+      // Editor: Display RichText
+      else if (Mode == EditMode::Edit)
+      {
+         string rtf; 
+
+         // Convert string into RTF
+         RtfStringWriter w(rtf);
+         w.Write(Document->SelectedString->RichText);
+         w.Close();
+
+         // Replace contents with RTF
+         SetRtf(rtf);
+
+         // DEBUG:
+         Console << GetSourceText() << ENDL;
+      }
+      // Display: Format for display
+      else if (Mode == EditMode::Display)
+         throw NotImplementedException(HERE, L"Display mode");
+
+      // Source: Display SourceText
+      else if (Mode == EditMode::Source)
+      {
+         // Clear previous
+         Clear();
+
+         // Display/highlight sourceText
+         SetWindowText(Document->SelectedString->Text.c_str());
+         UpdateHighlighting();
+      }
+   }
+
    /// <summary>Changes the edit mode.</summary>
    /// <param name="m">mode.</param>
+   /// <exception cref="Logic::ArgumentNullException">Not initialized</exception>
+   /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
    void  LanguageEdit::SetEditMode(EditMode m)
    {
+      REQUIRED(Document);  // Ensure initialized
+
+      // Preserve edit mode
       auto prev = GetEditMode();
 
       try
       {
          // Skip if already set, or edit disabled
-         if (m == prev || !HasString())
+         if (m == prev || !Document->SelectedString)
             return;
 
          // Change mode + redisplay   
          Mode = m;
-         DisplayString();
+         Refresh();
       }
       // Error: Revert mode
-      catch (ExceptionBase& e) {
+      catch (ExceptionBase&) {
          Mode = prev;
-         theApp.ShowError(HERE, e, L"Unable to change edit mode");
-         DisplayString();
-      }
-   }
-
-   /// <summary>Changes the current string and displays it</summary>
-   /// <param name="str">The string.</param>
-   void  LanguageEdit::SetString(LanguageString* str)
-   {
-      auto prev = String;
-      
-      try
-      {
-         REQUIRED(str);
-         
-         // Change string + redisplay
-         String = str;
-         DisplayString();
-       
-         // Enable window
-         EnableWindow(TRUE);
-      }
-      // Error: Revert string
-      catch (ExceptionBase& e) {
-         String = prev;
-         theApp.ShowError(HERE, e, L"Unable to display string");
-         DisplayString();
-      }
-   }
-   
-   // ------------------------------ PROTECTED METHODS -----------------------------
-   
-   /// <summary>Displays the current string in the current mode.</summary>
-   void  LanguageEdit::DisplayString()
-   {
-      try
-      {
-         // Empty:
-         if (!HasString())
-            throw AlgorithmException(HERE, L"No string to display");
-
-         // Edit:
-         if (Mode == EditMode::Edit)
-         {
-            string rtf; 
-            // Convert string into RTF
-            RtfStringWriter w(rtf);
-            w.Write(String->RichText);
-            w.Close();
-
-            // Replace contents with RTF
-            SetRtf(rtf);
-
-            // DEBUG:
-            //Console << GetSourceText() << ENDL;
-         }
-         // Display:
-         else if (Mode == EditMode::Display)
-            throw NotImplementedException(HERE, L"Display mode");
-
-         // Source:
-         else if (Mode == EditMode::Source)
-         {
-            // Clear formatting
-            Clear(false);
-
-            // Display text
-            SetWindowText(String->Text.c_str());
-            UpdateHighlighting();
-         }
-      }
-      // Error: Clear contents
-      catch (ExceptionBase& ) {
-         Clear(true);
          throw;
       }
    }
 
-
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
    /// <summary>Generates the source text.</summary>
    /// <returns></returns>
    wstring  LanguageEdit::GetSourceText()
    { 
-      try
-      {
-         return RichStringWriter(TextDocument).Write();
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-         return String->Text;
-      }
+      // TODO: Write author/title/text tags etc.
+
+      // Get content
+      wstring content = RichStringWriter(TextDocument).Write();
+
+      return content;
    }
 
-   /// <summary>Determines whether this instance has string.</summary>
-   /// <returns></returns>
-   bool  LanguageEdit::HasString() const
-   {
-      return String != nullptr;
-   }
-   
    /// <summary>Highlights the match.</summary>
    /// <param name="pos">position.</param>
    /// <param name="length">length or -1 for entire text.</param>
@@ -260,30 +240,41 @@ NAMESPACE_BEGIN2(GUI,Controls)
       *data = CustomTooltip::NoTooltip;
    }
 
-   /// <summary>Performs syntax colouring on the current line</summary>
+   /// <summary>Saves the current text into the currently selected string</summary>
    void LanguageEdit::OnTextChange()
    {
-      // Save contents
-      switch (GetEditMode())
+      try
       {
-      // Source: Save + highlight
-      case EditMode::Source:
-         String->Text = GetAllText();
-         UpdateHighlighting();
-         break;
+         // Ensure selection exists
+         REQUIRED(Document->SelectedString);
 
-      // Edit: Generate source
-      case EditMode::Edit:
-         //String->Text = GetSourceText();
-         Console << GetSourceText() << ENDL;
-         break;
+         // Save contents
+         switch (GetEditMode())
+         {
+         // Source: Save verbatim + highlight
+         case EditMode::Source:
+            Document->SelectedString->Text = GetAllText();
+            UpdateHighlighting();
+            break;
+
+         // Edit: Generate source + save
+         case EditMode::Edit:
+            //String->Text = GetSourceText();
+
+            // DEBUG:
+            Console << "TextChanged=" << GetSourceText() << ENDL;
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
       }
 
       // Reset tootlip
       __super::OnTextChange();
    }
    
-   /// <summary>Updates the highlighting.</summary>
+   /// <summary>Performs syntax highlighting when in Source mode</summary>
    void  LanguageEdit::UpdateHighlighting()
    {
       static const COLORREF Tag = RGB(255,174,207),         // Pale Pink

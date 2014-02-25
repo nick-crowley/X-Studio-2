@@ -47,7 +47,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language)
+   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), CurrentString(nullptr), CurrentPage(nullptr)
    {
    }
 
@@ -59,29 +59,32 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   #ifdef _DEBUG
-   void LanguageDocument::AssertValid() const
+   /// <summary>Gets the selected page.</summary>
+   /// <returns></returns>
+   LanguagePage*   LanguageDocument::GetSelectedPage() const
    {
-	   DocumentBase::AssertValid();
+      return CurrentPage;
    }
 
-   
-   void LanguageDocument::Dump(CDumpContext& dc) const
+   /// <summary>Gets the selected string.</summary>
+   /// <returns></returns>
+   LanguageString* LanguageDocument::GetSelectedString() const
    {
-	   DocumentBase::Dump(dc);
+      return CurrentString;
    }
-   #endif //_DEBUG
-   
-   void LanguageDocument::Serialize(CArchive& ar)
+
+   /// <summary>Sets the selected page.</summary>
+   /// <param name="p">The page.</param>
+   void  LanguageDocument::SetSelectedPage(LanguagePage* p)
    {
-	   if (ar.IsStoring())
-	   {
-		   // TODO: add storing code here
-	   }
-	   else
-	   {
-		   // TODO: add loading code here
-	   }
+      CurrentPage = p;
+   }
+
+   /// <summary>Sets the selected string.</summary>
+   /// <param name="s">The string.</param>
+   void  LanguageDocument::SetSelectedString(LanguageString* s)
+   {
+      CurrentString = s;
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

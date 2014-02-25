@@ -44,6 +44,7 @@ namespace Logic
       /// <param name="font">Font name</param>
       /// <param name="size">Font size in points</param>
       /// <param name="cols">List of colours</param>
+      /// <exception cref="Logic::InvalidOperationException">Write is already open</exception>
       void  RtfWriter::Open(const wstring& font, UINT size, list<COLORREF> cols) 
       {
          // Check stream is closed

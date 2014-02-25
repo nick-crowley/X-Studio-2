@@ -42,6 +42,7 @@ namespace Logic
       /// <summary>Convert colour enumeration to RGB</summary>
       /// <param name="c">colour</param>
       /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Invalid colour</exception>
       COLORREF RtfStringWriter::ToRGB(Colour c)
       {
          switch (c)

@@ -1,10 +1,10 @@
 #pragma once
 #include "RichEditEx.h"
+#include "LanguageDocument.h"
 #include <regex>
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
-
 
    /// <summary>RichEdit extension class</summary>
    class LanguageEdit : public RichEditEx
@@ -41,24 +41,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
                             MatchSubString,
                             MatchVariable;
 
+      static const COLORREF  MessageBackground = RGB(22,31,46);
+
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      //PROPERTY_GET_SET(EditMode,EditMode,GetEditMode,SetEditMode);
+
       // ---------------------- ACCESSORS ------------------------			
    public:
       wstring   GetAllText() const;
       EditMode  GetEditMode() const;
 
    protected:
-      bool  HasString() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  Clear(bool disable);
+      void  Clear();
+      void  Initialize(LanguageDocument* doc);
       void  SetEditMode(EditMode m);
-      void  SetString(LanguageString* str);
+      void  Refresh();
 
    protected:
-      void    DisplayString();
       wstring GetSourceText();
       void    HighlightMatch(UINT pos, UINT length, CharFormat& cf);
       void    UpdateHighlighting();
@@ -70,8 +73,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
 
    protected:
-      EditMode        Mode;
-      LanguageString* String;
+      EditMode          Mode;
+      LanguageDocument* Document;
 };
    
 
