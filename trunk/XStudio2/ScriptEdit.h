@@ -593,7 +593,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ScriptDocument* Document;
       TextDocument    TomDocument;
 
-      ScriptEditTooltip        Tooltip;
+      ScriptEditTooltip     Tooltip;
       TooltipEvent::Handler fnShowTooltip;
 };
    
