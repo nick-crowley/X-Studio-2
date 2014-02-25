@@ -10,6 +10,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class LanguageEdit : public RichEditEx
    {
       // ------------------------ TYPES --------------------------
+   public:
+      enum class EditMode { Source, Edit, Display };
+
    protected:
 
       // --------------------- CONSTRUCTION ----------------------
@@ -25,21 +28,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
+      EditMode  GetEditMode() const;
 
    protected:
-      
+      bool  HasString() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
+      void  SetEditMode(EditMode m);
+      void  SetString(LanguageString* str);
 
    protected:
+      void  DisplayString();
       void  UpdateHighlighting();
 
+      afx_msg void OnCommandEditMode(UINT nID);
+      afx_msg void OnQueryEditMode(CCmdUI* pCmd);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       virtual void OnTextChange();
       
       // -------------------- REPRESENTATION ---------------------
    public:
 
+   protected:
+      EditMode        Mode;
+      LanguageString* String;
 };
    
 
