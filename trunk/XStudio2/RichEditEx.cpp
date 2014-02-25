@@ -422,72 +422,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
-   /// <summary>Compiles script to highlight errors</summary>
-   void RichEditEx::OnBackgroundCompile()
+   /// <summary>Reset the tooltip</summary>
+   void RichEditEx::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
    {
-      CWaitCursor c;
+      // Reset tooltip
+      Tooltip.Reset();
 
-      // Stop compiler timer
-      SetCompilerTimer(false);
-        
-      // Freeze window
-      SuspendUndo(true);
-      FreezeWindow(true);
-
-      try 
-      { 
-         // Feedback
-         Console << Cons::Heading << "Background compiling " << Document->GetFullPath() << ENDL;
-
-         // Parse script 
-         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
-         
-         // DEBUG:
-         /*if (!parser.Errors.empty())
-            parser.Print();*/
-         Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
-
-         // Define error underline
-         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
-         cf.bUnderlineType = CFU_UNDERLINEWAVE;
-         cf.bUnderlineColor = 0x02;     //Undocumented underline colour
-         cf.crTextColor = RGB(255,0,0);
-
-         // Underline all errors
-         for (const auto& err : parser.Errors)
-         {
-            FormatToken(LineIndex(err.Line-1), err, cf);
-            Console << err.Line << L": " << Cons::Yellow << err.Message << Cons::White << L" : " << err.Text << ENDL;
-         }
-
-         // Raise 'Compile Complete'
-         CompileComplete.Raise();
-      }
-      catch (std::exception& e) 
-      { 
-         Console.Log(HERE, e); 
-      }
-
-      // UnFreeze window
-      FreezeWindow(false);
-      SuspendUndo(false);
+      // Scroll
+      __super::OnHScroll(nSBCode, nPos, pScrollBar);
    }
-
 
    /// <summary>Closes the suggestion when focus lost</summary>
    /// <param name="pNewWnd">New window.</param>
    void RichEditEx::OnKillFocus(CWnd* pNewWnd)
    {
-      try
-      {
-         // Deactivate tooltip
-         Tooltip.Activate(FALSE);  
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e); 
-      }
+      // Deactivate tooltip
+      Tooltip.Activate(FALSE);  
 
-      CRichEditCtrl::OnKillFocus(pNewWnd);
+      // Kill focus
+      __super::OnKillFocus(pNewWnd);
    }
    
    
@@ -514,7 +467,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
          break;
       }
    }
-
+   
+   /// <summary>Supply tooltip data</summary>
+   /// <param name="data">The data.</param>
+   void RichEditEx::OnRequestTooltip(ScriptEditTooltip::TooltipData* data)
+   {
+      // None: show nothing
+      *data = ScriptEditTooltip::NoTooltip;
+   }
    
    /// <summary>Enable tooltip.</summary>
    /// <param name="pOldWnd">The old WND.</param>
@@ -529,28 +489,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Performs syntax colouring on the current line</summary>
    void RichEditEx::OnTextChange()
    {
-      // Update current line
-      UpdateHighlighting(-1, -1);
-
       // Reset tooltip
       Tooltip.Reset();
+   }
+
+   /// <summary>Reset the tooltip</summary>
+   void RichEditEx::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   {
+      // Reset tooltip
+      Tooltip.Reset();
+
+      // Scroll
+      __super::OnVScroll(nSBCode, nPos, pScrollBar);
    }
    
    /// <summary>Pastes text from clipboard.</summary>
    /// <param name="nClipFormat">The clipboard format.</param>
    void  RichEditEx::PasteFormat(UINT nClipFormat)
    {
-      auto prevLine = LineFromChar(-1);
-
       // Paste
       if (CanPaste(nClipFormat))
          PasteSpecial(nClipFormat);
-
-      // DEBUG:
-      //Console << "inital line=" << prevLine << " newLine=" << LineFromChar(-1) << ENDL;
-
-      // Highlight pasted text
-      UpdateHighlighting(prevLine, LineFromChar(-1));
    }
 
    /// <summary>Scrolls window to the position of a character</summary>
@@ -562,63 +521,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       LineScroll(diff.y, diff.x);
    }
    
-   /// <summary>Updates the highlighting.</summary>
-   /// <param name="first">first zero-based line number</param>
-   /// <param name="last">last zero-based line number.</param>
-   void RichEditEx::UpdateHighlighting(int first, int last)
-   {
-      // Freeze window
-      SuspendUndo(true);
-      FreezeWindow(true);
-
-      try 
-      {
-         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
-         
-         // Caret:
-         if (first == -1)
-            first = last = LineFromChar(-1);
-
-         // Format lines
-         for (int i = first; i <= last; i++)
-         {
-            UINT offset = LineIndex(i);
-
-            // Lex current line
-            CommandLexer lex(GetLineText(i));
-
-            // Format tokens
-            for (const auto& tok : lex.Tokens)
-            {
-               // Set colour
-               switch (tok.Type)
-               {
-               case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
-               case TokenType::Label:        cf.crTextColor = RGB(255,0,255);    break;
-               case TokenType::Null:
-               case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
-               case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;
-               case TokenType::Number:  
-               case TokenType::String:       cf.crTextColor = RGB(255,0,0);      break;
-               case TokenType::ScriptObject: cf.crTextColor = RGB(255,255,0);    break;
-               case TokenType::GameObject:   cf.crTextColor = RGB(0,255,255);    break;
-               default:                      cf.crTextColor = RGB(255,255,255);  break;
-               }
-
-               // Set format
-               FormatToken(offset, tok, cf);
-            }
-         }
-      }
-      catch (ExceptionBase& e) { 
-         Console.Log(HERE, e); 
-      }
-
-      // Restore selection
-      FreezeWindow(false);
-      SuspendUndo(false);
-   }
-
    // ------------------------------- PRIVATE METHODS ------------------------------
    
 
