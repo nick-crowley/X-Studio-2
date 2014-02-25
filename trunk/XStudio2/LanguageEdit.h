@@ -24,6 +24,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_DYNAMIC(LanguageEdit)
       DECLARE_MESSAGE_MAP()
 
+   protected:
+      const static wregex   MatchComplexTag,
+                            MatchSimpleTag,
+                            MatchSubString,
+                            MatchVariable;
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
@@ -40,10 +46,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       void  DisplayString();
+      void  HighlightMatch(UINT pos, UINT length, CharFormat& cf);
       void  UpdateHighlighting();
 
-      
-      //afx_msg void OnQueryEditMode(CCmdUI* pCmd);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       virtual void OnTextChange();
       

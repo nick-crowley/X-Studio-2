@@ -7,14 +7,55 @@
 NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- CONSTANTS ----------------------------------
+   
+   /// <summary>Matches an opening tag with up to four properties</summary>
+   const wregex LanguageEdit::MatchComplexTag
+   (
+      L"\\[" 
+      L"(article|declare|rank|select|text|var)" 
+      L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?"  // Apostrophes or inverted commas
+      L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?" 
+      L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?" 
+      L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?" 
+      L"\\s?/?"  // Possibly self closing
+      L"\\]"
+   );   
 
+   /// <summary>Matches an opening tag without properties or a closing tag</summary>
+   const wregex LanguageEdit::MatchSimpleTag
+   (
+      L"\\[/?" // Possibly closing
+      L"(b|i|u|left|right|center|justify" 
+      L"|article|author|title|text|select" 
+      L"|black|blue|cyan|green|orange|magenta|red|silver|white|yellow)"
+      L"\\]"
+   );
+
+   /// <summary>Matches an substring reference</summary>
+   const wregex LanguageEdit::MatchSubString
+   (
+      L"\\{"
+      L"\\d+" 
+      L"(,\\d+)?" 
+      L"\\}"
+   );
+
+   /// <summary>Matches a mission director variable</summary>
+   const wregex LanguageEdit::MatchVariable
+   (
+      L"\\{"
+      L"[a-z\\.]+" 
+      L"@" 
+      L"[_ \\w\\d\\.]+" 
+      L"\\}"
+   );
+   
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNAMIC(LanguageEdit, RichEditEx)
 
    BEGIN_MESSAGE_MAP(LanguageEdit, RichEditEx)
       ON_CONTROL_REFLECT(EN_CHANGE, &LanguageEdit::OnTextChange)
-      //ON_UPDATE_COMMAND_UI_REFLECT(&LanguageEdit::OnQueryEditMode)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -127,6 +168,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return String != nullptr;
    }
    
+   /// <summary>Highlights the match.</summary>
+   /// <param name="pos">position.</param>
+   /// <param name="length">length or -1 for entire text.</param>
+   /// <param name="cf">formatting.</param>
+   void  LanguageEdit::HighlightMatch(UINT pos, UINT length, CharFormat& cf)
+   {
+      SetSel(pos, (length != -1 ? pos + length : -1));
+      SetSelectionCharFormat(cf);
+   }
+
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
    void LanguageEdit::OnRequestTooltip(CustomTooltip::TooltipData* data)
@@ -134,18 +185,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // None: show nothing
       *data = CustomTooltip::NoTooltip;
    }
-   
-   /// <summary>Called when query edit mode.</summary>
-   /// <param name="pCmd">The command.</param>
-   /*void LanguageEdit::OnQueryEditMode(CCmdUI* pCmd)
-   {
-      switch (pCmd->m_nID)
-      {
-      case ID_VIEW_SOURCE:    pCmd->Enable(Mode != EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    pCmd->Enable(Mode != EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   pCmd->Enable(Mode != EditMode::Display);  break;
-      }
-   }*/
 
    /// <summary>Performs syntax colouring on the current line</summary>
    void LanguageEdit::OnTextChange()
@@ -161,58 +200,61 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Updates the highlighting.</summary>
    void  LanguageEdit::UpdateHighlighting()
    {
-      static const COLORREF Tag = RGB(255,174,207), Property = RGB(255,174,89);
+      static const COLORREF Tag = RGB(255,174,207),         // Pale Pink
+                            Property = RGB(255,174,89),     // Pale Orange
+                            SubString = RGB(152,220,235),   // Pale Blue
+                            Variable = RGB(152,235,156);    // Pale Green
+
+      // Freeze
       SuspendUndo(true);
       FreezeWindow(true);
 
       try
       {
          CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
+         auto text = GetAllText();
 
          // Clear formatting
-         SetSel(0, -1);
          cf.crTextColor = RGB(255,255,255);
-         SetSelectionCharFormat(cf);
+         HighlightMatch(0, -1, cf);
 
-         // Prepare highlighting
-         auto text = GetAllText();
-         cf.crTextColor = Tag;
-         
          // Highlight simple opening/closing tags
-         wregex MatchTag(L"\\[/?(b|i|u|left|right|center|justify|" L"author|title|text|select|" L"black|blue|cyan|green|orange|magenta|red|silver|white|yellow)\\]");
-         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchTag), end; it != end; ++it)
-         {
-            SetSel(it->position(), it->position() + it->length());
-            SetSelectionCharFormat(cf);
-         }
-
-         // TestText: [text]blurb[/text] [text cols="4"]blurb[/text] [text cols="4" colwidth="232"]blurb[/text] [text cols="4" colwidth="232" colspacing="100"]blurb[/text] [select value="uninstall"]Uninstall FCC[/select]
+         cf.crTextColor = Tag;
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchSimpleTag), end; it != end; ++it)
+            HighlightMatch(it->position(), it->length(), cf);
 
          // Highlight tags with properties
-         wregex MatchComplexTag(L"\\[" L"(select|text)" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?"  L"\\]");
          for (wsregex_iterator it(text.cbegin(), text.cend(), MatchComplexTag), end; it != end; ++it)
          {
             // Highlight entire tag
             cf.crTextColor = Tag;
-            SetSel(it->position(0), it->position(0) + it->length(0));
-            SetSelectionCharFormat(cf);
+            HighlightMatch(it->position(0), it->length(0), cf);
 
-            // Highlight {properties,value} pairs
+            // Highlight up to four {properties,value} pairs
             cf.crTextColor = Property;
-            for (int i = 2; i <= 6 && it->_At(i).matched; i+=2)
-            {
-               SetSel(it->position(i), it->position(i) + it->length(i));
-               SetSelectionCharFormat(cf);
-            }
+            for (UINT i = 2; (i <= 8) && (i < it->max_size()) && (it->_At(i).matched); i+=2)
+               HighlightMatch(it->position(i), it->length(i), cf);
          }
+
+         // Highlight substrings
+         cf.crTextColor = SubString;
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchSubString), end; it != end; ++it)
+            HighlightMatch(it->position(), it->length(), cf);
+
+         // Highlight variables
+         cf.crTextColor = Variable;
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchVariable), end; it != end; ++it)
+            HighlightMatch(it->position(), it->length(), cf);
       }
       catch (regex_error& e) {
          Console.Log(HERE, RegularExpressionException(HERE, e));
       }
 
+      // UnFreeze
       FreezeWindow(false);
       SuspendUndo(false);
    }
+
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
