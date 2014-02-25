@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnQueryEditMode)
+      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandEditMode)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -95,6 +96,18 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
+   
+   /// <summary>Changes the edit mode.</summary>
+   /// <param name="nID">The command identifier.</param>
+   void LanguageEditView::OnCommandEditMode(UINT nID)
+   {
+      switch (nID)
+      {
+      case ID_VIEW_SOURCE:    RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
+      case ID_VIEW_EDITOR:    RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:   RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
+      }
+   }
 
    /// <summary>Creates the toolbar</summary>
    /// <param name="lpCreateStruct">The create structure.</param>

@@ -42,8 +42,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  DisplayString();
       void  UpdateHighlighting();
 
-      afx_msg void OnCommandEditMode(UINT nID);
-      afx_msg void OnQueryEditMode(CCmdUI* pCmd);
+      
+      //afx_msg void OnQueryEditMode(CCmdUI* pCmd);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       virtual void OnTextChange();
       

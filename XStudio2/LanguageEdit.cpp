@@ -14,8 +14,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    BEGIN_MESSAGE_MAP(LanguageEdit, RichEditEx)
       ON_CONTROL_REFLECT(EN_CHANGE, &LanguageEdit::OnTextChange)
-      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEdit::OnCommandEditMode)
-      ON_UPDATE_COMMAND_UI_REFLECT(&LanguageEdit::OnQueryEditMode)
+      //ON_UPDATE_COMMAND_UI_REFLECT(&LanguageEdit::OnQueryEditMode)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -43,18 +42,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="m">mode.</param>
    void  LanguageEdit::SetEditMode(EditMode m)
    {
-      // Change mode + redisplay   
-      Mode = m;
-      DisplayString();
+      auto prev = GetEditMode();
+
+      try
+      {
+         // Change mode + redisplay   
+         Mode = m;
+         DisplayString();
+      }
+      // Error: Revert mode
+      catch (ExceptionBase& e) {
+         Mode = prev;
+         theApp.ShowError(HERE, e, L"Unable to change edit mode");
+         DisplayString();
+      }
    }
 
    /// <summary>Sets the string.</summary>
    /// <param name="str">The string.</param>
    void  LanguageEdit::SetString(LanguageString* str)
    {
-      // Change string + redisplay
-      String = str;
-      DisplayString();
+      auto prev = String;
+
+      try
+      {
+         // Change string + redisplay
+         String = str;
+         DisplayString();
+      }
+      // Error: Revert string
+      catch (ExceptionBase& e) {
+         String = prev;
+         theApp.ShowError(HERE, e, L"Unable to display string");
+         DisplayString();
+      }
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -66,7 +87,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // Empty:
          if (!HasString())
-            return;
+            Clear();
 
          // Edit:
          else if (Mode == EditMode::Edit)
@@ -89,12 +110,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             Clear();
             SetWindowText(String->Text.c_str());
+            UpdateHighlighting();
          }
       }
-      // Error: Clear string and contents
+      // Error: Clear contents
       catch (ExceptionBase& ) {
          Clear();
-         String = nullptr;
          throw;
       }
    }
@@ -106,18 +127,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return String != nullptr;
    }
    
-   /// <summary>Changes the edit mode.</summary>
-   /// <param name="nID">The command identifier.</param>
-   void LanguageEdit::OnCommandEditMode(UINT nID)
-   {
-      switch (nID)
-      {
-      case ID_VIEW_SOURCE:    SetEditMode(EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    SetEditMode(EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   SetEditMode(EditMode::Display);  break;
-      }
-   }
-
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
    void LanguageEdit::OnRequestTooltip(CustomTooltip::TooltipData* data)
@@ -128,7 +137,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Called when query edit mode.</summary>
    /// <param name="pCmd">The command.</param>
-   void LanguageEdit::OnQueryEditMode(CCmdUI* pCmd)
+   /*void LanguageEdit::OnQueryEditMode(CCmdUI* pCmd)
    {
       switch (pCmd->m_nID)
       {
@@ -136,13 +145,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case ID_VIEW_EDITOR:    pCmd->Enable(Mode != EditMode::Edit);     break;
       case ID_VIEW_DISPLAY:   pCmd->Enable(Mode != EditMode::Display);  break;
       }
-   }
+   }*/
 
    /// <summary>Performs syntax colouring on the current line</summary>
    void LanguageEdit::OnTextChange()
    {
       // Perform highlighting
-      UpdateHighlighting();
+      if (GetEditMode() == EditMode::Source)
+         UpdateHighlighting();
 
       // Reset tootlip
       __super::OnTextChange();
@@ -157,12 +167,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
+         wsmatch match;
 
          // Clear formatting
          SetSel(0, -1);
          SetSelectionCharFormat(cf);
 
+         // Setup 
+         auto text = GetAllText();
+         cf.crTextColor = RGB(255,0,0);
+         
          // Highlight code...
+         wregex MatchTag(L"\\[/?b|i|u|left|right|center|text|black|blue|cyan|green|orange|magenta|white|yellow\\]");
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchTag), end; it != end; ++it)
+         {
+            SetSel(it->position(), it->position() + it->length());
+            SetSelectionCharFormat(cf);
+         }
       }
       catch (regex_error& e) {
          Console.Log(HERE, RegularExpressionException(HERE, e));
