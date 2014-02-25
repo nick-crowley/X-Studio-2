@@ -2,7 +2,7 @@
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
 
-/// <summary>User interface</summary>
+/// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
    // --------------------------------- CONSTANTS ----------------------------------

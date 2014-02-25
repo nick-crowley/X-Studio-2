@@ -2,6 +2,7 @@
 
 #include "afxcmn.h"
 #include "ToolBarEx.h"
+#include "LanguageEdit.h"
 #include "LanguageDocument.h"
 #include "LanguageStringView.h"
 
@@ -17,52 +18,41 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
-	   LanguageEditView();           // protected constructor used by dynamic creation
+	   LanguageEditView();           
+   public:
 	   virtual ~LanguageEditView();
 
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNCREATE(LanguageEditView)
-   protected:
       DECLARE_MESSAGE_MAP()
 
+   protected:
       static const COLORREF  MessageBackground = RGB(22,31,46);
 
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif   
-      LanguageDocument* GetDocument() const;
+      LanguageDocument*   GetDocument() const;
       LanguageStringView* GetStringView() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      
-      void onStringSelectionChanged();
+      void DoDataExchange(CDataExchange* pDX) override;   
 
-      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support   
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       virtual void OnInitialUpdate();
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
-      
+      handler void onStringSelectionChanged();
+
       // -------------------- REPRESENTATION ---------------------
    protected:
       SelectionChangedHandler  fnStringSelectionChanged;
-      CRichEditCtrl            RichEdit;
+      LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
-   public:
-      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
    };
-
-   #ifndef _DEBUG  
-   inline LanguageDocument* LanguageEditView::GetDocument() const
-      { return reinterpret_cast<LanguageDocument*>(m_pDocument); }
-   #endif
 
 
 NAMESPACE_END2(GUI,Views)

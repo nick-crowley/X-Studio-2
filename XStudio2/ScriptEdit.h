@@ -10,7 +10,7 @@
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 
-/// <summary>User interface</summary>
+/// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
    
