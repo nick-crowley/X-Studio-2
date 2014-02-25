@@ -4,6 +4,7 @@
 #include <tom.h> 
 #include "Helpers.h"
 #include "ScriptEditTooltip.h"
+#include "Logic/ScriptToken.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -60,7 +61,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CHARRANGE GetSelection() const;
       bool      HasSelection() const;
       int       LineLength(int nChar = -1) const;
-      void      PasteFormat(UINT nClipFormat);
 
    protected:
       CPoint     GetCursorLocation() const;
@@ -74,8 +74,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       bool   Replace(MatchData& m);
       bool   EnsureVisible(int line);
       void   Initialize(COLORREF bk);
-      BOOL   PreTranslateMessage(MSG* pMsg) override;
-      void   SetRtf(const string& rtf);
+      virtual void   PasteFormat(UINT nClipFormat);
+      virtual BOOL   PreTranslateMessage(MSG* pMsg) override;
+      virtual void   SetRtf(const string& rtf);
       void   SuspendUndo(bool suspend);
 
    protected:
@@ -83,13 +84,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   FreezeWindow(bool freeze, bool invalidate = true);
       void   SelectLine(int line = -1);
       void   SetScrollCoordinates(const CPoint& pt);
-      void   UpdateHighlighting(int first, int last);
       
+      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnRequestTooltip(ScriptEditTooltip::TooltipData* data);
+      virtual void OnRequestTooltip(ScriptEditTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
-      afx_msg void OnTextChange();
+      virtual void OnTextChange();
+      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
       
       // -------------------- REPRESENTATION ---------------------
    public:

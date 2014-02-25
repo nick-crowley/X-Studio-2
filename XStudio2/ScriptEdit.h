@@ -1,8 +1,5 @@
 #pragma once
-#include <richole.h>
-#include <Richedit.h>
-#include <tom.h> 
-#include "Helpers.h"
+#include "RichEditEx.h"
 #include "SuggestionList.h"
 #include "ScriptEditTooltip.h"
 #include "ScriptDocument.h"
@@ -17,42 +14,17 @@ FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 NAMESPACE_BEGIN2(GUI,Controls)
 
    
-   /// <summary>Get undo operation name</summary>
-   const wchar* GetString(UNDONAMEID id);
-
-
    /// <summary>Script editing control</summary>
-   class ScriptEdit : public CRichEditCtrl
+   class ScriptEdit : public RichEditEx
    {
+   protected:
       friend class SuggestionList;
+      class LineTextIterator;
 
       // ------------------------ TYPES --------------------------
-   private:
-      /// <summary>RichEdit COM interface</summary>
-      _COM_SMARTPTR_TYPEDEF(IRichEditOle, IID_IRichEditOle);
-
-      /// <summary>TOM COM interface</summary>
-      typedef TOM::ITextDocumentPtr  TextDocument;
-      typedef TOM::ITextRangePtr     TextRange;
-
-      /// <summary>Records state of text selection, view position, event mask</summary>
-      class DisplayState
-      {
-      public:
-         DisplayState() : Selection({0,0}), EventMask(NULL)
-         {}
-         DisplayState(CHARRANGE sel, DWORD mask, CPoint pos) : Selection(sel), EventMask(mask), ScrollPos(pos)
-         {}
-         CHARRANGE Selection;
-         DWORD     EventMask;
-         CPoint    ScrollPos;
-      };
-
+   protected:
       /// <summary>Defines whether suggestions visible</summary>
       enum class InputState : UINT { Normal, Suggestions };
-
-   private:
-      class LineTextIterator;
 
       /// <summary>Device context containing same font as ScriptEdit</summary>
       class FontDC : public CClientDC
@@ -499,51 +471,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
       static const wchar*  GetString(Suggestion& s);
 
-   private:
+   protected:
       static const UINT    COMPILE_TIMER;
 
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
-   public:
-      bool      FindNext(UINT start, MatchData& m) const;
-      wstring   GetAllText() const;
-      int       GetCaretIndex() const;
-      POINT     GetCaretLocation() const;
-      int       GetLineLength(int line = -1) const;
-      wstring   GetLineText(int line) const;
-      GuiString GetLineTextEx(int line) const;
-      LineArray GetLines() const;
-      CHARRANGE GetSelection() const;
-      bool      HasSelection() const;
-      int       LineLength(int nChar = -1) const;
-      void      PasteFormat(UINT nClipFormat);
+      void      PasteFormat(UINT nClipFormat) override;
 
    protected:
-      CPoint     GetCursorLocation() const;
-      int        GetLineEnd(int line = -1) const;
-      int        GetLineStart(int line = -1) const;
-      CPoint     GetScrollCoordinates() const;
-      void       GroupUndo(bool start);
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
       
       // ----------------------- MUTATORS ------------------------
    public:
-      bool   Replace(MatchData& m);
       void   CommentSelection();
-      bool   EnsureVisible(int line);
       void   IndentSelection(bool indent);
       void   Initialize(ScriptDocument* doc);
-      BOOL   PreTranslateMessage(MSG* pMsg) override;
-      void   SetRtf(const string& rtf);
-      void   SuspendUndo(bool suspend);
+      void   SetRtf(const string& rtf) override;
 
    protected:
       LineTextIterator begin(int line = 0);
@@ -552,12 +499,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       LineTextIterator send();
 
       void   CloseSuggestions();
-      void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
-      void   FreezeWindow(bool freeze, bool invalidate = true);
       void   InsertSuggestion();
       void   RefreshGutter();
-      void   SelectLine(int line = -1);
-      void   SetScrollCoordinates(const CPoint& pt);
       void   SetCompilerTimer(bool set);
       void   SetGutterWidth(UINT twips);
       void   ShowSuggestions();
@@ -575,9 +518,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnRequestTooltip(ScriptEditTooltip::TooltipData* data);
-      afx_msg void OnSetFocus(CWnd* pOldWnd);
-      afx_msg void OnTextChange();
+      handler void OnRequestTooltip(ScriptEditTooltip::TooltipData* data) override;
+      afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	  
@@ -585,16 +527,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
       SimpleEvent     CompileComplete;
 
-   private:
-      DisplayState    PrevState;
+   protected:
       InputState      State;
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
-      TextDocument    TomDocument;
-
-      ScriptEditTooltip     Tooltip;
-      TooltipEvent::Handler fnShowTooltip;
 };
    
 
