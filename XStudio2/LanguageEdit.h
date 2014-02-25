@@ -26,6 +26,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       const static wregex   MatchComplexTag,
+                            MatchColourCode,
                             MatchSimpleTag,
                             MatchSubString,
                             MatchVariable;

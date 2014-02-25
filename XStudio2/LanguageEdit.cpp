@@ -21,6 +21,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       L"\\]"
    );   
 
+   /// <summary>Matches a unix style colour code</summary>
+   const wregex LanguageEdit::MatchColourCode
+   (
+      L"(\\\\033A|\\\\033B|\\\\033C|\\\\033G|\\\\033O|\\\\033M|\\\\033R|\\\\033W|\\\\033X|\\\\033Y|\\\\033Z|\\\\053)" 
+   );
+
    /// <summary>Matches an opening tag without properties or a closing tag</summary>
    const wregex LanguageEdit::MatchSimpleTag
    (
@@ -87,6 +93,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
+         // Skip if already set
+         if (m == prev)
+            return;
+
          // Change mode + redisplay   
          Mode = m;
          DisplayString();
@@ -248,6 +258,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
             for (UINT i = 2; (i <= 8) && (i < it->max_size()) && (it->_At(i).matched); i+=2)
                HighlightMatch(it->position(i), it->length(i), cf);
          }
+
+         // Highlight colour codes
+         cf.crTextColor = Tag;
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchColourCode), end; it != end; ++it)
+            HighlightMatch(it->position(), it->length(), cf);
 
          // Highlight substrings
          cf.crTextColor = SubString;
