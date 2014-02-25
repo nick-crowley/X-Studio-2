@@ -161,28 +161,49 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Updates the highlighting.</summary>
    void  LanguageEdit::UpdateHighlighting()
    {
+      static const COLORREF Tag = RGB(255,174,207), Property = RGB(255,174,89);
       SuspendUndo(true);
       FreezeWindow(true);
 
       try
       {
          CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
-         wsmatch match;
 
          // Clear formatting
          SetSel(0, -1);
+         cf.crTextColor = RGB(255,255,255);
          SetSelectionCharFormat(cf);
 
-         // Setup 
+         // Prepare highlighting
          auto text = GetAllText();
-         cf.crTextColor = RGB(255,0,0);
+         cf.crTextColor = Tag;
          
-         // Highlight code...
-         wregex MatchTag(L"\\[/?b|i|u|left|right|center|text|black|blue|cyan|green|orange|magenta|white|yellow\\]");
+         // Highlight simple opening/closing tags
+         wregex MatchTag(L"\\[/?(b|i|u|left|right|center|justify|" L"author|title|text|select|" L"black|blue|cyan|green|orange|magenta|red|silver|white|yellow)\\]");
          for (wsregex_iterator it(text.cbegin(), text.cend(), MatchTag), end; it != end; ++it)
          {
             SetSel(it->position(), it->position() + it->length());
             SetSelectionCharFormat(cf);
+         }
+
+         // TestText: [text]blurb[/text] [text cols="4"]blurb[/text] [text cols="4" colwidth="232"]blurb[/text] [text cols="4" colwidth="232" colspacing="100"]blurb[/text] [select value="uninstall"]Uninstall FCC[/select]
+
+         // Highlight tags with properties
+         wregex MatchComplexTag(L"\\[" L"(select|text)" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?" L"(\\s+(value|cols|colwidth|colspacing)=[\"\'][^\"\']*[\"\'])?"  L"\\]");
+         for (wsregex_iterator it(text.cbegin(), text.cend(), MatchComplexTag), end; it != end; ++it)
+         {
+            // Highlight entire tag
+            cf.crTextColor = Tag;
+            SetSel(it->position(0), it->position(0) + it->length(0));
+            SetSelectionCharFormat(cf);
+
+            // Highlight {properties,value} pairs
+            cf.crTextColor = Property;
+            for (int i = 2; i <= 6 && it->_At(i).matched; i+=2)
+            {
+               SetSel(it->position(i), it->position(i) + it->length(i));
+               SetSelectionCharFormat(cf);
+            }
          }
       }
       catch (regex_error& e) {

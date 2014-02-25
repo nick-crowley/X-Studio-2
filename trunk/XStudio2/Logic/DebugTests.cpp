@@ -33,6 +33,7 @@ namespace Logic
    void  DebugTests::RunAll()
    {
       //Test_LanguageFileReader();
+      Test_LanguageEditRegEx();
       //Test_CatalogReader();
       //Test_GZip();
       //Test_FileSystem();
@@ -56,7 +57,7 @@ namespace Logic
 
       //Test_ScriptCompiler();
       
-      Test_StringParser();
+      //Test_StringParser();
       //Test_StringParserRegEx();
 
       //Test_DescriptionReader();
@@ -475,6 +476,85 @@ namespace Logic
          CString sz;
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
+      }
+   }
+
+   void  DebugTests::Test_LanguageEditRegEx()
+   {
+      try
+      {
+         // Init
+         //wstring text = L"[author][green]Factory Complex Constructor[/green][/author]\\n[title]System report[/title]step: [right]%sm.[/right]Rotation [select value=\"dereg\"]Reset Hotkeys[/select] [select value=\"uninstall\"]Uninstall FCC[/select]";
+         //
+         //// Highlight simple tags    // select/text/ranking
+         //wregex MatchTag(L"\\[/?(b|i|u|left|right|center|" L"author|title|text|select|" L"black|blue|cyan|green|orange|magenta|white|yellow)\\]");
+         //Console << "Searching text: " << Cons::Yellow << text << ENDL;
+
+         //for (wsregex_iterator it(text.cbegin(), text.cend(), MatchTag), end; it != end; ++it)
+         //{
+         //   Console << "Matched: " << it->str().c_str() << ENDL;
+         //   for (auto m : *it)
+         //      Console << (m.matched ? Cons::Green : Cons::Red) << "  SubMatch: " << m.str().c_str() << ENDL;
+         //}
+
+
+         // source
+         wstring text2 = L"[text]blurb[/text]\n"                                                // no properties
+                         L"[text cols=\"4\"]blurb[/text]\n"                                     // one property
+                         L"[text cols=\"4\" colwidth=\"232\"]blurb[/text]\n"                    // two properties
+                         L"[text cols=\"4\" colwidth=\"232\" colspacing=\"100\"]blurb[/text]\n" // three properties
+                         L"[select value=\"uninstall\"]Uninstall FCC[/select]";
+
+         // Highlight tags with properties
+         wregex MatchComplexTag(L"\\[" L"(select|text|rank)(\\s+(value|cols|colwidth|colspacing)=\"[^\"]*\")*"  L"\\]");
+         Console << "Searching text: " << Cons::Yellow << text2 << ENDL;
+
+         // Using iterator: Only returns the last property matched
+         for (wsregex_iterator it(text2.cbegin(), text2.cend(), MatchComplexTag), end; it != end; ++it)
+         {
+            Console << "Matched: " << it->str().c_str() << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  SubMatch: " << m.str() << ENDL;
+         }
+
+
+
+         // Highlight tags with properties
+         wregex MatchComplexTag2(L"\\[" L"(select|text|rank)(\\s+(value|cols|colwidth|colspacing)=\"[^\"]*\")?(\\s+(value|cols|colwidth|colspacing)=\"[^\"]*\")?(\\s+(value|cols|colwidth|colspacing)=\"[^\"]*\")?"  L"\\]");
+         Console << "Searching text: " << Cons::Yellow << text2 << ENDL;
+
+         // Using iterator: Only returns the last property matched
+         for (wsregex_iterator it(text2.cbegin(), text2.cend(), MatchComplexTag2), end; it != end; ++it)
+         {
+            Console << "Matched: " << it->str().c_str() << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  SubMatch: " << m.str() << ENDL;
+         }
+
+
+
+         // Highlight tags with properties using values between inverted commas or apostrophes
+         wstring text3 = L"[text]blurb[/text]\n"                        // no properties
+                         L"[text cols=\'4\']blurb[/text]\n"             // apostrophes
+                         L"[text cols=\"4\"]blurb[/text]\n"             // inverted commas
+                         L"[text cols=\"4\']blurb[/text]\n"             // mismatched
+                         L"[text cols=\'4\"]blurb[/text]\n"             // mismatched
+                         L"[text cols=\"4\" colwidth=\"232\"]blurb[/text]\n"     // two properties
+                         L"[text cols=\"4\" colwidth=\"232\" colspacing=\"100\"]blurb[/text]\n";      // three properties
+
+         wregex MatchComplexTag3(L"\\[" L"(select|text|rank)" L"(\\s+(value|cols|colwidth|colspacing)=([\"\'][^\"\']*[\"\']))?" L"(\\s+(value|cols|colwidth|colspacing)=([\"\'][^\"\']*[\"\']))?" L"(\\s+(value|cols|colwidth|colspacing)=([\"\'][^\"\']*[\"\']))?"  L"\\]");
+         Console << "Searching text: " << Cons::Yellow << text2 << ENDL;
+
+         // Using iterator: Only returns the last property matched
+         for (wsregex_iterator it(text3.cbegin(), text3.cend(), MatchComplexTag3), end; it != end; ++it)
+         {
+            Console << "Matched: " << it->str().c_str() << ENDL;
+            for (auto m : *it)
+               Console << (m.matched ? Cons::Green : Cons::Red) << "  SubMatch: " << m.str() << ENDL;
+         }
+      }
+      catch (regex_error& e) {
+         Console.Log(HERE, RegularExpressionException(HERE, e));
       }
    }
    

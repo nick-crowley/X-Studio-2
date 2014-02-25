@@ -24,6 +24,7 @@ namespace Logic
       static void  BatchTest_ScriptCompiler();
       static void  Test_CommandSyntax();
       static void  Test_LanguageFileReader();
+      static void  Test_LanguageEditRegEx();
       static void  Test_TFileReader();
       static void  Test_CatalogReader();
       static void  Test_ExpressionParser();
