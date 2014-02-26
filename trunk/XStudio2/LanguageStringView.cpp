@@ -148,11 +148,15 @@ NAMESPACE_BEGIN2(GUI,Views)
 
             // Re-Populate strings
             GetListCtrl().SetRedraw(FALSE);
-            for (const auto& pair : page->Strings)
+            for (auto& pair : page->Strings)
             {
-               const LanguageString& str = pair.second;
+               LanguageString& str = pair.second;
 
-               // Add item. set Text
+               // First display: Identify colour tags 
+               if (str.TagType == ColourTag::Undetermined)
+                  str.IdentifyColourTags();
+
+               // Add item, resolve and set Text
                GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
                GetListCtrl().SetItemText(item, 1, str.ResolvedText.c_str());
             }
