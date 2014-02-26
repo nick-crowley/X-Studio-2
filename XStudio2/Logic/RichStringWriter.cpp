@@ -52,7 +52,6 @@ namespace Logic
          throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
       }*/
 
-
       /// <summary>Converts RGB to language tag.</summary>
       /// <param name="c">colour</param>
       /// <returns></returns>
@@ -85,15 +84,43 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Invalid tag</exception>
       wstring  RichStringWriter::GetTagString(TagType t)
       {
-         const wchar* str[] = { L"b", L"u", L"i", L"left", L"right", L"center", L"justify", L"text", L"select", L"author", 
-                                L"title", L"rank",L"black", L"blue", L"cyan", L"green", L"magenta", L"orange", L"red", L"silver", L"yellow", 
-                                L"white", L"default", L"unrecognised"  };
+         const wchar* str[] = { L"b", L"u", L"i", 
+                                L"left", L"right", L"center", L"justify", 
+                                L"text", L"select", L"author", L"title", L"rank", 
+                                L"black", L"blue", L"cyan", L"green", L"grey", L"magenta", L"orange", L"red", L"silver", L"yellow", L"white", 
+                                L"default", L"unrecognised" };
 
          // Validate
-         if ((UINT)t < (UINT)TagType::Bold || (UINT)t >= (UINT)TagType::Default)
-            throw ArgumentException(HERE, L"t", GuiString(L"Tag %d has no string representation", t));
+         if ((UINT)t > (UINT)TagType::Unrecognised)
+            throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised Tag id=%d", t));
+         else if ((UINT)t >= (UINT)TagType::Default)
+            throw ArgumentException(HERE, L"t", GuiString(L"Tag type '%s' has no string representation", GetString(t).c_str()));
 
          return str[(UINT)t];
+      }
+      
+      /// <summary>Converts colour tag to unix colour code.</summary>
+      /// <param name="t">tag</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Not a colour tag</exception>
+      const wchar* RichStringWriter::GetUnixCode(TagType t)
+      {
+         switch (t)
+         {
+         case TagType::Silver:   return L"\\033A";   //Silver
+         case TagType::Blue:     return L"\\033B";   //Blue
+         case TagType::Cyan:     return L"\\033C";   //Cyan
+         case TagType::Green:    return L"\\033G";   //Green
+         case TagType::Orange:   return L"\\033O";   //Orange
+         case TagType::Magenta:  return L"\\033M";   //Magenta
+         case TagType::Red:      return L"\\033R";   //Red
+         case TagType::White:    return L"\\033W";   //White
+         case TagType::Default:  return L"\\033X";   //Default
+         case TagType::Yellow:   return L"\\033Y";   //Yellow
+         case TagType::Black:    return L"\\033Z";   //Black
+         }
+
+         throw ArgumentException(HERE, L"t", GuiString(L"'%s' has no associated colour code", GetString(t).c_str()));
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -107,7 +134,7 @@ namespace Logic
       {
          try
          {
-            if (!InputLength)
+            if (InputLength > 0)
             {
                TextRangePtr thisChar = Input->Range(0, 1),
                             prevChar(thisChar->Duplicate);
@@ -255,7 +282,36 @@ namespace Logic
       /// <param name="open">Whether opening or closing</param>
       void  RichStringWriter::WriteTag(TagType t, bool open)
       {
-         Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
+         switch (t)
+         {
+         // Default: Has no named representation
+         case TagType::Default:
+            if (ColourTags == ColourTag::Unix)
+               Output += GetUnixCode(t);
+            break;
+
+         case TagType::Black:
+         case TagType::Blue:
+         case TagType::Cyan:
+         case TagType::Green:
+         case TagType::Magenta:
+         case TagType::Orange:
+         case TagType::Red:
+         case TagType::Silver:
+         case TagType::Yellow:
+         case TagType::White:
+            // Named: Output normally
+            if (ColourTags == ColourTag::Message)
+               Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
+            else  
+               // UNIX: Use unix codes and /033X instead of a closing tag
+               Output += GetUnixCode(open ? t : TagType::Default);
+            break;
+
+         // Formatting/Paragraph: Output normally
+         default:
+            Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
+         }  
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------

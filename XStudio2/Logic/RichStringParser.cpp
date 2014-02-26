@@ -110,6 +110,10 @@ namespace Logic
       {
          const wchar* str[] = { L"Character", L"Paragraph", L"Colour", L"Special" };
 
+         // Validate
+         if ((UINT)c > (UINT)TagClass::Special)
+            throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised tag class %d", c));
+
          return str[(UINT)c];
       }
       
@@ -123,6 +127,10 @@ namespace Logic
                                 L"Text", L"Select", L"Author", L"Title", L"Rank",
                                 L"Black", L"Blue", L"Cyan", L"Green", L"Grey", L"Magenta", L"Orange", L"Red", L"Silver", L"Yellow", L"White", 
                                 L"Default", L"Unrecognised"  };
+
+         // Validate
+         if ((UINT)t >= (UINT)TagType::Unrecognised)
+            throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised tag type %d", t));
 
          return str[(UINT)t];
       }

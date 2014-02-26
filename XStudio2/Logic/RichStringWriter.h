@@ -214,6 +214,7 @@ namespace Logic
       public:
          static TagType  FromRGB(COLORREF c);
          static wstring  GetTagString(TagType t);
+         static LPCWSTR  GetUnixCode(TagType t);
 
          // --------------------- PROPERTIES ------------------------
       protected:
