@@ -86,7 +86,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(true);
 
       // Clear
-      __super::Clear();
+      //__super::Clear();
+      SetWindowText(L"");
       SetDefaultCharFormat(DefaultCharFormat());
       
       // Reset Undo
@@ -128,7 +129,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Document = doc;
 
       // Initially disable
-      EnableWindow(FALSE);
+      SetReadOnly(TRUE);
 
       // Initialize
       __super::Initialize(MessageBackground);
@@ -142,7 +143,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       REQUIRED(Document);  // Ensure initialized
 
       // Disable when no string selected
-      EnableWindow(Document->SelectedString ? TRUE : FALSE);
+      SetReadOnly(!Document->SelectedString ? TRUE : FALSE);
 
       // Nothing: Clear text
       if (!Document->SelectedString)
