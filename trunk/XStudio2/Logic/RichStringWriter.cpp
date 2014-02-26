@@ -13,7 +13,7 @@ namespace Logic
       /// <param name="doc">The document.</param>
       /// <param name="tags">Type of colour tags to use</param>
       /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
-      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), TagType(tags)
+      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), ColourTags(tags)
       {
          REQUIRED(doc);
       }
@@ -83,6 +83,59 @@ namespace Logic
          }
       }
 
+
+      void  RichStringWriter::OnFormattingLost(TagList lost)
+      {
+         TagList unchanged;
+         
+         // Close all open tags until all lost formatting has been closed
+         while (!lost.empty())
+         {
+            // Close tag
+            auto tag = Stack.Pop();
+            WriteTag(t, false);
+
+            // Remove/preserve tag
+            if (tag == lost.front())
+               lost.pop_front();
+            else
+               unchanged.push_back(t);
+         }
+
+         // Re-open tags whoose formatting was unchanged
+         for (TagType t : unchanged)
+            WriteTag(t, true);
+      }
+
+      void  RichStringWriter::OnFormattingGained(const TagList& gained)
+      {
+         // Open tags
+         for (TagType t : gained)
+            WriteTag(t, true);
+      }
+
+      void  RichStringWriter::OnParagraphOpened(CharState s)
+      {
+         // TODO: Open all tags in 's'.  Add them to stack.
+      }
+
+      void  RichStringWriter::OnParagraphClosed(CharState s)
+      {
+         // Close all tags
+         for (TagType t : Stack)
+            switch (t)
+            {
+            case TagType::Bold:       Output += L"[/b]";  break;
+            case TagType::Italic:     Output += L"[/i]";  break;
+            case TagType::Underline:  Output += L"[/u]";  break;
+            }
+         
+         // TODO: Close para
+
+         Stack.clear();
+      }
+
+
       /// <summary>Writes a character.</summary>
       /// <param name="chr">character.</param>
       /// <param name="prev">previous character.</param>
@@ -95,7 +148,7 @@ namespace Logic
          TextFontPtr  curFont = chr->Font, 
                       prevFont = prev->Font;
 
-//#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
+#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
 
          // Colour change
          //if (curFont->ForeColor != prevFont->ForeColor)

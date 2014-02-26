@@ -10,6 +10,13 @@ namespace Logic
    {
       // ------------------------ TYPES --------------------------
 
+      /// <summary>Defines available rich edit tags</summary>
+      enum class TagType { Bold, Underline, Italic, Left, Right, Centre, Justify, Text, Select, Author, Title, Rank,
+                           Black, Blue, Cyan, Green, Magenta, Orange, Red, Silver, Yellow, White,
+                           Unrecognised };
+
+      wstring   GetString(TagType t);
+
       // ------------------------ CLASSES ------------------------
 
       /// <summary>Rich-text parser</summary>
@@ -25,11 +32,6 @@ namespace Logic
 
          /// <summary>List of {name,value} property pairs for a rich-text tag</summary>
          typedef list<Property>  PropertyList;
-
-         /// <summary>Defines available rich edit tags</summary>
-         enum class TagType { Bold, Underline, Italic, Left, Right, Centre, Justify, Text, Select, Author, Title, Rank,
-                              Black, Blue, Cyan, Green, Magenta, Orange, Red, Silver, Yellow, White,
-                              Unrecognised };
 
          /// <summary>Groups tags by category</summary>
          enum class TagClass { Character, Paragraph, Colour, Special };
@@ -199,7 +201,6 @@ namespace Logic
 
          static Alignment GetAlignment(TagType t);
          static TagClass  GetClass(TagType t);
-         static wstring   GetString(TagType t);
          static wstring   GetString(TagClass t);
          static TagType   IdentifyTag(const wstring& name);
 

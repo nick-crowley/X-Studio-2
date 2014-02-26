@@ -116,7 +116,7 @@ namespace Logic
       /// <summary>Convert tag type to string</summary>
       /// <param name="t">tag type.</param>
       /// <returns></returns>
-      wstring  RichStringParser::GetString(TagType t)
+      wstring  GetString(TagType t)
       {
          const wchar* str[] = { L"Bold", L"Underline", L"Italic", L"Left", L"Right", L"Centre", L"Justify", L"Text", L"Select", L"Author", 
                                 L"Title", L"Rank",L"Black", L"Blue", L"Cyan", L"Green", L"Magenta", L"Orange", L"Red", L"Silver", L"Yellow", 
