@@ -42,31 +42,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
-   /// <summary>Gets the language page view</summary>
-   /// <returns></returns>
-   /// <exception cref="Logic::GenericException">View not found</exception>
-   LanguagePageView*  LanguageStringView::GetPageView() const
-   {
-      // Iterate thru views
-      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
-      {
-         LanguagePageView* pView = dynamic_cast<LanguagePageView*>(GetDocument()->GetNextView(pos));
-         if (pView != nullptr)
-            return pView;
-      }   
-
-      throw GenericException(HERE, L"Cannot find page View");
-   }
-
-   /// <summary>Gets the currently selected string.</summary>
-   /// <returns>Selected string if any, otherwise nullptr</returns>
-   /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
-   LanguageString*   LanguageStringView::GetSelected() const
-   {
-      int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetPageView()->GetSelected()->Strings.FindByIndex(item) : nullptr;
-   }
-   
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Arrange controls</summary>
@@ -83,7 +58,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
    }
    
-
+   /// <summary>Retrieves the language string representing the current selection.</summary>
+   /// <returns>Selected string if any, otherwise nullptr</returns>
+   /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
+   LanguageString*   LanguageStringView::GetSelected() const
+   {
+      int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
+      return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
+   }
+   
    /// <summary>Custom draw the strings</summary>
    /// <param name="pNMHDR">header.</param>
    /// <param name="pResult">result.</param>
@@ -99,19 +82,26 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CListView::OnInitialUpdate();
 
-      // Icons
-      Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
+      try
+      {
+         // Icons
+         Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
 	   
-      // Setup listView
-      GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
-      GetListCtrl().SetView(LV_VIEW_DETAILS);
-      GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
-      GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
-      GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
-      GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
+         // Setup listView
+         GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
+         GetListCtrl().SetView(LV_VIEW_DETAILS);
+         GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
+         GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
+         GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
+         GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
-      // Listen for PageClicked
-      fnPageSelectionChanged = GetPageView()->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+         // Listen for PageClicked
+         auto pageView = GetDocument()->GetView<LanguagePageView>();
+         fnPageSelectionChanged = pageView->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
    
    /// <summary>Raise the STRING SELECTION CHANGED event</summary>
@@ -121,14 +111,20 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
       
-      // Selection (not focus) has changed
-      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+      try
       {
-         // Update document
-         GetDocument()->SelectedString = GetSelected();
+         // Selection (not focus) has changed
+         if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+         {
+            // Update document
+            GetDocument()->SelectedString = GetSelected();
 
-         // Raise SELECTION CHANGED
-         SelectionChanged.Raise();
+            // Raise SELECTION CHANGED
+            SelectionChanged.Raise();
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
       }
 
       *pResult = 0;
@@ -180,7 +176,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
-
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    /// <summary>Custom draws the text column</summary>

@@ -45,22 +45,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
 
-   /// <summary>Gets the language string view</summary>
-   /// <returns></returns>
-   /// <exception cref="Logic::GenericException">View not found</exception>
-   LanguageStringView*  LanguageEditView::GetStringView() const
-   {
-      // Iterate thru views
-      for (POSITION pos = GetDocument()->GetFirstViewPosition(); pos != NULL; )
-      {
-         auto pView = dynamic_cast<LanguageStringView*>(GetDocument()->GetNextView(pos));
-         if (pView != nullptr)
-            return pView;
-      }   
-
-      throw GenericException(HERE, L"Cannot find language string View");
-   }
-
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Arrange controls</summary>
@@ -136,11 +120,18 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CFormView::OnInitialUpdate();
 
-      // Listen for string SelectionChanged
-      fnStringSelectionChanged = GetStringView()->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
+      try
+      {
+         // Listen for string SelectionChanged
+         auto strView = GetDocument()->GetView<LanguageStringView>();
+         fnStringSelectionChanged = strView->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
       
-      // Init RichEdit
-      RichEdit.Initialize(GetDocument());
+         // Init RichEdit
+         RichEdit.Initialize(GetDocument());
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
    
    /// <summary>Called when query edit mode.</summary>

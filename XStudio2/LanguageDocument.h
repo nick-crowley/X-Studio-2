@@ -28,7 +28,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
-      
    public:
       LanguageDocument();
 	   virtual ~LanguageDocument();
@@ -46,6 +45,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       LanguagePage*   GetSelectedPage() const;
       LanguageString* GetSelectedString() const;
+
+      /// <summary>Gets any language view</summary>
+      /// <typeparam name="VIEW">View type</typeparam>
+      /// <returns></returns>
+      /// <exception cref="Logic::AlgorithmException">View not found</exception>
+      template<typename VIEW>
+      VIEW* GetView() const
+      {
+         // Iterate thru views
+         for (POSITION pos = GetFirstViewPosition(); pos != NULL; )
+            if (VIEW* v = dynamic_cast<VIEW*>(GetNextView(pos)))
+               return v;
+
+         // Error: Not found
+         throw AlgorithmException(HERE, L"Cannot find desired View");
+      }
 
       // ----------------------- MUTATORS ------------------------
    public:

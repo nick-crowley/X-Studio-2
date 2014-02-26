@@ -31,7 +31,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ---------------------- ACCESSORS ------------------------			
    public:
       LanguageDocument*   GetDocument() const;
-      LanguageStringView* GetStringView() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
