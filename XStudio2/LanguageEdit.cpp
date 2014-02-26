@@ -217,7 +217,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // TODO: Write author/title/text tags etc.
 
       // Get content
-      wstring content = RichStringWriter(TextDocument).Write();
+      wstring content = RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
 
       return content;
    }

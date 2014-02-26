@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Common.h"
+#include "LanguagePage.h"
 
 namespace Logic
 {
@@ -16,7 +16,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         RichStringWriter(TextDocumentPtr& doc);
+         RichStringWriter(TextDocumentPtr& doc, ColourTag tags);
          virtual ~RichStringWriter();
 
          DEFAULT_COPY(RichStringWriter);	// Default copy semantics
@@ -42,6 +42,7 @@ namespace Logic
       protected:
          TextDocumentPtr Input;
          wstring         Output;
+         ColourTag       TagType;
       };
 
    }

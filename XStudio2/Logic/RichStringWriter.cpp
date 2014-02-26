@@ -8,7 +8,11 @@ namespace Logic
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      RichStringWriter::RichStringWriter(TextDocumentPtr& doc) : Input(doc)
+      /// <summary>Creates a rich text source code writer for a TOM text document</summary>
+      /// <param name="doc">The document.</param>
+      /// <param name="tags">Type of colour tags to use</param>
+      /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
+      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), TagType(tags)
       {
          REQUIRED(doc);
       }
@@ -22,7 +26,7 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Writes this instance.</summary>
+      /// <summary>Generates richText source code for the input document</summary>
       /// <returns></returns>
       wstring  RichStringWriter::Write()
       {
