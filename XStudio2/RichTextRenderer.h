@@ -20,14 +20,54 @@ namespace GUI
          /// <summary>List of phrases</summary>   
          typedef list<RichPhrase>  PhraseList;
 
+         /// <summary>Phrase list iterator</summary>   
          typedef PhraseList::iterator  PhraseIterator;
+         
+         /// <summary>Collection of recently used fonts, used for optimizing drawing</summary>   
+         class FontMap : public map<UINT, FontPtr>
+         {
+         public:
+            FontMap()
+            {}
+
+            /// <summary>Check whether map contains a font of given formatting</summary>
+            /// <param name="f">Formatting</param>
+            /// <returns></returns>
+            bool Contains(UINT f)
+            {
+               return find(f) != end();
+            }
+         };
+
+         /// <summary>Line rectangle</summary>   
+         class LineRect : public CRect
+         {
+         public:
+            /// <summary>Creates a line rectangle</summary>
+            /// <param name="page">Total drawing area.</param>
+            /// <param name="lineHeight">Height of a line.</param>
+            LineRect(const CRect& page, int lineHeight)
+               : CRect(page.left, page.top, page.right, page.top+lineHeight), LineHeight(lineHeight)
+            {}
+
+            /// <summary>Advances rectangle to the next line.</summary>
+            /// <returns>New line rectangle</returns>
+            const CRect& Advance()
+            {
+               OffsetRect(0, LineHeight);
+               return *this;
+            }
+
+         private:
+            int  LineHeight;
+         };
 
          /// <summary>Block of text with contiguous formatting</summary>   
          class RichPhrase
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false), Rect(0,0,0,0)
+            RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false), Rect(0,0,0,0), Font(nullptr)
             {
                Text.push_back(ch.Char);
             }
@@ -133,30 +173,12 @@ namespace GUI
 
             // -------------------- REPRESENTATION ---------------------
          public:
-            wstring Text;
-            UINT    Format;
-            Colour  Colour;
-            CRect   Rect;
-            bool    Skip;
-            FontPtr Font;
-         };
-
-         /// <summary>Line rectangle</summary>   
-         class LineRect : public CRect
-         {
-         public:
-            LineRect(const CRect& page, int lineHeight) 
-               : CRect(page.left, page.top, page.right, page.top+lineHeight), LineHeight(lineHeight)
-            {}
-
-            const CRect& Advance()
-            {
-               OffsetRect(0, LineHeight);
-               return *this;
-            }
-
-         private:
-            int  LineHeight;
+            wstring Text;        // Text
+            UINT    Format;      // Character formatting
+            Colour  Colour;      // Colour
+            CRect   Rect;        // Rendering rectangle
+            bool    Skip;        // Whether to skip rendering of this token  [whitespace at start of line]
+            FontPtr Font;        // Font used for rendering
          };
 
          // --------------------- CONSTRUCTION ----------------------

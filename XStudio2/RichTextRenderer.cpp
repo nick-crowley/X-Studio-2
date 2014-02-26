@@ -20,7 +20,6 @@ namespace GUI
 
       // ---------------------------- PUBLIC STATIC METHODS ---------------------------
 
-      
       /// <summary>Draw rich text in a single line</summary>
       /// <param name="dc">dc.</param>
       /// <param name="line">line rect</param>
@@ -28,8 +27,9 @@ namespace GUI
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
       void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str)
       {
+         FontMap Fonts;
          LOGFONT fontData;
-         CFont* oldFont;
+         CFont*  oldFont;
 
          // Get original font properties
          oldFont = dc->GetCurrentFont();
@@ -39,9 +39,12 @@ namespace GUI
          // Draw phrases
          for (auto& p : GetPhrases(str))
          {
+            // Create font if necessary
+            if (Fonts.Contains(p.Format))
+               Fonts[p.Format] = p.GetFont(fontData);
+
             // Select approprate font
-            auto font = p.GetFont(fontData);
-            dc->SelectObject(font.get());
+            dc->SelectObject(Fonts[p.Format].get());
             
             // Set colour
             dc->SetTextColor(p.GetColour(true));
@@ -58,6 +61,7 @@ namespace GUI
                break;
          }
       }
+
       /// <summary>Draw multiple lines of rich text</summary>
       /// <param name="dc">dc.</param>
       /// <param name="rect">drawing rectangle</param>
