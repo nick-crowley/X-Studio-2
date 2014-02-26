@@ -29,7 +29,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
-      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnQueryEditMode)
       ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandEditMode)
    END_MESSAGE_MAP()
    
@@ -43,6 +42,22 @@ NAMESPACE_BEGIN2(GUI,Views)
 #else
       return reinterpret_cast<LanguageDocument*>(m_pDocument);
 #endif
+   }
+   
+   /// <summary>Called when query edit mode.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd) const
+   {
+      // Disable if no string displayed
+      pCmd->Enable(RichEdit.IsWindowEnabled());
+
+      // Check correct state
+      switch (pCmd->m_nID)
+      {
+      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+      }
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -134,22 +149,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
    
-   /// <summary>Called when query edit mode.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd)
-   {
-      // Disable if no string displayed
-      pCmd->Enable(RichEdit.IsWindowEnabled());
-
-      // Check correct state
-      switch (pCmd->m_nID)
-      {
-      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
-      }
-   }
-
    /// <summary>Re-creates toolbar</summary>
    /// <param name="uFlags">The flags.</param>
    /// <param name="lpszSection">The section.</param>

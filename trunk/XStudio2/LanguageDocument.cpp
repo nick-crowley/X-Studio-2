@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "LanguageDocument.h"
 #include "LanguageFrame.h"
+#include "LanguageEditView.h"
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
 #include "Logic/FileIdentifier.h"
@@ -43,6 +44,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageDocument::OnQueryEditMode)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -127,6 +129,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
+
+   
+   /// <summary>Query state of editor mode commands.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageDocument::OnQueryEditMode(CCmdUI* pCmd)
+   {
+      // Delegate to edit view
+      GetView<LanguageEditView>()->OnQueryEditMode(pCmd);
+   }
+
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
