@@ -49,14 +49,21 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnQueryModeCommand(CCmdUI* pCmd) const
    {
       // Disable if no string displayed
-      pCmd->Enable(RichEdit.IsWindowEnabled());
-
-      // Check correct state
-      switch (pCmd->m_nID)
+      if (RichEdit.IsReadOnly())
       {
-      case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-      case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-      case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+         pCmd->Enable(FALSE);
+         pCmd->SetCheck(FALSE);
+      }
+      else
+      {
+         // Check correct state
+         pCmd->Enable();
+         switch (pCmd->m_nID)
+         {
+         case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+         case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+         case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+         }
       }
    }
 
@@ -65,8 +72,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnQueryFormatCommand(CCmdUI* pCmd) const
    {
       // Disable if no string displayed
-      if (!RichEdit.IsWindowEnabled())
+      if (RichEdit.IsReadOnly())
+      {
          pCmd->Enable(FALSE);
+         pCmd->SetCheck(FALSE);
+      }
       else
       {
          CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);

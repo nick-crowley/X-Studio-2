@@ -55,6 +55,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       LineArray GetLines() const;
       CHARRANGE GetSelection() const;
       bool      HasSelection() const;
+      bool      IsReadOnly() const;
       int       LineLength(int nChar = -1) const;
 
    protected:

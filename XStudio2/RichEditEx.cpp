@@ -196,7 +196,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       auto sel = GetSelection();
       return sel.cpMin != sel.cpMax;
    }
-   
+
+   /// <summary>Query whether set to read-only.</summary>
+   /// <returns></returns>
+   bool RichEditEx::IsReadOnly() const
+   {
+      return (GetOptions() & ECO_READONLY) != 0;
+   }
 
    /// <summary>Gets the length of the line by character index.</summary>
    /// <param name="nChar">The zero-based character index, or -1 for current line</param>
@@ -492,7 +498,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       switch (pProtected->msg)
       {
       case WM_PASTE:
-         PasteFormat(CF_UNICODETEXT);
+         // Manually invoke
+         if (!IsReadOnly())
+            PasteFormat(CF_UNICODETEXT);
+
          *pResult = BLOCK_INPUT;
          break;
 
@@ -542,7 +551,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void  RichEditEx::PasteFormat(UINT nClipFormat)
    {
       // Paste
-      if (CanPaste(nClipFormat))
+      if (CanPaste(nClipFormat) && !IsReadOnly())
          PasteSpecial(nClipFormat);
    }
 
