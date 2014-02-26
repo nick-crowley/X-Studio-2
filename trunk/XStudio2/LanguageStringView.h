@@ -40,7 +40,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ---------------------- ACCESSORS ------------------------			
    public:
       LanguageDocument* GetDocument() const;
-      LanguagePageView* GetPageView() const;
+
+   protected:
       LanguageString*   GetSelected() const;
 
       // ----------------------- MUTATORS ------------------------

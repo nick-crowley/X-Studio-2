@@ -86,30 +86,37 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       CListView::OnInitialUpdate();
 
-      // Icons
-      Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
-
-      // Setup listView
-      GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
-      GetListCtrl().SetView(LV_VIEW_DETAILS);
-      GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
-      GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
-      GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
-      GetListCtrl().EnableGroupView(TRUE);
-      GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
-
-      // Define groups
-      for (UINT i = (UINT)PageGroup::DATA; i <= (UINT)PageGroup::USER; ++i)
+      try
       {
-         LVGroup g(i, GuiString(i+IDS_FIRST_LANGUAGE_GROUP));
-         GetListCtrl().InsertGroup(i, &g);
-      }
+         // Icons
+         Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
 
-      // Populate pages
-      Populate();
+         // Setup listView
+         GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
+         GetListCtrl().SetView(LV_VIEW_DETAILS);
+         GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
+         GetListCtrl().InsertColumn(1, L"Title", LVCFMT_LEFT, 100, 1);
+         GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
+         GetListCtrl().EnableGroupView(TRUE);
+         GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
+
+         // Define groups
+         for (UINT i = (UINT)PageGroup::DATA; i <= (UINT)PageGroup::USER; ++i)
+         {
+            LVGroup g(i, GuiString(i+IDS_FIRST_LANGUAGE_GROUP));
+            GetListCtrl().InsertGroup(i, &g);
+         }
+
+         // Populate pages
+         Populate();
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
 
+   /// <summary>Populates this instance.</summary>
    void LanguagePageView::Populate()
    {
       // Generate static copy of string library
@@ -144,14 +151,20 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
       
-      // Selection (not focus) has changed
-      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+      try
       {
-         // Update document
-         GetDocument()->SelectedPage = GetSelected();
+         // Selection (not focus) has changed
+         if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
+         {
+            // Update document
+            GetDocument()->SelectedPage = GetSelected();
 
-         // Raise SELECTION CHANGED
-         SelectionChanged.Raise();
+            // Raise SELECTION CHANGED
+            SelectionChanged.Raise();
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
       }
 
       *pResult = 0;
