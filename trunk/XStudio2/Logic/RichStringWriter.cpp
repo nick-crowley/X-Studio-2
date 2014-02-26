@@ -25,6 +25,38 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get tag name from enum</summary>
+      /// <param name="t">tag type.</param>
+      /// <returns></returns>
+      wstring  RichStringWriter::GetTagString(TagType t)
+      {
+         const wchar* str[] = { L"b", L"u", L"i", L"left", L"right", L"center", L"justify", L"text", L"select", L"author", 
+                                L"title", L"rank",L"black", L"blue", L"cyan", L"green", L"magenta", L"orange", L"red", L"silver", L"yellow", 
+                                L"white", L"unrecognised"  };
+
+         return str[(UINT)t];
+      }
+
+      TagType  RichStringWriter::GetColourTag(COLORREF c)
+      {
+         switch (RtfStringWriter::FromRGB(c))
+         {
+         case Colour::Black:   return TagType::Black;
+         case Colour::Default: return TagType::Default;
+         case Colour::White:   return TagType::White;  
+         case Colour::Silver:  return TagType::Silver;
+
+         case Colour::Grey:    return TagType::Grey;
+         case Colour::Blue:    return TagType::Blue;
+         case Colour::Cyan:    return TagType::Cyan;
+         case Colour::Green:   return TagType::Green;
+         case Colour::Orange:  return TagType::Orange;
+         case Colour::Purple:  return TagType::Magenta;
+         case Colour::Red:     return TagType::Red;
+         case Colour::Yellow:  return TagType::Yellow;
+         }
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Generates richText source code for the input document</summary>
@@ -33,27 +65,53 @@ namespace Logic
       {
          try
          {
-            TextRangePtr chr = Input->Range(0, 1),
-                         prev = Input->Range(0, 1);
-
-            // Write initial state
-            WriteState(chr, true);
-
-            // Examine each character
-            for (int i = 1, end = Input->Range(0, 0)->EndOf(TOM::tomStory, 1); i < end; ++i)
+            if (!InputLength)
             {
-               // Advance character
-               chr->Move(TOM::tomCharacter, 1);
+               TextRangePtr thisChar = Input->Range(0, 1),
+                            prevChar(thisChar->Duplicate);
+               CharState    thisState(thisChar->Font, thisChar->Para),
+                            prevState(thisState);
 
-               // Write character
-               WriteChar(chr, prev);
+               // Open paragraph
+               OnParagraphOpened(thisState);
+               WriteChar(thisChar);
 
-               // Advance previous
-               prev->Move(TOM::tomCharacter, 1);
+               // Examine each character
+               for (int i = 1, end = InputLength; i < end; ++i)
+               {
+                  // Advance this
+                  thisChar->Move(TOM::tomCharacter, 1);
+                  thisState = CharState(thisChar->Font, thisChar->Para);
+
+                  // Paragraph change: Close open tags, Open new paragraph
+                  if (thisState.Alignment != prevState.Alignment)
+                  {
+                     OnParagraphClosed(prevState.Alignment);
+                     OnParagraphOpened(thisState);
+                  }
+                  else
+                  {
+                     // Formatting lost: Close tags
+                     if (thisState < prevState)
+                        OnFormattingLost(thisState - prevState);
+                     
+                     // Formatting gained: Open tags
+                     if (thisState > prevState)
+                        OnFormattingGained(prevState - thisState);
+                  }
+                  
+                  // Write character
+                  WriteChar(thisChar);
+
+                  // Re-sync prev 
+                  prevChar->Move(TOM::tomCharacter, 1);
+                  prevState = thisState;
+               }
+
+               // Close paragraph
+               OnParagraphClosed(thisState.Alignment);
             }
 
-            // Write Closing state
-            WriteState(chr, false);
             return Output;
          }
          catch (_com_error& e) {
@@ -63,28 +121,8 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       
-      /// <summary>Gets the colour of a character.</summary>
-      /// <param name="f">font data.</param>
-      /// <returns></returns>
-      Colour  RichStringWriter::GetColour(TextFontPtr& f)
-      {
-         return RtfStringWriter::FromRGB(f->ForeColor);
-      }
-
-      /// <summary>Writes the character.</summary>
-      /// <param name="ch">The ch.</param>
-      void  RichStringWriter::WriteChar(wchar ch)
-      {
-         switch (ch)
-         {
-         case '\r':  break;
-         case '\v':  Output += '\n';  break;
-         default:    Output += ch;    break;
-         }
-      }
-
-
-      void  RichStringWriter::OnFormattingLost(TagList lost)
+      
+      void  RichStringWriter::OnFormattingLost(TagList& lost)
       {
          TagList unchanged;
          
@@ -92,14 +130,14 @@ namespace Logic
          while (!lost.empty())
          {
             // Close tag
-            auto tag = Stack.Pop();
-            WriteTag(t, false);
+            auto tag = Formatting.Pop();
+            WriteTag(tag, false);
 
             // Remove/preserve tag
             if (tag == lost.front())
                lost.pop_front();
             else
-               unchanged.push_back(t);
+               unchanged.push_front(tag);
          }
 
          // Re-open tags whoose formatting was unchanged
@@ -111,135 +149,56 @@ namespace Logic
       {
          // Open tags
          for (TagType t : gained)
+         {
             WriteTag(t, true);
+            Formatting.Push(t);
+         }
       }
 
       void  RichStringWriter::OnParagraphOpened(CharState s)
       {
-         // TODO: Open all tags in 's'.  Add them to stack.
+         // Open paragraph
+         WriteTag(s.Alignment, true);
+
+         // Open tags (if any)
+         for (TagType t : s.FormatTags)
+         {
+            WriteTag(t, true);
+            Formatting.Push(t);
+         }
       }
 
-      void  RichStringWriter::OnParagraphClosed(CharState s)
+      void  RichStringWriter::OnParagraphClosed(TagType para)
       {
          // Close all tags
-         for (TagType t : Stack)
-            switch (t)
-            {
-            case TagType::Bold:       Output += L"[/b]";  break;
-            case TagType::Italic:     Output += L"[/i]";  break;
-            case TagType::Underline:  Output += L"[/u]";  break;
-            }
+         while (!Formatting.empty())
+            WriteTag(Formatting.Pop(), false);
          
-         // TODO: Close para
+         // Close paragraph
+         WriteTag(para, false);
 
-         Stack.clear();
+         // Clear stack
+         Formatting.clear();
       }
 
-
-      /// <summary>Writes a character.</summary>
-      /// <param name="chr">character.</param>
-      /// <param name="prev">previous character.</param>
-      void  RichStringWriter::WriteChar(TextRangePtr chr, TextRangePtr prev)
+      /// <summary>Writes the character.</summary>
+      /// <param name="chr">range</param>
+      void  RichStringWriter::WriteChar(TextRangePtr chr)
       {
-         REQUIRED(chr);
-         REQUIRED(prev);
-
-         // Get fonts
-         TextFontPtr  curFont = chr->Font, 
-                      prevFont = prev->Font;
-
-#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
-
-         // Colour change
-         //if (curFont->ForeColor != prevFont->ForeColor)
-         
-         // Existing character formatting
-         if (prevFont->Bold && !curFont->Bold)
-            Output += L"[\\b]";
-
-         if (prevFont->Italic && !curFont->Italic)
-            Output += L"[\\i]";
-
-         if (prevFont->Underline && !curFont->Underline)
-            Output += L"[\\u]";
-
-         // New Character formatting 
-         if (!prevFont->Bold && curFont->Bold)
-            Output += L"[b]";
-
-         if (!prevFont->Italic && curFont->Italic)
-            Output += L"[i]";
-
-         if (!prevFont->Underline && curFont->Underline)
-            Output += L"[u]";
-
-         // Paragraph alignment change
-         if (chr->Para->Alignment != prev->Para->Alignment)
+         switch (wchar ch = (wchar)chr->Char)
          {
-            // Close previous
-            switch (prev->Para->Alignment)
-            {
-            case TOM::tomAlignLeft:     Output += L"[/left]";     break;
-            case TOM::tomAlignCenter:   Output += L"[/center]";   break;
-            case TOM::tomAlignRight:    Output += L"[/right]";    break;
-            case TOM::tomAlignJustify:  Output += L"[/justify]";  break;
-            default:
-               throw AlgorithmException(HERE, GuiString(L"Unrecognised paragraph alignment: %d", prev->Para->Alignment));
-            }
-
-            // Open new
-            switch (chr->Para->Alignment)
-            {
-            case TOM::tomAlignLeft:     Output += L"[left]";     break;
-            case TOM::tomAlignCenter:   Output += L"[center]";   break;
-            case TOM::tomAlignRight:    Output += L"[right]";    break;
-            case TOM::tomAlignJustify:  Output += L"[justify]";  break;
-            default:
-               throw AlgorithmException(HERE, GuiString(L"Unrecognised paragraph alignment: %d", chr->Para->Alignment));
-            }
+         case '\r':  break;
+         case '\v':  Output += '\n';  break;
+         default:    Output += ch;    break;
          }
-
-         // Write character
-         WriteChar((wchar)chr->Char);
       }
 
-      /// <summary>Writes the first or last character.</summary>
-      /// <param name="chr">The character.</param>
-      /// <param name="open">whether opening or closing output.</param>
-      void  RichStringWriter::WriteState(TextRangePtr chr, bool open)
+      /// <summary>Writes the tag.</summary>
+      /// <param name="t">The t.</param>
+      /// <param name="open">The open.</param>
+      void  RichStringWriter::WriteTag(TagType t, bool open)
       {
-         REQUIRED(chr);
-
-         //
-         TextFontPtr font = chr->Font;
-         TextParaPtr para = chr->Para;
-
-         // Colour
-         /*if (GetColour(font) != Colour::Default)
-            WriteColour(GetColour(font), open);*/
-         
-         // Character formatting
-         if (font->Bold)
-            Output += (open ? L"[b]" : L"[/b]");
-         if (font->Italic)
-            Output += (open ? L"[i]" : L"[/i]");
-         if (font->Underline)
-            Output += (open ? L"[u]" : L"[/u]");
-
-         // Paragraph formatting
-         switch (para->Alignment)
-         {
-         case TOM::tomAlignLeft:     Output += (open ? L"[left]"    : L"[/left]");     break;
-         case TOM::tomAlignCenter:   Output += (open ? L"[center]"  : L"[/center]");   break;
-         case TOM::tomAlignRight:    Output += (open ? L"[right]"   : L"[/right]");    break;
-         case TOM::tomAlignJustify:  Output += (open ? L"[justify]" : L"[/justify]");  break;
-         default:
-            throw AlgorithmException(HERE, GuiString(L"Unrecognised paragraph alignment: %d", para->Alignment));
-         }
-
-         // Open: Write char
-         if (open)
-            WriteChar((wchar)chr->Char);
+         Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------

@@ -13,7 +13,17 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
       protected:
-         typedef list<TagType>  TagList;
+         class TagList : public list<TagType>
+         {
+         public:
+            TagList() {}
+
+            TagList& operator+=(TagType t)
+            {
+               push_back(t);
+               return *this;
+            }
+         };
 
          class TagStack : public list<TagType>
          {
@@ -42,23 +52,105 @@ namespace Logic
          class CharState
          {
          public:
-            CharState() {}
+            CharState(TextFontPtr f, TextParaPtr p) 
+            {
+               // Formatting
+               Bold      = f->Bold == TOM::tomTrue;
+               Italic    = f->Italic == TOM::tomTrue;
+               Underline = f->Underline == TOM::tomTrue;
+               
+               // Colour
+               Colour = RichStringWriter::GetColourTag(f->ForeColor);
 
-            bool operator==(const CharState& r)
+               // Alignment
+               switch (p->Alignment)
+               {
+               case TOM::tomAlignLeft:     Alignment = TagType::Left;     break;
+               case TOM::tomAlignCenter:   Alignment = TagType::Centre;   break;
+               case TOM::tomAlignRight:    Alignment = TagType::Right;    break;
+               case TOM::tomAlignJustify:  Alignment = TagType::Justify;  break;
+               }
+            }
+
+            PROPERTY_GET(TagList,FormatTags,GetFormatTags);
+
+            /// <summary>Gets all colour and formatting tags</summary>
+            /// <returns></returns>
+            TagList  GetFormatTags() const
+            {
+               TagList tags;
+
+               // Formatting
+               if (Bold)
+                  tags += TagType::Bold;
+               if (Italic)
+                  tags += TagType::Italic;
+               if (Underline)
+                  tags += TagType::Underline;
+
+               // Colour
+               tags += Colour;
+
+               return tags;
+            }
+
+            /// <summary>Compares formatting, colour and alignment.</summary>
+            /// <param name="r">The r.</param>
+            /// <returns></returns>
+            bool operator==(const CharState& r) const
             {
                return Bold==r.Bold && Italic==r.Italic && Underline==r.Underline && Colour==r.Colour && Alignment==r.Alignment;
             }
-            bool operator!=(const CharState& r)
+            bool operator!=(const CharState& r) const
             {
                return !operator==(r);
             }
 
+            /// <summary>Get whether another state has character formatting this instance does not</summary>
+            /// <param name="r">The r.</param>
+            /// <returns></returns>
+            bool operator<(const CharState& r) const
+            {
+               return r.Bold && !Bold || r.Italic && !Italic || r.Underline && !Underline || r.Colour != Colour;
+            }
+
+            /// <summary>Get whether this instance has formatting another state does not</summary>
+            /// <param name="r">The r.</param>
+            /// <returns></returns>
+            bool operator>(const CharState& r) const
+            {
+               return Bold && !r.Bold || Italic && !r.Italic || Underline && !r.Underline || Colour != r.Colour;
+            }
+
+            /// <summary>Get formatting in this instance not present in another</summary>
+            /// <param name="r">The r.</param>
+            /// <returns></returns>
+            TagList operator-(const CharState& r) const
+            {
+               TagList diff;
+
+               // Formatting
+               if (Bold && !r.Bold)
+                  diff += TagType::Bold;
+               if (Italic && !r.Italic)
+                  diff += TagType::Italic;
+               if (Underline && !r.Underline)
+                  diff += TagType::Underline;
+
+               // Colour
+               if (Colour != r.Colour)
+                  diff += Colour;
+
+               return diff;
+            }
+            
+
          public:
-            bool       Bold, 
-                       Italic, 
-                       Underline;
-            Colour     Colour;
-            Alignment  Alignment;
+            bool     Bold, 
+                     Italic, 
+                     Underline;
+            TagType  Colour;
+            TagType  Alignment;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -71,25 +163,32 @@ namespace Logic
          DEFAULT_MOVE(RichStringWriter);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
+      public:
+         static wstring  GetTagString(TagType t);
+         static TagType  GetColourTag(COLORREF c);
 
          // --------------------- PROPERTIES ------------------------
+      protected:
+         PROPERTY_GET(long,InputLength,GetInputLength);
 
          // ---------------------- ACCESSORS ------------------------			
+      protected:
+         long  GetInputLength() const
+         {
+            return Input->Range(0, 0)->EndOf(TOM::tomStory, 1);
+         }
 
          // ----------------------- MUTATORS ------------------------
       public:
          wstring  Write();
 
       protected:
-         void   OnFormattingLost(CharState prev, CharState chr);
-         void   OnFormattingGained(CharState prev, CharState chr);
+         void   OnFormattingLost(TagList& lost);
+         void   OnFormattingGained(const TagList& lost);
          void   OnParagraphOpened(CharState s);
-         void   OnParagraphClosed(CharState s);
-
-         Colour GetColour(TextFontPtr& f);
-         void   WriteChar(wchar ch);
-         void   WriteChar(TextRangePtr chr, TextRangePtr prev);
-         void   WriteState(TextRangePtr chr, bool open);
+         void   OnParagraphClosed(TagType para);
+         void   WriteTag(TagType t, bool open);
+         void   WriteChar(TextRangePtr chr);
 
          // -------------------- REPRESENTATION ---------------------
 
@@ -97,7 +196,7 @@ namespace Logic
          TextDocumentPtr Input;
          wstring         Output;
          ColourTag       ColourTags;
-         TagStack        Stack;
+         TagStack        Formatting;
       };
 
    }
