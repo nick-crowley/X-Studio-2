@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CustomTooltip.h"
 #include "RichTextRenderer.h"
-#include "Logic/StringParser.h"
+#include "Logic/RichStringParser.h"
 
 /// <summary>Print debugging stuff</summary>
 //#define PRINT_CONSOLE
@@ -90,8 +90,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Parse
       HasDescription = !data.DescriptionSource.empty();
-      Description = StringParser(data.DescriptionSource).Output;
-      Label       = StringParser(data.LabelSource).Output;
+      Description = RichStringParser(data.DescriptionSource).Output;
+      Label       = RichStringParser(data.LabelSource).Output;
       
       // DEBUG:
       //Console << Cons::Yellow << data.Description << ENDL << ENDL;

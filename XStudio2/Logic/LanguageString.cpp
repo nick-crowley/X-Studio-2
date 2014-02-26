@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LanguagePage.h"
 #include "StringResolver.h"
-#include "StringParser.h"
+#include "RichStringParser.h"
 #include "ParameterTypes.h"
 
 namespace Logic
@@ -48,7 +48,7 @@ namespace Logic
       /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
       RichString  LanguageString::GetRichText() const
       {
-         return StringParser(Text).Output;
+         return RichStringParser(Text).Output;
       }
       
       /// <summary>Identifies and sets the type of colour tags used by this string.</summary>

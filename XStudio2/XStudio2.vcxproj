@@ -175,7 +175,7 @@
     <ClInclude Include="Logic\ScriptObjectLibrary.h" />
     <ClInclude Include="Logic\MatchData.h" />
     <ClInclude Include="Logic\SearchWorker.h" />
-    <ClInclude Include="Logic\StringParser.h" />
+    <ClInclude Include="Logic\RichStringParser.h" />
     <ClInclude Include="Logic\StringResolver.h" />
     <ClInclude Include="Logic\TMissile.h" />
     <ClInclude Include="Logic\TShip.h" />
@@ -301,7 +301,7 @@
     <ClCompile Include="Logic\ScriptObjectLibrary.cpp" />
     <ClCompile Include="Logic\SearchWorker.cpp" />
     <ClCompile Include="Logic\SourceValueReader.cpp" />
-    <ClCompile Include="Logic\StringParser.cpp" />
+    <ClCompile Include="Logic\RichStringParser.cpp" />
     <ClCompile Include="Logic\StringResolver.cpp" />
     <ClCompile Include="Logic\SyntaxNode.cpp" />
     <ClCompile Include="Logic\TShipReader.cpp" />

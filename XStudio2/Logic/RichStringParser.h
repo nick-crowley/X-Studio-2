@@ -13,7 +13,7 @@ namespace Logic
       // ------------------------ CLASSES ------------------------
 
       /// <summary>Rich-text parser</summary>
-      class StringParser
+      class RichStringParser
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -182,11 +182,11 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         StringParser(const wstring& str);
-         virtual ~StringParser();
+         RichStringParser(const wstring& str);
+         virtual ~RichStringParser();
 
-         DEFAULT_COPY(StringParser);	// Default copy semantics
-         DEFAULT_MOVE(StringParser);	// Default move semantics
+         DEFAULT_COPY(RichStringParser);	// Default copy semantics
+         DEFAULT_MOVE(RichStringParser);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
       private:
