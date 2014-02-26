@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RichStringWriter.h"
+#include "RtfStringWriter.h"
 
 namespace Logic
 {
@@ -61,6 +62,14 @@ namespace Logic
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
+      
+      /// <summary>Gets the colour of a character.</summary>
+      /// <param name="f">font data.</param>
+      /// <returns></returns>
+      Colour  RichStringWriter::GetColour(TextFontPtr& f)
+      {
+         return RtfStringWriter::FromRGB(f->ForeColor);
+      }
 
       /// <summary>Writes the character.</summary>
       /// <param name="ch">The ch.</param>
@@ -85,22 +94,31 @@ namespace Logic
          // Get fonts
          TextFontPtr  curFont = chr->Font, 
                       prevFont = prev->Font;
+
+#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
+
+         // Colour change
+         //if (curFont->ForeColor != prevFont->ForeColor)
          
-         // Character formatting change
+         // Existing character formatting
+         if (prevFont->Bold && !curFont->Bold)
+            Output += L"[\\b]";
+
+         if (prevFont->Italic && !curFont->Italic)
+            Output += L"[\\i]";
+
+         if (prevFont->Underline && !curFont->Underline)
+            Output += L"[\\u]";
+
+         // New Character formatting 
          if (!prevFont->Bold && curFont->Bold)
             Output += L"[b]";
-         else if (prevFont->Bold && !curFont->Bold)
-            Output += L"[\\b]";
 
          if (!prevFont->Italic && curFont->Italic)
             Output += L"[i]";
-         else if (prevFont->Italic && !curFont->Italic)
-            Output += L"[\\i]";
 
          if (!prevFont->Underline && curFont->Underline)
             Output += L"[u]";
-         else if (prevFont->Underline && !curFont->Underline)
-            Output += L"[\\u]";
 
          // Paragraph alignment change
          if (chr->Para->Alignment != prev->Para->Alignment)
@@ -142,6 +160,10 @@ namespace Logic
          //
          TextFontPtr font = chr->Font;
          TextParaPtr para = chr->Para;
+
+         // Colour
+         if (GetColour(font) != Colour::Default)
+            WriteColour(GetColour(font), open);
          
          // Character formatting
          if (font->Bold)

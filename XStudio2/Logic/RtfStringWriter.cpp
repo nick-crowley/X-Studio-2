@@ -39,6 +39,32 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Convert RGB to colour enumeration</summary>
+      /// <param name="c">colour</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
+      Colour RtfStringWriter::FromRGB(COLORREF c)
+      {
+         switch (c)
+         {
+         case Black:          return Colour::Black;
+         /*case Default:        return Colour::Default;
+         case Silver:         return Colour::Silver;*/
+         case White:          return Colour::Default;
+
+         case Grey:           return Colour::Grey;
+         case Blue:           return Colour::Blue;
+         case Cyan:           return Colour::Cyan;
+         case Green:          return Colour::Green;
+         case Orange:         return Colour::Orange;
+         case Purple:         return Colour::Purple;
+         case Red:            return Colour::Red;
+         case Yellow:         return Colour::Yellow;
+         }
+
+         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
+      }
+
       /// <summary>Convert colour enumeration to RGB</summary>
       /// <param name="c">colour</param>
       /// <returns></returns>

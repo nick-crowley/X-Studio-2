@@ -33,9 +33,10 @@ namespace Logic
          wstring  Write();
 
       protected:
-         void  WriteChar(wchar ch);
-         void  WriteChar(TextRangePtr chr, TextRangePtr prev);
-         void  WriteState(TextRangePtr chr, bool open);
+         Colour GetColour(TextFontPtr& f);
+         void   WriteChar(wchar ch);
+         void   WriteChar(TextRangePtr chr, TextRangePtr prev);
+         void   WriteState(TextRangePtr chr, bool open);
 
          // -------------------- REPRESENTATION ---------------------
 
