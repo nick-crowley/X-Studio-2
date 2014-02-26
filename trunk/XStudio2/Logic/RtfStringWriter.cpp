@@ -13,24 +13,28 @@ namespace Logic
       RtfStringWriter::RtfStringWriter(string& out) : RtfWriter(out)
       {
          // Define colours
-         list<COLORREF> col;
-         col.push_back(Black);
-         col.push_back(Cyan);
-         col.push_back(Blue);
-         col.push_back(Green);
-         col.push_back(Grey);
-         col.push_back(Orange);
-         col.push_back(Purple);
-         col.push_back(Red);
-         col.push_back(Yellow);
-         col.push_back(White);
+         list<COLORREF> col = 
+         {
+            (COLORREF)LanguageColour::Default,
+            (COLORREF)LanguageColour::Black,
+            (COLORREF)LanguageColour::Cyan,
+            (COLORREF)LanguageColour::Blue,
+            (COLORREF)LanguageColour::Green,
+            (COLORREF)LanguageColour::Grey,
+            (COLORREF)LanguageColour::Orange,
+            (COLORREF)LanguageColour::Purple,
+            (COLORREF)LanguageColour::Red,
+            (COLORREF)LanguageColour::Silver,
+            (COLORREF)LanguageColour::Yellow,
+            (COLORREF)LanguageColour::White,
+         };
 
          // Init writer
          RtfWriter::Open(L"Arial", 10, col);
 
          // Set properties
          //RtfWriter::SetForeColour(White);
-         RtfWriter::SetBackColour(Black);
+         RtfWriter::SetBackColour((COLORREF)LanguageColour::Black);
       }
 
       RtfStringWriter::~RtfStringWriter()
@@ -38,32 +42,6 @@ namespace Logic
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
-
-      /// <summary>Convert RGB to colour enumeration</summary>
-      /// <param name="c">colour</param>
-      /// <returns></returns>
-      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
-      Colour RtfStringWriter::FromRGB(COLORREF c)
-      {
-         switch (c)
-         {
-         case Black:          return Colour::Black;
-         /*case Default:        return Colour::Default;
-         case Silver:         return Colour::Silver;*/
-         case White:          return Colour::Default;
-
-         case Grey:           return Colour::Grey;
-         case Blue:           return Colour::Blue;
-         case Cyan:           return Colour::Cyan;
-         case Green:          return Colour::Green;
-         case Orange:         return Colour::Orange;
-         case Purple:         return Colour::Purple;
-         case Red:            return Colour::Red;
-         case Yellow:         return Colour::Yellow;
-         }
-
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
-      }
 
       /// <summary>Convert colour enumeration to RGB</summary>
       /// <param name="c">colour</param>
@@ -73,19 +51,19 @@ namespace Logic
       {
          switch (c)
          {
-         case Colour::Black:   return Black;
-         case Colour::Default:
-         case Colour::White:   
-         case Colour::Silver:  return White;
+         case Colour::Black:   return (COLORREF)LanguageColour::Black;
+         case Colour::White:   return (COLORREF)LanguageColour::White;
+         case Colour::Default: return (COLORREF)LanguageColour::Default;
 
-         case Colour::Grey:    return Grey;
-         case Colour::Blue:    return Blue;
-         case Colour::Cyan:    return Cyan;
-         case Colour::Green:   return Green;
-         case Colour::Orange:  return Orange;
-         case Colour::Purple:  return Purple;
-         case Colour::Red:     return Red;
-         case Colour::Yellow:  return Yellow;
+         case Colour::Grey:    return (COLORREF)LanguageColour::Grey;
+         case Colour::Blue:    return (COLORREF)LanguageColour::Blue;
+         case Colour::Cyan:    return (COLORREF)LanguageColour::Cyan;
+         case Colour::Green:   return (COLORREF)LanguageColour::Green;
+         case Colour::Orange:  return (COLORREF)LanguageColour::Orange;
+         case Colour::Purple:  return (COLORREF)LanguageColour::Purple;
+         case Colour::Red:     return (COLORREF)LanguageColour::Red;
+         case Colour::Silver:  return (COLORREF)LanguageColour::Silver;
+         case Colour::Yellow:  return (COLORREF)LanguageColour::Yellow;
          }
 
          throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour enumeration: %d", c));

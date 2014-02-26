@@ -58,7 +58,7 @@ namespace Logic
          }
          
          // Not paragraph tag
-         throw ArgumentException(HERE, L"t", GuiString(L"Cannot get alignment for %s tag", GetString(t).c_str()));
+         throw ArgumentException(HERE, L"t", GuiString(L"Cannot get alignment for %s tag", ::GetString(t).c_str()));
       }
 
       /// <summary>Gets the class of a tag</summary>
@@ -100,7 +100,7 @@ namespace Logic
             return TagClass::Colour;
          }
 
-         throw ArgumentException(HERE, L"t", L"Unrecognised tags have no class");
+         throw ArgumentException(HERE, L"t", L"Default/Unrecognised tags have no class");
       }
 
       /// <summary>Convert tag class to string</summary>
@@ -118,9 +118,11 @@ namespace Logic
       /// <returns></returns>
       wstring  GetString(TagType t)
       {
-         const wchar* str[] = { L"Bold", L"Underline", L"Italic", L"Left", L"Right", L"Centre", L"Justify", L"Text", L"Select", L"Author", 
-                                L"Title", L"Rank",L"Black", L"Blue", L"Cyan", L"Green", L"Magenta", L"Orange", L"Red", L"Silver", L"Yellow", 
-                                L"White", L"Unrecognised"  };
+         const wchar* str[] = { L"Bold", L"Underline", L"Italic", 
+                                L"Left", L"Right", L"Centre", L"Justify", 
+                                L"Text", L"Select", L"Author", L"Title", L"Rank",
+                                L"Black", L"Blue", L"Cyan", L"Green", L"Grey", L"Magenta", L"Orange", L"Red", L"Silver", L"Yellow", L"White", 
+                                L"Default", L"Unrecognised"  };
 
          return str[(UINT)t];
       }
@@ -128,7 +130,7 @@ namespace Logic
       /// <summary>Identifies a tag type from it's name</summary>
       /// <param name="name">tag name WITHOUT square brackets</param>
       /// <returns></returns>
-      RichStringParser::TagType  RichStringParser::IdentifyTag(const wstring& name)
+      TagType  RichStringParser::IdentifyTag(const wstring& name)
       {
          switch (name.length())
          {
@@ -153,6 +155,8 @@ namespace Logic
                return TagType::Blue;
             else if (name == L"cyan")
                return TagType::Cyan;
+            else if (name == L"grey")
+               return TagType::Grey;
             else if (name == L"text")
                return TagType::Text;
             else if (name == L"rank")
@@ -324,7 +328,7 @@ namespace Logic
       {
          // Ensure tag is 'select'
          if (tag.Type != TagType::Select)
-            throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", GetString(tag.Type).c_str()) );
+            throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", ::GetString(tag.Type).c_str()) );
 
          // Recursively parse text  (To enable character/colour formatting)
          RichStringParser btn(tag.Text);
@@ -507,7 +511,7 @@ namespace Logic
       {
          // Ensure tag is 'text'
          if (tag.Type != TagType::Text)
-            throw InvalidOperationException(HERE, GuiString(L"Cannot extract column info from a '%s' tag", GetString(tag.Type).c_str()) );
+            throw InvalidOperationException(HERE, GuiString(L"Cannot extract column info from a '%s' tag", ::GetString(tag.Type).c_str()) );
 
          // Extract properties direct into output
          for (const Property& p : tag.Properties)

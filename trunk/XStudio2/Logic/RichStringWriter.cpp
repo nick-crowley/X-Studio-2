@@ -25,36 +25,75 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      
+      /// <summary>Convert RGB to colour enumeration</summary>
+      /// <param name="c">colour</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
+      /*Colour RichStringWriter::FromRGB(COLORREF c)
+      {
+         switch ((LanguageColour)c)
+         {
+         case LanguageColour::Black:          return Colour::Black;
+         case LanguageColour::Default:        return Colour::Default;
+         case LanguageColour::White:          return Colour::White;
+
+         case LanguageColour::Grey:           return Colour::Grey;
+         case LanguageColour::Blue:           return Colour::Blue;
+         case LanguageColour::Cyan:           return Colour::Cyan;
+         case LanguageColour::Green:          return Colour::Green;
+         case LanguageColour::Orange:         return Colour::Orange;
+         case LanguageColour::Purple:         return Colour::Purple;
+         case LanguageColour::Red:            return Colour::Red;
+         case LanguageColour::Silver:         return Colour::Silver;
+         case LanguageColour::Yellow:         return Colour::Yellow;
+         }
+
+         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
+      }*/
+
+
+      /// <summary>Converts RGB to language tag.</summary>
+      /// <param name="c">colour</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
+      TagType  RichStringWriter::FromRGB(COLORREF c)
+      {
+         switch ((LanguageColour)c)
+         {
+         case LanguageColour::Black:   return TagType::Black;
+         case LanguageColour::Default: return TagType::Default;
+         case LanguageColour::White:   return TagType::White;  
+         case LanguageColour::Silver:  return TagType::Silver;
+
+         case LanguageColour::Grey:    return TagType::Grey;
+         case LanguageColour::Blue:    return TagType::Blue;
+         case LanguageColour::Cyan:    return TagType::Cyan;
+         case LanguageColour::Green:   return TagType::Green;
+         case LanguageColour::Orange:  return TagType::Orange;
+         case LanguageColour::Purple:  return TagType::Magenta;
+         case LanguageColour::Red:     return TagType::Red;
+         case LanguageColour::Yellow:  return TagType::Yellow;
+         }
+
+         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
+      }
+      
       /// <summary>Get tag name from enum</summary>
       /// <param name="t">tag type.</param>
       /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Invalid tag</exception>
       wstring  RichStringWriter::GetTagString(TagType t)
       {
          const wchar* str[] = { L"b", L"u", L"i", L"left", L"right", L"center", L"justify", L"text", L"select", L"author", 
                                 L"title", L"rank",L"black", L"blue", L"cyan", L"green", L"magenta", L"orange", L"red", L"silver", L"yellow", 
-                                L"white", L"unrecognised"  };
+                                L"white", L"default", L"unrecognised"  };
+
+         // Validate
+         if ((UINT)t < (UINT)TagType::Bold || (UINT)t >= (UINT)TagType::Default)
+            throw ArgumentException(HERE, L"t", GuiString(L"Tag %d has no string representation", t));
 
          return str[(UINT)t];
-      }
-
-      TagType  RichStringWriter::GetColourTag(COLORREF c)
-      {
-         switch (RtfStringWriter::FromRGB(c))
-         {
-         case Colour::Black:   return TagType::Black;
-         case Colour::Default: return TagType::Default;
-         case Colour::White:   return TagType::White;  
-         case Colour::Silver:  return TagType::Silver;
-
-         case Colour::Grey:    return TagType::Grey;
-         case Colour::Blue:    return TagType::Blue;
-         case Colour::Cyan:    return TagType::Cyan;
-         case Colour::Green:   return TagType::Green;
-         case Colour::Orange:  return TagType::Orange;
-         case Colour::Purple:  return TagType::Magenta;
-         case Colour::Red:     return TagType::Red;
-         case Colour::Yellow:  return TagType::Yellow;
-         }
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -83,13 +122,14 @@ namespace Logic
                   thisChar->Move(TOM::tomCharacter, 1);
                   thisState = CharState(thisChar->Font, thisChar->Para);
 
-                  // Paragraph change: Close open tags, Open new paragraph
+                  // Paragraph change: Close open tags, Open new paragraph with same tags
                   if (thisState.Alignment != prevState.Alignment)
                   {
                      OnParagraphClosed(prevState.Alignment);
                      OnParagraphOpened(thisState);
                   }
-                  else
+                  // Format change: 
+                  else if (thisState != prevState)
                   {
                      // Formatting lost: Close tags
                      if (thisState < prevState)

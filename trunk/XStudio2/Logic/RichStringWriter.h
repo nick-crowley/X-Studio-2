@@ -13,11 +13,17 @@ namespace Logic
       {
          // ------------------------ TYPES --------------------------
       protected:
+         /// <summary>List of tags</summary>
          class TagList : public list<TagType>
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
-            TagList() {}
+            TagList()
+            {}
 
+            // ----------------------- MUTATORS ------------------------
+
+            /// <summary>Adds a tag to the back of the list</summary>
             TagList& operator+=(TagType t)
             {
                push_back(t);
@@ -25,34 +31,42 @@ namespace Logic
             }
          };
 
+         /// <summary>Formatting tag stack</summary>
          class TagStack : public list<TagType>
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
-            TagStack() {}
+            TagStack()
+            {}
 
+            // ----------------------- MUTATORS ------------------------
+
+            /// <summary>Pushes stack</summary>
+            /// <param name="t">The t.</param>
             void Push(TagType t)
             {
                push_front(t);
             }
 
+            /// <summary>Pops stack.</summary>
+            /// <returns></returns>
             TagType Pop()
             {
                auto t = front();
                pop_front();
                return t;
             }
-
-            /*TagStack& operator+=(TagType t)
-            {
-               Push(t);
-               return *this;
-            }*/
          };
 
+         /// <summary>Defines character state.</summary>
          class CharState
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
-            CharState(TextFontPtr f, TextParaPtr p) 
+            /// <summary>Create character state from font and paragraph data.</summary>
+            /// <param name="f">font.</param>
+            /// <param name="p">paragraph.</param>
+            CharState(TextFontPtr f, TextParaPtr p)
             {
                // Formatting
                Bold      = f->Bold == TOM::tomTrue;
@@ -60,7 +74,7 @@ namespace Logic
                Underline = f->Underline == TOM::tomTrue;
                
                // Colour
-               Colour = RichStringWriter::GetColourTag(f->ForeColor);
+               Colour = RichStringWriter::FromRGB(f->ForeColor);
 
                // Alignment
                switch (p->Alignment)
@@ -71,8 +85,13 @@ namespace Logic
                case TOM::tomAlignJustify:  Alignment = TagType::Justify;  break;
                }
             }
+            // ------------------------ STATIC -------------------------
+
+            // --------------------- PROPERTIES ------------------------
 
             PROPERTY_GET(TagList,FormatTags,GetFormatTags);
+
+            // ---------------------- ACCESSORS ------------------------			
 
             /// <summary>Gets all colour and formatting tags</summary>
             /// <returns></returns>
@@ -144,7 +163,9 @@ namespace Logic
                return diff;
             }
             
+            // ----------------------- MUTATORS ------------------------
 
+            // -------------------- REPRESENTATION ---------------------
          public:
             bool     Bold, 
                      Italic, 
@@ -154,7 +175,6 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-
       public:
          RichStringWriter(TextDocumentPtr& doc, ColourTag tags);
          virtual ~RichStringWriter();
@@ -164,8 +184,8 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
+         static TagType  FromRGB(COLORREF c);
          static wstring  GetTagString(TagType t);
-         static TagType  GetColourTag(COLORREF c);
 
          // --------------------- PROPERTIES ------------------------
       protected:
@@ -191,7 +211,6 @@ namespace Logic
          void   WriteChar(TextRangePtr chr);
 
          // -------------------- REPRESENTATION ---------------------
-
       protected:
          TextDocumentPtr Input;
          wstring         Output;
