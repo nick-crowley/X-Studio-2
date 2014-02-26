@@ -100,6 +100,9 @@ namespace Logic
 
       /// <summary>Generates richText source code for the input document</summary>
       /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
+      /// <exception cref="Logic::ComException">COM error</exception>
+      /// <exception cref="Logic::InvalidOperationException">Algorithm error</exception>
       wstring  RichStringWriter::Write()
       {
          try
@@ -161,7 +164,15 @@ namespace Logic
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       
-      
+      /// <summary>Gets the length of the input.</summary>
+      /// <returns></returns>
+      long  RichStringWriter::GetInputLength() const
+      {
+         return Input->Range(0, 0)->EndOf(TOM::tomStory, 1);
+      }
+
+      /// <summary>Closes the lost tags while maintaining existing formatting by closing/re-opening intermediate tags</summary>
+      /// <param name="lost">List of lost formatting tags.</param>
       void  RichStringWriter::OnFormattingLost(TagList& lost)
       {
          TagList unchanged;
@@ -174,10 +185,10 @@ namespace Logic
             WriteTag(tag, false);
 
             // Remove/preserve tag
-            if (tag == lost.front())
-               lost.pop_front();
+            if (lost.Contains(tag))
+               lost.remove(tag);
             else
-               unchanged.push_front(tag);
+               unchanged += tag;
          }
 
          // Re-open tags whoose formatting was unchanged
@@ -185,6 +196,8 @@ namespace Logic
             WriteTag(t, true);
       }
 
+      /// <summary>Opens new formatting tags</summary>
+      /// <param name="gained">List of new formatting tags.</param>
       void  RichStringWriter::OnFormattingGained(const TagList& gained)
       {
          // Open tags
@@ -195,6 +208,8 @@ namespace Logic
          }
       }
 
+      /// <summary>Opens a new paragraph and any necessary formatting tags</summary>
+      /// <param name="s">state of first character in the paragraph.</param>
       void  RichStringWriter::OnParagraphOpened(CharState s)
       {
          // Open paragraph
@@ -208,6 +223,8 @@ namespace Logic
          }
       }
 
+      /// <summary>Closes the paragraph and all open formatting tags</summary>
+      /// <param name="para">Paragraph alignment.</param>
       void  RichStringWriter::OnParagraphClosed(TagType para)
       {
          // Close all tags
@@ -218,10 +235,10 @@ namespace Logic
          WriteTag(para, false);
 
          // Clear stack
-         Formatting.clear();
+         Formatting.Clear();
       }
 
-      /// <summary>Writes the character.</summary>
+      /// <summary>Writes the first character in a range</summary>
       /// <param name="chr">range</param>
       void  RichStringWriter::WriteChar(TextRangePtr chr)
       {
@@ -233,9 +250,9 @@ namespace Logic
          }
       }
 
-      /// <summary>Writes the tag.</summary>
-      /// <param name="t">The t.</param>
-      /// <param name="open">The open.</param>
+      /// <summary>Writes an opening or closing tag.</summary>
+      /// <param name="t">Tag</param>
+      /// <param name="open">Whether opening or closing</param>
       void  RichStringWriter::WriteTag(TagType t, bool open)
       {
          Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());

@@ -21,6 +21,16 @@ namespace Logic
             TagList()
             {}
 
+            // ---------------------- ACCESSORS ------------------------
+
+            /// <summary>Query presence of tag</summary>
+            /// <param name="t">tag</param>
+            /// <returns></returns>
+            bool Contains(TagType t)
+            {
+               return any_of(begin(), end(), [t](TagType tag) {return tag==t;} );
+            }
+
             // ----------------------- MUTATORS ------------------------
 
             /// <summary>Adds a tag to the back of the list</summary>
@@ -32,14 +42,28 @@ namespace Logic
          };
 
          /// <summary>Formatting tag stack</summary>
-         class TagStack : public list<TagType>
+         class TagStack : protected list<TagType>
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
             TagStack()
             {}
 
+            // ---------------------- ACCESSORS ------------------------
+
+            /// <summary>Query stack empty</summary>
+            bool empty() const
+            {
+               return __super::empty();
+            }
+
             // ----------------------- MUTATORS ------------------------
+
+            /// <summary>Clear stack</summary>
+            void Clear() 
+            {
+               __super::clear();
+            }
 
             /// <summary>Pushes stack</summary>
             /// <param name="t">The t.</param>
@@ -50,8 +74,12 @@ namespace Logic
 
             /// <summary>Pops stack.</summary>
             /// <returns></returns>
+            /// <exception cref="Logic::InvalidOperationException">Stack is empty</exception>
             TagType Pop()
             {
+               if (empty())
+                  throw InvalidOperationException(HERE, L"Stack is empty");
+
                auto t = front();
                pop_front();
                return t;
@@ -193,10 +221,7 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       protected:
-         long  GetInputLength() const
-         {
-            return Input->Range(0, 0)->EndOf(TOM::tomStory, 1);
-         }
+         long  GetInputLength() const;
 
          // ----------------------- MUTATORS ------------------------
       public:
