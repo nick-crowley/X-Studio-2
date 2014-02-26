@@ -471,6 +471,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Get character
       MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
       wchar chr = pFilter->wParam;
+
+      // Reset tooltip
+      __super::OnInputMessage(pNMHDR, pResult);
    
       // Allow input by default
       *pResult = ALLOW_INPUT;

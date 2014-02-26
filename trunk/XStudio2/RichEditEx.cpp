@@ -12,9 +12,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    IMPLEMENT_DYNAMIC(RichEditEx, CRichEditCtrl)
 
    BEGIN_MESSAGE_MAP(RichEditEx, CRichEditCtrl)
+      ON_WM_HSCROLL_REFLECT()
       ON_WM_KILLFOCUS()
       ON_WM_SETFOCUS()
+      ON_WM_VSCROLL_REFLECT()
       ON_CONTROL_REFLECT(EN_CHANGE, &RichEditEx::OnTextChange)
+      ON_NOTIFY_REFLECT(EN_MSGFILTER, &RichEditEx::OnInputMessage)
       ON_NOTIFY_REFLECT(EN_PROTECTED, &RichEditEx::OnProtectedMessage)
    END_MESSAGE_MAP()
    
@@ -426,13 +429,42 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Reset the tooltip</summary>
-   void RichEditEx::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   void RichEditEx::HScroll(UINT nSBCode, UINT nPos)
    {
       // Reset tooltip
       Tooltip.Reset();
 
       // Scroll
-      __super::OnHScroll(nSBCode, nPos, pScrollBar);
+      //__super::OnHScroll(nSBCode, nPos, nullptr);
+   }
+
+   /// <summary>Resets the tooltip</summary>
+   /// <param name="pNMHDR">The notify header</param>
+   /// <param name="pResult">message result</param>
+   void RichEditEx::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
+
+      // Get character
+      MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
+   
+      // Allow input by default
+      *pResult = ALLOW_INPUT;
+
+      switch (pFilter->msg)
+      {
+      // KEYBOARD:
+      case WM_CHAR:
+      case WM_KEYDOWN:
+      // MOUSE:
+      case WM_LBUTTONDOWN:
+      case WM_RBUTTONDOWN:
+      case WM_MBUTTONDOWN:
+      // WHEEL: 
+      case WM_MOUSEWHEEL:
+         Tooltip.Reset();
+         break;
+      }
    }
 
    /// <summary>Closes the suggestion when focus lost</summary>
@@ -445,7 +477,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Kill focus
       __super::OnKillFocus(pNewWnd);
    }
-   
    
    /// <summary>Called when a message would change protected text.</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
@@ -497,13 +528,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Reset the tooltip</summary>
-   void RichEditEx::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   void RichEditEx::VScroll(UINT nSBCode, UINT nPos)
    {
       // Reset tooltip
       Tooltip.Reset();
 
       // Scroll
-      __super::OnVScroll(nSBCode, nPos, pScrollBar);
+      //__super::OnVScroll(nSBCode, nPos, nullptr);
    }
    
    /// <summary>Pastes text from clipboard.</summary>

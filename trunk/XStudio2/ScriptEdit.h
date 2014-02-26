@@ -513,12 +513,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       handler void OnCharNewLine();
       handler void OnCharTab(bool shift);
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-      afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult) override;
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
-      afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
       handler void OnRequestTooltip(CustomTooltip::TooltipData* data) override;
       afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
