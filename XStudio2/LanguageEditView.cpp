@@ -29,7 +29,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
-      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandEditMode)
+      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandChangeMode)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -44,9 +44,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
-   /// <summary>Called when query edit mode.</summary>
+   /// <summary>Queries the state of editing mode commands.</summary>
    /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryEditMode(CCmdUI* pCmd) const
+   void LanguageEditView::OnQueryModeCommand(CCmdUI* pCmd) const
    {
       // Disable if no string displayed
       pCmd->Enable(RichEdit.IsWindowEnabled());
@@ -57,6 +57,71 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
       case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
       case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+      }
+   }
+
+   /// <summary>Queries the state of formatting commands.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageEditView::OnQueryFormatCommand(CCmdUI* pCmd) const
+   {
+      // Disable if no string displayed
+      if (!RichEdit.IsWindowEnabled())
+         pCmd->Enable(FALSE);
+      else
+      {
+         CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
+         ParaFormat  pf(PFM_ALIGNMENT);
+
+         // Check correct state
+         switch (pCmd->m_nID)
+         {
+         // Clipboard: Set based on selection
+         case ID_EDIT_CUT:
+         case ID_EDIT_COPY:    return pCmd->Enable(RichEdit.HasSelection());
+         case ID_EDIT_PASTE:   
+         case ID_EDIT_CLEAR:   return pCmd->Enable(TRUE);
+            break;
+
+         // Format: Require editor mode
+         case ID_EDIT_BOLD:       
+         case ID_EDIT_ITALIC:     
+         case ID_EDIT_UNDERLINE:  
+            if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
+            {
+               pCmd->Enable();
+               RichEdit.GetSelectionCharFormat(cf);
+            
+               // Check formatting 
+               switch (pCmd->m_nID)
+               {
+               case ID_EDIT_BOLD:       return pCmd->SetCheck(cf.dwEffects & CFE_BOLD ? TRUE : FALSE);
+               case ID_EDIT_ITALIC:     return pCmd->SetCheck(cf.dwEffects & CFE_ITALIC ? TRUE : FALSE);
+               case ID_EDIT_UNDERLINE:  return pCmd->SetCheck(cf.dwEffects & CFE_UNDERLINE ? TRUE : FALSE);
+               }
+            }
+            break;
+
+         // Alignment: Require editor mode
+         case ID_EDIT_LEFT:
+         case ID_EDIT_RIGHT:
+         case ID_EDIT_CENTRE:
+         case ID_EDIT_JUSTIFY:
+            if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
+            {
+               pCmd->Enable();
+               RichEdit.GetParaFormat(pf);
+            
+               // Check alignment
+               switch (pCmd->m_nID)
+               {
+               case ID_EDIT_LEFT:     return pCmd->SetCheck(pf.wAlignment == PFA_LEFT    ? TRUE : FALSE);
+               case ID_EDIT_RIGHT:    return pCmd->SetCheck(pf.wAlignment == PFA_RIGHT   ? TRUE : FALSE);
+               case ID_EDIT_CENTRE:   return pCmd->SetCheck(pf.wAlignment == PFA_CENTER  ? TRUE : FALSE);
+               case ID_EDIT_JUSTIFY:  return pCmd->SetCheck(pf.wAlignment == PFA_JUSTIFY ? TRUE : FALSE);
+               }
+            }
+            break;
+         }
       }
    }
 
@@ -89,7 +154,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    /// <summary>Changes the edit mode.</summary>
    /// <param name="nID">The command identifier.</param>
-   void LanguageEditView::OnCommandEditMode(UINT nID)
+   void LanguageEditView::OnCommandChangeMode(UINT nID)
    {
       try
       {
