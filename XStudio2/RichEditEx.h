@@ -79,13 +79,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SelectLine(int line = -1);
       void   SetScrollCoordinates(const CPoint& pt);
       
-      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void HScroll(UINT nSBCode, UINT nPos);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
+      virtual void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
       virtual void OnTextChange();
-      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void VScroll(UINT nSBCode, UINT nPos);
       
       // -------------------- REPRESENTATION ---------------------
    public:

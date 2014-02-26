@@ -95,7 +95,7 @@ namespace Logic
          TextFontPtr  curFont = chr->Font, 
                       prevFont = prev->Font;
 
-#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
+//#error This algorithm will cause mis-matched tags. Use a two stage process: Rtf->RichString, RichString->SourceText
 
          // Colour change
          //if (curFont->ForeColor != prevFont->ForeColor)
@@ -162,8 +162,8 @@ namespace Logic
          TextParaPtr para = chr->Para;
 
          // Colour
-         if (GetColour(font) != Colour::Default)
-            WriteColour(GetColour(font), open);
+         /*if (GetColour(font) != Colour::Default)
+            WriteColour(GetColour(font), open);*/
          
          // Character formatting
          if (font->Bold)
