@@ -8,13 +8,21 @@ namespace Logic
 {
    namespace Language
    {
+      /// <summary>Matches any tags that identify whether named colour tags should be used</summary>
+      const wregex  LanguageString::MatchMessageTag(L"\\["
+                                                    L"(article|author|rank|text|title"
+                                                    L"|black|blue|cyan|green|orange|magenta|red|silver|yellow|white)"
+                                                    L"\\]");
+
       // -------------------------------- CONSTRUCTION --------------------------------
       
-      LanguageString::LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v) : ID(id), Page(page), Text(txt), Version(v) 
+      LanguageString::LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v)
+         : ID(id), Page(page), Text(txt), Version(v), TagType(ColourTag::Undetermined)
       {
       }
 
-      LanguageString::LanguageString(LanguageString&& r) : ID(r.ID), Page(r.Page), Text(move(r.Text)), Version(r.Version) 
+      LanguageString::LanguageString(LanguageString&& r) 
+         : ID(r.ID), Page(r.Page), Text(move(r.Text)), Version(r.Version), TagType(ColourTag::Undetermined)
       {
       }
 
@@ -41,6 +49,18 @@ namespace Logic
       RichString  LanguageString::GetRichText() const
       {
          return StringParser(Text).Output;
+      }
+      
+      /// <summary>Identifies and sets the type of colour tags used by this string.</summary>
+      /// <returns>Tag type, defaults to Unix if undetermined</returns>
+      ColourTag  LanguageString::IdentifyColourTags()
+      {
+         // Find [author], [title], [rank], [article] or any named colour tag
+         if (regex_search(Text.begin(), Text.end(), MatchMessageTag))
+            return TagType = ColourTag::Message;
+
+         // Assume Unix
+         return TagType = ColourTag::Unix;
       }
 
       /// <summary>Determines whether string can be used as the source of a script object</summary>

@@ -31,6 +31,9 @@ namespace Logic
          WING_COMMANDS        = 2028 
       };
 
+      /// <summary>Defines colour tag types used in language strings</summary>
+      enum class ColourTag { Undetermined, Unix, Message };
+
       /// <summary>Language string with immutable ID</summary>
       class LanguageString
       {
@@ -40,8 +43,12 @@ namespace Logic
          LanguageString(LanguageString&& r);
          ~LanguageString();
 
+         // ----------------------- STATIC --------------------------
+      protected:
+         static const wregex  MatchMessageTag;
+
          // --------------------- PROPERTIES ------------------------
-			
+      public:
          PROPERTY_GET(wstring,ResolvedText,GetResolvedText);
          PROPERTY_GET(RichString,RichText,GetRichText);
 
@@ -52,6 +59,8 @@ namespace Logic
          bool       IsScriptObject() const;
 
 		   // ----------------------- MUTATORS ------------------------
+      public:
+         ColourTag  IdentifyColourTags();
 
 		   // -------------------- REPRESENTATION ---------------------
 
@@ -59,6 +68,7 @@ namespace Logic
                       Page;
          wstring      Text;
          GameVersion  Version;
+         ColourTag    TagType;
       };
 
       /// <summary>Represents a collection of language strings</summary>
