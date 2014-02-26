@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
 #include "Logic/StringResolver.h"
-#include "Logic/StringParser.h"
+#include "Logic/RichStringParser.h"
 #include "RichTextRenderer.h"
 
 /// <summary>User interface</summary>
@@ -197,7 +197,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          case 1:
             auto src = ListView.GetItemText(item.Index, 1);
-            RichTextRenderer::DrawLine(dc, item.Rect, StringParser((const wchar*)src).Output);
+            RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((const wchar*)src).Output);
             break;
          }
       }

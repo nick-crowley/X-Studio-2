@@ -17,7 +17,7 @@
 #include "TWare.h"
 #include "TLaser.h"
 #include "StringResolver.h"
-#include "StringParser.h"
+#include "RichStringParser.h"
 #include "DescriptionFileReader.h"
 #include "../Testing/ScriptValidator.h"
 
@@ -753,7 +753,7 @@ namespace Logic
          try
          {
             Console << Cons::Heading << "Parsing language string: " << Cons::Yellow << Cons::Bold << str << ENDL;
-            StringParser p(str);
+            RichStringParser p(str);
             Console << p.Output << ENDL;
          }
          catch (ExceptionBase& e) {

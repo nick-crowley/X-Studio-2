@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "StringParser.h"
+#include "RichStringParser.h"
 #include <algorithm>
 
 namespace Logic
@@ -7,22 +7,22 @@ namespace Logic
    namespace Language
    {
       /// <summary>Matches an opening tag (at beginning of string) and captures the name</summary>
-      const wregex  StringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
+      const wregex  RichStringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
 
       /// <summary>Matches any closing tag (at beginning of string) and captures the name</summary>
-      const wregex  StringParser::IsClosingTag = wregex(L"^\\[/?([a-z]+)\\]");
+      const wregex  RichStringParser::IsClosingTag = wregex(L"^\\[/?([a-z]+)\\]");
       
       /// <summary>Matches any opening/closing tag (at beginning of string) without properties and captures the name</summary>
-      const wregex  StringParser::IsBasicTag = wregex(L"^\\[/?([a-z]+)\\]");
+      const wregex  RichStringParser::IsBasicTag = wregex(L"^\\[/?([a-z]+)\\]");
 
       /// <summary>Matches multiple tag properties captures both name and value</summary>
-      const wregex  StringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
+      const wregex  RichStringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
 
       /// <summary>Matches opening and closing [author] tags (at beginning of string) and captures the text</summary>
-      const wregex  StringParser::IsAuthorDefition = wregex(L"^\\[author\\](.*)\\[/author\\]");
+      const wregex  RichStringParser::IsAuthorDefition = wregex(L"^\\[author\\](.*)\\[/author\\]");
 
       /// <summary>Matches opening and closing [title] tags (at beginning of string) and captures the text</summary>
-      const wregex  StringParser::IsTitleDefition = wregex(L"^\\[title\\](.*)\\[/title\\]");
+      const wregex  RichStringParser::IsTitleDefition = wregex(L"^\\[title\\](.*)\\[/title\\]");
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -31,13 +31,13 @@ namespace Logic
       /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
-      StringParser::StringParser(const wstring& str) : Input(str), Alignments(TagClass::Paragraph)
+      RichStringParser::RichStringParser(const wstring& str) : Input(str), Alignments(TagClass::Paragraph)
       {
          Parse();
       }
 
 
-      StringParser::~StringParser()
+      RichStringParser::~RichStringParser()
       {
       }
 
@@ -47,7 +47,7 @@ namespace Logic
       /// <param name="t">tag type</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Not a paragraph tag</exception>
-      Alignment StringParser::GetAlignment(TagType t) 
+      Alignment RichStringParser::GetAlignment(TagType t) 
       {
          switch (t)
          {
@@ -65,7 +65,7 @@ namespace Logic
       /// <param name="t">tag type</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Tag is unrecognised</exception>
-      StringParser::TagClass  StringParser::GetClass(TagType t)
+      RichStringParser::TagClass  RichStringParser::GetClass(TagType t)
       {
          switch (t)
          {
@@ -106,7 +106,7 @@ namespace Logic
       /// <summary>Convert tag class to string</summary>
       /// <param name="c">tag class.</param>
       /// <returns></returns>
-      wstring  StringParser::GetString(TagClass c)
+      wstring  RichStringParser::GetString(TagClass c)
       {
          const wchar* str[] = { L"Character", L"Paragraph", L"Colour", L"Special" };
 
@@ -116,7 +116,7 @@ namespace Logic
       /// <summary>Convert tag type to string</summary>
       /// <param name="t">tag type.</param>
       /// <returns></returns>
-      wstring  StringParser::GetString(TagType t)
+      wstring  RichStringParser::GetString(TagType t)
       {
          const wchar* str[] = { L"Bold", L"Underline", L"Italic", L"Left", L"Right", L"Centre", L"Justify", L"Text", L"Select", L"Author", 
                                 L"Title", L"Rank",L"Black", L"Blue", L"Cyan", L"Green", L"Magenta", L"Orange", L"Red", L"Silver", L"Yellow", 
@@ -128,7 +128,7 @@ namespace Logic
       /// <summary>Identifies a tag type from it's name</summary>
       /// <param name="name">tag name WITHOUT square brackets</param>
       /// <returns></returns>
-      StringParser::TagType  StringParser::IdentifyTag(const wstring& name)
+      RichStringParser::TagType  RichStringParser::IdentifyTag(const wstring& name)
       {
          switch (name.length())
          {
@@ -205,7 +205,7 @@ namespace Logic
       /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
-      void  StringParser::Parse()
+      void  RichStringParser::Parse()
       {
          RichParagraph* Paragraph = &FirstParagraph;     // Current paragraph (output)
          Colour         TextColour = Colour::Default;    // Current colour
@@ -320,14 +320,14 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::InvalidOperation">Not a 'select' tag</exception>
       /// <exception cref="Logic::Language::RichTextException">Invalid tag property</exception>
-      RichButton*  StringParser::CreateButton(const RichTag& tag) const
+      RichButton*  RichStringParser::CreateButton(const RichTag& tag) const
       {
          // Ensure tag is 'select'
          if (tag.Type != TagType::Select)
             throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", GetString(tag.Type).c_str()) );
 
          // Recursively parse text  (To enable character/colour formatting)
-         StringParser btn(tag.Text);
+         RichStringParser btn(tag.Text);
                         
          // Get ID
          wstring id;
@@ -347,7 +347,7 @@ namespace Logic
 
       /// <summary>Gets the first paragraph.</summary>
       /// <returns></returns>
-      RichParagraph& StringParser::GetFirstParagraph() 
+      RichParagraph& RichStringParser::GetFirstParagraph() 
       {
          return Output.Paragraphs.back();
       }
@@ -355,7 +355,7 @@ namespace Logic
       /// <summary>Matches a unix style colour code.</summary>
       /// <param name="pos">position of backslash</param>
       /// <returns></returns>
-      bool  StringParser::MatchColourCode(CharIterator pos) const
+      bool  RichStringParser::MatchColourCode(CharIterator pos) const
       {
          // Check for EOF?
          if (distance(pos, Input.end()) <= 4)      //if (pos+4 >= Input.end())
@@ -389,7 +389,7 @@ namespace Logic
       /// <summary>Matches any opening or closing tag</summary>
       /// <param name="pos">position of opening bracket</param>
       /// <returns></returns>
-      bool  StringParser::MatchTag(CharIterator pos) const
+      bool  RichStringParser::MatchTag(CharIterator pos) const
       {
          wsmatch match;
 
@@ -408,7 +408,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::AlgorithmException">Previously matched colour code is unrecognised</exception>
       /// <remarks>Advances the iterator to the last character of the tag, so Parse() loop advances correctly to the next character</remarks>
-      Colour  StringParser::ReadColourCode(CharIterator& pos)
+      Colour  RichStringParser::ReadColourCode(CharIterator& pos)
       {
          Colour c;
 
@@ -440,7 +440,7 @@ namespace Logic
       /// <returns></returns>
       /// <exception cref="Logic::Language::RichTextException">Closing tag doesn't match currently open tag</exception>
       /// <remarks>Advances the iterator to the last character of the tag, so Parse() loop advances correctly to the next character</remarks>
-      StringParser::RichTag  StringParser::ReadTag(CharIterator& pos)
+      RichStringParser::RichTag  RichStringParser::ReadTag(CharIterator& pos)
       {
          wsmatch matches;
 
@@ -503,7 +503,7 @@ namespace Logic
       /// <param name="tag">text tag</param>
       /// <exception cref="Logic::InvalidOperation">Not a 'text' tag</exception>
       /// <exception cref="Logic::Language::RichTextException">Invalid tag property</exception>
-      void  StringParser::SetColumnInfo(const RichTag& tag)
+      void  RichStringParser::SetColumnInfo(const RichTag& tag)
       {
          // Ensure tag is 'text'
          if (tag.Type != TagType::Text)
