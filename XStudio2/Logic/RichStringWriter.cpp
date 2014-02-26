@@ -13,7 +13,7 @@ namespace Logic
       /// <param name="doc">The document.</param>
       /// <param name="tags">Type of colour tags to use</param>
       /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
-      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), ColourTags(tags)
+      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), ColourTags(ColourTag::Unix)
       {
          REQUIRED(doc);
       }
@@ -24,33 +24,6 @@ namespace Logic
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
-
-      
-      /// <summary>Convert RGB to colour enumeration</summary>
-      /// <param name="c">colour</param>
-      /// <returns></returns>
-      /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
-      /*Colour RichStringWriter::FromRGB(COLORREF c)
-      {
-         switch ((LanguageColour)c)
-         {
-         case LanguageColour::Black:          return Colour::Black;
-         case LanguageColour::Default:        return Colour::Default;
-         case LanguageColour::White:          return Colour::White;
-
-         case LanguageColour::Grey:           return Colour::Grey;
-         case LanguageColour::Blue:           return Colour::Blue;
-         case LanguageColour::Cyan:           return Colour::Cyan;
-         case LanguageColour::Green:          return Colour::Green;
-         case LanguageColour::Orange:         return Colour::Orange;
-         case LanguageColour::Purple:         return Colour::Purple;
-         case LanguageColour::Red:            return Colour::Red;
-         case LanguageColour::Silver:         return Colour::Silver;
-         case LanguageColour::Yellow:         return Colour::Yellow;
-         }
-
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
-      }*/
 
       /// <summary>Converts RGB to language tag.</summary>
       /// <param name="c">colour</param>
@@ -163,11 +136,11 @@ namespace Logic
                   {
                      // Formatting lost: Close tags
                      if (thisState < prevState)
-                        OnFormattingLost(thisState - prevState);
+                        OnFormattingLost(prevState - thisState);
                      
                      // Formatting gained: Open tags
                      if (thisState > prevState)
-                        OnFormattingGained(prevState - thisState);
+                        OnFormattingGained(thisState - prevState);
                   }
                   
                   // Write character
@@ -207,6 +180,9 @@ namespace Logic
          // Close all open tags until all lost formatting has been closed
          while (!lost.empty())
          {
+            if (Formatting.empty())
+               throw AlgorithmException(HERE, L"Formatting stack is empty");
+
             // Close tag
             auto tag = Formatting.Pop();
             WriteTag(tag, false);
@@ -220,7 +196,10 @@ namespace Logic
 
          // Re-open tags whoose formatting was unchanged
          for (TagType t : unchanged)
+         {
             WriteTag(t, true);
+            Formatting.Push(t);
+         }
       }
 
       /// <summary>Opens new formatting tags</summary>
@@ -260,9 +239,6 @@ namespace Logic
          
          // Close paragraph
          WriteTag(para, false);
-
-         // Clear stack
-         Formatting.Clear();
       }
 
       /// <summary>Writes the first character in a range</summary>
@@ -286,8 +262,6 @@ namespace Logic
          {
          // Default: Has no named representation
          case TagType::Default:
-            if (ColourTags == ColourTag::Unix)
-               Output += GetUnixCode(t);
             break;
 
          case TagType::Black:
