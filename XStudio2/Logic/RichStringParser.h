@@ -12,7 +12,7 @@ namespace Logic
 
       /// <summary>Defines available rich edit tags</summary>
       enum class TagType { Bold, Underline, Italic, Left, Right, Centre, Justify, Text, Select, Author, Title, Rank,
-                           Black, Blue, Cyan, Green, Magenta, Orange, Red, Silver, Yellow, White,
+                           Black, Blue, Cyan, Green, Grey, Magenta, Orange, Red, Silver, Yellow, White, Default,
                            Unrecognised };
 
       wstring   GetString(TagType t);
@@ -85,7 +85,7 @@ namespace Logic
             {
                // Ensure tag is of correct class
                if (tag.Class != Class)
-                  throw ArgumentException(HERE, L"tag", GuiString(L"Cannot add %s tag to a %s stack", GetString(tag.Type).c_str(), GetString(tag.Class).c_str()) );
+                  throw ArgumentException(HERE, L"tag", GuiString(L"Cannot add %s tag to a %s stack", ::GetString(tag.Type).c_str(), GetString(tag.Class).c_str()) );
 
                // Open: Push stack
                if (tag.Opening)
@@ -97,7 +97,7 @@ namespace Logic
 
                else
                   // Mismatch: Error
-                  throw RichTextException(HERE, GuiString(L"Unexpected closing %s tag", GetString(tag.Type).c_str()) );
+                  throw RichTextException(HERE, GuiString(L"Unexpected closing %s tag", ::GetString(tag.Type).c_str()) );
             }
 
             // -------------------- REPRESENTATION ---------------------

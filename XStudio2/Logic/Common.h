@@ -73,6 +73,15 @@ namespace Logic
    wstring  GetString(Alignment a);
 
 
+   /// <summary>RGB values for language string colours</summary>
+   enum class LanguageColour : COLORREF 
+   { 
+      Default = RGB(250,250,250),
+      Black = RGB(0,0,0),   White  = RGB(255,255,255), Cyan   = RGB(150,220,220), Blue   = RGB(0,0,255), 
+      Green = RGB(0,255,0), Grey   = RGB(128,128,128), Orange = RGB(255,128,40),  Purple = RGB(255,0,255), 
+      Red   = RGB(255,0,0), Silver = RGB(180,180,180), Yellow = RGB(255,255,0) 
+   };
+
 
    /// <summary>Compare character ranges</summary>
    bool operator==(const CHARRANGE& a, const CHARRANGE& b);
