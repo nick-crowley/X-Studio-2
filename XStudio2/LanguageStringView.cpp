@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetClientRect(wnd);
 
       // TODO: Layout code
-      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER); // wnd.Width() - GetListCtrl().GetColumnWidth(0) - 4);
    }
    
    /// <summary>Retrieves the language string representing the current selection.</summary>
@@ -137,8 +137,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          CWaitCursor c;
 
-         // Clear prev
+         // Clear items + selection
          GetListCtrl().DeleteAllItems();
+         GetDocument()->SelectedString = nullptr;
+
+         // Raise SELECTION CHANGED
+         SelectionChanged.Raise();
 
          // Get selection, if any
          if (LanguagePage* page = GetDocument()->SelectedPage)
