@@ -31,8 +31,9 @@ namespace Logic
                                 Red   = RGB(255,0,0), Yellow = RGB(255,255,0);
 
       public:
+         static Colour   FromRGB(COLORREF c);
          static COLORREF ToRGB(Colour c);
-
+         
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------			
