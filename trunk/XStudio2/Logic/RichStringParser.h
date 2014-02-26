@@ -11,9 +11,11 @@ namespace Logic
       // ------------------------ TYPES --------------------------
 
       /// <summary>Defines available rich edit tags</summary>
-      enum class TagType { Bold, Underline, Italic, Left, Right, Centre, Justify, Text, Select, Author, Title, Rank,
-                           Black, Blue, Cyan, Green, Grey, Magenta, Orange, Red, Silver, Yellow, White, Default,
-                           Unrecognised };
+      enum class TagType { Bold, Underline, Italic, 
+                           Left, Right, Centre, Justify, 
+                           Text, Select, Author, Title, Rank,
+                           Black, Blue, Cyan, Green, Grey, Magenta, Orange, Red, Silver, Yellow, White, 
+                           Default, Unrecognised };
 
       wstring   GetString(TagType t);
 
