@@ -25,7 +25,7 @@ namespace Logic
       class RichStringParser
       {
          // ------------------------ TYPES --------------------------
-      private:
+      protected:
          /// <summary>Constant character iterator</summary>
          typedef wstring::const_iterator CharIterator;
 
@@ -193,13 +193,15 @@ namespace Logic
          DEFAULT_MOVE(RichStringParser);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
-      private:
+      protected:
          static const wregex IsOpeningTag,
                              IsClosingTag,
                              IsBasicTag,
                              IsTagProperty,
-                             IsAuthorDefition,
-                             IsTitleDefition;
+                             IsAuthorDefinition,
+                             IsTitleDefinition,
+                             IsButtonDefinition,
+                             IsButtonText;
 
          static Alignment GetAlignment(TagType t);
          static TagClass  GetClass(TagType t);
@@ -215,12 +217,14 @@ namespace Logic
          bool  MatchColourCode(CharIterator pos) const;
          bool  MatchTag(CharIterator pos) const;
 
-      private:
+      protected:
          RichButton*  CreateButton(const RichTag& tag) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
-         void  Parse();
+         
+      protected:
+         void    Parse();
 
       private:
          RichParagraph& GetFirstParagraph();
@@ -232,7 +236,7 @@ namespace Logic
       public:
          RichString      Output;
 
-      private:
+      protected:
          wstring         Input;
          ColourTagStack  Colours;
          CharTagStack    Formatting;

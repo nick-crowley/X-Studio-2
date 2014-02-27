@@ -108,7 +108,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Draw button text onto bitmap
       memDC.SetBkMode(TRANSPARENT);
       memDC.SetTextColor(RtfStringWriter::ToRGB(col));
-      RichTextRenderer::DrawLine(&memDC, rcButton, txt);
+      RichTextRenderer::DrawLine(&memDC, rcButton, txt, RichTextRenderer::Flags::None);
       //memDC.DrawText(txt.c_str(), txt.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
 
       // Cleanup without destroying bitmap

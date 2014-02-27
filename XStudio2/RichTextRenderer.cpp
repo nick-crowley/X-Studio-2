@@ -24,8 +24,9 @@ namespace GUI
       /// <param name="dc">dc.</param>
       /// <param name="line">line rect</param>
       /// <param name="str">string.</param>
+      /// <param name="flags">How to modify colours for light/dark backgrounds.</param>
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-      void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str)
+      void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str, Flags flags)
       {
          FontMap Fonts;
          LOGFONT fontData;
@@ -47,7 +48,7 @@ namespace GUI
             dc->SelectObject(Fonts[p.Format].get());
             
             // Set colour
-            dc->SetTextColor(p.GetColour(true));
+            dc->SetTextColor(p.GetColour(flags != Flags::None));
 
             // Draw as much text as possible
             dc->DrawText(p.Text.c_str(), p.Text.length(), line, DT_LEFT|DT_END_ELLIPSIS|DT_SINGLELINE|DT_VCENTER);

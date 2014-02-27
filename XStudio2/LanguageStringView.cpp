@@ -193,16 +193,17 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try
       {
-         switch (item.SubItem)
-         {
-         case 0:
+         // ID:
+         if (item.SubItem == 0)
             ListViewCustomDraw::onDrawSubItem(dc, item);
-            break;
-
-         case 1:
+         
+         // Text:
+         else if (item.SubItem == 1)
+         {
             auto src = ListView.GetItemText(item.Index, 1);
-            RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((const wchar*)src).Output);
-            break;
+            auto flags = item.Selected ? RichTextRenderer::Flags::Selected : RichTextRenderer::Flags::Inverted;
+
+            RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((const wchar*)src).Output, flags);
          }
       }
       catch (ExceptionBase& e) {

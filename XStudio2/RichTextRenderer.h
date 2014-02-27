@@ -11,6 +11,10 @@ namespace GUI
       class RichTextRenderer
       {
          // ------------------------ TYPES --------------------------
+      public:
+         /// <summary>Drawing flags</summary>   
+         enum class Flags { None, Inverted, Selected };
+
       private:
          /// <summary>Collection of recently used fonts, used for optimizing drawing</summary>   
          class FontMap : public map<UINT, Logic::Language::FontPtr>
@@ -62,7 +66,7 @@ namespace GUI
 
          // ------------------------ STATIC -------------------------
       public:
-         static void  DrawLine(CDC* dc, CRect line, const RichString& str);
+         static void  DrawLine(CDC* dc, CRect line, const RichString& str, Flags flags = Flags::None);
          static int   DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags);
 
       protected:
