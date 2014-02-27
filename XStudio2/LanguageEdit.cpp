@@ -251,21 +251,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Editor: Display RichText
       else if (Mode == EditMode::Edit)
-      {
          SetRichText(Document->SelectedString->RichText);
-         //string rtf; 
 
-         //// Convert string into RTF
-         //RtfStringWriter w(rtf);
-         //w.Write(Document->SelectedString->RichText);
-         //w.Close();
-
-         //// Replace contents with RTF
-         //SetRtf(rtf);
-
-         //// DEBUG:
-         //Console << GetSourceText() << ENDL;
-      }
       // Display: Format for display
       else if (Mode == EditMode::Display)
          throw NotImplementedException(HERE, L"Display mode");
