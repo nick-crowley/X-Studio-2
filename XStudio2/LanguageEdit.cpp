@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
+#include "OleBitmap.h"
 #include "Logic/RtfStringWriter.h"
 #include "Logic/RichStringWriter.h"
 #include "Logic/LanguagePage.h"
@@ -133,6 +134,68 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Initialize
       __super::Initialize(MessageBackground);
+   }
+
+   /// <summary>Inserts a button at the caret.</summary>
+   /// <param name="txt">Button text.</param>
+   /// <param name="id">Button identifier.</param>
+   /// <param name="col">Text colour</param>
+   void LanguageEdit::InsertButton(const wstring& txt, const wstring& id, Colour col)
+   {
+      try
+      {
+         IOleClientSitePtr clientSite;
+         ILockBytesPtr     lockBytes;
+         IStoragePtr       storage;
+
+         // Create button data
+         ButtonData* button = new ButtonData(this, txt, id, col);
+
+	      // Get container site
+         OleDocument->GetClientSite(&clientSite);
+
+	      // Initialize a Storage Object
+	      if (SUCCEEDED(::CreateILockBytesOnHGlobal(NULL, TRUE, &lockBytes))
+          && SUCCEEDED(::StgCreateDocfileOnILockBytes(lockBytes, STGM_SHARE_EXCLUSIVE|STGM_CREATE|STGM_READWRITE, 0, &storage)))
+         {
+            IOleObjectPtr picture;
+            
+            // Create a static picture OLE Object 
+            if (picture = OleBitmap::CreateStatic(button->Bitmap, clientSite, storage))
+            {
+               ReObject  reObject;
+               CLSID     iCLSID;
+
+               // Notify object it's embedded
+               OleSetContainedObject(button->Object, TRUE);
+
+               // Lookup CLSID
+               if (picture->GetUserClassID(&iCLSID) == S_OK)
+               {
+                  // Define object
+                  reObject.clsid    = iCLSID;
+                  reObject.cp       = REO_CP_SELECTION;
+                  reObject.dvaspect = DVASPECT_CONTENT;
+                  reObject.poleobj  = picture;
+                  reObject.polesite = clientSite;
+                  reObject.pstg     = storage;
+
+                  // Associate button data
+                  reObject.dwUser = reinterpret_cast<DWORD>(button);
+                  button->Object  = picture;
+
+                  // Insert the object at the current location in the richedit control
+                  OleDocument->InsertObject(&reObject);
+               }  
+            }  
+         }
+      }
+      catch (_com_error& e) {
+         Console.Log(HERE, ComException(HERE, e));
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
    /// <summary>Displays the currently selected string in the manner appropriate to the editing mode.</summary>

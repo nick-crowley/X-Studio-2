@@ -94,6 +94,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       TextDocumentPtr  TextDocument;
+      IRichEditOlePtr  OleDocument;
       CustomTooltip    Tooltip;
       
    private:
