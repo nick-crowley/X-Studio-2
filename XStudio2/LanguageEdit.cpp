@@ -14,7 +14,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    const wregex LanguageEdit::MatchComplexTag
    (
       L"\\[" 
-      L"(article|declare|rank|select|text|var)" 
+      L"(article|declare|ranking|select|text|var)" 
       L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?"  // Apostrophes or inverted commas
       L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?" 
       L"(\\s+(args|cols|colwidth|colspacing|name|neg|script|state|title|type|value)=[\"\'][^\"\']*[\"\'])?" 
@@ -35,7 +35,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       L"\\[/?" // Possibly closing
       L"(b|i|u|left|right|center|justify" 
       L"|article|author|title|text|select" 
-      L"|black|blue|cyan|green|orange|magenta|red|silver|white|yellow)"
+      L"|black|blue|cyan|green|grey|orange|magenta|red|silver|white|yellow)"
       L"\\]"
    );
 

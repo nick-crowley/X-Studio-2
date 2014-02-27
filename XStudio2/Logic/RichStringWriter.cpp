@@ -59,7 +59,7 @@ namespace Logic
       {
          const wchar* str[] = { L"b", L"u", L"i", 
                                 L"left", L"right", L"center", L"justify", 
-                                L"text", L"select", L"author", L"title", L"rank", 
+                                L"text", L"select", L"author", L"title", L"ranking", 
                                 L"black", L"blue", L"cyan", L"green", L"grey", L"magenta", L"orange", L"red", L"silver", L"yellow", L"white", 
                                 L"default", L"unrecognised" };
 
