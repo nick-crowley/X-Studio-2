@@ -8,27 +8,32 @@ namespace GUI
    {
       namespace OLE
       {
+         
+
          /// <summary></summary>
-         class RichEditImage : public IDataObject
+         class OleBitmap : public IDataObject
          {
             // ------------------------ TYPES --------------------------
          private:
 
             // --------------------- CONSTRUCTION ----------------------   
+         protected:
+	         OleBitmap();
+            OleBitmap(HBITMAP bitmap);
          public:
-	         RichEditImage();
-	         ~RichEditImage();
+	         ~OleBitmap();
 
-            NO_COPY(RichEditImage);	// Default copy semantics
-            NO_MOVE(RichEditImage);	// Default move semantics
+            NO_COPY(OleBitmap);	   // No copy semantics
+            NO_MOVE(OleBitmap);	   // No move semantics
 
-            
             // ------------------------ STATIC -------------------------
+         public:
+            static IOleObjectPtr  CreateStatic(HBITMAP bitmap, IOleClientSitePtr clientSite, IStoragePtr storage);
 
             // --------------------- PROPERTIES ------------------------
 
             // --------------------- INTERFACES ------------------------
-            
+         public:
          // IUnknown
             STDMETHOD(QueryInterface)(REFIID  iID, void** ppInterface);
 	         STDMETHOD_(ULONG,AddRef)();
@@ -50,9 +55,8 @@ namespace GUI
             // ---------------------- ACCESSORS ------------------------			
 
             // ----------------------- MUTATORS ------------------------
-         public:
-	         IOleObject*   Create(IOleClientSite*  pOleClientSite, IStorage*  pStorage);
-            void          SetBitmap(HBITMAP  hBitmap);
+         protected:
+            void  SetBitmap(HBITMAP  hBitmap);
 
             // -------------------- REPRESENTATION ---------------------
 

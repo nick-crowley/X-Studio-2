@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "RichEditImage.h"
+#include "OleBitmap.h"
 
 namespace GUI
 {
@@ -10,7 +10,7 @@ namespace GUI
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Creates an empty RichEdit image</summary>
-         RichEditImage::RichEditImage() 
+         OleBitmap::OleBitmap() 
          {
             ZeroMemory(&m_oData, sizeof(STGMEDIUM));
             ZeroMemory(&m_oFormat, sizeof(FORMATETC));
@@ -20,8 +20,20 @@ namespace GUI
             m_pEvents    = NULL;
          }
 
+         /// <summary>Create a non-empty RichEdit image</summary>
+         /// <param name="bitmap">The bitmap.</param>
+         /// <exception cref="Logic::ArgumentNullException">Bitmap is null</exception>
+         /// <exception cref="_com_error">Unable to set image data</exception>
+         OleBitmap::OleBitmap(HBITMAP bitmap) : OleBitmap()
+         {
+            REQUIRED(bitmap);
+
+            AddRef();
+            SetBitmap(bitmap);
+         }
+
          /// <summary>Release data</summary>
-         RichEditImage::~RichEditImage()
+         OleBitmap::~OleBitmap()
          {
             // [CHECK] Destroy data if we're the owner
 	         if (m_bDataOwner)
@@ -30,41 +42,46 @@ namespace GUI
 
          // ------------------------------- STATIC METHODS -------------------------------
 
-         // ------------------------------- PUBLIC METHODS -------------------------------
-
-         /// <summary>Increment the reference count </summary>
-         /// <returns></returns>
-         STDMETHODIMP_(ULONG)  RichEditImage::AddRef()
-         {
-	         return ++m_iRefCount;
-         }
-
          /// <summary>Creates an OLE picture.</summary>
          /// <param name="pOleClientSite">The OLE client site.</param>
          /// <param name="pStorage">The storage.</param>
          /// <returns></returns>
-         IOleObject*  RichEditImage::Create(IOleClientSite*  pOleClientSite, IStorage*  pStorage)
+         /// <exception cref="Logic::ArgumentNullException">Bitmap is null</exception>
+         /// <exception cref="_com_error">Unable to set image data</exception>
+         IOleObjectPtr  OleBitmap::CreateStatic(HBITMAP bitmap, IOleClientSitePtr clientSite, IStoragePtr storage)
          {
-            IOleObject* pOleObject = NULL;
-            HRESULT     hResult;
+            REQUIRED(bitmap);
+            REQUIRED(clientSite);
+            REQUIRED(storage);
 
-            // [CHECK] Ensure we have a bitmap
-	         ASSERT(m_oData.hBitmap);
+            // Create image source
+	         auto img = new OleBitmap(bitmap);
 
-            // Create OleObject
-	         hResult = ::OleCreateStaticFromData(this, IID_IOleObject, OLERENDER_FORMAT, &m_oFormat, pOleClientSite, pStorage, (void**)&pOleObject);
-	         ASSERT(hResult == S_OK);
+            // Create static copy
+            IOleObjectPtr object;
+	         HRESULT hr = ::OleCreateStaticFromData(img, IID_IOleObject, OLERENDER_FORMAT, &img->m_oFormat, clientSite, storage, (void**)&object);
+            if (FAILED(hr))
+	            _com_issue_errorex(hr, img, __uuidof(IDataObject));
 
-	         return pOleObject;
+	         return object;
          }
          
+         // ------------------------------- PUBLIC METHODS -------------------------------
+
+         /// <summary>Increment the reference count </summary>
+         /// <returns></returns>
+         STDMETHODIMP_(ULONG)  OleBitmap::AddRef()
+         {
+	         return ++m_iRefCount;
+         }
+
          /// <summary>Register for a 'data changed' notification</summary>
          /// <param name="pFormat">format to monitor.</param>
          /// <param name="dwFlags">flags.</param>
          /// <param name="pOutput">The OLE object to call when changes occurr.</param>
          /// <param name="pdwConnectionID">Unique ID to identify the event</param>
          /// <returns>S_OK if succesful</returns>
-         STDMETHODIMP RichEditImage::DAdvise(FORMATETC*  pFormat, DWORD  dwFlags, IAdviseSink*  pOutput, DWORD*  pdwConnectionID)
+         STDMETHODIMP OleBitmap::DAdvise(FORMATETC*  pFormat, DWORD  dwFlags, IAdviseSink*  pOutput, DWORD*  pdwConnectionID)
          {
             HRESULT  hResult;    // Operation result
 
@@ -79,7 +96,7 @@ namespace GUI
          /// <summary>Un-register a previously registered 'data changed' notification</summary>
          /// <param name="dwConnectionID">The connection identifier.</param>
          /// <returns>S_OK if succesful</returns>
-         STDMETHODIMP  RichEditImage::DUnadvise(DWORD dwConnectionID)
+         STDMETHODIMP  OleBitmap::DUnadvise(DWORD dwConnectionID)
          {
             // [CHECK] Events object exists
             if (!m_pEvents)
@@ -93,7 +110,7 @@ namespace GUI
          /// <param name="pFormat">Requested format</param>
          /// <param name="pOutput">output.</param>
          /// <returns>S_OK if succesful or E_HANDLE otherwise</returns>
-         STDMETHODIMP  RichEditImage::GetData(FORMATETC*  pFormat, STGMEDIUM*  pOutput)
+         STDMETHODIMP  OleBitmap::GetData(FORMATETC*  pFormat, STGMEDIUM*  pOutput)
          {
 	         HBITMAP  hBitmapCopy;
 
@@ -116,7 +133,7 @@ namespace GUI
          /// <param name="iID">The identifier.</param>
          /// <param name="pInterface">The interface.</param>
          /// <returns></returns>
-         STDMETHODIMP  RichEditImage::QueryInterface(REFIID  iID, void**  pInterface)
+         STDMETHODIMP  OleBitmap::QueryInterface(REFIID  iID, void**  pInterface)
          {
             // Set interface
 	         if (iID == IID_IUnknown)
@@ -138,7 +155,7 @@ namespace GUI
 
          /// <summary>Releases this instance.</summary>
          /// <returns></returns>
-         STDMETHODIMP_(ULONG)  RichEditImage::Release()
+         STDMETHODIMP_(ULONG)  OleBitmap::Release()
          {
 	         if (--m_iRefCount == 0)
 		         delete this;
@@ -146,37 +163,12 @@ namespace GUI
 	         return m_iRefCount;
          }
 
-         /// <summary>Sets the image by Bitmap handle.</summary>
-         /// <param name="hBitmap">The bitmap handle.</param>
-         VOID  RichEditImage::SetBitmap(HBITMAP  hBitmap)
-         {
-            STGMEDIUM  oData;
-            FORMATETC  oFormat;
-
-	         ASSERT(hBitmap);
-
-            /// Data
-	         oData.tymed   = TYMED_GDI;	
-	         oData.hBitmap = hBitmap;
-	         oData.pUnkForRelease = NULL;
-
-	         /// Data format
-	         oFormat.cfFormat = CF_BITMAP;				// Clipboard format = CF_BITMAP
-	         oFormat.ptd      = NULL;					// Target Device = Screen
-	         oFormat.dwAspect = DVASPECT_CONTENT;	// Level of detail = Full content
-	         oFormat.lindex   = -1;						// Index = Not applicaple
-	         oFormat.tymed    = TYMED_GDI;				// Storage medium = HBITMAP handle
-
-            // Save data
-	         SetData(&oFormat, &oData, TRUE);		
-         }
-
          /// <summary>Sets the image data.</summary>
          /// <param name="pFormat">The format.</param>
          /// <param name="pData">The data.</param>
          /// <param name="bDataOwner">Whether the object owns the new data and is responsible for destroying it</param>
          /// <returns>S_OK</returns>
-         STDMETHODIMP  RichEditImage::SetData(FORMATETC*  pFormat, STGMEDIUM*  pData, BOOL  bDataOwner)
+         STDMETHODIMP  OleBitmap::SetData(FORMATETC*  pFormat, STGMEDIUM*  pData, BOOL  bDataOwner)
          {
             // [CHECK] Destroy existing data, if any
             if (m_bDataOwner && m_oData.hBitmap)
@@ -191,6 +183,35 @@ namespace GUI
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
+         
+         /// <summary>Sets the image by Bitmap handle.</summary>
+         /// <param name="hBitmap">The bitmap handle.</param>
+         /// <exception cref="Logic::ArgumentNullException">Bitmap is null</exception>
+         /// <exception cref="_com_error">Unable to set image data</exception>
+         void  OleBitmap::SetBitmap(HBITMAP  hBitmap)
+         {
+            STGMEDIUM  oData;
+            FORMATETC  oFormat;
+            HRESULT    hr;
+
+	         REQUIRED(hBitmap);
+
+            /// Data
+	         oData.tymed   = TYMED_GDI;	
+	         oData.hBitmap = hBitmap;
+	         oData.pUnkForRelease = NULL;
+
+	         /// Data format
+	         oFormat.cfFormat = CF_BITMAP;				// Clipboard format = CF_BITMAP
+	         oFormat.ptd      = NULL;					// Target Device = Screen
+	         oFormat.dwAspect = DVASPECT_CONTENT;	// Level of detail = Full content
+	         oFormat.lindex   = -1;						// Index = Not applicaple
+	         oFormat.tymed    = TYMED_GDI;				// Storage medium = HBITMAP handle
+
+            // Save data
+	         if (FAILED(hr=SetData(&oFormat, &oData, TRUE)))
+                _com_issue_errorex(hr, this, __uuidof(IDataObject));
+         }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
       }
