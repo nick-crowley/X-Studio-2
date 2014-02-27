@@ -109,12 +109,6 @@
     <Filter Include="Header Files\Logic\Projects">
       <UniqueIdentifier>{f6b294a6-c4bc-483e-bb12-226753d932cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Controls\OLE">
-      <UniqueIdentifier>{ec27fba0-8cb0-485f-8ec8-5390b5b27094}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Controls\OLE">
-      <UniqueIdentifier>{ecf88f4f-99e5-47c3-bd68-6a1d3c0e18b0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -517,7 +511,7 @@
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
     <ClInclude Include="OleBitmap.h">
-      <Filter>Header Files\GUI\Controls\OLE</Filter>
+      <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -845,8 +839,11 @@
     <ClCompile Include="Logic\RichStringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
+    <ClCompile Include="LanguageEditCallback.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
     <ClCompile Include="OleBitmap.cpp">
-      <Filter>Source Files\GUI\Controls\OLE</Filter>
+      <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

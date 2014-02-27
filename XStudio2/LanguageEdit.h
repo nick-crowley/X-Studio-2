@@ -82,8 +82,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       };
 
    protected:
+      /// <summary>RichEdit Callback COM interface</summary>
+      _COM_SMARTPTR_TYPEDEF(IRichEditOleCallback, IID_IRichEditOleCallback);
+
+      /// <summary>Default character formatting</summary>
       class DefaultCharFormat : public CharFormat
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          DefaultCharFormat() : CharFormat(CFM_FACE|CFM_COLOR|CFM_PROTECTED|CFM_SIZE, CFE_PROTECTED)
          {
@@ -92,6 +97,44 @@ NAMESPACE_BEGIN2(GUI,Controls)
             StringCchCopy(szFaceName, LF_FACESIZE, L"Arial");
          }
       };
+
+      /// <summary>Ole Callback interface</summary>
+      class EditCallback : public IRichEditOleCallback
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         EditCallback(LanguageEdit* edit);
+         ~EditCallback();
+
+         // --------------------- PROPERTIES ------------------------
+      public:
+      // IUnknown
+         STDMETHOD(QueryInterface)(REFIID  iid, void**  pInterface);
+         STDMETHOD_(ULONG,AddRef)();
+         STDMETHOD_(ULONG,Release)();
+
+      // IRichEditOleCallback
+         STDMETHOD(GetContextMenu)(WORD  iSelectionType, IOleObject*  piObject, CHARRANGE*  pSelection, HMENU*  pOutput);
+         STDMETHOD(DeleteObject)(IOleObject* pOleObject);
+         STDMETHOD(QueryAcceptData)(IDataObject* pDataObject, CLIPFORMAT* lpcfFormat, DWORD reco, BOOL fReally, HGLOBAL hMetaPict);
+	      STDMETHOD(QueryInsertObject)(CLSID* pCLSID, IStorage* pStorage, LONG cp);
+
+      // Not Implemented
+         STDMETHOD(ContextSensitiveHelp)(BOOL fEnterMode)                                                                            { return E_NOTIMPL; };
+	      STDMETHOD(GetClipboardData)(CHARRANGE* lpchrg, DWORD reco, IDataObject** ppDataObject)                                      { return E_NOTIMPL; };
+         STDMETHOD(GetDragDropEffect)(BOOL fDrag, DWORD grfKeyState, DWORD* pdwEffect)                                               { return E_NOTIMPL; };
+         STDMETHOD(GetInPlaceContext)(IOleInPlaceFrame** ppFrame, IOleInPlaceUIWindow** ppDoc, LPOLEINPLACEFRAMEINFO lpFrameInfo)    { return E_NOTIMPL; };
+         STDMETHOD(GetNewStorage)(IStorage** ppStorage)                                                                              { return E_NOTIMPL; };
+	      STDMETHOD(ShowContainerUI)(BOOL fShow)                                                                                      { return E_NOTIMPL; };
+   
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         INT           RefCount;
+         LanguageEdit* Edit;
+      };
+
+      /// <summary>Short name for OLE callback smart-pointer</summary>
+      typedef IRichEditOleCallbackPtr  EditCallbackPtr;
 
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -135,8 +178,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void    HighlightMatch(UINT pos, UINT length, CharFormat& cf);
       void    UpdateHighlighting();
 
-      virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
-      virtual void OnTextChange();
+      handler void  OnButtonRemoved(IOleObjectPtr obj);
+      virtual void  OnRequestTooltip(CustomTooltip::TooltipData* data);
+      virtual void  OnTextChange();
       
       // -------------------- REPRESENTATION ---------------------
    public:
@@ -144,6 +188,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       EditMode          Mode;
       LanguageDocument* Document;
+      EditCallbackPtr   Callback;
 };
    
 
