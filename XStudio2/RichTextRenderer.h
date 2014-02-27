@@ -73,7 +73,7 @@ namespace GUI
          static PhraseList  GetPhrases(const RichString& str);
          static PhraseList  GetWords(const RichParagraph& para);
          static int         MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line);
-         static void        RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end);
+         static void        RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end, Flags flags);
 
          // --------------------- PROPERTIES ------------------------
 

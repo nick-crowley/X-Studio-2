@@ -90,6 +90,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       CClientDC dc(wnd);
       CBitmap   bmp;
+      CFont     font;
       CDC       memDC;
             
       // Create memory DC
@@ -102,8 +103,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw Win32Exception(HERE, L"Unable to load empty button image");
 
       // Setup DC
+      font.CreatePointFont(9*10, L"Arial");
       auto prevBmp = memDC.SelectObject(&bmp);
-      auto prevFont = memDC.SelectStockObject(ANSI_VAR_FONT);
+      auto prevFont = memDC.SelectObject(&font);
       
       // Draw button text onto bitmap
       memDC.SetBkMode(TRANSPARENT);

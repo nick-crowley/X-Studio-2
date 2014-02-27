@@ -191,6 +191,7 @@ namespace Logic
          RichString(const ElementList& content) : RichString()
          {
             FirstParagraph.Content = content;
+            FirstParagraph.Align = Alignment::Centre;
          }
 
          /// <summary>Create simple string without formatting</summary>
