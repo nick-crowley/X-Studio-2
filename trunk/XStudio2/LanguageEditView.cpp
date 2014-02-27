@@ -264,6 +264,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (ExceptionBase& e) { 
          theApp.ShowError(HERE, e, L"Unable to display selected string");
       }
+      catch (exception& e) { 
+         theApp.ShowError(HERE, e, L"Unable to display selected string");
+      }
    }
 
    /// <summary>Adjusts layout</summary>

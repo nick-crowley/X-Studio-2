@@ -338,6 +338,19 @@ void  Application::SetState(AppState s)
 /// <param name="e">The exception</param>
 /// <param name="msg">The display message</param>
 /// <returns></returns>
+BOOL Application::ShowError(const GuiString& src, const exception& e, const GuiString& msg) const
+{
+   Console.Log(src, e);
+   return AfxMessageBox(GuiString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
+                                                            StringResource::Convert(e.what(), CP_ACP).c_str(), 
+                                                            src.c_str()).c_str(), MB_ICONERROR|MB_OK);
+}
+
+/// <summary>Displays and logs an exception</summary>
+/// <param name="src">The handler location</param>
+/// <param name="e">The exception</param>
+/// <param name="msg">The display message</param>
+/// <returns></returns>
 BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const
 {
    Console.Log(src, e, msg);

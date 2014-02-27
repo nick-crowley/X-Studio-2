@@ -147,6 +147,7 @@ public:
 
    HICON     LoadIconW(UINT nResID, UINT iSize) const;
    CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;
+   BOOL      ShowError(const GuiString& src, const exception& e, const GuiString& msg) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e) const;
    
