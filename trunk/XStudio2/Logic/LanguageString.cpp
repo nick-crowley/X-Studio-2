@@ -10,8 +10,8 @@ namespace Logic
    {
       /// <summary>Matches any tags that identify whether named colour tags should be used</summary>
       const wregex  LanguageString::MatchMessageTag(L"\\["
-                                                    L"(article|author|rank|text|title"
-                                                    L"|black|blue|cyan|green|orange|magenta|red|silver|yellow|white)"
+                                                    L"(article|author|ranking|text|title"
+                                                    L"|black|blue|cyan|green|grey|orange|magenta|red|silver|yellow|white)"
                                                     L"\\]");
 
       // -------------------------------- CONSTRUCTION --------------------------------

@@ -167,8 +167,6 @@ namespace Logic
                return TagType::Grey;
             else if (name == L"text")
                return TagType::Text;
-            else if (name == L"rank")
-               return TagType::Rank;
             break;
 
          case 5:
@@ -204,6 +202,8 @@ namespace Logic
                return TagType::Magenta;
             else if (name == L"justify")
                return TagType::Justify;
+            else if (name == L"ranking")
+               return TagType::Rank;
             break;
          }
 
