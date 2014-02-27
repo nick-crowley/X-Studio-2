@@ -81,12 +81,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Creates a bitmap for a button</summary>
    /// <param name="wnd">Edit window.</param>
-   /// <param name="txt">text</param>
-   /// <param name="id">identifier.</param>
-   /// <param name="col">text colour</param>
+   /// <param name="txt">button text</param>
+   /// <param name="id">button ID.</param>
    /// <returns>New button bitmap</returns>
    /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-   HBITMAP LanguageEdit::ButtonData::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id, Logic::Colour col)
+   HBITMAP LanguageEdit::ButtonData::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id)
    {
       CClientDC dc(wnd);
       CBitmap   bmp;
@@ -109,9 +108,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // Draw button text onto bitmap
       memDC.SetBkMode(TRANSPARENT);
-      memDC.SetTextColor(RtfStringWriter::ToRGB(col));
       RichTextRenderer::DrawLine(&memDC, rcButton, txt, RichTextRenderer::Flags::None);
-      //memDC.DrawText(txt.c_str(), txt.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
 
       // Cleanup without destroying bitmap
       memDC.SelectObject(prevBmp);
@@ -183,10 +180,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Inserts a button at the caret.</summary>
-   /// <param name="txt">Button text.</param>
+   /// <param name="txt">Button source text.</param>
    /// <param name="id">Button identifier.</param>
-   /// <param name="col">Text colour</param>
-   void LanguageEdit::InsertButton(const RichString& txt, const wstring& id, Colour col)
+   void LanguageEdit::InsertButton(const wstring& txt, const wstring& id)
    {
       try
       {
@@ -205,7 +201,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             throw ComException(HERE, hr);
          
          // Create a static picture OLE Object 
-         bitmap.Attach(ButtonData::CreateBitmap(this, txt, id, col));
+         bitmap.Attach(ButtonData::CreateBitmap(this, RichStringParser(txt, Alignment::Centre).Output, id));
          IOleObjectPtr picture = OleBitmap::CreateStatic(bitmap, clientSite, storage);
          
          // Notify object it's embedded
@@ -226,7 +222,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          reObject.pstg     = storage;
 
          // Associate button data
-         reObject.dwUser = reinterpret_cast<DWORD>(new ButtonData(txt, id, col));
+         reObject.dwUser = reinterpret_cast<DWORD>(new ButtonData(txt, id));
 
          // Insert the object at the current location
          OleDocument->InsertObject(&reObject);
@@ -477,7 +473,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                Console << "Inserting Button=" << btn->Text << ENDL;
 
                // Insert button
-               InsertButton(btn->Text, btn->ID, Colour::White);
+               InsertButton(btn->Text, btn->ID);
             }
          }
 

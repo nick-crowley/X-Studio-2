@@ -190,7 +190,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnCommandInsertButton()
    {
       static int LastID = 1;
-      RichEdit.InsertButton(GuiString(L"Button %d", LastID++), L"id", Colour::Orange);
+      RichEdit.InsertButton(GuiString(L"Button %d", LastID++), L"id");
    }
 
    /// <summary>Creates the toolbar</summary>

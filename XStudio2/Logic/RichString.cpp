@@ -42,8 +42,8 @@ namespace Logic
          c << "{" << Cons::Yellow << "RichButton" << Cons::White << " Id=" << e.ID << " Text=";
 
          // Text
-         for (const auto& el : e.Text)
-            c << *el;
+         for (auto& chr : e.Text)
+            c << chr;
          
          return c << "}";
       }
