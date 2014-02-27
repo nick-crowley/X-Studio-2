@@ -68,7 +68,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageEdit::LanguageEdit() : Mode(EditMode::Edit), Document(nullptr)
+   LanguageEdit::LanguageEdit() : Mode(EditMode::Edit), Callback(nullptr), Document(nullptr)
    {
    }
 
@@ -134,6 +134,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Initialize
       __super::Initialize(MessageBackground);
+
+      // Create+set callback
+      Callback.Attach(new EditCallback(this), true);
+      SetOLECallback(Callback);
    }
 
    /// <summary>Inserts a button at the caret.</summary>
@@ -289,6 +293,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       SetSel(pos, (length != -1 ? pos + length : -1));
       SetSelectionCharFormat(cf);
+   }
+
+   /// <summary>Destroys the button data stored with a button image</summary>
+   /// <param name="obj">The object.</param>
+   void  LanguageEdit::OnButtonRemoved(IOleObjectPtr obj)
+   {
    }
 
    /// <summary>Supply tooltip data</summary>
