@@ -516,8 +516,8 @@
     <ClInclude Include="Logic\RichStringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="RichEditImage.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="OleBitmap.h">
+      <Filter>Header Files\GUI\Controls\OLE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -845,8 +845,8 @@
     <ClCompile Include="Logic\RichStringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
-    <ClCompile Include="RichEditImage.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="OleBitmap.cpp">
+      <Filter>Source Files\GUI\Controls\OLE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
