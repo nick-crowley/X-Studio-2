@@ -91,11 +91,12 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_COPY:    return pCmd->Enable(RichEdit.HasSelection());
          case ID_EDIT_PASTE:   
          case ID_EDIT_CLEAR:   return pCmd->Enable(TRUE);
-            break;
 
          // Button: Require editor mode
          case ID_EDIT_ADD_BUTTON:
-            return pCmd->Enable(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);
+            pCmd->SetCheck(FALSE);
+            pCmd->Enable(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);
+            break;
 
          // Format: Require editor mode
          case ID_EDIT_BOLD:       
@@ -188,7 +189,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Inserts a new button</summary>
    void LanguageEditView::OnCommandInsertButton()
    {
-      RichEdit.InsertButton(L"Button Text", L"id", Colour::Orange);
+      static int LastID = 1;
+      RichEdit.InsertButton(GuiString(L"Button %d", LastID++), L"id", Colour::Orange);
    }
 
    /// <summary>Creates the toolbar</summary>

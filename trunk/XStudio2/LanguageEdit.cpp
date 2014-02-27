@@ -299,6 +299,48 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="obj">The object.</param>
    void  LanguageEdit::OnButtonRemoved(IOleObjectPtr obj)
    {
+      try
+      {
+         REQUIRED(obj);
+
+         // Linear search for matching object
+         for (int i = 0; i < OleDocument->GetObjectCount(); ++i)
+         {
+            ReObject reObject;
+            
+            // Get IOleObject
+            /*if (FAILED(hr=OleDocument->GetObjectW(i, &reObject, REO_GETOBJ_POLEOBJ)))      // BUG: Fails if i > 0
+               throw ComException(HERE, hr);*/
+
+            // Get IOleObject
+            OleDocument->GetObjectW(i, &reObject, REO_GETOBJ_POLEOBJ);
+            IOleObjectPtr obj2(reObject.poleobj, false);
+
+            // Match: Delete button data
+            if (obj == obj2)
+            {
+               // Ensure data exists
+               if (!reObject.dwUser)
+                  throw AlgorithmException(HERE, L"Retrieved OLE object has no button data");
+
+               // DEBUG:
+               Console << "OnButtonRemoved: Destroying button=" << reinterpret_cast<ButtonData*>(reObject.dwUser)->Text << ENDL;
+
+               // Delete button data
+               delete reinterpret_cast<ButtonData*>(reObject.dwUser);
+               return;
+            }
+         }
+
+         // Error: Not found
+         throw AlgorithmException(HERE, L"Unable to destroy button data");
+      }
+      catch (_com_error& e) {
+         Console.Log(HERE, ComException(HERE, e));
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
    /// <summary>Supply tooltip data</summary>
