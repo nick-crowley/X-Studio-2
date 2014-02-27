@@ -23,7 +23,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="txt">text</param>
          /// <param name="id">identifier.</param>
          /// <param name="col">text colour</param>
-         ButtonData(const wstring& txt, const wstring& id, Colour col)
+         ButtonData(const RichString& txt, const wstring& id, Colour col)
             : Text(txt), ID(id), Colour(col) 
          {
             
@@ -31,44 +31,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // ------------------------ STATIC -------------------------
 
-         /// <summary>Creates a bitmap for a button</summary>
-         /// <param name="wnd">Edit window.</param>
-         /// <param name="txt">text</param>
-         /// <param name="id">identifier.</param>
-         /// <param name="col">text colour</param>
-         /// <returns>New button bitmap</returns>
-         /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-         static HBITMAP CreateBitmap(LanguageEdit* wnd, const wstring& txt, const wstring& id, Colour col)
-         {
-            CClientDC dc(wnd);
-            CBitmap   bmp;
-            CDC       memDC;
-            
-            // Create memory DC
-            if (!memDC.CreateCompatibleDC(&dc))
-               throw Win32Exception(HERE, L"Unable to create memory DC");
-
-            // Load bitmap
-            CRect rcButton(0,0, 160,19);
-            if (!bmp.LoadBitmapW(IDB_RICH_BUTTON))
-               throw Win32Exception(HERE, L"Unable to load empty button image");
-
-            // Setup DC
-            auto prevBmp = memDC.SelectObject(&bmp);
-            auto prevFont = memDC.SelectStockObject(ANSI_VAR_FONT);
-      
-            // Draw button text onto bitmap
-            memDC.SetBkMode(TRANSPARENT);
-            memDC.SetTextColor(RtfStringWriter::ToRGB(col));
-            memDC.DrawText(txt.c_str(), txt.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
-
-            // Cleanup without destroying bitmap
-            memDC.SelectObject(prevBmp);
-            memDC.SelectObject(prevFont);
-
-            // Detach/return bitmap
-            return (HBITMAP)bmp.Detach();
-         }
+         static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id, Colour col);
 
          // ---------------------- ACCESSORS ------------------------
 
@@ -76,9 +39,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         Colour   Colour;   
-         wstring  Text,     
-                  ID;       
+         Colour      Colour; 
+         wstring     ID; 
+         RichString  Text;
       };
 
    protected:
@@ -169,13 +132,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
       void  Clear();
       void  Initialize(LanguageDocument* doc);
-      void  InsertButton(const wstring& txt, const wstring& id, Colour col);
+      void  InsertButton(const RichString& txt, const wstring& id, Colour col);
       void  SetEditMode(EditMode m);
       void  Refresh();
 
    protected:
       wstring GetSourceText();
+      void    InsertPhrase(const RichPhrase& p);
       void    HighlightMatch(UINT pos, UINT length, CharFormat& cf);
+      void    SetRichText(const RichString& str);
       void    UpdateHighlighting();
 
       handler void  OnButtonRemoved(IOleObjectPtr obj);

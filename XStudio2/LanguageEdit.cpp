@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
 #include "OleBitmap.h"
+#include "RichTextRenderer.h"
 #include "Logic/RtfStringWriter.h"
 #include "Logic/RichStringWriter.h"
 #include "Logic/LanguagePage.h"
@@ -78,6 +79,46 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Creates a bitmap for a button</summary>
+   /// <param name="wnd">Edit window.</param>
+   /// <param name="txt">text</param>
+   /// <param name="id">identifier.</param>
+   /// <param name="col">text colour</param>
+   /// <returns>New button bitmap</returns>
+   /// <exception cref="Logic::Win32Exception">Drawing error</exception>
+   HBITMAP LanguageEdit::ButtonData::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id, Logic::Colour col)
+   {
+      CClientDC dc(wnd);
+      CBitmap   bmp;
+      CDC       memDC;
+            
+      // Create memory DC
+      if (!memDC.CreateCompatibleDC(&dc))
+         throw Win32Exception(HERE, L"Unable to create memory DC");
+
+      // Load bitmap
+      CRect rcButton(0,0, 160,19);
+      if (!bmp.LoadBitmapW(IDB_RICH_BUTTON))
+         throw Win32Exception(HERE, L"Unable to load empty button image");
+
+      // Setup DC
+      auto prevBmp = memDC.SelectObject(&bmp);
+      auto prevFont = memDC.SelectStockObject(ANSI_VAR_FONT);
+      
+      // Draw button text onto bitmap
+      memDC.SetBkMode(TRANSPARENT);
+      memDC.SetTextColor(RtfStringWriter::ToRGB(col));
+      RichTextRenderer::DrawLine(&memDC, rcButton, txt);
+      //memDC.DrawText(txt.c_str(), txt.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
+
+      // Cleanup without destroying bitmap
+      memDC.SelectObject(prevBmp);
+      memDC.SelectObject(prevFont);
+
+      // Detach/return bitmap
+      return (HBITMAP)bmp.Detach();
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
    
    /// <summary>Clears the text and resets font to Arial 10pt without firing EN_CHANGED</summary>
@@ -87,7 +128,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(true);
 
       // Clear
-      //__super::Clear();
       SetWindowText(L"");
       SetDefaultCharFormat(DefaultCharFormat());
       
@@ -144,7 +184,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="txt">Button text.</param>
    /// <param name="id">Button identifier.</param>
    /// <param name="col">Text colour</param>
-   void LanguageEdit::InsertButton(const wstring& txt, const wstring& id, Colour col)
+   void LanguageEdit::InsertButton(const RichString& txt, const wstring& id, Colour col)
    {
       try
       {
@@ -214,18 +254,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Editor: Display RichText
       else if (Mode == EditMode::Edit)
       {
-         string rtf; 
+         SetRichText(Document->SelectedString->RichText);
+         //string rtf; 
 
-         // Convert string into RTF
-         RtfStringWriter w(rtf);
-         w.Write(Document->SelectedString->RichText);
-         w.Close();
+         //// Convert string into RTF
+         //RtfStringWriter w(rtf);
+         //w.Write(Document->SelectedString->RichText);
+         //w.Close();
 
-         // Replace contents with RTF
-         SetRtf(rtf);
+         //// Replace contents with RTF
+         //SetRtf(rtf);
 
-         // DEBUG:
-         Console << GetSourceText() << ENDL;
+         //// DEBUG:
+         //Console << GetSourceText() << ENDL;
       }
       // Display: Format for display
       else if (Mode == EditMode::Display)
@@ -309,11 +350,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             ReObject reObject;
             
             // Get IOleObject
-            /*if (FAILED(hr=OleDocument->GetObjectW(i, &reObject, REO_GETOBJ_POLEOBJ)))      // BUG: Fails if i > 0
-               throw ComException(HERE, hr);*/
-
-            // Get IOleObject
-            OleDocument->GetObjectW(i, &reObject, REO_GETOBJ_POLEOBJ);
+            OleDocument->GetObjectW(i, &reObject, REO_GETOBJ_POLEOBJ);     // BUG: Returns failure but actually succeeds
             IOleObjectPtr obj2(reObject.poleobj, false);
 
             // Match: Delete button data
@@ -324,7 +361,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   throw AlgorithmException(HERE, L"Retrieved OLE object has no button data");
 
                // DEBUG:
-               Console << "OnButtonRemoved: Destroying button=" << reinterpret_cast<ButtonData*>(reObject.dwUser)->Text << ENDL;
+               //Console << "OnButtonRemoved: Destroying button=" << reinterpret_cast<ButtonData*>(reObject.dwUser)->Text << ENDL;
 
                // Delete button data
                delete reinterpret_cast<ButtonData*>(reObject.dwUser);
@@ -383,6 +420,96 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Reset tootlip
       __super::OnTextChange();
+   }
+
+   /// <summary>Replace edit contents with rich text.</summary>
+   /// <param name="richStr">The string.</param>
+   void  LanguageEdit::SetRichText(const RichString& richStr)
+   {
+      // Freeze
+      FreezeWindow(true);
+      SuspendUndo(true);
+
+      // Clear contents
+      SetWindowText(L"");
+      SetDefaultCharFormat(DefaultCharFormat());
+      
+      // Assemble characters into phrases of contiguous formatting separated by buttons, insert them, then align paragraph.
+      for (const RichParagraph& para : richStr.Paragraphs)
+      {
+         RichPhrase phrase;
+
+         // Paragraph start index
+         auto paraBegin = GetSelection().cpMin;
+
+         // Insert text/buttons
+         for (const RichElementPtr& element : para.Content)
+         {
+            // Character: Extend phrase
+            if (element->Type == ElementType::Character)
+            {
+               RichCharacter* chr = reinterpret_cast<RichCharacter*>(element.get());
+
+               // Start phrase
+               if (phrase.Empty())
+                  phrase = RichPhrase(*chr);
+               // Extend phrase
+               else if (phrase.Format == chr->Format && phrase.Colour == chr->Colour)
+                  phrase += chr->Char;
+               else
+               {  // Commit phrase
+                  InsertPhrase(phrase += chr->Char);
+                  phrase.Clear();
+               }
+            }
+            // Button:
+            else 
+            {
+               auto btn = reinterpret_cast<RichButton*>(element.get());
+
+               // Commit phrase (if any)
+               InsertPhrase(phrase);
+               phrase.Clear();
+
+               // DEBUG:
+               Console << "Inserting Button=" << btn->Text << ENDL;
+
+               // Insert button
+               InsertButton(btn->Text, btn->ID, Colour::White);
+            }
+         }
+
+         // Commit final phrase
+         InsertPhrase(phrase);
+         
+         // Align paragraph
+         auto paraEnd = GetSelection().cpMax;
+         SetSel(paraBegin, paraEnd);
+         SetParaFormat(ParaFormat(PFM_ALIGNMENT, para.Align));
+         SetSel(paraEnd, paraEnd);
+      }
+      
+      // Clear selection
+      SetSel(0,0);
+
+      // Unfreeze + Clear Undo
+      SuspendUndo(false);
+      EmptyUndoBuffer();
+      FreezeWindow(false);
+   }
+
+   void LanguageEdit::InsertPhrase(const RichPhrase& phr)
+   {
+      if (phr.Empty())
+         return;
+
+      // Insert phrase
+      SetSelectionCharFormat(CharFormat(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE|CFM_COLOR, phr.Format, phr.GetColour(false)));
+      ReplaceSel(phr.Text.c_str());
+
+      // Move caret to end-of-phrase
+      auto end = GetSelection().cpMax;
+      SetSel(end, end);
    }
    
    /// <summary>Performs syntax highlighting when in Source mode</summary>

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "Logic/RichString.h"
 #include <strsafe.h>
 #include <Richole.h>
 
@@ -213,11 +214,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
    public:
       CharFormat() { Clear(); }
-      CharFormat(DWORD mask, DWORD effects) 
+      CharFormat(DWORD mask, DWORD effects) : CharFormat()
       {
-         Clear();
          dwMask = mask;
          dwEffects = effects;
+      }
+      CharFormat(DWORD mask, DWORD effects, COLORREF col) : CharFormat(mask, effects)
+      {
+         crTextColor = col;
       }
 
       /// <summary>Clear formatting</summary>
@@ -233,10 +237,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
    public:
       ParaFormat() { Clear(); }
-      ParaFormat(DWORD mask) 
+      ParaFormat(DWORD mask) : ParaFormat()
       {
-         Clear();
          dwMask = mask;
+      }
+      ParaFormat(DWORD mask, Alignment align) : ParaFormat(mask)
+      {
+         wAlignment = (UINT)align;
       }
 
       /// <summary>Clear formatting</summary>

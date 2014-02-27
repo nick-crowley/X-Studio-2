@@ -240,7 +240,7 @@ namespace GUI
       /// <summary>Convert string into a list of phrases with contiguous formatting</summary>
       /// <param name="str">string.</param>
       /// <returns>List of phrases</returns>
-      RichTextRenderer::PhraseList  RichTextRenderer::GetPhrases(const RichString& str)
+      PhraseList  RichTextRenderer::GetPhrases(const RichString& str)
       {
          RichCharList chars;
 
@@ -275,7 +275,7 @@ namespace GUI
       /// <summary>Convert string into a list of words/whitespace with contiguous formatting</summary>
       /// <param name="str">string.</param>
       /// <returns>List of words/whitespace with contiguous formatting</returns>
-      RichTextRenderer::PhraseList  RichTextRenderer::GetWords(const RichParagraph& para)
+      PhraseList  RichTextRenderer::GetWords(const RichParagraph& para)
       {
          RichCharList chars;
 
