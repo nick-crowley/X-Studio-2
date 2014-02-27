@@ -19,19 +19,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Creates button data and a bitmap</summary>
+         /// <summary>Creates button data</summary>
+         /// <param name="txt">text</param>
+         /// <param name="id">identifier.</param>
+         /// <param name="col">text colour</param>
+         ButtonData(const wstring& txt, const wstring& id, Colour col)
+            : Text(txt), ID(id), Colour(col) 
+         {
+            
+         }
+
+         // ------------------------ STATIC -------------------------
+
+         /// <summary>Creates a bitmap for a button</summary>
          /// <param name="wnd">Edit window.</param>
          /// <param name="txt">text</param>
          /// <param name="id">identifier.</param>
          /// <param name="col">text colour</param>
+         /// <returns>New button bitmap</returns>
          /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-         ButtonData(LanguageEdit* wnd, const wstring& txt, const wstring& id, Colour col)
-            : Text(txt), ID(id), Colour(col), Bitmap(nullptr)
+         static HBITMAP CreateBitmap(LanguageEdit* wnd, const wstring& txt, const wstring& id, Colour col)
          {
             CClientDC dc(wnd);
             CBitmap   bmp;
             CDC       memDC;
-      
+            
             // Create memory DC
             if (!memDC.CreateCompatibleDC(&dc))
                throw Win32Exception(HERE, L"Unable to create memory DC");
@@ -46,20 +58,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
             auto prevFont = memDC.SelectStockObject(ANSI_VAR_FONT);
       
             // Draw button text onto bitmap
+            memDC.SetBkMode(TRANSPARENT);
             memDC.SetTextColor(RtfStringWriter::ToRGB(col));
-            memDC.DrawText(Text.c_str(), Text.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
+            memDC.DrawText(txt.c_str(), txt.length(), &rcButton, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
 
             // Cleanup without destroying bitmap
             memDC.SelectObject(prevBmp);
             memDC.SelectObject(prevFont);
 
-            // Store bitmap
-            Bitmap = (HBITMAP)bmp.Detach();
-         }
-
-         ~ButtonData()
-         {
-            DeleteObject(Bitmap);
+            // Detach/return bitmap
+            return (HBITMAP)bmp.Detach();
          }
 
          // ---------------------- ACCESSORS ------------------------
@@ -68,11 +76,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         Colour         Colour;   
-         wstring        Text,     
-                        ID;       
-         HBITMAP        Bitmap;   
-         IOleObjectPtr  Object;   
+         Colour   Colour;   
+         wstring  Text,     
+                  ID;       
       };
 
    protected:

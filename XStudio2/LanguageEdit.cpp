@@ -147,48 +147,43 @@ NAMESPACE_BEGIN2(GUI,Controls)
          IOleClientSitePtr clientSite;
          ILockBytesPtr     lockBytes;
          IStoragePtr       storage;
-
-         // Create button data
-         ButtonData* button = new ButtonData(this, txt, id, col);
-
+         CBitmap           bitmap;
+         HRESULT           hr;
+         
 	      // Get container site
          OleDocument->GetClientSite(&clientSite);
 
 	      // Initialize a Storage Object
-	      if (SUCCEEDED(::CreateILockBytesOnHGlobal(NULL, TRUE, &lockBytes))
-          && SUCCEEDED(::StgCreateDocfileOnILockBytes(lockBytes, STGM_SHARE_EXCLUSIVE|STGM_CREATE|STGM_READWRITE, 0, &storage)))
-         {
-            IOleObjectPtr picture;
-            
-            // Create a static picture OLE Object 
-            if (picture = OleBitmap::CreateStatic(button->Bitmap, clientSite, storage))
-            {
-               ReObject  reObject;
-               CLSID     iCLSID;
+         if (FAILED(hr=::CreateILockBytesOnHGlobal(NULL, TRUE, &lockBytes))
+          || FAILED(hr=::StgCreateDocfileOnILockBytes(lockBytes, STGM_SHARE_EXCLUSIVE|STGM_CREATE|STGM_READWRITE, 0, &storage)))
+            throw ComException(HERE, hr);
+         
+         // Create a static picture OLE Object 
+         bitmap.Attach(ButtonData::CreateBitmap(this, txt, id, col));
+         IOleObjectPtr picture = OleBitmap::CreateStatic(bitmap, clientSite, storage);
+         
+         // Notify object it's embedded
+         OleSetContainedObject(picture, TRUE);
 
-               // Notify object it's embedded
-               OleSetContainedObject(button->Object, TRUE);
+         // Lookup CLSID
+         CLSID  clsid;
+         if (FAILED(hr=picture->GetUserClassID(&clsid)))
+            throw ComException(HERE, hr);
+         
+         // Define object
+         ReObject  reObject;
+         reObject.clsid    = clsid;
+         reObject.cp       = REO_CP_SELECTION;
+         reObject.dvaspect = DVASPECT_CONTENT;
+         reObject.poleobj  = picture;
+         reObject.polesite = clientSite;
+         reObject.pstg     = storage;
 
-               // Lookup CLSID
-               if (picture->GetUserClassID(&iCLSID) == S_OK)
-               {
-                  // Define object
-                  reObject.clsid    = iCLSID;
-                  reObject.cp       = REO_CP_SELECTION;
-                  reObject.dvaspect = DVASPECT_CONTENT;
-                  reObject.poleobj  = picture;
-                  reObject.polesite = clientSite;
-                  reObject.pstg     = storage;
+         // Associate button data
+         reObject.dwUser = reinterpret_cast<DWORD>(new ButtonData(txt, id, col));
 
-                  // Associate button data
-                  reObject.dwUser = reinterpret_cast<DWORD>(button);
-                  button->Object  = picture;
-
-                  // Insert the object at the current location in the richedit control
-                  OleDocument->InsertObject(&reObject);
-               }  
-            }  
-         }
+         // Insert the object at the current location
+         OleDocument->InsertObject(&reObject);
       }
       catch (_com_error& e) {
          Console.Log(HERE, ComException(HERE, e));
