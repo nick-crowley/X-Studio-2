@@ -34,10 +34,12 @@ namespace Logic
 
       /// <summary>Creates a rich-text parser from an input string</summary>
       /// <param name="str">string containing rich-text tags</param>
+      /// <param name="default">Default paragraph alignment</param>
       /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::Language::RichTextException">Error in formatting tags</exception>
-      RichStringParser::RichStringParser(const wstring& str) : Input(str), Alignments(TagClass::Paragraph)
+      RichStringParser::RichStringParser(const wstring& str, Alignment default) 
+         : Input(str), Output(default), Alignments(TagClass::Paragraph)
       {
          Parse();
       }
@@ -288,10 +290,10 @@ namespace Logic
                         Output += RichParagraph(GetAlignment(tag.Type));
                         Paragraph = &Output.Paragraphs.back();
                      }
-                     // Close: Append empty left-aligned (unless EOF)
+                     // Close: Append empty default-aligned (unless EOF)
                      else if (!tag.Opening && ch+1 < Input.end())
                      {  
-                        Output += RichParagraph(Alignment::Left);
+                        Output += RichParagraph(Default);
                         Paragraph = &Output.Paragraphs.back();
                      }
                      break;
@@ -345,22 +347,18 @@ namespace Logic
          if (tag.Type != TagType::Select)
             throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", ::GetString(tag.Type).c_str()) );
 
-         // Recursively parse text  (To enable character/colour formatting)
-         RichStringParser btn(tag.Text);
-                        
-         // Get ID
-         wstring id;
-         if (!tag.Properties.empty())
+         // Anonymous: Use text only
+         if (tag.Properties.empty())
+            return new RichButton(tag.Text);
+         else
          {
             // Ensure property is 'value'
-            if (tag.Properties.front().first != L"value")
-               throw RichTextException(HERE, GuiString(L"Unrecognised button property '%s'", tag.Properties.front().first.c_str()) );
+            if (tag.Properties.front().Name != L"value")
+               throw RichTextException(HERE, GuiString(L"Unrecognised button property '%s'", tag.Properties.front().Name.c_str()) );
 
-            id = tag.Properties.front().second;
+            // Return text + ID
+            return new RichButton(tag.Text, tag.Properties.front().Value);
          }
-                           
-         // Append button     [Extract only 1st paragraph of button text, to strip paragraph alignment]
-         return new RichButton(id, btn.FirstParagraph.Content);
       }
       
 
@@ -541,23 +539,23 @@ namespace Logic
          for (const Property& p : tag.Properties)
          {
             // Column count
-            if (p.first == L"cols")
+            if (p.Name == L"cols")
             {
                // Verify
-               auto cols = _ttoi(p.second.c_str());
+               auto cols = _ttoi(p.Value.c_str());
                if (cols < 0 || cols > 3)
                   throw RichTextException(HERE, GuiString(L"Cannot arrange text in %d columns", cols));
                Output.Columns = static_cast<ColumnType>(cols);
             }
             // Column width
-            else if (p.first == L"colwidth")
-               Output.Width = _ttoi(p.second.c_str());
+            else if (p.Name == L"colwidth")
+               Output.Width = _ttoi(p.Value.c_str());
             // Column spacing
-            else if (p.first == L"colspacing")
-               Output.Width = _ttoi(p.second.c_str());
+            else if (p.Name == L"colspacing")
+               Output.Width = _ttoi(p.Value.c_str());
             else
                // Unrecognised
-               throw RichTextException(HERE, GuiString(L"Invalid 'text' tag property '%s'", p.first.c_str()));
+               throw RichTextException(HERE, GuiString(L"Invalid 'text' tag property '%s'", p.Name.c_str()));
          }
       }
 

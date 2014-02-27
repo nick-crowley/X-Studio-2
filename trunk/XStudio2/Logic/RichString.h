@@ -106,13 +106,15 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RichButton(const wstring& id, const ElementList& txt) : RichElement(ElementType::Button), ID(id), Text(txt)
+         RichButton(const wstring& txt) : RichElement(ElementType::Button), Text(txt)
+         {}
+         RichButton(const wstring& txt, const wstring& id) : RichElement(ElementType::Button), ID(id), Text(txt)
          {}
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         wstring     ID;
-         ElementList Text;
+         wstring  ID,
+                  Text;    // Button text - may be richText source
       };
 
       /// <summary>Paragraph of text within a rich-text string</summary>
@@ -120,12 +122,9 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create empty left-aligned paragraph</summary>
-         RichParagraph() : Align(Alignment::Left)
-         {}
          /// <summary>Create empty paragraph</summary>
          /// <param name="al">alignment</param>
-         RichParagraph(Alignment al) : Align(al)
+         RichParagraph(Alignment align = Alignment::Left) : Align(align)
          {}
 
          // ----------------------- MUTATORS ------------------------
@@ -182,20 +181,13 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create empty string with single left-aligned paragraph</summary>
-         RichString() : Columns(ColumnType::Default), Spacing(0), Width(0)
+         RichString(Alignment default = Alignment::Left) : Columns(ColumnType::Default), Spacing(0), Width(0)
          {
-            operator+=( RichParagraph(Alignment::Left) );
-         }
-
-         /// <summary>Create string from existing list of characters [Used for rendering button text]</summary>
-         RichString(const ElementList& content) : RichString()
-         {
-            FirstParagraph.Content = content;
-            FirstParagraph.Align = Alignment::Centre;
+            operator+=( RichParagraph(default) );
          }
 
          /// <summary>Create simple string without formatting</summary>
-         RichString(const wstring& text) : RichString()
+         explicit RichString(const wstring& text) : RichString(Alignment::Left)
          {
             for (auto& ch : text)
                GetFirstParagraph() += new RichCharacter(ch, Colour::Default, 0);

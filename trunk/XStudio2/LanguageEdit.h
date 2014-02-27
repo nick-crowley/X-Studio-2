@@ -22,16 +22,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Creates button data</summary>
          /// <param name="txt">text</param>
          /// <param name="id">identifier.</param>
-         /// <param name="col">text colour</param>
-         ButtonData(const RichString& txt, const wstring& id, Colour col)
-            : Text(txt), ID(id), Colour(col) 
-         {
-            
-         }
+         ButtonData(const wstring& txt, const wstring& id) : Text(txt), ID(id)
+         {}
 
          // ------------------------ STATIC -------------------------
 
-         static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id, Colour col);
+         static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id);
 
          // ---------------------- ACCESSORS ------------------------
 
@@ -39,9 +35,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         Colour      Colour; 
-         wstring     ID; 
-         RichString  Text;
+         wstring  ID,
+                  Text;
       };
 
    protected:
@@ -132,7 +127,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
       void  Clear();
       void  Initialize(LanguageDocument* doc);
-      void  InsertButton(const RichString& txt, const wstring& id, Colour col);
+      void  InsertButton(const wstring& txt, const wstring& id);
       void  SetEditMode(EditMode m);
       void  Refresh();
 

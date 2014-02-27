@@ -30,7 +30,18 @@ namespace Logic
          typedef wstring::const_iterator CharIterator;
 
          /// <summary>Rich-text tag {name,value} property pair</summary>
-         typedef pair<wstring,wstring> Property;
+         class Property 
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         public:
+            Property(const wstring& name, const wstring& val) : Name(name), Value(val)
+            {}
+
+            // -------------------- REPRESENTATION ---------------------
+         public:
+            wstring  Name, 
+                     Value;
+         };
 
          /// <summary>List of {name,value} property pairs for a rich-text tag</summary>
          typedef list<Property>  PropertyList;
@@ -186,7 +197,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         RichStringParser(const wstring& str);
+         RichStringParser(const wstring& str, Alignment default = Alignment::Left);
          virtual ~RichStringParser();
 
          DEFAULT_COPY(RichStringParser);	// Default copy semantics
@@ -241,6 +252,7 @@ namespace Logic
          ColourTagStack  Colours;
          CharTagStack    Formatting;
          TagStack        Alignments;
+         Alignment       Default;
       };
 
    }
