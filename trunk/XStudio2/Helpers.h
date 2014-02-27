@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include <strsafe.h>
+#include <Richole.h>
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -243,6 +244,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          ZeroMemory((PARAFORMAT*)this, sizeof(PARAFORMAT));
          cbSize = sizeof(PARAFORMAT);
+      }
+   };
+
+   /// <summary>RichEdit object helper</summary>
+   class ReObject : public REOBJECT
+   {
+   public:
+      ReObject() { Clear(); }
+
+      /// <summary>Clear</summary>
+      void  Clear()
+      {
+         ZeroMemory((REOBJECT*)this, sizeof(REOBJECT));
+         cbStruct = sizeof(REOBJECT);
       }
    };
 

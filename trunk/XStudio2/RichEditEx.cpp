@@ -235,12 +235,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Tooltip.Create(this, this);
 
       // Get IRichEditOle interface
-      IRichEditOlePtr edit(GetIRichEditOle(), false);
-      if (!edit)
+      OleDocument = IRichEditOlePtr(GetIRichEditOle(), false);
+      if (!OleDocument)
          throw Win32Exception(HERE, L"Unable to get IRichEditOle interface");
       
       // Get ITextDocument interface
-      TextDocument = edit;
+      TextDocument = OleDocument;
       if (!TextDocument)
          throw Win32Exception(HERE, L"Unable to get ITextDocument interface");
    }

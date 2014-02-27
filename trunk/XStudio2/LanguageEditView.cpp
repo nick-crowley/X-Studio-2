@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
       ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandChangeMode)
+      ON_COMMAND(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandInsertButton)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -91,6 +92,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_PASTE:   
          case ID_EDIT_CLEAR:   return pCmd->Enable(TRUE);
             break;
+
+         // Button: Require editor mode
+         case ID_EDIT_ADD_BUTTON:
+            return pCmd->Enable(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);
 
          // Format: Require editor mode
          case ID_EDIT_BOLD:       
@@ -178,6 +183,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (ExceptionBase& e) { 
          theApp.ShowError(HERE, e, L"Unable to change editor mode");
       }
+   }
+
+   /// <summary>Inserts a new button</summary>
+   void LanguageEditView::OnCommandInsertButton()
+   {
+      RichEdit.InsertButton(L"Button Text", L"id", Colour::Orange);
    }
 
    /// <summary>Creates the toolbar</summary>
