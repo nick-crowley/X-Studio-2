@@ -28,39 +28,26 @@ namespace GUI
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
       void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str, Flags flags)
       {
-         FontMap Fonts;
-         LOGFONT fontData;
-         CFont*  oldFont;
+         // Separate into phrases
+         auto words = GetPhrases(str);
 
-         // Get original font properties
-         oldFont = dc->GetCurrentFont();
-         if (!oldFont->GetLogFont(&fontData))
-            throw Win32Exception(HERE, L"Unable to get logical font");
-         
-         // Draw phrases
-         for (auto& p : GetPhrases(str))
+         // Measure phrases
+         auto first = words.begin(), last = first;
+         int line_remaining = MeasureLine(dc, last, words.end(), line);
+
+         // Alignment: Offset all word rectangles
+         for (auto w = first; w != last; ++w)
          {
-            // Create font if necessary
-            if (Fonts.Contains(p.Format))
-               Fonts[p.Format] = p.GetFont(fontData);
-
-            // Select approprate font
-            dc->SelectObject(Fonts[p.Format].get());
-            
-            // Set colour
-            dc->SetTextColor(p.GetColour(flags != Flags::None));
-
-            // Draw as much text as possible
-            dc->DrawText(p.Text.c_str(), p.Text.length(), line, DT_LEFT|DT_END_ELLIPSIS|DT_SINGLELINE|DT_VCENTER);
-            line.left += dc->GetTextExtent(p.Text.c_str(), p.Text.length()).cx;
-
-            // Restore
-            dc->SelectObject(oldFont);
-
-            // EOF: Abort if we run out of space
-            if (line.left > line.right)
-               break;
+            switch (str.FirstParagraph.Align)
+            {
+            case Alignment::Right:   w->Offset(line_remaining);    break;
+            case Alignment::Centre:
+            case Alignment::Justify: w->Offset(line_remaining/2);  break;
+            }
          }
+
+         // Render words
+         RenderLine(dc, first, last, flags);
       }
 
       /// <summary>Draw multiple lines of rich text</summary>
@@ -113,7 +100,7 @@ namespace GUI
 
                // Render words
                if (!Calculate)
-                  RenderLine(dc, first, w);
+                  RenderLine(dc, first, w, Flags::None);
 
                // NewLine
                if (w != words.end())
@@ -201,7 +188,7 @@ namespace GUI
       /// <param name="dc">The dc.</param>
       /// <param name="pos">position of first word.</param>
       /// <param name="end">position after the last word.</param>
-      void  RichTextRenderer::RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end)
+      void  RichTextRenderer::RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end, Flags flags)
       {
          LOGFONT fontData;
 
@@ -223,7 +210,7 @@ namespace GUI
 
             // Select font/colour
             dc->SelectObject(w->Font.get());
-            dc->SetTextColor(w->GetColour(true));
+            dc->SetTextColor(w->GetColour(flags != Flags::None));
             dc->SelectObject(oldFont);
 
             // DEBUG:
