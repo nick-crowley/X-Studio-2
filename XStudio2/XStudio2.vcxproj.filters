@@ -109,6 +109,12 @@
     <Filter Include="Header Files\Logic\Projects">
       <UniqueIdentifier>{f6b294a6-c4bc-483e-bb12-226753d932cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Controls\OLE">
+      <UniqueIdentifier>{ec27fba0-8cb0-485f-8ec8-5390b5b27094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Controls\OLE">
+      <UniqueIdentifier>{ecf88f4f-99e5-47c3-bd68-6a1d3c0e18b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -510,6 +516,9 @@
     <ClInclude Include="Logic\RichStringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
+    <ClInclude Include="RichEditImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -835,6 +844,9 @@
     </ClCompile>
     <ClCompile Include="Logic\RichStringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="RichEditImage.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -246,6 +246,7 @@
     <ClInclude Include="PropertyGrid.h" />
     <ClInclude Include="PropertySource.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="RichEditImage.h" />
     <ClInclude Include="RichTextRenderer.h" />
     <ClInclude Include="ScriptDocument.h" />
     <ClInclude Include="ScriptEdit.h" />
@@ -355,6 +356,7 @@
     <ClCompile Include="MainWnd.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="PropertyGrid.cpp" />
+    <ClCompile Include="RichEditImage.cpp" />
     <ClCompile Include="RichTextRenderer.cpp" />
     <ClCompile Include="ScriptDocument.cpp" />
     <ClCompile Include="ScriptEdit.cpp" />
