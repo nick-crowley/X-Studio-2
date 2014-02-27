@@ -7,7 +7,7 @@ namespace Logic
    namespace Language
    {
       /// <summary>Matches an opening tag (at beginning of string) and captures the name</summary>
-      const wregex  RichStringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*'\\w+')*\\]");
+      const wregex  RichStringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*[\"']\\w+[\"'])*\\]");
 
       /// <summary>Matches any closing tag (at beginning of string) and captures the name</summary>
       const wregex  RichStringParser::IsClosingTag = wregex(L"^\\[/?([a-z]+)\\]");
@@ -16,13 +16,19 @@ namespace Logic
       const wregex  RichStringParser::IsBasicTag = wregex(L"^\\[/?([a-z]+)\\]");
 
       /// <summary>Matches multiple tag properties captures both name and value</summary>
-      const wregex  RichStringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*'(\\w+)'");
+      const wregex  RichStringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*[\"'](\\w+)[\"']");
 
       /// <summary>Matches opening and closing [author] tags (at beginning of string) and captures the text</summary>
-      const wregex  RichStringParser::IsAuthorDefition = wregex(L"^\\[author\\](.*)\\[/author\\]");
+      const wregex  RichStringParser::IsAuthorDefinition = wregex(L"^\\[author\\](.*?)\\[/author\\]");
+
+      /// <summary>Matches opening and closing [select] tags (at start of string) and captures the text</summary>
+      const wregex  RichStringParser::IsButtonDefinition = wregex(L"^\\[select\\](.*?)\\[/select\\]");
+
+      /// <summary>Matches button text and closing [select] tags</summary>
+      const wregex  RichStringParser::IsButtonText = wregex(L"^\\](.*?)\\[/select\\]");
 
       /// <summary>Matches opening and closing [title] tags (at beginning of string) and captures the text</summary>
-      const wregex  RichStringParser::IsTitleDefition = wregex(L"^\\[title\\](.*)\\[/title\\]");
+      const wregex  RichStringParser::IsTitleDefinition = wregex(L"^\\[title\\](.*?)\\[/title\\]");
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
@@ -213,6 +219,9 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
+
+      // ------------------------------ PROTECTED METHODS -----------------------------
+      
       /// <summary>Parses input string</summary>
       /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
       /// <exception cref="Logic::ArgumentException">Error in parsing algorithm</exception>
@@ -322,8 +331,6 @@ namespace Logic
             }
          }
       }
-
-      // ------------------------------ PROTECTED METHODS -----------------------------
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
@@ -450,6 +457,7 @@ namespace Logic
       /// <summary>Reads the entire tag and advances the iterator</summary>
       /// <param name="pos">position of opening bracket</param>
       /// <returns></returns>
+      /// <exception cref="Logic::Language::AlgorithmException">Unable to read tag</exception>
       /// <exception cref="Logic::Language::RichTextException">Closing tag doesn't match currently open tag</exception>
       /// <remarks>Advances the iterator to the last character of the tag, so Parse() loop advances correctly to the next character</remarks>
       RichStringParser::RichTag  RichStringParser::ReadTag(CharIterator& pos)
@@ -466,25 +474,19 @@ namespace Logic
             // Identify type
             switch (TagType type = IdentifyTag(name))
             {
-            // Author: Return author
-            case TagType::Author:
-               // Match [author](text)[/author]
-               if (!regex_search(pos, Input.cend(), matches, IsAuthorDefition))
-                  throw RichTextException(HERE, L"Invalid author tag");
-
-               // Advance iterator.  Return author text
-               pos += matches[0].length()-1;
-               return RichTag(TagType::Author, matches[1].str());
-
             // Title: Return title
+            case TagType::Author:
+            case TagType::Select:
             case TagType::Title:
                // Match [title](text)[/title]
-               if (!regex_search(pos, Input.cend(), matches, IsTitleDefition))
-                  throw RichTextException(HERE, L"Invalid title tag");
+               if (!regex_search(pos, Input.cend(), matches, type == TagType::Title  ? IsTitleDefinition
+                                                           : type == TagType::Author ? IsAuthorDefinition
+                                                                                     : IsButtonDefinition)) 
+                  throw RichTextException(HERE, GuiString(L"Invalid [%s] tag", ::GetString(type).c_str()));
 
                // Advance iterator.  Return title text
                pos += matches[0].length()-1;
-               return RichTag(TagType::Title, matches[1].str());
+               return RichTag(type, matches[1].str());
 
             // Default: Advance iterator to ']' + return
             default:
@@ -493,22 +495,36 @@ namespace Logic
             }
          }
          // COMPLEX: Open tag with properties
-         else
+         else if (regex_search(pos, Input.cend(), matches, IsOpeningTag))  // Match tag name, identify start/end of properties
          {
             PropertyList props;
-
-            // Match tag name, identify start/end of properties
-            regex_search(pos, Input.cend(), matches, IsOpeningTag);
 
             // Match properties
             for (wsregex_iterator it(pos+matches[1].length(), pos+matches[0].length(), IsTagProperty), eof; it != eof; ++it)
                // Extract {name,value} from 2st/3rd match
-               props.push_back( Property((*it)[1].str(), (*it)[2].str()) );
+               props.push_back( Property(it->str(1), it->str(2)) );
             
-            // Advance Iterator + Return tag
+            // Advance Iterator + create tag
             pos += matches[0].length()-1;
-            return RichTag(IdentifyTag(matches[1].str()), props);
+            auto tag = RichTag(IdentifyTag(matches[1].str()), props);
+
+            // Button: Extract text
+            if (tag.Type == TagType::Select)
+            {
+               if (!regex_search(pos, Input.cend(), matches, IsButtonText))
+                  throw RichTextException(HERE, GuiString(L"Invalid [select] tag"));
+
+               // Extract text + Advance Iterator
+               tag.Text = matches[1].str();
+               pos += matches[0].length()-1;
+            }
+
+            // Return tag
+            return tag;
          }
+
+         // Error: No match
+         throw AlgorithmException(HERE, L"Cannot read previously matched opening tag");
       }
       
       /// <summary>Extracts column information from a text tag</summary>
