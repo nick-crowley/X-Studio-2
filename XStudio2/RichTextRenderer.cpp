@@ -33,16 +33,21 @@ namespace GUI
 
          // Measure phrases
          auto first = words.begin(), last = first;
-         int line_remaining = MeasureLine(dc, last, words.end(), line);
+         int line_remaining = MeasureLine(dc, last, words.end(), line, flags);
+
+         // Vertical Centre
+         auto textHeight = dc->GetTextExtent(L"ABC").cy;
+         auto vCentre = (line.Height() > textHeight ? (line.Height() - textHeight) / 2 : 0);
 
          // Alignment: Offset all word rectangles
          for (auto w = first; w != last; ++w)
          {
             switch (str.FirstParagraph.Align)
             {
-            case Alignment::Right:   w->Offset(line_remaining);    break;
+            case Alignment::Left:    w->Offset(0, vCentre);                 break;
+            case Alignment::Right:   w->Offset(line_remaining, vCentre);    break;
             case Alignment::Centre:
-            case Alignment::Justify: w->Offset(line_remaining/2);  break;
+            case Alignment::Justify: w->Offset(line_remaining/2, vCentre);  break;
             }
          }
 
@@ -81,16 +86,16 @@ namespace GUI
 
                // Measure words on line
                auto first = w;
-               int line_remaining = MeasureLine(dc, w, words.end(), line);
+               int line_remaining = MeasureLine(dc, w, words.end(), line, flags);
 
                // Alignment: Offset all word rectangles
                for (auto word = first; word != w; ++word)
                {
                   switch (para->Align)
                   {
-                  case Alignment::Right:   word->Offset(line_remaining);    break;
+                  case Alignment::Right:   word->Offset(line_remaining, 0);    break;
                   case Alignment::Centre:
-                  case Alignment::Justify: word->Offset(line_remaining/2);  break;
+                  case Alignment::Justify: word->Offset(line_remaining/2, 0);  break;
                   }
 
                   // Set rightmost margin
@@ -127,7 +132,7 @@ namespace GUI
       /// <param name="end">end of words.</param>
       /// <param name="line">line rectangle.</param>
       /// <returns>Line length remaining</returns>
-      int  RichTextRenderer::MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line)
+      int  RichTextRenderer::MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line, RenderFlags flags)
       {
          LOGFONT fontData;
          CRect   remaining(line);
@@ -148,16 +153,29 @@ namespace GUI
                break;
             }
 
-            // Create word font
+            // Create font
             w->Font = w->GetFont(fontData);
             dc->SelectObject(w->Font.get());
             // Measure word
             auto word = w->GetSize(dc);
             dc->SelectObject(oldFont);
 
-            // EndOfLine: stop      // SpecialCase: Punctuation - never start new line with punctuation
-            if (word.cx > remaining.Width()) // && !iswpunct(w->Text.front()))    
+            // EndOfLine: stop               
+            if (word.cx > remaining.Width()) 
+            {
+               // SingleLine: Truncate final phrase with ellipses
+               if (flags == RenderFlags::Inverted || flags == RenderFlags::Selected)
+               {
+                  // Truncate + Set rectangle
+                  word = w->Truncate(dc, remaining.Width());
+                  w->Rect.SetRect(remaining.left, remaining.top, remaining.left + word.cx, remaining.bottom);
+
+                  // Include in measurement.
+                  remaining.left += word.cx;
+                  ++w;
+               }
                break;
+            }
 
             // Skip whitespace at start of line
             if (firstWord && w->IsWhitespace())
@@ -242,18 +260,20 @@ namespace GUI
             return PhraseList();
 
          PhraseList phrases;
-         phrases.push_back(RichPhrase(*chars.front()));
+         phrases += RichPhrase(*chars.front());
 
          // Transform into blocks of contiguous characters
          for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
          {
+            RichPhrase& current = phrases.back();
+
             // Create new phrase if colour/formatting changes
-            if (ch->Colour != phrases.back().Colour
-             || ch->Format != phrases.back().Format)
-                phrases.push_back(RichPhrase(*ch));
+            if (ch->Colour != current.Colour
+             || ch->Format != current.Format)
+                phrases += RichPhrase(*ch);
             else
                // Otherwise append to last phrase
-               phrases.back().Text.push_back(ch->Char);
+               current += ch->Char;
          });
 
          return phrases;
@@ -276,7 +296,7 @@ namespace GUI
 
          // Get first char
          PhraseList phrases;
-         phrases.push_back(RichPhrase(*chars.front()));
+         phrases += RichPhrase(*chars.front());
 
          // Transform into blocks of contiguous characters
          for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
@@ -286,14 +306,14 @@ namespace GUI
             // Create new word on colour/formatting change
             if (ch->Colour != current.Colour
              || ch->Format != current.Format)
-                phrases.push_back(RichPhrase(*ch));
+                phrases += RichPhrase(*ch);
 
-            // Create new word on punctuation, line-break and word-break
-            else if (/*iswpunct(ch->Char) ||*/ ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
-               phrases.push_back(RichPhrase(*ch));
+            // Create new word line-break and word-break
+            else if (ch->Char == '\n' || iswspace(ch->Char) != iswspace(current.Text.front()))
+               phrases += RichPhrase(*ch);      // TODO: Prevent lines starting with punctuation
             else
                // Otherwise append to last phrase
-               current.Text.push_back(ch->Char);
+               current += ch->Char;
          });
 
          // return words
