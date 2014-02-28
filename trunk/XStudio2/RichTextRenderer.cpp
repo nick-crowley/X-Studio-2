@@ -39,6 +39,10 @@ namespace GUI
          auto textHeight = dc->GetTextExtent(L"ABC").cy;
          auto vCentre = (line.Height() > textHeight ? (line.Height() - textHeight) / 2 : 0);
 
+         // ListView: Always render left-aligned
+         if (flags == RenderFlags::Inverted || flags == RenderFlags::Selected)
+            line_remaining = 0;
+
          // Alignment: Offset all word rectangles
          for (auto w = first; w != last; ++w)
          {
