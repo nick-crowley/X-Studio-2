@@ -312,7 +312,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnQueryEditUndo(CCmdUI *pCmdUI)
    {
       pCmdUI->Enable(RichEdit.CanUndo());
-      pCmdUI->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetRedoName())).c_str() );
+      pCmdUI->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetUndoName())).c_str() );
    }
 
    /// <summary>Query state of REDO context menu command</summary>

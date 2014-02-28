@@ -295,6 +295,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
+   /// <summary>Toggles the formatting.</summary>
+   /// <param name="f">CHARFORMAT effect.</param>
+   void  LanguageEdit::ToggleFormatting(DWORD fx)
+   {
+      CharFormat cf(fx, fx);
+      GetSelectionCharFormat(cf);
+      cf.dwEffects = (cf.dwEffects & fx ? cf.dwEffects & ~fx : cf.dwEffects | fx);
+      SetSelectionCharFormat(cf);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Generates the source text.</summary>

@@ -128,8 +128,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  Clear();
       void  Initialize(LanguageDocument* doc);
       void  InsertButton(const wstring& txt, const wstring& id);
-      void  SetEditMode(EditMode m);
       void  Refresh();
+      void  SetEditMode(EditMode m);
+      void  ToggleFormatting(DWORD fx);
 
    protected:
       wstring GetSourceText();

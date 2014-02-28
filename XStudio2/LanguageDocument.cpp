@@ -44,12 +44,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_BUTTON, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_JUSTIFY, &LanguageDocument::OnQueryFormatCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_ADD_BUTTON, &LanguageDocument::OnQueryFormatCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageDocument::OnQueryModeCommand)
    END_MESSAGE_MAP()
 
@@ -136,7 +135,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   
+   /// <summary>Query state of clipboard commands.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageDocument::OnQueryClipboardCommand(CCmdUI* pCmd)
+   {
+      // Delegate to edit view
+      GetView<LanguageEditView>()->OnQueryClipboardCommand(pCmd);
+   }
+
    /// <summary>Query state of editor formatting commands.</summary>
    /// <param name="pCmd">The command.</param>
    void LanguageDocument::OnQueryFormatCommand(CCmdUI* pCmd)

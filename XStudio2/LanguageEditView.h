@@ -34,6 +34,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      afx_msg void OnQueryClipboardCommand(CCmdUI* pCmd) const;
       afx_msg void OnQueryModeCommand(CCmdUI* pCmd) const;
       afx_msg void OnQueryFormatCommand(CCmdUI* pCmd) const;
 
@@ -42,7 +43,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       void DoDataExchange(CDataExchange* pDX) override;   
 
       afx_msg void OnCommandChangeMode(UINT nID);
-      afx_msg void OnCommandInsertButton();
+      afx_msg void OnCommandChangeText(UINT nID);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       virtual void OnInitialUpdate();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
