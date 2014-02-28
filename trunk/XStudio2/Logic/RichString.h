@@ -25,8 +25,27 @@ namespace Logic
       /// <summary>List of rich-text characters/buttons</summary>
       typedef list<RichElementPtr>  ElementList;
 
-      /// <summary>List of rich-text characters/buttons</summary>
-      typedef list<const RichCharacter*>  RichCharList;
+      /// <summary>List of rich-text characters</summary>
+      class RichCharList : public list<const RichCharacter*>
+      {
+      public:
+         RichCharList()
+         {}
+
+         /// <summary>Append another list of rich-text characters</summary>
+         RichCharList& operator+=(const RichCharList& r)
+         {
+            insert(end(), r.begin(), r.end());
+            return *this;
+         }
+
+         /// <summary>Append another list of rich-text characters</summary>
+         RichCharList& operator+=(const RichCharacter& chr)
+         {
+            push_back(&chr);
+            return *this;
+         }
+      };
 
       // ------------------------ CLASSES ------------------------
 

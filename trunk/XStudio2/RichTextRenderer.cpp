@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RichTextRenderer.h"
-
+#include "Logic/RichStringParser.h"
 
 namespace GUI
 {
@@ -255,25 +255,42 @@ namespace GUI
       /// <returns>List of phrases</returns>
       PhraseList  RichTextRenderer::GetPhrases(const RichString& str)
       {
+         static RichCharacter space(' ', Colour::Default, NULL);
+
          RichCharList chars;
          PhraseList phrases;
 
-         // Flatten string into list of characters
-         for (auto& para : str.Paragraphs)
-            for (auto ch : para.Characters)
-               chars.push_back(ch);
-
          // Author: Manual insert
-         if (!str.Author.empty()) {
-            phrases += RichPhrase(str.Author, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
-            phrases += RichPhrase(L" ", NULL, Colour::Default);
+         RichStringParser auth(str.Author);
+         if (str.Author.length())
+         {
+            chars += auth.Output.FirstParagraph.Characters;
+            chars += space;
          }
 
          // Title: Manual insert
-         if (!str.Title.empty()) {
+         RichStringParser title(str.Title);
+         if (str.Title.length())
+         {
+            chars += title.Output.FirstParagraph.Characters;
+            chars += space;
+         }
+         
+         // Flatten string into list of characters
+         for (auto& para : str.Paragraphs)
+            chars += para.Characters;
+
+         // Author: Manual insert
+         /*if (!str.Author.empty()) {
+            phrases += RichPhrase(str.Author, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
+            phrases += RichPhrase(L" ", NULL, Colour::Default);
+         }*/
+
+         // Title: Manual insert
+         /*if (!str.Title.empty()) {
             phrases += RichPhrase(str.Title, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
             phrases += RichPhrase(L" ", NULL, Colour::Default);
-         }
+         }*/
          
          // Skip if empty string
          if (!chars.empty())
@@ -314,8 +331,7 @@ namespace GUI
          RichCharList chars;
 
          // Flatten paragraph into list of characters
-         for (auto ch : para.Characters)
-            chars.push_back(ch);
+         chars += para.Characters;
 
          // Abort if empty string
          if (chars.empty())
