@@ -50,15 +50,40 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
 
+   /// <summary>Called when activate view.</summary>
+   /// <param name="bActivate">activated.</param>
+   /// <param name="pActivateView">The activate view.</param>
+   /// <param name="pDeactiveView">The deactive view.</param>
    void LanguagePageView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
-      // Show properties
+      // Show page properties (if any), otherwise document properties
       if (bActivate)
-         CPropertiesWnd::Connect(GetDocument(), true);
+         DisplayProperties();
 
-      CListView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+      __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
+   
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   void  LanguagePageView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      REQUIRED(GetDocument()->SelectedPage);
+      
+      // Init
+      LanguagePage& page = *GetDocument()->SelectedPage;
+      LanguageDocument& doc = *GetDocument();
 
+      // Group: Page
+      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Page"));
+
+      // ID/Description/Title/Voiced
+      group->AddSubItem(new IDProperty(doc, page));
+      group->AddSubItem(new DescriptionProperty(doc, page));
+      group->AddSubItem(new TitleProperty(doc, page));
+      group->AddSubItem(new VoicedProperty(doc, page));
+      grid.AddProperty(group);
+   }
+   
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -75,6 +100,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
    }
    
+   /// <summary>Displays page or document properties.</summary>
+   void LanguagePageView::DisplayProperties()
+   {
+      // Show page properties (if any), otherwise document properties
+      if (GetDocument()->SelectedPage)
+         CPropertiesWnd::Connect(this, true);
+      else 
+         CPropertiesWnd::Connect(GetDocument(), true);
+   }
 
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
@@ -152,6 +186,9 @@ NAMESPACE_BEGIN2(GUI,Views)
             // Update document
             GetDocument()->SelectedPage = GetSelected();
 
+            // Show page properties (if any), otherwise document properties
+            DisplayProperties();
+
             // Raise SELECTION CHANGED
             SelectionChanged.Raise();
          }
@@ -169,7 +206,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="cy">The new height</param>
    void LanguagePageView::OnSize(UINT nType, int cx, int cy)
    {
-      CListView::OnSize(nType, cx, cy);
+      __super::OnSize(nType, cx, cy);
       AdjustLayout();
    }
    
