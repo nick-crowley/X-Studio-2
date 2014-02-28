@@ -101,7 +101,6 @@ namespace GUI
                case Colour::Default:
                case Colour::White:   
                case Colour::Silver:  return (COLORREF)ForRichText(Colour::Black);
-               case Colour::Black:   return (COLORREF)ForRichText(Colour::White);
                }
                return (COLORREF)ForRichText(Colour);
 
