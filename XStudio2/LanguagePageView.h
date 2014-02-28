@@ -16,11 +16,155 @@ NAMESPACE_BEGIN2(GUI,Views)
    // ----------------------- CLASSES -------------------------
 
    /// <summary></summary>
-   class LanguagePageView : public CListView
+   class LanguagePageView : public CListView, public PropertySource
    {
       // ------------------------ TYPES --------------------------
-   private:
-      
+   protected:
+      /// <summary>Base class for all Language document properties</summary>
+      class PagePropertyBase : public LanguageDocument::LanguagePropertyBase
+      {
+      public:
+         /// <summary>Create page property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="page">page.</param>
+         /// <param name="name">name.</param>
+         /// <param name="val">value</param>
+         /// <param name="desc">description.</param>
+         PagePropertyBase(LanguageDocument& doc, LanguagePage& page, wstring name, _variant_t val, wstring desc)
+            : Page(page), LanguagePropertyBase(doc, name, val, desc)
+         {}
+
+      protected:
+         LanguagePage&  Page;
+      };
+
+      /// <summary>Page Description property grid item</summary>
+      class DescriptionProperty : public PagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Description property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="page">page.</param>
+         DescriptionProperty(LanguageDocument& doc, LanguagePage& page) 
+            : PagePropertyBase(doc, page, L"Description", page.Description.c_str(),  L"Page description")
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update Description</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Page.Description = value;
+            __super::OnValueChanged(value);    // Modify document
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>page ID property grid item</summary>
+      class IDProperty : public PagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create page ID property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="page">page.</param>
+         IDProperty(LanguageDocument& doc, LanguagePage& page)
+            : PagePropertyBase(doc, page, L"ID", page.ID,  L"Page ID")
+              
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Ensures ID is between 1 and 9999</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            return !value.length()                                                      // Not empty
+                || (value.IsNumeric() && value.ToInt() >= 1 && value.ToInt() <= 9999)   // 1 <= val <= 9999
+                || File.Pages.Contains(value.ToInt());                                  // Not already in use
+         }
+
+         /// <summary>Update ID</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // TODO: Change ID
+            //File.ID = value.ToInt();
+            __super::OnValueChanged(value);    // Modify document
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Page title property grid item</summary>
+      class TitleProperty : public PagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create page title property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="page">page.</param>
+         TitleProperty(LanguageDocument& doc, LanguagePage& page) : PagePropertyBase(doc, page, L"Title", page.Title.c_str(),  L"Page title")
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update title</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Page.Title = value;
+            __super::OnValueChanged(value);    // Modify document
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Voiced property grid item</summary>
+      class VoicedProperty : public PagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Voiced property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="page">page.</param>
+         VoicedProperty(LanguageDocument& doc, LanguagePage& page) 
+            : PagePropertyBase(doc, page, L"Voiced", page.Voiced ? L"True" : L"False",  L"Whether strings are voiced within the game")
+         {
+            AddOption(L"True", FALSE);
+            AddOption(L"False", FALSE);
+            // Strict option
+            AllowEdit(FALSE);
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update Voiced</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            Page.Voiced = (value == L"True");
+            __super::OnValueChanged(value);    // Modify document
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
@@ -44,9 +188,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+      void DisplayProperties();
       void Populate();
 	  
-      virtual void OnInitialUpdate();
+      handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
+      handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
@@ -54,10 +201,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:
       SelectionChangedEvent   SelectionChanged;
       
-   private:
+   protected:
       ImageListEx   Images;
-      
-      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
    
 

@@ -96,14 +96,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="grid">The grid.</param>
    void  LanguageDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
    {
-      // Group: General
-      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
+      // Group: 
+      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("File"));
 
       // ID/Language
-      //general->AddSubItem(new NameProperty(*this));
-      general->AddSubItem(new FileIDProperty(*this));
-      general->AddSubItem(new FileLanguageProperty(*this));
-      grid.AddProperty(general);
+      group->AddSubItem(new IDProperty(*this));
+      group->AddSubItem(new GameLanguageProperty(*this));
+      grid.AddProperty(group);
    }
    
    /// <summary>Called when document closed.</summary>

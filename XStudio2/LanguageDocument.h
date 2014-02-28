@@ -29,16 +29,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
 	   typedef LanguageFile::PageCollection PageCollection;
 
-   protected:
+   public:
       /// <summary>Base class for all Language document properties</summary>
-      class LanguageProperty : public ValidatingProperty
+      class LanguagePropertyBase : public ValidatingProperty
       {
       public:
-         LanguageProperty(LanguageDocument& d, wstring name, _variant_t val, wstring desc)
+         LanguagePropertyBase(LanguageDocument& d, wstring name, _variant_t val, wstring desc)
             : Document(d), File(d.Content), ValidatingProperty(name.c_str(), val, desc.c_str(), NULL, nullptr, nullptr, nullptr)
          {
             // Disable if document is virtual
-            AllowEdit(Document.Virtual ? FALSE : TRUE);
+            Enable(Document.Virtual ? FALSE : TRUE);
          }
 
       protected:
@@ -55,16 +55,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
 
-
+   protected:
       /// <summary>Language file ID property grid item</summary>
-      class FileIDProperty : public LanguageProperty
+      class IDProperty : public LanguagePropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create language file ID property.</summary>
          /// <param name="doc">Language document.</param>
-         FileIDProperty(LanguageDocument& doc)
-            : LanguageProperty(doc, L"ID", GuiString(L"%d", doc.Content.ID).c_str(),  L"File ID")
+         IDProperty(LanguageDocument& doc)
+            : LanguagePropertyBase(doc, L"ID", GuiString(L"%d", doc.Content.ID).c_str(),  L"File ID")
               
          {}
 
@@ -96,14 +96,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
 
       /// <summary>Game language property grid item</summary>
-      class FileLanguageProperty : public LanguageProperty
+      class GameLanguageProperty : public LanguagePropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create game language property.</summary>
          /// <param name="doc">Language document.</param>
-         FileLanguageProperty(LanguageDocument& doc)
-            : LanguageProperty(doc, L"Language", GetString(doc.Content.Language).c_str(),  L"Language of all strings in document")
+         GameLanguageProperty(LanguageDocument& doc)
+            : LanguagePropertyBase(doc, L"Language", GetString(doc.Content.Language).c_str(),  L"Language of all strings in document")
               
          {
             // Populate game languages
