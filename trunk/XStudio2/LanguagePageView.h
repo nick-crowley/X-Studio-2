@@ -88,9 +88,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <returns>True to accept, false to reject</returns>
          bool OnValidateValue(GuiString& value) override
          {
-            return !value.length()                                                      // Not empty
-                || (value.IsNumeric() && value.ToInt() >= 1 && value.ToInt() <= 9999)   // 1 <= val <= 9999
-                || File.Pages.Contains(value.ToInt());                                  // Not already in use
+            return value.length()                                                      // Not empty
+                && (value.IsNumeric() && value.ToInt() >= 1 && value.ToInt() <= 9999)  // 1 <= val <= 9999
+                && !File.Pages.Contains(value.ToInt());                                // Not already in use
          }
 
          /// <summary>Update ID</summary>
