@@ -237,8 +237,15 @@ namespace Logic
          // Verify string tag
          ReadElement(element, L"t");
 
+         // Get text
+         wstring txt((WCHAR*)element->text);
+
+         // Convert octal addition entities
+         for (auto pos = txt.find(L"\\053"); pos != wstring::npos; pos = txt.find(L"\\053"))
+            txt.replace(pos, 4, L"+");
+
          // Read ID+text
-         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), page.ID, (WCHAR*)element->text, v);
+         return LanguageString(_wtoi(ReadAttribute(element, L"id").c_str()), page.ID, txt, v);
       }
    }
 }
