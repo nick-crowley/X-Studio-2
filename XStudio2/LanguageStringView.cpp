@@ -43,13 +43,40 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
+   /// <summary>Called when activate view.</summary>
+   /// <param name="bActivate">activated.</param>
+   /// <param name="pActivateView">The activate view.</param>
+   /// <param name="pDeactiveView">The deactive view.</param>
    void LanguageStringView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
       // Show properties
       if (bActivate)
-         CPropertiesWnd::Connect(GetDocument(), true);
+         DisplayProperties();
 
-      CListView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+      __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
+   }
+
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   /// <exception cref="Logic::ArgumentException">String colour tags still 'undetermined'</exception>
+   /// <exception cref="Logic::ArgumentNullException">No string or page is selected</exception>
+   void  LanguageStringView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      REQUIRED(GetDocument()->SelectedString);
+      REQUIRED(GetDocument()->SelectedPage);
+      
+      // Init
+      LanguageString& str = *GetDocument()->SelectedString;
+      LanguageDocument& doc = *GetDocument();
+
+      // Group: String
+      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
+
+      // ID/Description/Title/Voiced
+      group->AddSubItem(new IDProperty(doc, *GetDocument()->SelectedPage, str));
+      group->AddSubItem(new ColourTagProperty(doc, str));
+      group->AddSubItem(new VersionProperty(doc, str));
+      grid.AddProperty(group);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -68,6 +95,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));  //LVSCW_AUTOSIZE_USEHEADER); 
    }
    
+   /// <summary>Displays string or document properties.</summary>
+   void LanguageStringView::DisplayProperties()
+   {
+      // Show string properties (if any), otherwise document properties
+      if (GetDocument()->SelectedString)
+         CPropertiesWnd::Connect(this, true);
+      else 
+         CPropertiesWnd::Connect(GetDocument(), true);
+   }
+
    /// <summary>Retrieves the language string representing the current selection.</summary>
    /// <returns>Selected string if any, otherwise nullptr</returns>
    /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
@@ -90,7 +127,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Initialise control</summary>
    void LanguageStringView::OnInitialUpdate()
    {
-      CListView::OnInitialUpdate();
+      __super::OnInitialUpdate();
 
       try
       {
@@ -128,6 +165,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
             // Update document
             GetDocument()->SelectedString = GetSelected();
+
+            // Refresh properties
+            DisplayProperties();
 
             // Raise SELECTION CHANGED
             SelectionChanged.Raise();
@@ -190,7 +230,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="cy">The new height</param>
    void LanguageStringView::OnSize(UINT nType, int cx, int cy)
    {
-      CListView::OnSize(nType, cx, cy);
+      __super::OnSize(nType, cx, cy);
       AdjustLayout();
    }
    
@@ -205,7 +245,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          // ID:
          if (item.SubItem == 0)
-            ListViewCustomDraw::onDrawSubItem(dc, item);
+            __super::onDrawSubItem(dc, item);
          
          // Text:
          else if (item.SubItem == 1)
