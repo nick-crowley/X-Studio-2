@@ -50,7 +50,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
-
+   /// <summary>Called when activate view.</summary>
+   /// <param name="bActivate">activated.</param>
+   /// <param name="pActivateView">The activate view.</param>
+   /// <param name="pDeactiveView">The deactive view.</param>
    void LanguageEditView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
    {
       // Show properties
