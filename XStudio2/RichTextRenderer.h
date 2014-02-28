@@ -43,12 +43,24 @@ namespace GUI
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RichPhrase() : Format(NULL), Colour(Colour::Default), Skip(false), Font(nullptr)
+         /// <summary>Create empty phrase</summary>
+         RichPhrase() : Format(NULL), Colour(Colour::Default), Skip(false), Rect(0,0,0,0), Font(nullptr)
          {}
+
+         /// <summary>Create phrase with formatting determined by first character</summary>
+         /// <param name="ch">First character</param>
          RichPhrase(RichCharacter ch) : Format(ch.Format), Colour(ch.Colour), Skip(false), Rect(0,0,0,0), Font(nullptr)
          {
             Text.push_back(ch.Char);
          }
+
+         /// <summary>Manually specify content and formatting of entire phrase</summary>
+         /// <param name="txt">text.</param>
+         /// <param name="format">formatting.</param>
+         /// <param name="col">Colour</param>
+         RichPhrase(const wstring& txt, UINT format, Colour col) : Text(txt), Format(format), Colour(col), Skip(false), Rect(0,0,0,0), Font(nullptr)
+         {}
+
          // ------------------------ STATIC -------------------------
 
          // --------------------- PROPERTIES ------------------------
