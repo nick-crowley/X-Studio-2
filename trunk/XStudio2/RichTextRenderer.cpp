@@ -162,7 +162,7 @@ namespace GUI
             }
 
             // Create font  
-            w->Font = w->GetFont(fontData);
+            w->Font = w->GetFont(fontData, flags);
             
             // Measure word
             dc->SelectObject(w->Font.get());

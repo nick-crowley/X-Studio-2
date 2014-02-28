@@ -99,8 +99,9 @@ namespace GUI
                switch (Colour)
                {
                case Colour::Default:
-               case Colour::White:   
-               case Colour::Silver:  return (COLORREF)ForRichText(Colour::Black);
+               case Colour::White:   return (COLORREF)ForRichText(Colour::Black);
+               case Colour::Silver:  
+               case Colour::Black:   return (COLORREF)ForRichText(Colour::Grey);
                }
                return (COLORREF)ForRichText(Colour);
 
@@ -115,7 +116,7 @@ namespace GUI
          /// <summary>Creates a new font to represent this phrase</summary>
          /// <param name="from">Basis for new font.</param>
          /// <returns></returns>
-         FontPtr GetFont(const LOGFONT& from) const
+         FontPtr GetFont(const LOGFONT& from, RenderFlags flags) const
          {
             FontPtr f = FontPtr(new CFont());
             LOGFONT lf = from;
@@ -128,6 +129,10 @@ namespace GUI
             // Custom font:
             if (!CustomFont.empty())
                StringCchCopy(lf.lfFaceName, LF_FACESIZE, CustomFont.c_str());
+
+            // Inverted (White): Display as bold
+            if (flags == RenderFlags::Inverted && Colour == Colour::White)
+               lf.lfWeight = FW_BOLD;
 
             // Create font
             f->CreateFontIndirectW(&lf);
