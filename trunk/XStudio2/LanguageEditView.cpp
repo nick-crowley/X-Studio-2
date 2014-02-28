@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "LanguageEditView.h"
+#include "PropertiesWnd.h"
 #include "Helpers.h"
 #include "afxcview.h"
 
@@ -49,6 +50,16 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
+
+   void LanguageEditView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   {
+      // Show properties
+      if (bActivate)
+         CPropertiesWnd::Connect(GetDocument(), true);
+
+      CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+   }
+
    /// <summary>Queries the state of editing mode commands.</summary>
    /// <param name="pCmd">The command.</param>
    void LanguageEditView::OnQueryModeCommand(CCmdUI* pCmd) const

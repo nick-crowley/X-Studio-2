@@ -57,6 +57,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    private:
       ImageListEx   Images;
       
+      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
    
 

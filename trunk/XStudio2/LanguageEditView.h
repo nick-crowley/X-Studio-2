@@ -55,6 +55,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnStringSelectionChanged;
       LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
+      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
 
 

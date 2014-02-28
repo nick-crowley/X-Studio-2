@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
+#include "PropertiesWnd.h"
 #include "Logic/StringResolver.h"
 #include "Logic/RichStringParser.h"
 #include "RichTextRenderer.h"
@@ -42,6 +43,15 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
+   void LanguageStringView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   {
+      // Show properties
+      if (bActivate)
+         CPropertiesWnd::Connect(GetDocument(), true);
+
+      CListView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Arrange controls</summary>
@@ -216,4 +226,5 @@ NAMESPACE_BEGIN2(GUI,Views)
 
 
 NAMESPACE_END2(GUI,Views)
+
 

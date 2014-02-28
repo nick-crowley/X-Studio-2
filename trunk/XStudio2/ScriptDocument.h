@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    class ScriptDocument : public DocumentBase, public PropertySource
    {
       // ------------------------ TYPES --------------------------
-   private:
+   protected:
       /// <summary>Script property base</summary>
       class ScriptProperty : public ValidatingProperty
       {
@@ -85,7 +85,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
          ScriptVariable& Argument;
       };
 
@@ -145,7 +145,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
       };
 
       /// <summary>Script description property grid item</summary>
@@ -174,7 +174,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
       };
 
       /// <summary>Game version property grid item</summary>
@@ -212,7 +212,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
       };
 
       /// <summary>Script name property grid item</summary>
@@ -245,7 +245,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
          
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
       };
 
       /// <summary>Egosoft signature grid item</summary>
@@ -297,7 +297,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
       };
       
       // --------------------- CONSTRUCTION ----------------------
@@ -340,7 +340,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       ScriptFile  Script;
 
-   private:
+   protected:
       GUI::Controls::ScriptEdit* Edit;
       list<ArgumentProperty*>    ArgumentProperties;
    };

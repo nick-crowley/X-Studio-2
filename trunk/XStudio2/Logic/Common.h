@@ -27,6 +27,48 @@ namespace Logic
    /// <summary>Get game language string</summary>
    wstring  GetString(GameLanguage l);
 
+   /// <summary>Map Game Language into zero-based index</summary>
+   class GameLanguageIndex
+   {
+   public:
+      /// <summary>Convert Language to zero-based index</summary>
+      /// <param name="lang">language.</param>
+      GameLanguageIndex(GameLanguage lang) : Index(0), Language(lang)
+      {
+         switch (lang)
+         {
+         case GameLanguage::Czech:     Index = 0;  break;
+         case GameLanguage::English:   Index = 1;  break;
+         case GameLanguage::French:    Index = 2;  break;
+         case GameLanguage::German:    Index = 3;  break;
+         case GameLanguage::Italian:   Index = 4;  break;
+         case GameLanguage::Polish:    Index = 5;  break;
+         case GameLanguage::Russian:   Index = 6;  break;
+         case GameLanguage::Spanish:   Index = 7;  break;
+         }
+      }
+
+      /// <summary>Convert zero-based index to Language.</summary>
+      /// <param name="index">The index.</param>
+      GameLanguageIndex(UINT index) : Index(index), Language(GameLanguage::English)
+      {
+         switch (index)
+         {
+         case 0:  Language = GameLanguage::Czech;     break;
+         case 1:  Language = GameLanguage::English;   break;
+         case 2:  Language = GameLanguage::French;    break;
+         case 3:  Language = GameLanguage::German;    break;
+         case 4:  Language = GameLanguage::Italian;   break;
+         case 5:  Language = GameLanguage::Polish;    break;
+         case 6:  Language = GameLanguage::Russian;   break;
+         case 7:  Language = GameLanguage::Spanish;   break;
+         }
+      }
+
+      int           Index;
+      GameLanguage  Language;
+   };
+
 
 
    /// <summary>Defines the available game versions</summary>
@@ -36,6 +78,8 @@ namespace Logic
    class GameVersionIndex
    {
    public:
+      /// <summary>Convert version to zero-based index</summary>
+      /// <param name="v">The v.</param>
       GameVersionIndex(GameVersion v) : Index(0), Version(v)
       {
          switch (v)
@@ -48,6 +92,8 @@ namespace Logic
          }
       }
 
+      /// <summary>Convert zero-based index to version.</summary>
+      /// <param name="index">The index.</param>
       GameVersionIndex(UINT index) : Index(index), Version(GameVersion::Threat)
       {
          switch (index)

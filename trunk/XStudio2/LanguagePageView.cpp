@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePageView.h"
+#include "PropertiesWnd.h"
 #include "Helpers.h"
 
 /// <summary>User interface</summary>
@@ -48,6 +49,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       return item != -1 ? &GetDocument()->GetContent().FindByIndex(item) : nullptr;
    }
    
+
+   void LanguagePageView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   {
+      // Show properties
+      if (bActivate)
+         CPropertiesWnd::Connect(GetDocument(), true);
+
+      CListView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
