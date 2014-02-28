@@ -115,6 +115,7 @@ namespace GUI
 
          /// <summary>Creates a new font to represent this phrase</summary>
          /// <param name="from">Basis for new font.</param>
+         /// <param name="flags">Render flags.</param>
          /// <returns></returns>
          FontPtr GetFont(const LOGFONT& from, RenderFlags flags) const
          {
