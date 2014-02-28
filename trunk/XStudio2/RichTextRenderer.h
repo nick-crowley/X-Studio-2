@@ -56,28 +56,33 @@ namespace GUI
          /// <exception cref="Logic::ArgumentException">Invalid render flag</exception>
          COLORREF  GetColour(RenderFlags flags) const
          {
-            // Invert black/white
             switch (flags)
             {
+            // Tooltip: set Default to Black.  Use Tooltip RGBs
             case RenderFlags::Tooltip:
+               if (Colour == Colour::Default)
+                  return (COLORREF)ForTooltip(Colour::Black);
+
                return (COLORREF)ForTooltip(Colour);
 
-            case RenderFlags::Inverted:
+            // Selected: Always white
             case RenderFlags::Selected:
+               return (COLORREF)ForRichText(Colour::White);
+
+            // Inverted: Invert black/white. Use RichText RGBs
+            case RenderFlags::Inverted:
                switch (Colour)
                {
                case Colour::Default:
                case Colour::White:   
-               case Colour::Silver:  
-                  return (COLORREF)ForLanguage(Colour::Black);
-
-               case Colour::Black:   
-                  return (COLORREF)ForLanguage(Colour::White);
+               case Colour::Silver:  return (COLORREF)ForRichText(Colour::Black);
+               case Colour::Black:   return (COLORREF)ForRichText(Colour::White);
                }
-               // Fall thru...
+               return (COLORREF)ForRichText(Colour);
 
+            // RichText: Use RichText RGBs without conversion
             case RenderFlags::RichText:
-               return (COLORREF)ForLanguage(Colour);
+               return (COLORREF)ForRichText(Colour);
             }
             
             throw ArgumentException(HERE, L"flags", GuiString(L"Invalid render flag %d", flags));

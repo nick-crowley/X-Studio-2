@@ -30,21 +30,21 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
       TagType  RichStringWriter::FromRGB(COLORREF c)
       {
-         switch ((LanguageColour)c)
+         switch ((RichTextColour)c)
          {
-         case LanguageColour::Black:   return TagType::Black;
-         case LanguageColour::Default: return TagType::Default;
-         case LanguageColour::White:   return TagType::White;  
-         case LanguageColour::Silver:  return TagType::Silver;
+         case RichTextColour::Black:   return TagType::Black;
+         case RichTextColour::Default: return TagType::Default;
+         case RichTextColour::White:   return TagType::White;  
+         case RichTextColour::Silver:  return TagType::Silver;
 
-         case LanguageColour::Grey:    return TagType::Grey;
-         case LanguageColour::Blue:    return TagType::Blue;
-         case LanguageColour::Cyan:    return TagType::Cyan;
-         case LanguageColour::Green:   return TagType::Green;
-         case LanguageColour::Orange:  return TagType::Orange;
-         case LanguageColour::Purple:  return TagType::Magenta;
-         case LanguageColour::Red:     return TagType::Red;
-         case LanguageColour::Yellow:  return TagType::Yellow;
+         case RichTextColour::Grey:    return TagType::Grey;
+         case RichTextColour::Blue:    return TagType::Blue;
+         case RichTextColour::Cyan:    return TagType::Cyan;
+         case RichTextColour::Green:   return TagType::Green;
+         case RichTextColour::Orange:  return TagType::Orange;
+         case RichTextColour::Purple:  return TagType::Magenta;
+         case RichTextColour::Red:     return TagType::Red;
+         case RichTextColour::Yellow:  return TagType::Yellow;
          }
 
          throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
