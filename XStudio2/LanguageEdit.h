@@ -1,7 +1,7 @@
 #pragma once
 #include "RichEditEx.h"
 #include "LanguageDocument.h"
-#include "Logic/RtfStringWriter.h"
+#include "RichTextRenderer.h"
 #include <regex>
 
 /// <summary>User interface controls</summary>

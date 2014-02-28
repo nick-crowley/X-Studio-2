@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RichStringWriter.h"
-#include "RtfStringWriter.h"
 
 namespace Logic
 {

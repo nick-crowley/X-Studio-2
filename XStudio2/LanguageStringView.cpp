@@ -201,7 +201,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          else if (item.SubItem == 1)
          {
             auto src = ListView.GetItemText(item.Index, 1);
-            auto flags = item.Selected ? RichTextRenderer::Flags::Selected : RichTextRenderer::Flags::Inverted;
+            auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
 
             RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((const wchar*)src).Output, flags);
          }

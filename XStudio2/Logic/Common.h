@@ -72,16 +72,39 @@ namespace Logic
    /// <summary>Get paragraph alignment string</summary>
    wstring  GetString(Alignment a);
 
+   /// <summary>Device independent colour enumeration</summary>
+   enum class Colour  
+   { 
+      Default,
+      Black, White,  Blue,   Cyan,
+      Green, Grey,   Orange, Purple,
+      Red,   Silver, Yellow
+   };
 
-   /// <summary>RGB values for language string colours</summary>
+
+   /// <summary>RGB values for RichText colours</summary>
    enum class LanguageColour : COLORREF 
    { 
       Default = RGB(250,250,250),
-      Black = RGB(0,0,0),   White  = RGB(255,255,255), Cyan   = RGB(150,220,220), Blue   = RGB(0,0,255), 
+      Black = RGB(0,0,0),   White  = RGB(255,255,255), Blue   = RGB(0,0,255),     Cyan   = RGB(150,220,220), 
       Green = RGB(0,255,0), Grey   = RGB(128,128,128), Orange = RGB(255,128,40),  Purple = RGB(255,0,255), 
       Red   = RGB(255,0,0), Silver = RGB(180,180,180), Yellow = RGB(255,255,0) 
    };
 
+   /// <summary>RGB values for Tooltip colours</summary>
+   enum class TooltipColour : COLORREF
+   {
+      Default = RGB(200,200,200),
+      Black = RGB(0,0,0),     White  = RGB(255,255,255), Blue   = RGB(25,55,242),  Cyan   = RGB(42,168,200), 
+      Green = RGB(13,191,25), Grey   = RGB(128,128,128), Orange = RGB(213,145,28), Purple = RGB(200,36,167), 
+      Red   = RGB(180,37,37), Silver = RGB(233,233,233), Yellow = RGB(180,180,0)
+   };
+
+   /// <summary>Convert colour enumeration to RGB</summary>
+   LanguageColour ForLanguage(Colour c);
+
+   /// <summary>Convert colour enumeration to RGB</summary>
+   TooltipColour ForTooltip(Colour c);
 
    /// <summary>Compare character ranges</summary>
    bool operator==(const CHARRANGE& a, const CHARRANGE& b);

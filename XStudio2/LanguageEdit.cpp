@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
 #include "OleBitmap.h"
-#include "RichTextRenderer.h"
-#include "Logic/RtfStringWriter.h"
 #include "Logic/RichStringWriter.h"
 #include "Logic/LanguagePage.h"
 
@@ -108,7 +106,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // Draw button text onto bitmap
       memDC.SetBkMode(TRANSPARENT);
-      RichTextRenderer::DrawLine(&memDC, rcButton, txt, RichTextRenderer::Flags::None);
+      RichTextRenderer::DrawLine(&memDC, rcButton, txt, RenderFlags::RichText);
 
       // Cleanup without destroying bitmap
       memDC.SelectObject(prevBmp);
@@ -483,13 +481,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(false);
    }
 
+   /// <summary>Inserts a phrase at the caret and formats it.</summary>
+   /// <param name="phr">phrase.</param>
    void LanguageEdit::InsertPhrase(const RichPhrase& phr)
    {
       if (phr.Empty())
          return;
 
       // Insert phrase
-      SetSelectionCharFormat(CharFormat(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE|CFM_COLOR, phr.Format, phr.GetColour(false)));
+      SetSelectionCharFormat(CharFormat(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE|CFM_COLOR, phr.Format, phr.GetColour(RenderFlags::RichText)));
       ReplaceSel(phr.Text.c_str());
 
       // Move caret to end-of-phrase
