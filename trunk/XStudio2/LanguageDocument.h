@@ -57,6 +57,68 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
 
    protected:
+      
+      /// <summary>Language filename property grid item</summary>
+      class FileNameProperty : public LanguagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create filename property.</summary>
+         /// <param name="doc">Language document.</param>
+         FileNameProperty(LanguageDocument& doc, wstring& filename)
+            : LanguagePropertyBase(doc, L"Filename", filename.c_str(),  L"File used within the library")
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Nothing</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {}
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+
+      /// <summary>Game language property grid item</summary>
+      class GameLanguageProperty : public LanguagePropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create game language property.</summary>
+         /// <param name="doc">Language document.</param>
+         GameLanguageProperty(LanguageDocument& doc)
+            : LanguagePropertyBase(doc, L"Language", GetString(doc.Content.Language).c_str(),  L"Language of all strings in document")
+         {
+            // Populate game languages
+            for (int i = 0; i <= 7; i++)
+               AddOption(GetString(GameLanguageIndex(i).Language).c_str(), FALSE);
+
+            // Strict dropdown
+            AllowEdit(FALSE);
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update language</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            File.Language = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
+            
+            __super::OnValueChanged(value);    // Modify document
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+
       /// <summary>Language file ID property grid item</summary>
       class IDProperty : public LanguagePropertyBase
       {
@@ -66,7 +128,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="doc">Language document.</param>
          IDProperty(LanguageDocument& doc)
             : LanguagePropertyBase(doc, L"ID", GuiString(L"%d", doc.Content.ID).c_str(),  L"File ID")
-              
          {}
 
          // ---------------------- ACCESSORS ------------------------	
@@ -86,44 +147,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
          void OnValueChanged(GuiString value) override
          {
             File.ID = value.ToInt();
-            
-            __super::OnValueChanged(value);    // Modify document
-         }
-
-         // -------------------- REPRESENTATION ---------------------
-      protected:
-      };
-
-
-
-      /// <summary>Game language property grid item</summary>
-      class GameLanguageProperty : public LanguagePropertyBase
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         /// <summary>Create game language property.</summary>
-         /// <param name="doc">Language document.</param>
-         GameLanguageProperty(LanguageDocument& doc)
-            : LanguagePropertyBase(doc, L"Language", GetString(doc.Content.Language).c_str(),  L"Language of all strings in document")
-              
-         {
-            // Populate game languages
-            for (int i = 0; i <= 7; i++)
-               AddOption(GetString(GameLanguageIndex(i).Language).c_str(), FALSE);
-
-            // Strict dropdown
-            AllowEdit(FALSE);
-         }
-
-         // ---------------------- ACCESSORS ------------------------	
-
-         // ----------------------- MUTATORS ------------------------
-      protected:
-         /// <summary>Update language</summary>
-         /// <param name="value">value text</param>
-         void OnValueChanged(GuiString value) override
-         {
-            File.Language = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
             
             __super::OnValueChanged(value);    // Modify document
          }

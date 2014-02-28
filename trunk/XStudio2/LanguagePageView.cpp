@@ -79,8 +79,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Page: ID/Description/Title/Voiced
       CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Page"));
       group->AddSubItem(new IDProperty(doc, page));
-      group->AddSubItem(new DescriptionProperty(doc, page));
       group->AddSubItem(new TitleProperty(doc, page));
+      group->AddSubItem(new DescriptionProperty(doc, page));
       group->AddSubItem(new VoicedProperty(doc, page));
       grid.AddProperty(group);
    }
