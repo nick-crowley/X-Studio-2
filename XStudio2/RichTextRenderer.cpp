@@ -278,8 +278,14 @@ namespace GUI
          // Skip if empty string
          if (!chars.empty())
          {
-            // Transform content into blocks of contiguous characters
+            // Init
             phrases += RichPhrase(*chars.front());
+
+            // Leading CRLF: conv to space
+            if (phrases.back().Text == L"\n")
+               phrases.back().Text = L" ";
+
+            // Transform content into blocks of contiguous characters
             for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
             {
                RichPhrase& current = phrases.back();
