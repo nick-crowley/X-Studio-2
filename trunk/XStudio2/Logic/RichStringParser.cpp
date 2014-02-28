@@ -261,8 +261,9 @@ namespace Logic
                case ']':
                case '(':
                case ')':   *Paragraph += new RichCharacter(ch[1], TextColour, Formatting.Current);  ++ch;  break;
-               // Unknown
-               default:    *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);  ++ch;   break;
+               // Backslash
+               default:
+                  *Paragraph += new RichCharacter('\\', TextColour, Formatting.Current);  break;
                }
                continue;
 
