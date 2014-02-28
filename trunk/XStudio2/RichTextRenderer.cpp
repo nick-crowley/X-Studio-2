@@ -26,7 +26,7 @@ namespace GUI
       /// <param name="str">string.</param>
       /// <param name="flags">How to modify colours for light/dark backgrounds.</param>
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-      void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str, Flags flags)
+      void  RichTextRenderer::DrawLine(CDC* dc, CRect line, const RichString& str, RenderFlags flags)
       {
          // Separate into phrases
          auto words = GetPhrases(str);
@@ -54,15 +54,14 @@ namespace GUI
       /// <param name="dc">dc.</param>
       /// <param name="rect">drawing rectangle</param>
       /// <param name="str">string.</param>
-      /// <param name="flags">DrawText flags.</param>
+      /// <param name="flags">drawing flags.</param>
       /// <exception cref="Logic::Win32Exception">Drawing error</exception>
       /// <returns>Width of widest line</returns>
-      int  RichTextRenderer::DrawLines(CDC* dc, CRect& rect, const RichString& str, UINT flags)
+      int  RichTextRenderer::DrawLines(CDC* dc, CRect& rect, const RichString& str, RenderFlags flags)
       {
          LOGFONT  fontData;
          CFont*   oldFont;
          LineRect line(rect, dc->GetTextExtent(L"ABC").cy);
-         bool     Calculate = (flags & DT_CALCRECT) != 0;
          long     rightMargin = rect.left;
 
          // Get original font properties
@@ -99,8 +98,8 @@ namespace GUI
                }
 
                // Render words
-               if (!Calculate)
-                  RenderLine(dc, first, w, Flags::None);
+               if (flags != RenderFlags::Calculate)
+                  RenderLine(dc, first, w, flags);
 
                // NewLine
                if (w != words.end())
@@ -188,7 +187,7 @@ namespace GUI
       /// <param name="dc">The dc.</param>
       /// <param name="pos">position of first word.</param>
       /// <param name="end">position after the last word.</param>
-      void  RichTextRenderer::RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end, Flags flags)
+      void  RichTextRenderer::RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end, RenderFlags flags)
       {
          LOGFONT fontData;
 
@@ -210,7 +209,7 @@ namespace GUI
 
             // Select font/colour
             dc->SelectObject(w->Font.get());
-            dc->SetTextColor(w->GetColour(flags != Flags::None));
+            dc->SetTextColor(w->GetColour(flags));
             dc->SelectObject(oldFont);
 
             // DEBUG:

@@ -414,9 +414,6 @@
     <ClInclude Include="Logic\RichString.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\RtfStringWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="ToolBarEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -504,14 +501,14 @@
     <ClInclude Include="Logic\TextObjectModel.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\RichStringWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\RichStringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
     <ClInclude Include="OleBitmap.h">
       <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\RichStringWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -749,9 +746,6 @@
     <ClCompile Include="Logic\RtfScriptWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\RtfStringWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\RichString.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
@@ -833,9 +827,6 @@
     <ClCompile Include="LanguageEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\RichStringWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\RichStringParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
@@ -844,6 +835,9 @@
     </ClCompile>
     <ClCompile Include="OleBitmap.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\RichStringWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

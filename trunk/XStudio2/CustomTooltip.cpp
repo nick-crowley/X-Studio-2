@@ -127,7 +127,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 #endif
 
       // Draw/Calculate 
-      int width = RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? DT_CALCRECT : NULL);
+      int width = RichTextRenderer::DrawLines(pDC, rc, Description, bCalcOnly ? RenderFlags::Calculate : RenderFlags::Tooltip);
 
       // Calculate: Adjust rectangle
       if (bCalcOnly)
@@ -136,7 +136,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          while (rc.Ratio > 0.8f)
          {
             rc.right += 100;
-            width = RichTextRenderer::DrawLines(pDC, rc, Description, DT_CALCRECT);
+            width = RichTextRenderer::DrawLines(pDC, rc, Description, RenderFlags::Calculate);
          }
       }
 
@@ -179,7 +179,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 #endif
 
       // Draw/Calculate rectangle
-      int width = RichTextRenderer::DrawLines(pDC, rect, Label, (bCalcOnly ? DT_CALCRECT : NULL));
+      int width = RichTextRenderer::DrawLines(pDC, rect, Label, bCalcOnly ? RenderFlags::Calculate : RenderFlags::Tooltip);
 
 #ifdef PRINT_CONSOLE
       Console << "Label: " << (bCalcOnly ? Cons::Yellow : Cons::Green) << rect << ENDL;
