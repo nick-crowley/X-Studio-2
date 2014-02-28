@@ -21,7 +21,19 @@ namespace GUI
       typedef shared_ptr<CFont>  FontPtr;
 
       /// <summary>List of phrases</summary>   
-      typedef list<RichPhrase>  PhraseList;
+      class PhraseList : public list<RichPhrase> 
+      {
+      public:
+         PhraseList() 
+         {}
+
+         /// <summary>Append a phrase</summary>   
+         PhraseList& operator+=(RichPhrase& p)
+         {
+            push_back(p);
+            return *this;
+         }
+      };
 
       /// <summary>Phrase list iterator</summary>   
       typedef PhraseList::iterator  PhraseIterator;
@@ -135,11 +147,32 @@ namespace GUI
             Format = NULL;
          }
 
-         /// <summary>Offsets the drawing rectangle horizontally.</summary>
+         /// <summary>Offsets the drawing rectangle .</summary>
          /// <param name="cx">Distance.</param>
-         void  Offset(int cx)
+         /// <param name="cy">Distance.</param>
+         void  Offset(int cx, int cy)
          {
-            Rect.OffsetRect(cx, 0);
+            Rect.OffsetRect(cx, cy);
+         }
+
+         /// <summary>Truncates the phrase to desired width.</summary>
+         /// <param name="dc">The dc.</param>
+         /// <param name="width">The width.</param>
+         /// <returns>New size</returns>
+         CSize Truncate(CDC* dc, int width)
+         {
+            CSize maxSize;
+            int maxChars = 0;
+
+            // Get max number of characters that we can fit
+            if (!::GetTextExtentExPointW(dc->m_hDC, Text.c_str(), Text.length(), width, &maxChars, nullptr, &maxSize))
+               throw Win32Exception(HERE, L"Unable to measure text extent");
+            
+            // Truncate
+            if (maxChars > 0)
+               Text.replace(Text.begin()+maxChars, Text.end(), L"...");
+                  
+            return GetSize(dc);
          }
 
          /// <summary>Appends a character to the phrase.</summary>
@@ -222,7 +255,7 @@ namespace GUI
       protected:
          static PhraseList  GetPhrases(const RichString& str);
          static PhraseList  GetWords(const RichParagraph& para);
-         static int         MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line);
+         static int         MeasureLine(CDC* dc, PhraseIterator& start, const PhraseIterator& end, const CRect& line, RenderFlags flags);
          static void        RenderLine(CDC* dc, const PhraseIterator& pos, const PhraseIterator& end, RenderFlags flags);
 
          // --------------------- PROPERTIES ------------------------
