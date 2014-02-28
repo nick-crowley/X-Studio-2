@@ -40,8 +40,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      void DisplayProperties();
       void DoDataExchange(CDataExchange* pDX) override;   
 
+      handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
       afx_msg void OnCommandChangeMode(UINT nID);
       afx_msg void OnCommandChangeText(UINT nID);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -55,7 +57,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnStringSelectionChanged;
       LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
-      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
 
 
