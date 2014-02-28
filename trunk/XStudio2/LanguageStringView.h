@@ -208,6 +208,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       handler void onPageSelectionChanged();
+      afx_msg void OnQueryRemoveSelected(CCmdUI* pCmdUI);
+      afx_msg void OnRemoveSelected();
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------

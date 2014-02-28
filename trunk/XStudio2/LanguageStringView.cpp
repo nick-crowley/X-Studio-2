@@ -16,6 +16,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
+      ON_COMMAND(ID_EDIT_CLEAR, &LanguageStringView::OnRemoveSelected)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryRemoveSelected)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -178,7 +180,30 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
+   void LanguageStringView::OnRemoveSelected()
+   {
+      if (GetDocument()->SelectedString)
+      {
+         try 
+         {
+            // Remove string from selected page
+            GetDocument()->SelectedPage->Remove(GetDocument()->SelectedString->ID);
+            // Delete selected item
+            GetListCtrl().DeleteItem(GetListCtrl().GetNextItem(-1, LVNI_SELECTED));
+         }
+         catch (ExceptionBase& e) {
+            theApp.ShowError(HERE, e);
+         }
+      }
+   }
    
+
+   void LanguageStringView::OnQueryRemoveSelected(CCmdUI* pCmdUI)
+   {
+      pCmdUI->Enable(GetDocument()->SelectedString ? TRUE : FALSE);
+   }
+
+
    /// <summary>Adjusts layout</summary>
    /// <param name="nType">Type of the resize</param>
    /// <param name="cx">The new width</param>
