@@ -91,6 +91,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return;
 
       // Clear 
+      SetRedraw(FALSE);
       m_wndPropList.RemoveAll();
 
       // Disconnect
@@ -105,6 +106,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       // Redraw
+      SetRedraw(TRUE);
       m_wndPropList.Invalidate();
       m_wndPropList.UpdateWindow();
    }
