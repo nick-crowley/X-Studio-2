@@ -38,7 +38,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded))
    {
-      Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECT));
+      Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECTVIEW));
    }
 
    CProjectWnd::~CProjectWnd()
@@ -99,7 +99,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
          // Toolbar:
-         if (!Toolbar.Create(this, IDR_PROJECT))
+         if (!Toolbar.Create(this, IDR_PROJECTVIEW))
             throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
 	      // Populate
@@ -118,7 +118,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CProjectWnd::OnChangeVisualStyle()
    {
 	   //Toolbar.CleanUpLockedImages();
-	   //Toolbar.LoadBitmap(IDR_PROJECT, 0, 0, TRUE /* Locked */);
+	   //Toolbar.LoadBitmap(IDR_PROJECTVIEW, 0, 0, TRUE /* Locked */);
 
 	   //Images.DeleteImageList();
 
