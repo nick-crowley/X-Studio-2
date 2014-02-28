@@ -441,8 +441,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   phrase += chr->Char;
                else
                {  // Commit phrase
-                  InsertPhrase(phrase += chr->Char);
-                  phrase.Clear();
+                  InsertPhrase(phrase);
+                  phrase = RichPhrase(*chr);
                }
             }
             // Button:
