@@ -109,6 +109,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void LanguageDocument::OnCloseDocument()
    {
       // Disconnect properties
+      CPropertiesWnd::Connect(GetView<LanguageStringView>(), false);
+      CPropertiesWnd::Connect(GetView<LanguagePageView>(), false);
       CPropertiesWnd::Connect(this, false);
 
       __super::OnCloseDocument();

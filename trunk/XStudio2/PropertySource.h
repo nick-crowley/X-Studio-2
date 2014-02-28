@@ -105,7 +105,7 @@ NAMESPACE_BEGIN2(GUI,Utils)
       /// <returns></returns>
       BOOL OnUpdateValue() override
       {
-         CString strText;
+         CString strText, origVal(GetValue());
 
          // Get editing text
 	      m_pWndInPlace->GetWindowText(strText);
@@ -120,9 +120,12 @@ NAMESPACE_BEGIN2(GUI,Utils)
             // Replace input
             m_pWndInPlace->SetWindowTextW(value.c_str());
 
-            // Success: Update property
-            CMFCPropertyGridProperty::OnUpdateValue();
-            OnValueChanged(value);
+            // Update property
+            __super::OnUpdateValue();
+
+            // Changed: Raise 'CHANGED'
+            if (value != (LPCTSTR)origVal)
+               OnValueChanged(value);
             return TRUE;
          }
          catch (ExceptionBase& e) {

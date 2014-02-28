@@ -88,9 +88,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <returns>True to accept, false to reject</returns>
          bool OnValidateValue(GuiString& value) override
          {
-            return value.length()                                                      // Not empty
-                && (value.IsNumeric() && value.ToInt() >= 1 && value.ToInt() <= 9999)  // 1 <= val <= 9999
-                && !File.Pages.Contains(value.ToInt());                                // Not already in use
+            return value.length() && value.IsNumeric()                     // Not empty
+                && value.ToInt() >= 1 && value.ToInt() <= 9999             // 1 <= val <= 9999
+                && (Page.ID == value.ToInt() || !File.Pages.Contains(value.ToInt()));   // ID is Unchanged or available 
          }
 
          /// <summary>Update ID</summary>
@@ -185,14 +185,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguageDocument* GetDocument() const;
       LanguagePage*     GetSelected() const;
 
+      handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
+
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
       void DisplayProperties();
       void Populate();
 	  
-      handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
-      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
