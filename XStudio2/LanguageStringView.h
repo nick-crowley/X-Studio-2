@@ -25,7 +25,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          void  onDrawSubItem(CDC* dc, ItemData& item) override;
       };
 
-
       /// <summary>Base class for all Language document properties</summary>
       class StringPropertyBase : public LanguageDocument::LanguagePropertyBase
       {
@@ -44,8 +43,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageString& String;
       };
       
-
-
       /// <summary>colour tags property grid item</summary>
       class ColourTagProperty : public StringPropertyBase
       {
@@ -102,7 +99,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 
-
       /// <summary>ID property grid item</summary>
       class IDProperty : public StringPropertyBase
       {
@@ -144,7 +140,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguagePage& Page;
       };
 
-      
       /// <summary>version property grid item</summary>
       class VersionProperty : public StringPropertyBase
       {
@@ -202,12 +197,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguageString*   GetSelected() const;
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
+
    protected:
       void AdjustLayout();
       void DisplayProperties();
 
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       handler void onPageSelectionChanged();
@@ -221,7 +219,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
-      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
    
 
