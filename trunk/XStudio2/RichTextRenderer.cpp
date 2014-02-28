@@ -161,10 +161,11 @@ namespace GUI
                break;
             }
 
-            // Create font
+            // Create font  
             w->Font = w->GetFont(fontData);
-            dc->SelectObject(w->Font.get());
+            
             // Measure word
+            dc->SelectObject(w->Font.get());
             auto word = w->GetSize(dc);
             dc->SelectObject(oldFont);
 
@@ -255,70 +256,68 @@ namespace GUI
       /// <returns>List of phrases</returns>
       PhraseList  RichTextRenderer::GetPhrases(const RichString& str)
       {
+         // space char as a RichCharacter
          static RichCharacter space(' ', Colour::Default, NULL);
 
-         RichCharList chars;
-         PhraseList phrases;
-
-         // Author: Manual insert
-         RichStringParser auth(str.Author);
-         if (str.Author.length())
+         // lambda for assembling phrases
+         static function<void (PhraseList& list, const RichCharacter*)> buildPhrases = [](PhraseList& list, const RichCharacter* ch) 
          {
-            chars += auth.Output.FirstParagraph.Characters;
-            chars += space;
-         }
-
-         // Title: Manual insert
-         RichStringParser title(str.Title);
-         if (str.Title.length())
-         {
-            chars += title.Output.FirstParagraph.Characters;
-            chars += space;
-         }
-         
-         // Flatten string into list of characters
-         for (auto& para : str.Paragraphs)
-            chars += para.Characters;
-
-         // Author: Manual insert
-         /*if (!str.Author.empty()) {
-            phrases += RichPhrase(str.Author, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
-            phrases += RichPhrase(L" ", NULL, Colour::Default);
-         }*/
-
-         // Title: Manual insert
-         /*if (!str.Title.empty()) {
-            phrases += RichPhrase(str.Title, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
-            phrases += RichPhrase(L" ", NULL, Colour::Default);
-         }*/
-         
-         // Skip if empty string
-         if (!chars.empty())
-         {
-            // Init
-            phrases += RichPhrase(*chars.front());
-
-            // Leading CRLF: conv to space
-            if (phrases.back().Text == L"\n")
-               phrases.back().Text = L" ";
-
-            // Transform content into blocks of contiguous characters
-            for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
+            // Init: Start first phrase
+            if (list.empty())
+               list += RichPhrase(iswcntrl(ch->Char) ? space : *ch);
+            else
             {
-               RichPhrase& current = phrases.back();
+               RichPhrase& current = list.back();
 
                // CRLF: Replace with space
-               if (ch->Char == '\n' || ch->Char == '\t')
+               if (iswcntrl(ch->Char))
                   current += ' ';
+
                // Create new phrase if colour/formatting changes
                else if (ch->Colour != current.Colour
-                || ch->Format != current.Format)
-                   phrases += RichPhrase(*ch);
+                     || ch->Format != current.Format)
+                     list += RichPhrase(*ch);
                else
                   // Otherwise append to last phrase
                   current += ch->Char;
-            });
+            }
+         };
+
+         
+         PhraseList phrases;
+
+         // Author: Manual insert
+         if (str.Author.length())
+         {
+            // Parse colours + formatting
+            for (auto& ch : RichStringParser(str.Author).Output.Characters)
+               buildPhrases(phrases, ch);
+
+            // Spacing phrase
+            phrases += RichPhrase(L" ", NULL, Colour::Default);
          }
+
+         // Title: Manual insert
+         if (str.Title.length())
+         {
+            // Parse colours + formatting
+            for (auto& ch : RichStringParser(str.Title).Output.Characters)
+               buildPhrases(phrases, ch);
+
+            // Spacing phrase
+            phrases += RichPhrase(L" ", NULL, Colour::Default);
+         }
+
+         // Embolden author/title, if any
+         for (auto& p : phrases)
+         {
+            p.Format |= CFE_BOLD;
+            p.CustomFont = L"Times New Roman";
+         }
+         
+         // Assemble phrases
+         for (const RichCharacter* ch : str.Characters)
+            buildPhrases(phrases, ch);
 
          return phrases;
       }
