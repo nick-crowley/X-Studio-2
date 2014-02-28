@@ -224,6 +224,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Notify on change/scroll/input/paste
       SetEventMask(ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS | ENM_PROTECTED);
 
+      // Show/Preserve selection on lose focus
+      SetOptions(ECOOP_OR, ECO_NOHIDESEL | ECO_SAVESEL);
+
       // Set undo limit + options
       SetTextMode(TM_RICHTEXT | TM_MULTILEVELUNDO | TM_MULTICODEPAGE);
       SetUndoLimit(100);
