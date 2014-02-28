@@ -248,33 +248,46 @@ namespace GUI
       PhraseList  RichTextRenderer::GetPhrases(const RichString& str)
       {
          RichCharList chars;
+         PhraseList phrases;
 
          // Flatten string into list of characters
          for (auto& para : str.Paragraphs)
             for (auto ch : para.Characters)
-               if (ch->Char != '\n')      // Drop line breaks
-                  chars.push_back(ch);
+               chars.push_back(ch);
 
-         // Abort if empty string
-         if (chars.empty())
-            return PhraseList();
+         // Author: Manual insert
+         if (!str.Author.empty()) {
+            phrases += RichPhrase(str.Author, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
+            phrases += RichPhrase(L" ", NULL, Colour::Default);
+         }
 
-         PhraseList phrases;
-         phrases += RichPhrase(*chars.front());
-
-         // Transform into blocks of contiguous characters
-         for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
+         // Title: Manual insert
+         if (!str.Title.empty()) {
+            phrases += RichPhrase(str.Title, CFE_BOLD|CFE_UNDERLINE, Colour::Default);
+            phrases += RichPhrase(L" ", NULL, Colour::Default);
+         }
+         
+         // Skip if empty string
+         if (!chars.empty())
          {
-            RichPhrase& current = phrases.back();
+            // Transform content into blocks of contiguous characters
+            phrases += RichPhrase(*chars.front());
+            for_each(++chars.begin(), chars.end(), [&](const RichCharacter* ch) 
+            {
+               RichPhrase& current = phrases.back();
 
-            // Create new phrase if colour/formatting changes
-            if (ch->Colour != current.Colour
-             || ch->Format != current.Format)
-                phrases += RichPhrase(*ch);
-            else
-               // Otherwise append to last phrase
-               current += ch->Char;
-         });
+               // CRLF: Replace with space
+               if (ch->Char == '\n' || ch->Char == '\t')
+                  current += ' ';
+               // Create new phrase if colour/formatting changes
+               else if (ch->Colour != current.Colour
+                || ch->Format != current.Format)
+                   phrases += RichPhrase(*ch);
+               else
+                  // Otherwise append to last phrase
+                  current += ch->Char;
+            });
+         }
 
          return phrases;
       }
