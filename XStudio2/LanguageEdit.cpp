@@ -458,7 +458,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
                Console << "Inserting Button=" << btn->Text << ENDL;
 
                // Insert button
+               auto pos = GetSelection().cpMax;
                InsertButton(btn->Text, btn->ID);
+               SetSel(pos+1, pos+1);
             }
          }
 

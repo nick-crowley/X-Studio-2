@@ -142,6 +142,10 @@ namespace GUI
          CRect   remaining(line);
          PhraseIterator w;
 
+         // Empty:
+         if (start == end)
+            return line.Width();
+
          // Get original font properties
          CFont* oldFont = dc->GetCurrentFont();
          oldFont->GetLogFont(&fontData);
