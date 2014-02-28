@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetClientRect(wnd);
 
       // TODO: Layout code
-      GetListCtrl().SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER); // wnd.Width() - GetListCtrl().GetColumnWidth(0) - 4);
+      GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));  //LVSCW_AUTOSIZE_USEHEADER); 
    }
    
    /// <summary>Retrieves the language string representing the current selection.</summary>

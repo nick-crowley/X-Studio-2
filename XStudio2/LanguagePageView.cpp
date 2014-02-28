@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePageView.h"
 #include "Helpers.h"
-#include "Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -46,16 +45,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    LanguagePage*   LanguagePageView::GetSelected() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetDataSource().FindByIndex(item) : nullptr;
+      return item != -1 ? &GetDocument()->GetContent().FindByIndex(item) : nullptr;
    }
    
-   /// <summary>Retrieves page collection, either from document language file or static copy of library</summary>
-   /// <returns></returns>
-   LanguagePageView::PageCollection&   LanguagePageView::GetDataSource() const
-   {
-      return GetDocument()->Virtual ? const_cast<PageCollection&>(Library) : GetDocument()->Content.Pages;
-   }
-
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -72,14 +64,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
    }
    
-   /// <summary>Builds a static copy of the string library.</summary>
-   void LanguagePageView::GenerateLibrary()
-   {
-      // Copy each page (and strings) into from string library into static snapshot
-      for (auto& file : StringLib.Files)
-         for (auto& page : file)
-            Library.Add(page);
-   }
 
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
@@ -116,17 +100,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
 
-   /// <summary>Populates this instance.</summary>
+   /// <summary>Populates pages.</summary>
    void LanguagePageView::Populate()
    {
-      // Generate static copy of string library
-      if (GetDocument()->Virtual)
-         GenerateLibrary();
+      // Freeze window
+      GetListCtrl().SetRedraw(FALSE);
 
       // Populate pages
       int index = 0;
-      GetListCtrl().SetRedraw(FALSE);
-      for (const auto& pair : GetDataSource()) 
+      for (const auto& pair : GetDocument()->GetContent()) 
       {
          const LanguagePage& p = pair.second;
          

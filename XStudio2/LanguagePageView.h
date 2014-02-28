@@ -20,7 +20,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    private:
-      typedef LanguageFile::PageCollection PageCollection;
+      
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
@@ -40,12 +40,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:
       LanguageDocument* GetDocument() const;
       LanguagePage*     GetSelected() const;
-      PageCollection&   GetDataSource() const;
 
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      void GenerateLibrary();
       void Populate();
 	  
       virtual void OnInitialUpdate();
@@ -55,8 +53,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // -------------------- REPRESENTATION ---------------------
    public:
       SelectionChangedEvent   SelectionChanged;
-      PageCollection          Library;
-   
+      
    private:
       ImageListEx   Images;
       

@@ -9,6 +9,7 @@
 #include "Logic/LanguageFileReader.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/WorkerFeedback.h"
+#include "Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -44,6 +45,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_SAVE, ID_FILE_SAVE_AS, &LanguageDocument::OnQueryFileCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryClipboardCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryClipboardCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnQueryClipboardCommand)
@@ -54,7 +56,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), CurrentString(nullptr), CurrentPage(nullptr)
+   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), CurrentString(nullptr), CurrentPage(nullptr), Virtual(false)
    {
    }
 
@@ -66,6 +68,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   
+   /// <summary>Retrieves the file/library page collection</summary>
+   /// <returns></returns>
+   LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
+   {
+      return Virtual ? Library : Content.Pages;
+   }
+
+
    /// <summary>Gets the selected page.</summary>
    /// <returns></returns>
    LanguagePage*   LanguageDocument::GetSelectedPage() const
@@ -96,6 +107,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Initializes new document</summary>
+   /// <returns></returns>
    BOOL LanguageDocument::OnNewDocument()
    {
 	   if (!DocumentBase::OnNewDocument())
@@ -103,6 +116,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   return TRUE;
    }
 
+   /// <summary>Populates from a file path</summary>
+   /// <param name="szPathName">Full path, or 'String Library'</param>
+   /// <returns></returns>
    BOOL LanguageDocument::OnOpenDocument(LPCTSTR szPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
@@ -113,14 +129,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Console << Cons::UserAction << L"Loading language file: " << Path(szPathName) << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading language file '%s'", szPathName));
 
-         // Parse file
-         if (GuiString(L"String Library") == szPathName)
-            Virtual = true;
-         else
+         // Identify whether file or library
+         Virtual = GuiString(L"String Library") == szPathName;
+         
+         // Library:
+         if (Virtual)
          {
+            // Copy each page (and strings) into from string library into static snapshot
+            for (auto& file : StringLib.Files)
+               for (auto& page : file)
+                  Library.Add(page);
+         }
+         else
+         {  
+            // Parse input file
             StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
             Content = LanguageFileReader(fs2).ReadFile(Path(szPathName).FileName);
-            Virtual = false;
          }
 
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
@@ -132,6 +156,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
+      }
+   }
+
+   /// <summary>Query state of save commands.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageDocument::OnQueryFileCommand(CCmdUI* pCmd)
+   {
+      pCmd->SetCheck(FALSE);
+
+      switch (pCmd->m_nID)
+      {
+      // Save/SaveAs: Require file document
+      case ID_FILE_SAVE:
+      case ID_FILE_SAVE_AS:
+         pCmd->Enable(!Virtual ? TRUE : FALSE);
+         break;
       }
    }
 
