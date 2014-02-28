@@ -9,17 +9,14 @@
 NAMESPACE_BEGIN2(GUI,Views)
 
    // ----------------- EVENTS AND DELEGATES ------------------
-
-   typedef Event<>                             SelectionChangedEvent;
-   typedef SelectionChangedEvent::DelegatePtr  SelectionChangedHandler;
    
    // ----------------------- CLASSES -------------------------
 
    /// <summary></summary>
-   class LanguagePageView : public CListView, public PropertySource
+   class LanguagePageView : public CListView
    {
       // ------------------------ TYPES --------------------------
-   protected:
+   public:
       /// <summary>Base class for all Language document properties</summary>
       class PagePropertyBase : public LanguageDocument::LanguagePropertyBase
       {
@@ -186,12 +183,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguagePage*     GetSelected() const;
 
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
-      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
 
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      void DisplayProperties();
       void Populate();
 	  
       handler void OnInitialUpdate() override;
@@ -199,8 +194,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
-   public:
-      SelectionChangedEvent   SelectionChanged;
+   public:      
       
    protected:
       ImageListEx   Images;

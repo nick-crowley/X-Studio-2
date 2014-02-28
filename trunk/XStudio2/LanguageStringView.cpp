@@ -51,33 +51,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Show properties
       if (bActivate)
-         DisplayProperties();
+         CPropertiesWnd::Connect(GetDocument(), true); 
 
       __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
-   }
-
-   /// <summary>Populates the properties window</summary>
-   /// <param name="grid">The grid.</param>
-   /// <exception cref="Logic::ArgumentException">String colour tags still 'undetermined'</exception>
-   /// <exception cref="Logic::ArgumentNullException">No string or page is selected</exception>
-   void  LanguageStringView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
-   {
-      REQUIRED(GetDocument()->SelectedString);
-      REQUIRED(GetDocument()->SelectedPage);
-      
-      // Prepend file+page properties
-      GetDocument()->GetView<LanguagePageView>()->OnDisplayProperties(grid);
-
-      // Init
-      LanguageString& str = *GetDocument()->SelectedString;
-      LanguageDocument& doc = *GetDocument();
-
-      // String: ID/Description/Title/Voiced
-      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
-      group->AddSubItem(new IDProperty(doc, *GetDocument()->SelectedPage, str));
-      group->AddSubItem(new ColourTagProperty(doc, str));
-      group->AddSubItem(new VersionProperty(doc, str));
-      grid.AddProperty(group);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -96,18 +72,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));  //LVSCW_AUTOSIZE_USEHEADER); 
    }
    
-   /// <summary>Displays string or document properties.</summary>
-   void LanguageStringView::DisplayProperties()
-   {
-      // Show string properties (if any), otherwise page properties (if any), otherwise document properties
-      if (GetDocument()->SelectedString)
-         CPropertiesWnd::Connect(this, true);
-      else if (GetDocument()->SelectedPage)
-         CPropertiesWnd::Connect(GetDocument()->GetView<LanguagePageView>(), true);
-      else 
-         CPropertiesWnd::Connect(GetDocument(), true);
-   }
-
    /// <summary>Retrieves the language string representing the current selection.</summary>
    /// <returns>Selected string if any, otherwise nullptr</returns>
    /// <exception cref="Logic::IndexOutOfRangeException">Selected item index is invalid</exception>
@@ -145,9 +109,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
          GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
-         // Listen for PageClicked
-         auto pageView = GetDocument()->GetView<LanguagePageView>();
-         fnPageSelectionChanged = pageView->SelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+         // Listen for Page selection changed
+         fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -165,16 +128,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          // Selection (not focus) has changed
          if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
-         {
             // Update document
             GetDocument()->SelectedString = GetSelected();
-
-            // Refresh properties
-            DisplayProperties();
-
-            // Raise SELECTION CHANGED
-            SelectionChanged.Raise();
-         }
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -193,9 +148,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Clear items + selection
          GetListCtrl().DeleteAllItems();
          GetDocument()->SelectedString = nullptr;
-
-         // Raise SELECTION CHANGED
-         SelectionChanged.Raise();
 
          // Get selection, if any
          if (LanguagePage* page = GetDocument()->SelectedPage)

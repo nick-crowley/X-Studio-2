@@ -10,7 +10,7 @@
 NAMESPACE_BEGIN2(GUI,Views)
    
    /// <summary></summary>
-   class LanguageStringView : public CListView, public PropertySource
+   class LanguageStringView : public CListView
    {
       // ------------------------ TYPES --------------------------
    protected:
@@ -25,6 +25,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          void  onDrawSubItem(CDC* dc, ItemData& item) override;
       };
 
+   public:
       /// <summary>Base class for all Language document properties</summary>
       class StringPropertyBase : public LanguageDocument::LanguagePropertyBase
       {
@@ -199,11 +200,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ----------------------- MUTATORS ------------------------
    public:
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
-      handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
 
    protected:
       void AdjustLayout();
-      void DisplayProperties();
 
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       handler void OnInitialUpdate() override;
@@ -213,7 +212,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
-      SelectionChangedEvent    SelectionChanged;
+      
 
    private:
       SelectionChangedHandler  fnPageSelectionChanged;
