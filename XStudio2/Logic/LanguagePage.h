@@ -169,6 +169,24 @@ namespace Logic
                throw IndexOutOfRangeException(HERE, index, size());
             }
 
+            /// <summary>Remove a string by ID</summary>
+            /// <param name="id">The string id</param>
+            /// <returns>String removed</returns>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+            LanguageString  Remove(UINT  id) 
+            { 
+               const_iterator pos;
+
+               // Lookup string
+               if ((pos=find(id)) == end())
+                  throw StringNotFoundException(HERE, PageID, id);
+
+               // Extract + Remove
+               LanguageString str(pos->second);
+               this->erase(pos);
+               return str;
+            }
+
 		      // -------------------- REPRESENTATION ---------------------
          private:
             UINT  PageID;
@@ -239,6 +257,15 @@ namespace Logic
          }
 
 		   // ----------------------- MUTATORS ------------------------
+         
+         /// <summary>Remove a string by ID</summary>
+         /// <param name="id">The string id</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+         LanguageString  Remove(UINT  id) 
+         { 
+            return Strings.Remove(id);     
+         }
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
