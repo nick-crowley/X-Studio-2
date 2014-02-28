@@ -29,8 +29,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
+      ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageEditView::OnCommandChangeText)
+      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageEditView::OnCommandChangeText)
+      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageEditView::OnCommandChangeText)
+      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageEditView::OnCommandChangeText)
+      ON_COMMAND_RANGE(ID_EDIT_BOLD, ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandChangeText)
       ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandChangeMode)
-      ON_COMMAND(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandInsertButton)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -68,6 +72,46 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
+   /// <summary>Queries the state of clipboard commands.</summary>
+   /// <param name="pCmd">The command.</param>
+   void LanguageEditView::OnQueryClipboardCommand(CCmdUI* pCmd) const
+   {
+      // Disable if no string displayed
+      if (RichEdit.IsReadOnly())
+      {
+         pCmd->Enable(FALSE);
+         pCmd->SetCheck(FALSE);
+      }
+      else
+      {
+         // Check correct state
+         pCmd->SetCheck(FALSE);
+         switch (pCmd->m_nID)
+         {
+         // Clipboard: Set based on selection
+         case ID_EDIT_CUT:
+         case ID_EDIT_COPY:    
+            return pCmd->Enable(RichEdit.HasSelection());
+
+         // Paste/Delete: Always enabled
+         case ID_EDIT_PASTE:   
+         case ID_EDIT_CLEAR:   
+            return pCmd->Enable(TRUE);
+
+         // Undo:
+         case ID_EDIT_UNDO:
+            pCmd->Enable(RichEdit.CanUndo());
+            pCmd->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetUndoName())).c_str() );
+            break;
+         // Redo:
+         case ID_EDIT_REDO:
+            pCmd->Enable(RichEdit.CanRedo());
+            pCmd->SetText( GuiString(RichEdit.CanRedo() ? L"Redo %s" : L"Redo", GetString(RichEdit.GetRedoName())).c_str() );
+            break;
+         }
+      }
+   }
+
    /// <summary>Queries the state of formatting commands.</summary>
    /// <param name="pCmd">The command.</param>
    void LanguageEditView::OnQueryFormatCommand(CCmdUI* pCmd) const
@@ -84,18 +128,17 @@ NAMESPACE_BEGIN2(GUI,Views)
          ParaFormat  pf(PFM_ALIGNMENT);
 
          // Check correct state
+         pCmd->SetCheck(FALSE);
          switch (pCmd->m_nID)
          {
-         // Clipboard: Set based on selection
-         case ID_EDIT_CUT:
-         case ID_EDIT_COPY:    return pCmd->Enable(RichEdit.HasSelection());
-         case ID_EDIT_PASTE:   
-         case ID_EDIT_CLEAR:   return pCmd->Enable(TRUE);
-
          // Button: Require editor mode
          case ID_EDIT_ADD_BUTTON:
-            pCmd->SetCheck(FALSE);
             pCmd->Enable(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);
+            break;
+
+         // Colour: Not implemented
+         case ID_EDIT_COLOUR:
+            pCmd->Enable(FALSE);
             break;
 
          // Format: Require editor mode
@@ -104,7 +147,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_UNDERLINE:  
             if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
             {
-               pCmd->Enable();
+               pCmd->Enable(TRUE);
                RichEdit.GetSelectionCharFormat(cf);
             
                // Check formatting 
@@ -124,7 +167,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_JUSTIFY:
             if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
             {
-               pCmd->Enable();
+               pCmd->Enable(TRUE);
                RichEdit.GetParaFormat(pf);
             
                // Check alignment
@@ -186,11 +229,45 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
-   /// <summary>Inserts a new button</summary>
-   void LanguageEditView::OnCommandInsertButton()
+   /// <summary>Perform text formatting command.</summary>
+   /// <param name="nID">The command identifier.</param>
+   void LanguageEditView::OnCommandChangeText(UINT nID)
    {
-      static int LastID = 1;
-      RichEdit.InsertButton(GuiString(L"Button %d", LastID++), L"id");
+      static int LastButtonID = 1;  
+
+      // Execute
+      switch (nID)
+      {
+      // Clipboard: Set based on selection
+      case ID_EDIT_CUT:     RichEdit.Cut();     break;
+      case ID_EDIT_COPY:    RichEdit.Copy();    break;
+      case ID_EDIT_PASTE:   RichEdit.PasteFormat(CF_UNICODETEXT);   break;
+      case ID_EDIT_CLEAR:   RichEdit.ReplaceSel(L"", TRUE);         break;
+
+      // Undo/Redo:
+      case ID_EDIT_UNDO:    RichEdit.Undo();    break;
+      case ID_EDIT_REDO:    RichEdit.Redo();    break;
+
+      // Button: Insert at caret
+      case ID_EDIT_ADD_BUTTON:
+         RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");
+         break;
+
+      // Colour: Not implemented
+      case ID_EDIT_COLOUR:
+         break;
+
+      // Format: Require editor mode
+      case ID_EDIT_BOLD:       RichEdit.ToggleFormatting(CFE_BOLD);       break;
+      case ID_EDIT_ITALIC:     RichEdit.ToggleFormatting(CFE_ITALIC);     break;
+      case ID_EDIT_UNDERLINE:  RichEdit.ToggleFormatting(CFE_UNDERLINE);  break;
+
+      // Alignment: Require editor mode
+      case ID_EDIT_LEFT:       RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Left));     break;
+      case ID_EDIT_RIGHT:      RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Right));    break;
+      case ID_EDIT_CENTRE:     RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Centre));   break;
+      case ID_EDIT_JUSTIFY:    RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Justify));  break;
+      }
    }
 
    /// <summary>Creates the toolbar</summary>

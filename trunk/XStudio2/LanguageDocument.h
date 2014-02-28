@@ -70,6 +70,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    protected:
 	   BOOL OnNewDocument() override;
       BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+      void OnQueryClipboardCommand(CCmdUI* pCmd);
       void OnQueryFormatCommand(CCmdUI* pCmd);
       void OnQueryModeCommand(CCmdUI* pCmd);
 
