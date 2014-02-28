@@ -46,7 +46,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            Document.SetModifiedFlag(TRUE);
+            if (!Document.Virtual)
+               Document.SetModifiedFlag(TRUE);
          }
 
       protected:

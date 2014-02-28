@@ -148,6 +148,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
             for (auto& file : StringLib.Files)
                for (auto& page : file)
                   Library.Add(page);
+
+            // Set language (for display purposes only) from main language file
+            if (!StringLib.Files.empty())
+               Content.Language = StringLib.Files.begin()->Language;
          }
          else
          {  
