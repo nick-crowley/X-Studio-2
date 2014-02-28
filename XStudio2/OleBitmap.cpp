@@ -62,6 +62,8 @@ namespace GUI
          if (FAILED(hr))
 	         _com_issue_errorex(hr, img, __uuidof(IDataObject));
 
+         // Cleanup temp image + return static copy
+         img->Release();
 	      return object;
       }
          
