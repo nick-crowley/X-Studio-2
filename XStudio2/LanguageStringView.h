@@ -62,6 +62,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
+      virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
    };
    
 

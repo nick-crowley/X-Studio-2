@@ -5,6 +5,7 @@
 #include "LanguageDocument.h"
 #include "LanguageFrame.h"
 #include "LanguageEditView.h"
+#include "PropertiesWnd.h"
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
 #include "Logic/FileIdentifier.h"
@@ -90,23 +91,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return CurrentString;
    }
-
-   /// <summary>Sets the selected page.</summary>
-   /// <param name="p">The page.</param>
-   void  LanguageDocument::SetSelectedPage(LanguagePage* p)
-   {
-      CurrentPage = p;
-   }
-
-   /// <summary>Sets the selected string.</summary>
-   /// <param name="s">The string.</param>
-   void  LanguageDocument::SetSelectedString(LanguageString* s)
-   {
-      CurrentString = s;
-   }
-
-   // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   void  LanguageDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      // Group: General
+      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
+
+      // ID/Language
+      //general->AddSubItem(new NameProperty(*this));
+      general->AddSubItem(new FileIDProperty(*this));
+      general->AddSubItem(new FileLanguageProperty(*this));
+      grid.AddProperty(general);
+   }
+   
+   /// <summary>Called when document closed.</summary>
+   void LanguageDocument::OnCloseDocument()
+   {
+      // Disconnect properties
+      CPropertiesWnd::Connect(this, false);
+
+      __super::OnCloseDocument();
+   }
+
    /// <summary>Initializes new document</summary>
    /// <returns></returns>
    BOOL LanguageDocument::OnNewDocument()
@@ -159,6 +167,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
+   /// <summary>Sets the selected page.</summary>
+   /// <param name="p">The page.</param>
+   void  LanguageDocument::SetSelectedPage(LanguagePage* p)
+   {
+      CurrentPage = p;
+   }
+
+   /// <summary>Sets the selected string.</summary>
+   /// <param name="s">The string.</param>
+   void  LanguageDocument::SetSelectedString(LanguageString* s)
+   {
+      CurrentString = s;
+   }
+
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
    /// <summary>Query state of save commands.</summary>
    /// <param name="pCmd">The command.</param>
    void LanguageDocument::OnQueryFileCommand(CCmdUI* pCmd)
@@ -203,4 +227,5 @@ NAMESPACE_BEGIN2(GUI,Documents)
    // ------------------------------- PRIVATE METHODS ------------------------------
    
 NAMESPACE_END2(GUI,Documents)
+
 
