@@ -20,7 +20,6 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-
       private:
          StringLibrary();
       public:
@@ -31,15 +30,14 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
          
 		   // ---------------------- ACCESSORS ------------------------			
-
       public:
          FileCollection::const_iterator begin() const { return Files.begin(); }
          FileCollection::const_iterator end() const   { return Files.end(); }
 
-         bool            Contains(UINT page, UINT id) const;
-         const LanguageString&  Find(UINT page, UINT id) const;
-         wstring         Resolve(UINT page, UINT id) const;
-         bool            TryFind(UINT page, UINT id, const LanguageString* &str) const;
+         bool              Contains(UINT page, UINT id) const;
+         LanguageStringRef Find(UINT page, UINT id) const;
+         wstring           Resolve(UINT page, UINT id) const;
+         bool              TryFind(UINT page, UINT id, const LanguageString* &str) const;
 
 		   // ----------------------- MUTATORS ------------------------
 
@@ -48,7 +46,6 @@ namespace Logic
          UINT  Enumerate(XFileSystem& vfs, GameLanguage lang, WorkerData* data);
 
 		   // -------------------- REPRESENTATION ---------------------
-
       public:
          static StringLibrary  Instance;
 

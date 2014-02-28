@@ -7,6 +7,15 @@ namespace Logic
 {
    namespace Language
    {
+      class LanguageString;
+      class LanguagePage;
+
+      /// <summary>Read-only language string reference</summary>
+      typedef const LanguageString&  LanguageStringRef;
+
+      /// <summary>Read-only language page reference</summary>
+      typedef const LanguagePage&    LanguagePageRef;
+
       /// <summary>Categorises language page ID</summary>
       enum class PageGroup : UINT { DATA, DIALOGUE, MISC, QUEST, BONUS, MENU, EDITOR, NEWS, PLOT, NPC, USER };
 
@@ -34,7 +43,7 @@ namespace Logic
       /// <summary>Defines colour tag types used in language strings</summary>
       enum class ColourTag { Undetermined, Unix, Message };
 
-      /// <summary>Language string with immutable ID</summary>
+      /// <summary>Represents a string in a language file</summary>
       class LanguageString
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -42,6 +51,8 @@ namespace Logic
          LanguageString(UINT  id, UINT page, wstring  txt, GameVersion v);
          LanguageString(LanguageString&& r);
          ~LanguageString();
+
+         DEFAULT_COPY(LanguageString);	// Default copy semantics
 
          // ----------------------- STATIC --------------------------
       protected:
@@ -63,8 +74,8 @@ namespace Logic
          ColourTag  IdentifyColourTags();
 
 		   // -------------------- REPRESENTATION ---------------------
-
-         const UINT   ID,
+      public:
+         UINT         ID,
                       Page;
          wstring      Text;
          GameVersion  Version;
@@ -95,11 +106,11 @@ namespace Logic
                return find(id) != end();
             }
 
-            /// <summary>Finds the specified string.</summary>
+            /// <summary>Read-only access to strings by ID.</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>
             /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-            const LanguageString&  Find(UINT  id) const
+            LanguageStringRef  Find(UINT  id) const
             {
                const_iterator it;
 
@@ -109,11 +120,11 @@ namespace Logic
                return it->second;
             }
             
-            /// <summary>Finds the specified string.</summary>
+            /// <summary>Read-only access to strings by ID.</summary>
             /// <param name="id">The string id</param>
             /// <returns></returns>
             /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-            const LanguageString&  operator[](UINT  id) const
+            LanguageStringRef  operator[](UINT  id) const
             {
                return Find(id);
             }
@@ -141,7 +152,7 @@ namespace Logic
                return false;
             }
 
-            /// <summary>Finds a string by index</summary>
+            /// <summary>Read-write access to strings by index</summary>
             /// <param name="index">The index</param>
             /// <returns></returns>
             /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
@@ -173,6 +184,8 @@ namespace Logic
          LanguagePage(LanguagePage&& r);
          ~LanguagePage();
 
+         DEFAULT_COPY(LanguagePage);	// Default copy semantics
+
          // ----------------------- STATIC ------------------------
 
          /// <summary>Get category of a page id</summary>
@@ -182,7 +195,7 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------
 
-         /// <summary>Get constant string iterator</summary>
+         /// <summary>Get read-only string iterator</summary>
          /// <returns></returns>
          const_iterator begin() const 
          { 
@@ -197,18 +210,18 @@ namespace Logic
             return Strings.Contains(id); 
          }
 
-         /// <summary>Get constant string iterator</summary>
+         /// <summary>Get read-only string iterator</summary>
          /// <returns></returns>
          const_iterator end() const 
          { 
             return const_iterator(Strings, Strings.end()); 
          }
 
-         /// <summary>Finds the specified string.</summary>
+         /// <summary>Read-only access to string by ID</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         const LanguageString&  Find(UINT  id) const
+         LanguageStringRef  Find(UINT  id) const
          { 
             return Strings.Find(id);     
          }
@@ -216,11 +229,11 @@ namespace Logic
          /// <summary>Get display category of this page when used in the string library viewer</summary>
          PageGroup  GetGroup() const;
 
-         /// <summary>Finds the specified string.</summary>
+         /// <summary>Read-only access to string by ID.</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         const LanguageString&  operator[](UINT  id) const
+         LanguageStringRef  operator[](UINT  id) const
          { 
             return Strings.Find(id);     
          }
@@ -228,14 +241,13 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
-
-         const UINT       ID;
+      public:
+         UINT             ID;
          wstring          Title,
                           Description;
          bool             Voiced;
          
          StringCollection Strings;
-
       };
    }
 }

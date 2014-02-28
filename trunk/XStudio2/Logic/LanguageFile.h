@@ -42,11 +42,11 @@ namespace Logic
                return it != end() && it->second.Strings.Contains(id);
             }
 
-            /// <summary>Finds the specified page.</summary>
+            /// <summary>Read-only access to pages by ID.</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
             /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-            const LanguagePage&  Find(UINT page) const
+            LanguagePageRef  Find(UINT page) const
             {
                const_iterator it;
 
@@ -56,22 +56,22 @@ namespace Logic
                return it->second;
             }
 
-            /// <summary>Finds the specified string</summary>
+            /// <summary>Read-only access to strings by ID</summary>
             /// <param name="page">The page id</param>
             /// <param name="id">The string id</param>
             /// <returns></returns>
             /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
             /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-            const LanguageString&  Find(UINT page, UINT id) const
+            LanguageStringRef  Find(UINT page, UINT id) const
             {
                return Find(page).Strings[id]; 
             }
             
-            /// <summary>Finds the specified page.</summary>
+            /// <summary>Read-only access to pages by ID.</summary>
             /// <param name="page">The page id</param>
             /// <returns></returns>
             /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-            const LanguagePage&  operator[](UINT  page) const
+            LanguagePageRef  operator[](UINT  page) const
             {
                return Find(page);
             }
@@ -93,7 +93,7 @@ namespace Logic
                }
             }
 
-            /// <summary>Finds a page by index</summary>
+            /// <summary>Find a page by index</summary>
             /// <param name="index">The index</param>
             /// <returns></returns>
             /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
@@ -127,11 +127,13 @@ namespace Logic
          {}
          ~LanguageFile();
 
+         DEFAULT_COPY(LanguageFile);	// Default copy semantics
+
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
 
-         /// <summary>Get constant page iterator</summary>
+         /// <summary>Get read-only page iterator</summary>
          /// <returns></returns>
          const_iterator begin() const 
          { 
@@ -147,20 +149,20 @@ namespace Logic
             return Pages.Contains(page,id); 
          }
          
-         /// <summary>Get constant page iterator</summary>
+         /// <summary>Get read-only page iterator</summary>
          /// <returns></returns>
          const_iterator end() const
          { 
             return const_iterator(Pages, Pages.end());   
          }
 
-         /// <summary>Finds the specified string</summary>
+         /// <summary>Read-only access to strings by ID</summary>
          /// <param name="page">The page id</param>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         const LanguageString&  Find(UINT page, UINT id) const
+         LanguageStringRef  Find(UINT page, UINT id) const
          { 
             return Pages.Find(page,id); 
          }
@@ -184,7 +186,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
-
+      public:
          UINT            ID;
          PageCollection  Pages;
          GameLanguage    Language;
