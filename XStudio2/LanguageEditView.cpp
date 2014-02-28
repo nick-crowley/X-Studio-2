@@ -58,7 +58,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Show properties
       if (bActivate)
-         DisplayProperties();
+         CPropertiesWnd::Connect(GetDocument(), true);  
 
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
@@ -217,18 +217,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       RichEdit.SetWindowPos(nullptr, view.left, view.top+barHeight, view.Width(), view.Height()-barHeight, SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
-   /// <summary>Displays string or document properties.</summary>
-   void LanguageEditView::DisplayProperties()
-   {
-      // Show string properties (if any), otherwise page properties (if any), otherwise document properties
-      if (GetDocument()->SelectedString)
-         CPropertiesWnd::Connect(GetDocument()->GetView<LanguageStringView>(), true);
-      else if (GetDocument()->SelectedPage)
-         CPropertiesWnd::Connect(GetDocument()->GetView<LanguagePageView>(), true);
-      else 
-         CPropertiesWnd::Connect(GetDocument(), true);
-   }
-
    /// <summary>Does the data exchange.</summary>
    /// <param name="pDX">The p dx.</param>
    void LanguageEditView::DoDataExchange(CDataExchange* pDX)
@@ -328,9 +316,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try
       {
-         // Listen for string SelectionChanged
-         auto strView = GetDocument()->GetView<LanguageStringView>();
-         fnStringSelectionChanged = strView->SelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
+         // Listen for string Selection Changed
+         fnStringSelectionChanged = GetDocument()->StringSelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
       
          // Init RichEdit
          RichEdit.Initialize(GetDocument());

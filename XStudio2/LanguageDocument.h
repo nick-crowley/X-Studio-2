@@ -6,6 +6,11 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
 
+   // ----------------- EVENTS AND DELEGATES ------------------
+
+   typedef Event<>                             SelectionChangedEvent;
+   typedef SelectionChangedEvent::DelegatePtr  SelectionChangedHandler;
+
    /// <summary>Language document template</summary>
    class LanguageDocTemplate : public CMultiDocTemplate
    {
@@ -57,7 +62,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
 
    protected:
-      
       /// <summary>Language filename property grid item</summary>
       class FileNameProperty : public LanguagePropertyBase
       {
@@ -81,7 +85,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // -------------------- REPRESENTATION ---------------------
       protected:
       };
-
 
       /// <summary>Game language property grid item</summary>
       class GameLanguageProperty : public LanguagePropertyBase
@@ -117,7 +120,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // -------------------- REPRESENTATION ---------------------
       protected:
       };
-
 
       /// <summary>Language file ID property grid item</summary>
       class IDProperty : public LanguagePropertyBase
@@ -211,6 +213,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       LanguageFile     Content;
       PageCollection   Library;
       bool             Virtual;
+
+      SelectionChangedEvent  StringSelectionChanged,
+                             PageSelectionChanged;
 
    protected:
       LanguageString*  CurrentString;

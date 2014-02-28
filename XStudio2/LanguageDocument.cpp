@@ -96,31 +96,43 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="grid">The grid.</param>
    void  LanguageDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
    {
-      // File: Display ID+Language
+      // Group: ID/Language
+      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(Virtual ? L"Library" : L"File");
       if (!Virtual)
+         group->AddSubItem(new LanguageDocument::IDProperty(*this));
+      group->AddSubItem(new LanguageDocument::GameLanguageProperty(*this));
+      grid.AddProperty(group);
+
+      // Group: PageID/Title/Description/Voiced
+      if (SelectedPage)
       {
-         CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("File"));
-         group->AddSubItem(new IDProperty(*this));
-         group->AddSubItem(new GameLanguageProperty(*this));
-         grid.AddProperty(group, FALSE);
-      }
-      // Library: Display Language + Files
-      else
-      {
-         // Library: Language
-         CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Library"));
-         group->AddSubItem(new GameLanguageProperty(*this));
+         CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Page"));
+         group->AddSubItem(new LanguagePageView::IDProperty(*this, *SelectedPage));
+         group->AddSubItem(new LanguagePageView::TitleProperty(*this, *SelectedPage));
+         group->AddSubItem(new LanguagePageView::DescriptionProperty(*this, *SelectedPage));
+         group->AddSubItem(new LanguagePageView::VoicedProperty(*this, *SelectedPage));
          grid.AddProperty(group);
+      }
 
-         // Files: Filenames
-         group = new CMFCPropertyGridProperty(_T("Files"));
-         
-         for (auto& file : StringLib.Files)
-            group->AddSubItem(new FileNameProperty(*this, GuiString(L"ID=%d", file.ID)));
+      // Group: StringID/ColourTag/Version
+      if (SelectedString)
+      {
+         CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
+         group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
+         group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
+         group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         grid.AddProperty(group);
+      }
 
-         // Do not initially expand
-         grid.AddProperty(group, FALSE);
-         group->Expand(FALSE);
+      // Group: Library files
+      if (Virtual)
+      {
+         group = new CMFCPropertyGridProperty(_T("Components"));
+      
+         // Enumerate files [backwards]
+         for (auto file = StringLib.Files.crbegin(); file != StringLib.Files.crend(); ++file)
+            group->AddSubItem(new FileNameProperty(*this, GuiString(L"ID=%d", file->ID)));
+         grid.AddProperty(group);
       }
    }
    
@@ -128,8 +140,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void LanguageDocument::OnCloseDocument()
    {
       // Disconnect properties
-      CPropertiesWnd::Connect(GetView<LanguageStringView>(), false);
-      CPropertiesWnd::Connect(GetView<LanguagePageView>(), false);
       CPropertiesWnd::Connect(this, false);
 
       __super::OnCloseDocument();
@@ -191,18 +201,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   /// <summary>Sets the selected page.</summary>
+   /// <summary>Sets the selected page and raises PAGE SELECTION CHANGED.</summary>
    /// <param name="p">The page.</param>
    void  LanguageDocument::SetSelectedPage(LanguagePage* p)
    {
       CurrentPage = p;
+      CPropertiesWnd::Connect(this, true);
+      PageSelectionChanged.Raise();
    }
 
-   /// <summary>Sets the selected string.</summary>
+   /// <summary>Sets the selected string and raises STRING SELECTION CHANGED.</summary>
    /// <param name="s">The string.</param>
    void  LanguageDocument::SetSelectedString(LanguageString* s)
    {
       CurrentString = s;
+      CPropertiesWnd::Connect(this, true);
+      StringSelectionChanged.Raise();
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

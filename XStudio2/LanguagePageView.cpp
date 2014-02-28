@@ -58,31 +58,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Show page properties (if any), otherwise document properties
       if (bActivate)
-         DisplayProperties();
+         CPropertiesWnd::Connect(GetDocument(), true);
 
       __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
-   }
-   
-   /// <summary>Populates the properties window</summary>
-   /// <param name="grid">The grid.</param>
-   void  LanguagePageView::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
-   {
-      REQUIRED(GetDocument()->SelectedPage);
-      
-      // Prepend file properties
-      GetDocument()->OnDisplayProperties(grid);
-
-      // Init
-      LanguagePage& page = *GetDocument()->SelectedPage;
-      LanguageDocument& doc = *GetDocument();
-
-      // Page: ID/Description/Title/Voiced
-      CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Page"));
-      group->AddSubItem(new IDProperty(doc, page));
-      group->AddSubItem(new TitleProperty(doc, page));
-      group->AddSubItem(new DescriptionProperty(doc, page));
-      group->AddSubItem(new VoicedProperty(doc, page));
-      grid.AddProperty(group);
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -101,16 +79,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
    }
    
-   /// <summary>Displays page or document properties.</summary>
-   void LanguagePageView::DisplayProperties()
-   {
-      // Show page properties (if any), otherwise document properties
-      if (GetDocument()->SelectedPage)
-         CPropertiesWnd::Connect(this, true);
-      else 
-         CPropertiesWnd::Connect(GetDocument(), true);
-   }
-
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
    {
@@ -183,16 +151,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          // Selection (not focus) has changed
          if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)
-         {
             // Update document
             GetDocument()->SelectedPage = GetSelected();
-
-            // Show page properties (if any), otherwise document properties
-            DisplayProperties();
-
-            // Raise SELECTION CHANGED
-            SelectionChanged.Raise();
-         }
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
