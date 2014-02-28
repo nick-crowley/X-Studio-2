@@ -39,23 +39,23 @@ namespace Logic
       /// <param name="c">colour</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Invalid colour</exception>
-      LanguageColour ForLanguage(Colour c)
+      RichTextColour ForRichText(Colour c)
       {
          switch (c)
          {
-         case Colour::Black:   return LanguageColour::Black;
-         case Colour::White:   return LanguageColour::White;
-         case Colour::Default: return LanguageColour::Default;
+         case Colour::Black:   return RichTextColour::Black;
+         case Colour::White:   return RichTextColour::White;
+         case Colour::Default: return RichTextColour::Default;
 
-         case Colour::Grey:    return LanguageColour::Grey;
-         case Colour::Blue:    return LanguageColour::Blue;
-         case Colour::Cyan:    return LanguageColour::Cyan;
-         case Colour::Green:   return LanguageColour::Green;
-         case Colour::Orange:  return LanguageColour::Orange;
-         case Colour::Purple:  return LanguageColour::Purple;
-         case Colour::Red:     return LanguageColour::Red;
-         case Colour::Silver:  return LanguageColour::Silver;
-         case Colour::Yellow:  return LanguageColour::Yellow;
+         case Colour::Grey:    return RichTextColour::Grey;
+         case Colour::Blue:    return RichTextColour::Blue;
+         case Colour::Cyan:    return RichTextColour::Cyan;
+         case Colour::Green:   return RichTextColour::Green;
+         case Colour::Orange:  return RichTextColour::Orange;
+         case Colour::Purple:  return RichTextColour::Purple;
+         case Colour::Red:     return RichTextColour::Red;
+         case Colour::Silver:  return RichTextColour::Silver;
+         case Colour::Yellow:  return RichTextColour::Yellow;
          }
 
          throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour enumeration: %d", c));

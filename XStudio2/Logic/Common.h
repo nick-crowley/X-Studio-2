@@ -83,7 +83,7 @@ namespace Logic
 
 
    /// <summary>RGB values for RichText colours</summary>
-   enum class LanguageColour : COLORREF 
+   enum class RichTextColour : COLORREF 
    { 
       Default = RGB(250,250,250),
       Black = RGB(0,0,0),   White  = RGB(255,255,255), Blue   = RGB(0,0,255),     Cyan   = RGB(150,220,220), 
@@ -101,7 +101,7 @@ namespace Logic
    };
 
    /// <summary>Convert colour enumeration to RGB</summary>
-   LanguageColour ForLanguage(Colour c);
+   RichTextColour ForRichText(Colour c);
 
    /// <summary>Convert colour enumeration to RGB</summary>
    TooltipColour ForTooltip(Colour c);
