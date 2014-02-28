@@ -1,5 +1,6 @@
 #pragma once
 #include "Logic/RichString.h"
+#include <strsafe.h>
 
 namespace GUI
 {
@@ -125,6 +126,10 @@ namespace GUI
             lf.lfWeight = (Format & CFE_BOLD ? FW_BOLD : FW_NORMAL);
             lf.lfUnderline = (Format & CFE_UNDERLINE ? TRUE : FALSE);
 
+            // Custom font:
+            if (!CustomFont.empty())
+               StringCchCopy(lf.lfFaceName, LF_FACESIZE, CustomFont.c_str());
+
             // Create font
             f->CreateFontIndirectW(&lf);
             return f;
@@ -202,6 +207,7 @@ namespace GUI
          CRect   Rect;        // Rendering rectangle
          bool    Skip;        // Whether to skip rendering of this token  [whitespace at start of line]
          FontPtr Font;        // Font used for rendering
+         wstring CustomFont;  // [optional] Name of font used for rendering
       };
 
       /// <summary></summary>

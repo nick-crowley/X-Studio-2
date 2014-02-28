@@ -214,10 +214,24 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
       public:
+         PROPERTY_GET(RichCharList,Characters,GetCharacters);
          PROPERTY_GET(RichParagraph&,FirstParagraph,GetFirstParagraph);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Gets content as list of characters</summary>
+         /// <returns></returns>
+         RichCharList GetCharacters() const
+         {
+            RichCharList list;
+
+            // Extract characters, drop buttons
+            for (auto& para : Paragraphs)
+               list += para.Characters;
+
+            return list;
+         }
+
          /// <summary>Get first paragraph</summary>
          const RichParagraph& GetFirstParagraph() const
          {
