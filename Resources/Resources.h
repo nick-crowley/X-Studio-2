@@ -7,7 +7,6 @@
 #define IDR_PROPERTIES                  103
 #define IDR_PROPERTIES_16               104
 #define IDR_PROPERTIES_24               105
-#define IDR_PROJECT                     106
 #define IDR_OUTPUT                      107
 #define IDR_COMMANDS                    108
 #define IDR_GAME_OBJECTS                109
