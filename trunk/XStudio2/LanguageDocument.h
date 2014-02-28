@@ -25,8 +25,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
    class LanguageDocument : public DocumentBase
    {
 	   // ------------------------ TYPES --------------------------
-   private:
-	  
+   public:
+	   typedef LanguageFile::PageCollection PageCollection;
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       LanguageDocument();
@@ -43,8 +44,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      LanguagePage*   GetSelectedPage() const;
-      LanguageString* GetSelectedString() const;
+      PageCollection&  GetContent();
+      LanguagePage*    GetSelectedPage() const;
+      LanguageString*  GetSelectedString() const;
 
       /// <summary>Gets any language view</summary>
       /// <typeparam name="VIEW">View type</typeparam>
@@ -71,12 +73,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   BOOL OnNewDocument() override;
       BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
       void OnQueryClipboardCommand(CCmdUI* pCmd);
+      void OnQueryFileCommand(CCmdUI* pCmd);
       void OnQueryFormatCommand(CCmdUI* pCmd);
       void OnQueryModeCommand(CCmdUI* pCmd);
 
       // -------------------- REPRESENTATION ---------------------
    public:
       LanguageFile     Content;
+      PageCollection   Library;
       bool             Virtual;
 
    protected:
