@@ -7,7 +7,7 @@ namespace Logic
    namespace Language
    {
       /// <summary>Matches an opening tag (at beginning of string) and captures the name</summary>
-      const wregex  RichStringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*[\"']\\w+[\"'])*\\]");
+      const wregex  RichStringParser::IsOpeningTag = wregex(L"^\\[([a-z]+)(?:\\s+[a-z]+\\s*=\\s*[\"'][\\w\\d\\._]+[\"'])*\\]");
 
       /// <summary>Matches any closing tag (at beginning of string) and captures the name</summary>
       const wregex  RichStringParser::IsClosingTag = wregex(L"^\\[/?([a-z]+)\\]");
@@ -16,7 +16,7 @@ namespace Logic
       const wregex  RichStringParser::IsBasicTag = wregex(L"^\\[/?([a-z]+)\\]");
 
       /// <summary>Matches multiple tag properties captures both name and value</summary>
-      const wregex  RichStringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*[\"'](\\w+)[\"']");
+      const wregex  RichStringParser::IsTagProperty = wregex(L"\\s+([a-z]+)\\s*=\\s*[\"']([\\w\\d\\._]+)[\"']");
 
       /// <summary>Matches opening and closing [author] tags (at beginning of string) and captures the text</summary>
       const wregex  RichStringParser::IsAuthorDefinition = wregex(L"^\\[author\\](.*?)\\[/author\\]");
