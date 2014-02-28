@@ -126,7 +126,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <returns>True to accept, false to reject</returns>
          bool OnValidateValue(GuiString& value) override
          {
-            return value.length() && value.IsNumeric() && !Page.Contains(value.ToInt()); 
+            return value.length() && value.IsNumeric() 
+                && (String.ID == value.ToInt() || !Page.Contains(value.ToInt()));   // ID is Unchanged or available
          }
 
          /// <summary>Update ID</summary>

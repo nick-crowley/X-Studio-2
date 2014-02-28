@@ -69,14 +69,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       REQUIRED(GetDocument()->SelectedPage);
       
+      // Prepend file properties
+      GetDocument()->OnDisplayProperties(grid);
+
       // Init
       LanguagePage& page = *GetDocument()->SelectedPage;
       LanguageDocument& doc = *GetDocument();
 
-      // Group: Page
+      // Page: ID/Description/Title/Voiced
       CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Page"));
-
-      // ID/Description/Title/Voiced
       group->AddSubItem(new IDProperty(doc, page));
       group->AddSubItem(new DescriptionProperty(doc, page));
       group->AddSubItem(new TitleProperty(doc, page));

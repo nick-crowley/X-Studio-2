@@ -65,14 +65,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       REQUIRED(GetDocument()->SelectedString);
       REQUIRED(GetDocument()->SelectedPage);
       
+      // Prepend file+page properties
+      GetDocument()->GetView<LanguagePageView>()->OnDisplayProperties(grid);
+
       // Init
       LanguageString& str = *GetDocument()->SelectedString;
       LanguageDocument& doc = *GetDocument();
 
-      // Group: String
+      // String: ID/Description/Title/Voiced
       CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
-
-      // ID/Description/Title/Voiced
       group->AddSubItem(new IDProperty(doc, *GetDocument()->SelectedPage, str));
       group->AddSubItem(new ColourTagProperty(doc, str));
       group->AddSubItem(new VersionProperty(doc, str));
@@ -98,9 +99,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Displays string or document properties.</summary>
    void LanguageStringView::DisplayProperties()
    {
-      // Show string properties (if any), otherwise document properties
+      // Show string properties (if any), otherwise page properties (if any), otherwise document properties
       if (GetDocument()->SelectedString)
          CPropertiesWnd::Connect(this, true);
+      else if (GetDocument()->SelectedPage)
+         CPropertiesWnd::Connect(GetDocument()->GetView<LanguagePageView>(), true);
       else 
          CPropertiesWnd::Connect(GetDocument(), true);
    }
