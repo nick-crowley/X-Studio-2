@@ -103,7 +103,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             throw Win32Exception(HERE, L"Unable to base view");
 
          // Create toolbar
-         if (!ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
+         if (!ToolBar.Create(this, IDR_EDITOR, IDB_EDITOR_GREY))  // PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
             throw Win32Exception(HERE, L"Unable to create toolbar");
 
          ToolBar.SetRouteCommandsViaFrame(TRUE);
@@ -205,7 +205,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Re-create toolbar
       ToolBar.DestroyWindow();
-      ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
+      //ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
+      ToolBar.Create(this, IDR_EDITOR ,IDB_EDITOR_GREY);
 
       // Adjust layout
       AdjustLayout();

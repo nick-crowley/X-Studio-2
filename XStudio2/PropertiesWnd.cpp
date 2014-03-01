@@ -137,7 +137,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      m_wndPropList.MarkModifiedProperties();
 
          // Toolbar
-         m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_PROPERTIES_24 : IDR_PROPERTIES_16);
+         m_wndToolBar.Create(this, IDR_PROPERTIES); //PrefsLib.LargeToolbars ? IDR_PROPERTIES_24 : IDR_PROPERTIES_16);
 
          // Layout
 	      AdjustLayout();
