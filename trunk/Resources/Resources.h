@@ -2,9 +2,7 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
-//#define IDR_MAINFRAME_20                101
 #define IDR_PROPERTIES                  102
-//#define IDR_PROPERTIES_20               103
 #define IDR_OUTPUT                      104
 #define IDR_COMMANDS                    105
 #define IDR_GAME_OBJECTS                106

@@ -140,11 +140,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void    UpdateHighlighting();
 
       handler void  OnButtonRemoved(IOleObjectPtr obj);
-      /*afx_msg void  OnCommandChangeMode(UINT nID);
-      afx_msg void  OnCommandChangeText(UINT nID);
-      afx_msg void  OnQueryClipboardCommand(CCmdUI* pCmd);
-      afx_msg void  OnQueryModeCommand(CCmdUI* pCmd);
-      afx_msg void  OnQueryFormatCommand(CCmdUI* pCmd);*/
       virtual void  OnRequestTooltip(CustomTooltip::TooltipData* data);
       virtual void  OnTextChange();
       

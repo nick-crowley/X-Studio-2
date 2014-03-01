@@ -30,12 +30,27 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
-      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguageEditView::OnCommandChangeText)
-      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageEditView::OnCommandChangeText)
-      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageEditView::OnCommandChangeText)
-      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageEditView::OnCommandChangeText)
-      ON_COMMAND_RANGE(ID_EDIT_BOLD, ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandChangeText)
-      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnCommandChangeMode)
+      ON_COMMAND(ID_EDIT_CUT, &LanguageEditView::OnCommandEditCut)
+      ON_COMMAND(ID_EDIT_COPY, &LanguageEditView::OnCommandEditCopy)
+      ON_COMMAND(ID_EDIT_PASTE, &LanguageEditView::OnCommandEditPaste)
+      ON_COMMAND(ID_EDIT_CLEAR, &LanguageEditView::OnCommandEditClear)
+      ON_COMMAND(ID_EDIT_COLOUR, &LanguageEditView::OnCommandEditColour)
+      ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguageEditView::OnCommandEditSelectAll)
+      ON_COMMAND(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandEditAddButton)
+      ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageEditView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageEditView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageEditView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COLOUR, &LanguageEditView::OnQueryFormat)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnQueryFormat)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageEditView::OnQueryFormat)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageEditView::OnQueryAlignment)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnQueryMode)
    END_MESSAGE_MAP()
    
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -116,68 +131,181 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
-   /// <summary>Changes the edit mode.</summary>
-   /// <param name="nID">The command identifier.</param>
-   void LanguageEditView::OnCommandChangeMode(UINT nID)
-   {
-      AfxMessageBox(L"LanguageEditView::OnCommandChangeMode");
-
-      try
-      {
-         switch (nID)
-         {
-         case ID_VIEW_SOURCE:    RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
-         case ID_VIEW_EDITOR:    RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
-         case ID_VIEW_DISPLAY:   RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
-         }
-      }
-      catch (ExceptionBase& e) { 
-         theApp.ShowError(HERE, e, L"Unable to change editor mode");
-      }
-   }
-
    /// <summary>Perform text formatting command.</summary>
    /// <param name="nID">The command identifier.</param>
-   void LanguageEditView::OnCommandChangeText(UINT nID)
+   void LanguageEditView::OnPerformCommand(UINT nID)
    {
       static int LastButtonID = 1;  
       
-      AfxMessageBox(L"LanguageEditView::OnCommandChangeText");
+      //AfxMessageBox(L"LanguageEditView::OnCommandChangeText");
 
-      // Execute
-      switch (nID)
+      try
       {
-      // Clipboard: Set based on selection
-      case ID_EDIT_CUT:     RichEdit.Cut();     break;
-      case ID_EDIT_COPY:    RichEdit.Copy();    break;
-      case ID_EDIT_PASTE:   RichEdit.PasteFormat(CF_UNICODETEXT);   break;
-      case ID_EDIT_CLEAR:   RichEdit.ReplaceSel(L"", TRUE);         break;
+         // Execute
+         switch (nID)
+         {
+         // Clipboard: Set based on selection
+         case ID_EDIT_CUT:        RichEdit.Cut();     break;
+         case ID_EDIT_COPY:       RichEdit.Copy();    break;
+         case ID_EDIT_PASTE:      RichEdit.PasteFormat(CF_UNICODETEXT);   break;
+         case ID_EDIT_CLEAR:      RichEdit.ReplaceSel(L"", TRUE);         break;
+         case ID_EDIT_SELECT_ALL: RichEdit.SetSel(0, -1);                 break;
 
-      // Undo/Redo:
-      case ID_EDIT_UNDO:    RichEdit.Undo();    break;
-      case ID_EDIT_REDO:    RichEdit.Redo();    break;
+         // Undo/Redo:
+         case ID_EDIT_UNDO:       RichEdit.Undo();    break;
+         case ID_EDIT_REDO:       RichEdit.Redo();    break;
 
-      // Button: Insert at caret
-      case ID_EDIT_ADD_BUTTON:
-         RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");
-         break;
+         // Button: Insert at caret
+         case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");  break;
 
-      // Colour: Not implemented
-      case ID_EDIT_COLOUR:
-         break;
+         // Colour: Not implemented
+         case ID_EDIT_COLOUR: 
+            break;
 
-      // Format: Require editor mode
-      case ID_EDIT_BOLD:       RichEdit.ToggleFormatting(CFE_BOLD);       break;
-      case ID_EDIT_ITALIC:     RichEdit.ToggleFormatting(CFE_ITALIC);     break;
-      case ID_EDIT_UNDERLINE:  RichEdit.ToggleFormatting(CFE_UNDERLINE);  break;
+         // Format: Require editor mode
+         case ID_EDIT_BOLD:       RichEdit.ToggleFormatting(CFE_BOLD);       break;
+         case ID_EDIT_ITALIC:     RichEdit.ToggleFormatting(CFE_ITALIC);     break;
+         case ID_EDIT_UNDERLINE:  RichEdit.ToggleFormatting(CFE_UNDERLINE);  break;
 
-      // Alignment: Require editor mode
-      case ID_EDIT_LEFT:       RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Left));     break;
-      case ID_EDIT_RIGHT:      RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Right));    break;
-      case ID_EDIT_CENTRE:     RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Centre));   break;
-      case ID_EDIT_JUSTIFY:    RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Justify));  break;
+         // Alignment: Require editor mode
+         case ID_EDIT_LEFT:       RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Left));     break;
+         case ID_EDIT_RIGHT:      RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Right));    break;
+         case ID_EDIT_CENTRE:     RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Centre));   break;
+         case ID_EDIT_JUSTIFY:    RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Justify));  break;
+
+         // Mode: Change mode
+         case ID_VIEW_SOURCE:     RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
+         case ID_VIEW_EDITOR:     RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
+         case ID_VIEW_DISPLAY:    RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
       }
    }
+
+   
+   /// <summary>Query state of paragraph alignment command</summary>
+   void LanguageEditView::OnQueryAlignment(CCmdUI* pCmd)
+   {
+      bool state = false, 
+           checked = false;
+
+      // Require selected string + editor mode
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit))
+      {
+         ParaFormat  pf(PFM_ALIGNMENT);
+         
+         // Query alignment
+         RichEdit.GetParaFormat(pf);
+         switch (pCmd->m_nID)
+         {
+         case ID_EDIT_LEFT:     checked = (pf.wAlignment == PFA_LEFT);     break;
+         case ID_EDIT_RIGHT:    checked = (pf.wAlignment == PFA_RIGHT);    break;
+         case ID_EDIT_CENTRE:   checked = (pf.wAlignment == PFA_CENTER);   break;
+         case ID_EDIT_JUSTIFY:  checked = (pf.wAlignment == PFA_JUSTIFY);  break;
+         }
+      }
+
+      // Set state
+      pCmd->Enable(state ? TRUE : FALSE);
+      pCmd->SetCheck(checked ? TRUE : FALSE);
+   }
+   
+   /// <summary>Query state of clipboard command</summary>
+   void LanguageEditView::OnQueryClipboard(CCmdUI* pCmd)
+   {
+      bool state = false, 
+           checked = false;
+
+      // Require selected string + Edit/Source mode
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() != LanguageEdit::EditMode::Display))
+      {
+         // Query selection
+         switch (pCmd->m_nID)
+         {
+         case ID_EDIT_CUT:
+         case ID_EDIT_COPY:    
+            state = RichEdit.HasSelection();
+            break;
+
+         // Paste/Delete/SelectAll: Always enabled
+         case ID_EDIT_PASTE:   
+         case ID_EDIT_CLEAR:   
+         case ID_EDIT_SELECT_ALL:
+            state = true;
+            break;
+
+         // Undo:
+         case ID_EDIT_UNDO:
+            state = RichEdit.CanUndo() != FALSE;
+            pCmd->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetUndoName())).c_str() );
+            break;
+         // Redo:
+         case ID_EDIT_REDO:
+            state = RichEdit.CanRedo() != FALSE;
+            pCmd->SetText( GuiString(RichEdit.CanRedo() ? L"Redo %s" : L"Redo", GetString(RichEdit.GetRedoName())).c_str() );
+            break;
+         }
+      }
+
+      // Set state
+      pCmd->Enable(state ? TRUE : FALSE);
+      pCmd->SetCheck(checked ? TRUE : FALSE);
+   }
+
+   /// <summary>Query state of formatting command</summary>
+   void LanguageEditView::OnQueryFormat(CCmdUI* pCmd)
+   {
+      bool state = false, 
+           checked = false;
+
+      // Require selected string + editor mode
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit))
+      {
+         CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
+         
+         // Query format
+         RichEdit.GetSelectionCharFormat(cf);
+         switch (pCmd->m_nID)
+         {
+         case ID_EDIT_BOLD:       checked = (cf.dwEffects & CFE_BOLD) != 0;       break;
+         case ID_EDIT_ITALIC:     checked = (cf.dwEffects & CFE_ITALIC) != 0;     break;
+         case ID_EDIT_UNDERLINE:  checked = (cf.dwEffects & CFE_UNDERLINE) != 0;  break;
+         case ID_EDIT_ADD_BUTTON: state = true;                                   break;
+         case ID_EDIT_COLOUR:     state = RichEdit.HasSelection();                break;
+         }
+      }
+
+      // Set state
+      pCmd->Enable(state ? TRUE : FALSE);
+      pCmd->SetCheck(checked ? TRUE : FALSE);
+   }
+
+   /// <summary>Query state of editor mode command</summary>
+   void LanguageEditView::OnQueryMode(CCmdUI* pCmd)
+   {
+      bool state = false, 
+           checked = false;
+
+      // Require selected string
+      if (state = (GetDocument()->SelectedString != nullptr))
+      {
+         // Query mode
+         switch (pCmd->m_nID)
+         {
+         case ID_VIEW_SOURCE:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+         case ID_VIEW_EDITOR:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+         case ID_VIEW_DISPLAY:    checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+         }
+      }
+
+      // Set state
+      pCmd->Enable(state ? TRUE : FALSE);
+      pCmd->SetCheck(checked ? TRUE : FALSE);
+   }
+
+
    /// <summary>Initialise control</summary>
    void LanguageEditView::OnInitialUpdate()
    {
