@@ -21,14 +21,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_PASTE, &LanguageStringView::OnCommandEditPaste)
       ON_COMMAND(ID_EDIT_CLEAR, &LanguageStringView::OnCommandEditClear)
       ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguageStringView::OnCommandEditSelectAll)
-      //ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageStringView::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
-      //ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -220,10 +218,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Remove selected
          case ID_EDIT_CLEAR:       GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); break;
-
-         // Undo/Redo
-         /*case ID_EDIT_UNDO:        GetDocument()->Undo();   break;
-         case ID_EDIT_REDO:        GetDocument()->Redo();   break;*/
          }
       }
       catch (ExceptionBase& e) {
@@ -257,18 +251,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_FIND:
          state = false;
          break;
-
-      // Undo:
-      //case ID_EDIT_UNDO:
-      //   state = GetDocument()->CanUndo();
-      //   pCmdUI->SetText(GetDocument()->GetUndoMenuItem().c_str());
-      //   break;
-
-      //// Redo:
-      //case ID_EDIT_REDO:
-      //   state = GetDocument()->CanRedo();
-      //   pCmdUI->SetText(GetDocument()->GetRedoMenuItem().c_str());
-      //   break;
       }
 
       // Set state
