@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="Clipboard.h" />
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\RichStringWriter.h" />

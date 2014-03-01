@@ -513,6 +513,9 @@
     <ClInclude Include="GuiCommand.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Clipboard.h">
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
