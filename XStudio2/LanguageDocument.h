@@ -209,10 +209,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetSelectedStringIndex(int index);
 
    protected:
-      void OnQueryClipboardCommand(CCmdUI* pCmd);
-      void OnQueryFileCommand(CCmdUI* pCmd);
-      void OnQueryFormatCommand(CCmdUI* pCmd);
-      void OnQueryModeCommand(CCmdUI* pCmd);
+      void  OnPerformCommand(UINT nID);
+      void  OnQueryCommand(CCmdUI* pCmdUI);
 
       // -------------------- REPRESENTATION ---------------------
    public:

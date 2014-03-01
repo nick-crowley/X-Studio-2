@@ -13,14 +13,16 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguagePageView::OnItemStateChanged)
-      /*ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_CUT, ID_EDIT_CUT, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_COPY, &LanguagePageView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguagePageView::OnPerformCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguagePageView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguagePageView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguagePageView::OnQueryCommand)*/
+      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_SELECT_ALL, &LanguagePageView::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguagePageView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -167,6 +169,62 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
 
       *pResult = 0;
+   }
+
+   /// <summary>Performs a menu command</summary>
+   /// <param name="nID">Command identifier.</param>
+   void LanguagePageView::OnPerformCommand(UINT nID)
+   {
+      AfxMessageBox(L"LanguagePageView::OnPerformCommand");
+
+      try 
+      {
+         switch (nID)
+         {
+         // TODO:
+         case ID_EDIT_COPY:   
+         case ID_EDIT_CUT:    
+         case ID_EDIT_PASTE:  
+         case ID_EDIT_SELECT_ALL:
+            break;
+
+         // TODO: Remove selected
+         case ID_EDIT_CLEAR: 
+            //GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument()));
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+   
+
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void LanguagePageView::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+
+      switch (pCmdUI->m_nID)
+      {
+      // Require selection
+      case ID_EDIT_CLEAR: 
+      case ID_EDIT_COPY:   
+      case ID_EDIT_CUT:    
+         state = (GetDocument()->SelectedPage != nullptr);  
+         break;
+     
+      // Always enabled
+      case ID_EDIT_PASTE:  
+      case ID_EDIT_SELECT_ALL:
+         state = true;  
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
    }
 
    /// <summary>Adjusts layout</summary>

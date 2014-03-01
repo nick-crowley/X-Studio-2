@@ -63,141 +63,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
 
-   /// <summary>Queries the state of editing mode commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryModeCommand(CCmdUI* pCmd) const
-   {
-      // Disable if no string displayed
-      if (RichEdit.IsReadOnly())
-      {
-         pCmd->Enable(FALSE);
-         pCmd->SetCheck(FALSE);
-      }
-      else
-      {
-         // Check correct state
-         pCmd->Enable();
-         switch (pCmd->m_nID)
-         {
-         case ID_VIEW_SOURCE:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-         case ID_VIEW_EDITOR:    pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-         case ID_VIEW_DISPLAY:   pCmd->SetCheck(RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
-         }
-      }
-   }
-
-   /// <summary>Queries the state of clipboard commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryClipboardCommand(CCmdUI* pCmd) const
-   {
-      // Disable if no string displayed
-      if (RichEdit.IsReadOnly())
-      {
-         pCmd->Enable(FALSE);
-         pCmd->SetCheck(FALSE);
-      }
-      else
-      {
-         // Check correct state
-         pCmd->SetCheck(FALSE);
-         switch (pCmd->m_nID)
-         {
-         // Clipboard: Set based on selection
-         case ID_EDIT_CUT:
-         case ID_EDIT_COPY:    
-            return pCmd->Enable(RichEdit.HasSelection());
-
-         // Paste/Delete: Always enabled
-         case ID_EDIT_PASTE:   
-         case ID_EDIT_CLEAR:   
-            return pCmd->Enable(TRUE);
-
-         // Undo:
-         case ID_EDIT_UNDO:
-            pCmd->Enable(RichEdit.CanUndo());
-            pCmd->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetUndoName())).c_str() );
-            break;
-         // Redo:
-         case ID_EDIT_REDO:
-            pCmd->Enable(RichEdit.CanRedo());
-            pCmd->SetText( GuiString(RichEdit.CanRedo() ? L"Redo %s" : L"Redo", GetString(RichEdit.GetRedoName())).c_str() );
-            break;
-         }
-      }
-   }
-
-   /// <summary>Queries the state of formatting commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageEditView::OnQueryFormatCommand(CCmdUI* pCmd) const
-   {
-      // Disable if no string displayed
-      if (RichEdit.IsReadOnly())
-      {
-         pCmd->Enable(FALSE);
-         pCmd->SetCheck(FALSE);
-      }
-      else
-      {
-         CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
-         ParaFormat  pf(PFM_ALIGNMENT);
-
-         // Check correct state
-         pCmd->SetCheck(FALSE);
-         switch (pCmd->m_nID)
-         {
-         // Button: Require editor mode
-         case ID_EDIT_ADD_BUTTON:
-            pCmd->Enable(RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);
-            break;
-
-         // Colour: Not implemented
-         case ID_EDIT_COLOUR:
-            pCmd->Enable(FALSE);
-            break;
-
-         // Format: Require editor mode
-         case ID_EDIT_BOLD:       
-         case ID_EDIT_ITALIC:     
-         case ID_EDIT_UNDERLINE:  
-            if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
-            {
-               pCmd->Enable(TRUE);
-               RichEdit.GetSelectionCharFormat(cf);
-            
-               // Check formatting 
-               switch (pCmd->m_nID)
-               {
-               case ID_EDIT_BOLD:       return pCmd->SetCheck(cf.dwEffects & CFE_BOLD ? TRUE : FALSE);
-               case ID_EDIT_ITALIC:     return pCmd->SetCheck(cf.dwEffects & CFE_ITALIC ? TRUE : FALSE);
-               case ID_EDIT_UNDERLINE:  return pCmd->SetCheck(cf.dwEffects & CFE_UNDERLINE ? TRUE : FALSE);
-               }
-            }
-            break;
-
-         // Alignment: Require editor mode
-         case ID_EDIT_LEFT:
-         case ID_EDIT_RIGHT:
-         case ID_EDIT_CENTRE:
-         case ID_EDIT_JUSTIFY:
-            if (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit)
-            {
-               pCmd->Enable(TRUE);
-               RichEdit.GetParaFormat(pf);
-            
-               // Check alignment
-               switch (pCmd->m_nID)
-               {
-               case ID_EDIT_LEFT:     return pCmd->SetCheck(pf.wAlignment == PFA_LEFT    ? TRUE : FALSE);
-               case ID_EDIT_RIGHT:    return pCmd->SetCheck(pf.wAlignment == PFA_RIGHT   ? TRUE : FALSE);
-               case ID_EDIT_CENTRE:   return pCmd->SetCheck(pf.wAlignment == PFA_CENTER  ? TRUE : FALSE);
-               case ID_EDIT_JUSTIFY:  return pCmd->SetCheck(pf.wAlignment == PFA_JUSTIFY ? TRUE : FALSE);
-               }
-            }
-            break;
-         }
-      }
-   }
-
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Arrange controls</summary>
@@ -225,10 +90,38 @@ NAMESPACE_BEGIN2(GUI,Views)
       DDX_Control(pDX, IDC_STRING_EDIT, RichEdit);
    }
    
+   
+   /// <summary>Creates the toolbar</summary>
+   /// <param name="lpCreateStruct">The create structure.</param>
+   /// <returns></returns>
+   int LanguageEditView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+   {
+      try
+      {
+         // Create view
+         if (CFormView::OnCreate(lpCreateStruct) == -1)
+            throw Win32Exception(HERE, L"Unable to base view");
+
+         // Create toolbar
+         if (!ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
+            throw Win32Exception(HERE, L"Unable to create toolbar");
+
+         ToolBar.SetRouteCommandsViaFrame(TRUE);
+
+         return 0;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return -1;
+      }
+   }
+
    /// <summary>Changes the edit mode.</summary>
    /// <param name="nID">The command identifier.</param>
    void LanguageEditView::OnCommandChangeMode(UINT nID)
    {
+      AfxMessageBox(L"LanguageEditView::OnCommandChangeMode");
+
       try
       {
          switch (nID)
@@ -248,6 +141,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnCommandChangeText(UINT nID)
    {
       static int LastButtonID = 1;  
+      
+      AfxMessageBox(L"LanguageEditView::OnCommandChangeText");
 
       // Execute
       switch (nID)
@@ -283,32 +178,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_JUSTIFY:    RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Justify));  break;
       }
    }
-
-   /// <summary>Creates the toolbar</summary>
-   /// <param name="lpCreateStruct">The create structure.</param>
-   /// <returns></returns>
-   int LanguageEditView::OnCreate(LPCREATESTRUCT lpCreateStruct)
-   {
-      try
-      {
-         // Create view
-         if (CFormView::OnCreate(lpCreateStruct) == -1)
-            throw Win32Exception(HERE, L"Unable to base view");
-
-         // Create toolbar
-         if (!ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
-            throw Win32Exception(HERE, L"Unable to create toolbar");
-
-         ToolBar.SetRouteCommandsViaFrame(TRUE);
-
-         return 0;
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-         return -1;
-      }
-   }
-
    /// <summary>Initialise control</summary>
    void LanguageEditView::OnInitialUpdate()
    {

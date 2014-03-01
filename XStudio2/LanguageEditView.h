@@ -34,9 +34,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      afx_msg void OnQueryClipboardCommand(CCmdUI* pCmd) const;
-      afx_msg void OnQueryModeCommand(CCmdUI* pCmd) const;
-      afx_msg void OnQueryFormatCommand(CCmdUI* pCmd) const;
+      
 
    protected:
       void AdjustLayout();
