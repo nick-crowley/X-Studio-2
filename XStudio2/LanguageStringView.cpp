@@ -16,8 +16,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
-      ON_COMMAND(ID_EDIT_CLEAR, &LanguageStringView::OnRemoveSelected)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryRemoveSelected)
+      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguageStringView::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -83,6 +89,20 @@ NAMESPACE_BEGIN2(GUI,Views)
       return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
    }
    
+   /// <summary>Inserts a string.</summary>
+   /// <param name="index">The index.</param>
+   /// <param name="str">The string.</param>
+   void LanguageStringView::InsertString(UINT index, LanguageString& str)
+   {
+      // First display: Identify colour tags 
+      if (str.TagType == ColourTag::Undetermined)
+         str.IdentifyColourTags();
+
+      // Add item, resolve and set Text
+      GetListCtrl().InsertItem(index, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
+      GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
+   }
+
    /// <summary>Custom draw the strings</summary>
    /// <param name="pNMHDR">header.</param>
    /// <param name="pResult">result.</param>
@@ -152,55 +172,95 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetDocument()->SelectedString = nullptr;
 
          // Get selection, if any
-         if (LanguagePage* page = GetDocument()->SelectedPage)
+         if (GetDocument()->SelectedPage)
          {
-            int item = -1;
-            //Console << L"User has clicked on page: " << (page?page->ID:-1) << L" : " << (page?page->Title:L"") << ENDL;
+            int item = 0;
+
+            // Freeze
+            GetListCtrl().SetRedraw(FALSE);
 
             // Re-Populate strings
-            GetListCtrl().SetRedraw(FALSE);
-            for (auto& pair : page->Strings)
-            {
-               LanguageString& str = pair.second;
-
-               // First display: Identify colour tags 
-               if (str.TagType == ColourTag::Undetermined)
-                  str.IdentifyColourTags();
-
-               // Add item, resolve and set Text
-               GetListCtrl().InsertItem(++item, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
-               GetListCtrl().SetItemText(item, 1, str.ResolvedText.c_str());
-            }
-            GetListCtrl().SetRedraw(TRUE);
-            GetListCtrl().UpdateWindow();
+            for (auto& pair : GetDocument()->SelectedPage->Strings)
+               InsertString(item++, pair.second);
          }
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e); 
       }
+
+      // Unfreeze
+      GetListCtrl().SetRedraw(TRUE);
+      GetListCtrl().UpdateWindow();
    }
 
-   void LanguageStringView::OnRemoveSelected()
+
+   /// <summary>Performs a menu command</summary>
+   /// <param name="nID">Command identifier.</param>
+   void LanguageStringView::OnPerformCommand(UINT nID)
    {
-      if (GetDocument()->SelectedString)
+      try 
       {
-         try 
+         switch (nID)
          {
-            // Remove string from selected page
-            GetDocument()->SelectedPage->Remove(GetDocument()->SelectedString->ID);
-            // Delete selected item
-            GetListCtrl().DeleteItem(GetListCtrl().GetNextItem(-1, LVNI_SELECTED));
+         // TODO:
+         case ID_EDIT_COPY:   
+         case ID_EDIT_CUT:    
+         case ID_EDIT_PASTE:  
+            break;
+
+         // Remove selected
+         case ID_EDIT_CLEAR: 
+            GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument()));
+            break;
+      
+         // Undo/Redo
+         case ID_EDIT_UNDO:  GetDocument()->Undo();    break;
+         case ID_EDIT_REDO:  GetDocument()->Redo();    break;
          }
-         catch (ExceptionBase& e) {
-            theApp.ShowError(HERE, e);
-         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
       }
    }
    
 
-   void LanguageStringView::OnQueryRemoveSelected(CCmdUI* pCmdUI)
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void LanguageStringView::OnQueryCommand(CCmdUI* pCmdUI)
    {
-      pCmdUI->Enable(GetDocument()->SelectedString ? TRUE : FALSE);
+      bool state = false;
+
+      switch (pCmdUI->m_nID)
+      {
+      // Require selection
+      case ID_EDIT_CLEAR: 
+      case ID_EDIT_COPY:   
+      case ID_EDIT_CUT:    
+         state = (GetDocument()->SelectedString != nullptr);  
+         break;
+     
+      // Always enabled
+      case ID_EDIT_PASTE:  
+      case ID_EDIT_SELECT_ALL:
+         state = true;  
+         break;
+      
+      // Undo: Query document
+      case ID_EDIT_UNDO:   
+         if (state = GetDocument()->CanUndo())
+            pCmdUI->SetText(GuiString(L"Undo '%s'", GetDocument()->UndoName.c_str()).c_str());
+         break;
+      
+      // Redo: Query document
+      case ID_EDIT_REDO:   
+         if (state = GetDocument()->CanRedo())
+            pCmdUI->SetText(GuiString(L"Redo '%s'", GetDocument()->RedoName.c_str()).c_str());
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
    }
 
 

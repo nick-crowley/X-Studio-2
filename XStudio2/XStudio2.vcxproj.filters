@@ -510,6 +510,9 @@
     <ClInclude Include="Logic\RichStringWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="GuiCommand.h">
+      <Filter>Header Files\GUI\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
