@@ -43,11 +43,13 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COLOUR, &LanguageEditView::OnQueryFormat)
       ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnQueryFormat)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageEditView::OnQueryClipboard)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageEditView::OnQueryFormat)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageEditView::OnQueryAlignment)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnQueryMode)
@@ -236,15 +238,21 @@ NAMESPACE_BEGIN2(GUI,Views)
             state = true;
             break;
 
+         // Find: Not supported
+         case ID_EDIT_FIND:
+            state = false;
+            break;
+
          // Undo:
          case ID_EDIT_UNDO:
             state = RichEdit.CanUndo() != FALSE;
-            pCmd->SetText( GuiString(RichEdit.CanUndo() ? L"Undo %s" : L"Undo", GetString(RichEdit.GetUndoName())).c_str() );
+            pCmd->SetText(RichEdit.GetUndoMenuItem().c_str());
             break;
+
          // Redo:
          case ID_EDIT_REDO:
             state = RichEdit.CanRedo() != FALSE;
-            pCmd->SetText( GuiString(RichEdit.CanRedo() ? L"Redo %s" : L"Redo", GetString(RichEdit.GetRedoName())).c_str() );
+            pCmd->SetText(RichEdit.GetRedoMenuItem().c_str());
             break;
          }
       }

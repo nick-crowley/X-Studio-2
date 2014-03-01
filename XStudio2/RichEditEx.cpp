@@ -180,6 +180,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return lines;   
    }
    
+   /// <summary>Gets the 'redo' menu item text</summary>
+   /// <returns></returns>
+   wstring  RichEditEx::GetRedoMenuItem() const
+   {
+      return GuiString(CanRedo() ? L"Redo '%s'" : L"Redo", GetString(GetRedoName()));
+   }
+
    /// <summary>Gets the co-ordinates of the current selection</summary>
    /// <returns></returns>
    CHARRANGE RichEditEx::GetSelection() const
@@ -187,6 +194,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CHARRANGE sel;
       CRichEditCtrl::GetSel(sel);
       return sel;
+   }
+
+   /// <summary>Gets the 'Undo' menu item text</summary>
+   /// <returns></returns>
+   wstring  RichEditEx::GetUndoMenuItem() const
+   {
+      return GuiString(CanUndo() ? L"Undo '%s'" : L"Undo", GetString(GetUndoName()));
    }
 
    /// <summary>Determines whether text selection exists</summary>
