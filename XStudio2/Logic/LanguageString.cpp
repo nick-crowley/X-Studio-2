@@ -22,7 +22,7 @@ namespace Logic
       }
 
       LanguageString::LanguageString(LanguageString&& r) 
-         : ID(r.ID), Page(r.Page), Text(move(r.Text)), Version(r.Version), TagType(ColourTag::Undetermined)
+         : ID(r.ID), Page(r.Page), Text(move(r.Text)), Version(r.Version), TagType(r.TagType)
       {
       }
 
