@@ -273,7 +273,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="nID">Command identifier.</param>
    void LanguageDocument::OnPerformCommand(UINT nID)
    {
-      AfxMessageBox(L"LanguageDocument::OnPerformCommand");
+      //AfxMessageBox(L"LanguageDocument::OnPerformCommand");
 
       try 
       {

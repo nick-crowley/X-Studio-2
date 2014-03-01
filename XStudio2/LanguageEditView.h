@@ -42,10 +42,20 @@ NAMESPACE_BEGIN2(GUI,Views)
       void DoDataExchange(CDataExchange* pDX) override;   
 
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
-      afx_msg void OnCommandChangeMode(UINT nID);
-      afx_msg void OnCommandChangeText(UINT nID);
+      afx_msg void OnCommandEditCut()        { OnPerformCommand(ID_EDIT_CUT);        }
+      afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
+      afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
+      afx_msg void OnCommandEditPaste()      { OnPerformCommand(ID_EDIT_PASTE);      }
+      afx_msg void OnCommandEditColour()     { OnPerformCommand(ID_EDIT_COLOUR);     }
+      afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
+      afx_msg void OnCommandEditAddButton()  { OnPerformCommand(ID_EDIT_ADD_BUTTON); }
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-      virtual void OnInitialUpdate();
+      handler void OnInitialUpdate() override;
+      afx_msg void OnPerformCommand(UINT nID);
+      afx_msg void OnQueryAlignment(CCmdUI* pCmd);
+      afx_msg void OnQueryClipboard(CCmdUI* pCmd);
+      afx_msg void OnQueryFormat(CCmdUI* pCmd);
+      afx_msg void OnQueryMode(CCmdUI* pCmd);
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void onStringSelectionChanged();

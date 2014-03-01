@@ -175,7 +175,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="nID">Command identifier.</param>
    void LanguagePageView::OnPerformCommand(UINT nID)
    {
-      AfxMessageBox(L"LanguagePageView::OnPerformCommand");
+      //AfxMessageBox(L"LanguagePageView::OnPerformCommand");
 
       try 
       {
