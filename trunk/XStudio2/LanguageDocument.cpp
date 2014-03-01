@@ -47,10 +47,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
       ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_SAVE, ID_FILE_SAVE_AS, &LanguageDocument::OnQueryFileCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageDocument::OnQueryClipboardCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryClipboardCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &LanguageDocument::OnQueryClipboardCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageDocument::OnQueryFormatCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_ADD_BUTTON, &LanguageDocument::OnQueryFormatCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageDocument::OnQueryModeCommand)
    END_MESSAGE_MAP()
@@ -80,16 +83,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Gets the selected page.</summary>
    /// <returns></returns>
-   LanguagePage*   LanguageDocument::GetSelectedPage() const
+   LanguagePage*  LanguageDocument::GetSelectedPage() const
    {
       return CurrentPage;
+   }
+   
+   /// <summary>Gets the index of the selected page.</summary>
+   /// <returns>Zero-based index, or -1 if no selection</returns>
+   int  LanguageDocument::GetSelectedPageIndex() const
+   {
+      return GetView<LanguagePageView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
    }
 
    /// <summary>Gets the selected string.</summary>
    /// <returns></returns>
-   LanguageString* LanguageDocument::GetSelectedString() const
+   LanguageString*  LanguageDocument::GetSelectedString() const
    {
       return CurrentString;
+   }
+
+   /// <summary>Gets the index of the selected string.</summary>
+   /// <returns>Zero-based index, or -1 if no selection</returns>
+   int  LanguageDocument::GetSelectedStringIndex() const
+   {
+      return GetView<LanguageStringView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
    }
    
    /// <summary>Populates the properties window</summary>
@@ -209,6 +226,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CPropertiesWnd::Connect(this, true);
       PageSelectionChanged.Raise();
    }
+   
+   /// <summary>Programatically select a page (raises PAGE SELECTION CHANGED).</summary>
+   /// <param name="index">Zero-based item index, or -1 to clear selection</param>
+   /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+   void  LanguageDocument::SetSelectedPageIndex(int index)
+   {
+      auto& ctrl = GetView<LanguagePageView>()->GetListCtrl();
+
+      // Validate index
+      if (index > ctrl.GetItemCount())
+         throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
+
+      // Select+display page
+      ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+      ctrl.EnsureVisible(index, FALSE);
+   }
 
    /// <summary>Sets the selected string and raises STRING SELECTION CHANGED.</summary>
    /// <param name="s">The string.</param>
@@ -217,6 +250,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CurrentString = s;
       CPropertiesWnd::Connect(this, true);
       StringSelectionChanged.Raise();
+   }
+   
+   /// <summary>Programatically select a string in the currently selected page (raises STRING SELECTION CHANGED).</summary>
+   /// <param name="index">Zero-based item index, or -1 to clear selection</param>
+   /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+   void  LanguageDocument::SetSelectedStringIndex(int index)
+   {
+      auto& ctrl = GetView<LanguageStringView>()->GetListCtrl();
+
+      // Validate index
+      if (index > ctrl.GetItemCount())
+         throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
+
+      // Select+display string
+      ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+      ctrl.EnsureVisible(index, FALSE);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

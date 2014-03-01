@@ -5,6 +5,7 @@
 #include "LanguagePageView.h"
 #include "ImageListEx.h"
 #include "ListViewCustomDraw.h"
+#include "GuiCommand.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -178,6 +179,84 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 
+      /// <summary>Deletes the currently selected string</summary>
+      class RemoveSelectedString : public GuiCommand
+      {
+         // ------------------------ TYPES --------------------------
+      private:
+         typedef unique_ptr<LanguageString>  LanguageStringPtr;
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create remove-selected-string command</summary>
+         /// <param name="view">The view.</param>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
+         RemoveSelectedString(LanguageStringView& view, LanguageDocument& doc)
+            : View(view), Document(doc), SelectedPage(doc.SelectedPageIndex), SelectedString(doc.SelectedStringIndex)
+         {
+            if (SelectedString == -1)
+               throw InvalidOperationException(HERE, L"No string is selected");
+            else if (SelectedPage == -1)
+               throw InvalidOperationException(HERE, L"No page is selected");
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Enable Undo</summary>
+         /// <returns></returns>
+         bool CanUndo() const override { return true; }
+
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Remove String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected string from the View and the Document</summary>
+         void Execute() override
+         {
+            // Ensure command not already executed
+            if (String)
+               throw InvalidOperationException(HERE, L"Command has already been executed");
+
+            // Select original page & string  (May have changed since original invokation)
+            Document.SelectedPageIndex = SelectedPage;
+            Document.SelectedStringIndex = SelectedString;
+
+            // Remove currently selected string. 
+            auto str = Document.SelectedPage->Remove(Document.SelectedString->ID);
+            View.GetListCtrl().DeleteItem(SelectedString);
+
+            // Save string for 'Undo'
+            String.reset( new LanguageString(str) );
+         }
+
+         /// <summary>Inserts the removed string.</summary>
+         void Undo() override
+         {
+            // Ensure command executed
+            if (!String)
+               throw InvalidOperationException(HERE, L"Command has not been executed");
+
+            // Select original page    (May have changed since original invokation)
+            Document.SelectedPageIndex = SelectedPage;
+
+            // Insert string at original position
+            View.InsertString(SelectedString, *String);
+
+            // Clear saved string
+            String.reset(nullptr);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         LanguageStringView& View;
+         LanguageDocument&   Document;
+         LanguageStringPtr   String;            // Copy of removed string
+         const UINT          SelectedPage,      // Index of Page selected at original time of invokation
+                             SelectedString;    // Index of String selected at original time of invokation
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    protected:
       LanguageStringView();    // Protected constructor used by dynamic creation
@@ -203,13 +282,14 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      void InsertString(UINT index, LanguageString& str);
 
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       handler void onPageSelectionChanged();
-      afx_msg void OnQueryRemoveSelected(CCmdUI* pCmdUI);
-      afx_msg void OnRemoveSelected();
+      afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
+      afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------

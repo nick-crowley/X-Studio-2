@@ -13,6 +13,14 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguagePageView::OnItemStateChanged)
+      /*ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguagePageView::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguagePageView::OnQueryCommand)*/
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
