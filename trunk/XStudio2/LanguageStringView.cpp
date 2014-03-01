@@ -16,16 +16,19 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
-      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_CUT, ID_EDIT_CUT, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_COPY, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_SELECT_ALL, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND(ID_EDIT_CUT, &LanguageStringView::OnCommandEditCut)
+      ON_COMMAND(ID_EDIT_COPY, &LanguageStringView::OnCommandEditCopy)
+      ON_COMMAND(ID_EDIT_PASTE, &LanguageStringView::OnCommandEditPaste)
+      ON_COMMAND(ID_EDIT_CLEAR, &LanguageStringView::OnCommandEditClear)
+      ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguageStringView::OnCommandEditSelectAll)
+      //ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageStringView::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
+      //ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -210,13 +213,17 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_COPY:   
          case ID_EDIT_CUT:    
          case ID_EDIT_PASTE:  
-         case ID_EDIT_SELECT_ALL:
             break;
 
+         // Select All
+         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);            break;
+
          // Remove selected
-         case ID_EDIT_CLEAR: 
-            GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument()));
-            break;
+         case ID_EDIT_CLEAR:       GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); break;
+
+         // Undo/Redo
+         /*case ID_EDIT_UNDO:        GetDocument()->Undo();   break;
+         case ID_EDIT_REDO:        GetDocument()->Redo();   break;*/
          }
       }
       catch (ExceptionBase& e) {
@@ -245,6 +252,23 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_SELECT_ALL:
          state = true;  
          break;
+
+      // Disabled
+      case ID_EDIT_FIND:
+         state = false;
+         break;
+
+      // Undo:
+      //case ID_EDIT_UNDO:
+      //   state = GetDocument()->CanUndo();
+      //   pCmdUI->SetText(GetDocument()->GetUndoMenuItem().c_str());
+      //   break;
+
+      //// Redo:
+      //case ID_EDIT_REDO:
+      //   state = GetDocument()->CanRedo();
+      //   pCmdUI->SetText(GetDocument()->GetRedoMenuItem().c_str());
+      //   break;
       }
 
       // Set state

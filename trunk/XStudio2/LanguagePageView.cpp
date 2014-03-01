@@ -13,16 +13,19 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguagePageView::OnItemStateChanged)
-      ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_CUT, ID_EDIT_CUT, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_COPY, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguagePageView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_SELECT_ALL, &LanguagePageView::OnPerformCommand)
+      ON_COMMAND(ID_EDIT_CUT, &LanguagePageView::OnCommandEditCut)
+      ON_COMMAND(ID_EDIT_COPY, &LanguagePageView::OnCommandEditCopy)
+      ON_COMMAND(ID_EDIT_PASTE, &LanguagePageView::OnCommandEditPaste)
+      ON_COMMAND(ID_EDIT_CLEAR, &LanguagePageView::OnCommandEditClear)
+      ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguagePageView::OnCommandEditSelectAll)
+      //ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguagePageView::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguagePageView::OnQueryCommand)
+      //ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguagePageView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -60,19 +63,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
 
-   /// <summary>Called when activate view.</summary>
-   /// <param name="bActivate">activated.</param>
-   /// <param name="pActivateView">The activate view.</param>
-   /// <param name="pDeactiveView">The deactive view.</param>
-   void LanguagePageView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
-   {
-      // Show page properties (if any), otherwise document properties
-      if (bActivate)
-         CPropertiesWnd::Connect(GetDocument(), true);
-
-      __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
-   }
-   
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -87,6 +77,19 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Stretch 2nd column over view
       GetListCtrl().SetColumnWidth(1, wnd.Width()-GetListCtrl().GetColumnWidth(0));
+   }
+   
+   /// <summary>Called when activate view.</summary>
+   /// <param name="bActivate">activated.</param>
+   /// <param name="pActivateView">The activate view.</param>
+   /// <param name="pDeactiveView">The deactive view.</param>
+   void LanguagePageView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+   {
+      // Show page properties (if any), otherwise document properties
+      if (bActivate)
+         CPropertiesWnd::Connect(GetDocument(), true);
+
+      __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
    /// <summary>Initialise listView and populate pages</summary>
@@ -170,7 +173,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       *pResult = 0;
    }
-
+   
    /// <summary>Performs a menu command</summary>
    /// <param name="nID">Command identifier.</param>
    void LanguagePageView::OnPerformCommand(UINT nID)
@@ -185,13 +188,18 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_COPY:   
          case ID_EDIT_CUT:    
          case ID_EDIT_PASTE:  
-         case ID_EDIT_SELECT_ALL:
             break;
 
-         // TODO: Remove selected
-         case ID_EDIT_CLEAR: 
-            //GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument()));
+         // Select All
+         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);            break;
+
+         // Remove selected
+         case ID_EDIT_CLEAR:       //GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); break;
             break;
+
+         // Undo/Redo
+         /*case ID_EDIT_UNDO:        GetDocument()->Undo();   break;
+         case ID_EDIT_REDO:        GetDocument()->Redo();   break;*/
          }
       }
       catch (ExceptionBase& e) {
@@ -217,9 +225,26 @@ NAMESPACE_BEGIN2(GUI,Views)
      
       // Always enabled
       case ID_EDIT_PASTE:  
-      case ID_EDIT_SELECT_ALL:
          state = true;  
          break;
+
+      // Disabled
+      case ID_EDIT_FIND:
+      case ID_EDIT_SELECT_ALL:
+         state = false;
+         break;
+
+      // Undo:
+      //case ID_EDIT_UNDO:
+      //   state = GetDocument()->CanUndo();
+      //   pCmdUI->SetText(GetDocument()->GetUndoMenuItem().c_str());
+      //   break;
+
+      //// Redo:
+      //case ID_EDIT_REDO:
+      //   state = GetDocument()->CanRedo();
+      //   pCmdUI->SetText(GetDocument()->GetRedoMenuItem().c_str());
+      //   break;
       }
 
       // Set state

@@ -53,7 +53,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       wstring   GetLineText(int line) const;
       GuiString GetLineTextEx(int line) const;
       LineArray GetLines() const;
+      wstring   GetRedoMenuItem() const;
       CHARRANGE GetSelection() const;
+      wstring   GetUndoMenuItem() const;
       bool      HasSelection() const;
       bool      IsReadOnly() const;
       int       LineLength(int nChar = -1) const;

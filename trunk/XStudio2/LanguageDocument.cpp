@@ -46,14 +46,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_SAVE, ID_FILE_SAVE_AS, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &LanguageDocument::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &LanguageDocument::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageDocument::OnQueryCommand)
       ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnPerformCommand)
    END_MESSAGE_MAP()
 
@@ -279,17 +275,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          switch (nID)
          {
-         // Clipboard: TODO
-         //case ID_EDIT_COPY:   
-         //case ID_EDIT_CUT:    
-         //case ID_EDIT_PASTE:  
-         //   break;
-
-         //// Remove selected
-         //case ID_EDIT_CLEAR: 
-         //   Execute(new LanguageStringView::RemoveSelectedString(*GetView<LanguageStringView>(), *this));
-         //   break;
-      
          // Undo/Redo
          case ID_EDIT_UNDO:  Undo();    break;
          case ID_EDIT_REDO:  Redo();    break;
@@ -315,29 +300,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
          pCmdUI->Enable(!Virtual ? TRUE : FALSE);
          break;
 
-      // Require selection
-      case ID_EDIT_CLEAR: 
-      case ID_EDIT_COPY:   
-      case ID_EDIT_CUT:    
-         state = (SelectedString != nullptr);  
-         break;
-     
-      // Always enabled
-      case ID_EDIT_PASTE:  
-      case ID_EDIT_SELECT_ALL:
-         state = true;  
-         break;
-      
       // Undo: Query document
       case ID_EDIT_UNDO:   
-         if (state = CanUndo())
-            pCmdUI->SetText(GuiString(L"Undo '%s'", UndoName.c_str()).c_str());
+         state = CanUndo();
+         pCmdUI->SetText(GetUndoMenuItem().c_str());
          break;
       
       // Redo: Query document
       case ID_EDIT_REDO:   
-         if (state = CanRedo())
-            pCmdUI->SetText(GuiString(L"Redo '%s'", RedoName.c_str()).c_str());
+         state = CanRedo();
+         pCmdUI->SetText(GetRedoMenuItem().c_str());
          break;
       }
 

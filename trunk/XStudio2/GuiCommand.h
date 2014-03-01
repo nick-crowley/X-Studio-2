@@ -90,6 +90,16 @@ namespace GUI
 
             return RedoQueue.front()->Name;
          }
+         
+         /// <summary>Gets the 'redo' menu item text</summary>
+         /// <returns></returns>
+         wstring  GetRedoMenuItem() const
+         {
+            if (!CanRedo())
+               return L"Redo";
+
+            return GuiString(L"Redo '%s'", GetRedoName().c_str());
+         }
 
          /// <summary>Get 'Undo' command name</summary>
          /// <exception cref="Logic::InvalidOperationException">Undo queue is empty</exception>
@@ -99,6 +109,16 @@ namespace GUI
                throw InvalidOperationException(HERE, L"Undo queue is empty");
 
             return UndoQueue.front()->Name;
+         }
+         
+         /// <summary>Gets the 'Undo' menu item text</summary>
+         /// <returns></returns>
+         wstring  GetUndoMenuItem() const
+         {
+            if (!CanUndo())
+               return L"Undo";
+
+            return GuiString(L"Undo '%s'", GetUndoName().c_str());
          }
 
          // ----------------------- MUTATORS ------------------------
