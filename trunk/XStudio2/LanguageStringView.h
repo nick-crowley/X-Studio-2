@@ -213,6 +213,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Removes the selected string from the View and the Document</summary>
+         /// <exception cref="Logic::StringNotFoundException">Unable to remove string</exception>
+         /// <exception cref="Logic::InvalidOperationException">Already executed</exception>
          void Execute() override
          {
             // Ensure command not already executed
@@ -232,6 +234,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          /// <summary>Inserts the removed string.</summary>
+         /// <exception cref="Logic::AlgorithmException">Unable to insert string</exception>
+         /// <exception cref="Logic::InvalidOperationException">Not yet executed</exception>
          void Undo() override
          {
             // Ensure command executed
@@ -242,6 +246,8 @@ NAMESPACE_BEGIN2(GUI,Views)
             Document.SelectedPageIndex = SelectedPage;
 
             // Insert string at original position
+            if (!Document.SelectedPage->Strings.Add(*String))
+               throw AlgorithmException(HERE, L"Unable to re-insert string into current page");
             View.InsertString(SelectedString, *String);
 
             // Clear saved string
