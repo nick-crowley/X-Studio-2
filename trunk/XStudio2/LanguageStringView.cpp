@@ -17,13 +17,15 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
       ON_COMMAND_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_CUT, ID_EDIT_CUT, &LanguageStringView::OnPerformCommand)
+      ON_COMMAND_RANGE(ID_EDIT_COPY, ID_EDIT_COPY, &LanguageStringView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageStringView::OnPerformCommand)
-      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguageStringView::OnPerformCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_CLEAR, ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_COPY, ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_PASTE, ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_REDO, &LanguageStringView::OnQueryCommand)
+      ON_COMMAND_RANGE(ID_EDIT_SELECT_ALL, ID_EDIT_SELECT_ALL, &LanguageStringView::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -198,6 +200,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="nID">Command identifier.</param>
    void LanguageStringView::OnPerformCommand(UINT nID)
    {
+      AfxMessageBox(L"LanguageStringView::OnPerformCommand");
+
       try 
       {
          switch (nID)
@@ -206,16 +210,13 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_COPY:   
          case ID_EDIT_CUT:    
          case ID_EDIT_PASTE:  
+         case ID_EDIT_SELECT_ALL:
             break;
 
          // Remove selected
          case ID_EDIT_CLEAR: 
             GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument()));
             break;
-      
-         // Undo/Redo
-         case ID_EDIT_UNDO:  GetDocument()->Undo();    break;
-         case ID_EDIT_REDO:  GetDocument()->Redo();    break;
          }
       }
       catch (ExceptionBase& e) {
@@ -243,18 +244,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_PASTE:  
       case ID_EDIT_SELECT_ALL:
          state = true;  
-         break;
-      
-      // Undo: Query document
-      case ID_EDIT_UNDO:   
-         if (state = GetDocument()->CanUndo())
-            pCmdUI->SetText(GuiString(L"Undo '%s'", GetDocument()->UndoName.c_str()).c_str());
-         break;
-      
-      // Redo: Query document
-      case ID_EDIT_REDO:   
-         if (state = GetDocument()->CanRedo())
-            pCmdUI->SetText(GuiString(L"Redo '%s'", GetDocument()->RedoName.c_str()).c_str());
          break;
       }
 

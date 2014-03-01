@@ -46,16 +46,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_SAVE, ID_FILE_SAVE_AS, &LanguageDocument::OnQueryFileCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &LanguageDocument::OnQueryClipboardCommand)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_ADD_BUTTON, &LanguageDocument::OnQueryFormatCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageDocument::OnQueryModeCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_SAVE, ID_FILE_SAVE_AS, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &LanguageDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageDocument::OnQueryCommand)
+      ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnPerformCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -270,46 +269,82 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Query state of save commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageDocument::OnQueryFileCommand(CCmdUI* pCmd)
+   /// <summary>Performs a menu command</summary>
+   /// <param name="nID">Command identifier.</param>
+   void LanguageDocument::OnPerformCommand(UINT nID)
    {
-      pCmd->SetCheck(FALSE);
+      AfxMessageBox(L"LanguageDocument::OnPerformCommand");
 
-      switch (pCmd->m_nID)
+      try 
+      {
+         switch (nID)
+         {
+         // Clipboard: TODO
+         //case ID_EDIT_COPY:   
+         //case ID_EDIT_CUT:    
+         //case ID_EDIT_PASTE:  
+         //   break;
+
+         //// Remove selected
+         //case ID_EDIT_CLEAR: 
+         //   Execute(new LanguageStringView::RemoveSelectedString(*GetView<LanguageStringView>(), *this));
+         //   break;
+      
+         // Undo/Redo
+         case ID_EDIT_UNDO:  Undo();    break;
+         case ID_EDIT_REDO:  Redo();    break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+   
+
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void LanguageDocument::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+
+      switch (pCmdUI->m_nID)
       {
       // Save/SaveAs: Require file document
       case ID_FILE_SAVE:
       case ID_FILE_SAVE_AS:
-         pCmd->Enable(!Virtual ? TRUE : FALSE);
+         pCmdUI->Enable(!Virtual ? TRUE : FALSE);
+         break;
+
+      // Require selection
+      case ID_EDIT_CLEAR: 
+      case ID_EDIT_COPY:   
+      case ID_EDIT_CUT:    
+         state = (SelectedString != nullptr);  
+         break;
+     
+      // Always enabled
+      case ID_EDIT_PASTE:  
+      case ID_EDIT_SELECT_ALL:
+         state = true;  
+         break;
+      
+      // Undo: Query document
+      case ID_EDIT_UNDO:   
+         if (state = CanUndo())
+            pCmdUI->SetText(GuiString(L"Undo '%s'", UndoName.c_str()).c_str());
+         break;
+      
+      // Redo: Query document
+      case ID_EDIT_REDO:   
+         if (state = CanRedo())
+            pCmdUI->SetText(GuiString(L"Redo '%s'", RedoName.c_str()).c_str());
          break;
       }
-   }
 
-   /// <summary>Query state of clipboard commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageDocument::OnQueryClipboardCommand(CCmdUI* pCmd)
-   {
-      // Delegate to edit view
-      GetView<LanguageEditView>()->OnQueryClipboardCommand(pCmd);
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
    }
-
-   /// <summary>Query state of editor formatting commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageDocument::OnQueryFormatCommand(CCmdUI* pCmd)
-   {
-      // Delegate to edit view
-      GetView<LanguageEditView>()->OnQueryFormatCommand(pCmd);
-   }
-
-   /// <summary>Query state of editor mode commands.</summary>
-   /// <param name="pCmd">The command.</param>
-   void LanguageDocument::OnQueryModeCommand(CCmdUI* pCmd)
-   {
-      // Delegate to edit view
-      GetView<LanguageEditView>()->OnQueryModeCommand(pCmd);
-   }
-
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
