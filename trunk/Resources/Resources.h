@@ -2,38 +2,34 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
-#define IDR_MAINFRAME_16                101
-#define IDR_MAINFRAME_24                102
-#define IDR_PROPERTIES                  103
-#define IDR_PROPERTIES_16               104
-#define IDR_PROPERTIES_24               105
-#define IDR_OUTPUT                      107
-#define IDR_COMMANDS                    108
-#define IDR_GAME_OBJECTS                109
-#define IDR_SCRIPT_OBJECTS              110
-#define IDR_EDITOR_16                   111
-#define IDR_EDITOR_24                   112
-#define IDR_CUSTOM                      113
+//#define IDR_MAINFRAME_20                101
+#define IDR_PROPERTIES                  102
+//#define IDR_PROPERTIES_20               103
+#define IDR_OUTPUT                      104
+#define IDR_COMMANDS                    105
+#define IDR_GAME_OBJECTS                106
+#define IDR_SCRIPT_OBJECTS              107
+#define IDR_EDITOR                      108
+#define IDR_CUSTOM                      109
 
-#define IDR_LANGUAGEVIEW                114
-#define IDR_SCRIPTVIEW                  115
-#define IDR_PROJECTVIEW                 116
+#define IDR_LANGUAGEVIEW                110
+#define IDR_SCRIPTVIEW                  111
+#define IDR_PROJECTVIEW                 112
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  117
-#define IDM_PROJECT_POPUP               118
-#define IDM_OUTPUT_POPUP                119
+#define IDM_EDIT_POPUP                  113
+#define IDM_PROJECT_POPUP               114
+#define IDM_OUTPUT_POPUP                115
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_16_GREY              120
-#define IDB_EDITOR_24_GREY              121
-#define IDB_PROJECT_ICONS               122
-#define IDB_OUTPUT_ICONS                123
-#define IDB_GAMEDATA_ICONS              124
-#define IDB_LANGUAGE_ICONS              125
-#define IDB_RICH_BUTTON                 126
+#define IDB_EDITOR_GREY                 116
+#define IDB_PROJECT_ICONS               117
+#define IDB_OUTPUT_ICONS                118
+#define IDB_GAMEDATA_ICONS              119
+#define IDB_LANGUAGE_ICONS              120
+#define IDB_RICH_BUTTON                 121
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

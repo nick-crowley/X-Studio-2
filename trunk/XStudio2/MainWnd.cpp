@@ -178,7 +178,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
          // Load menu item image (not placed on any standard toolbars):
-         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME_16, IDR_MAINFRAME_16);
+         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME, IDR_MAINFRAME);
+         CMFCToolBar::m_dblLargeImageRatio = 1.2;
 
          // MainMenu:
 	      if (!m_wndMenuBar.Create(this)) //, AFX_DEFAULT_TOOLBAR_STYLE, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16))
@@ -187,7 +188,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          
 	      
          // ToolBar:
-	      if (!m_wndToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
+	      if (!m_wndToolBar.Create(this, IDR_MAINFRAME)) //PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
             throw Win32Exception(HERE, L"Unable to create MainWnd toolbar");
          m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
 	      
