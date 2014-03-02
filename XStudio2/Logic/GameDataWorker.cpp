@@ -17,7 +17,8 @@ namespace Logic
    {
       // -------------------------------- STATIC DATA  --------------------------------
 
-      const WorkerData   WorkerData::NoFeedback(Operation::Dummy);
+      /// <summary>No operation feedback sentinel</summary>
+      const WorkerData   WorkerData::NoFeedback;
 
       // -------------------------------- CONSTRUCTION --------------------------------
    
@@ -31,6 +32,9 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Loads game data</summary>
+      /// <param name="data">arguments.</param>
+      /// <returns></returns>
       DWORD WINAPI GameDataWorker::ThreadMain(GameDataWorkerData* data)
       {
          try

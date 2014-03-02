@@ -17,7 +17,7 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary>Defines the output window used by various operations</summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, Dummy };
+      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, NoFeedback };
 
       /// <summary>Base class for output window feedback items</summary>
       class WorkerProgress
@@ -42,8 +42,17 @@ namespace Logic
       public:
          /// <summary>Creates worker data for an operation</summary>
          /// <param name="op">operation.</param>
+         /// <exception cref="Logic::ArgumentNullException">Main window does not exist</exception>
          WorkerData(Operation op) : ParentWnd(AfxGetMainWnd()), Operation(op), Aborted(false)
+         {
+            REQUIRED(ParentWnd);
+         }
+      private:
+         /// <summary>Creates 'No Feedback' sentinel data</summary>
+         WorkerData() : ParentWnd(nullptr), Operation(Operation::NoFeedback), Aborted(false)
          {}
+
+      public:
          virtual ~WorkerData()
          {}
 
@@ -73,7 +82,7 @@ namespace Logic
          void  SendFeedback(ProgressType t, UINT indent, const wstring& sz) const
          {
             // Dummy: NOP
-            if (Operation == Operation::Dummy || !ParentWnd)
+            if (Operation == Operation::NoFeedback || !ParentWnd)
                return;
 
             // Output to GUI
@@ -84,7 +93,7 @@ namespace Logic
          void  SendFeedback(Cons c, ProgressType t, UINT indent, const wstring& sz) const
          {
             // Dummy: NOP
-            if (Operation == Operation::Dummy || !ParentWnd)
+            if (Operation == Operation::NoFeedback || !ParentWnd)
                return;
 
             // Output to console 
