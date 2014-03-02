@@ -33,7 +33,10 @@ namespace GUI
          // ---------------------- ACCESSORS ------------------------			
       public:
          /// <summary>Query whether command can be undone</summary>
-         virtual bool  CanUndo() const PURE;
+         virtual bool  CanUndo() const
+         {
+            return true;
+         }
 
          /// <summary>Get command name</summary>
          virtual wstring GetName() const PURE;

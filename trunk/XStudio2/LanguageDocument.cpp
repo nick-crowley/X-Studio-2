@@ -67,14 +67,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   
    /// <summary>Retrieves the file/library page collection</summary>
    /// <returns></returns>
    LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
    {
       return Virtual ? Library : Content.Pages;
    }
-
 
    /// <summary>Gets the selected page.</summary>
    /// <returns></returns>
@@ -104,6 +102,39 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return GetView<LanguageStringView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
    }
    
+   /// <summary>Inserts a string into the appropriate page</summary>
+   /// <param name="str">The string.</param>
+   void  LanguageDocument::InsertString(LanguageStringRef str)
+   {
+      // Display page
+      SelectedPageID = str.Page;
+
+      // Insert into languagePage
+      UINT index;
+      if ((index=SelectedPage->Insert(str)) == -1)
+         throw ApplicationException(HERE, L"The ID is already in use");
+
+      // Update view
+      GetView<LanguageStringView>()->InsertString(index, str);
+   }
+
+   /// <summary>Removes the string from the appropriate page</summary>
+   /// <param name="page">Page ID.</param>
+   /// <param name="id">string ID.</param>
+   void  LanguageDocument::RemoveString(UINT page, UINT id)
+   {
+      // Display page
+      SelectedPageID = page;
+
+      // Remove from languagePage
+      UINT index;
+      if ((index=SelectedPage->Remove(id)) == -1)
+         throw ApplicationException(HERE, L"The string was not found");
+
+      // Update view
+      GetView<LanguageStringView>()->RemoveString(index);
+   }
+
    /// <summary>Populates the properties window</summary>
    /// <param name="grid">The grid.</param>
    void  LanguageDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)

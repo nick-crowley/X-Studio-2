@@ -61,6 +61,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
          LanguageFile&      File;
       };
 
+      /// <summary>Base class for all language document GUI commands</summary>
+      class CommandBase : public GuiCommand
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         CommandBase(LanguageDocument& doc) : Document(doc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Enable Undo</summary>
+         /// <returns></returns>
+         bool CanUndo() const override { return true; }
+
+         // ----------------------- MUTATORS ------------------------
+      
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         LanguageDocument&  Document;
+      };
+
    protected:
       /// <summary>Language filename property grid item</summary>
       class FileNameProperty : public LanguagePropertyBase
@@ -214,6 +239,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  InsertString(LanguageStringRef str);
+      void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;
       BOOL  OnNewDocument() override;
