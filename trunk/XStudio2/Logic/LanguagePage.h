@@ -183,17 +183,18 @@ namespace Logic
 
             /// <summary>Remove a string by ID</summary>
             /// <param name="id">The string id</param>
-            /// <returns>Zero-based index if successful, otherwise -1</returns>
+            /// <returns>Index of removed string</returns>
+            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
             int  Remove(UINT  id) 
             { 
                const_iterator pos;
 
                // Lookup string
                if ((pos=find(id)) == end())
-                  return -1;
+                  throw StringNotFoundException(HERE, PageID, id);
+               int index = distance(cbegin(), pos);
 
-               // Remove + Return index
-               auto index = distance(cbegin(), pos);
+               // Remove + return index
                erase(pos);
                return index;
             }
@@ -296,7 +297,8 @@ namespace Logic
          
          /// <summary>Remove a string by ID</summary>
          /// <param name="id">The string id</param>
-         /// <returns>Zero-based index if successful, otherwise -1</returns>
+         /// <returns>Zero-based index of removed string</returns>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          int  Remove(UINT  id) 
          { 
             return Strings.Remove(id);     

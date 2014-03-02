@@ -104,33 +104,35 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
-   void  LanguageDocument::InsertString(LanguageStringRef str)
+   void  LanguageDocument::InsertString(LanguageString& str)
    {
       // Display page
-      SelectedPage = const_cast<LanguagePage*>( &GetContent().Find(str.Page) );
+      SelectedPage = const_cast<LanguagePage*>(&GetContent().Find(str.Page));
 
       // Insert into languagePage
-      if (SelectedPage->Insert(str) == -1)
+      UINT index = SelectedPage->Insert(str);
+      if (index == -1)
          throw ApplicationException(HERE, L"The ID is already in use");
       
       // Update view
-      PageContentChanged.Raise();
+      GetView<LanguageStringView>()->InsertString(index, str);
    }
 
-   /// <summary>Removes a string from the appropriate page</summary>
+   /// <summary>Removes the string from the appropriate page</summary>
    /// <param name="page">Page ID.</param>
    /// <param name="id">string ID.</param>
    void  LanguageDocument::RemoveString(UINT page, UINT id)
    {
       // Display page
-      SelectedPage = const_cast<LanguagePage*>( &GetContent().Find(page) );
+      SelectedPage = const_cast<LanguagePage*>(&GetContent().Find(page));
 
       // Remove from languagePage
-      if (SelectedPage->Remove(id) == -1)
+      UINT index = SelectedPage->Remove(id);
+      if (index == -1)
          throw ApplicationException(HERE, L"The string was not found");
 
       // Update view
-      PageContentChanged.Raise();
+      GetView<LanguageStringView>()->RemoveString(index);
    }
 
    /// <summary>Populates the properties window</summary>
@@ -249,7 +251,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::SetSelectedPage(LanguagePage* p)
    {
       CurrentPage = p;
-      
       CPropertiesWnd::Connect(this, true);
       PageSelectionChanged.Raise();
    }
@@ -274,10 +275,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="s">The string.</param>
    void  LanguageDocument::SetSelectedString(LanguageString* s)
    {
-      if (s == CurrentString)
-         return;
-      
-      // Change string
       CurrentString = s;
       CPropertiesWnd::Connect(this, true);
       StringSelectionChanged.Raise();
