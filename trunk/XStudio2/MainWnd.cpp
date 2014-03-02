@@ -141,6 +141,127 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Creates the tool bars.</summary>
+   void MainWnd::CreateToolBars()
+   {
+      // MainMenu:
+	   if (!m_wndMenuBar.Create(this)) 
+         throw Win32Exception(HERE, L"Unable to create MainWnd menu");
+	   m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+         
+      // Dock
+	   m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+	   DockPane(&m_wndMenuBar);
+
+
+	      
+      // File ToolBar:
+	   if (!m_wndFileToolBar.Create(this, IDT_FILE, L"File")) 
+         throw Win32Exception(HERE, L"Unable to create MainWnd file toolbar");
+      m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+      //m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+	      
+      // Dock
+      m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
+      DockPane(&m_wndFileToolBar);
+
+
+      // Edit ToolBar:
+	   if (!m_wndEditToolBar.Create(this, IDT_EDIT, L"Edit")) 
+         throw Win32Exception(HERE, L"Unable to create MainWnd Edit toolbar");
+      m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+      //m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+	      
+      // Dock
+      m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
+      DockPane(&m_wndEditToolBar);
+
+
+      // View ToolBar:
+	   if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
+         throw Win32Exception(HERE, L"Unable to create MainWnd View toolbar");
+      m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+      //m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+	      
+      // Dock
+      m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
+      DockPane(&m_wndViewToolBar);
+
+
+
+      // StatusBar:
+	   if (!m_wndStatusBar.Create(this))
+         throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
+	   m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+      onScriptCaretMoved(POINT {0,0});
+   }
+
+
+   /// <summary>Creates the tool windows.</summary>
+   void MainWnd::CreateToolWindows()
+   {
+      static CRect DefaultSize = CRect(0, 0, 300, 500);     // output=500 high, others=300 wide
+
+      // Project Window:
+	   if (!m_wndProject.Create(L"Project", this, DefaultSize, TRUE, ID_VIEW_PROJECT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+         throw Win32Exception(HERE, L"Unable to create Project window");
+      m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECTVIEW, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock left
+      m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      DockPane(&m_wndProject, AFX_IDW_DOCKBAR_LEFT);
+         
+
+	   // Properties Window:
+	   if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, DefaultSize, TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      throw Win32Exception(HERE, L"Unable to create Properties window");
+      m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock left, Attach to LHS tab
+      m_wndProperties.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      m_wndProperties.AttachToTabWnd(&m_wndProject, AFX_DOCK_METHOD::DM_SHOW);
+
+
+      // Commands Window:
+	   if (!m_wndCommands.Create(GuiString(L"Commands").c_str(), this, DefaultSize, TRUE, ID_VIEW_COMMANDS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      throw Win32Exception(HERE, L"Unable to create Commands window");
+      m_wndCommands.SetIcon(theApp.LoadIconW(IDR_COMMANDS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock right
+      m_wndCommands.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      DockPane(&m_wndCommands, AFX_IDW_DOCKBAR_RIGHT);
+
+
+      // Game objects window:
+      if (!m_wndGameObjects.Create(GuiString(L"Game Objects").c_str(), this, DefaultSize, TRUE, ID_VIEW_GAME_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      throw Win32Exception(HERE, L"Unable to create Game objects window");
+      m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_GAME_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock right. Attach to RHS tab
+      m_wndGameObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      m_wndGameObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
+
+
+      // Game objects window:
+      if (!m_wndScriptObjects.Create(GuiString(L"Script Objects").c_str(), this, DefaultSize, TRUE, ID_VIEW_SCRIPT_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	      throw Win32Exception(HERE, L"Unable to create Script objects window");
+      m_wndScriptObjects.SetIcon(theApp.LoadIconW(IDR_SCRIPT_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock right. Attach to RHS tab
+      m_wndScriptObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      m_wndScriptObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
+         
+
+	   // Output Window:
+	   if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, DefaultSize, TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	      throw Win32Exception(HERE, L"Unable to create Output window");
+      m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock bottom
+      m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
+	   DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
+   }
+
    /// <summary>Displays the Find & Replace dialog.</summary>
    void MainWnd::OnCommandFindText()
    {
@@ -196,6 +317,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ShowWindowsDialog();
    }
 
+   /// <summary>Creates child windows and sets up MFC GUI classes</summary>
+   /// <param name="lpCreateStruct">The create data.</param>
+   /// <returns></returns>
    int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       try
@@ -235,130 +359,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          EnableDocking(CBRS_ALIGN_ANY);
          EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
-
-         // MainMenu:
-	      if (!m_wndMenuBar.Create(this)) 
-            throw Win32Exception(HERE, L"Unable to create MainWnd menu");
-	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+         // Toolbars
+         CreateToolBars();
          
-         // Dock
-	      m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	      DockPane(&m_wndMenuBar);
-
-
-	      
-         // File ToolBar:
-	      if (!m_wndFileToolBar.Create(this, IDT_FILE, L"File")) 
-            throw Win32Exception(HERE, L"Unable to create MainWnd file toolbar");
-         m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         //m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
-	      
-         // Dock
-         m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndFileToolBar);
-
-
-         // Edit ToolBar:
-	      if (!m_wndEditToolBar.Create(this, IDT_EDIT, L"Edit")) 
-            throw Win32Exception(HERE, L"Unable to create MainWnd Edit toolbar");
-         m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         //m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
-	      
-         // Dock
-         m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndEditToolBar);
-
-
-         // View ToolBar:
-	      if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
-            throw Win32Exception(HERE, L"Unable to create MainWnd View toolbar");
-         m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         //m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
-	      
-         // Dock
-         m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
-         DockPane(&m_wndViewToolBar);
-
-
-
-         // StatusBar:
-	      if (!m_wndStatusBar.Create(this))
-            throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
-	      m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-         onScriptCaretMoved(POINT {0,0});
-
-
-	      
-	      
-
-
-	      
-
-	      
+         // Tool windows
+	      CreateToolWindows();
          
          // Find & Replace dialog:
          m_dlgFind.Create(FindDialog::IDD, this);
-         
-
-	      // Project Window:
-	      if (!m_wndProject.Create(L"Project", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
-            throw Win32Exception(HERE, L"Unable to create Project window");
-         m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECTVIEW, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock left
-         m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndProject, AFX_IDW_DOCKBAR_LEFT);
-         
-
-	      // Properties Window:
-	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Properties window");
-         m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock left, Attach to LHS tab
-         m_wndProperties.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         m_wndProperties.AttachToTabWnd(&m_wndProject, AFX_DOCK_METHOD::DM_SHOW);
-
-
-         // Commands Window:
-	      if (!m_wndCommands.Create(GuiString(L"Commands").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_COMMANDS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Commands window");
-         m_wndCommands.SetIcon(theApp.LoadIconW(IDR_COMMANDS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock right
-         m_wndCommands.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndCommands, AFX_IDW_DOCKBAR_RIGHT);
-
-
-         // Game objects window:
-         if (!m_wndGameObjects.Create(GuiString(L"Game Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_GAME_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Game objects window");
-         m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_GAME_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock right. Attach to RHS tab
-         m_wndGameObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         m_wndGameObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
-
-
-         // Game objects window:
-         if (!m_wndScriptObjects.Create(GuiString(L"Script Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SCRIPT_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Script objects window");
-         m_wndScriptObjects.SetIcon(theApp.LoadIconW(IDR_SCRIPT_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock right. Attach to RHS tab
-         m_wndScriptObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         m_wndScriptObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
-         
-
-	      // Output Window:
-	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Output window");
-         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
-         // Dock bottom
-         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
-	      DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
-         
 
          
          // Set document icons??
@@ -376,15 +384,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      //EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
 
 	      
-         
-
-
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
 
 
-         // REM: Load game data
+         // Load game data
          GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
 	      return 0;
       }
