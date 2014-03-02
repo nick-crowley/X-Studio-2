@@ -57,14 +57,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryShowWindow)
+      ON_WM_SHOWWINDOW()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
-                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved))
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved)),
+                        FirstShow(true)
    {
-	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
 
    MainWnd::~MainWnd()
@@ -75,18 +76,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   #ifdef _DEBUG
-   void MainWnd::AssertValid() const
-   {
-	   CMDIFrameWndEx::AssertValid();
-   }
-
-   void MainWnd::Dump(CDumpContext& dc) const
-   {
-	   CMDIFrameWndEx::Dump(dc);
-   }
-   #endif //_DEBUG
-
    /// <summary>Activates an output window pane.</summary>
    /// <param name="pane">The pane.</param>
    void  MainWnd::ActivateOutputPane(Operation pane)
@@ -348,8 +337,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CMFCToolBar::EnableQuickCustomization();
 
          // load user-defined toolbar images
-	      if (!CMFCToolBar::GetUserImages() && m_UserImages.Load(IDB_USER_IMAGES))
-            CMFCToolBar::SetUserImages(&m_UserImages);
+	      /*if (!CMFCToolBar::GetUserImages() && m_UserImages.Load(IDB_USER_IMAGES))
+            CMFCToolBar::SetUserImages(&m_UserImages);*/
 
          // enable Visual Studio 2008 style docking + AutoHide
          CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
@@ -358,16 +347,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Enable docking
          EnableDocking(CBRS_ALIGN_ANY);
          EnableAutoHidePanes(CBRS_ALIGN_ANY);
-
+         
          // Toolbars
          CreateToolBars();
          
          // Tool windows
 	      CreateToolWindows();
-         
-         // Find & Replace dialog:
-         m_dlgFind.Create(FindDialog::IDD, this);
-
          
          // Set document icons??
 	      UpdateMDITabbedBarsIcons();
@@ -387,15 +372,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
-
-
-         // Load game data
-         GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
 	      return 0;
       }
-      catch (ExceptionBase& e)
-      {
-         Console.Log(HERE, e);
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
          return -1;
       }
    }
@@ -422,6 +402,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
+   /// <summary>Called on first display</summary>
+   void MainWnd::OnInitialUpdate()
+   {
+      // Load game data
+      GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
+
+      
+      // Find & Replace dialog:
+      m_dlgFind.Create(FindDialog::IDD, this);
+   }
+
+
    /// <summary>Query state of 'find text'.</summary>
    /// <param name="pCmdUI">The command UI.</param>
    void MainWnd::OnQueryFindText(CCmdUI *pCmdUI)
@@ -460,15 +452,37 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
    }
+   
+   /// <summary>Called when shown.</summary>
+   /// <param name="bShow">show.</param>
+   /// <param name="nStatus">status.</param>
+   void MainWnd::OnShowWindow(BOOL bShow, UINT nStatus)
+   {
+      CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
 
+      // Initial update
+      if (FirstShow)
+      {
+         FirstShow = false;
+         OnInitialUpdate();
+      }
+         
+   }
+
+   /// <summary>Called when settings change.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
 	   CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
-	   m_wndOutput.UpdateFonts();
    }
 
 
-   LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
+   /// <summary>Enable customization on user created toolsbars.  (App-Wizard generated)</summary>
+   /// <param name="wp">The wp.</param>
+   /// <param name="lp">The lp.</param>
+   /// <returns></returns>
+   LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp, LPARAM lp)
    {
 	   LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
 	   if (lres == 0)
@@ -482,6 +496,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
+   /// <summary>Raise appropriate events in response to worker feedback.</summary>
+   /// <param name="wParam">Not used.</param>
+   /// <param name="lParam">Progress data.</param>
+   /// <returns></returns>
    LRESULT MainWnd::OnWorkerFeedback(WPARAM wParam, LPARAM lParam)
    {
       WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
@@ -504,6 +522,4 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)
-
-
 

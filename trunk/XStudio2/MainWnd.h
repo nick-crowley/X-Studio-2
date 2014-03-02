@@ -26,15 +26,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ------------------------ TYPES --------------------------
 
       // --------------------- CONSTRUCTION ----------------------
-	   
    public:
 	   MainWnd();
       virtual ~MainWnd();
 
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNAMIC(MainWnd)
-   protected:
       DECLARE_MESSAGE_MAP()
 
    public:
@@ -46,10 +43,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif 
 
       // ----------------------- MUTATORS ------------------------
    
@@ -70,10 +63,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommandWindowManager();
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
       handler void    onGameDataFeedback(const WorkerProgress& wp);
+      handler void    OnInitialUpdate();
       afx_msg void    OnQueryFindText(CCmdUI *pCmdUI);
       afx_msg void    OnQueryShowWindow(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void    onScriptCaretMoved(POINT pt);
+      afx_msg void    OnShowWindow(BOOL bShow, UINT nStatus);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
@@ -98,6 +93,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       FeedbackHandler   fnGameDataFeedback;
       CaretMovedHandler fnCaretMoved;
+   
+   private:
+      bool              FirstShow;
    };
 
 
