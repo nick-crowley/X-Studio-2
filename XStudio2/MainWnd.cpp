@@ -60,8 +60,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
-                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved)),
-                        PrevTable(nullptr)
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved))
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
    }
@@ -201,24 +200,62 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
          // Load menu item image (not placed on any standard toolbars):
-         CMFCToolBar::AddToolBarForImageCollection(IDR_MAINFRAME, IDR_MAINFRAME);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_CUSTOM, IDT_CUSTOM);
          CMFCToolBar::m_dblLargeImageRatio = 1.2;
 
          // MainMenu:
-	      if (!m_wndMenuBar.Create(this)) //, AFX_DEFAULT_TOOLBAR_STYLE, PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16))
+	      if (!m_wndMenuBar.Create(this)) 
             throw Win32Exception(HERE, L"Unable to create MainWnd menu");
 	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
          
+         // Make dockable
+	      m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+	      EnableDocking(CBRS_ALIGN_ANY);
+	      DockPane(&m_wndMenuBar);
+
+
 	      
-         // ToolBar:
-	      if (!m_wndToolBar.Create(this, IDR_MAINFRAME)) //PrefsLib.LargeToolbars ? IDR_MAINFRAME_24 : IDR_MAINFRAME_16)) 
-            throw Win32Exception(HERE, L"Unable to create MainWnd toolbar");
-         m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+         // File ToolBar:
+	      if (!m_wndFileToolBar.Create(this, IDT_FILE)) 
+            throw Win32Exception(HERE, L"Unable to create MainWnd file toolbar");
+         m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
 	      
          // Allow user-defined toolbars operations:
-	      m_wndToolBar.SetWindowText(GuiString(IDS_TOOLBAR_STANDARD).c_str());
-	      //m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
+	      m_wndFileToolBar.SetWindowText(L"File");
+	      m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
 	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+
+         m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(&m_wndFileToolBar);
+
+
+         // Edit ToolBar:
+	      if (!m_wndEditToolBar.Create(this, IDT_EDIT)) 
+            throw Win32Exception(HERE, L"Unable to create MainWnd Edit toolbar");
+         m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+	      
+         // Allow user-defined toolbars operations:
+	      m_wndEditToolBar.SetWindowText(L"Edit");
+	      m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
+	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+
+         m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(&m_wndEditToolBar);
+
+
+         // View ToolBar:
+	      if (!m_wndViewToolBar.Create(this, IDT_VIEW)) 
+            throw Win32Exception(HERE, L"Unable to create MainWnd View toolbar");
+         m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+	      
+         // Allow user-defined toolbars operations:
+	      m_wndViewToolBar.SetWindowText(L"View");
+	      m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
+	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+
+         m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(&m_wndViewToolBar);
+
 
 
          // StatusBar:
@@ -228,12 +265,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          onScriptCaretMoved(POINT {0,0});
 
 
-	      // Make Toolbar/MenuBar dockable
-	      m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	      m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	      EnableDocking(CBRS_ALIGN_ANY);
-	      DockPane(&m_wndMenuBar);
-	      DockPane(&m_wndToolBar);
+	      
+	      
 
 
 	      // enable Visual Studio 2005 style docking + AutoHide

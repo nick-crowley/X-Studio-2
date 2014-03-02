@@ -78,7 +78,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected: 
       FindDialog        m_dlgFind;
 	   CMFCMenuBar       m_wndMenuBar;
-	   ToolBarEx         m_wndToolBar;
+	   ToolBarEx         m_wndFileToolBar,
+                        m_wndEditToolBar,
+                        m_wndViewToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
 	   CProjectWnd       m_wndProject;
