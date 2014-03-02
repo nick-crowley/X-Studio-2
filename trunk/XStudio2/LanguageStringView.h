@@ -206,6 +206,49 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageStringPtr    String;   // Copy of string being operated on
       };
 
+      /// <summary>Copies the currently selected string to the clipboard</summary>
+      class CopySelectedString : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
+         CopySelectedString(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure selection exists
+            if (!doc.SelectedString)
+               throw InvalidOperationException(HERE, L"No string is selected");
+            else if (!doc.SelectedPage)
+               throw InvalidOperationException(HERE, L"No page is selected");
+
+            // Store copy of string
+            String.reset(new LanguageString(*doc.SelectedString));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Command cannot be undone.</summary>
+         bool CanUndo() const override { return false; }
+
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Copy String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Copies the selected string</summary>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         void Execute() override
+         {
+            theClipboard.SetLanguageString(*String);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
       /// <summary>Paste string on clipboard into the currently selected page</summary>
       class PasteString : public CommandBase
       {
