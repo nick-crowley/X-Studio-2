@@ -220,11 +220,11 @@ NAMESPACE_BEGIN2(GUI,Views)
             
          // Cut Selected:
          case ID_EDIT_CUT:    
-            GetDocument()->Execute(new CutSelectedString(*this, *GetDocument()));  
+            GetDocument()->Execute(new CutSelectedString(*GetDocument()));  
             break;
 
          case ID_EDIT_PASTE:  
-            GetDocument()->Execute(new PasteString(*this, *GetDocument()));  
+            GetDocument()->Execute(new PasteString(*GetDocument()));  
             break;
 
          // Select All
@@ -232,7 +232,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Delete selected:
          case ID_EDIT_CLEAR:  
-            GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); 
+            GetDocument()->Execute(new RemoveSelectedString(*GetDocument())); 
             break;
          }
       }

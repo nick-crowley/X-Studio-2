@@ -180,6 +180,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 
+
       /// <summary>Base class for all string commands</summary>
       class CommandBase : public LanguageDocument::CommandBase
       {
@@ -192,8 +193,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <summary>Create command</summary>
          /// <param name="view">The view.</param>
          /// <param name="doc">The document.</param>
-         CommandBase(LanguageStringView& view, LanguageDocument& doc)
-            : LanguageDocument::CommandBase(doc), View(view)
+         CommandBase(LanguageDocument& doc)
+            : LanguageDocument::CommandBase(doc)
          {}
 
          // ---------------------- ACCESSORS ------------------------	
@@ -202,10 +203,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       
          // -------------------- REPRESENTATION ---------------------
       protected:
-         LanguageStringView&  View;
          LanguageStringPtr    String;   // Copy of string being operated on
       };
-
 
       /// <summary>Paste string on clipboard into the currently selected page</summary>
       class PasteString : public CommandBase
@@ -215,11 +214,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create 'paste string' command</summary>
-         /// <param name="view">The view.</param>
          /// <param name="doc">The document.</param>
          /// <exception cref="Logic::InvalidOperationException">No string on clipboard -or- no page selected</exception>
          /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
-         PasteString(LanguageStringView& view, LanguageDocument& doc) : CommandBase(view, doc)
+         PasteString(LanguageDocument& doc) : CommandBase(doc)
          {
             // Ensure clipboard contains string
             if (!theClipboard.HasLanguageString())
@@ -274,10 +272,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create command</summary>
-         /// <param name="view">The view.</param>
          /// <param name="doc">The document.</param>
          /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
-         RemoveSelectedString(LanguageStringView& view, LanguageDocument& doc) : CommandBase(view, doc)
+         RemoveSelectedString(LanguageDocument& doc) : CommandBase(doc)
          {
             // Ensure selection exists
             if (!doc.SelectedString)
@@ -329,10 +326,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create command</summary>
-         /// <param name="view">The view.</param>
          /// <param name="doc">The document.</param>
          /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
-         CutSelectedString(LanguageStringView& view, LanguageDocument& doc) : RemoveSelectedString(view, doc)
+         CutSelectedString(LanguageDocument& doc) : RemoveSelectedString(doc)
          {}
 
          // ---------------------- ACCESSORS ------------------------			
