@@ -264,7 +264,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;
-      SimpleEvent            LibraryRebuilt;
+      SimpleEvent            LibraryRebuilt,
+                             PageContentChanged;
 
    protected:
       LanguageString*  CurrentString;

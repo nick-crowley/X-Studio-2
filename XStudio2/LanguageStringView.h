@@ -371,6 +371,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      void UpdateItemCount();
       
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnCommandEditCut()        { OnPerformCommand(ID_EDIT_CUT);        }
@@ -380,7 +381,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
+      handler void onPageContentChanged();
       handler void onPageSelectionChanged();
+      afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -391,9 +394,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    private:
       SelectionChangedHandler  fnPageSelectionChanged;
+      EventHandler             fnPageContentChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
-   };
+};
    
 
 NAMESPACE_END2(GUI,Views)

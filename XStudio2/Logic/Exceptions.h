@@ -44,6 +44,17 @@ namespace Logic
       {}
    };
    
+   /// <summary>Occurs when a message should be displayed to the user verbatim</summary>
+   class ApplicationException : public ExceptionBase
+   {
+   public:
+      /// <summary>Create an ApplicationException</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Message</param>
+      ApplicationException(wstring  src, wstring  msg) 
+         : ExceptionBase(src, msg)
+      {}
+   };
 
    /// <summary>Occurs when a missing argument is detected</summary>
    class ArgumentNullException : public ExceptionBase

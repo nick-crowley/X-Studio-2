@@ -107,32 +107,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::InsertString(LanguageStringRef str)
    {
       // Display page
-      SelectedPageID = str.Page;
+      SelectedPage = const_cast<LanguagePage*>( &GetContent().Find(str.Page) );
 
       // Insert into languagePage
-      UINT index;
-      if ((index=SelectedPage->Insert(str)) == -1)
+      if (SelectedPage->Insert(str) == -1)
          throw ApplicationException(HERE, L"The ID is already in use");
-
+      
       // Update view
-      GetView<LanguageStringView>()->InsertString(index, str);
+      PageContentChanged.Raise();
    }
 
-   /// <summary>Removes the string from the appropriate page</summary>
+   /// <summary>Removes a string from the appropriate page</summary>
    /// <param name="page">Page ID.</param>
    /// <param name="id">string ID.</param>
    void  LanguageDocument::RemoveString(UINT page, UINT id)
    {
       // Display page
-      SelectedPageID = page;
+      SelectedPage = const_cast<LanguagePage*>( &GetContent().Find(page) );
 
       // Remove from languagePage
-      UINT index;
-      if ((index=SelectedPage->Remove(id)) == -1)
+      if (SelectedPage->Remove(id) == -1)
          throw ApplicationException(HERE, L"The string was not found");
 
       // Update view
-      GetView<LanguageStringView>()->RemoveString(index);
+      PageContentChanged.Raise();
    }
 
    /// <summary>Populates the properties window</summary>
@@ -251,6 +249,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::SetSelectedPage(LanguagePage* p)
    {
       CurrentPage = p;
+      
       CPropertiesWnd::Connect(this, true);
       PageSelectionChanged.Raise();
    }
@@ -276,6 +275,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::SetSelectedString(LanguageString* s)
    {
       CurrentString = s;
+      
       CPropertiesWnd::Connect(this, true);
       StringSelectionChanged.Raise();
    }
