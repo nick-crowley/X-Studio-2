@@ -58,22 +58,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
-      BOOL         PreTranslateMessage(MSG* pMsg) override;
-      void         PushAccelerators(UINT nID);
-      void         PopAccelerators();
 
    protected:
+      afx_msg void    OnCommandFindText();
+      afx_msg void    OnCommandCustomizeToolbar();
+      afx_msg void    OnCommandRunTests();
+      afx_msg void    OnCommandStringLibrary();
+      afx_msg void    OnCommandWindowManager();
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
-      afx_msg void    OnEditFind();
       handler void    onGameDataFeedback(const WorkerProgress& wp);
-      afx_msg void    OnQueryEditFind(CCmdUI *pCmdUI);
-      afx_msg void    OnRunAllTests();
+      afx_msg void    OnQueryFindText(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
-      handler void    onScriptViewCaretMoved(POINT pt);
+      handler void    onScriptCaretMoved(POINT pt);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
-      afx_msg void    OnViewCustomize();
-      afx_msg void    OnViewStringLibrary();
-      afx_msg void    OnWindowManager();
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------
@@ -95,8 +92,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       FeedbackHandler   fnGameDataFeedback;
       CaretMovedHandler fnCaretMoved;
-
-      HACCEL PrevTable;
    };
 
 
