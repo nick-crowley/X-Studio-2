@@ -2,32 +2,38 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
-#define IDR_PROPERTIES                  102
-#define IDR_OUTPUT                      104
-#define IDR_COMMANDS                    105
-#define IDR_GAME_OBJECTS                106
-#define IDR_SCRIPT_OBJECTS              107
-#define IDR_EDITOR                      108
-#define IDR_CUSTOM                      109
+#define IDR_PROPERTIES                  101
+#define IDR_OUTPUT                      102
+#define IDR_COMMANDS                    103
+#define IDR_GAME_OBJECTS                104
+#define IDR_SCRIPT_OBJECTS              105
+#define IDR_EDITOR                      106
 
-#define IDR_LANGUAGEVIEW                110
-#define IDR_SCRIPTVIEW                  111
-#define IDR_PROJECTVIEW                 112
+#define IDR_LANGUAGEVIEW                107
+#define IDR_SCRIPTVIEW                  108
+#define IDR_PROJECTVIEW                 109
+
+///////////////////////////////// TOOLBARS /////////////////////////////
+
+#define IDT_FILE                        110
+#define IDT_EDIT                        111
+#define IDT_VIEW                        112
+#define IDT_CUSTOM                      113
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  113
-#define IDM_PROJECT_POPUP               114
-#define IDM_OUTPUT_POPUP                115
+#define IDM_EDIT_POPUP                  114
+#define IDM_PROJECT_POPUP               115
+#define IDM_OUTPUT_POPUP                116
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_GREY                 116
-#define IDB_PROJECT_ICONS               117
-#define IDB_OUTPUT_ICONS                118
-#define IDB_GAMEDATA_ICONS              119
-#define IDB_LANGUAGE_ICONS              120
-#define IDB_RICH_BUTTON                 121
+#define IDB_EDITOR_GREY                 117
+#define IDB_PROJECT_ICONS               118
+#define IDB_OUTPUT_ICONS                119
+#define IDB_GAMEDATA_ICONS              120
+#define IDB_LANGUAGE_ICONS              121
+#define IDB_RICH_BUTTON                 122
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -155,7 +161,8 @@
 // Status bar
 #define IDS_CARET_STATUS                1015
 #define IDS_STATUS_PANE2                1016
-#define IDS_TOOLBAR_STANDARD            1017
+
+// Toolbar
 #define IDS_TOOLBAR_CUSTOMIZE           1018
 
 
