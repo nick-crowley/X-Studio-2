@@ -266,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\RichStringWriter.cpp" />

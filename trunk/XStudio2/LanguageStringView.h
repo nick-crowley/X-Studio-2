@@ -6,6 +6,7 @@
 #include "ImageListEx.h"
 #include "ListViewCustomDraw.h"
 #include "GuiCommand.h"
+#include "Clipboard.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -179,11 +180,90 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 
+      
+      /// <summary>Paste string into the current page</summary>
+      class PasteString : public GuiCommand
+      {
+         // ------------------------ TYPES --------------------------
+      protected:
+         typedef unique_ptr<LanguageString>  LanguageStringPtr;
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'paste string' command</summary>
+         /// <param name="view">The view.</param>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No page selected</exception>
+         PasteString(LanguageStringView& view, LanguageDocument& doc)
+            : View(view), Document(doc), SelectedPage(doc.SelectedPageIndex), NewIndex(-1)
+         {
+            if (SelectedPage == -1)
+               throw InvalidOperationException(HERE, L"No page is selected");
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Enable Undo</summary>
+         /// <returns></returns>
+         bool CanUndo() const override { return true; }
+
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Paste String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Paste string into the selected page</summary>
+         /// <exception cref="Logic::AlgorithmException">ID not unique</exception>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         void Execute() override
+         {
+            // Select original page   (May have changed since original invokation)
+            Document.SelectedPageIndex = SelectedPage;
+            
+            // Duplicate string on clipboard
+            if (!String)
+               String.reset(new LanguageString(theClipboard.GetLanguageString())); 
+            
+            // Insert into page
+            if ((NewIndex=Document.SelectedPage->Insert(*String)) == -1)
+               throw AlgorithmException(HERE, L"Cannot paste string - ID is already in use");
+
+            // Insert into View
+            View.InsertString(NewIndex, *String);
+         }
+
+         /// <summary>Removed pasted string.</summary>
+         /// <exception cref="Logic::AlgorithmException">Unable to insert string</exception>
+         /// <exception cref="Logic::InvalidOperationException">Not yet executed</exception>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         void Undo() override
+         {
+            // Ensure command executed
+            if (NewIndex == -1)
+               throw InvalidOperationException(HERE, L"Command has not been executed");
+
+            // Select original page    (May have changed since original invokation)
+            Document.SelectedPageIndex = SelectedPage;
+
+            // Remove pasted string. 
+            auto str = Document.SelectedPage->Remove( Document.SelectedPage->FindByIndex(NewIndex).ID );
+            View.GetListCtrl().DeleteItem(NewIndex);
+         }  
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         LanguageStringView&  View;
+         LanguageDocument&    Document;
+         LanguageStringPtr    String;            // Copy of pasted string
+         const UINT           SelectedPage;      // Index of Page selected at original time of invokation
+         UINT                 NewIndex;          // Index of newly pasted string
+      };
+
       /// <summary>Deletes the currently selected string</summary>
       class RemoveSelectedString : public GuiCommand
       {
          // ------------------------ TYPES --------------------------
-      private:
+      protected:
          typedef unique_ptr<LanguageString>  LanguageStringPtr;
 
          // --------------------- CONSTRUCTION ----------------------
@@ -246,7 +326,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             Document.SelectedPageIndex = SelectedPage;
 
             // Insert string at original position
-            if (!Document.SelectedPage->Strings.Add(*String))
+            if (!Document.SelectedPage->Add(*String))
                throw AlgorithmException(HERE, L"Unable to re-insert string into current page");
             View.InsertString(SelectedString, *String);
 
@@ -255,13 +335,54 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          // -------------------- REPRESENTATION ---------------------
-      private:
+      protected:
          LanguageStringView& View;
          LanguageDocument&   Document;
          LanguageStringPtr   String;            // Copy of removed string
          const UINT          SelectedPage,      // Index of Page selected at original time of invokation
                              SelectedString;    // Index of String selected at original time of invokation
       };
+
+      /// <summary>Deletes the currently selected string</summary>
+      class CutSelectedString : public RemoveSelectedString
+      {
+         // ------------------------ TYPES --------------------------
+      protected:
+         typedef unique_ptr<LanguageString>  LanguageStringPtr;
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="view">The view.</param>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
+         CutSelectedString(LanguageStringView& view, LanguageDocument& doc) : RemoveSelectedString(view, doc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Cut String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected string and copies it to the clipboard</summary>
+         /// <exception cref="Logic::StringNotFoundException">Unable to remove string</exception>
+         /// <exception cref="Logic::InvalidOperationException">Already executed</exception>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         void Execute() override
+         {
+            // Remove string
+            __super::Execute();
+
+            // Copy to clipboard
+            theClipboard.SetLanguageString(*String);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
 
       // --------------------- CONSTRUCTION ----------------------
    protected:

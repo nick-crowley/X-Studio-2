@@ -169,6 +169,18 @@ namespace Logic
                throw IndexOutOfRangeException(HERE, index, size());
             }
 
+            /// <summary>Inserts a string</summary>
+            /// <param name="s">string.</param>
+            /// <returns>Zero-based index if successful, otherwise -1</returns>
+            int  Insert(LanguageString& s)
+            {
+               // Attempt to insert
+               auto pos = insert(value_type(s.ID, s));
+               
+               // Return index
+               return pos.second ? distance(begin(), pos.first) : -1;
+            }
+
             /// <summary>Remove a string by ID</summary>
             /// <param name="id">The string id</param>
             /// <returns>String removed</returns>
@@ -219,20 +231,28 @@ namespace Logic
          { 
             return const_iterator(Strings, Strings.begin()); 
          }
+         
+         /// <summary>Get read-only string iterator</summary>
+         /// <returns></returns>
+         const_iterator end() const 
+         { 
+            return const_iterator(Strings, Strings.end()); 
+         }
 
+         /// <summary>Adds a string to the collection. If a lower version string exists, it is overwritten</summary>
+         /// <param name="s">The string</param>
+         /// <returns>True if inserted, otherwise false</returns>
+         bool  Add(LanguageString& s)
+         {
+            return Strings.Add(s);
+         }
+         
          /// <summary>Query whether a string is present</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
          bool Contains(UINT  id) const
          { 
             return Strings.Contains(id); 
-         }
-
-         /// <summary>Get read-only string iterator</summary>
-         /// <returns></returns>
-         const_iterator end() const 
-         { 
-            return const_iterator(Strings, Strings.end()); 
          }
 
          /// <summary>Read-only access to string by ID</summary>
@@ -244,8 +264,25 @@ namespace Logic
             return Strings.Find(id);     
          }
 
+         /// <summary>Read-write access to strings by index</summary>
+         /// <param name="index">The index</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+         LanguageString&  FindByIndex(UINT index) 
+         {
+            return Strings.FindByIndex(index);
+         }
+
          /// <summary>Get display category of this page when used in the string library viewer</summary>
          PageGroup  GetGroup() const;
+         
+         /// <summary>Inserts a string</summary>
+         /// <param name="s">string.</param>
+         /// <returns>Zero-based index if successful, otherwise -1</returns>
+         int  Insert(LanguageString& s)
+         {
+            return Strings.Insert(s);
+         }
 
          /// <summary>Read-only access to string by ID.</summary>
          /// <param name="id">The string id</param>
@@ -273,7 +310,7 @@ namespace Logic
          wstring          Title,
                           Description;
          bool             Voiced;
-         
+      
          StringCollection Strings;
       };
    }

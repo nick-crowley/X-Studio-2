@@ -209,15 +209,24 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
          // TODO:
          case ID_EDIT_COPY:   
+            break;
+            
+         // Cut Selected:
          case ID_EDIT_CUT:    
+            GetDocument()->Execute(new CutSelectedString(*this, *GetDocument()));  
+            break;
+
          case ID_EDIT_PASTE:  
+            GetDocument()->Execute(new PasteString(*this, *GetDocument()));  
             break;
 
          // Select All
          //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);            break;
 
-         // Remove selected
-         case ID_EDIT_CLEAR:       GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); break;
+         // Delete selected:
+         case ID_EDIT_CLEAR:  
+            GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); 
+            break;
          }
       }
       catch (ExceptionBase& e) {
@@ -237,20 +246,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Require selection
       case ID_EDIT_CLEAR: 
       case ID_EDIT_COPY:   
-      case ID_EDIT_CUT:    
-         state = (GetDocument()->SelectedString != nullptr);  
-         break;
+      case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);  break;
      
-      // Always enabled
-      case ID_EDIT_PASTE:  
-      case ID_EDIT_SELECT_ALL:
-         state = true;  
-         break;
+      // Require string on clipboard
+      case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;
 
-      // Disabled
-      case ID_EDIT_FIND:
-         state = false;
-         break;
+      // Always Enabled/Disabled
+      case ID_EDIT_SELECT_ALL:  state = true;  break;
+      case ID_EDIT_FIND:        state = false; break;
       }
 
       // Set state
@@ -288,7 +291,8 @@ NAMESPACE_BEGIN2(GUI,Views)
             auto src = ListView.GetItemText(item.Index, 1);
             auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
 
-            RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((const wchar*)src).Output, flags);
+            RichStringParser parser((const wchar*)src);
+            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
          }
       }
       catch (ExceptionBase& e) {
