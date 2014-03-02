@@ -47,20 +47,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
    BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
 	   ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
-      ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnEditFind)
-	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnRunAllTests)
-	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnViewCustomize)
-      ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnViewStringLibrary)
-      ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnWindowManager)
+      ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
+	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
+	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommandCustomizeToolbar)
+      ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
+      ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryEditFind)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
-                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptViewCaretMoved)),
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved)),
                         PrevTable(nullptr)
    {
 	   //theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
@@ -100,7 +100,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return dynamic_cast<ScriptView*>(GetActiveView());
    }
 
-   BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
+   /// <summary>Loads the frame.</summary>
+   /// <param name="nIDResource">The n identifier resource.</param>
+   /// <param name="dwDefaultStyle">The dw default style.</param>
+   /// <param name="pParentWnd">The p parent WND.</param>
+   /// <param name="pContext">The p context.</param>
+   /// <returns></returns>
+   BOOL MainWnd::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext)
    {
 	   // base class does the real work
 	   if (!CMDIFrameWndEx::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext))
@@ -132,39 +138,56 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   return TRUE;
    }
 
-   
-   /// <summary>Removed: Used in debugging source of PASTE messages to RichEdit</summary>
-   /// <param name="pMsg">The MSG.</param>
-   /// <returns></returns>
-   BOOL MainWnd::PreTranslateMessage(MSG* pMsg)
-   {
-      return CMDIFrameWndEx::PreTranslateMessage(pMsg);
-   }
-
-   /// <summary>Load temporary accelerator table.</summary>
-   /// <param name="nID">Resource identifier.</param>
-   void  MainWnd::PushAccelerators(UINT nID)
-   {
-      PrevTable = this->m_hAccelTable;
-      LoadAccelTable(MAKEINTRESOURCE(nID));
-   }
-
-   /// <summary>Unload temporary accelerator table.</summary>
-   void  MainWnd::PopAccelerators()
-   {
-      LoadAccelTable(MAKEINTRESOURCE(PrevTable));
-      PrevTable = nullptr;
-   }
-
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Displays the Find & Replace dialog.</summary>
+   void MainWnd::OnCommandFindText()
+   {
+      m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
+   }
+   
+   /// <summary>Display customize toolbar dialog.</summary>
+   void MainWnd::OnCommandCustomizeToolbar()
+   {
+	   CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
+	   pDlgCust->EnableUserDefinedToolbars();
+	   pDlgCust->Create();
+   }
+   
+   /// <summary>Execute debugging tests.</summary>
+   void MainWnd::OnCommandRunTests()
+   {
+      try
+      {
+         DebugTests::RunAll();
+         //AfxMessageBox(L"Tests completed successfully");
+         Console << ENDL << "Tests completed" << ENDL;
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unhandled exception in debugging tests");
+      }
+   }
+
+   /// <summary>Display string library.</summary>
+   void MainWnd::OnCommandStringLibrary()
+   {
+      theApp.OpenStringLibrary();
+   }
+
+   /// <summary>Display window manager.</summary>
+   void MainWnd::OnCommandWindowManager()
+   {
+	   ShowWindowsDialog();
+   }
 
    int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-	   if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
-		   return -1;
-
       try
       {
+         // Create base
+         if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
+		      throw Win32Exception(HERE, L"Unable to CMDIFrameWndEx window");
+
          // Document Tabs
 	      CMDITabInfo mdiTabParams;
 	      mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; // other styles available...
@@ -202,7 +225,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!m_wndStatusBar.Create(this))
             throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
 	      m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-         onScriptViewCaretMoved(POINT {0,0});
+         onScriptCaretMoved(POINT {0,0});
 
 
 	      // Make Toolbar/MenuBar dockable
@@ -318,12 +341,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   /// <summary>Displays the Find & Replace dialog.</summary>
-   void MainWnd::OnEditFind()
-   {
-      m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
-   }
    
+   /// <summary>Changes app state once game data is loaded.</summary>
+   /// <param name="wp">The wp.</param>
    void MainWnd::onGameDataFeedback(const WorkerProgress& wp)
    {
       // Success: Change app state
@@ -342,29 +362,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	         theApp.ProcessShellCommand(cmdInfo);
       }
    }
-
-   void MainWnd::OnQueryEditFind(CCmdUI *pCmdUI)
+   
+   /// <summary>Query state of 'find text'.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void MainWnd::OnQueryFindText(CCmdUI *pCmdUI)
    {
-      pCmdUI->Enable(TRUE);
+      // Require active script document
+      pCmdUI->Enable(ScriptDocument::GetActive() != nullptr);
+      // Check if visible
       pCmdUI->SetCheck(m_dlgFind.IsWindowVisible());
    }
    
-   void MainWnd::OnRunAllTests()
-   {
-      try
-      {
-         DebugTests::RunAll();
-         //AfxMessageBox(L"Tests completed successfully");
-         Console << ENDL << "Tests completed" << ENDL;
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e, L"Unhandled exception in debugging tests");
-      }
-   }
-
    /// <summary>Display caret co-ordinates in status bar</summary>
    /// <param name="pt">The caret position</param>
-   void MainWnd::onScriptViewCaretMoved(POINT pt)
+   void MainWnd::onScriptCaretMoved(POINT pt)
    {
       m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
    }
@@ -390,24 +401,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
-   void MainWnd::OnViewCustomize()
-   {
-	   CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
-	   pDlgCust->EnableUserDefinedToolbars();
-	   pDlgCust->Create();
-   }
-
-   void MainWnd::OnViewStringLibrary()
-   {
-      theApp.OpenStringLibrary();
-   }
-
-   void MainWnd::OnWindowManager()
-   {
-	   ShowWindowsDialog();
-   }
-
-   
    LRESULT MainWnd::OnWorkerFeedback(WPARAM wParam, LPARAM lParam)
    {
       WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
