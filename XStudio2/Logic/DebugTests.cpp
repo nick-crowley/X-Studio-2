@@ -444,7 +444,7 @@ namespace Logic
       {
          // Read file
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
+         auto langFile = LanguageFileReader(fs).ReadFile(path);
 
          // Test iterator
          Console << Cons::Heading << "Testing Language file iterator..." << ENDL;
@@ -469,7 +469,7 @@ namespace Logic
       {
          // Test LanguageFileReader
          StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto langFile = LanguageFileReader(fs).ReadFile(Path(path).GetFileName());
+         auto langFile = LanguageFileReader(fs).ReadFile(path);
       }
       catch (ExceptionBase&  e)
       {
@@ -937,7 +937,7 @@ namespace Logic
 
          // Test by reading
          StreamPtr fs2( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         auto langFile = LanguageFileReader(fs2).ReadFile(Path(path).GetFileName());
+         auto langFile = LanguageFileReader(fs2).ReadFile(path);
 
          // Test fails because debug window doesn't conv to ANSI Correctly, but the strings are read+stored correctly
          for (const auto& pair : langFile.Pages)

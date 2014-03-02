@@ -59,7 +59,7 @@ namespace Logic
                Console << L"Reading language file: " << f.FullPath << L"...";
 
                // Parse language file
-               LanguageFile file = LanguageFileReader(f.OpenRead()).ReadFile(f.FullPath.FileName);
+               LanguageFile file = LanguageFileReader(f.OpenRead()).ReadFile(f.FullPath);
 
                // Skip files that turn out to be foreign
                if (file.Language == lang)

@@ -14,7 +14,7 @@ namespace Logic
       class StringLibrary
       {
       public:
-         /// <summary>Collection of language files</summary>
+         /// <summary>Collection of language files, sorted with highest priority first</summary>
          class FileCollection : public set<LanguageFile, greater<LanguageFile>>
          {
          };

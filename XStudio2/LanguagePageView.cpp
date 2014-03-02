@@ -117,7 +117,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          // Listen for 'LIBRARY REBUILT'
-         GetDocument()->LibraryRebuilt.Register(this, &LanguagePageView::OnLibraryRebuilt);
+         fnLibraryRebuilt = GetDocument()->LibraryRebuilt.Register(this, &LanguagePageView::OnLibraryRebuilt);
 
          // Populate pages
          Populate();

@@ -126,18 +126,18 @@ namespace Logic
 		// ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire language file</summary>
-      /// <param name="filename">The filename</param>
+      /// <param name="path">Full path</param>
       /// <returns>New language file</returns>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid languageID or pageID</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      LanguageFile LanguageFileReader::ReadFile(wstring filename)
+      LanguageFile LanguageFileReader::ReadFile(IO::Path path)
       {
-         LanguageFile file;
-
          try
          {
+            LanguageFile file(path);
+
             // Parse document
             LoadDocument();
 
@@ -145,7 +145,7 @@ namespace Logic
             XmlNodePtr languageNode(Document->documentElement);
 
             // Read fileID + language tag
-            file.ID = LanguageFilenameReader(filename).FileID;
+            file.ID = LanguageFilenameReader(path.FileName).FileID;
             file.Language = ReadLanguageTag(languageNode);
 
             // Read pages
