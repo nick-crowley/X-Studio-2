@@ -6,57 +6,82 @@ namespace GUI
 {
    namespace Utils
    {
+      /// <summary>Clipboard singleton</summary>
+      #define theClipboard  Clipboard::Instance
 
       /// <summary></summary>
       class Clipboard
       {
          // ------------------------ TYPES --------------------------
       protected:
+         typedef unique_ptr<LanguageString>  LanguageStringPtr;
+         typedef unique_ptr<LanguagePage>  LanguagePagePtr;
 
          // --------------------- CONSTRUCTION ----------------------
       private:
-         Clipboard();
-         virtual ~Clipboard();
-         
+         Clipboard() {}
+         ~Clipboard() {}
          NO_COPY(Clipboard);	// No copy semantics
          NO_MOVE(Clipboard);	// No move semantics
 
+      public:
+         //PROPERTY_GET_SET(LanguageString*,String,GetLanguageString,SetLanguageString);
+
          // ------------------------ STATIC -------------------------
+      
+
+         // --------------------- PROPERTIES ------------------------
+
+         // ---------------------- ACCESSORS ------------------------			
       public:
          /// <summary>Copies a language string to the clipboard.</summary>
          /// <param name="str">The string.</param>
-         static void  CopyString(const LanguageString* str)
+         LanguageString  GetLanguageString() const
          {
-            REQUIRED(str);
-            SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
+            //return GetData<LanguageString*>(CF_LANGUAGE_STRING);
+            return *StringData.get();
          }
-         
+
+         /// <summary>Determines whether [has language string].</summary>
+         /// <returns></returns>
+         bool  HasLanguageString() const
+         {
+            //return IsClipboardFormatAvailable(CF_LANGUAGE_STRING) != FALSE;
+            return (bool)StringData;
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Clears the clipboard.</summary>
+         void  Clear()
+         {
+            StringData.reset();
+            PageData.reset();
+         }
+
          /// <summary>Copies a language string to the clipboard.</summary>
          /// <param name="str">The string.</param>
-         static LanguageString*  PasteString()
+         void  SetLanguageString(LanguageStringRef str)
          {
-            return GetData<LanguageString*>(CF_LANGUAGE_STRING);
+            //REQUIRED(str);
+            //SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
+            StringData.reset(new LanguageString(str));
          }
          
-
       protected:
-         /// <summary>Private clipboard formats</summary>
-         static const UINT CF_LANGUAGE_STRING = CF_GDIOBJFIRST + 1;     // Tells System to delete handles
-
          /// <summary>Gets data from the clipboard.</summary>
          /// <param name="format">format.</param>
          /// <returns>Data</returns>
          template<typename T>
-         static T  GetData(UINT format)
+         T  GetData(UINT format) const
          {
             HANDLE handle = nullptr;
             void*  buffer = nullptr;
-            T      object;
 
             try
             {
                // Open clipboard
-               if (!OpenClipboard(AfxGetMainWnd()))
+               if (!OpenClipboard(AfxGetMainWnd()->m_hWnd))
                   throw Win32Exception(HERE, L"Unable to open clipboard");
             
                // Allocate+Open buffer
@@ -68,12 +93,13 @@ namespace GUI
                   throw Win32Exception(HERE, L"Unable to allocate global memory");
 
                // Copy
+               BYTE object[sizeof(T)];
                memcpy(object, buffer, sizeof(T));
                GlobalUnlock(handle);
 
                // Close
                CloseClipboard();
-               return object;
+               return *reinterpret_cast<T*>(object);
             }
             catch (...) 
             {
@@ -89,7 +115,7 @@ namespace GUI
          /// <param name="format">format.</param>
          /// <param name="obj">object.</param>
          template<typename T>
-         static void  SetData(UINT format, T obj)
+         void  SetData(UINT format, T obj)
          {
             HANDLE handle = nullptr;
             void*  buffer = nullptr;
@@ -97,7 +123,7 @@ namespace GUI
             try
             {
                // Open clipboard
-               if (!OpenClipboard(AfxGetMainWnd()))
+               if (!OpenClipboard(AfxGetMainWnd()->m_hWnd))
                   throw Win32Exception(HERE, L"Unable to open clipboard");
 
                // Clear
@@ -105,14 +131,14 @@ namespace GUI
             
                // Allocate+Open buffer
                if ( !(handle = GlobalAlloc(GMEM_MOVEABLE, sizeof(T))) || !(buffer = GlobalLock(handle)) )
-               if (!handle || !buffer)
                   throw Win32Exception(HERE, L"Unable to allocate global memory");
 
                // Copy output to the clipboard buffer
-               memcpy(buf, &obj, sizeof(T));
-      
+               memcpy(buffer, &obj, sizeof(T));
+               GlobalUnlock(handle);
+               
                // Transfer to clipboard
-               if (!GlobalUnlock(handle) || !SetClipboardData(format, handle))
+               if (!SetClipboardData(format, handle))
                   throw Win32Exception(HERE, L"Unable to set clipboard data");
 
                // Close
@@ -128,19 +154,18 @@ namespace GUI
             }
          }
 
-         
-
-         //static list<LanguageStringPtr>  Data;
-
-         // --------------------- PROPERTIES ------------------------
-
-         // ---------------------- ACCESSORS ------------------------			
-
-         // ----------------------- MUTATORS ------------------------
-
          // -------------------- REPRESENTATION ---------------------
+      public:
+         /// <summary>Singleton instance</summary>
+         static Clipboard  Instance;
 
-      private:
+      protected:
+         /// <summary>Private clipboard formats</summary>
+         const UINT  CF_LANGUAGE_STRING = CF_GDIOBJFIRST;
+
+         /// <summary>Clipboard data</summary>
+         static LanguageStringPtr  StringData;
+         static LanguagePagePtr    PageData;
       };
 
    }

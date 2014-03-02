@@ -845,6 +845,9 @@
     <ClCompile Include="Logic\RichStringWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
+    <ClCompile Include="Clipboard.cpp">
+      <Filter>Source Files\GUI\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
