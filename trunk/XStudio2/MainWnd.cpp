@@ -303,50 +303,62 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Project Window:
 	      if (!m_wndProject.Create(L"Project", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROJECT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
             throw Win32Exception(HERE, L"Unable to create Project window");
-	   
          m_wndProject.SetIcon(theApp.LoadIconW(IDR_PROJECTVIEW, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock left
          m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndProject);
+         DockPane(&m_wndProject, AFX_IDW_DOCKBAR_LEFT);
          
+
 	      // Properties Window:
 	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
-
          m_wndProperties.SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock left, Attach to LHS tab
          m_wndProperties.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-	      DockPane(&m_wndProperties);
+         m_wndProperties.AttachToTabWnd(&m_wndProject, AFX_DOCK_METHOD::DM_SHOW);
+
 
          // Commands Window:
 	      if (!m_wndCommands.Create(GuiString(L"Commands").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_COMMANDS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Commands window");
-
          m_wndCommands.SetIcon(theApp.LoadIconW(IDR_COMMANDS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock right
          m_wndCommands.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndCommands);
+         DockPane(&m_wndCommands, AFX_IDW_DOCKBAR_RIGHT);
+
 
          // Game objects window:
          if (!m_wndGameObjects.Create(GuiString(L"Game Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_GAME_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Game objects window");
-
          m_wndGameObjects.SetIcon(theApp.LoadIconW(IDR_GAME_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock right. Attach to RHS tab
          m_wndGameObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndGameObjects);
+         m_wndGameObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
+
 
          // Game objects window:
          if (!m_wndScriptObjects.Create(GuiString(L"Script Objects").c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SCRIPT_OBJECTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Script objects window");
-         
          m_wndScriptObjects.SetIcon(theApp.LoadIconW(IDR_SCRIPT_OBJECTS, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock right. Attach to RHS tab
          m_wndScriptObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
-         DockPane(&m_wndScriptObjects);
+         m_wndScriptObjects.AttachToTabWnd(&m_wndCommands, AFX_DOCK_METHOD::DM_SHOW);
          
+
 	      // Output Window:
 	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Output window");
-
-         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
-	      DockPane(&m_wndOutput);
          m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+         // Dock bottom
+         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
+	      DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
+         
 
          
          // Set document icons??
