@@ -203,56 +203,62 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CMFCToolBar::AddToolBarForImageCollection(IDT_CUSTOM, IDT_CUSTOM);
          CMFCToolBar::m_dblLargeImageRatio = 1.2;
 
+         // enable quick (Alt+drag) toolbar customization
+	      CMFCToolBar::EnableQuickCustomization();
+
+         // load user-defined toolbar images
+	      if (!CMFCToolBar::GetUserImages() && m_UserImages.Load(IDB_USER_IMAGES))
+            CMFCToolBar::SetUserImages(&m_UserImages);
+
+         // enable Visual Studio 2008 style docking + AutoHide
+         CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
+	      CDockingManager::SetDockingMode(DT_SMART);
+	      
+         // Enable docking
+         EnableDocking(CBRS_ALIGN_ANY);
+         EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+
          // MainMenu:
 	      if (!m_wndMenuBar.Create(this)) 
             throw Win32Exception(HERE, L"Unable to create MainWnd menu");
 	      m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
          
-         // Make dockable
+         // Dock
 	      m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	      EnableDocking(CBRS_ALIGN_ANY);
 	      DockPane(&m_wndMenuBar);
 
 
 	      
          // File ToolBar:
-	      if (!m_wndFileToolBar.Create(this, IDT_FILE)) 
+	      if (!m_wndFileToolBar.Create(this, IDT_FILE, L"File")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd file toolbar");
          m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+         m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-         // Allow user-defined toolbars operations:
-	      m_wndFileToolBar.SetWindowText(L"File");
-	      m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
-	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
-
+         // Dock
          m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
          DockPane(&m_wndFileToolBar);
 
 
          // Edit ToolBar:
-	      if (!m_wndEditToolBar.Create(this, IDT_EDIT)) 
+	      if (!m_wndEditToolBar.Create(this, IDT_EDIT, L"Edit")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd Edit toolbar");
          m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+         m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-         // Allow user-defined toolbars operations:
-	      m_wndEditToolBar.SetWindowText(L"Edit");
-	      m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
-	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
-
+         // Dock
          m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
          DockPane(&m_wndEditToolBar);
 
 
          // View ToolBar:
-	      if (!m_wndViewToolBar.Create(this, IDT_VIEW)) 
+	      if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd View toolbar");
          m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+         m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-         // Allow user-defined toolbars operations:
-	      m_wndViewToolBar.SetWindowText(L"View");
-	      m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE);
-	      //InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
-
+         // Dock
          m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
          DockPane(&m_wndViewToolBar);
 
@@ -269,9 +275,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      
 
 
-	      // enable Visual Studio 2005 style docking + AutoHide
-	      CDockingManager::SetDockingMode(DT_SMART);
-	      EnableAutoHidePanes(CBRS_ALIGN_ANY);
+	      
 
 	      
          
@@ -332,10 +336,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      UpdateMDITabbedBarsIcons();
 
                   
-         // set the visual manager and style 
-	      CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
-		   CDockingManager::SetDockingMode(DT_SMART);
-	      m_wndOutput.UpdateFonts();
+         // Redraw?
 	      RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
 
@@ -345,17 +346,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Enable 'customize' command in menu 
 	      EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
 
-	      // enable quick (Alt+drag) toolbar customization
-	      CMFCToolBar::EnableQuickCustomization();
-
-	      if (CMFCToolBar::GetUserImages() == NULL)
-	      {
-		      // load user-defined toolbar images
-		      if (m_UserImages.Load(_T(".\\UserImages.bmp")))
-		      {
-			      CMFCToolBar::SetUserImages(&m_UserImages);
-		      }
-	      }
+	      
+         
 
 
 	      // Switch the order of document name and application name on the window title bar. This

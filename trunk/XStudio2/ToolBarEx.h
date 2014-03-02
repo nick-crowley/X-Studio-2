@@ -25,7 +25,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public: 
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(CWnd* parent, UINT nID, UINT nDisabledResID = 0);
+      BOOL Create(CWnd* parent, UINT nID, wstring name, bool routeFrame = true, UINT nDisabledResID = 0);
 
       // -------------------- REPRESENTATION ---------------------
       

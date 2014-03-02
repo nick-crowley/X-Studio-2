@@ -24,10 +24,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Creates a toolbar with normal and disabled icons</summary>
    /// <param name="parent">Parent window</param>
-   /// <param name="nResID">Hot icons resource ID.</param>
+   /// <param name="nID">Hot icons resource ID.</param>
+   /// <param name="name">Customization window name.</param>
+   /// <param name="routeFrame">Route commands via frame.</param>
    /// <param name="nDisabledResID">Disabled icons resource ID</param>
    /// <returns></returns>
-   BOOL  ToolBarEx::Create(CWnd* parent, UINT nID, UINT nDisabledResID)
+   BOOL  ToolBarEx::Create(CWnd* parent, UINT nID, wstring name, bool routeFrame, UINT nDisabledResID)
    {
       try
       {
@@ -44,9 +46,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          SetPaneStyle(GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	      SetPaneStyle(GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
 	      SetOwner(parent);
+         
+         // Set customize display name
+         SetWindowText(name.c_str());
 
          // Route commands via this control , not via the parent frame:
-	      SetRouteCommandsViaFrame(FALSE);
+	      SetRouteCommandsViaFrame(routeFrame ? TRUE : FALSE);
          return TRUE;
       }
       catch (ExceptionBase& e) {

@@ -120,10 +120,8 @@ NAMESPACE_BEGIN2(GUI,Views)
             throw Win32Exception(HERE, L"Unable to base view");
 
          // Create toolbar
-         if (!ToolBar.Create(this, IDR_EDITOR, IDB_EDITOR_GREY))  // PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY))
+         if (!ToolBar.Create(this, IDR_EDITOR, L"Editor", true, IDB_EDITOR_GREY))  
             throw Win32Exception(HERE, L"Unable to create toolbar");
-
-         ToolBar.SetRouteCommandsViaFrame(TRUE);
 
          return 0;
       }
@@ -338,11 +336,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
       CFormView::OnSettingChange(uFlags, lpszSection);
-
-      // Re-create toolbar
-      ToolBar.DestroyWindow();
-      //ToolBar.Create(this, PrefsLib.LargeToolbars ? IDR_EDITOR_24 : IDR_EDITOR_16, PrefsLib.LargeToolbars ? IDB_EDITOR_24_GREY : IDB_EDITOR_16_GREY);
-      ToolBar.Create(this, IDR_EDITOR ,IDB_EDITOR_GREY);
 
       // Adjust layout
       AdjustLayout();
