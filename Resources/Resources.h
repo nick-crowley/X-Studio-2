@@ -34,6 +34,7 @@
 #define IDB_GAMEDATA_ICONS              120
 #define IDB_LANGUAGE_ICONS              121
 #define IDB_RICH_BUTTON                 122
+#define IDB_USER_IMAGES                 123
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

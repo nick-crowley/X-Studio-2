@@ -99,7 +99,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
          // Toolbar:
-         if (!Toolbar.Create(this, IDR_PROJECTVIEW))
+         if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project"))
             throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
 	      // Populate
