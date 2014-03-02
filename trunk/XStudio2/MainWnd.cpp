@@ -53,8 +53,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
+      ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
 	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryShowWindow)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -167,6 +169,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
+   /// <summary>Display tool window.</summary>
+   void MainWnd::OnCommandShowWindow(UINT nID)
+   {
+      // Toggle display state of tool window
+      switch (nID)
+      {
+      case ID_VIEW_PROJECT:         m_wndProject.ShowPane(m_wndProject.IsVisible(), FALSE, TRUE);              break;
+      case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
+      case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
+      case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(m_wndCommands.IsVisible(), FALSE, TRUE);            break;
+      case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(m_wndOutput.IsVisible(), FALSE, TRUE);                break;
+      case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(m_wndProperties.IsVisible(), FALSE, TRUE);        break;
+      }
+   }
+
    /// <summary>Display string library.</summary>
    void MainWnd::OnCommandStringLibrary()
    {
@@ -234,7 +251,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!m_wndFileToolBar.Create(this, IDT_FILE, L"File")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd file toolbar");
          m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+         //m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
          // Dock
          m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -245,7 +262,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!m_wndEditToolBar.Create(this, IDT_EDIT, L"Edit")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd Edit toolbar");
          m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+         //m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
          // Dock
          m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -256,7 +273,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
             throw Win32Exception(HERE, L"Unable to create MainWnd View toolbar");
          m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
-         m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+         //m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
          // Dock
          m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -291,14 +308,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          m_wndProject.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
          DockPane(&m_wndProject);
          
-	      // Output Window:
-	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
-	         throw Win32Exception(HERE, L"Unable to create Output window");
-
-         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
-	      DockPane(&m_wndOutput);
-         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
-
 	      // Properties Window:
 	      if (!m_wndProperties.Create(GuiString(IDR_PROPERTIES).c_str(), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_PROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	         throw Win32Exception(HERE, L"Unable to create Properties window");
@@ -331,6 +340,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          m_wndScriptObjects.EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
          DockPane(&m_wndScriptObjects);
          
+	      // Output Window:
+	      if (!m_wndOutput.Create(GuiString(IDR_OUTPUT).c_str(), this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	         throw Win32Exception(HERE, L"Unable to create Output window");
+
+         m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
+	      DockPane(&m_wndOutput);
+         m_wndOutput.SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
          
          // Set document icons??
 	      UpdateMDITabbedBarsIcons();
@@ -344,7 +361,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
 
 	      // Enable 'customize' command in menu 
-	      EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
+	      //EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
 
 	      
          
@@ -398,6 +415,28 @@ NAMESPACE_BEGIN2(GUI,Windows)
       pCmdUI->SetCheck(m_dlgFind.IsWindowVisible());
    }
    
+   /// <summary>Query state of tool window command.</summary>
+   void MainWnd::OnQueryShowWindow(CCmdUI* pCmdUI)
+   {
+      BOOL state = TRUE, 
+           checked = FALSE;
+
+      // Query windows
+      switch (pCmdUI->m_nID)
+      {
+      case ID_VIEW_PROJECT:         checked = m_wndProject.IsVisible();        break;
+      case ID_VIEW_SCRIPT_OBJECTS:  checked = m_wndScriptObjects.IsVisible();  break;
+      case ID_VIEW_GAME_OBJECTS:    checked = m_wndGameObjects.IsVisible();    break;
+      case ID_VIEW_COMMANDS:        checked = m_wndCommands.IsVisible();       break;
+      case ID_VIEW_OUTPUT:          checked = m_wndOutput.IsVisible();         break;
+      case ID_VIEW_PROPERTIES:      checked = m_wndProperties.IsVisible();     break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state);
+      pCmdUI->SetCheck(checked);
+   }
+
    /// <summary>Display caret co-ordinates in status bar</summary>
    /// <param name="pt">The caret position</param>
    void MainWnd::onScriptCaretMoved(POINT pt)

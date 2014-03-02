@@ -63,11 +63,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommandFindText();
       afx_msg void    OnCommandCustomizeToolbar();
       afx_msg void    OnCommandRunTests();
+      afx_msg void    OnCommandShowWindow(UINT nID);
       afx_msg void    OnCommandStringLibrary();
       afx_msg void    OnCommandWindowManager();
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
       handler void    onGameDataFeedback(const WorkerProgress& wp);
       afx_msg void    OnQueryFindText(CCmdUI *pCmdUI);
+      afx_msg void    OnQueryShowWindow(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void    onScriptCaretMoved(POINT pt);
       afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
