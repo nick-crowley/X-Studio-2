@@ -242,6 +242,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Paste string into the selected page</summary>
+         /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Execute() override
          {
             // insert string
@@ -249,6 +252,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          /// <summary>Removed pasted string.</summary>
+         /// <exception cref="Logic::ApplicationException">String not found</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Undo() override
          {
             // Remove string
@@ -290,6 +297,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Removes the selected string from the View and the Document</summary>
+         /// <exception cref="Logic::ApplicationException">String not found</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Execute() override
          {
             // Remove string
@@ -297,6 +308,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          /// <summary>Inserts the removed string.</summary>
+         /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Undo() override
          {
             // Re-insert string
@@ -329,6 +343,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Removes the selected string and copies it to the clipboard</summary>
+         /// <exception cref="Logic::ApplicationException">String not found</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Execute() override
          {
             // Remove string

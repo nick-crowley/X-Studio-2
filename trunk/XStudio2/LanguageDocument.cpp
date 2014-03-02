@@ -71,7 +71,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
    {
-      return Virtual ? Library : Content.Pages;
+      return Virtual ? Library : File.Pages;
    }
 
    /// <summary>Gets the selected page.</summary>
@@ -83,10 +83,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Gets the index of the selected page.</summary>
    /// <returns>Zero-based index, or -1 if no selection</returns>
-   int  LanguageDocument::GetSelectedPageIndex() const
+   /*int  LanguageDocument::GetSelectedPageIndex() const
    {
       return GetView<LanguagePageView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-   }
+   }*/
 
    /// <summary>Gets the selected string.</summary>
    /// <returns></returns>
@@ -104,10 +104,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
+   /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
    void  LanguageDocument::InsertString(LanguageString& str)
    {
       // Select+Display page
-      SelectedPageIndex = GetContent().IndexOf(str.Page);
+      SelectedPageIndex = Content.IndexOf(str.Page);
 
       // Insert into languagePage
       UINT index = SelectedPage->Insert(str);
@@ -121,10 +124,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Removes the string from the appropriate page</summary>
    /// <param name="page">Page ID.</param>
    /// <param name="id">string ID.</param>
+   /// <exception cref="Logic::ApplicationException">String not found</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+   /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
    void  LanguageDocument::RemoveString(UINT page, UINT id)
    {
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
       // Select+Display page
-      SelectedPageIndex = GetContent().IndexOf(page);
+      SelectedPageIndex = Content.IndexOf(page);
 
       // Remove from languagePage
       UINT index = SelectedPage->Remove(id);
@@ -225,13 +235,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
             // Set language (for display purposes only) from main language file
             if (!StringLib.Files.empty())
-               Content.Language = StringLib.Files.begin()->Language;
+               File.Language = StringLib.Files.begin()->Language;
          }
          else
          {  
             // Parse input file
             StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
-            Content = LanguageFileReader(fs2).ReadFile(szPathName);
+            File = LanguageFileReader(fs2).ReadFile(szPathName);
          }
 
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");

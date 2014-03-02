@@ -17,6 +17,9 @@
 //#define HERE   __WFUNCTION__ L" on line " STRINGIZE(__LINE__)
 //#define HERE   WIDEN(__FUNCTION__ " on line " STRINGIZE(__LINE__))
 
+
+
+
 // Macro: Provides default move constructor and assignment (Not functional)
 #define DEFAULT_MOVE(type)       // MS BUG:800114:     type::type(type&&) = default;  type& operator=(type&&) = default;
 
@@ -37,17 +40,25 @@
 #define NO_COPY_ASSIGN(type)     type& operator=(const type&) = delete;
 
 
+
+
 // Macro: Declares a read-only property 
-#define PROPERTY_GET(type,name,fget)   __declspec(property(get=fget)) type name
+#define PROPERTY_GET(type,name,fget)            __declspec(property(get=fget)) type name
 
 // Macro: Declares a read-write property 
 #define PROPERTY_GET_SET(type,name,fget,fset)   __declspec(property(get=fget,put=fset)) type name
 
+// Macro: Declares a write-only property 
+#define PROPERTY_SET(type,name,fset)            __declspec(property(put=fset)) type name
+
+
+
+
 // Macro: Throws ArgumentNullException if argument is null
 #define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
 
-// Macro: Shorthand for console end-of-line manipulator
-//#define ENDL      Cons::Endl
+
+
 
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN(n)     namespace n {
@@ -56,6 +67,10 @@
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN2(n1,n2)     namespace n1 {  namespace n2 {
 #define NAMESPACE_END2(n1,n2)       } }  using namespace n1::n2;
+
+
+
+
 
 // Macro: Forward declarations nested in namespaces
 #define FORWARD_DECLARATION(ns,decl)  namespace ns { decl }
