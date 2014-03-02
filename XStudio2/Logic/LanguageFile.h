@@ -67,6 +67,20 @@ namespace Logic
             {
                return Find(page).Strings[id]; 
             }
+
+            /// <summary>Find zero-based index of a page</summary>
+            /// <param name="page">page id.</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+            UINT  IndexOf(UINT page) const
+            {
+               const_iterator pos;
+
+               if ((pos=find(page)) == end())
+                  throw PageNotFoundException(HERE, page);
+
+               return distance(begin(), pos);
+            }
             
             /// <summary>Read-only access to pages by ID.</summary>
             /// <param name="page">The page id</param>
@@ -142,6 +156,13 @@ namespace Logic
          { 
             return const_iterator(Pages, Pages.begin()); 
          }
+         
+         /// <summary>Get read-only page iterator</summary>
+         /// <returns></returns>
+         const_iterator end() const
+         { 
+            return const_iterator(Pages, Pages.end());   
+         }
 
          /// <summary>Queries whether a string is present</summary>
          /// <param name="page">The page id</param>
@@ -152,13 +173,6 @@ namespace Logic
             return Pages.Contains(page,id); 
          }
          
-         /// <summary>Get read-only page iterator</summary>
-         /// <returns></returns>
-         const_iterator end() const
-         { 
-            return const_iterator(Pages, Pages.end());   
-         }
-
          /// <summary>Read-only access to strings by ID</summary>
          /// <param name="page">The page id</param>
          /// <param name="id">The string id</param>
@@ -168,6 +182,15 @@ namespace Logic
          LanguageStringRef  Find(UINT page, UINT id) const
          { 
             return Pages.Find(page,id); 
+         }
+
+         /// <summary>Find zero-based index of a page</summary>
+         /// <param name="page">page id.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         UINT  IndexOf(UINT page) const
+         {
+            return Pages.IndexOf(page);
          }
 
          /// <summary>Compares precendence of two files</summary>
