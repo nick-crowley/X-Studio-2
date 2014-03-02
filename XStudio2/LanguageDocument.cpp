@@ -83,10 +83,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Gets the index of the selected page.</summary>
    /// <returns>Zero-based index, or -1 if no selection</returns>
-   int  LanguageDocument::GetSelectedPageIndex() const
+   /*int  LanguageDocument::GetSelectedPageIndex() const
    {
       return GetView<LanguagePageView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-   }
+   }*/
 
    /// <summary>Gets the selected string.</summary>
    /// <returns></returns>
@@ -97,10 +97,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Gets the index of the selected string.</summary>
    /// <returns>Zero-based index, or -1 if no selection</returns>
-   int  LanguageDocument::GetSelectedStringIndex() const
+   /*int  LanguageDocument::GetSelectedStringIndex() const
    {
       return GetView<LanguageStringView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-   }
+   }*/
    
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
@@ -258,18 +258,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Programatically select a page (raises PAGE SELECTION CHANGED).</summary>
    /// <param name="index">Zero-based item index, or -1 to clear selection</param>
    /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-   void  LanguageDocument::SetSelectedPageIndex(int index)
-   {
-      auto& ctrl = GetView<LanguagePageView>()->GetListCtrl();
+   //void  LanguageDocument::SetSelectedPageIndex(int index)
+   //{
+   //   auto& ctrl = GetView<LanguagePageView>()->GetListCtrl();
 
-      // Validate index
-      if (index > ctrl.GetItemCount())
-         throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
+   //   // Validate index
+   //   if (index > ctrl.GetItemCount())
+   //      throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
 
-      // Select+display page
-      ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
-      ctrl.EnsureVisible(index, FALSE);
-   }
+   //   // Select+display page
+   //   ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+   //   ctrl.EnsureVisible(index, FALSE);
+   //}
 
    /// <summary>Sets the selected string and raises STRING SELECTION CHANGED.</summary>
    /// <param name="s">The string.</param>
@@ -283,18 +283,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Programatically select a string in the currently selected page (raises STRING SELECTION CHANGED).</summary>
    /// <param name="index">Zero-based item index, or -1 to clear selection</param>
    /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-   void  LanguageDocument::SetSelectedStringIndex(int index)
-   {
-      auto& ctrl = GetView<LanguageStringView>()->GetListCtrl();
+   //void  LanguageDocument::SetSelectedStringIndex(int index)
+   //{
+   //   auto& ctrl = GetView<LanguageStringView>()->GetListCtrl();
 
-      // Validate index
-      if (index > ctrl.GetItemCount())
-         throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
+   //   // Validate index
+   //   if (index > ctrl.GetItemCount())
+   //      throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
 
-      // Select+display string
-      ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
-      ctrl.EnsureVisible(index, FALSE);
-   }
+   //   // Select+display string
+   //   ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+   //   ctrl.EnsureVisible(index, FALSE);
+   //}
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
