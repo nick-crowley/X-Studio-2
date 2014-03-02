@@ -44,7 +44,7 @@ namespace Logic
       {}
    };
    
-   /// <summary>Occurs when a message should be displayed to the user verbatim</summary>
+   /// <summary>Occurs when an error should be displayed to the user verbatim</summary>
    class ApplicationException : public ExceptionBase
    {
    public:
@@ -55,7 +55,7 @@ namespace Logic
          : ExceptionBase(src, msg)
       {}
    };
-
+   
    /// <summary>Occurs when a missing argument is detected</summary>
    class ArgumentNullException : public ExceptionBase
    {

@@ -239,7 +239,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  InsertString(LanguageStringRef str);
+      void  InsertString(LanguageString& str);
       void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;
@@ -264,8 +264,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;
-      SimpleEvent            LibraryRebuilt,
-                             PageContentChanged;
+      SimpleEvent            LibraryRebuilt;
 
    protected:
       LanguageString*  CurrentString;
