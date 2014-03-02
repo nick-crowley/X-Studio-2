@@ -41,7 +41,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
       public:
          LanguagePropertyBase(LanguageDocument& d, wstring name, _variant_t val, wstring desc)
-            : Document(d), File(d.Content), ValidatingProperty(name.c_str(), val, desc.c_str(), NULL, nullptr, nullptr, nullptr)
+            : Document(d), File(d.File), ValidatingProperty(name.c_str(), val, desc.c_str(), NULL, nullptr, nullptr, nullptr)
          {
             // Disable if document is virtual
             Enable(Document.Virtual ? FALSE : TRUE);
@@ -131,7 +131,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <summary>Create game language property.</summary>
          /// <param name="doc">Language document.</param>
          GameLanguageProperty(LanguageDocument& doc)
-            : LanguagePropertyBase(doc, L"Language", GetString(doc.Content.Language).c_str(),  L"Language of all strings in document")
+            : LanguagePropertyBase(doc, L"Language", GetString(doc.File.Language).c_str(),  L"Language of all strings in document")
          {
             // Populate game languages
             for (int i = 0; i <= 7; i++)
@@ -166,7 +166,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <summary>Create language file ID property.</summary>
          /// <param name="doc">Language document.</param>
          IDProperty(LanguageDocument& doc)
-            : LanguagePropertyBase(doc, L"ID", GuiString(L"%d", doc.Content.ID).c_str(),  L"File ID")
+            : LanguagePropertyBase(doc, L"ID", GuiString(L"%d", doc.File.ID).c_str(),  L"File ID")
          {}
 
          // ---------------------- ACCESSORS ------------------------	
@@ -205,16 +205,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // --------------------- PROPERTIES ------------------------
    public:
+      PROPERTY_GET(PageCollection&,Content,GetContent);
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
-      PROPERTY_GET_SET(int,SelectedPageIndex,GetSelectedPageIndex,SetSelectedPageIndex);
+      PROPERTY_SET(int,SelectedPageIndex,SetSelectedPageIndex);
       //PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       PageCollection&  GetContent();
       LanguagePage*    GetSelectedPage() const;
-      int              GetSelectedPageIndex() const;
+      //int              GetSelectedPageIndex() const;
       LanguageString*  GetSelectedString() const;
       //int              GetSelectedStringIndex() const;
 
@@ -258,7 +259,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      LanguageFile     Content;
+      LanguageFile     File;
       PageCollection   Library;
       bool             Virtual;
       

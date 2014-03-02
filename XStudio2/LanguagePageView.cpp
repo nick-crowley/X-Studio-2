@@ -57,7 +57,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    LanguagePage*   LanguagePageView::GetSelected() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetDocument()->GetContent().FindByIndex(item) : nullptr;
+      return item != -1 ? &GetDocument()->Content.FindByIndex(item) : nullptr;
    }
    
 
@@ -152,7 +152,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Populate pages
       int index = 0;
-      for (const auto& pair : GetDocument()->GetContent()) 
+      for (const auto& pair : GetDocument()->Content) 
          InsertItem(index++, pair.second);
 
       // Refresh
