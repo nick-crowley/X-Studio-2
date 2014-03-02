@@ -27,12 +27,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
+      ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &LanguageStringView::OnRetrieveItem)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
    LanguageStringView::LanguageStringView() : CustomDraw(this)
    {
+      m_dwDefaultStyle |= LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_OWNERDATA;
    }
 
    LanguageStringView::~LanguageStringView()
@@ -110,7 +112,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    LanguageString*   LanguageStringView::GetSelected() const
    {
       int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-      return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
+
+      // Return item/null
+      return item != -1 ? &GetDocument()->SelectedPage->FindByIndex(item) : nullptr;
    }
    
    /// <summary>Custom draw the strings</summary>
@@ -123,6 +127,32 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
+   /// <summary>Custom draws the text column</summary>
+   /// <param name="dc">Device context</param>
+   /// <param name="item">Item data.</param>
+   void  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
+   {
+      try
+      {
+         // ID:
+         if (item.SubItem == 0)
+            __super::onDrawSubItem(dc, item);
+         
+         // Text:
+         else if (item.SubItem == 1)
+         {
+            auto src = ListView.GetItemText(item.Index, 1);
+            auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
+
+            RichStringParser parser((const wchar*)src);
+            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
+
    /// <summary>Initialise control</summary>
    void LanguageStringView::OnInitialUpdate()
    {
@@ -132,17 +162,19 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          // Icons
          Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
-	   
+	      
          // Setup listView
-         GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL);
+         //GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_OWNERDATA);
          GetListCtrl().SetView(LV_VIEW_DETAILS);
+         GetListCtrl().SetItemCountEx(0);
          GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
          GetListCtrl().InsertColumn(1, L"Text", LVCFMT_LEFT, 240, 1);
          GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
          GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
-         // Listen for Page selection changed
+         // Listen for Page content/selection changed
          fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+         fnPageContentChanged = GetDocument()->PageContentChanged.Register(this, &LanguageStringView::onPageContentChanged);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -175,35 +207,32 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try
       {
-         CWaitCursor c;
-
-         // Clear items + selection
-         GetListCtrl().DeleteAllItems();
+         // Clear selection
          GetDocument()->SelectedString = nullptr;
 
-         // Get selection, if any
-         if (GetDocument()->SelectedPage)
-         {
-            int item = 0;
-
-            // Freeze
-            GetListCtrl().SetRedraw(FALSE);
-
-            // Re-Populate strings
-            for (auto& pair : GetDocument()->SelectedPage->Strings)
-               InsertString(item++, pair.second);
-         }
+         // Update items
+         UpdateItemCount();
+         GetListCtrl().EnsureVisible(0, FALSE);
+         GetListCtrl().RedrawWindow();
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e); 
       }
-
-      // Unfreeze
-      GetListCtrl().SetRedraw(TRUE);
-      GetListCtrl().UpdateWindow();
    }
 
-
+   /// <summary>Updates the strings</summary>
+   void LanguageStringView::onPageContentChanged()
+   {
+      try
+      {
+         // Update items
+         UpdateItemCount();
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e); 
+      }
+   }
+   
    /// <summary>Performs a menu command</summary>
    /// <param name="nID">Command identifier.</param>
    void LanguageStringView::OnPerformCommand(UINT nID)
@@ -269,6 +298,45 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
 
+   /// <summary>Called when retrieve item].</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void LanguageStringView::OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
+      
+      try
+      {
+         if (!GetDocument()->SelectedPage)
+            throw AlgorithmException(HERE, L"No selected page");
+
+         // Lookup string
+         auto& str = GetDocument()->SelectedPage->FindByIndex(item.iItem);
+      
+         // First display: Identify colour tags 
+         if (str.TagType == ColourTag::Undetermined)
+            str.IdentifyColourTags();
+
+         // Text
+         if (item.mask & LVIF_TEXT)
+         {
+            if (item.iSubItem == 0)
+               StringCchCopy(item.pszText, item.cchTextMax, GuiString(L"%d", str.ID).c_str());
+            else
+               StringCchCopy(item.pszText, item.cchTextMax, str.ResolvedText.c_str());
+         }
+
+         // Image
+         if (item.mask & LVIF_IMAGE)
+            item.iImage = GameVersionIndex(str.Version).Index + 2;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+
+      *pResult = 0;
+   }
+
    /// <summary>Adjusts layout</summary>
    /// <param name="nType">Type of the resize</param>
    /// <param name="cx">The new width</param>
@@ -279,35 +347,21 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
-   // ------------------------------- PRIVATE METHODS ------------------------------
-   
-   /// <summary>Custom draws the text column</summary>
-   /// <param name="dc">Device context</param>
-   /// <param name="item">Item data.</param>
-   void  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
+   /// <summary>Updates the item count.</summary>
+   void LanguageStringView::UpdateItemCount()
    {
-      try
-      {
-         // ID:
-         if (item.SubItem == 0)
-            __super::onDrawSubItem(dc, item);
-         
-         // Text:
-         else if (item.SubItem == 1)
-         {
-            auto src = ListView.GetItemText(item.Index, 1);
-            auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
+      int count = GetDocument()->SelectedPage ? GetDocument()->SelectedPage->Strings.size() : 0;
 
-            RichStringParser parser((const wchar*)src);
-            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
-         }
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
+      // Update items
+      //GetListCtrl().SetItemState(-1, NULL, LVIS_SELECTED);
+      GetListCtrl().SetItemCountEx(count);
+      GetListCtrl().RedrawItems(0, count);
+      GetListCtrl().UpdateWindow();
    }
 
-
+   // ------------------------------- PRIVATE METHODS ------------------------------
+   
+   
 
 
 

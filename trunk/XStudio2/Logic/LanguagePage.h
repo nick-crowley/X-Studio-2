@@ -172,7 +172,7 @@ namespace Logic
             /// <summary>Inserts a string</summary>
             /// <param name="s">string.</param>
             /// <returns>Zero-based index if successful, otherwise -1</returns>
-            int  Insert(LanguageString& s)
+            int  Insert(LanguageStringRef s)
             {
                // Attempt to insert
                auto pos = insert(value_type(s.ID, s));
@@ -183,20 +183,19 @@ namespace Logic
 
             /// <summary>Remove a string by ID</summary>
             /// <param name="id">The string id</param>
-            /// <returns>String removed</returns>
-            /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-            LanguageString  Remove(UINT  id) 
+            /// <returns>Zero-based index if successful, otherwise -1</returns>
+            int  Remove(UINT  id) 
             { 
                const_iterator pos;
 
                // Lookup string
                if ((pos=find(id)) == end())
-                  throw StringNotFoundException(HERE, PageID, id);
+                  return -1;
 
-               // Extract + Remove
-               LanguageString str(pos->second);
-               this->erase(pos);
-               return str;
+               // Remove + Return index
+               auto index = distance(cbegin(), pos);
+               erase(pos);
+               return index;
             }
 
 		      // -------------------- REPRESENTATION ---------------------
@@ -279,7 +278,7 @@ namespace Logic
          /// <summary>Inserts a string</summary>
          /// <param name="s">string.</param>
          /// <returns>Zero-based index if successful, otherwise -1</returns>
-         int  Insert(LanguageString& s)
+         int  Insert(LanguageStringRef s)
          {
             return Strings.Insert(s);
          }
@@ -297,9 +296,8 @@ namespace Logic
          
          /// <summary>Remove a string by ID</summary>
          /// <param name="id">The string id</param>
-         /// <returns></returns>
-         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         LanguageString  Remove(UINT  id) 
+         /// <returns>Zero-based index if successful, otherwise -1</returns>
+         int  Remove(UINT  id) 
          { 
             return Strings.Remove(id);     
          }
