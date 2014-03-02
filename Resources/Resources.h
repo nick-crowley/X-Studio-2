@@ -51,22 +51,22 @@
 #define ID_EDIT_LOCALIZE                204
 #define ID_EDIT_INDENT                  205
 #define ID_EDIT_OUTDENT                 206
+#define ID_EDIT_PREFERENCES             207
 
 // Test menu
-#define ID_TEST_RUN_ALL                 207
-#define ID_TEST_COMPILE                 208
+#define ID_TEST_RUN_ALL                 208
+#define ID_TEST_COMPILE                 209
 
 // View menu
-#define ID_VIEW_PROJECT                 209
-#define ID_VIEW_SCRIPT_OBJECTS          210
-#define ID_VIEW_GAME_OBJECTS            211
-#define ID_VIEW_COMMANDS                212
-#define ID_VIEW_OUTPUT                  213
-#define ID_VIEW_PROPERTIES              214
-#define ID_VIEW_STRING_LIBRARY          215
-#define ID_VIEW_MEDIA_LIBRARY           216
-#define ID_VIEW_CUSTOMIZE               217
-#define ID_VIEW_PREFERENCES             218
+#define ID_VIEW_PROJECT                 210
+#define ID_VIEW_SCRIPT_OBJECTS          211
+#define ID_VIEW_GAME_OBJECTS            212
+#define ID_VIEW_COMMANDS                213
+#define ID_VIEW_OUTPUT                  214
+#define ID_VIEW_PROPERTIES              215
+#define ID_VIEW_STRING_LIBRARY          216
+#define ID_VIEW_MEDIA_LIBRARY           217
+#define ID_VIEW_CUSTOMIZE               218
 
 // Window menu
 #define ID_WINDOW_MANAGER               219
@@ -96,22 +96,19 @@
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 
-// Toolbar Customization
-#define ID_TOOLS_MACRO                  237
-
 // LanguageEditor
-#define ID_EDIT_BOLD                    238
-#define ID_EDIT_ITALIC                  239
-#define ID_EDIT_UNDERLINE               240
-#define ID_EDIT_COLOUR                  241
-#define ID_EDIT_LEFT                    242
-#define ID_EDIT_CENTRE                  243
-#define ID_EDIT_RIGHT                   244
-#define ID_EDIT_JUSTIFY                 245
-#define ID_EDIT_ADD_BUTTON              246
-#define ID_VIEW_SOURCE                  247
-#define ID_VIEW_EDITOR                  248
-#define ID_VIEW_DISPLAY                 249
+#define ID_EDIT_BOLD                    235
+#define ID_EDIT_ITALIC                  236
+#define ID_EDIT_UNDERLINE               237
+#define ID_EDIT_COLOUR                  238
+#define ID_EDIT_LEFT                    239
+#define ID_EDIT_CENTRE                  240
+#define ID_EDIT_RIGHT                   241
+#define ID_EDIT_JUSTIFY                 242
+#define ID_EDIT_ADD_BUTTON              243
+#define ID_VIEW_SOURCE                  244
+#define ID_VIEW_EDITOR                  245
+#define ID_VIEW_DISPLAY                 246
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 

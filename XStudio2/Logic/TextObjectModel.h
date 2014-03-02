@@ -1,5 +1,8 @@
 #pragma once
 
+// Ignore warning(s) : 'automatically excluding 'wireHWND' while importing type library 'Msftedit.dll'' 
+#pragma warning(disable:4192)
+
 // Import TOM library
 #undef FindText
 #import "Msftedit.dll" rename_namespace(_T("TOM"))
@@ -10,4 +13,7 @@ typedef TOM::ITextDocumentPtr  TextDocumentPtr;
 typedef TOM::ITextRangePtr     TextRangePtr;
 typedef TOM::ITextFontPtr      TextFontPtr;
 typedef TOM::ITextParaPtr      TextParaPtr;
+
+
+#pragma warning(default:4192)
 
