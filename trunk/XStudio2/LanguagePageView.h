@@ -181,10 +181,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:
       LanguageDocument* GetDocument() const;
       LanguagePage*     GetSelected() const;
-
+      
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
+      void InsertItem(UINT index, LanguagePageRef page);
       void Populate();
 	  
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
@@ -193,6 +194,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
       afx_msg void OnCommandEditPaste()      { OnPerformCommand(ID_EDIT_PASTE);      }
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
+      handler void OnLibraryRebuilt();
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);

@@ -156,6 +156,22 @@ namespace Logic
    bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
 
 
+   template<typename T> 
+   class reverse_adapter 
+   { 
+   public: 
+      reverse_adapter(T& c) : c(c) 
+      {} 
+      
+      typename T::reverse_iterator begin() { return c.rbegin(); } 
+      typename T::reverse_iterator end()   { return c.rend();   } 
+
+      typename T::const_reverse_iterator begin() const { return c.rbegin(); } 
+      typename T::const_reverse_iterator end() const   { return c.rend();   } 
+   
+   private: 
+      T& c; 
+   };
    
 }
 

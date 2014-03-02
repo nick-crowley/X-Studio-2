@@ -116,6 +116,9 @@ NAMESPACE_BEGIN2(GUI,Views)
             GetListCtrl().InsertGroup(i, &g);
          }
 
+         // Listen for 'LIBRARY REBUILT'
+         GetDocument()->LibraryRebuilt.Register(this, &LanguagePageView::OnLibraryRebuilt);
+
          // Populate pages
          Populate();
       }
@@ -123,7 +126,20 @@ NAMESPACE_BEGIN2(GUI,Views)
          Console.Log(HERE, e);
       }
    }
+   
+   /// <summary>Inserts a page item.</summary>
+   /// <param name="index">Zero-based index.</param>
+   /// <param name="page">The page.</param>
+   void LanguagePageView::InsertItem(UINT index, LanguagePageRef page)
+   {
+      // Define item
+      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+      item.iImage = page.Voiced ? 1 : 0;
 
+      // Add item.  Set title
+      GetListCtrl().InsertItem(&item);
+      GetListCtrl().SetItemText(item.iItem, 1, page.Title.c_str());
+   }
 
    /// <summary>Populates pages.</summary>
    void LanguagePageView::Populate()
@@ -131,25 +147,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Freeze window
       GetListCtrl().SetRedraw(FALSE);
 
+      // Clear previous, if any
+      GetListCtrl().DeleteAllItems();
+
       // Populate pages
       int index = 0;
       for (const auto& pair : GetDocument()->GetContent()) 
-      {
-         const LanguagePage& p = pair.second;
-         
-         // Define item
-         LVItem item(index++, GuiString(L"%d", p.ID), (UINT)p.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-         item.iImage = p.Voiced ? 1 : 0;
-
-         // Add item.  Set title
-         GetListCtrl().InsertItem(&item);
-         GetListCtrl().SetItemText(item.iItem, 1, p.Title.c_str());
-      }
+         InsertItem(index++, pair.second);
 
       // Refresh
       GetListCtrl().SetRedraw(TRUE);
       GetListCtrl().UpdateWindow();
    }
+
+   /// <summary>Re-populate in response to library being rebuilt</summary>
+   void LanguagePageView::OnLibraryRebuilt()
+   {
+      Populate();
+   }
+   
 
    /// <summary>Raise the PAGE SELECTION CHANGED event</summary>
    /// <param name="pNMHDR">Item data</param>

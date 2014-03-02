@@ -142,8 +142,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
          group = new CMFCPropertyGridProperty(_T("Components"));
       
          // Enumerate files [backwards]
-         for (auto file = StringLib.Files.crbegin(); file != StringLib.Files.crend(); ++file)
-            group->AddSubItem(new FileNameProperty(*this, GuiString(L"ID=%d", file->ID)));
+         for (auto file = StringLib.Files.crbegin(); file != StringLib.Files.crend(); ++file)    //for (auto& file : reverse_adapter<StringLibrary::FileCollection>(StringLib.Files))
+         {
+            bool included = (Components.find(file->ID) != Components.end());
+            group->AddSubItem(new FileNameProperty(*this, *file, included));
+         }
          grid.AddProperty(group);
       }
    }
@@ -185,10 +188,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Library:
          if (Virtual)
          {
-            // Copy each page (and strings) into from string library into static snapshot
+            // Initially display all files
             for (auto& file : StringLib.Files)
-               for (auto& page : file)
-                  Library.Add(page);
+               Components.insert(file.ID);
+            
+            // Populate
+            Populate();
 
             // Set language (for display purposes only) from main language file
             if (!StringLib.Files.empty())
@@ -265,6 +270,50 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Includes or excludes a file.</summary>
+   /// <param name="id">file ID.</param>
+   /// <param name="include">include/exclude.</param>
+   void LanguageDocument::IncludeFile(UINT id, bool include)
+   {
+      // Add/Remove ID from component set
+      if (include)
+         Components.insert(id);
+      else
+         Components.erase(id);
+
+      // Re-populate
+      Populate();
+   }
+
+   /// <summary>Determines whether a file is currently included in the library.</summary>
+   /// <param name="id">The identifier.</param>
+   /// <returns></returns>
+   bool LanguageDocument::IsIncluded(UINT id) const
+   {
+      return Components.find(id) != Components.end();
+   }
+
+   /// <summary>Populates or re-populates the library.</summary>
+   void LanguageDocument::Populate()
+   {
+      // Clear selection (if any)
+      SelectedString = nullptr;
+      SelectedPage = nullptr;
+
+      // Clear library
+      Library.clear();
+
+      // Copy strings from all included library files
+      for (auto& file : StringLib.Files)
+         if (IsIncluded(file.ID))
+            // Enum pages/strings
+            for (auto& page : file)
+               Library.Add(page);
+
+      // Raise 'LIBRARY REBUILT'
+      LibraryRebuilt.Raise();
+   }
+
    /// <summary>Performs a menu command</summary>
    /// <param name="nID">Command identifier.</param>
    void LanguageDocument::OnPerformCommand(UINT nID)

@@ -69,21 +69,33 @@ NAMESPACE_BEGIN2(GUI,Documents)
       public:
          /// <summary>Create filename property.</summary>
          /// <param name="doc">Language document.</param>
-         FileNameProperty(LanguageDocument& doc, wstring& filename)
-            : LanguagePropertyBase(doc, L"Filename", filename.c_str(),  L"File used within the library")
-         {}
+         /// <param name="file">Language file.</param>
+         /// <param name="included">Whether included or excluded.</param>
+         FileNameProperty(LanguageDocument& doc, const LanguageFile& file, bool included)
+            : File(file), LanguagePropertyBase(doc, GuiString(L"ID=%d", file.ID), included ? L"Include" : L"Exclude", L"File used within the library")
+         {
+            // Strict list
+            AddOption(L"Include");
+            AddOption(L"Exclude");
+            AllowEdit(FALSE);
+            // Enable property
+            Enable(TRUE);
+         }
 
          // ---------------------- ACCESSORS ------------------------	
 
          // ----------------------- MUTATORS ------------------------
       protected:
-         /// <summary>Nothing</summary>
+         /// <summary>Include/Exclude selected file, rebuild library</summary>
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
-         {}
+         {
+            Document.IncludeFile(File.ID, value == L"Include");
+         }
 
          // -------------------- REPRESENTATION ---------------------
       protected:
+         const LanguageFile& File;
       };
 
       /// <summary>Game language property grid item</summary>
@@ -197,6 +209,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          throw AlgorithmException(HERE, L"Cannot find desired View");
       }
 
+   protected:
+      bool  IsIncluded(UINT id) const;
+
       // ----------------------- MUTATORS ------------------------
    public:
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
@@ -209,6 +224,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetSelectedStringIndex(int index);
 
    protected:
+      void  IncludeFile(UINT id, bool include);
+      void  Populate();
       void  OnPerformCommand(UINT nID);
       void  OnQueryCommand(CCmdUI* pCmdUI);
 
@@ -217,13 +234,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       LanguageFile     Content;
       PageCollection   Library;
       bool             Virtual;
-
+      
       SelectionChangedEvent  StringSelectionChanged,
-                             PageSelectionChanged;
+                             PageSelectionChanged,
+                             LibraryRebuilt;
 
    protected:
       LanguageString*  CurrentString;
       LanguagePage*    CurrentPage;
+      set<UINT>        Components;
 };
 
 
