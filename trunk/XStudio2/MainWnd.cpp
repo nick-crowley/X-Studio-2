@@ -138,11 +138,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          throw Win32Exception(HERE, L"Unable to create MainWnd menu");
 	   m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
          
-      // Dock
-	   m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	   DockPane(&m_wndMenuBar);
-
-
 	      
       // File ToolBar:
 	   if (!m_wndFileToolBar.Create(this, IDT_FILE, L"File")) 
@@ -150,10 +145,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndFileToolBar.SetPaneStyle(m_wndFileToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
       //m_wndFileToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-      // Dock
-      m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
-      DockPane(&m_wndFileToolBar);
-
 
       // Edit ToolBar:
 	   if (!m_wndEditToolBar.Create(this, IDT_EDIT, L"Edit")) 
@@ -161,10 +152,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
       //m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-      // Dock
-      m_wndEditToolBar.EnableDocking(CBRS_ALIGN_ANY);
-      DockPane(&m_wndEditToolBar);
-
 
       // View ToolBar:
 	   if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
@@ -172,17 +159,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndViewToolBar.SetPaneStyle(m_wndViewToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
       //m_wndViewToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
-      // Dock
-      m_wndViewToolBar.EnableDocking(CBRS_ALIGN_ANY);
-      DockPane(&m_wndViewToolBar);
-
-
 
       // StatusBar:
 	   if (!m_wndStatusBar.Create(this))
          throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
 	   m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+      // Init indicators
       onScriptCaretMoved(POINT {0,0});
+
+
+      // Enable docking
+      EnableDocking(CBRS_ALIGN_ANY);
+      EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+      // Dock toolbars *after* creation of StatusBar, otherwise StatusBar placed within docking area
+      for (auto bar : vector<CMFCBaseToolBar*>({&m_wndMenuBar, &m_wndFileToolBar, &m_wndEditToolBar, &m_wndViewToolBar}))
+      {
+         bar->EnableDocking(CBRS_ALIGN_ANY);
+         DockPane(bar);
+      }
    }
 
 
@@ -344,23 +339,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
 	      CDockingManager::SetDockingMode(DT_SMART);
 	      
-         // Enable docking
-         EnableDocking(CBRS_ALIGN_ANY);
-         EnableAutoHidePanes(CBRS_ALIGN_ANY);
          
-         // Toolbars
+         
+         // Create Toolbars
          CreateToolBars();
          
-         // Tool windows
+         // Create Tool windows
 	      CreateToolWindows();
          
+
          // Set document icons??
 	      UpdateMDITabbedBarsIcons();
 
-                  
          // Redraw?
 	      RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
-
 
 	      // Enable windows management dialog
 	      EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
@@ -368,7 +360,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Enable 'customize' command in menu 
 	      //EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str(), ID_VIEW_CUSTOMIZE);
 
-	      
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
