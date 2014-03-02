@@ -205,6 +205,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:      
       
    protected:
+      EventHandler  fnLibraryRebuilt;
       ImageListEx   Images;
    };
    

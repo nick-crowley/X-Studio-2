@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "LanguagePage.h"
 #include "MapIterator.hpp"
+#include "FileBase.h"
 
 namespace Logic
 {
@@ -9,7 +10,7 @@ namespace Logic
    {
 
       /// <summary>Represents an X3 language file, provides a collection of language pages</summary>
-      class LanguageFile
+      class LanguageFile : public FileBase
       {
       public:
          /// <summary>Collection of language pages, sorted by ID</summary>
@@ -120,12 +121,14 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LanguageFile();
-         LanguageFile(UINT id, GameLanguage l) : ID(id), Language(l) 
+         LanguageFile() : ID(0), Language(GameLanguage::English)
          {}
-         LanguageFile(LanguageFile&& r) : ID(r.ID), Language(r.Language), Pages(move(r.Pages))
+         LanguageFile(IO::Path path) : FileBase(path), ID(0), Language(GameLanguage::English)
          {}
-         ~LanguageFile();
+         LanguageFile(LanguageFile&& r) : FileBase(r), ID(r.ID), Language(r.Language), Pages(move(r.Pages))
+         {}
+         ~LanguageFile()
+         {}
 
          DEFAULT_COPY(LanguageFile);	// Default copy semantics
 

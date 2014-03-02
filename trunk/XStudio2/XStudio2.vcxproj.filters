@@ -516,6 +516,9 @@
     <ClInclude Include="Clipboard.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\FileBase.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -535,9 +538,6 @@
     </ClCompile>
     <ClCompile Include="Logic\SyntaxFile.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\LanguageFile.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LanguagePage.cpp">
       <Filter>Source Files\Logic\Language</Filter>

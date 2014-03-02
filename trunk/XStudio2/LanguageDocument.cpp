@@ -142,11 +142,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          group = new CMFCPropertyGridProperty(_T("Components"));
       
          // Enumerate files [backwards]
-         for (auto file = StringLib.Files.crbegin(); file != StringLib.Files.crend(); ++file)    //for (auto& file : reverse_adapter<StringLibrary::FileCollection>(StringLib.Files))
-         {
-            bool included = (Components.find(file->ID) != Components.end());
-            group->AddSubItem(new FileNameProperty(*this, *file, included));
-         }
+         for (auto file = StringLib.Files.crbegin(); file != StringLib.Files.crend(); ++file)   
+            group->AddSubItem( new FileNameProperty(*this, *file, IsIncluded(file->ID)) );
          grid.AddProperty(group);
       }
    }
@@ -203,7 +200,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          {  
             // Parse input file
             StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
-            Content = LanguageFileReader(fs2).ReadFile(Path(szPathName).FileName);
+            Content = LanguageFileReader(fs2).ReadFile(szPathName);
          }
 
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
@@ -283,6 +280,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Re-populate
       Populate();
+
+      // Raise 'LIBRARY REBUILT'
+      LibraryRebuilt.Raise();
    }
 
    /// <summary>Determines whether a file is currently included in the library.</summary>
@@ -309,9 +309,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // Enum pages/strings
             for (auto& page : file)
                Library.Add(page);
-
-      // Raise 'LIBRARY REBUILT'
-      LibraryRebuilt.Raise();
    }
 
    /// <summary>Performs a menu command</summary>

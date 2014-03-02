@@ -55,7 +55,7 @@ namespace Logic
 			// ----------------------- MUTATORS ------------------------
 
       public:
-         LanguageFile   ReadFile(wstring filename);
+         LanguageFile   ReadFile(IO::Path path);
 
       private:
          GameLanguage   ReadLanguageTag(XmlNodePtr& element);

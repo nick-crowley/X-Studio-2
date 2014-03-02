@@ -72,7 +72,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="file">Language file.</param>
          /// <param name="included">Whether included or excluded.</param>
          FileNameProperty(LanguageDocument& doc, const LanguageFile& file, bool included)
-            : File(file), LanguagePropertyBase(doc, GuiString(L"ID=%d", file.ID), included ? L"Include" : L"Exclude", L"File used within the library")
+            : File(file), LanguagePropertyBase(doc, file.FullPath.FileName, included ? L"Included" : L"Excluded", L"Include or exclude file from library")
          {
             // Strict list
             AddOption(L"Include");
@@ -90,7 +90,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            Document.IncludeFile(File.ID, value == L"Include");
+            Document.IncludeFile(File.ID, value == L"Included");
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -236,8 +236,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool             Virtual;
       
       SelectionChangedEvent  StringSelectionChanged,
-                             PageSelectionChanged,
-                             LibraryRebuilt;
+                             PageSelectionChanged;
+      SimpleEvent            LibraryRebuilt;
 
    protected:
       LanguageString*  CurrentString;

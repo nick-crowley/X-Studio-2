@@ -133,6 +133,7 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
+    <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\RichStringWriter.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
     <ClInclude Include="RichEditEx.h" />
@@ -323,7 +324,6 @@
     <ClCompile Include="Logic\FileSearch.cpp" />
     <ClCompile Include="Logic\FileStream.cpp" />
     <ClCompile Include="Logic\GZipStream.cpp" />
-    <ClCompile Include="Logic\LanguageFile.cpp" />
     <ClCompile Include="Logic\LanguageFileReader.cpp" />
     <ClCompile Include="Logic\LanguagePage.cpp" />
     <ClCompile Include="Logic\LegacySyntaxReader.cpp" />
