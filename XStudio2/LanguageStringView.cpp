@@ -214,26 +214,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
          switch (nID)
          {
-         // TODO:
-         case ID_EDIT_COPY:   
-            break;
-            
-         // Cut Selected:
-         case ID_EDIT_CUT:    
-            GetDocument()->Execute(new CutSelectedString(*GetDocument()));  
-            break;
-
-         case ID_EDIT_PASTE:  
-            GetDocument()->Execute(new PasteString(*GetDocument()));  
-            break;
+         // Cut/Copy/Paste/Delete
+         case ID_EDIT_CUT:    GetDocument()->Execute(new CutSelectedString(*GetDocument()));       break;
+         case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedString(*GetDocument()));      break;
+         case ID_EDIT_PASTE:  GetDocument()->Execute(new PasteString(*GetDocument()));             break;
+         case ID_EDIT_CLEAR:  GetDocument()->Execute(new RemoveSelectedString(*GetDocument()));    break;
 
          // Select All
-         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);            break;
-
-         // Delete selected:
-         case ID_EDIT_CLEAR:  
-            GetDocument()->Execute(new RemoveSelectedString(*GetDocument())); 
-            break;
+         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);   break;
          }
       }
       catch (ExceptionBase& e) {
