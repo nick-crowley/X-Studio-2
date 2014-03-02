@@ -55,6 +55,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    public:
       void         ActivateOutputPane(Operation pane);
+      void         CreateToolBars();
+      void         CreateToolWindows();
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
