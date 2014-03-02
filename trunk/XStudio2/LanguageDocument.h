@@ -207,16 +207,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
-      PROPERTY_GET_SET(int,SelectedPageIndex,GetSelectedPageIndex,SetSelectedPageIndex);
-      PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
+      //PROPERTY_GET_SET(int,SelectedPageIndex,GetSelectedPageIndex,SetSelectedPageIndex);
+      //PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       PageCollection&  GetContent();
       LanguagePage*    GetSelectedPage() const;
-      int              GetSelectedPageIndex() const;
+      //int              GetSelectedPageIndex() const;
       LanguageString*  GetSelectedString() const;
-      int              GetSelectedStringIndex() const;
+      //int              GetSelectedStringIndex() const;
 
       /// <summary>Gets any language view</summary>
       /// <typeparam name="VIEW">View type</typeparam>
@@ -246,9 +246,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       void  SetSelectedPage(LanguagePage* p);
-      void  SetSelectedPageIndex(int index);
+      //void  SetSelectedPageIndex(int index);
       void  SetSelectedString(LanguageString* s);
-      void  SetSelectedStringIndex(int index);
+      //void  SetSelectedStringIndex(int index);
 
    protected:
       void  IncludeFile(UINT id, bool include);
