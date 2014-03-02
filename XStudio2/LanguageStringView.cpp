@@ -54,6 +54,27 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
    
+   /// <summary>Inserts a string.</summary>
+   /// <param name="index">The index.</param>
+   /// <param name="str">The string.</param>
+   void LanguageStringView::InsertString(UINT index, LanguageString& str)
+   {
+      // First display: Identify colour tags 
+      if (str.TagType == ColourTag::Undetermined)
+         str.IdentifyColourTags();
+
+      // Add item, resolve and set Text
+      GetListCtrl().InsertItem(index, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
+      GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
+   }
+
+   /// <summary>Removes a string.</summary>
+   /// <param name="index">The index.</param>
+   void LanguageStringView::RemoveString(UINT index)
+   {
+      GetListCtrl().DeleteItem(index);
+   }
+
    /// <summary>Called when activate view.</summary>
    /// <param name="bActivate">activated.</param>
    /// <param name="pActivateView">The activate view.</param>
@@ -92,20 +113,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
    }
    
-   /// <summary>Inserts a string.</summary>
-   /// <param name="index">The index.</param>
-   /// <param name="str">The string.</param>
-   void LanguageStringView::InsertString(UINT index, LanguageString& str)
-   {
-      // First display: Identify colour tags 
-      if (str.TagType == ColourTag::Undetermined)
-         str.IdentifyColourTags();
-
-      // Add item, resolve and set Text
-      GetListCtrl().InsertItem(index, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
-      GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
-   }
-
    /// <summary>Custom draw the strings</summary>
    /// <param name="pNMHDR">header.</param>
    /// <param name="pResult">result.</param>
