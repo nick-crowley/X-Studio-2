@@ -61,6 +61,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="str">The string.</param>
    void LanguageStringView::InsertString(UINT index, LanguageString& str)
    {
+      throw InvalidOperationException(HERE, L"");
+
       // First display: Identify colour tags 
       if (str.TagType == ColourTag::Undetermined)
          str.IdentifyColourTags();
@@ -74,6 +76,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="index">The index.</param>
    void LanguageStringView::RemoveString(UINT index)
    {
+      throw InvalidOperationException(HERE, L"");
+
       GetListCtrl().DeleteItem(index);
    }
 
@@ -164,7 +168,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          Images.Create(IDB_LANGUAGE_ICONS, 16, 6, RGB(255,0,255));
 	      
          // Setup listView
-         //GetListCtrl().ModifyStyle(WS_BORDER, LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_OWNERDATA);
+         GetListCtrl().ModifyStyle(WS_BORDER, 0);
          GetListCtrl().SetView(LV_VIEW_DETAILS);
          GetListCtrl().SetItemCountEx(0);
          GetListCtrl().InsertColumn(0, L"ID", LVCFMT_LEFT, 60, 0);
@@ -212,8 +216,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Update items
          UpdateItemCount();
-         GetListCtrl().EnsureVisible(0, FALSE);
-         GetListCtrl().RedrawWindow();
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e); 
@@ -307,8 +309,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       
       try
       {
+         // BUGFIX: Because the UpdateItemCount() BugFix requires we scroll to first item before changing count, we sometimes 
+         //         receive LVN_GETDISPINFO when the selectedPage is nullptr
          if (!GetDocument()->SelectedPage)
-            throw AlgorithmException(HERE, L"No selected page");
+            return;     
 
          // Lookup string
          auto& str = GetDocument()->SelectedPage->FindByIndex(item.iItem);
@@ -353,10 +357,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       int count = GetDocument()->SelectedPage ? GetDocument()->SelectedPage->Strings.size() : 0;
 
       // Update items
-      //GetListCtrl().SetItemState(-1, NULL, LVIS_SELECTED);
-      GetListCtrl().SetItemCountEx(count);
-      GetListCtrl().RedrawItems(0, count);
-      GetListCtrl().UpdateWindow();
+      GetListCtrl().EnsureVisible(0, FALSE);    // BUGFIX: Scroll to first item before changing count, otherwise scroll position remains Unchanged
+      GetListCtrl().SetItemCountEx(count, 0); 
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

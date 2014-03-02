@@ -274,8 +274,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="s">The string.</param>
    void  LanguageDocument::SetSelectedString(LanguageString* s)
    {
-      CurrentString = s;
+      if (s == CurrentString)
+         return;
       
+      // Change string
+      CurrentString = s;
       CPropertiesWnd::Connect(this, true);
       StringSelectionChanged.Raise();
    }
