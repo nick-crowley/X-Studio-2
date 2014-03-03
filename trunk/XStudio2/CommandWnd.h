@@ -26,6 +26,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ---------------------- ACCESSORS ------------------------			
       
       // ----------------------- MUTATORS ------------------------
+   public:
+      void Create(CWnd* parent);
+
    protected:
       virtual void PopulateGroupCombo();
       virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup);

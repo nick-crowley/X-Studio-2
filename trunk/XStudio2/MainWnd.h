@@ -39,6 +39,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
                               FindReplaceFeedback,
                               LoadSaveFeedback;
 
+      const static CRect DefaultSize;
+
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			

@@ -26,6 +26,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void CCommandWnd::Create(CWnd* parent)
+   {
+      __super::Create(parent, L"Commands", IDR_COMMANDS, IDR_COMMANDS);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Populates the group combo.</summary>
