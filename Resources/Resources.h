@@ -18,23 +18,24 @@
 #define IDT_FILE                        110
 #define IDT_EDIT                        111
 #define IDT_VIEW                        112
-#define IDT_CUSTOM                      113
+#define IDT_MENU_IMAGES                 113
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
 #define IDM_EDIT_POPUP                  114
 #define IDM_PROJECT_POPUP               115
 #define IDM_OUTPUT_POPUP                116
+#define IDM_STRINGVIEW_POPUP            117
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_GREY                 117
-#define IDB_PROJECT_ICONS               118
-#define IDB_OUTPUT_ICONS                119
-#define IDB_GAMEDATA_ICONS              120
-#define IDB_LANGUAGE_ICONS              121
-#define IDB_RICH_BUTTON                 122
-#define IDB_USER_IMAGES                 123
+#define IDB_EDITOR_GREY                 118
+#define IDB_PROJECT_ICONS               119
+#define IDB_OUTPUT_ICONS                120
+#define IDB_GAMEDATA_ICONS              121
+#define IDB_LANGUAGE_ICONS              122
+#define IDB_RICH_BUTTON                 123
+#define IDB_USER_IMAGES                 124
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

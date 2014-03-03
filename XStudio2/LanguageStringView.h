@@ -430,6 +430,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       void AdjustLayout();
       
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommandEditCut()        { OnPerformCommand(ID_EDIT_CUT);        }
       afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
@@ -450,7 +451,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
-   };
+
+};
    
 
 NAMESPACE_END2(GUI,Views)

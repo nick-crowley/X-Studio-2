@@ -27,6 +27,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
+      ON_WM_CONTEXTMENU()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -113,6 +114,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
    }
    
+   /// <summary>Called when context menu.</summary>
+   /// <param name="pWnd">The WND.</param>
+   /// <param name="point">The point.</param>
+   void LanguageStringView::OnContextMenu(CWnd* pWnd, CPoint point)
+   {
+      CMenu menu;
+	   menu.LoadMenu(IDM_STRINGVIEW_POPUP);
+
+      // Create MFC custom menu
+	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
+		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
+			return;
+
+      // Show
+		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
+		UpdateDialogControls(this, FALSE);
+	   SetFocus();
+   }
+
    /// <summary>Custom draw the strings</summary>
    /// <param name="pNMHDR">header.</param>
    /// <param name="pResult">result.</param>
@@ -300,5 +320,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
 
 NAMESPACE_END2(GUI,Views)
+
 
 

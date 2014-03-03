@@ -325,7 +325,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
          // Load menu item image (not placed on any standard toolbars):
-         CMFCToolBar::AddToolBarForImageCollection(IDT_CUSTOM, IDT_CUSTOM);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_MENU_IMAGES, IDT_MENU_IMAGES);
          CMFCToolBar::m_dblLargeImageRatio = 1.2;
 
          // enable quick (Alt+drag) toolbar customization
