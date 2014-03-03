@@ -354,6 +354,12 @@ BOOL Application::ShowError(const GuiString& src, const exception& e, const GuiS
 BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const
 {
    Console.Log(src, e, msg);
+
+   // Application exception: Display verbatim
+   if (auto app = dynamic_cast<const ApplicationException*>(&e))
+      return AfxMessageBox(app->Message.c_str());
+   
+   // Exception: Display source/sink data
    return AfxMessageBox(GuiString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 
@@ -365,6 +371,12 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const 
 BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
 {
    Console.Log(src, e);
+
+   // Application exception: Display verbatim
+   if (auto app = dynamic_cast<const ApplicationException*>(&e))
+      return AfxMessageBox(app->Message.c_str());
+
+   // Exception: Display source/sink data
    return AfxMessageBox(GuiString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 

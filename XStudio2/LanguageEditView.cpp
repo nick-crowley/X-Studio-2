@@ -199,7 +199,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
       }
       catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
+         theApp.ShowError(HERE, ApplicationException(e));
       }
    }
 
@@ -358,18 +358,20 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try 
       {
-         // Clear button selection
-         GetDocument()->SelectedButton = nullptr;
-
          // Display new string
          RichEdit.Refresh();
       }
       catch (ExceptionBase& e) { 
-         theApp.ShowError(HERE, e, L"Unable to display selected string");
+         GetDocument()->SelectedString = nullptr;
+         theApp.ShowError(HERE, ApplicationException(e), L"Unable to display selected string");
       }
+
+#ifdef RESCINDED     // I don't remember why I needed this
       catch (exception& e) { 
+         GetDocument()->SelectedString = nullptr;
          theApp.ShowError(HERE, e, L"Unable to display selected string");
       }
+#endif
    }
 
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>

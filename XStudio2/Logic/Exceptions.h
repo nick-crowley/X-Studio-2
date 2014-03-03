@@ -54,6 +54,12 @@ namespace Logic
       ApplicationException(wstring  src, wstring  msg) 
          : ExceptionBase(src, msg)
       {}
+
+      /// <summary>Convert existing exception into an ApplicationException</summary>
+      /// <param name="r">Exception</param>
+      ApplicationException(const ExceptionBase& r) 
+         : ExceptionBase(r.Source, r.Message)
+      {}
    };
    
    /// <summary>Occurs when a missing argument is detected</summary>
