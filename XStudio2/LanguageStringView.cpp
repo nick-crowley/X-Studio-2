@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguageStringView.h"
+#include "LanguageEditView.h"
 #include "PropertiesWnd.h"
 #include "Logic/StringResolver.h"
 #include "Logic/RichStringParser.h"
@@ -30,10 +31,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_INSERT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
-      // Unsupported: Always disabled
+      // Toolbar Commands
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageStringView::OnQueryMode)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageStringView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -341,6 +342,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Set state
       pCmdUI->Enable(state ? TRUE : FALSE);
       pCmdUI->SetCheck(FALSE);
+   }
+
+   /// <summary>Queries the state of the editor mode toolbar commands.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void LanguageStringView::OnQueryMode(CCmdUI* pCmdUI)
+   {
+      // Enable mode switch, Delegate to Edit View
+      GetDocument()->GetView<LanguageEditView>()->OnQueryMode(pCmdUI);
    }
 
 

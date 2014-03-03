@@ -523,6 +523,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       handler void onPageSelectionChanged();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
+      afx_msg void OnQueryMode(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void OnStringTextChanged();

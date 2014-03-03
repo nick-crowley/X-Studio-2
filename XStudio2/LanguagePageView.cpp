@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LanguagePageView.h"
+#include "LanguageEditView.h"
 #include "PropertiesWnd.h"
 #include "Helpers.h"
 
@@ -24,10 +25,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguagePageView::OnQueryCommand)
-      // Unsupported: Always disabled
+      // Toolbar Commands
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguagePageView::OnQueryMode)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguagePageView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguagePageView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -254,6 +255,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Set state
       pCmdUI->Enable(state ? TRUE : FALSE);
       pCmdUI->SetCheck(FALSE);
+   }
+
+   /// <summary>Queries the state of the editor mode toolbar commands.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void LanguagePageView::OnQueryMode(CCmdUI* pCmdUI)
+   {
+      // Enable mode switch, Delegate to Edit View
+      GetDocument()->GetView<LanguageEditView>()->OnQueryMode(pCmdUI);
    }
 
    /// <summary>Adjusts layout</summary>
