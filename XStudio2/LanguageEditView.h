@@ -130,8 +130,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      LanguageDocument*      GetDocument() const;
-      LanguageEdit::EditMode GetEditMode() const;
+      LanguageDocument*   GetDocument() const;
 
       // ----------------------- MUTATORS ------------------------
    public:

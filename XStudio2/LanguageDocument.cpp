@@ -59,6 +59,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), 
                                           CurrentString(nullptr), CurrentPage(nullptr), CurrentButton(nullptr),
+                                          Mode(EditMode::Edit), 
                                           Virtual(false)
    {
    }
@@ -94,6 +95,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
    {
       return Virtual ? Library : File.Pages;
+   }
+   
+   /// <summary>Gets the edit mode.</summary>
+   /// <returns></returns>
+   EditMode  LanguageDocument::GetEditMode() const
+   {
+      return Mode;
    }
 
    /// <summary>Gets the selected button.</summary>
@@ -137,58 +145,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       // Update view
       GetView<LanguageStringView>()->InsertString(index, str, true);
-   }
-
-   /// <summary>Changes the ID of a string.</summary>
-   /// <param name="str">The string.</param>
-   /// <param name="newID">The new ID</param>
-   /// <exception cref="Logic::ApplicationException">New String ID already in use</exception>
-   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
-   void  LanguageDocument::RenameString(LanguageString& str, UINT newID)
-   {
-      // Feedback
-      Console << "Renaming document string: " << str << Cons::White << " newID=" << newID << ENDL;
-
-      // Ensure not library
-      if (Virtual)
-         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
-
-      // Validate new ID
-      if (!Content.Find(str.Page).IsAvailable(newID))
-         throw ApplicationException(HERE, L"Unable to change string ID - it is already in use");
-
-      // Generate string (must identify colour tags before display)
-      LanguageString newStr(newID, str.Page, str.Text, str.Version);
-      newStr.IdentifyColourTags();
-
-      // Remove/Re-Insert
-      RemoveString(str.Page, str.ID);
-      InsertString(newStr);
-   }
-
-   /// <summary>Removes the string from the appropriate page</summary>
-   /// <param name="page">Page ID.</param>
-   /// <param name="id">string ID.</param>
-   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
-   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-   /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-   void  LanguageDocument::RemoveString(UINT page, UINT id)
-   {
-      // Feedback
-      Console << "Removing document string: page=" << page << " id=" << id << ENDL;
-
-      // Ensure not library
-      if (Virtual)
-         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
-
-      // Select+Display page
-      SelectedPageIndex = Content.IndexOf(page);
-
-      // Remove from languagePage
-      UINT index = SelectedPage->Remove(id);
-
-      // Update view
-      GetView<LanguageStringView>()->RemoveString(index);
    }
 
    /// <summary>Populates the properties window</summary>
@@ -309,6 +265,88 @@ NAMESPACE_BEGIN2(GUI,Documents)
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
+      }
+   }
+   
+   /// <summary>Changes the ID of a string.</summary>
+   /// <param name="str">The string.</param>
+   /// <param name="newID">The new ID</param>
+   /// <exception cref="Logic::ApplicationException">New String ID already in use</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   void  LanguageDocument::RenameString(LanguageString& str, UINT newID)
+   {
+      // Feedback
+      Console << "Renaming document string: " << str << Cons::White << " newID=" << newID << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
+      // Validate new ID
+      if (!Content.Find(str.Page).IsAvailable(newID))
+         throw ApplicationException(HERE, L"Unable to change string ID - it is already in use");
+
+      // Generate string (must identify colour tags before display)
+      LanguageString newStr(newID, str.Page, str.Text, str.Version);
+      newStr.IdentifyColourTags();
+
+      // Remove/Re-Insert
+      RemoveString(str.Page, str.ID);
+      InsertString(newStr);
+   }
+
+   /// <summary>Removes the string from the appropriate page</summary>
+   /// <param name="page">Page ID.</param>
+   /// <param name="id">string ID.</param>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+   /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+   void  LanguageDocument::RemoveString(UINT page, UINT id)
+   {
+      // Feedback
+      Console << "Removing document string: page=" << page << " id=" << id << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
+      // Select+Display page
+      SelectedPageIndex = Content.IndexOf(page);
+
+      // Remove from languagePage
+      UINT index = SelectedPage->Remove(id);
+
+      // Update view
+      GetView<LanguageStringView>()->RemoveString(index);
+   }
+   
+   /// <summary>Changes the edit mode.</summary>
+   /// <param name="m">mode.</param>
+   /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::ArgumentException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
+   /// <exception cref="Logic::Language::RichTextException">Error in richText formatting tags</exception>
+   void  LanguageDocument::SetEditMode(EditMode m)
+   {
+      if (m == GetEditMode())
+         return;
+
+      // Preserve edit mode
+      auto prev = GetEditMode();
+
+      try
+      {
+         // Raise 'EDIT MODE CHANGED'
+         Mode = m;
+         EditModeChanged.Raise();
+
+         // Refresh properties
+         CPropertiesWnd::Connect(this, true); 
+      }
+      // Error: Revert mode
+      catch (ExceptionBase&) {
+         Mode = prev;
+         throw;
       }
    }
 

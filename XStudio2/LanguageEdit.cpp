@@ -68,7 +68,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageEdit::LanguageEdit() : Mode(EditMode::Edit), Callback(nullptr), Document(nullptr)
+   LanguageEdit::LanguageEdit() : Callback(nullptr), Document(nullptr)
    {
    }
 
@@ -192,13 +192,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return reinterpret_cast<LanguageButton*>(reObject.dwUser);
    }
 
-   /// <summary>Gets the edit mode.</summary>
-   /// <returns></returns>
-   LanguageEdit::EditMode  LanguageEdit::GetEditMode() const
-   {
-      return Mode;
-   }
-
    /// <summary>Initializes the specified document.</summary>
    /// <param name="doc">The document.</param>
    /// <exception cref="Logic::ArgumentNullException">doc is nullptr</exception>
@@ -219,8 +212,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Callback.Attach(new EditCallback(this), true);
       SetOLECallback(Callback);
 
-      // Listen for 'CONTENT CHANGED'
+      // Listen for 'CONTENT CHANGED' + 'MODE CHANGED'
       fnContentChanged = Document->StringContentChanged.Register(this, &LanguageEdit::OnContentChanged);
+      fnEditModeChanged = Document->EditModeChanged.Register(this, &LanguageEdit::OnEditModeChanged);
    }
 
    /// <summary>Inserts a button at the caret.</summary>
@@ -338,17 +332,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Clear();
 
       // Editor: Display RichText
-      else if (Mode == EditMode::Edit)
+      else if (Document->CurrentMode == EditMode::Edit)
       {
          Content = Document->SelectedString->RichText;
          SetRichText(Content);
       }
       // Display: Format for display
-      else if (Mode == EditMode::Display)
+      else if (Document->CurrentMode == EditMode::Display)
          throw NotImplementedException(HERE, L"Display mode");
 
       // Source: Display SourceText
-      else if (Mode == EditMode::Source)
+      else if (Document->CurrentMode == EditMode::Source)
       {
          // Clear previous
          Clear();
@@ -356,40 +350,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Display/highlight sourceText
          SetWindowText(Document->SelectedString->Text.c_str());
          UpdateHighlighting();
-      }
-   }
-
-   /// <summary>Changes the edit mode.</summary>
-   /// <param name="m">mode.</param>
-   /// <exception cref="Logic::ArgumentNullException">Control not initialized</exception>
-   /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
-   /// <exception cref="Logic::ArgumentException">Error in richText parsing algorithm</exception>
-   /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
-   /// <exception cref="Logic::Language::RichTextException">Error in richText formatting tags</exception>
-   void  LanguageEdit::SetEditMode(EditMode m)
-   {
-      REQUIRED(Document);  // Ensure initialized
-
-      // Preserve edit mode
-      auto prev = GetEditMode();
-
-      try
-      {
-         // Skip if already set, or edit disabled
-         if (m == prev || !Document->SelectedString)
-            return;
-
-         // Change mode + redisplay   
-         Mode = m;
-         Refresh();
-
-         // Enable/Disable 'editor-only' properties
-         CPropertiesWnd::Connect(Document, true); 
-      }
-      // Error: Revert mode
-      catch (ExceptionBase&) {
-         Mode = prev;
-         throw;
       }
    }
 
@@ -469,6 +429,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
+   /// <summary>Refreshes the contents when the editor mode changes</summary>
+   /// <exception cref="Logic::ArgumentNullException">Control not initialized</exception>
+   /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::ArgumentException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
+   /// <exception cref="Logic::Language::RichTextException">Error in richText formatting tags</exception>
+   void  LanguageEdit::OnEditModeChanged()
+   {
+      Refresh();
+   }
+
    /// <summary>Destroys the button data stored with a button image</summary>
    /// <param name="obj">The object.</param>
    void  LanguageEdit::OnButtonRemoved(IOleObjectPtr obj)
@@ -535,11 +506,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          REQUIRED(Document->SelectedString);
 
          // Save contents
-         switch (GetEditMode())
+         switch (Document->CurrentMode)
          {
          // Source: Save verbatim + highlight
          case EditMode::Source:
-            Document->SelectedStringText = GetAllText();
+            Document->SelectedString->Text = GetAllText();
             UpdateHighlighting();
             break;
 

@@ -2,7 +2,6 @@
 
 #include "afxcview.h"
 #include "LanguageDocument.h"
-#include "LanguageEditView.h"
 #include "ListViewCustomDraw.h"
 #include "ImageListEx.h"
 #include "GuiCommand.h"
@@ -60,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             : StringPropertyBase(doc, str, name, val, desc)
          {
             // Require 'Editor' mode
-            Enable(Document.GetView<LanguageEditView>()->GetEditMode() == LanguageEdit::EditMode::Edit ? TRUE : FALSE);
+            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
       protected:

@@ -69,13 +69,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
 
-   /// <summary>Gets the current edit mode.</summary>
-   /// <returns></returns>
-   LanguageEdit::EditMode  LanguageEditView::GetEditMode() const
-   {
-      return RichEdit.GetEditMode();
-   }
-   
    /// <summary>Called when activate view.</summary>
    /// <param name="bActivate">activated.</param>
    /// <param name="pActivateView">The activate view.</param>
@@ -92,19 +85,15 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Query state of editor mode command</summary>
    void LanguageEditView::OnQueryMode(CCmdUI* pCmd)
    {
-      bool state = false, 
+      bool state = true, 
            checked = false;
 
-      // Require selected string
-      if (state = (GetDocument()->SelectedString != nullptr))
+      // Query mode
+      switch (pCmd->m_nID)
       {
-         // Query mode
-         switch (pCmd->m_nID)
-         {
-         case ID_VIEW_SOURCE:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-         case ID_VIEW_EDITOR:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-         case ID_VIEW_DISPLAY:    checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
-         }
+      case ID_VIEW_SOURCE:     checked = (GetDocument()->CurrentMode == EditMode::Source);   break;
+      case ID_VIEW_EDITOR:     checked = (GetDocument()->CurrentMode == EditMode::Edit);     break;
+      case ID_VIEW_DISPLAY:    checked = (GetDocument()->CurrentMode == EditMode::Display);  break;
       }
 
       // Set state
@@ -223,10 +212,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_CENTRE:     RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Centre));   break;
          case ID_EDIT_JUSTIFY:    RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Justify));  break;
 
-         // Mode: Change mode
-         case ID_VIEW_SOURCE:     RichEdit.SetEditMode(LanguageEdit::EditMode::Source);   break;
-         case ID_VIEW_EDITOR:     RichEdit.SetEditMode(LanguageEdit::EditMode::Edit);     break;
-         case ID_VIEW_DISPLAY:    RichEdit.SetEditMode(LanguageEdit::EditMode::Display);  break;
+         // Mode: Attempt Change mode  (May fail if syntax errors)
+         case ID_VIEW_SOURCE:     GetDocument()->CurrentMode = EditMode::Source;   break;
+         case ID_VIEW_EDITOR:     GetDocument()->CurrentMode = EditMode::Edit;     break;
+         case ID_VIEW_DISPLAY:    GetDocument()->CurrentMode = EditMode::Display;  break;
          }
       }
       catch (ExceptionBase& e) {
@@ -242,7 +231,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit && ::GetFocus() == RichEdit))
+      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode == EditMode::Edit && ::GetFocus() == RichEdit))
       {
          ParaFormat  pf(PFM_ALIGNMENT);
          
@@ -269,7 +258,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + Edit/Source mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() != LanguageEdit::EditMode::Display && ::GetFocus() == RichEdit))
+      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode != EditMode::Display && ::GetFocus() == RichEdit))
       {
          // Query selection
          switch (pCmd->m_nID)
@@ -317,7 +306,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit && ::GetFocus() == RichEdit))
+      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode == EditMode::Edit && ::GetFocus() == RichEdit))
       {
          CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
          
