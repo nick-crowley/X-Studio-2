@@ -41,6 +41,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageEditView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageEditView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageEditView::OnPerformCommand)
+      ON_NOTIFY(EN_SELCHANGE,IDC_STRING_EDIT,&LanguageEditView::OnTextSelectionChange)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageEditView::OnQueryClipboard)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageEditView::OnQueryClipboard)
@@ -131,6 +132,24 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
+   
+   /// <summary>Initialise control</summary>
+   void LanguageEditView::OnInitialUpdate()
+   {
+      CFormView::OnInitialUpdate();
+
+      try
+      {
+         // Listen for string Selection Changed
+         fnStringSelectionChanged = GetDocument()->StringSelectionChanged.Register(this, &LanguageEditView::OnStringSelectionChanged);
+      
+         // Init RichEdit
+         RichEdit.Initialize(GetDocument());
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
    /// <summary>Perform text formatting command.</summary>
    /// <param name="nID">The command identifier.</param>
    void LanguageEditView::OnPerformCommand(UINT nID)
@@ -312,24 +331,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
 
-   /// <summary>Initialise control</summary>
-   void LanguageEditView::OnInitialUpdate()
-   {
-      CFormView::OnInitialUpdate();
-
-      try
-      {
-         // Listen for string Selection Changed
-         fnStringSelectionChanged = GetDocument()->StringSelectionChanged.Register(this, &LanguageEditView::onStringSelectionChanged);
-      
-         // Init RichEdit
-         RichEdit.Initialize(GetDocument());
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-   }
-   
    /// <summary>Re-creates toolbar</summary>
    /// <param name="uFlags">The flags.</param>
    /// <param name="lpszSection">The section.</param>
@@ -343,7 +344,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    
    /// <summary>Display the currently selected string</summary>
-   void LanguageEditView::onStringSelectionChanged()
+   void LanguageEditView::OnStringSelectionChanged()
    {
       try 
       {
@@ -368,6 +369,37 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
 
+   /// <summary>Called when text selection changes (ie. caret has moved)</summary>
+   /// <param name="pNMHDR">Message header</param>
+   /// <param name="result">The result.</param>
+   void LanguageEditView::OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result)
+   {
+      SELCHANGE *sel = reinterpret_cast<SELCHANGE*>(pNMHDR);
+      *result = TRUE;
+      
+      try
+      {
+         // Refresh properties
+         CPropertiesWnd::Connect(GetDocument(), true); 
+
+         // Object selected without text:
+         if (sel->seltyp == SEL_OBJECT)
+         {
+            Console << "User selected button: " << *RichEdit.GetButton(sel->chrg) << ENDL;
+         }
+
+         // DEBUG:
+         Console << "Selection changed:" 
+                 << " SEL_EMPTY=" << (sel->seltyp == SEL_EMPTY)
+                 << " SEL_TEXT=" << ((sel->seltyp & SEL_TEXT) != 0)
+                 << " SEL_MULTICHAR=" << ((sel->seltyp & SEL_MULTICHAR) != 0)
+                 << " SEL_OBJECT=" << ((sel->seltyp & SEL_OBJECT) != 0)
+                 << " SEL_MULTIOBJECT=" << ((sel->seltyp & SEL_MULTIOBJECT) != 0) << ENDL;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
    // ------------------------------- PRIVATE METHODS ------------------------------
 
    

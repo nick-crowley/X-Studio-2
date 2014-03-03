@@ -83,7 +83,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="id">button ID.</param>
    /// <returns>New button bitmap</returns>
    /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-   HBITMAP LanguageEdit::ButtonData::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id)
+   HBITMAP LanguageButton::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id)
    {
       CClientDC dc(wnd);
       CBitmap   bmp;
@@ -114,6 +114,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Detach/return bitmap
       return (HBITMAP)bmp.Detach();
+   }
+
+   /// <summary>Write Button data to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageButton& b)
+   {
+      return c << Cons::White << "{" << Cons::Yellow << "LanguageButton"
+               << Cons::White << " id=" << b.ID << " text=" << b.Text 
+               << "}";
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
@@ -147,6 +155,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
             ch = '\n';
 
       return txt;
+   }
+
+   /// <summary>Gets button data.</summary>
+   /// <param name="pos">position.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::AlgorithmException">Button has no data</exception>
+   /// <exception cref="Logic::ComException">COM error</exception>
+   LanguageButton* LanguageEdit::GetButton(CHARRANGE pos) const
+   {
+      ReObject reObject;
+      HRESULT  hr;
+      
+      // Get IOleObject
+      reObject.cp = pos.cpMin;
+      if (FAILED(hr=OleDocument->GetObjectW(REO_IOB_USE_CP, &reObject, REO_GETOBJ_POLEOBJ)))  
+          throw ComException(HERE, hr);
+      IOleObjectPtr obj(reObject.poleobj, false);
+
+      // Ensure data exists
+      if (!reObject.dwUser)
+         throw AlgorithmException(HERE, L"Retrieved OLE object has no button data");
+
+      // Extract data
+      return reinterpret_cast<LanguageButton*>(reObject.dwUser);
    }
 
    /// <summary>Gets the edit mode.</summary>
@@ -199,7 +231,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             throw ComException(HERE, hr);
          
          // Create a static picture OLE Object 
-         bitmap.Attach(ButtonData::CreateBitmap(this, RichStringParser(txt, Alignment::Centre).Output, id));
+         bitmap.Attach(LanguageButton::CreateBitmap(this, RichStringParser(txt, Alignment::Centre).Output, id));
          IOleObjectPtr picture = OleBitmap::CreateStatic(bitmap, clientSite, storage);
          
          // Notify object it's embedded
@@ -220,7 +252,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          reObject.pstg     = storage;
 
          // Associate button data
-         reObject.dwUser = reinterpret_cast<DWORD>(new ButtonData(txt, id));
+         reObject.dwUser = reinterpret_cast<DWORD>(new LanguageButton(txt, id));
 
          // Insert the object at the current location
          OleDocument->InsertObject(&reObject);
@@ -354,10 +386,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   throw AlgorithmException(HERE, L"Retrieved OLE object has no button data");
 
                // DEBUG:
-               //Console << "OnButtonRemoved: Destroying button=" << reinterpret_cast<ButtonData*>(reObject.dwUser)->Text << ENDL;
+               //Console << "OnButtonRemoved: Destroying button=" << reinterpret_cast<LanguageButton*>(reObject.dwUser)->Text << ENDL;
 
                // Delete button data
-               delete reinterpret_cast<ButtonData*>(reObject.dwUser);
+               delete reinterpret_cast<LanguageButton*>(reObject.dwUser);
                return;
             }
          }

@@ -7,37 +7,43 @@
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
+   class LanguageEdit;
+
+   /// <summary>Data associated with each OLE button object</summary>
+   class LanguageButton
+   {
+      // --------------------- CONSTRUCTION ----------------------
+   public:
+      /// <summary>Creates button data</summary>
+      /// <param name="txt">text</param>
+      /// <param name="id">identifier.</param>
+      LanguageButton(const wstring& txt, const wstring& id) : Text(txt), ID(id)
+      {}
+
+      // ------------------------ STATIC -------------------------
+
+      static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id);
+
+      // ---------------------- ACCESSORS ------------------------
+
+      // ----------------------- MUTATORS ------------------------
+
+      // -------------------- REPRESENTATION ---------------------
+   public:
+      wstring  ID,
+               Text;
+   };
+
+   /// <summary>Write Button data to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageButton& b);
+
+
    /// <summary>RichEdit extension class</summary>
    class LanguageEdit : public RichEditEx
    {
       // ------------------------ TYPES --------------------------
    public:
       enum class EditMode { Source, Edit, Display };
-
-      /// <summary>Data associated with each OLE button object</summary>
-      class ButtonData
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         /// <summary>Creates button data</summary>
-         /// <param name="txt">text</param>
-         /// <param name="id">identifier.</param>
-         ButtonData(const wstring& txt, const wstring& id) : Text(txt), ID(id)
-         {}
-
-         // ------------------------ STATIC -------------------------
-
-         static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id);
-
-         // ---------------------- ACCESSORS ------------------------
-
-         // ----------------------- MUTATORS ------------------------
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         wstring  ID,
-                  Text;
-      };
 
    protected:
       /// <summary>RichEdit Callback COM interface</summary>
@@ -118,8 +124,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      wstring   GetAllText() const;
-      EditMode  GetEditMode() const;
+      wstring     GetAllText() const;
+      LanguageButton* GetButton(CHARRANGE pos) const;
+      EditMode    GetEditMode() const;
 
    protected:
 
@@ -150,7 +157,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       EditMode          Mode;
       LanguageDocument* Document;
       EditCallbackPtr   Callback;
-};
+   };
+  
    
 
 NAMESPACE_END2(GUI,Controls)
