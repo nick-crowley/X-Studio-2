@@ -127,6 +127,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
    void  LanguageDocument::InsertString(LanguageString& str)
    {
+      // Feedback
+      Console << "Inserting document string: " << str << ENDL;
+
       // Select+Display page
       SelectedPageIndex = Content.IndexOf(str.Page);
 
@@ -143,8 +146,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="str">The string.</param>
    /// <param name="newID">The new ID</param>
    /// <exception cref="Logic::ApplicationException">New String ID already in use</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
    void  LanguageDocument::RenameString(LanguageString& str, UINT newID)
    {
+      // Feedback
+      Console << "Renaming document string: " << str << Cons::White << " newID=" << newID << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
       // Validate new ID
       if (!Content.Find(str.Page).IsAvailable(newID))
          throw ApplicationException(HERE, L"Unable to change string ID - it is already in use");
@@ -166,6 +177,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
    void  LanguageDocument::RemoveString(UINT page, UINT id)
    {
+      // Feedback
+      Console << "Removing document string: page=" << page << " id=" << id << ENDL;
+
+      // Ensure not library
       if (Virtual)
          throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
 

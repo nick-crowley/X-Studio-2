@@ -56,6 +56,15 @@ namespace Logic
             return PageGroup::DATA;
       }
 
+      /// <summary>Write string to console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str)
+      {
+         return c << Cons::White << "{" 
+                  << Cons::Yellow << "LanguageString" 
+                  << Cons::White << " id=" << str.ID << " page=" << str.Page << " text=" << str.Text 
+                  << "}";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Gets the category/group.</summary>

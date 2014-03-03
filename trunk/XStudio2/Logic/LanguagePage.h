@@ -82,6 +82,9 @@ namespace Logic
          ColourTag    TagType;
       };
 
+      /// <summary>Write string to console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str);
+
       /// <summary>Represents a collection of language strings</summary>
       class LanguagePage
       {
