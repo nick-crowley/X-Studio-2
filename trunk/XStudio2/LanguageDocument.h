@@ -10,10 +10,17 @@ FORWARD_DECLARATION2(GUI,Controls,class LanguageButton)
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
 
+   // ------------------------- ENUMS -------------------------
+
+   /// <summary>Language document editor mode</summary>
+   enum class EditMode { Source, Edit, Display };
+
    // ----------------- EVENTS AND DELEGATES ------------------
 
    typedef Event<>                             SelectionChangedEvent;
    typedef SelectionChangedEvent::DelegatePtr  SelectionChangedHandler;
+
+   // ------------------------ CLASSES ------------------------
 
    /// <summary>Language document template</summary>
    class LanguageDocTemplate : public CMultiDocTemplate
@@ -213,6 +220,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- PROPERTIES ------------------------
    public:
       PROPERTY_GET(PageCollection&,Content,GetContent);
+      PROPERTY_GET_SET(EditMode,CurrentMode,GetEditMode,SetEditMode);
       PROPERTY_GET_SET(ButtonData*,SelectedButton,GetSelectedButton,SetSelectedButton);
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
@@ -222,6 +230,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ---------------------- ACCESSORS ------------------------			
    public:
       PageCollection&  GetContent();
+      EditMode         GetEditMode() const;
       ButtonData*      GetSelectedButton() const;
       LanguagePage*    GetSelectedPage() const;
       LanguageString*  GetSelectedString() const;
@@ -255,6 +264,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  OnCloseDocument() override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
+      void  SetEditMode(EditMode m);
       void  SetSelectedButton(ButtonData* b);
       void  SetSelectedPage(LanguagePage* p);
       void  SetSelectedPageIndex(int index);
@@ -276,13 +286,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;
       SimpleEvent            LibraryRebuilt,
-                             StringContentChanged;
+                             StringContentChanged,
+                             EditModeChanged;
 
    protected:
-      ButtonData*      CurrentButton;
-      LanguageString*  CurrentString;
-      LanguagePage*    CurrentPage;
-      set<UINT>        Components;
+      EditMode         Mode;             // Current editing mode
+      ButtonData*      CurrentButton;    // Currently selected button
+      LanguageString*  CurrentString;    // Currently selected string
+      LanguagePage*    CurrentPage;      // Currently selected page
+      set<UINT>        Components;       // [LIBRARY] IDs of currently included files
 };
 
 

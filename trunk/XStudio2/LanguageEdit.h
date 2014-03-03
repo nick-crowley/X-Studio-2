@@ -46,7 +46,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    public:
-      enum class EditMode { Source, Edit, Display };
+      
 
    protected:
       /// <summary>RichEdit Callback COM interface</summary>
@@ -126,14 +126,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // --------------------- PROPERTIES ------------------------
    public:
-      //PROPERTY_GET_SET(EditMode,EditMode,GetEditMode,SetEditMode);
+      
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       wstring         GetAllText() const;
       LanguageButton* GetButton(CHARRANGE pos) const;
-      EditMode        GetEditMode() const;
-
+      
    protected:
 
       // ----------------------- MUTATORS ------------------------
@@ -143,7 +142,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  InsertButton(const wstring& txt, const wstring& id);
       void  OnButtonChanged(LanguageButton& btn);
       void  Refresh();
-      void  SetEditMode(EditMode m);
       void  ToggleFormatting(DWORD fx);
 
    protected:
@@ -155,6 +153,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       handler void  OnButtonRemoved(IOleObjectPtr obj);
       handler void  OnContentChanged();
+      handler void  OnEditModeChanged();
       handler void  OnRequestTooltip(CustomTooltip::TooltipData* data) override;
       handler void  OnTextChange() override;
       
@@ -162,12 +161,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
 
    protected:
-      EditMode          Mode;             // Current editing mode
-      LanguageDocument* Document;         // Document 
-      EditCallbackPtr   Callback;         // Object removal notification callback
-      RichString        Content;          // [EditorMode] Current content 
-      ButtonDataList    ActiveData;       // Temporary storage for button data
-      EventHandler      fnContentChanged;
+      LanguageDocument* Document;            // Document 
+      EditCallbackPtr   Callback;            // Object removal notification callback
+      RichString        Content;             // [EDITOR] Current content 
+      ButtonDataList    ActiveData;          // Temporary storage for button data
+      EventHandler      fnContentChanged,    // String Text/Properties changed
+                        fnEditModeChanged;   // Edit mode changed
    };
   
    
