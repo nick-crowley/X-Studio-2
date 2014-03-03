@@ -67,6 +67,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Creates a new string.</summary>
+   /// <param name="page">destination page.</param>
+   /// <param name="insertAt">insertion point</param>
+   /// <returns>String with available ID</returns>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+   LanguageString  LanguageDocument::CreateString(UINT page, LanguageString* insertAt /*= nullptr*/)
+   {
+      // Determine ID
+      UINT newID = Content.Find(page).GetAvailableID(insertAt ? insertAt->ID : -1);
+      
+      // Generate string
+      return LanguageString(newID, page, L"<New String>", GameVersion::Threat);
+   }
+
    /// <summary>Retrieves the file/library page collection</summary>
    /// <returns></returns>
    LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
@@ -104,7 +119,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
-   /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+   /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
    /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
    /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
    void  LanguageDocument::InsertString(LanguageString& str)
@@ -124,7 +139,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Removes the string from the appropriate page</summary>
    /// <param name="page">Page ID.</param>
    /// <param name="id">string ID.</param>
-   /// <exception cref="Logic::ApplicationException">String not found</exception>
    /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
    /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
    /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
@@ -138,8 +152,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Remove from languagePage
       UINT index = SelectedPage->Remove(id);
-      if (index == -1)
-         throw ApplicationException(HERE, L"The string was not found");
 
       // Update view
       GetView<LanguageStringView>()->RemoveString(index);

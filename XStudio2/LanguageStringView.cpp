@@ -20,12 +20,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COPY, &LanguageStringView::OnCommandEditCopy)
       ON_COMMAND(ID_EDIT_PASTE, &LanguageStringView::OnCommandEditPaste)
       ON_COMMAND(ID_EDIT_CLEAR, &LanguageStringView::OnCommandEditClear)
+      ON_COMMAND(ID_EDIT_INSERT, &LanguageStringView::OnCommandEditInsert)
       ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguageStringView::OnCommandEditSelectAll)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_INSERT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
       ON_WM_CONTEXTMENU()
    END_MESSAGE_MAP()
@@ -239,6 +241,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedString(*GetDocument()));      break;
          case ID_EDIT_PASTE:  GetDocument()->Execute(new PasteString(*GetDocument()));             break;
          case ID_EDIT_CLEAR:  GetDocument()->Execute(new RemoveSelectedString(*GetDocument()));    break;
+         case ID_EDIT_INSERT: GetDocument()->Execute(new InsertNewString(*GetDocument()));         break;
 
          // Select All
          //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);   break;
@@ -267,6 +270,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;
 
       // Always Enabled/Disabled
+      case ID_EDIT_INSERT:
       case ID_EDIT_SELECT_ALL:  state = true;  break;
       case ID_EDIT_FIND:        state = false; break;
       }

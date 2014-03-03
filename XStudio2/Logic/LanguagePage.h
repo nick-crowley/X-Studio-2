@@ -264,24 +264,38 @@ namespace Logic
             return Strings.Find(id);     
          }
 
-         /// <summary>Read-write access to strings by index</summary>
-         /// <param name="index">The index</param>
-         /// <returns></returns>
-         /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
-         LanguageString&  FindByIndex(UINT index) 
-         {
-            return Strings.FindByIndex(index);
-         }
-
          /// <summary>Get display category of this page when used in the string library viewer</summary>
          PageGroup  GetGroup() const;
          
-         /// <summary>Inserts a string</summary>
-         /// <param name="s">string.</param>
-         /// <returns>Zero-based index if successful, otherwise -1</returns>
-         int  Insert(LanguageStringRef s)
+         /// <summary>Finds the first free ID preceeding the input, if any, otherwise the first ID following the input.</summary>
+         /// <param name="start">initial ID, or -1 to append.</param>
+         /// <returns></returns>
+         int  GetAvailableID(int start) const
          {
-            return Strings.Insert(s);
+            // Append: Return LastID+1
+            if (start == -1 || Strings.empty())
+               return !Strings.empty() ? Strings.end()->first + 1 : 1;
+
+            // Find previous ID:
+            auto pos = Strings.find(start);
+            for (int id = start; id >= 0 && pos != Strings.begin(); id--)
+            {
+               // Gap Detected: Use first available ID
+               if ((UINT)id > (pos--)->first)
+                  return id;
+            }
+
+            // Find next ID
+            pos = Strings.find(start);
+            for (int id = start; pos != Strings.end(); id++)
+            {
+               // Gap Detected: Use first available ID
+               if ((UINT)id < (pos++)->first)
+                  return id;
+            }
+
+            // Contiguous: Use LastID+1
+            return Strings.end()->first + 1;
          }
 
          /// <summary>Read-only access to string by ID.</summary>
@@ -295,6 +309,23 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
          
+         /// <summary>Read-write access to strings by index</summary>
+         /// <param name="index">The index</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+         LanguageString&  FindByIndex(UINT index) 
+         {
+            return Strings.FindByIndex(index);
+         }
+         
+         /// <summary>Inserts a string</summary>
+         /// <param name="s">string.</param>
+         /// <returns>Zero-based index if successful, otherwise -1</returns>
+         int  Insert(LanguageStringRef s)
+         {
+            return Strings.Insert(s);
+         }
+
          /// <summary>Remove a string by ID</summary>
          /// <param name="id">The string id</param>
          /// <returns>Zero-based index of removed string</returns>
