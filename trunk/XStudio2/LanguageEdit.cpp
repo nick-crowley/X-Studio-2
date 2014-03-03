@@ -273,8 +273,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Displays the currently selected string in the manner appropriate to the editing mode.</summary>
-   /// <exception cref="Logic::ArgumentNullException">Not initialized</exception>
+   /// <exception cref="Logic::ArgumentNullException">Control not initialized</exception>
+   /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::ArgumentException">Error in richText parsing algorithm</exception>
    /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
+   /// <exception cref="Logic::Language::RichTextException">Error in richText formatting tags</exception>
    void  LanguageEdit::Refresh()
    {
       REQUIRED(Document);  // Ensure initialized
@@ -288,8 +291,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Editor: Display RichText
       else if (Mode == EditMode::Edit)
-         SetRichText(Document->SelectedString->RichText);
-
+      {
+         Content = Document->SelectedString->RichText;
+         SetRichText(Content);
+      }
       // Display: Format for display
       else if (Mode == EditMode::Display)
          throw NotImplementedException(HERE, L"Display mode");
@@ -308,8 +313,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Changes the edit mode.</summary>
    /// <param name="m">mode.</param>
-   /// <exception cref="Logic::ArgumentNullException">Not initialized</exception>
+   /// <exception cref="Logic::ArgumentNullException">Control not initialized</exception>
+   /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
+   /// <exception cref="Logic::ArgumentException">Error in richText parsing algorithm</exception>
    /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
+   /// <exception cref="Logic::Language::RichTextException">Error in richText formatting tags</exception>
    void  LanguageEdit::SetEditMode(EditMode m)
    {
       REQUIRED(Document);  // Ensure initialized
@@ -348,14 +356,42 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Generates the source text.</summary>
    /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Author/Title exceed GuiString buffer limit</exception>
    wstring  LanguageEdit::GetSourceText()
    { 
-      // TODO: Write author/title/text tags etc.
+      wstring source;
 
-      // Get content
-      wstring content = RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
+      // Author:
+      if (!Content.Author.empty())
+         source += GuiString(L"[author]%s[/author]", Content.Author.c_str());
+      
+      // Title:
+      if (!Content.Title.empty())
+         source += GuiString(L"[title]%s[/title]", Content.Title.c_str());
 
-      return content;
+      // Columns:
+      if (Content.Columns != ColumnType::Default || Content.Width || Content.Spacing)
+      {
+         source += L"[text";
+         
+         // Properties:
+         if (Content.Columns != ColumnType::Default)
+            source += GuiString(L" cols='%d'", Content.Columns);
+         if (Content.Width)
+            source += GuiString(L" colwidth='%d'", Content.Width);
+         if (Content.Spacing)
+            source += GuiString(L" colspacing='%d'", Content.Spacing);
+
+         // Content
+         source += L"]";
+         source += RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
+         source += L"[/text]";
+      }
+      else
+         // Content:
+         source += RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
+
+      return source;
    }
 
    /// <summary>Highlights the match.</summary>
