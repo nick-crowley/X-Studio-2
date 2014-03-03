@@ -379,15 +379,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       
       try
       {
-         // Refresh properties
-         CPropertiesWnd::Connect(GetDocument(), true); 
-
-         // Object selected without text:
-         if (sel->seltyp == SEL_OBJECT)
-         {
-            Console << "User selected button: " << *RichEdit.GetButton(sel->chrg) << ENDL;
-         }
-
+         // Set/Clear button selection
+         if (sel->seltyp == SEL_OBJECT)      // Object selected (with no extra characters)
+            GetDocument()->SelectedButton = RichEdit.GetButton(sel->chrg);
+         else
+            GetDocument()->SelectedButton = nullptr;
+         
          // DEBUG:
          Console << "Selection changed:" 
                  << " SEL_EMPTY=" << (sel->seltyp == SEL_EMPTY)

@@ -213,15 +213,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- PROPERTIES ------------------------
    public:
       PROPERTY_GET(PageCollection&,Content,GetContent);
+      PROPERTY_GET_SET(ButtonData*,SelectedButton,GetSelectedButton,SetSelectedButton);
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
       PROPERTY_SET(int,SelectedPageIndex,SetSelectedPageIndex);
-      PROPERTY_SET(ButtonData*,SelectedButton,SetSelectedButton);
       //PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       PageCollection&  GetContent();
+      ButtonData*      GetSelectedButton() const;
       LanguagePage*    GetSelectedPage() const;
       //int              GetSelectedPageIndex() const;
       LanguageString*  GetSelectedString() const;
@@ -256,7 +257,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  OnCloseDocument() override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
-      void  SetSelectedButton(GUI::Controls::LanguageButton* b);
+      void  SetSelectedButton(ButtonData* b);
       void  SetSelectedPage(LanguagePage* p);
       void  SetSelectedPageIndex(int index);
       void  SetSelectedString(LanguageString* s);

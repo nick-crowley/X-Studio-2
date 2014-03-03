@@ -55,7 +55,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), CurrentString(nullptr), CurrentPage(nullptr), Virtual(false)
+   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), 
+                                          CurrentString(nullptr), CurrentPage(nullptr), CurrentButton(nullptr),
+                                          Virtual(false)
    {
    }
 
@@ -90,6 +92,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    LanguageDocument::PageCollection&   LanguageDocument::GetContent() 
    {
       return Virtual ? Library : File.Pages;
+   }
+
+   /// <summary>Gets the selected button.</summary>
+   /// <returns></returns>
+   LanguageButton*  LanguageDocument::GetSelectedButton() const
+   {
+      return CurrentButton;
    }
 
    /// <summary>Gets the selected page.</summary>
@@ -227,14 +236,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
 
       // Group: ButtonID/ButtonText
-      /*if (CurrentButton)
+      if (CurrentButton)
       {
+         auto edit = GetView<LanguageEditView>();
          CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Button"));
-         group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
-         group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
-         group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         group->AddSubItem(new LanguageEditView::ButtonIDProperty(*this, *edit, *SelectedButton));
+         group->AddSubItem(new LanguageEditView::ButtonTextProperty(*this, *edit, *SelectedButton));
          grid.AddProperty(group);
-      }*/
+      }
 
       // Group: Library files
       if (Virtual)
@@ -319,7 +328,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="b">The button.</param>
    void  LanguageDocument::SetSelectedButton(LanguageButton* b)
    {
-      CurrentButton = b;
+      if (CurrentButton != b)
+      {
+         CurrentButton = b;
+         CPropertiesWnd::Connect(this, true);
+      }
    }
 
    /// <summary>Sets the selected page and raises PAGE SELECTION CHANGED.</summary>

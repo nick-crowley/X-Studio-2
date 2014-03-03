@@ -14,7 +14,108 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // ------------------------ TYPES --------------------------
    public:
+      /// <summary>Dialog ID.</summary>
 	   enum { IDD = IDR_LANGUAGEVIEW };
+
+      /// <summary>Base class for all button properties</summary>
+      class ButtonPropertyBase : public LanguageDocument::LanguagePropertyBase
+      {
+      public:
+         /// <summary>Create button property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">language edit.</param>
+         /// <param name="button">button.</param>
+         /// <param name="name">name.</param>
+         /// <param name="val">value</param>
+         /// <param name="desc">description.</param>
+         ButtonPropertyBase(LanguageDocument& doc, LanguageEdit& edit, LanguageButton& button, wstring name, _variant_t val, wstring desc)
+            : Button(button), Edit(edit), LanguagePropertyBase(doc, name, val, desc)
+         {}
+
+      protected:
+         LanguageButton&  Button;
+         LanguageEdit&    Edit;
+      };
+
+      /// <summary>Button ID property grid item</summary>
+      class ButtonIDProperty : public ButtonPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create button ID property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="view">Edit view.</param>
+         /// <param name="button">button.</param>
+         ButtonIDProperty(LanguageDocument& doc, LanguageEditView& view, LanguageButton& button)
+            : ButtonPropertyBase(doc, view.RichEdit, button, L"ID", button.ID.c_str(),  L"Button ID used by scripts")
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Always allow, even duplicates</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            return true;
+         }
+
+         /// <summary>Update ID</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Change ID
+            Button.ID = value;
+            Edit.OnButtonChanged(Button);
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Button text property grid item</summary>
+      class ButtonTextProperty : public ButtonPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create button text property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="view">Edit view.</param>
+         /// <param name="button">button.</param>
+         ButtonTextProperty(LanguageDocument& doc, LanguageEditView& view, LanguageButton& button)
+            : ButtonPropertyBase(doc, view.RichEdit, button, L"Text", button.Text.c_str(),  L"Button display text (can include formatting tags)")
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Always allow, even duplicates</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            return true;
+         }
+
+         /// <summary>Update text</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Change text
+            Button.Text = value;
+            Edit.OnButtonChanged(Button);
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:

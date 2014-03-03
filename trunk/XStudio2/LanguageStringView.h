@@ -113,7 +113,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="string">string.</param>
          IDProperty(LanguageDocument& doc, LanguagePage& page, LanguageString& string)
             : Page(page), StringPropertyBase(doc, string, L"ID", string.ID,  L"string ID")
-              
          {}
 
          // ---------------------- ACCESSORS ------------------------	
