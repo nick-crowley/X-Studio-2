@@ -81,6 +81,29 @@ NAMESPACE_BEGIN2(GUI,Views)
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
 
+   /// <summary>Query state of editor mode command</summary>
+   void LanguageEditView::OnQueryMode(CCmdUI* pCmd)
+   {
+      bool state = false, 
+           checked = false;
+
+      // Require selected string
+      if (state = (GetDocument()->SelectedString != nullptr))
+      {
+         // Query mode
+         switch (pCmd->m_nID)
+         {
+         case ID_VIEW_SOURCE:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
+         case ID_VIEW_EDITOR:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
+         case ID_VIEW_DISPLAY:    checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
+         }
+      }
+
+      // Set state
+      pCmd->Enable(state ? TRUE : FALSE);
+      pCmd->SetCheck(checked ? TRUE : FALSE);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Arrange controls</summary>
@@ -299,29 +322,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_UNDERLINE:  checked = (cf.dwEffects & CFE_UNDERLINE) != 0;  break;
          case ID_EDIT_ADD_BUTTON: state = true;                                   break;
          case ID_EDIT_COLOUR:     state = RichEdit.HasSelection();                break;
-         }
-      }
-
-      // Set state
-      pCmd->Enable(state ? TRUE : FALSE);
-      pCmd->SetCheck(checked ? TRUE : FALSE);
-   }
-
-   /// <summary>Query state of editor mode command</summary>
-   void LanguageEditView::OnQueryMode(CCmdUI* pCmd)
-   {
-      bool state = false, 
-           checked = false;
-
-      // Require selected string
-      if (state = (GetDocument()->SelectedString && ::GetFocus() == RichEdit))
-      {
-         // Query mode
-         switch (pCmd->m_nID)
-         {
-         case ID_VIEW_SOURCE:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Source);   break;
-         case ID_VIEW_EDITOR:     checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit);     break;
-         case ID_VIEW_DISPLAY:    checked = (RichEdit.GetEditMode() == LanguageEdit::EditMode::Display);  break;
          }
       }
 

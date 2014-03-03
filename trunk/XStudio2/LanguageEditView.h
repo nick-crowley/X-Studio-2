@@ -135,7 +135,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      
+      afx_msg void OnQueryMode(CCmdUI* pCmd);
 
    protected:
       void AdjustLayout();
@@ -156,7 +156,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnQueryAlignment(CCmdUI* pCmd);
       afx_msg void OnQueryClipboard(CCmdUI* pCmd);
       afx_msg void OnQueryFormat(CCmdUI* pCmd);
-      afx_msg void OnQueryMode(CCmdUI* pCmd);
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void OnStringSelectionChanged();
