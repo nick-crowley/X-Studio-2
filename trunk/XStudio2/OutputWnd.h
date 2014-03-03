@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    public:
       void ActivatePane(Operation op);
+      //BOOL CanBeClosed() const override { return FALSE; }
       void Create(CWnd* parent);
 
    protected:
