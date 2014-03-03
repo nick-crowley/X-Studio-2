@@ -226,6 +226,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
          grid.AddProperty(group);
       }
 
+      // Group: ButtonID/ButtonText
+      /*if (CurrentButton)
+      {
+         CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Button"));
+         group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
+         group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
+         group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         grid.AddProperty(group);
+      }*/
+
       // Group: Library files
       if (Virtual)
       {
@@ -303,6 +313,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
       }
+   }
+
+   /// <summary>Sets the selected button.</summary>
+   /// <param name="b">The button.</param>
+   void  LanguageDocument::SetSelectedButton(LanguageButton* b)
+   {
+      CurrentButton = b;
    }
 
    /// <summary>Sets the selected page and raises PAGE SELECTION CHANGED.</summary>

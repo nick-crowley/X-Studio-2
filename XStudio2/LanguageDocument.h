@@ -4,6 +4,9 @@
 #include "PropertySource.h"
 #include "GuiCommand.h"
 
+/// <summary>Forward declaration</summary>
+FORWARD_DECLARATION2(GUI,Controls,class LanguageButton)
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
 
@@ -33,7 +36,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
 	   // ------------------------ TYPES --------------------------
    public:
+      /// <summary>LanguageFile Page collection</summary>
 	   typedef LanguageFile::PageCollection PageCollection;
+
+      /// <summary>Language button</summary>
+      typedef GUI::Controls::LanguageButton ButtonData;
 
    public:
       /// <summary>Base class for all Language document properties</summary>
@@ -209,6 +216,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
       PROPERTY_SET(int,SelectedPageIndex,SetSelectedPageIndex);
+      PROPERTY_SET(ButtonData*,SelectedButton,SetSelectedButton);
       //PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
 
       // ---------------------- ACCESSORS ------------------------			
@@ -248,6 +256,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  OnCloseDocument() override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
+      void  SetSelectedButton(GUI::Controls::LanguageButton* b);
       void  SetSelectedPage(LanguagePage* p);
       void  SetSelectedPageIndex(int index);
       void  SetSelectedString(LanguageString* s);
@@ -270,6 +279,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SimpleEvent            LibraryRebuilt;
 
    protected:
+      ButtonData*      CurrentButton;
       LanguageString*  CurrentString;
       LanguagePage*    CurrentPage;
       set<UINT>        Components;
