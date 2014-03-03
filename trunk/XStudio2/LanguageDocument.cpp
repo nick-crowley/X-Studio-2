@@ -130,7 +130,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Insert into languagePage
       UINT index = SelectedPage->Insert(str);
       if (index == -1)
-         throw ApplicationException(HERE, L"The ID is already in use");
+         throw ApplicationException(HERE, L"Unable to insert string - the ID is already in use");
       
       // Update view
       GetView<LanguageStringView>()->InsertString(index, str, true);
