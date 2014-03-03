@@ -289,16 +289,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         // Update text
-         //String->Text = GetSourceText();
-         Console << "TextChanged=" << GetSourceText() << ENDL;
+         REQUIRED(Document->SelectedString);
 
          // Preserve location
          auto sel = GetSelection();
 
-         // Change Bitmap + Refresh properties
+         // Change Bitmap + Re-display properties using new button data
          InsertButton(btn.Text, btn.ID);
          Document->SelectedButton = GetButton(sel);
+
+         // Update string
+         Document->SelectedStringText = GetSourceText();
       }
       catch (ExceptionBase& e) 
       {
@@ -514,16 +515,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
          // Source: Save verbatim + highlight
          case EditMode::Source:
-            Document->SelectedString->Text = GetAllText();
+            Document->SelectedStringText = GetAllText();
             UpdateHighlighting();
             break;
 
          // Edit: Generate source + save
          case EditMode::Edit:
-            //String->Text = GetSourceText();
-
             // DEBUG:
-            Console << "TextChanged=" << GetSourceText() << ENDL;
+            //Console << "TextChanged=" << GetSourceText() << ENDL;
+            
+            Document->SelectedStringText = GetSourceText();
             break;
          }
       }
@@ -585,7 +586,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                phrase.Clear();
 
                // DEBUG:
-               Console << "Inserting Button=" << btn->Text << ENDL;
+               //Console << "Inserting Button=" << btn->Text << ENDL;
 
                // Insert button
                auto pos = GetSelection().cpMax;
