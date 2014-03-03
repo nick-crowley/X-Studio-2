@@ -330,6 +330,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       if (CurrentButton != b)
       {
+         // Display properties
          CurrentButton = b;
          CPropertiesWnd::Connect(this, true);
       }
@@ -337,11 +338,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Sets the selected page and raises PAGE SELECTION CHANGED.</summary>
    /// <param name="p">The page.</param>
+   /// <remarks>Also clears the current button</remarks>
    void  LanguageDocument::SetSelectedPage(LanguagePage* p)
    {
-      CurrentPage = p;
-      CPropertiesWnd::Connect(this, true);
-      PageSelectionChanged.Raise();
+      if (CurrentPage != p)
+      {
+         // Set page.  Clear button before updating properties
+         CurrentPage = p;
+         CurrentButton = nullptr;
+
+         // Display properties. Raise PAGE SELECTION CHANGED
+         CPropertiesWnd::Connect(this, true);
+         PageSelectionChanged.Raise();
+      }
    }
    
    /// <summary>Programatically select a page (raises PAGE SELECTION CHANGED).</summary>
@@ -362,11 +371,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Sets the selected string and raises STRING SELECTION CHANGED.</summary>
    /// <param name="s">The string.</param>
+   /// <remarks>Also clears the current button</remarks>
    void  LanguageDocument::SetSelectedString(LanguageString* s)
    {
-      CurrentString = s;
-      CPropertiesWnd::Connect(this, true);
-      StringSelectionChanged.Raise();
+      if (CurrentString != s)
+      {
+         // Set page.  Clear button before updating properties
+         CurrentString = s;
+         CurrentButton = nullptr;
+
+         // Display properties. Raise STRING SELECTION CHANGED
+         CPropertiesWnd::Connect(this, true);
+         StringSelectionChanged.Raise();
+      }
    }
    
    /// <summary>Programatically select a string in the currently selected page (raises STRING SELECTION CHANGED).</summary>
