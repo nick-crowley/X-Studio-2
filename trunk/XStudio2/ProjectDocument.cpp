@@ -342,7 +342,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Read file
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
          Project = LegacyProjectReader(fs).ReadFile(szPath);
-
+         
          // Success: 
          return TRUE;
       }

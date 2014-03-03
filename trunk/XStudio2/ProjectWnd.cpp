@@ -75,7 +75,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
 	      return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
 
-      return CDockablePane::PreTranslateMessage(pMsg);
+      return __super::PreTranslateMessage(pMsg);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -136,6 +136,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Custom accelerators
          Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECTVIEW));
+         
 
 	      // Populate
 	      TreeView.Populate();

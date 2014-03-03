@@ -12,6 +12,7 @@
 #define IDR_LANGUAGEVIEW                107
 #define IDR_SCRIPTVIEW                  108
 #define IDR_PROJECTVIEW                 109
+#define IDR_STRINGVIEW                  150
 
 ///////////////////////////////// TOOLBARS /////////////////////////////
 

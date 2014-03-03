@@ -504,6 +504,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:
       void InsertString(UINT index, LanguageString& str, bool display);
       void RemoveString(UINT index);
+      BOOL PreTranslateMessage(MSG* pMsg) override;
       
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
 
@@ -528,13 +529,12 @@ NAMESPACE_BEGIN2(GUI,Views)
       // -------------------- REPRESENTATION ---------------------
    public:
       
-
-   private:
+   protected:
       SelectionChangedHandler  fnPageSelectionChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
-
-};
+      HACCEL                   Accelerators;
+   };
    
 
 NAMESPACE_END2(GUI,Views)
