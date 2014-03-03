@@ -99,6 +99,17 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
+   
+   /// <summary>Translates custom accelerators for this window.</summary>
+   /// <param name="pMsg">The MSG.</param>
+   /// <returns></returns>
+   BOOL LanguageStringView::PreTranslateMessage(MSG* pMsg)
+   {
+      if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+	      return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
+
+      return __super::PreTranslateMessage(pMsg);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
@@ -199,6 +210,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetListCtrl().SetExtendedStyle(LVS_EX_FULLROWSELECT);
          GetListCtrl().SetImageList(&Images, LVSIL_SMALL);
 
+         // Custom accelerators
+         Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_STRINGVIEW));
+
          // Listen for Page selection changed
          fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
       }
@@ -295,21 +309,23 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       bool state = false;
 
-      switch (pCmdUI->m_nID)
-      {
-      // Require selection
-      case ID_EDIT_CLEAR: 
-      case ID_EDIT_COPY:   
-      case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);  break;
+      // Ensure focused
+      if (::GetFocus() == GetListCtrl())
+         switch (pCmdUI->m_nID)
+         {
+         // Require selection
+         case ID_EDIT_CLEAR: 
+         case ID_EDIT_COPY:   
+         case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);  break;
      
-      // Require string on clipboard
-      case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;
+         // Require string on clipboard
+         case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;
 
-      // Always Enabled/Disabled
-      case ID_EDIT_INSERT:
-      case ID_EDIT_SELECT_ALL:  state = true;  break;
-      case ID_EDIT_FIND:        state = false; break;
-      }
+         // Always Enabled/Disabled
+         case ID_EDIT_INSERT:
+         case ID_EDIT_SELECT_ALL:  state = true;  break;
+         case ID_EDIT_FIND:        state = false; break;
+         }
 
       // Set state
       pCmdUI->Enable(state ? TRUE : FALSE);
@@ -331,6 +347,5 @@ NAMESPACE_BEGIN2(GUI,Views)
    
 
 NAMESPACE_END2(GUI,Views)
-
 
 

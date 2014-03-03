@@ -224,26 +224,28 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       bool state = false;
 
-      switch (pCmdUI->m_nID)
-      {
-      // Require selection
-      case ID_EDIT_CLEAR: 
-      case ID_EDIT_COPY:   
-      case ID_EDIT_CUT:    
-         state = (GetDocument()->SelectedPage != nullptr);  
-         break;
+      // Ensure focused
+      if (::GetFocus() == GetListCtrl())
+         switch (pCmdUI->m_nID)
+         {
+         // Require selection
+         case ID_EDIT_CLEAR: 
+         case ID_EDIT_COPY:   
+         case ID_EDIT_CUT:    
+            state = (GetDocument()->SelectedPage != nullptr);  
+            break;
      
-      // Always enabled
-      case ID_EDIT_PASTE:  
-         state = true;  
-         break;
+         // Always enabled
+         case ID_EDIT_PASTE:  
+            state = true;  
+            break;
 
-      // Disabled
-      case ID_EDIT_FIND:
-      case ID_EDIT_SELECT_ALL:
-         state = false;
-         break;
-      }
+         // Disabled
+         case ID_EDIT_FIND:
+         case ID_EDIT_SELECT_ALL:
+            state = false;
+            break;
+         }
 
       // Set state
       pCmdUI->Enable(state ? TRUE : FALSE);

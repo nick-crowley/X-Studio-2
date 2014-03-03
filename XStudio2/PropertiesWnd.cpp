@@ -18,19 +18,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Properties window instance.</summary>
    CPropertiesWnd*  CPropertiesWnd::Instance = nullptr;
 
+   const UINT IDC_PROPERTY_GRID = 4;
+
    // --------------------------------- APP WIZARD ---------------------------------
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
+      ON_WM_SETFOCUS()
+	   ON_WM_SETTINGCHANGE()
 	   ON_COMMAND(ID_EXPAND_ALL, OnExpandAllProperties)
       ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
+      ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyUpdated)
       ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
       ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnQueryExpandAllProperties)
       ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnQuerySortProperties)
-	   ON_WM_SETFOCUS()
-	   ON_WM_SETTINGCHANGE()
-      ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyUpdated)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -142,7 +144,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
          // Create property grid
-	      if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, 2))
+	      if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
 	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
          SetPropListFont();
@@ -203,7 +205,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
    {
-	   CDockablePane::OnSetFocus(pOldWnd);
+      CDockablePane::OnSetFocus(pOldWnd);
 	   m_wndPropList.SetFocus();
    }
 

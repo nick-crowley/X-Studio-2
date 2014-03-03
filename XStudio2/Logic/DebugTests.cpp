@@ -32,8 +32,10 @@ namespace Logic
 
    void  DebugTests::RunAll()
    {
+      AfxGetMainWnd()->UpdateDialogControls(AfxGetMainWnd(), TRUE);
+
       //Test_LanguageFileReader();
-      Test_LanguageEditRegEx();
+      //Test_LanguageEditRegEx();
       //Test_CatalogReader();
       //Test_GZip();
       //Test_FileSystem();

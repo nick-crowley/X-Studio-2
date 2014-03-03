@@ -211,7 +211,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit))
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit && ::GetFocus() == RichEdit))
       {
          ParaFormat  pf(PFM_ALIGNMENT);
          
@@ -238,7 +238,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + Edit/Source mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() != LanguageEdit::EditMode::Display))
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() != LanguageEdit::EditMode::Display && ::GetFocus() == RichEdit))
       {
          // Query selection
          switch (pCmd->m_nID)
@@ -286,7 +286,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit))
+      if (state = (GetDocument()->SelectedString && RichEdit.GetEditMode() == LanguageEdit::EditMode::Edit && ::GetFocus() == RichEdit))
       {
          CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
          
@@ -314,7 +314,7 @@ NAMESPACE_BEGIN2(GUI,Views)
            checked = false;
 
       // Require selected string
-      if (state = (GetDocument()->SelectedString != nullptr))
+      if (state = (GetDocument()->SelectedString && ::GetFocus() == RichEdit))
       {
          // Query mode
          switch (pCmd->m_nID)
