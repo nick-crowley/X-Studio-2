@@ -267,26 +267,21 @@ namespace Logic
          /// <summary>Get display category of this page when used in the string library viewer</summary>
          PageGroup  GetGroup() const;
          
-         /// <summary>Finds the first free ID preceeding the input, if any, otherwise the first ID following the input.</summary>
-         /// <param name="start">initial ID, or -1 to append.</param>
-         /// <returns></returns>
+         /// <summary>Finds an available ID for a new string</summary>
+         /// <param name="start">ID of insertion point, or -1 to append after last string.</param>
+         /// <returns>ID preceeding input, if available, otherwise the first ID following the input.</returns>
          int  GetAvailableID(int start) const
          {
-            // Append: Return LastID+1
+            // Empty/Append: Return LastID+1
             if (start == -1 || Strings.empty())
-               return !Strings.empty() ? Strings.end()->first + 1 : 1;
+               return !Strings.empty() ? (--Strings.end())->first+1 : 1;
 
-            // Find previous ID:
-            auto pos = Strings.find(start);
-            for (int id = start; id >= 0 && pos != Strings.begin(); id--)
-            {
-               // Gap Detected: Use first available ID
-               if ((UINT)id > (pos--)->first)
-                  return id;
-            }
+            // Prev Available: Use previous ID
+            if (Strings.find(start-1) == Strings.end())
+               return start-1;
 
             // Find next ID
-            pos = Strings.find(start);
+            auto pos = Strings.find(start);
             for (int id = start; pos != Strings.end(); id++)
             {
                // Gap Detected: Use first available ID
@@ -295,7 +290,7 @@ namespace Logic
             }
 
             // Contiguous: Use LastID+1
-            return Strings.end()->first + 1;
+            return (--Strings.end())->first+1;
          }
 
          /// <summary>Read-only access to string by ID.</summary>
