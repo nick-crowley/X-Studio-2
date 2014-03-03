@@ -206,6 +206,97 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageStringPtr    String;   // Copy of string being operated on
       };
 
+      
+      /// <summary>Deletes the currently selected string</summary>
+      class DeleteSelectedString : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
+         DeleteSelectedString(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure selection exists
+            if (!doc.SelectedString)
+               throw InvalidOperationException(HERE, L"No string is selected");
+            else if (!doc.SelectedPage)
+               throw InvalidOperationException(HERE, L"No page is selected");
+
+            // Store copy of string
+            String.reset(new LanguageString(*doc.SelectedString));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Remove String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected string from the View and the Document</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+         void Execute() override
+         {
+            // Remove string
+            Document.RemoveString(String->Page, String->ID);
+         }
+
+         /// <summary>Inserts the removed string.</summary>
+         /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Undo() override
+         {
+            // Re-insert string
+            Document.InsertString(*String);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Cuts the currently selected string to the clipboard</summary>
+      class CutSelectedString : public DeleteSelectedString
+      {
+         // ------------------------ TYPES --------------------------
+      
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
+         CutSelectedString(LanguageDocument& doc) : DeleteSelectedString(doc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Cut String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected string and copies it to the clipboard</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+         void Execute() override
+         {
+            // Remove string
+            __super::Execute();
+
+            // Copy to clipboard
+            theClipboard.SetLanguageString(*String);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
       /// <summary>Copies the currently selected string to the clipboard</summary>
       class CopySelectedString : public CommandBase
       {
@@ -365,97 +456,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // -------------------- REPRESENTATION ---------------------
       protected:
       };
-
-      /// <summary>Deletes the currently selected string</summary>
-      class RemoveSelectedString : public CommandBase
-      {
-         // ------------------------ TYPES --------------------------
-
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         /// <summary>Create command</summary>
-         /// <param name="doc">The document.</param>
-         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
-         RemoveSelectedString(LanguageDocument& doc) : CommandBase(doc)
-         {
-            // Ensure selection exists
-            if (!doc.SelectedString)
-               throw InvalidOperationException(HERE, L"No string is selected");
-            else if (!doc.SelectedPage)
-               throw InvalidOperationException(HERE, L"No page is selected");
-
-            // Store copy of string
-            String.reset(new LanguageString(*doc.SelectedString));
-         }
-
-         // ---------------------- ACCESSORS ------------------------			
-      public:
-         /// <summary>Get name.</summary>
-         wstring GetName() const override { return L"Remove String"; }
-
-         // ----------------------- MUTATORS ------------------------
-      public:
-         /// <summary>Removes the selected string from the View and the Document</summary>
-         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
-         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         void Execute() override
-         {
-            // Remove string
-            Document.RemoveString(String->Page, String->ID);
-         }
-
-         /// <summary>Inserts the removed string.</summary>
-         /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
-         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
-         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-         void Undo() override
-         {
-            // Re-insert string
-            Document.InsertString(*String);
-         }
-
-         // -------------------- REPRESENTATION ---------------------
-      protected:
-      };
-
-      /// <summary>Cuts the currently selected string to the clipboard</summary>
-      class CutSelectedString : public RemoveSelectedString
-      {
-         // ------------------------ TYPES --------------------------
-      
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         /// <summary>Create command</summary>
-         /// <param name="doc">The document.</param>
-         /// <exception cref="Logic::InvalidOperationException">No string/page selected</exception>
-         CutSelectedString(LanguageDocument& doc) : RemoveSelectedString(doc)
-         {}
-
-         // ---------------------- ACCESSORS ------------------------			
-      public:
-         /// <summary>Get name.</summary>
-         wstring GetName() const override { return L"Cut String"; }
-
-         // ----------------------- MUTATORS ------------------------
-      public:
-         /// <summary>Removes the selected string and copies it to the clipboard</summary>
-         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
-         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
-         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
-         void Execute() override
-         {
-            // Remove string
-            __super::Execute();
-
-            // Copy to clipboard
-            theClipboard.SetLanguageString(*String);
-         }
-
-         // -------------------- REPRESENTATION ---------------------
-      protected:
-      };
-
 
       // --------------------- CONSTRUCTION ----------------------
    protected:
