@@ -160,6 +160,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void OnStringSelectionChanged();
+      handler void OnStringTextChanged();
       afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
       
       // -------------------- REPRESENTATION ---------------------

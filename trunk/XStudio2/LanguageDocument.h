@@ -217,16 +217,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
       PROPERTY_SET(int,SelectedPageIndex,SetSelectedPageIndex);
-      //PROPERTY_GET_SET(int,SelectedStringIndex,GetSelectedStringIndex,SetSelectedStringIndex);
+      PROPERTY_SET(wstring,SelectedStringText,SetSelectedStringText);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       PageCollection&  GetContent();
       ButtonData*      GetSelectedButton() const;
       LanguagePage*    GetSelectedPage() const;
-      //int              GetSelectedPageIndex() const;
       LanguageString*  GetSelectedString() const;
-      //int              GetSelectedStringIndex() const;
 
       /// <summary>Gets any language view</summary>
       /// <typeparam name="VIEW">View type</typeparam>
@@ -261,7 +259,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetSelectedPage(LanguagePage* p);
       void  SetSelectedPageIndex(int index);
       void  SetSelectedString(LanguageString* s);
-      //void  SetSelectedStringIndex(int index);
+      void  SetSelectedStringText(const wstring& txt);
 
    protected:
       void  IncludeFile(UINT id, bool include);
@@ -277,7 +275,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;
-      SimpleEvent            LibraryRebuilt;
+      SimpleEvent            LibraryRebuilt,
+                             StringTextChanged;
 
    protected:
       ButtonData*      CurrentButton;

@@ -342,6 +342,16 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
 
+   /// <summary>Adjusts layout</summary>
+   /// <param name="nType">Type of the resize</param>
+   /// <param name="cx">The new width</param>
+   /// <param name="cy">The new height</param>
+   void LanguageEditView::OnSize(UINT nType, int cx, int cy)
+   {
+      CFormView::OnSize(nType, cx, cy);
+      AdjustLayout();
+   }
+   
    
    /// <summary>Display the currently selected string</summary>
    void LanguageEditView::OnStringSelectionChanged()
@@ -360,16 +370,6 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (exception& e) { 
          theApp.ShowError(HERE, e, L"Unable to display selected string");
       }
-   }
-
-   /// <summary>Adjusts layout</summary>
-   /// <param name="nType">Type of the resize</param>
-   /// <param name="cx">The new width</param>
-   /// <param name="cy">The new height</param>
-   void LanguageEditView::OnSize(UINT nType, int cx, int cy)
-   {
-      CFormView::OnSize(nType, cx, cy);
-      AdjustLayout();
    }
 
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>

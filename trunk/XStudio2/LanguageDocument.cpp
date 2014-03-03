@@ -108,13 +108,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return CurrentPage;
    }
    
-   /// <summary>Gets the index of the selected page.</summary>
-   /// <returns>Zero-based index, or -1 if no selection</returns>
-   /*int  LanguageDocument::GetSelectedPageIndex() const
-   {
-      return GetView<LanguagePageView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-   }*/
-
    /// <summary>Gets the selected string.</summary>
    /// <returns></returns>
    LanguageString*  LanguageDocument::GetSelectedString() const
@@ -122,13 +115,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return CurrentString;
    }
 
-   /// <summary>Gets the index of the selected string.</summary>
-   /// <returns>Zero-based index, or -1 if no selection</returns>
-   /*int  LanguageDocument::GetSelectedStringIndex() const
-   {
-      return GetView<LanguageStringView>()->GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-   }*/
-   
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
    /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
@@ -385,23 +371,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
          StringSelectionChanged.Raise();
       }
    }
+
+   void  LanguageDocument::SetSelectedStringText(const wstring& txt)
+   {
+      REQUIRED(SelectedString);
+
+      // Update text. Raise STRING TEXT CHANGED
+      SelectedString->Text = txt;
+      StringTextChanged.Raise();
+   }
    
-   /// <summary>Programatically select a string in the currently selected page (raises STRING SELECTION CHANGED).</summary>
-   /// <param name="index">Zero-based item index, or -1 to clear selection</param>
-   /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-   //void  LanguageDocument::SetSelectedStringIndex(int index)
-   //{
-   //   auto& ctrl = GetView<LanguageStringView>()->GetListCtrl();
-
-   //   // Validate index
-   //   if (index > ctrl.GetItemCount())
-   //      throw IndexOutOfRangeException(HERE, index, ctrl.GetItemCount());
-
-   //   // Select+display string
-   //   ctrl.SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
-   //   ctrl.EnsureVisible(index, FALSE);
-   //}
-
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Includes or excludes a file.</summary>

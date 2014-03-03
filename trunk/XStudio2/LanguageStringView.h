@@ -525,12 +525,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
+      handler void OnStringTextChanged();
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
       
    protected:
       SelectionChangedHandler  fnPageSelectionChanged;
+      EventHandler             fnStringTextChanged;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
       HACCEL                   Accelerators;

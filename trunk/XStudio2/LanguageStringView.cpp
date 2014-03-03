@@ -182,8 +182,14 @@ NAMESPACE_BEGIN2(GUI,Views)
             auto src = ListView.GetItemText(item.Index, 1);
             auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
 
-            RichStringParser parser((const wchar*)src);
-            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
+            try
+            {  // Parse+Draw
+               RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((LPCWSTR)src).Output, flags);
+            }
+            catch (ExceptionBase& e) {
+               dc->SetTextColor((COLORREF)RichTextColour::Red);
+               dc->DrawText(src, item.Rect, DT_LEFT|DT_SINGLELINE);
+            }
          }
       }
       catch (ExceptionBase& e) {
@@ -213,8 +219,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Custom accelerators
          Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_STRINGVIEW));
 
-         // Listen for Page selection changed
+         // Listen for PAGE CHANGED + TEXT CHANGED
          fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+         fnStringTextChanged = GetDocument()->StringTextChanged.Register(this, &LanguageStringView::OnStringTextChanged);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -343,6 +350,22 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
+   /// <summary>Refreshes the item matching the currently selected string</summary>
+   void LanguageStringView::OnStringTextChanged()
+   {
+      try 
+      {  
+         REQUIRED(GetDocument()->SelectedString);
+
+         // Update text
+         int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
+         GetListCtrl().SetItemText(item, 1, GetDocument()->SelectedString->ResolvedText.c_str());
+      }
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e);
+      }
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
 
