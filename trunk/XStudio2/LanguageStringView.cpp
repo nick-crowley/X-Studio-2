@@ -246,7 +246,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_CUT:    GetDocument()->Execute(new CutSelectedString(*GetDocument()));       break;
          case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedString(*GetDocument()));      break;
          case ID_EDIT_PASTE:  GetDocument()->Execute(new PasteString(*GetDocument()));             break;
-         case ID_EDIT_CLEAR:  GetDocument()->Execute(new RemoveSelectedString(*GetDocument()));    break;
+         case ID_EDIT_CLEAR:  GetDocument()->Execute(new DeleteSelectedString(*GetDocument()));    break;
          case ID_EDIT_INSERT: GetDocument()->Execute(new InsertNewString(*GetDocument()));         break;
 
          // Select All
