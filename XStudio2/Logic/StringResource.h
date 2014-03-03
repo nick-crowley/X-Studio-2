@@ -55,6 +55,7 @@ namespace Logic
       /// <summary>Loads and formats a resource string</summary>
       /// <param name="id">Resource ID</param>
       /// <param name="">Arguments</param>
+      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
       GuiString(UINT id, ...)
       {
          va_list args;
@@ -64,6 +65,7 @@ namespace Logic
       /// <summary>Loads and formats a string</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="">Arguments</param>
+      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
       GuiString(const WCHAR* format, ...)
       {
          va_list args;

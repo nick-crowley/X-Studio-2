@@ -158,6 +158,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       EditMode          Mode;
       LanguageDocument* Document;
       EditCallbackPtr   Callback;
+      RichString        Content;
    };
   
    
