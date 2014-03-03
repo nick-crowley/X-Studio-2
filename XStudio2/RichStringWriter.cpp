@@ -1,18 +1,20 @@
 #include "stdafx.h"
 #include "RichStringWriter.h"
 
-namespace Logic
+namespace GUI
 {
-   namespace IO
+   namespace Utils
    {
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates a rich text source code writer for a TOM text document</summary>
+      /// <param name="edit">Language edit.</param>
       /// <param name="doc">The document.</param>
       /// <param name="tags">Type of colour tags to use</param>
       /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
-      RichStringWriter::RichStringWriter(TextDocumentPtr& doc, ColourTag tags) : Input(doc), ColourTags(ColourTag::Unix)
+      RichStringWriter::RichStringWriter(LanguageEdit& edit, TextDocumentPtr& doc, ColourTag tags) 
+         : Edit(edit), Input(doc), ColourTags(ColourTag::Unix)
       {
          REQUIRED(doc);
       }
@@ -122,32 +124,52 @@ namespace Logic
                {
                   // Advance this
                   thisChar->Move(TOM::tomCharacter, 1);
-                  thisState = CharState(thisChar->Font, thisChar->Para);
+                  bool isCharacter = (thisChar->Char != 0xfffc);
 
-                  // Paragraph change: Close open tags, Open new paragraph with same tags
-                  if (thisState.Alignment != prevState.Alignment)
+                  // Character: Examine formatting + Write character
+                  if (isCharacter)
                   {
-                     OnParagraphClosed(prevState.Alignment);
-                     OnParagraphOpened(thisState);
-                  }
-                  // Format change: 
-                  else if (thisState != prevState)
-                  {
-                     // Formatting lost: Close tags
-                     if (thisState < prevState)
-                        OnFormattingLost(prevState - thisState);
+                     // Query state
+                     thisState = CharState(thisChar->Font, thisChar->Para);
+
+                     // Paragraph change: Close open tags, Open new paragraph with same tags
+                     if (thisState.Alignment != prevState.Alignment)
+                     {
+                        OnParagraphClosed(prevState.Alignment);
+                        OnParagraphOpened(thisState);
+                     }
+                     // Format change: 
+                     else if (thisState != prevState)
+                     {
+                        // Formatting lost: Close tags
+                        if (thisState < prevState)
+                           OnFormattingLost(prevState - thisState);
                      
-                     // Formatting gained: Open tags
-                     if (thisState > prevState)
-                        OnFormattingGained(thisState - prevState);
-                  }
+                        // Formatting gained: Open tags
+                        if (thisState > prevState)
+                           OnFormattingGained(thisState - prevState);
+                     }
                   
-                  // Write character
-                  WriteChar(thisChar);
+                     // Write character
+                     WriteChar(thisChar);
+                  }
+                  // Button: Lookup button + Write [select] tag
+                  else
+                  {
+                     // Lookup button + write tag
+                     WriteButton(*Edit.GetButton({i,i+1}));
+
+                     // Don't re-sync previous state
+                     continue;
+                  }
 
                   // Re-sync prev 
                   prevChar->Move(TOM::tomCharacter, 1);
                   prevState = thisState;
+
+                  // Skip over objects
+                  if (prevChar->Char == 0xfffc)
+                     prevChar->Move(TOM::tomCharacter, 1);
                }
 
                // Close paragraph
@@ -238,6 +260,16 @@ namespace Logic
          
          // Close paragraph
          WriteTag(para, false);
+      }
+
+      /// <summary>Writes a select tag.</summary>
+      /// <param name="btn">The button.</param>
+      void  RichStringWriter::WriteButton(const LanguageButton& btn)
+      {
+         if (btn.ID.empty())
+            Output += GuiString(L"[select]%s[/select]", btn.Text.c_str());
+         else
+            Output += GuiString(L"[select value='%s']%s[/select]", btn.ID.c_str(), btn.Text.c_str());
       }
 
       /// <summary>Writes the first character in a range</summary>

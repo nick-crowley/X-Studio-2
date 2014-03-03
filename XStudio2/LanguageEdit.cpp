@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
 #include "OleBitmap.h"
-#include "Logic/RichStringWriter.h"
+#include "RichStringWriter.h"
 #include "Logic/LanguagePage.h"
 
 /// <summary>User interface controls</summary>
@@ -384,12 +384,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Content
          source += L"]";
-         source += RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
+         source += RichStringWriter(*this, TextDocument, Document->SelectedString->TagType).Write();
          source += L"[/text]";
       }
       else
          // Content:
-         source += RichStringWriter(TextDocument, Document->SelectedString->TagType).Write();
+         source += RichStringWriter(*this, TextDocument, Document->SelectedString->TagType).Write();
 
       return source;
    }
