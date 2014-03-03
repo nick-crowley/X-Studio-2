@@ -226,7 +226,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Listen for PAGE CHANGED + TEXT CHANGED
          fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
-         fnStringTextChanged = GetDocument()->StringTextChanged.Register(this, &LanguageStringView::OnStringTextChanged);
+         fnStringTextChanged = GetDocument()->StringContentChanged.Register(this, &LanguageStringView::OnStringContentChanged);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -364,19 +364,36 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
    /// <summary>Refreshes the item matching the currently selected string</summary>
-   void LanguageStringView::OnStringTextChanged()
+   void LanguageStringView::OnStringContentChanged()
    {
       try 
       {  
-         REQUIRED(GetDocument()->SelectedString);
+         REQUIRED(GetDocument()->SelectedString);  
 
-         // Update text
-         int item = GetListCtrl().GetNextItem(-1, LVNI_SELECTED);
-         GetListCtrl().SetItemText(item, 1, GetDocument()->SelectedString->ResolvedText.c_str());
+         // Update string
+         UpdateString(GetListCtrl().GetNextItem(-1, LVNI_SELECTED), *GetDocument()->SelectedString);
       }
       catch (ExceptionBase& e) { 
          Console.Log(HERE, e);
       }
+   }
+   
+   /// <summary>Updates a string.</summary>
+   /// <param name="index">The index.</param>
+   /// <param name="str">String data.</param>
+   void LanguageStringView::UpdateString(UINT index, LanguageStringRef str)
+   {
+      // Validate index
+      if (index >= (UINT)GetListCtrl().GetItemCount())
+         throw IndexOutOfRangeException(HERE, index, GetListCtrl().GetItemCount());
+
+      // Define 1st sub-item
+      LVItem item(index, GuiString(L"%d", str.ID), NULL, LVIF_TEXT|LVIF_IMAGE);
+      item.iImage = GameVersionIndex(str.Version).Index + 2;
+
+      // Set ID/Icon/Text
+      GetListCtrl().SetItem(&item);
+      GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "LanguageEditView.h"
+#include "LanguageStringView.h"
 #include "PropertiesWnd.h"
 #include "Helpers.h"
 #include "afxcview.h"
@@ -66,6 +67,13 @@ NAMESPACE_BEGIN2(GUI,Views)
 #else
       return reinterpret_cast<LanguageDocument*>(m_pDocument);
 #endif
+   }
+
+   /// <summary>Gets the current edit mode.</summary>
+   /// <returns></returns>
+   LanguageEdit::EditMode  LanguageEditView::GetEditMode() const
+   {
+      return RichEdit.GetEditMode();
    }
    
    /// <summary>Called when activate view.</summary>

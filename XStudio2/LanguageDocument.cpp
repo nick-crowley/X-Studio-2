@@ -5,6 +5,8 @@
 #include "LanguageDocument.h"
 #include "LanguageFrame.h"
 #include "LanguageEditView.h"
+#include "LanguageStringView.h"
+#include "LanguagePageView.h"
 #include "PropertiesWnd.h"
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
@@ -372,14 +374,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   void  LanguageDocument::SetSelectedStringText(const wstring& txt)
-   {
-      REQUIRED(SelectedString);
+   //void  LanguageDocument::SetSelectedStringText(const wstring& txt)
+   //{
+   //   REQUIRED(SelectedString);
 
-      // Update text. Raise STRING TEXT CHANGED
-      SelectedString->Text = txt;
-      StringTextChanged.Raise();
-   }
+   //   // Update text. Raise STRING TEXT CHANGED
+   //   SelectedString->Text = txt;
+   //   StringContentChanged.Raise();
+   //}
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    

@@ -4,7 +4,6 @@
 #include "ToolBarEx.h"
 #include "LanguageEdit.h"
 #include "LanguageDocument.h"
-#include "LanguageStringView.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -131,7 +130,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      LanguageDocument*   GetDocument() const;
+      LanguageDocument*      GetDocument() const;
+      LanguageEdit::EditMode GetEditMode() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -159,7 +159,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void OnStringSelectionChanged();
-      handler void OnStringTextChanged();
+      handler void OnStringContentChanged();
       afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
       
       // -------------------- REPRESENTATION ---------------------

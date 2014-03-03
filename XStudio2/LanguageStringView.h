@@ -2,9 +2,9 @@
 
 #include "afxcview.h"
 #include "LanguageDocument.h"
-#include "LanguagePageView.h"
-#include "ImageListEx.h"
+#include "LanguageEditView.h"
 #include "ListViewCustomDraw.h"
+#include "ImageListEx.h"
 #include "GuiCommand.h"
 #include "Clipboard.h"
 
@@ -45,18 +45,38 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
          LanguageString& String;
       };
+
+      /// <summary>Base class for properties that require 'editor' mode</summary>
+      class EditorOnlyProperty : public StringPropertyBase
+      {
+      public:
+         /// <summary>Create 'editor only' property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="str">string.</param>
+         /// <param name="name">name.</param>
+         /// <param name="val">value</param>
+         /// <param name="desc">description.</param>
+         EditorOnlyProperty(LanguageDocument& doc, LanguageString& str, wstring name, _variant_t val, wstring desc)
+            : StringPropertyBase(doc, str, name, val, desc)
+         {
+            // Require 'Editor' mode
+            Enable(Document.GetView<LanguageEditView>()->GetEditMode() == LanguageEdit::EditMode::Edit ? TRUE : FALSE);
+         }
+
+      protected:
+      };
       
       /// <summary>colour tags property grid item</summary>
-      class ColourTagProperty : public StringPropertyBase
+      class ColourTagProperty : public EditorOnlyProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create string title property.</summary>
+         /// <summary>Create string colour-tags property.</summary>
          /// <param name="doc">document.</param>
          /// <param name="string">string.</param>
          /// <exception cref="Logic::ArgumentException">Colour tags are still undetermined</exception>
          ColourTagProperty(LanguageDocument& doc, LanguageString& string) 
-            : StringPropertyBase(doc, string, L"Colour Tags", GetString(string.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
+            : EditorOnlyProperty(doc, string, L"Colour Tags", GetString(string.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
          {
             // Require tags to be already determined
             if (String.TagType == ColourTag::Undetermined)
@@ -94,8 +114,14 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Set tag type
             String.TagType = (value == L"Colour Codes" ? ColourTag::Unix : ColourTag::Message);
-            __super::OnValueChanged(value);    // Modify document
+
+            // Raise 'STRING CONTENT CHANGED'
+            Document.StringContentChanged.Raise();
+
+            // Modify document
+            __super::OnValueChanged(value);    
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -134,6 +160,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
             // Change ID
             Document.RenameString(String, value.ToInt());
+
             // Modify document
             __super::OnValueChanged(value);    
          }
@@ -172,6 +199,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
             // Convert zero-based index into GameVersion
             String.Version = GameVersionIndex(Find(value.c_str())).Version;      
+
+            // Raise 'STRING CONTENT CHANGED'
+            Document.StringContentChanged.Raise();
+
             // Modify document
             __super::OnValueChanged(value);    
          }
@@ -510,6 +541,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      void UpdateString(UINT index, LanguageStringRef str);
       
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -526,7 +558,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnQueryMode(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
-      handler void OnStringTextChanged();
+      handler void OnStringContentChanged();
 	  
       // -------------------- REPRESENTATION ---------------------
    public:

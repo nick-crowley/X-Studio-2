@@ -217,7 +217,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       PROPERTY_GET_SET(LanguagePage*,SelectedPage,GetSelectedPage,SetSelectedPage);
       PROPERTY_GET_SET(LanguageString*,SelectedString,GetSelectedString,SetSelectedString);
       PROPERTY_SET(int,SelectedPageIndex,SetSelectedPageIndex);
-      PROPERTY_SET(wstring,SelectedStringText,SetSelectedStringText);
+      //PROPERTY_SET(wstring,SelectedStringText,SetSelectedStringText);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
@@ -259,7 +259,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetSelectedPage(LanguagePage* p);
       void  SetSelectedPageIndex(int index);
       void  SetSelectedString(LanguageString* s);
-      void  SetSelectedStringText(const wstring& txt);
+      //void  SetSelectedStringText(const wstring& txt);
 
    protected:
       void  IncludeFile(UINT id, bool include);
@@ -276,7 +276,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;
       SimpleEvent            LibraryRebuilt,
-                             StringTextChanged;
+                             StringContentChanged;
 
    protected:
       ButtonData*      CurrentButton;
