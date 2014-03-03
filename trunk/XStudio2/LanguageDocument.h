@@ -107,8 +107,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
             : File(file), LanguagePropertyBase(doc, file.FullPath.FileName, included ? L"Included" : L"Excluded", L"Include or exclude file from library")
          {
             // Strict list
-            AddOption(L"Include");
-            AddOption(L"Exclude");
+            AddOption(L"Included");
+            AddOption(L"Excluded");
             AllowEdit(FALSE);
             // Enable property
             Enable(TRUE);
