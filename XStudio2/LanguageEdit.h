@@ -22,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ------------------------ STATIC -------------------------
 
-      static HBITMAP CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id);
+      static HBITMAP CreateBitmap(LanguageEdit* wnd, const wstring& txt, const wstring& id);
 
       // ---------------------- ACCESSORS ------------------------
 
