@@ -242,6 +242,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Execute() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Deleting string: " << *String << ENDL;
+
             // Remove string
             Document.RemoveString(String->Page, String->ID);
          }
@@ -252,6 +255,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Undo() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Undoing Delete string: " << *String << ENDL;
+
             // Re-insert string
             Document.InsertString(*String);
          }
@@ -286,6 +292,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Execute() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Cutting string: " << *String << ENDL;
+
             // Remove string
             __super::Execute();
 
@@ -333,6 +342,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
          void Execute() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Copying string: " << *String << ENDL;
+
+            // Duplicate to clipboard
             theClipboard.SetLanguageString(*String);
          }
 
@@ -376,6 +389,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Execute() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Insert new string:" << Cons::White << " insertAt=" << (InsertAt ? InsertAt->ID : -1) << ENDL;
+
             // Create/Insert string
             auto str = Document.CreateString(PageID, InsertAt.get());
             Document.InsertString(str);
@@ -390,6 +406,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Undo() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Undoing insert new string: " << *String << ENDL;
+
             // Remove created string
             Document.RemoveString(PageID, String->ID);
          }
@@ -439,6 +458,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Execute() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Pasting string: " << *String << ENDL;
+
             // insert string
             Document.InsertString(*String);
          }
@@ -449,6 +471,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
          void Undo() override
          {
+            // Feedback
+            Console << Cons::UserAction << "Undoing paste string: " << *String << ENDL;
+
             // Remove string
             Document.RemoveString(String->Page, String->ID);
          }  
