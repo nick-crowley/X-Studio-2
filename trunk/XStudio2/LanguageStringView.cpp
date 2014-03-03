@@ -13,6 +13,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    IMPLEMENT_DYNCREATE(LanguageStringView, CListView)
 
    BEGIN_MESSAGE_MAP(LanguageStringView, CListView)
+      ON_WM_CONTEXTMENU()
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguageStringView::OnItemStateChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &LanguageStringView::OnCustomDraw)
@@ -29,7 +30,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_INSERT, &LanguageStringView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguageStringView::OnQueryCommand)
-      ON_WM_CONTEXTMENU()
+      // Unsupported: Always disabled
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageStringView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguageStringView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -186,7 +190,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             {  // Parse+Draw
                RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((LPCWSTR)src).Output, flags);
             }
-            catch (ExceptionBase& e) {
+            catch (ExceptionBase&) {
                dc->SetTextColor((COLORREF)RichTextColour::Red);
                dc->DrawText(src, item.Rect, DT_LEFT|DT_SINGLELINE);
             }
@@ -323,7 +327,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Require selection
          case ID_EDIT_CLEAR: 
          case ID_EDIT_COPY:   
-         case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);  break;
+         case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);    break;
      
          // Require string on clipboard
          case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;

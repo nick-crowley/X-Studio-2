@@ -24,6 +24,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguagePageView::OnQueryCommand)
+      // Unsupported: Always disabled
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguagePageView::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
