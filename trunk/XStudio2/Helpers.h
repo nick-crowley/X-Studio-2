@@ -269,4 +269,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    };
 
 
+   /// <summary>Character range helper</summary>
+   class CharRange : public CHARRANGE
+   {
+   public:
+      CharRange(long from, long to) : CHARRANGE({from,to})
+      {}
+   };
+
+
 NAMESPACE_END2(GUI,Controls)

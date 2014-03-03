@@ -1,11 +1,12 @@
 #pragma once
-#include "Common.h"
-#include "LanguagePage.h"
-#include "RichStringParser.h"
+#include "Logic/Common.h"
+#include "Logic/LanguagePage.h"
+#include "Logic/RichStringParser.h"
+#include "LanguageEdit.h"
 
-namespace Logic
+namespace GUI
 {
-   namespace IO
+   namespace Utils
    {
 
       /// <summary></summary>
@@ -204,7 +205,7 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RichStringWriter(TextDocumentPtr& doc, ColourTag tags);
+         RichStringWriter(LanguageEdit& edit, TextDocumentPtr& doc, ColourTag tags);
          virtual ~RichStringWriter();
 
          DEFAULT_COPY(RichStringWriter);	// Default copy semantics
@@ -233,12 +234,14 @@ namespace Logic
          void   OnFormattingGained(const TagList& lost);
          void   OnParagraphOpened(CharState s);
          void   OnParagraphClosed(TagType para);
-         void   WriteTag(TagType t, bool open);
+         void   WriteButton(const LanguageButton& btn);
          void   WriteChar(TextRangePtr chr);
+         void   WriteTag(TagType t, bool open);
 
          // -------------------- REPRESENTATION ---------------------
       protected:
          TextDocumentPtr Input;
+         LanguageEdit&   Edit;
          wstring         Output;
          ColourTag       ColourTags;
          TagStack        Formatting;
