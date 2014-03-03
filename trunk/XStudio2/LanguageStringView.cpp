@@ -73,7 +73,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Ensure visible
       if (display)
+      {
          GetListCtrl().EnsureVisible(index, FALSE);
+         GetListCtrl().SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+      }
    }
 
    /// <summary>Removes a string.</summary>
@@ -151,6 +154,33 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
+   /// <summary>Custom draws the text column</summary>
+   /// <param name="dc">Device context</param>
+   /// <param name="item">Item data.</param>
+   void  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
+   {
+      try
+      {
+         // ID:
+         if (item.SubItem == 0)
+            __super::onDrawSubItem(dc, item);
+         
+         // Text:
+         else if (item.SubItem == 1)
+         {
+            auto src = ListView.GetItemText(item.Index, 1);
+            auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
+
+            RichStringParser parser((const wchar*)src);
+            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
+
+
    /// <summary>Initialise control</summary>
    void LanguageStringView::OnInitialUpdate()
    {
@@ -299,35 +329,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    
-   /// <summary>Custom draws the text column</summary>
-   /// <param name="dc">Device context</param>
-   /// <param name="item">Item data.</param>
-   void  LanguageStringView::StringCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
-   {
-      try
-      {
-         // ID:
-         if (item.SubItem == 0)
-            __super::onDrawSubItem(dc, item);
-         
-         // Text:
-         else if (item.SubItem == 1)
-         {
-            auto src = ListView.GetItemText(item.Index, 1);
-            auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
-
-            RichStringParser parser((const wchar*)src);
-            RichTextRenderer::DrawLine(dc, item.Rect, parser.Output, flags);
-         }
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-   }
-
-
-
-
 
 NAMESPACE_END2(GUI,Views)
 

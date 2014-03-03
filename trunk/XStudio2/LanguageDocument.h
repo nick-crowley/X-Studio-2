@@ -242,6 +242,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
       void  InsertString(LanguageString& str);
+      void  RenameString(LanguageString& str, UINT newID);
       void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;
