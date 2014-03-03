@@ -154,18 +154,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void    UpdateHighlighting();
 
       handler void  OnButtonRemoved(IOleObjectPtr obj);
-      virtual void  OnRequestTooltip(CustomTooltip::TooltipData* data);
-      virtual void  OnTextChange();
+      handler void  OnContentChanged();
+      handler void  OnRequestTooltip(CustomTooltip::TooltipData* data) override;
+      handler void  OnTextChange() override;
       
       // -------------------- REPRESENTATION ---------------------
    public:
 
    protected:
-      EditMode          Mode;          // Current editing mode
-      LanguageDocument* Document;      // Document 
-      EditCallbackPtr   Callback;      // Object removal notification callback
-      RichString        Content;       // [EditorMode] Current content 
-      ButtonDataList    ActiveData;    // Temporary storage for button data
+      EditMode          Mode;             // Current editing mode
+      LanguageDocument* Document;         // Document 
+      EditCallbackPtr   Callback;         // Object removal notification callback
+      RichString        Content;          // [EditorMode] Current content 
+      ButtonDataList    ActiveData;       // Temporary storage for button data
+      EventHandler      fnContentChanged;
    };
   
    

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LanguageEdit.h"
 #include "OleBitmap.h"
+#include "PropertiesWnd.h"
 #include "RichStringWriter.h"
 #include "Logic/LanguagePage.h"
 
@@ -217,6 +218,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Create+set callback
       Callback.Attach(new EditCallback(this), true);
       SetOLECallback(Callback);
+
+      // Listen for 'CONTENT CHANGED'
+      fnContentChanged = Document->StringContentChanged.Register(this, &LanguageEdit::OnContentChanged);
    }
 
    /// <summary>Inserts a button at the caret.</summary>
@@ -278,9 +282,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console.Log(HERE, e);
       }
    }
-
-   /// <summary>Displays a button</summary>
-   /// <param name="btn">The BTN.</param>
+   
+   /// <summary>Replaces the OleBitmap when button text changes, and updates the source-text</summary>
+   /// <param name="btn">button data.</param>
    void  LanguageEdit::OnButtonChanged(LanguageButton& btn)
    {
       // Freeze window + Undo
@@ -298,8 +302,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          InsertButton(btn.Text, btn.ID);
          Document->SelectedButton = GetButton(sel);
 
+         // Raise 'CONTENT CHANGED'
+         Document->StringContentChanged.Raise();
+
          // Update string
-         Document->SelectedStringText = GetSourceText();
+         //Document->SelectedStringText = GetSourceText();
       }
       catch (ExceptionBase& e) 
       {
@@ -375,6 +382,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Change mode + redisplay   
          Mode = m;
          Refresh();
+
+         // Enable/Disable 'editor-only' properties
+         CPropertiesWnd::Connect(Document, true); 
       }
       // Error: Revert mode
       catch (ExceptionBase&) {
@@ -443,6 +453,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       SetSel(pos, (length != -1 ? pos + length : -1));
       SetSelectionCharFormat(cf);
+   }
+   
+   /// <summary>Called when text changes or a property that affects text changes.</summary>
+   /// <remarks>This event is only raised in 'Editor' mode</remarks>
+   void  LanguageEdit::OnContentChanged()
+   {
+      try
+      {
+         // Generate new source text
+         Document->SelectedString->Text = GetSourceText();
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
    /// <summary>Destroys the button data stored with a button image</summary>
@@ -519,12 +543,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
             UpdateHighlighting();
             break;
 
-         // Edit: Generate source + save
+         // Edit: Raise 'CONTENT CHANGED' [which generates source + saves]
          case EditMode::Edit:
-            // DEBUG:
-            //Console << "TextChanged=" << GetSourceText() << ENDL;
-            
-            Document->SelectedStringText = GetSourceText();
+            Document->StringContentChanged.Raise();
             break;
          }
       }
