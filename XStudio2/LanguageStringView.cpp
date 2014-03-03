@@ -75,6 +75,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="index">The index.</param>
    void LanguageStringView::RemoveString(UINT index)
    {
+      GetListCtrl().EnsureVisible(index, FALSE);
       GetListCtrl().DeleteItem(index);
    }
 
