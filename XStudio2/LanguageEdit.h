@@ -34,6 +34,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
                Text;
    };
 
+   /// <summary>Shared pointer to language button data</summary>
+   typedef shared_ptr<LanguageButton>  LanguageButtonPtr;
+
    /// <summary>Write Button data to the console</summary>
    ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageButton& b);
 
@@ -100,6 +103,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Short name for OLE callback smart-pointer</summary>
       typedef IRichEditOleCallbackPtr  EditCallbackPtr;
 
+      /// <summary>List of language button data</summary>
+      typedef list<LanguageButtonPtr>  ButtonDataList;
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       LanguageEdit();
@@ -155,10 +161,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
 
    protected:
-      EditMode          Mode;
-      LanguageDocument* Document;
-      EditCallbackPtr   Callback;
-      RichString        Content;
+      EditMode          Mode;          // Current editing mode
+      LanguageDocument* Document;      // Document 
+      EditCallbackPtr   Callback;      // Object removal notification callback
+      RichString        Content;       // [EditorMode] Current content 
+      ButtonDataList    ActiveData;    // Temporary storage for button data
    };
   
    

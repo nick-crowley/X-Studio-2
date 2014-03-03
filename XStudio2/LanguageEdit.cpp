@@ -146,6 +146,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Reset Undo
       EmptyUndoBuffer();
 
+      // Clear all allocated button data
+      ActiveData.clear();
+
       // Resume updates
       FreezeWindow(false);
    }
@@ -259,7 +262,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          reObject.pstg     = storage;
 
          // Associate button data
-         reObject.dwUser = reinterpret_cast<DWORD>(new LanguageButton(txt, id));
+         LanguageButtonPtr data(new LanguageButton(txt, id));
+         reObject.dwUser = reinterpret_cast<DWORD>(data.get());
+
+         // Store
+         ActiveData.push_back(data);
 
          // Insert the object at the current location
          OleDocument->InsertObject(&reObject);
@@ -441,6 +448,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="obj">The object.</param>
    void  LanguageEdit::OnButtonRemoved(IOleObjectPtr obj)
    {
+      // Since the action of destroying a button can be un-done, button data is not longer deleted immediately.
+      //   it remains allocated in the 'ActiveData' list until the active string or editor mode is changed.
+
+#ifdef RESCINDED
       try
       {
          REQUIRED(obj);
@@ -479,6 +490,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
+#endif
    }
 
    /// <summary>Supply tooltip data</summary>
