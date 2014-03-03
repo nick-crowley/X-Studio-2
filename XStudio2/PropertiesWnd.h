@@ -56,6 +56,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      //BOOL  CanBeClosed() const override { return FALSE; }
       void  Create(CWnd* parent);
    
    protected:
