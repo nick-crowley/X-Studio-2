@@ -124,9 +124,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      wstring     GetAllText() const;
+      wstring         GetAllText() const;
       LanguageButton* GetButton(CHARRANGE pos) const;
-      EditMode    GetEditMode() const;
+      EditMode        GetEditMode() const;
 
    protected:
 
@@ -135,6 +135,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  Clear();
       void  Initialize(LanguageDocument* doc);
       void  InsertButton(const wstring& txt, const wstring& id);
+      void  OnButtonChanged(LanguageButton& btn);
       void  Refresh();
       void  SetEditMode(EditMode m);
       void  ToggleFormatting(DWORD fx);

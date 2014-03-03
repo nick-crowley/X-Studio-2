@@ -265,6 +265,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
+   /// <summary>Displays a button</summary>
+   /// <param name="btn">The BTN.</param>
+   void  LanguageEdit::OnButtonChanged(LanguageButton& btn)
+   {
+      // Change bitmap. Update text.
+   }
+
    /// <summary>Displays the currently selected string in the manner appropriate to the editing mode.</summary>
    /// <exception cref="Logic::ArgumentNullException">Not initialized</exception>
    /// <exception cref="Logic::NotImplementedException">Mode is DISPLAY</exception>
