@@ -65,6 +65,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Dock left/right
       EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
    }
+   
+
+   /// <summary>Translates custom accelerators for this window.</summary>
+   /// <param name="pMsg">The MSG.</param>
+   /// <returns></returns>
+   BOOL CProjectWnd::PreTranslateMessage(MSG* pMsg)
+   {
+      if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+	      return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
+
+      return CDockablePane::PreTranslateMessage(pMsg);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -377,7 +389,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Remove: Not project + not fixed folder
          case ID_PROJECT_REMOVE:
-            State = item && item->Fixed;  
+            State = item && !item->Fixed;  
             break;
 
          // Delete: Require file   
@@ -432,12 +444,3 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 NAMESPACE_END2(GUI,Windows)
 
-
-
-BOOL CProjectWnd::PreTranslateMessage(MSG* pMsg)
-{
-   if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
-	   return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
-
-   return CDockablePane::PreTranslateMessage(pMsg);
-}
