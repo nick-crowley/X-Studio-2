@@ -348,6 +348,9 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       try 
       {
+         // Clear button selection
+         GetDocument()->SelectedButton = nullptr;
+
          // Display new string
          RichEdit.Refresh();
       }
@@ -386,12 +389,12 @@ NAMESPACE_BEGIN2(GUI,Views)
             GetDocument()->SelectedButton = nullptr;
          
          // DEBUG:
-         Console << "Selection changed:" 
+         /*Console << "Selection changed:" 
                  << " SEL_EMPTY=" << (sel->seltyp == SEL_EMPTY)
                  << " SEL_TEXT=" << ((sel->seltyp & SEL_TEXT) != 0)
                  << " SEL_MULTICHAR=" << ((sel->seltyp & SEL_MULTICHAR) != 0)
                  << " SEL_OBJECT=" << ((sel->seltyp & SEL_OBJECT) != 0)
-                 << " SEL_MULTIOBJECT=" << ((sel->seltyp & SEL_MULTIOBJECT) != 0) << ENDL;
+                 << " SEL_MULTIOBJECT=" << ((sel->seltyp & SEL_MULTIOBJECT) != 0) << ENDL;*/
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
