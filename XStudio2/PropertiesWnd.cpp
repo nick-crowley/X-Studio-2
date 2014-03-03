@@ -2,6 +2,7 @@
 
 #include "PropertiesWnd.h"
 #include "ScriptView.h"
+#include "MainWnd.h"
 #include "Logic/ScriptObjectLibrary.h"
 
 #ifdef _DEBUG
@@ -57,15 +58,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void CPropertiesWnd::Create(CWnd* parent)
+   {
+      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_RIGHT | CBRS_FLOAT_MULTI;
+
+      // Create window
+      if (!__super::Create(GuiString(IDR_PROPERTIES).c_str(), parent, MainWnd::DefaultSize, TRUE, IDR_PROPERTIES, style))
+	      throw Win32Exception(HERE, L"Unable to create Properties window");
+
+      SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock left/right
+      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Adjusts the layout.</summary>
    void CPropertiesWnd::AdjustLayout()
    {
-	   if (GetSafeHwnd () == NULL || (AfxGetMainWnd() != NULL && AfxGetMainWnd()->IsIconic()))
-	   {
-		   return;
-	   }
+      // Ensure exists
+	   if (!GetSafeHwnd() || (AfxGetMainWnd() && AfxGetMainWnd()->IsIconic()))
+         return;
 
 	   CRect rectClient;
 	   GetClientRect(rectClient);
@@ -74,8 +91,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   int barHeight = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
       // Snap toolbar to top, stretch grid over remainder
-	   m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	   m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   m_wndToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   m_wndPropList.SetWindowPos(nullptr, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
    /// <summary>Connects a source of properties.</summary>

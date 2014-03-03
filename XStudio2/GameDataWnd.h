@@ -26,18 +26,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ---------------------- ACCESSORS ------------------------			
       
       // ----------------------- MUTATORS ------------------------
+   public:
+      void Create(CWnd* parent, wstring title, UINT nID, UINT nIconID);
+
    protected:
-      void onAppStateChanged(AppState s);
-      afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+      virtual void Clear();
+      virtual void PopulateGroupCombo() PURE;
+      virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
+
+      handler void OnAppStateChanged(AppState s);
+      afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSearchTermChanged();
-      
-      virtual void Clear();
-      virtual void PopulateGroupCombo() PURE;
-      virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
 
    private:
       void  AdjustLayout();

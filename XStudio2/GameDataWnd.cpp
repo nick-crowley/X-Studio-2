@@ -1,10 +1,15 @@
 #include "stdafx.h"
 #include "GameDataWnd.h"
-#include <strsafe.h>
+#include "MainWnd.h"
 #include "Helpers.h"
+#include <strsafe.h>
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
+
+   const UINT IDC_LISTVIEW = 10,
+              IDC_EDIT  = 20,
+              IDC_COMBO = 30;
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -14,12 +19,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
-      ON_EN_CHANGE(2, &CGameDataWnd::OnSearchTermChanged)
+      ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CGameDataWnd::CGameDataWnd() : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::onAppStateChanged))
+   CGameDataWnd::CGameDataWnd() : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::OnAppStateChanged))
    {
    }
 
@@ -32,6 +37,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">parent.</param>
+   /// <param name="title">title.</param>
+   /// <param name="nID">child id.</param>
+   /// <param name="nIconID">Icon id.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void CGameDataWnd::Create(CWnd* parent, wstring title, UINT nID, UINT nIconID)
+   {
+      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_RIGHT | CBRS_FLOAT_MULTI;
+
+      // Create window
+      if (!__super::Create(title.c_str(), parent, MainWnd::DefaultSize, TRUE, nID, style))
+	      throw Win32Exception(HERE, GuiString(L"Unable to create %s window", title.c_str()));
+      SetIcon(theApp.LoadIconW(nIconID, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock left/right
+      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    void  CGameDataWnd::Clear()
@@ -40,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ListView.DeleteAllItems();
    }
 
-   void CGameDataWnd::onAppStateChanged(AppState s)
+   void CGameDataWnd::OnAppStateChanged(AppState s)
    {
       UpdateContent();
    }
@@ -87,7 +111,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
 	      // ListView
-	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT |  LVS_ALIGNTOP | LVS_NOCOLUMNHEADER, rectDummy, this, 1))
+	      if (!ListView.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT |  LVS_ALIGNTOP | LVS_NOCOLUMNHEADER, rectDummy, this, IDC_LISTVIEW))
             throw Win32Exception(HERE, L"Unable to create game data window listview");
 
          // Insert columns
@@ -101,13 +125,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      ListView.SetImageList(&Images, LVSIL_SMALL);
 
          // create Search edit
-	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, 2))
+	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, IDC_EDIT))
             throw Win32Exception(HERE, L"Unable to create game data window edit control");
          Search.SetFont(&afxGlobalData.fontRegular);
          Search.SetCueBanner(L"Enter search term...");
 
          // create Groups ComboBox
-	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, 3))
+	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, IDC_COMBO))
             throw Win32Exception(HERE, L"Unable to create game data window combo box");
          Groups.SetFont(&afxGlobalData.fontRegular);
 

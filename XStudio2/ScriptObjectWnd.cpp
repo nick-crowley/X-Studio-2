@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptObjectWnd.h"
+#include "MainWnd.h"
 #include "Logic/ScriptObjectLibrary.h"
 #include <strsafe.h>
 #include "Helpers.h"
@@ -26,6 +27,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void CScriptObjectWnd::Create(CWnd* parent)
+   {
+      __super::Create(parent, L"Script Objects", IDR_SCRIPT_OBJECTS, IDR_SCRIPT_OBJECTS);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 

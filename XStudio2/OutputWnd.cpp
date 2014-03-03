@@ -38,9 +38,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   void COutputWnd::UpdateFonts()
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void COutputWnd::Create(CWnd* parent)
    {
-	   
+      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI;
+
+      // Create window
+      if (!__super::Create(GuiString(IDR_OUTPUT).c_str(), parent, MainWnd::DefaultSize, TRUE, IDR_OUTPUT, style))
+         throw Win32Exception(HERE, L"Unable to create output window");
+      SetIcon(theApp.LoadIconW(IDR_OUTPUT, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock bottom only
+      EnableDocking(CBRS_ALIGN_BOTTOM);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

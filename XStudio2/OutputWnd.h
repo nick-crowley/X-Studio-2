@@ -30,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    public:
       void ActivatePane(Operation op);
-      void UpdateFonts();
+      void Create(CWnd* parent);
 
    protected:
 	   void AdjustHorzScroll(CListBox& wndListBox);

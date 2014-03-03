@@ -55,6 +55,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ---------------------- ACCESSORS ------------------------			
       
       // ----------------------- MUTATORS ------------------------
+   public:
+      void  Create(CWnd* parent);
+   
    protected:
       void AdjustLayout();
       void ConnectSource(PropertySource* src, bool connect);

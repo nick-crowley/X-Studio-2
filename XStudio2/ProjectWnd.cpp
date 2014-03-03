@@ -49,6 +49,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Creates the window.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
+   void CProjectWnd::Create(CWnd* parent)
+   {
+      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_RIGHT | CBRS_FLOAT_MULTI;
+
+      // Create window
+      if (!__super::Create(L"Project", parent, MainWnd::DefaultSize, TRUE, IDR_PROJECTVIEW, style))
+         throw Win32Exception(HERE, L"Unable to create Project window");
+
+      SetIcon(theApp.LoadIconW(IDR_PROJECTVIEW, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
+
+      // Dock left/right
+      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
 
    /// <summary>Adjusts the layout.</summary>

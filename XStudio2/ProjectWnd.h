@@ -51,10 +51,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL PreTranslateMessage(MSG* pMsg) override;
+      void  Create(CWnd* parent);
+      BOOL  PreTranslateMessage(MSG* pMsg) override;
 
    protected:
-      void       AdjustLayout();
+      void  AdjustLayout();
       
       handler void OnChangeVisualStyle();
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
