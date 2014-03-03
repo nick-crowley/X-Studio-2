@@ -83,7 +83,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="id">button ID.</param>
    /// <returns>New button bitmap</returns>
    /// <exception cref="Logic::Win32Exception">Drawing error</exception>
-   HBITMAP LanguageButton::CreateBitmap(LanguageEdit* wnd, const RichString& txt, const wstring& id)
+   HBITMAP LanguageButton::CreateBitmap(LanguageEdit* wnd, const wstring& txt, const wstring& id)
    {
       CClientDC dc(wnd);
       CBitmap   bmp;
@@ -103,10 +103,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       font.CreatePointFont(9*10, L"Arial");
       auto prevBmp = memDC.SelectObject(&bmp);
       auto prevFont = memDC.SelectObject(&font);
-      
-      // Draw button text onto bitmap
       memDC.SetBkMode(TRANSPARENT);
-      RichTextRenderer::DrawLine(&memDC, rcButton, txt, RenderFlags::RichText);
+      
+      try
+      {  // Draw richText onto button bitmap
+         RichTextRenderer::DrawLine(&memDC, rcButton, RichStringParser(txt, Alignment::Centre).Output, RenderFlags::RichText);
+      }
+      catch (ExceptionBase&) {
+         // Failed -or- Syntax Error: Draw text verbatim
+         memDC.SetTextColor((COLORREF)RichTextColour::White);
+         memDC.DrawText(txt.c_str(), txt.length(), rcButton, DT_CENTER | DT_SINGLELINE);
+      }
 
       // Cleanup without destroying bitmap
       memDC.SelectObject(prevBmp);
@@ -231,7 +238,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             throw ComException(HERE, hr);
          
          // Create a static picture OLE Object 
-         bitmap.Attach(LanguageButton::CreateBitmap(this, RichStringParser(txt, Alignment::Centre).Output, id));
+         bitmap.Attach(LanguageButton::CreateBitmap(this, txt, id));
          IOleObjectPtr picture = OleBitmap::CreateStatic(bitmap, clientSite, storage);
          
          // Notify object it's embedded
@@ -269,7 +276,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="btn">The BTN.</param>
    void  LanguageEdit::OnButtonChanged(LanguageButton& btn)
    {
-      // Change bitmap. Update text.
+      // Freeze window + Undo
+      FreezeWindow(true);
+      SuspendUndo(true);
+
+      try
+      {
+         // Update text
+         //String->Text = GetSourceText();
+         Console << "TextChanged=" << GetSourceText() << ENDL;
+
+         // Preserve location
+         auto sel = GetSelection();
+
+         // Change Bitmap + Refresh properties
+         InsertButton(btn.Text, btn.ID);
+         Document->SelectedButton = GetButton(sel);
+      }
+      catch (ExceptionBase& e) 
+      {
+         SetSel(0,0);
+         Document->SelectedButton = nullptr;
+         theApp.ShowError(HERE, e, L"Unable to modify button properties");
+      }
+
+      // Unfreeze
+      SuspendUndo(false);
+      FreezeWindow(false);
    }
 
    /// <summary>Displays the currently selected string in the manner appropriate to the editing mode.</summary>
