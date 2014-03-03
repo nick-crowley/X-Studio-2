@@ -60,7 +60,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Inserts a string.</summary>
    /// <param name="index">The index.</param>
    /// <param name="str">The string.</param>
-   void LanguageStringView::InsertString(UINT index, LanguageString& str)
+   /// <param name="display">Whether to ensure visible after insert</param>
+   void LanguageStringView::InsertString(UINT index, LanguageString& str, bool display)
    {
       // First display: Identify colour tags 
       if (str.TagType == ColourTag::Undetermined)
@@ -69,6 +70,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Add item, resolve and set Text
       GetListCtrl().InsertItem(index, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
       GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
+
+      // Ensure visible
+      if (display)
+         GetListCtrl().EnsureVisible(index, FALSE);
    }
 
    /// <summary>Removes a string.</summary>
@@ -214,7 +219,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
             // Re-Populate strings
             for (auto& pair : GetDocument()->SelectedPage->Strings)
-               InsertString(item++, pair.second);
+               InsertString(item++, pair.second, false);
          }
       }
       catch (ExceptionBase& e) {
