@@ -249,12 +249,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Toggle display state of tool window
       switch (nID)
       {
-      case ID_VIEW_PROJECT:         m_wndProject.ShowPane(m_wndProject.IsVisible(), FALSE, TRUE);              break;
-      case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
-      case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
-      case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(m_wndCommands.IsVisible(), FALSE, TRUE);            break;
-      case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(m_wndOutput.IsVisible(), FALSE, TRUE);                break;
-      case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(m_wndProperties.IsVisible(), FALSE, TRUE);        break;
+      case ID_VIEW_PROJECT:         m_wndProject.ShowPane(!m_wndProject.IsVisible(), FALSE, TRUE);              break;
+      case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(!m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
+      case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(!m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
+      case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(!m_wndCommands.IsVisible(), FALSE, TRUE);            break;
+      case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(!m_wndOutput.IsVisible(), FALSE, TRUE);                break;
+      case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(!m_wndProperties.IsVisible(), FALSE, TRUE);        break;
       }
    }
 
