@@ -78,8 +78,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Determine ID
       UINT newID = Content.Find(page).GetAvailableID(insertAt ? insertAt->ID : -1);
       
-      // Generate string
-      return LanguageString(newID, page, L"<New String>", GameVersion::Threat);
+      // Generate string (must identify colour tags before display)
+      auto str = LanguageString(newID, page, L"<New String>", GameVersion::Threat);
+      str.IdentifyColourTags();
+
+      return str;
    }
 
    /// <summary>Retrieves the file/library page collection</summary>
@@ -134,6 +137,25 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       // Update view
       GetView<LanguageStringView>()->InsertString(index, str, true);
+   }
+
+   /// <summary>Changes the ID of a string.</summary>
+   /// <param name="str">The string.</param>
+   /// <param name="newID">The new ID</param>
+   /// <exception cref="Logic::ApplicationException">New String ID already in use</exception>
+   void  LanguageDocument::RenameString(LanguageString& str, UINT newID)
+   {
+      // Validate new ID
+      if (!Content.Find(str.Page).IsAvailable(newID))
+         throw ApplicationException(HERE, L"Unable to change string ID - it is already in use");
+
+      // Generate string (must identify colour tags before display)
+      LanguageString newStr(newID, str.Page, str.Text, str.Version);
+      newStr.IdentifyColourTags();
+
+      // Remove/Re-Insert
+      RemoveString(str.Page, str.ID);
+      InsertString(newStr);
    }
 
    /// <summary>Removes the string from the appropriate page</summary>

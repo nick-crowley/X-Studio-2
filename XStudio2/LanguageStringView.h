@@ -28,7 +28,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       };
 
    public:
-      /// <summary>Base class for all Language document properties</summary>
+      /// <summary>Base class for all string properties</summary>
       class StringPropertyBase : public LanguageDocument::LanguagePropertyBase
       {
       public:
@@ -126,16 +126,17 @@ NAMESPACE_BEGIN2(GUI,Views)
          bool OnValidateValue(GuiString& value) override
          {
             return value.length() && value.IsNumeric() 
-                && (String.ID == value.ToInt() || !Page.Contains(value.ToInt()));   // ID is Unchanged or available
+                && (String.ID == value.ToInt() || Page.IsAvailable(value.ToInt()));   // ID is Unchanged or available
          }
 
          /// <summary>Update ID</summary>
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // TODO: Change ID
-            //File.ID = value.ToInt();
-            __super::OnValueChanged(value);    // Modify document
+            // Change ID
+            Document.RenameString(String, value.ToInt());
+            // Modify document
+            __super::OnValueChanged(value);    
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -206,7 +207,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageStringPtr    String;   // Copy of string being operated on
       };
 
-      
       /// <summary>Deletes the currently selected string</summary>
       class DeleteSelectedString : public CommandBase
       {

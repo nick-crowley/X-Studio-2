@@ -293,6 +293,14 @@ namespace Logic
             return (--Strings.end())->first+1;
          }
 
+         /// <summary>Determines whether a string ID is available.</summary>
+         /// <param name="id">The identifier.</param>
+         /// <returns></returns>
+         bool IsAvailable(UINT id) const
+         {
+            return !Contains(id);
+         }
+
          /// <summary>Read-only access to string by ID.</summary>
          /// <param name="id">The string id</param>
          /// <returns></returns>
