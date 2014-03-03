@@ -133,7 +133,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          throw ApplicationException(HERE, L"The ID is already in use");
       
       // Update view
-      GetView<LanguageStringView>()->InsertString(index, str);
+      GetView<LanguageStringView>()->InsertString(index, str, true);
    }
 
    /// <summary>Removes the string from the appropriate page</summary>

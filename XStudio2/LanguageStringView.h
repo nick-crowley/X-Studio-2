@@ -478,7 +478,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void InsertString(UINT index, LanguageString& str);
+      void InsertString(UINT index, LanguageString& str, bool display);
       void RemoveString(UINT index);
       
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
