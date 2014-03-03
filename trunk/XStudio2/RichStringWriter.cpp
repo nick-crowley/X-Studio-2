@@ -117,59 +117,47 @@ namespace GUI
 
                // Open paragraph
                OnParagraphOpened(thisState);
-               WriteChar(thisChar);
+
+               // Write first char
+               if (thisChar->Char != OBJ)
+                  WriteChar(thisChar);
+               else
+                  WriteButton(0);
 
                // Examine each character
                for (int i = 1, end = InputLength; i < end; ++i)
                {
                   // Advance this
                   thisChar->Move(TOM::tomCharacter, 1);
-                  bool isCharacter = (thisChar->Char != 0xfffc);
+                  thisState = CharState(thisChar->Font, thisChar->Para);
 
-                  // Character: Examine formatting + Write character
-                  if (isCharacter)
+                  // Paragraph change: Close open tags, Open new paragraph with same tags
+                  if (thisState.Alignment != prevState.Alignment)
                   {
-                     // Query state
-                     thisState = CharState(thisChar->Font, thisChar->Para);
-
-                     // Paragraph change: Close open tags, Open new paragraph with same tags
-                     if (thisState.Alignment != prevState.Alignment)
-                     {
-                        OnParagraphClosed(prevState.Alignment);
-                        OnParagraphOpened(thisState);
-                     }
-                     // Format change: 
-                     else if (thisState != prevState)
-                     {
-                        // Formatting lost: Close tags
-                        if (thisState < prevState)
-                           OnFormattingLost(prevState - thisState);
+                     OnParagraphClosed(prevState.Alignment);
+                     OnParagraphOpened(thisState);
+                  }
+                  // Format change: 
+                  else if (thisState != prevState)
+                  {
+                     // Formatting lost: Close tags
+                     if (thisState < prevState)
+                        OnFormattingLost(prevState - thisState);
                      
-                        // Formatting gained: Open tags
-                        if (thisState > prevState)
-                           OnFormattingGained(thisState - prevState);
-                     }
+                     // Formatting gained: Open tags
+                     if (thisState > prevState)
+                        OnFormattingGained(thisState - prevState);
+                  }
                   
-                     // Write character
+                  // Write character
+                  if (thisChar->Char != OBJ)
                      WriteChar(thisChar);
-                  }
-                  // Button: Lookup button + Write [select] tag
                   else
-                  {
-                     // Lookup button + write tag
-                     WriteButton(*Edit.GetButton({i,i+1}));
-
-                     // Don't re-sync previous state
-                     continue;
-                  }
+                     WriteButton(i);
 
                   // Re-sync prev 
                   prevChar->Move(TOM::tomCharacter, 1);
                   prevState = thisState;
-
-                  // Skip over objects
-                  if (prevChar->Char == 0xfffc)
-                     prevChar->Move(TOM::tomCharacter, 1);
                }
 
                // Close paragraph
@@ -263,9 +251,13 @@ namespace GUI
       }
 
       /// <summary>Writes a select tag.</summary>
-      /// <param name="btn">The button.</param>
-      void  RichStringWriter::WriteButton(const LanguageButton& btn)
+      /// <param name="charIndex">Position.</param>
+      void  RichStringWriter::WriteButton(UINT charIndex)
       {
+         // Lookup button data
+         const LanguageButton& btn = *Edit.GetButton({charIndex,charIndex+1});
+         
+         // Write text [+id]
          if (btn.ID.empty())
             Output += GuiString(L"[select]%s[/select]", btn.Text.c_str());
          else

@@ -217,6 +217,10 @@ namespace GUI
          static wstring  GetTagString(TagType t);
          static LPCWSTR  GetUnixCode(TagType t);
 
+      protected:
+         /// <summary>Object replacement character.</summary>
+         const static wchar OBJ = 0xfffc;
+
          // --------------------- PROPERTIES ------------------------
       protected:
          PROPERTY_GET(long,InputLength,GetInputLength);
@@ -234,7 +238,7 @@ namespace GUI
          void   OnFormattingGained(const TagList& lost);
          void   OnParagraphOpened(CharState s);
          void   OnParagraphClosed(TagType para);
-         void   WriteButton(const LanguageButton& btn);
+         void   WriteButton(UINT charIndex);
          void   WriteChar(TextRangePtr chr);
          void   WriteTag(TagType t, bool open);
 
