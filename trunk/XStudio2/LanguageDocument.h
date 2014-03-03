@@ -240,6 +240,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
       void  InsertString(LanguageString& str);
       void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;

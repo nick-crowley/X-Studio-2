@@ -38,7 +38,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded))
    {
-      Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECTVIEW));
    }
 
    CProjectWnd::~CProjectWnd()
@@ -60,6 +59,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!__super::Create(L"Project", parent, MainWnd::DefaultSize, TRUE, IDR_PROJECTVIEW, style))
          throw Win32Exception(HERE, L"Unable to create Project window");
 
+      // Icon
       SetIcon(theApp.LoadIconW(IDR_PROJECTVIEW, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
       // Dock left/right
@@ -106,6 +106,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
+   /// <summary>Called when created.</summary>
+   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <returns></returns>
    int CProjectWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       try
@@ -130,6 +133,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Toolbar:
          if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project"))
             throw Win32Exception(HERE, L"Unable to create project window toolbar");
+
+         // Custom accelerators
+         Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECTVIEW));
 
 	      // Populate
 	      TreeView.Populate();

@@ -249,6 +249,66 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 
+      /// <summary>Inserts a new string preceeding the currently selected string</summary>
+      class InsertNewString : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No page selected</exception>
+         InsertNewString(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure page is selected
+            if (!doc.SelectedPage)
+               throw InvalidOperationException(HERE, L"No page is selected");
+
+            // Store PageID
+            PageID = doc.SelectedPage->ID;
+
+            // Define insertion point (if any)
+            if (doc.SelectedString)
+               InsertAt.reset(new LanguageString(*doc.SelectedString));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"New String"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Insert a new string using the next available ID</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Execute() override
+         {
+            // Create/Insert string
+            auto str = Document.CreateString(PageID, InsertAt.get());
+            Document.InsertString(str);
+
+            // Store for later removal
+            String.reset( new LanguageString(str) );
+         }
+
+         /// <summary>Inserts the removed string.</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
+         void Undo() override
+         {
+            // Remove created string
+            Document.RemoveString(PageID, String->ID);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         UINT              PageID;     // Target Page 
+         LanguageStringPtr InsertAt;   // Optional insertion position
+      };
+
       /// <summary>Paste string on clipboard into the currently selected page</summary>
       class PasteString : public CommandBase
       {
@@ -283,7 +343,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Paste string into the selected page</summary>
-         /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+         /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
          /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Execute() override
@@ -293,7 +353,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          /// <summary>Removed pasted string.</summary>
-         /// <exception cref="Logic::ApplicationException">String not found</exception>
          /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
@@ -337,7 +396,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Removes the selected string from the View and the Document</summary>
-         /// <exception cref="Logic::ApplicationException">String not found</exception>
          /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
@@ -348,7 +406,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          /// <summary>Inserts the removed string.</summary>
-         /// <exception cref="Logic::ApplicationException">String ID is not available</exception>
+         /// <exception cref="Logic::ApplicationException">String ID already in use</exception>
          /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          void Undo() override
@@ -382,7 +440,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Removes the selected string and copies it to the clipboard</summary>
-         /// <exception cref="Logic::ApplicationException">String not found</exception>
          /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
          /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
          /// <exception cref="Logic::StringNotFoundException">String does not exist</exception>
@@ -435,6 +492,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
       afx_msg void OnCommandEditPaste()      { OnPerformCommand(ID_EDIT_PASTE);      }
+      afx_msg void OnCommandEditInsert()     { OnPerformCommand(ID_EDIT_INSERT);     }
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
