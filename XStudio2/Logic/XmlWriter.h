@@ -25,14 +25,13 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
       public:
-         void   Close();
-
+         void          Close();
          void          WriteAttribute(XmlElementPtr& node, const wstring& name, const wstring& value);
          void          WriteAttribute(XmlElementPtr& node, const wstring& name, int value);
          void          WriteComment(const wstring& txt);
-         void          WriteComment(XmlElementPtr& node, const wstring& txt);
-         XmlElementPtr WriteElement(XmlElementPtr& node, const wstring& name);
-         XmlElementPtr WriteElement(XmlElementPtr& node, const wstring& name, const wstring& txt);
+         void          WriteComment(XmlElementPtr& parent, const wstring& txt);
+         XmlElementPtr WriteElement(XmlElementPtr& parent, const wstring& name);
+         XmlElementPtr WriteElement(XmlElementPtr& parent, const wstring& name, const wstring& txt);
          void          WriteInstruction(const wstring& txt);
          XmlElementPtr WriteRoot(const wstring& name);
          void          WriteText(XmlElementPtr& node, const wstring& txt);

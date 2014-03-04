@@ -206,8 +206,8 @@ namespace Logic
          // Read properties
          id = ReadAttribute(element, L"id");
          TryReadAttribute(element, L"title", title);
-         TryReadAttribute(element, L"desc", desc);
-         voice = TryReadAttribute(element, L"desc", tmp) && tmp == L"yes";
+         TryReadAttribute(element, L"descr", desc);
+         voice = TryReadAttribute(element, L"voice", tmp) && tmp == L"yes";
 
          // Create page (also normalise PageID)
          LanguagePage page(ParsePageID(id, ver), title, desc, voice);

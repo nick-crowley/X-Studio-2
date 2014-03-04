@@ -352,8 +352,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
             throw InvalidOperationException(HERE, L"Cannot save string library");
          
          // Write contents
-         StreamPtr fs2( new FileStream(szPathName, FileMode::OpenAlways, FileAccess::Write) );
-         File = LanguageFileWriter(fs2).WriteFile(File);
+         LanguageFileWriter w( StreamPtr(new FileStream(szPathName, FileMode::OpenAlways, FileAccess::Write)) );
+         w.Write(File);
+         w.Close();
 
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file saved successfully");
          return TRUE;

@@ -134,6 +134,7 @@
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\FileBase.h" />
+    <ClInclude Include="Logic\LanguageFileWriter.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
     <ClInclude Include="RichEditEx.h" />
     <ClInclude Include="CustomTooltip.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
+    <ClCompile Include="Logic\LanguageFileWriter.cpp" />
     <ClCompile Include="RichEditEx.cpp" />
     <ClCompile Include="CustomTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
