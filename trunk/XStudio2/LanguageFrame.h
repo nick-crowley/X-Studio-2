@@ -4,44 +4,34 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
 
-   /// <summary>Splits the language view vertically</summary>
-   class LanguagePageSplitter : public CSplitterWnd
+   /// <summary>Splits the language frame into two rows</summary>
+   class DualRowSplitter : public CSplitterWnd
    {
-   public:
+      // --------------------- CONSTRUCTION ----------------------
+
+      // ------------------------ STATIC -------------------------
       DECLARE_MESSAGE_MAP()
 
-      /// <summary>Saves column sizes on change</summary>
-      void RecalcLayout() override
-      {
-         CSplitterWnd::RecalcLayout();
+      // ----------------------- MUTATORS ------------------------
+   public:
+	   BOOL Create(CWnd* pParentWnd, UINT nID = AFX_IDW_PANE_FIRST);
 
-         // Store column widths
-         int width, min;
-         GetColumnInfo(0, width, min);
-         theApp.WriteSectionInt(L"LanguageFrame", L"PageWidth", width);
-         GetColumnInfo(1, width, min);
-         theApp.WriteSectionInt(L"LanguageFrame", L"StringWidth", width);
-      }
+      void RecalcLayout() override;
    };
 
-   /// <summary>Splits the language view horizontally</summary>
-   class LanguageStringSplitter : public CSplitterWnd
+   /// <summary>Splits the language fame into two columns</summary>
+   class DualColumnSplitter : public CSplitterWnd
    {
-   public:
+      // --------------------- CONSTRUCTION ----------------------
+
+      // ------------------------ STATIC -------------------------
       DECLARE_MESSAGE_MAP()
 
-      /// <summary>Saves row sizes on change</summary>
-      void RecalcLayout() override
-      {
-         CSplitterWnd::RecalcLayout();
+      // ----------------------- MUTATORS ------------------------
+   public:
+      BOOL Create(CWnd* pParentWnd, UINT nID = AFX_IDW_PANE_FIRST);
 
-         // Store row widths
-         int height, min;
-         GetRowInfo(0, height, min);
-         theApp.WriteSectionInt(L"LanguageFrame", L"StringHeight", height);
-         GetRowInfo(1, height, min);
-         theApp.WriteSectionInt(L"LanguageFrame", L"EditHeight", height);
-      }
+      void RecalcLayout() override;
    };
 
    /// <summary>Child frame</summary>
@@ -54,28 +44,22 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   virtual ~LanguageFrame();
 
       // ------------------------ STATIC -------------------------
-   public:
       DECLARE_DYNCREATE(LanguageFrame)
-   protected:
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif   
-
+      
       // ----------------------- MUTATORS ------------------------
    protected:
-      virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+      BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext) override;
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-	   LanguageStringSplitter SubSplitter;
-      LanguagePageSplitter   Splitter;
+	   DualColumnSplitter ColumnSplitter;
+      DualRowSplitter    RowSplitter;
    };
 
 
