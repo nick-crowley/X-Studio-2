@@ -6,7 +6,7 @@
 #include "Application.h"
 #include "MainWnd.h"
 #include "Logic/DebugTests.h"
-
+#include "PreferencesDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -235,7 +235,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Execute debugging tests.</summary>
    void MainWnd::OnCommandPreferences()
    {
-      m_dlgPreferences.DoModal();
+      PreferencesDialog dlg(this);
+      dlg.DoModal();
    }
 
    /// <summary>Execute debugging tests.</summary>

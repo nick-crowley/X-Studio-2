@@ -15,7 +15,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      PreferencesDialog();    
+      PreferencesDialog(CWnd* parent);    
       virtual ~PreferencesDialog();
        
       // ------------------------ STATIC -------------------------

@@ -15,7 +15,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   PreferencesDialog::PreferencesDialog() 
+   PreferencesDialog::PreferencesDialog(CWnd* parent) : CMFCPropertySheet(L"Preferences", parent, 0)
    {
       AddPage(&General);
       AddPage(&GameData);

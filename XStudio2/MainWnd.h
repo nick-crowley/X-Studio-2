@@ -14,7 +14,6 @@
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
 #include "FindDialog.h"
-#include "PreferencesDialog.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -97,7 +96,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected: 
       FindDialog        m_dlgFind;
-      PreferencesDialog m_dlgPreferences;
 	   CMFCMenuBar       m_wndMenuBar;
 	   ToolBarEx         m_wndFileToolBar,
                         m_wndEditToolBar,
