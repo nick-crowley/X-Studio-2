@@ -302,6 +302,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
                              PageSelectionChanged;
       SimpleEvent            LibraryRebuilt,
                              EditModeChanged,
+                             PageUpdated,
                              StringUpdated;
 
    protected:

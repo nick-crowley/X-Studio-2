@@ -55,8 +55,11 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Update value. Raise 'PAGE UPDATED'
             Page.Description = value;
-            __super::OnValueChanged(value);    // Modify document
+            Document.PageUpdated.Raise();
+            // Modify document
+            __super::OnValueChanged(value);    
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -122,8 +125,11 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Update value. Raise 'PAGE UPDATED'
             Page.Title = value;
-            __super::OnValueChanged(value);    // Modify document
+            Document.PageUpdated.Raise();
+            // Modify document
+            __super::OnValueChanged(value);  
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -155,8 +161,11 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Update value. Raise 'PAGE UPDATED'
             Page.Voiced = (value == L"True");
-            __super::OnValueChanged(value);    // Modify document
+            Document.PageUpdated.Raise();
+            // Modify document
+            __super::OnValueChanged(value);
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -185,8 +194,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      void InsertItem(UINT index, LanguagePageRef page);
+      void InsertPage(UINT index, LanguagePageRef page);
       void Populate();
+      void UpdatePage(UINT index, LanguagePageRef page);
 	  
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
       afx_msg void OnCommandEditCut()        { OnPerformCommand(ID_EDIT_CUT);        }
@@ -199,6 +209,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryMode(CCmdUI* pCmdUI);
+      handler void OnPageUpdated();
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
@@ -206,7 +217,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:      
       
    protected:
-      EventHandler  fnLibraryRebuilt;
+      EventHandler  fnLibraryRebuilt,
+                    fnPageUpdated;
       ImageListEx   Images;
    };
    

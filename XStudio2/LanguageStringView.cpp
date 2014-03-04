@@ -225,7 +225,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_STRINGVIEW));
 
          // Listen for PAGE CHANGED + TEXT CHANGED
-         fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
+         fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::OnPageSelectionChanged);
          fnStringUpdated = GetDocument()->StringUpdated.Register(this, &LanguageStringView::OnStringUpdated);
       }
       catch (ExceptionBase& e) {
@@ -255,7 +255,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    /// <summary>Populates the strings for the currently selected page</summary>
-   void LanguageStringView::onPageSelectionChanged()
+   void LanguageStringView::OnPageSelectionChanged()
    {
       try
       {
