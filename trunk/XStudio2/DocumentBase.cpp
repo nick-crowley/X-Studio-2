@@ -12,6 +12,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, &DocumentBase::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -143,9 +144,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
       // Save/SaveAs: Require file document
       case ID_FILE_SAVE:
-      case ID_FILE_SAVE_AS:
-         pCmdUI->Enable(!Virtual ? TRUE : FALSE);
-         break;
+      case ID_FILE_SAVE_AS:  state = !Virtual;   break;
+      // SaveAll: Always enabled
+      case ID_FILE_SAVE_ALL: state = true;       break;
       }
 
       // Set state

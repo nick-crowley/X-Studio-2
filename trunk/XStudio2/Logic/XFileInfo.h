@@ -17,9 +17,8 @@ namespace Logic
       /// <summary>Represents a file descriptor for any physical or catalog based file</summary>
       class XFileInfo
       {
-      public:
          // --------------------- CONSTRUCTION ----------------------
-
+      public:
          XFileInfo(const Path& p);
          XFileInfo(const XFileSystem& vfs, const XCatalog& cat, Path subPath, DWORD size, DWORD position);
          virtual ~XFileInfo();
@@ -29,7 +28,6 @@ namespace Logic
          DEFAULT_MOVE(XFileInfo);
 
          // ----------------------- STATIC --------------------------
-
       private:
          static DWORD CalculatePrecendence(FileSource s, const Path& path);
 
@@ -38,16 +36,15 @@ namespace Logic
          PROPERTY_GET(Path,DataFile,GetDataFile);
 
 			// ---------------------- ACCESSORS ------------------------
-
+      public:
          Path       GetDataFile() const; 
-
          bool       Matches(Path path, bool checkExtension) const;
          StreamPtr  OpenRead() const;
+         StreamPtr  OpenWrite() const;
 
 			// ----------------------- MUTATORS ------------------------
 
 			// -------------------- REPRESENTATION ---------------------
-
       public:
          const XFileSystem* FileSystem;
          const XCatalog*    Catalog;

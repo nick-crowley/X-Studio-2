@@ -8,7 +8,7 @@
 #include "LanguageStringView.h"
 #include "LanguagePageView.h"
 #include "PropertiesWnd.h"
-#include "Logic/FileStream.h"
+#include "Logic/XFileInfo.h"
 #include "Logic/LanguageFileReader.h"
 #include "Logic/LanguageFileWriter.h"
 #include "Logic/FileIdentifier.h"
@@ -318,8 +318,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          else
          {  
             // Parse input file
-            StreamPtr fs2( new FileStream(szPathName, FileMode::OpenExisting, FileAccess::Read) );
-            File = LanguageFileReader(fs2).ReadFile(szPathName);
+            XFileInfo stream(szPathName);
+            File = LanguageFileReader(stream.OpenRead()).ReadFile(szPathName);
          }
 
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
@@ -340,7 +340,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    BOOL LanguageDocument::OnSaveDocument(LPCTSTR szPathName)
    {
       WorkerData data(Operation::LoadSaveDocument);
-
+      
       try
       {
          // Feedback
@@ -350,12 +350,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Verify not library
          if (GuiString(L"String Library") == szPathName)
             throw InvalidOperationException(HERE, L"Cannot save string library");
-         
+      
          // Write contents
-         LanguageFileWriter w( StreamPtr(new FileStream(szPathName, FileMode::OpenAlways, FileAccess::Write)) );
+         LanguageFileWriter w(XFileInfo(FullPath).OpenWrite());
          w.Write(File);
          w.Close();
 
+         // Feedback
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file saved successfully");
          return TRUE;
       }
