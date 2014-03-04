@@ -51,18 +51,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
    BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
 	   ON_WM_CREATE()
       ON_WM_SETTINGCHANGE()
+      ON_WM_SHOWWINDOW()
+      ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
+      ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
+      ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
 	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommandCustomizeToolbar)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
-      ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
+      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandPreferences)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
-	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
-      ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryPreferences)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryShowWindow)
-      ON_WM_SHOWWINDOW()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -231,6 +233,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
    /// <summary>Execute debugging tests.</summary>
+   void MainWnd::OnCommandPreferences()
+   {
+      m_dlgPreferences.DoModal();
+   }
+
+   /// <summary>Execute debugging tests.</summary>
    void MainWnd::OnCommandRunTests()
    {
       try
@@ -395,6 +403,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       pCmdUI->Enable(ScriptDocument::GetActive() != nullptr);
       // Check if visible
       pCmdUI->SetCheck(m_dlgFind.IsWindowVisible());
+   }
+
+   /// <summary>Query state of 'edit preferences'.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void MainWnd::OnQueryPreferences(CCmdUI *pCmdUI)
+   {
+      pCmdUI->Enable(TRUE);
+      pCmdUI->SetCheck(FALSE);
    }
    
    /// <summary>Query state of tool window command.</summary>

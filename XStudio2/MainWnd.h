@@ -14,6 +14,7 @@
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
 #include "FindDialog.h"
+#include "PreferencesDialog.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -74,6 +75,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       afx_msg void    OnCommandFindText();
       afx_msg void    OnCommandCustomizeToolbar();
+      afx_msg void    OnCommandPreferences();
       afx_msg void    OnCommandRunTests();
       afx_msg void    OnCommandShowWindow(UINT nID);
       afx_msg void    OnCommandStringLibrary();
@@ -82,6 +84,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       handler void    onGameDataFeedback(const WorkerProgress& wp);
       handler void    OnInitialUpdate();
       afx_msg void    OnQueryFindText(CCmdUI *pCmdUI);
+      afx_msg void    OnQueryPreferences(CCmdUI *pCmdUI);
       afx_msg void    OnQueryShowWindow(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void    onScriptCaretMoved(POINT pt);
@@ -94,6 +97,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected: 
       FindDialog        m_dlgFind;
+      PreferencesDialog m_dlgPreferences;
 	   CMFCMenuBar       m_wndMenuBar;
 	   ToolBarEx         m_wndFileToolBar,
                         m_wndEditToolBar,
@@ -105,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       CCommandWnd       m_wndCommands;
       CGameObjectWnd    m_wndGameObjects;
       CScriptObjectWnd  m_wndScriptObjects;
-	   CPropertiesWnd    m_wndProperties;
+	   CPropertiesWnd    m_wndProperties;      
 
       GameDataWorker    GameDataThread;
 

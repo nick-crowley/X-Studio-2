@@ -131,11 +131,17 @@
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="CompilerPage.h" />
+    <ClInclude Include="EditorPage.h" />
+    <ClInclude Include="GameDataPage.h" />
+    <ClInclude Include="GeneralPage.h" />
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
+    <ClInclude Include="PreferencesDialog.h" />
+    <ClInclude Include="PreferencesPage.h" />
     <ClInclude Include="RichEditEx.h" />
     <ClInclude Include="CustomTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
@@ -269,9 +275,15 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="CompilerPage.cpp" />
+    <ClCompile Include="EditorPage.cpp" />
+    <ClCompile Include="GameDataPage.cpp" />
+    <ClCompile Include="GeneralPage.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
+    <ClCompile Include="PreferencesDialog.cpp" />
+    <ClCompile Include="PreferencesPage.cpp" />
     <ClCompile Include="RichEditEx.cpp" />
     <ClCompile Include="CustomTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
