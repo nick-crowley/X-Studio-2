@@ -71,7 +71,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void    onScriptCaretMoved(POINT pt);
       afx_msg void    OnShowWindow(BOOL bShow, UINT nStatus);
-      afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
+      afx_msg LRESULT OnCreateNewToolbar(WPARAM wp, LPARAM lp);
+      afx_msg LRESULT OnRequestTabTooltip(WPARAM wp, LPARAM lp);
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------

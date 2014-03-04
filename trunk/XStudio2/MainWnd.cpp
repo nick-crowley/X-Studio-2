@@ -58,7 +58,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
-	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnToolbarCreateNew)
+	   ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
+      ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryShowWindow)
       ON_WM_SHOWWINDOW()
@@ -283,11 +284,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Document Tabs
 	      CMDITabInfo mdiTabParams;
-	      mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; // other styles available...
-	      mdiTabParams.m_bActiveTabCloseButton = TRUE;      // set to FALSE to place close button at right of tab area
-	      mdiTabParams.m_bTabIcons = TRUE;    // set to TRUE to enable document icons on MDI taba
-	      mdiTabParams.m_bAutoColor = TRUE;    // set to FALSE to disable auto-coloring of MDI tabs
-	      mdiTabParams.m_bDocumentMenu = TRUE; // enable the document menu at the right edge of the tab area
+	      mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; 
+	      mdiTabParams.m_bActiveTabCloseButton = TRUE;      // Document close button
+	      mdiTabParams.m_bAutoColor = TRUE;                 // Coloured tags
+	      mdiTabParams.m_bDocumentMenu = TRUE;              // Document selection context menu
+         mdiTabParams.m_bTabIcons = TRUE;                  // Document icons
+         mdiTabParams.m_bEnableTabSwap = TRUE;             // Swap tabs
+         mdiTabParams.m_bTabCustomTooltips = TRUE;         // Tooltips
 	      EnableMDITabbedGroups(TRUE, mdiTabParams);
 
          // prevent the menu bar from taking the focus on activation
@@ -339,6 +342,24 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return -1;
       }
    }
+   
+   /// <summary>Enable customization on user created toolsbars.  (App-Wizard generated)</summary>
+   /// <param name="wp">The wp.</param>
+   /// <param name="lp">The lp.</param>
+   /// <returns></returns>
+   LRESULT MainWnd::OnCreateNewToolbar(WPARAM wp, LPARAM lp)
+   {
+	   LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
+	   if (lres == 0)
+	      return 0;
+
+	   CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
+	   ASSERT_VALID(pUserToolbar);
+
+	   pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
+	   return lres;
+   }
+
 
    
    /// <summary>Changes app state once game data is loaded.</summary>
@@ -406,6 +427,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       pCmdUI->SetCheck(checked);
    }
 
+   /// <summary>Called to request tab tooltip.</summary>
+   /// <param name="wp">The wp.</param>
+   /// <param name="lp">The lp.</param>
+   /// <returns></returns>
+   LRESULT  MainWnd::OnRequestTabTooltip(WPARAM wp, LPARAM lp)
+   {
+      auto info = reinterpret_cast<CMFCTabToolTipInfo*>(lp);
+    
+      // TODO: Display document path
+      info->m_strText = L"TODO: Display document path";
+      return 0;
+   }
+
    /// <summary>Display caret co-ordinates in status bar</summary>
    /// <param name="pt">The caret position</param>
    void MainWnd::onScriptCaretMoved(POINT pt)
@@ -435,24 +469,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void MainWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
 	   CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
-   }
-
-
-   /// <summary>Enable customization on user created toolsbars.  (App-Wizard generated)</summary>
-   /// <param name="wp">The wp.</param>
-   /// <param name="lp">The lp.</param>
-   /// <returns></returns>
-   LRESULT MainWnd::OnToolbarCreateNew(WPARAM wp, LPARAM lp)
-   {
-	   LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
-	   if (lres == 0)
-	      return 0;
-
-	   CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
-	   ASSERT_VALID(pUserToolbar);
-
-	   pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, GuiString(IDS_TOOLBAR_CUSTOMIZE).c_str());
-	   return lres;
    }
 
 
