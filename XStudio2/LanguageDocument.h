@@ -276,6 +276,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
       void  InsertPage(LanguagePage& page);
       void  InsertString(LanguageString& str);
+      void  RenamePage(LanguagePage& page, UINT newID);
       void  RenameString(LanguageString& str, UINT newID);
       void  RemovePage(UINT page);
       void  RemoveString(UINT page, UINT id);

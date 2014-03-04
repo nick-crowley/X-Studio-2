@@ -91,16 +91,17 @@ NAMESPACE_BEGIN2(GUI,Views)
          {
             return value.length() && value.IsNumeric()                     // Not empty
                 && value.ToInt() >= 1 && value.ToInt() <= 9999             // 1 <= val <= 9999
-                && (Page.ID == value.ToInt() || !File.Pages.Contains(value.ToInt()));   // ID is Unchanged or available 
+                && (Page.ID == value.ToInt() || File.IsAvailable(value.ToInt()));   // ID is Unchanged or available 
          }
 
          /// <summary>Update ID</summary>
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // TODO: Change ID
-            //File.ID = value.ToInt();
-            __super::OnValueChanged(value);    // Modify document
+            // Change ID
+            Document.RenamePage(Page, value.ToInt());
+            // Modify document
+            __super::OnValueChanged(value);    
          }
 
          // -------------------- REPRESENTATION ---------------------

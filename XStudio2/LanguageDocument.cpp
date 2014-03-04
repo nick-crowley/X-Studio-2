@@ -322,6 +322,33 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
    
+   /// <summary>Changes the ID of a Page.</summary>
+   /// <param name="str">The Page.</param>
+   /// <param name="newID">The new ID</param>
+   /// <exception cref="Logic::ApplicationException">New Page ID already in use</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   void  LanguageDocument::RenamePage(LanguagePage& page, UINT newID)
+   {
+      // Feedback
+      Console << "Renaming document Page: " << page << Cons::White << " newID=" << newID << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
+      // Validate new ID
+      if (!File.IsAvailable(newID))
+         throw ApplicationException(HERE, L"Unable to change Page ID - it is already in use");
+
+      // Generate Page 
+      LanguagePage newPage(page);
+      newPage.ID = newID;
+
+      // Remove/Re-Insert
+      RemovePage(page.ID);
+      InsertPage(newPage);
+   }
+
    /// <summary>Changes the ID of a string.</summary>
    /// <param name="str">The string.</param>
    /// <param name="newID">The new ID</param>
