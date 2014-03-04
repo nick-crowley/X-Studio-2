@@ -46,11 +46,23 @@ NAMESPACE_BEGIN2(GUI,Utils)
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-	   ValidatingProperty(const CString& strGroupName, DWORD_PTR dwData = 0, BOOL bIsValueList = FALSE)
+      /// <summary>Create group property.</summary>
+      /// <param name="strGroupName">Group name.</param>
+      /// <param name="dwData">item data.</param>
+      /// <param name="bIsValueList">Whether a value list.</param>
+      ValidatingProperty(const CString& strGroupName, DWORD_PTR dwData = 0, BOOL bIsValueList = FALSE)
          : CMFCPropertyGridProperty(strGroupName, dwData, bIsValueList)
       {}
 
-	   ValidatingProperty(const CString& strName, const COleVariant& varValue, LPCTSTR lpszDescr = NULL, DWORD_PTR dwData = 0,
+      /// <summary>Create item property</summary>
+      /// <param name="strName">Name.</param>
+      /// <param name="varValue">value.</param>
+      /// <param name="lpszDescr">description.</param>
+      /// <param name="dwData">item data.</param>
+      /// <param name="lpszEditMask">edit mask.</param>
+      /// <param name="lpszEditTemplate">edit template.</param>
+      /// <param name="lpszValidChars">valid chars.</param>
+      ValidatingProperty(const CString& strName, const COleVariant& varValue, LPCTSTR lpszDescr = NULL, DWORD_PTR dwData = 0,
 		   LPCTSTR lpszEditMask = NULL, LPCTSTR lpszEditTemplate = NULL, LPCTSTR lpszValidChars = NULL)
          : CMFCPropertyGridProperty(strName, varValue, lpszDescr, dwData, lpszEditMask, lpszEditTemplate, lpszValidChars)
       {}

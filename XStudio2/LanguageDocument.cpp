@@ -180,6 +180,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
             group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
             group->AddSubItem(new LanguageEdit::AuthorProperty(*this, edit));
+            group->AddSubItem(new LanguageEdit::ColumnsProperty(*this, edit));
             group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
             group->AddSubItem(new LanguageEdit::TitleProperty(*this, edit));
             group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));

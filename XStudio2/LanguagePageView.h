@@ -18,7 +18,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ------------------------ TYPES --------------------------
    public:
       /// <summary>Base class for all Language document properties</summary>
-      class PagePropertyBase : public LanguageDocument::LanguagePropertyBase
+      class PagePropertyBase : public LanguageDocument::PropertyBase
       {
       public:
          /// <summary>Create page property.</summary>
@@ -28,7 +28,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="val">value</param>
          /// <param name="desc">description.</param>
          PagePropertyBase(LanguageDocument& doc, LanguagePage& page, wstring name, _variant_t val, wstring desc)
-            : Page(page), LanguagePropertyBase(doc, name, val, desc)
+            : Page(page), PropertyBase(doc, name, val, desc)
          {}
 
       protected:
