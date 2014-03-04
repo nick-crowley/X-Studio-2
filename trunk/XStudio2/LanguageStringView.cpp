@@ -39,7 +39,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageStringView::LanguageStringView() : CustomDraw(this)
+   LanguageStringView::LanguageStringView() : CustomDraw(this), Accelerators(nullptr)
    {
    }
 

@@ -474,6 +474,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    public:
       void InsertPage(UINT index, LanguagePageRef page, bool display);
       void RemovePage(UINT index);
+      BOOL PreTranslateMessage(MSG* pMsg) override;
 
    protected:
       void AdjustLayout();
@@ -504,6 +505,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       EventHandler  fnLibraryRebuilt,
                     fnPageUpdated;
       ImageListEx   Images;
+      HACCEL        Accelerators;
    };
    
 
