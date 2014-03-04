@@ -77,6 +77,21 @@ namespace Logic
          return c << "}";
       }
 
+      /// <summary>Gets column type string.</summary>
+      /// <param name="t">The type.</param>
+      /// <returns></returns>
+      const wchar*  GetString(ColumnType t)
+      {
+         switch (t)
+         {
+         case ColumnType::Default:  return L"Default";
+         case ColumnType::Single:   return L"Single";
+         case ColumnType::Double:   return L"Double";
+         case ColumnType::Triple:   return L"Triple";
+         }
+         return L"Unknown";
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       // ------------------------------ PROTECTED METHODS -----------------------------

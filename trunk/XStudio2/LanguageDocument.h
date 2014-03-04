@@ -311,7 +311,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       LanguageString*  CurrentString;    // Currently selected string
       LanguagePage*    CurrentPage;      // Currently selected page
       set<UINT>        Components;       // [LIBRARY] IDs of currently included files
-      
 };
 
 

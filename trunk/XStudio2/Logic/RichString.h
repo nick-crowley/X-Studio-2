@@ -12,8 +12,11 @@ namespace Logic
 
       // ------------------------ TYPES --------------------------
 
-      /// <summary>Column spacing of a rich-text string</summary>
+      /// <summary>Column layout in a rich-text string</summary>
       enum class ColumnType { Default, Single, Double, Triple };
+
+      /// <summary>Get column type string</summary>
+      const wchar*  GetString(ColumnType t);
 
       /// <summary>Distinguishes characters from buttons in rich text</summary>
       enum class ElementType  { Character, Button };
