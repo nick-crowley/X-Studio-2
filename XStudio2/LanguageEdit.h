@@ -60,7 +60,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             : Edit(edit), PropertyBase(doc, name, val, desc)
          {
             // Require 'Editor' mode
-            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
+            Enable(IsEnabled() && Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
       protected:

@@ -69,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Views)
             AllowEdit(FALSE);
 
             // Require 'Editor' mode
-            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
+            Enable(IsEnabled() && Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
          // ------------------------ STATIC -------------------------
