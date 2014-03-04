@@ -321,6 +321,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
+
+   /// <summary>Renames the document.</summary>
+   /// <param name="id">File ID.</param>
+   /// <param name="lang">language.</param>
+   void  LanguageDocument::Rename(UINT id, GameLanguage lang)
+   {
+      // Change path + title
+      __super::Rename(GuiString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str()));
+   }
    
    /// <summary>Changes the ID of a Page.</summary>
    /// <param name="str">The Page.</param>
