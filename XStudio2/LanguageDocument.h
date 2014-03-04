@@ -273,8 +273,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
+      void  InsertPage(LanguagePage& page);
       void  InsertString(LanguageString& str);
       void  RenameString(LanguageString& str, UINT newID);
+      void  RemovePage(UINT page);
       void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;

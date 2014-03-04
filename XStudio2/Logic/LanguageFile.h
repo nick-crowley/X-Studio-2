@@ -124,6 +124,36 @@ namespace Logic
                // Not found
                throw IndexOutOfRangeException(HERE, index, size());
             }
+            
+            /// <summary>Inserts a Page</summary>
+            /// <param name="p">Page.</param>
+            /// <returns>Zero-based index if successful, otherwise -1</returns>
+            int  Insert(LanguagePageRef p)
+            {
+               // Attempt to insert
+               auto pos = insert(value_type(p.ID, p));
+               
+               // Return index
+               return pos.second ? distance(begin(), pos.first) : -1;
+            }
+
+            /// <summary>Remove a page by ID</summary>
+            /// <param name="id">The page id</param>
+            /// <returns>Index of removed page</returns>
+            /// <exception cref="Logic::PageNotFoundException">page does not exist</exception>
+            int  Remove(UINT  id) 
+            { 
+               const_iterator pos;
+
+               // Lookup page
+               if ((pos=find(id)) == end())
+                  throw PageNotFoundException(HERE, id);
+               int index = distance(cbegin(), pos);
+
+               // Remove + return index
+               erase(pos);
+               return index;
+            }
 
 		      // -------------------- REPRESENTATION ---------------------
             
@@ -210,6 +240,23 @@ namespace Logic
          }
 
 		   // ----------------------- MUTATORS ------------------------
+         
+         /// <summary>Inserts a Page</summary>
+         /// <param name="s">Page.</param>
+         /// <returns>Zero-based index if successful, otherwise -1</returns>
+         int  Insert(LanguagePageRef s)
+         {
+            return Pages.Insert(s);
+         }
+
+         /// <summary>Remove a page by ID</summary>
+         /// <param name="id">The page id</param>
+         /// <returns>Zero-based index of removed page</returns>
+         /// <exception cref="Logic::PageNotFoundException">page does not exist</exception>
+         int  Remove(UINT  id) 
+         { 
+            return Pages.Remove(id);     
+         }
 
 		   // -------------------- REPRESENTATION ---------------------
       public:

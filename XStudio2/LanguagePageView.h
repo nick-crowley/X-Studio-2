@@ -171,6 +171,87 @@ NAMESPACE_BEGIN2(GUI,Views)
          // -------------------- REPRESENTATION ---------------------
       protected:
       };
+
+
+      /// <summary>Base class for all Page commands</summary>
+      class CommandBase : public LanguageDocument::CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+      protected:
+         typedef unique_ptr<LanguagePage>  LanguagePagePtr;
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         CommandBase(LanguageDocument& doc)
+            : LanguageDocument::CommandBase(doc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         LanguagePagePtr    Page;   // Copy of Page being operated on
+      };
+
+      /// <summary>Deletes the currently selected Page</summary>
+      class DeleteSelectedPage : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No Page selected</exception>
+         DeleteSelectedPage(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure selection exists
+            if (!doc.SelectedPage)
+               throw InvalidOperationException(HERE, L"No Page is selected");
+
+            // Store copy of Page
+            Page.reset(new LanguagePage(*doc.SelectedPage));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Remove Page"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected Page from the View and the Document</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Execute() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Deleting Page: " << *Page << ENDL;
+
+            // Remove Page
+            Document.RemovePage(Page->ID);
+         }
+
+         /// <summary>Inserts the removed Page.</summary>
+         /// <exception cref="Logic::ApplicationException">Page ID already in use</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Undo() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Undoing Delete Page: " << *Page << ENDL;
+
+            // Re-insert Page
+            Document.InsertPage(*Page);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
@@ -192,13 +273,17 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguagePage*     GetSelected() const;
       
       // ----------------------- MUTATORS ------------------------
+   public:
+      void InsertPage(UINT index, LanguagePageRef page, bool display);
+      void RemovePage(UINT index);
+
    protected:
       void AdjustLayout();
-      void InsertPage(UINT index, LanguagePageRef page);
       void Populate();
       void UpdatePage(UINT index, LanguagePageRef page);
 	  
       handler void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+      afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommandEditCut()        { OnPerformCommand(ID_EDIT_CUT);        }
       afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }

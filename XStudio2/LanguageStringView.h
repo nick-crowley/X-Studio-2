@@ -201,7 +201,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create command</summary>
-         /// <param name="view">The view.</param>
          /// <param name="doc">The document.</param>
          CommandBase(LanguageDocument& doc)
             : LanguageDocument::CommandBase(doc)

@@ -57,11 +57,20 @@ namespace Logic
       }
 
       /// <summary>Write string to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str)
+      ConsoleWnd& operator<<(ConsoleWnd& c, LanguageStringRef str)
       {
          return c << Cons::White << "{" 
                   << Cons::Yellow << "LanguageString" 
                   << Cons::White << " id=" << str.ID << " page=" << str.Page << " text=" << str.Text 
+                  << "}";
+      }
+
+      /// <summary>Write page to console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page)
+      {
+         return c << Cons::White << "{" 
+                  << Cons::Yellow << "LanguagePage" 
+                  << Cons::White << " id=" << page.ID << " title=" << page.Title << " desc=" << page.Description << " size=" << page.Strings.size()
                   << "}";
       }
 
