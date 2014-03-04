@@ -282,16 +282,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		      throw Win32Exception(HERE, L"Unable to CMDIFrameWndEx window");
 
-         // Document Tabs
-	      CMDITabInfo mdiTabParams;
-	      mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; 
-	      mdiTabParams.m_bActiveTabCloseButton = TRUE;      // Document close button
-	      mdiTabParams.m_bAutoColor = TRUE;                 // Coloured tags
-	      mdiTabParams.m_bDocumentMenu = TRUE;              // Document selection context menu
-         mdiTabParams.m_bTabIcons = TRUE;                  // Document icons
-         mdiTabParams.m_bEnableTabSwap = TRUE;             // Swap tabs
-         mdiTabParams.m_bTabCustomTooltips = TRUE;         // Tooltips
-	      EnableMDITabbedGroups(TRUE, mdiTabParams);
+         // Setup Document Tabs
+	      EnableMDITabbedGroups(TRUE, DefaultTabStyle());
 
          // prevent the menu bar from taking the focus on activation
 	      CMFCPopupMenu::SetForceMenuFocus(FALSE);

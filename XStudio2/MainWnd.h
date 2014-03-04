@@ -24,7 +24,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
    class MainWnd : public CMDIFrameWndEx
    {
       // ------------------------ TYPES --------------------------
-
+   protected:
+      /// <summary>Defines document tab styles</summary>
+      class DefaultTabStyle : public CMDITabInfo
+      {
+      public:
+         DefaultTabStyle() 
+         {
+	         m_style = CMFCTabCtrl::STYLE_3D_VS2005; 
+	         m_bActiveTabCloseButton = TRUE;      // Document close button
+	         m_bAutoColor = TRUE;                 // Coloured tags
+	         m_bDocumentMenu = TRUE;              // Document selection context menu
+            m_bTabIcons = TRUE;                  // Document icons
+            m_bEnableTabSwap = TRUE;             // Swap tabs
+            m_bTabCustomTooltips = TRUE;         // Tooltips
+         }
+      };
       // --------------------- CONSTRUCTION ----------------------
    public:
 	   MainWnd();
