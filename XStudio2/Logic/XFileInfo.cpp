@@ -122,6 +122,25 @@ namespace Logic
          return s;
       }
 
+      /// <summary>Opens a stream for writing</summary>
+      /// <returns></returns>
+      StreamPtr  XFileInfo::OpenWrite() const
+      {
+         // Ensure physical
+         if (Source == FileSource::Catalog)
+            throw InvalidOperationException(HERE, L"Catalog based files are read-only");
+
+         // basic file stream
+         StreamPtr s(new FileStream(FullPath, FileMode::OpenAlways, FileAccess::Write));
+
+         // PCK: Wrap in GZip compression stream
+         if (FullPath.HasExtension(L".pck"))
+            s = StreamPtr(new GZipStream(StreamPtr(s), GZipStream::Operation::Compression));
+
+         // Return stream
+         return s;
+      }
+
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
 		// ------------------------------- PRIVATE METHODS ------------------------------
