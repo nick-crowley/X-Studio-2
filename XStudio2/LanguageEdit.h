@@ -46,7 +46,94 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    public:
-      
+      /// <summary>Base class for all Rich-text string properties</summary>
+      class RichStringPropertyBase : public LanguageDocument::LanguagePropertyBase
+      {
+      public:
+         /// <summary>Create Rich-text string property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="str">string.</param>
+         /// <param name="name">name.</param>
+         /// <param name="val">value</param>
+         /// <param name="desc">description.</param>
+         RichStringPropertyBase(LanguageDocument& doc, RichString& str, wstring name, _variant_t val, wstring desc)
+            : String(str), LanguagePropertyBase(doc, name, val, desc)
+         {
+            // Require 'Editor' mode
+            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
+         }
+
+      protected:
+         RichString& String;
+      };
+
+      /// <summary>Author property grid item</summary>
+      class AuthorProperty : public RichStringPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create author property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         AuthorProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichStringPropertyBase(doc, edit.Content, L"Author", edit.Content.Author.c_str(),  L"Author displayed when used as a message")
+         {}
+
+         // ------------------------ STATIC -------------------------
+         
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update author</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Update author. Raise 'STRING CONTENT CHANGED'
+            String.Author = value;
+            Document.StringContentChanged.Raise();
+
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Title property grid item</summary>
+      class TitleProperty : public RichStringPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Title property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         TitleProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichStringPropertyBase(doc, edit.Content, L"Title", edit.Content.Title.c_str(),  L"Title displayed when used as a message")
+         {}
+
+         // ------------------------ STATIC -------------------------
+         
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update Title</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Update Title. Raise 'STRING CONTENT CHANGED'
+            String.Title = value;
+            Document.StringContentChanged.Raise();
+
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
 
    protected:
       /// <summary>RichEdit Callback COM interface</summary>

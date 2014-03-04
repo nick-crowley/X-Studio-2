@@ -45,28 +45,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageString& String;
       };
 
-      /// <summary>Base class for properties that require 'editor' mode</summary>
-      class EditorOnlyProperty : public StringPropertyBase
-      {
-      public:
-         /// <summary>Create 'editor only' property.</summary>
-         /// <param name="doc">document.</param>
-         /// <param name="str">string.</param>
-         /// <param name="name">name.</param>
-         /// <param name="val">value</param>
-         /// <param name="desc">description.</param>
-         EditorOnlyProperty(LanguageDocument& doc, LanguageString& str, wstring name, _variant_t val, wstring desc)
-            : StringPropertyBase(doc, str, name, val, desc)
-         {
-            // Require 'Editor' mode
-            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
-         }
-
-      protected:
-      };
-      
       /// <summary>colour tags property grid item</summary>
-      class ColourTagProperty : public EditorOnlyProperty
+      class ColourTagProperty : public StringPropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -75,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="string">string.</param>
          /// <exception cref="Logic::ArgumentException">Colour tags are still undetermined</exception>
          ColourTagProperty(LanguageDocument& doc, LanguageString& string) 
-            : EditorOnlyProperty(doc, string, L"Colour Tags", GetString(string.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
+            : StringPropertyBase(doc, string, L"Colour Tags", GetString(string.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
          {
             // Require tags to be already determined
             if (String.TagType == ColourTag::Undetermined)
@@ -86,6 +66,9 @@ NAMESPACE_BEGIN2(GUI,Views)
             AddOption(GetString(ColourTag::Message).c_str());
             // Strict dropdown
             AllowEdit(FALSE);
+
+            // Require 'Editor' mode
+            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
          // ------------------------ STATIC -------------------------
@@ -113,10 +96,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Set tag type
+            // Update tag. Raise 'STRING CONTENT CHANGED'
             String.TagType = (value == L"Colour Codes" ? ColourTag::Unix : ColourTag::Message);
-
-            // Raise 'STRING CONTENT CHANGED'
             Document.StringContentChanged.Raise();
 
             // Modify document
@@ -196,10 +177,8 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Convert zero-based index into GameVersion
+            // Convert zero-based index into GameVersion.  Raise 'STRING CONTENT CHANGED'
             String.Version = GameVersionIndex(Find(value.c_str())).Version;      
-
-            // Raise 'STRING CONTENT CHANGED'
             Document.StringContentChanged.Raise();
 
             // Modify document

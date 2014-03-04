@@ -172,9 +172,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Group: StringID/ColourTag/Version
       if (SelectedString)
       {
+         LanguageEdit& edit = GetView<LanguageEditView>()->GetEdit();
+
          CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
          group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
+         group->AddSubItem(new LanguageEdit::AuthorProperty(*this, edit));
          group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
+         group->AddSubItem(new LanguageEdit::TitleProperty(*this, edit));
          group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
          grid.AddProperty(group);
       }
@@ -407,8 +411,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          CurrentButton = nullptr;
 
          // Display properties. Raise STRING SELECTION CHANGED
-         CPropertiesWnd::Connect(this, true);
+         
          StringSelectionChanged.Raise();
+         CPropertiesWnd::Connect(this, true);
       }
    }
 

@@ -69,6 +69,12 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
 
+   /// <summary>Gets the edit control</summary>
+   LanguageEdit& LanguageEditView::GetEdit() const 
+   {
+      return const_cast<LanguageEdit&>(RichEdit);
+   }
+
    /// <summary>Called when activate view.</summary>
    /// <param name="bActivate">activated.</param>
    /// <param name="pActivateView">The activate view.</param>
