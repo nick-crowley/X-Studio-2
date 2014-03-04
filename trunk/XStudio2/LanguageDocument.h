@@ -272,6 +272,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      LanguagePage    CreatePage(LanguagePage* insertAt = nullptr);
       LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
       void  InsertPage(LanguagePage& page);
       void  InsertString(LanguageString& str);

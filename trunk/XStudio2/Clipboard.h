@@ -9,7 +9,10 @@ namespace GUI
       /// <summary>Clipboard singleton</summary>
       #define theClipboard  Clipboard::Instance
 
-      /// <summary></summary>
+      /// <summary>
+      /// Due to having to maintain and delete global memory allocations when using private clipboard formats,
+      /// this class just provides the illusion of clipboard functionality
+      /// </summary>
       class Clipboard
       {
          // ------------------------ TYPES --------------------------
@@ -34,20 +37,32 @@ namespace GUI
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Copies a language Page to the clipboard.</summary>
+         /// <param name="str">The Page.</param>
+         LanguagePage  GetLanguagePage() const
+         {
+            return *PageData.get();     //return GetData<LanguagePage*>(CF_LANGUAGE_Page);
+         }
+
          /// <summary>Copies a language string to the clipboard.</summary>
          /// <param name="str">The string.</param>
          LanguageString  GetLanguageString() const
          {
-            //return GetData<LanguageString*>(CF_LANGUAGE_STRING);
-            return *StringData.get();
+            return *StringData.get();     //return GetData<LanguageString*>(CF_LANGUAGE_STRING);
          }
 
-         /// <summary>Determines whether [has language string].</summary>
+         /// <summary>Query whether clipboard contains a language Page</summary>
+         /// <returns></returns>
+         bool  HasLanguagePage() const
+         {
+            return (bool)PageData;      //return IsClipboardFormatAvailable(CF_LANGUAGE_Page) != FALSE;
+         }
+
+         /// <summary>Query whether clipboard contains a language string</summary>
          /// <returns></returns>
          bool  HasLanguageString() const
          {
-            //return IsClipboardFormatAvailable(CF_LANGUAGE_STRING) != FALSE;
-            return (bool)StringData;
+            return (bool)StringData;      //return IsClipboardFormatAvailable(CF_LANGUAGE_STRING) != FALSE;
          }
 
          // ----------------------- MUTATORS ------------------------
@@ -58,14 +73,21 @@ namespace GUI
             StringData.reset();
             PageData.reset();
          }
+         
+         /// <summary>Copies a language Page to the clipboard.</summary>
+         /// <param name="str">The Page.</param>
+         void  SetLanguagePage(LanguagePageRef str)
+         {
+            Clear();
+            PageData.reset(new LanguagePage(str));      //SetData<const LanguagePage*>(CF_LANGUAGE_Page, str);
+         }
 
          /// <summary>Copies a language string to the clipboard.</summary>
          /// <param name="str">The string.</param>
          void  SetLanguageString(LanguageStringRef str)
          {
-            //REQUIRED(str);
-            //SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
-            StringData.reset(new LanguageString(str));
+            Clear();
+            StringData.reset(new LanguageString(str));      //SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
          }
          
       protected:

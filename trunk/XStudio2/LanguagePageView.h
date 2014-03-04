@@ -4,6 +4,7 @@
 #include "LanguageDocument.h"
 #include "Logic/Event.h"
 #include "ImageListEx.h"
+#include "Clipboard.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -204,7 +205,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create command</summary>
+         /// <summary>Create delete-page command</summary>
          /// <param name="doc">The document.</param>
          /// <exception cref="Logic::InvalidOperationException">No Page selected</exception>
          DeleteSelectedPage(LanguageDocument& doc) : CommandBase(doc)
@@ -253,6 +254,203 @@ NAMESPACE_BEGIN2(GUI,Views)
       protected:
       };
 	  
+      /// <summary>Cuts the currently selected Page to the clipboard</summary>
+      class CutSelectedPage : public DeleteSelectedPage
+      {
+         // ------------------------ TYPES --------------------------
+      
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create cut-page command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No Page selected</exception>
+         CutSelectedPage(LanguageDocument& doc) : DeleteSelectedPage(doc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Cut Page"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Removes the selected Page and copies it to the clipboard</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Execute() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Cutting Page: " << *Page << ENDL;
+
+            // Remove Page
+            __super::Execute();
+
+            // Copy to clipboard
+            theClipboard.SetLanguagePage(*Page);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Copies the currently selected Page to the clipboard</summary>
+      class CopySelectedPage : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create copy-page command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No Page selected</exception>
+         CopySelectedPage(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure selection exists
+            if (!doc.SelectedPage)
+               throw InvalidOperationException(HERE, L"No Page is selected");
+
+            // Store copy of Page
+            Page.reset(new LanguagePage(*doc.SelectedPage));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Command cannot be undone.</summary>
+         bool CanUndo() const override { return false; }
+
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Copy Page"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Copies the selected Page</summary>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         void Execute() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Copying Page: " << *Page << ENDL;
+
+            // Duplicate to clipboard
+            theClipboard.SetLanguagePage(*Page);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Inserts a new Page preceeding the currently selected Page</summary>
+      class InsertNewPage : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create insert-page command</summary>
+         /// <param name="doc">The document.</param>
+         InsertNewPage(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Define insertion point (if any)
+            if (doc.SelectedPage)
+               InsertAt.reset(new LanguagePage(*doc.SelectedPage));
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"New Page"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Insert a new Page using the next available ID</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Execute() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Insert new Page:" << Cons::White << " insertAt=" << (InsertAt ? InsertAt->ID : -1) << ENDL;
+
+            // Create/Insert Page
+            auto page = Document.CreatePage(InsertAt.get());
+            Document.InsertPage(page);
+
+            // Store for later removal
+            Page.reset( new LanguagePage(page) );
+         }
+
+         /// <summary>Inserts the removed Page.</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Undo() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Undoing insert new Page: " << *Page << ENDL;
+
+            // Remove created Page
+            Document.RemovePage(Page->ID);
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         LanguagePagePtr InsertAt;   // Optional insertion position
+      };
+
+      /// <summary>Paste Page on clipboard</summary>
+      class PastePage : public CommandBase
+      {
+         // ------------------------ TYPES --------------------------
+      
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'paste Page' command</summary>
+         /// <param name="doc">The document.</param>
+         /// <exception cref="Logic::InvalidOperationException">No Page on clipboard</exception>
+         /// <exception cref="Logic::Win32Exception">Clipboard error</exception>
+         PastePage(LanguageDocument& doc) : CommandBase(doc)
+         {
+            // Ensure clipboard contains Page
+            if (!theClipboard.HasLanguagePage())
+               throw InvalidOperationException(HERE, L"Clipboard does not contain a Page");
+
+            // Duplicate clipboard Page
+            Page.reset( new LanguagePage(theClipboard.GetLanguagePage()) );
+         }
+
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         /// <summary>Get name.</summary>
+         wstring GetName() const override { return L"Paste Page"; }
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Paste Page into the selected page</summary>
+         /// <exception cref="Logic::ApplicationException">Page ID already in use</exception>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Execute() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Pasting Page: " << *Page << ENDL;
+
+            // insert Page
+            Document.InsertPage(*Page);
+         }
+
+         /// <summary>Removed pasted Page.</summary>
+         /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+         /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+         void Undo() override
+         {
+            // Feedback
+            Console << Cons::UserAction << "Undoing paste Page: " << *Page << ENDL;
+
+            // Remove Page
+            Document.RemovePage(Page->ID);
+         }  
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    protected:
       LanguagePageView();    // Protected constructor used by dynamic creation
@@ -288,6 +486,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
       afx_msg void OnCommandEditPaste()      { OnPerformCommand(ID_EDIT_PASTE);      }
+      afx_msg void OnCommandEditInsert()     { OnPerformCommand(ID_EDIT_INSERT);     }
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
       handler void OnLibraryRebuilt();
       handler void OnInitialUpdate() override;
