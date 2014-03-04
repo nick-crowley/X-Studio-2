@@ -28,7 +28,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    public:
       /// <summary>Base class for all string properties</summary>
-      class StringPropertyBase : public LanguageDocument::LanguagePropertyBase
+      class StringPropertyBase : public LanguageDocument::PropertyBase
       {
       public:
          /// <summary>Create string property.</summary>
@@ -38,7 +38,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="val">value</param>
          /// <param name="desc">description.</param>
          StringPropertyBase(LanguageDocument& doc, LanguageString& str, wstring name, _variant_t val, wstring desc)
-            : String(str), LanguagePropertyBase(doc, name, val, desc)
+            : String(str), PropertyBase(doc, name, val, desc)
          {}
 
       protected:

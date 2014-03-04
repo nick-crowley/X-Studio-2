@@ -47,17 +47,29 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ------------------------ TYPES --------------------------
    public:
       /// <summary>Base class for all Rich-text string properties</summary>
-      class RichTextPropertyBase : public LanguageDocument::LanguagePropertyBase
+      class RichTextPropertyBase : public LanguageDocument::PropertyBase
       {
       public:
-         /// <summary>Create Rich-text string property.</summary>
+         /// <summary>Create Rich-text item property.</summary>
          /// <param name="doc">document.</param>
          /// <param name="edit">edit.</param>
          /// <param name="name">name.</param>
          /// <param name="val">value</param>
          /// <param name="desc">description.</param>
          RichTextPropertyBase(LanguageDocument& doc, LanguageEdit& edit, wstring name, _variant_t val, wstring desc)
-            : Edit(edit), LanguagePropertyBase(doc, name, val, desc)
+            : Edit(edit), PropertyBase(doc, name, val, desc)
+         {
+            // Require 'Editor' mode
+            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
+         }
+
+         /// <summary>Create Rich-text group property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         /// <param name="group">name.</param>
+         /// <param name="valueList">is list of values</param>
+         RichTextPropertyBase(LanguageDocument& doc, LanguageEdit& edit, wstring group, bool valueList = false)
+            : Edit(edit), PropertyBase(doc, group, valueList)
          {
             // Require 'Editor' mode
             Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
@@ -91,6 +103,47 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // Update author. (Raises 'STRING UPDATED')
             Edit.Author = value;
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Columns property grid item</summary>
+      class ColumnsProperty : public RichTextPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Columns property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         ColumnsProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichTextPropertyBase(doc, edit, L"Columns", true)
+         {
+            // DEBUG:
+            auto prop = new CMFCPropertyGridProperty(_T("Height"), (_variant_t) 250l, _T("Specifies the window's height"));
+	         prop->EnableSpinControl(TRUE, 50, 300);
+	         AddSubItem(prop);
+
+            prop = new CMFCPropertyGridProperty(_T("Width"), (_variant_t) 200l, _T("Specifies the window's height"));
+	         prop->EnableSpinControl(TRUE, 50, 300);
+	         AddSubItem(prop);
+         }
+
+         // ------------------------ STATIC -------------------------
+         
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update Columns</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Update Columns. (Raises 'STRING UPDATED')
+            //Edit.Columns = value;
             // Modify document
             __super::OnValueChanged(value);    
          }

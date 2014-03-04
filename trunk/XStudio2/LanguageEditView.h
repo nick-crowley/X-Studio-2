@@ -17,7 +17,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   enum { IDD = IDR_LANGUAGEVIEW };
 
       /// <summary>Base class for all button properties</summary>
-      class ButtonPropertyBase : public LanguageDocument::LanguagePropertyBase
+      class ButtonPropertyBase : public LanguageDocument::PropertyBase
       {
       public:
          /// <summary>Create button property.</summary>
@@ -28,7 +28,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="val">value</param>
          /// <param name="desc">description.</param>
          ButtonPropertyBase(LanguageDocument& doc, LanguageEdit& edit, LanguageButton& button, wstring name, _variant_t val, wstring desc)
-            : Button(button), Edit(edit), LanguagePropertyBase(doc, name, val, desc)
+            : Button(button), Edit(edit), PropertyBase(doc, name, val, desc)
          {}
 
       protected:

@@ -51,11 +51,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    public:
       /// <summary>Base class for all Language document properties</summary>
-      class LanguagePropertyBase : public ValidatingProperty
+      class PropertyBase : public ValidatingProperty
       {
       public:
-         LanguagePropertyBase(LanguageDocument& d, wstring name, _variant_t val, wstring desc)
+         /// <summary>Create item properties</summary>
+         /// <param name="d">document.</param>
+         /// <param name="name">name.</param>
+         /// <param name="val">value.</param>
+         /// <param name="desc">description.</param>
+         PropertyBase(LanguageDocument& d, wstring name, _variant_t val, wstring desc)
             : Document(d), File(d.File), ValidatingProperty(name.c_str(), val, desc.c_str(), NULL, nullptr, nullptr, nullptr)
+         {
+            // Disable if document is virtual
+            Enable(Document.Virtual ? FALSE : TRUE);
+         }
+
+         /// <summary>Create group property.</summary>
+         /// <param name="d">Document.</param>
+         /// <param name="name">Group name.</param>
+         /// <param name="valueList">Whether a value list.</param>
+         PropertyBase(LanguageDocument& d, wstring name, bool valueList = false)
+            : Document(d), File(d.File), ValidatingProperty(name.c_str(), 0, valueList ? TRUE : FALSE)
          {
             // Disable if document is virtual
             Enable(Document.Virtual ? FALSE : TRUE);
@@ -102,7 +118,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    protected:
       /// <summary>Language filename property grid item</summary>
-      class FileNameProperty : public LanguagePropertyBase
+      class FileNameProperty : public PropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -111,7 +127,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="file">Language file.</param>
          /// <param name="included">Whether included or excluded.</param>
          FileNameProperty(LanguageDocument& doc, const LanguageFile& file, bool included)
-            : File(file), LanguagePropertyBase(doc, file.FullPath.FileName, included ? L"Included" : L"Excluded", L"Include or exclude file from library")
+            : File(file), PropertyBase(doc, file.FullPath.FileName, included ? L"Included" : L"Excluded", L"Include or exclude file from library")
          {
             // Strict list
             AddOption(L"Included");
@@ -138,14 +154,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
       /// <summary>Game language property grid item</summary>
-      class GameLanguageProperty : public LanguagePropertyBase
+      class GameLanguageProperty : public PropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create game language property.</summary>
          /// <param name="doc">Language document.</param>
          GameLanguageProperty(LanguageDocument& doc)
-            : LanguagePropertyBase(doc, L"Language", GetString(doc.File.Language).c_str(),  L"Language of all strings in document")
+            : PropertyBase(doc, L"Language", GetString(doc.File.Language).c_str(),  L"Language of all strings in document")
          {
             // Populate game languages
             for (int i = 0; i <= 7; i++)
@@ -173,14 +189,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
       /// <summary>Language file ID property grid item</summary>
-      class IDProperty : public LanguagePropertyBase
+      class IDProperty : public PropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create language file ID property.</summary>
          /// <param name="doc">Language document.</param>
          IDProperty(LanguageDocument& doc)
-            : LanguagePropertyBase(doc, L"ID", GuiString(L"%d", doc.File.ID).c_str(),  L"File ID")
+            : PropertyBase(doc, L"ID", GuiString(L"%d", doc.File.ID).c_str(),  L"File ID")
          {}
 
          // ---------------------- ACCESSORS ------------------------	
