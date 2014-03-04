@@ -355,8 +355,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       REQUIRED(Document);  // Ensure initialized
 
-      // Disable when no string selected
-      SetReadOnly(!Document->SelectedString ? TRUE : FALSE);
+      // Disable: library, no-string-selected
+      ReadOnly = (Document->Virtual || !Document->SelectedString ? TRUE : FALSE);
 
       // Nothing: Clear text
       if (!Document->SelectedString)
