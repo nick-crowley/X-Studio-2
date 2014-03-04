@@ -249,6 +249,14 @@ namespace Logic
             return Pages.IndexOf(page);
          }
 
+         /// <summary>Determines whether the specified page is available.</summary>
+         /// <param name="page">The page.</param>
+         /// <returns></returns>
+         bool IsAvailable(UINT page) const
+         {
+            return !Pages.Contains(page);
+         }
+
          /// <summary>Compares precendence of two files</summary>
          /// <param name="r">The other</param>
          /// <returns></returns>
