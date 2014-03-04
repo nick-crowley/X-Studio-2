@@ -190,15 +190,15 @@ NAMESPACE_BEGIN2(GUI,Views)
          switch (nID)
          {
          // Clipboard: Set based on selection
-         case ID_EDIT_CUT:        RichEdit.Cut();     break;
-         case ID_EDIT_COPY:       RichEdit.Copy();    break;
+         case ID_EDIT_CUT:        RichEdit.Cut();                         break;
+         case ID_EDIT_COPY:       RichEdit.Copy();                        break;
          case ID_EDIT_PASTE:      RichEdit.PasteFormat(CF_UNICODETEXT);   break;
          case ID_EDIT_CLEAR:      RichEdit.ReplaceSel(L"", TRUE);         break;
          case ID_EDIT_SELECT_ALL: RichEdit.SetSel(0, -1);                 break;
 
          // Undo/Redo:
-         case ID_EDIT_UNDO:       RichEdit.Undo();    break;
-         case ID_EDIT_REDO:       RichEdit.Redo();    break;
+         case ID_EDIT_UNDO:       RichEdit.Undo();                        break;
+         case ID_EDIT_REDO:       RichEdit.Redo();                        break;
 
          // Button: Insert at caret
          case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");  break;
@@ -222,6 +222,30 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_VIEW_SOURCE:     GetDocument()->CurrentMode = EditMode::Source;   break;
          case ID_VIEW_EDITOR:     GetDocument()->CurrentMode = EditMode::Edit;     break;
          case ID_VIEW_DISPLAY:    GetDocument()->CurrentMode = EditMode::Display;  break;
+         }
+
+         // Modify document
+         switch (nID)
+         {
+         // Clipboard: 
+         case ID_EDIT_CUT:    
+         case ID_EDIT_PASTE:  
+         case ID_EDIT_CLEAR:  
+         case ID_EDIT_UNDO:   
+         case ID_EDIT_REDO:   
+         // Format: 
+         case ID_EDIT_ADD_BUTTON:
+         case ID_EDIT_COLOUR: 
+         case ID_EDIT_BOLD:     
+         case ID_EDIT_ITALIC:    
+         case ID_EDIT_UNDERLINE: 
+         // Alignment: 
+         case ID_EDIT_LEFT:    
+         case ID_EDIT_RIGHT:   
+         case ID_EDIT_CENTRE:  
+         case ID_EDIT_JUSTIFY: 
+            GetDocument()->SetModifiedFlag(TRUE);
+            break;
          }
       }
       catch (ExceptionBase& e) {
