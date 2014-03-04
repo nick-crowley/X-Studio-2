@@ -553,7 +553,7 @@ namespace Logic
                Output.Width = _ttoi(p.Value.c_str());
             // Column spacing
             else if (p.Name == L"colspacing")
-               Output.Width = _ttoi(p.Value.c_str());
+               Output.Spacing = _ttoi(p.Value.c_str());
             else
                // Unrecognised
                throw RichTextException(HERE, GuiString(L"Invalid 'text' tag property '%s'", p.Name.c_str()));
