@@ -109,6 +109,12 @@
     <Filter Include="Header Files\Logic\Projects">
       <UniqueIdentifier>{f6b294a6-c4bc-483e-bb12-226753d932cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\Preferences">
+      <UniqueIdentifier>{64a527fb-adc5-4e63-b84c-1f546a46fc98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Preferences">
+      <UniqueIdentifier>{062daa7a-f7f9-4204-a264-7d8dc2c82202}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -522,6 +528,24 @@
     <ClInclude Include="Logic\LanguageFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="GeneralPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDataPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="PreferencesPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="PreferencesDialog.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -853,6 +877,24 @@
     </ClCompile>
     <ClCompile Include="Logic\LanguageFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDataPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="PreferencesPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="PreferencesDialog.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
