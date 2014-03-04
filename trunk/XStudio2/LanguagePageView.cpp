@@ -123,6 +123,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Listen for 'LIBRARY REBUILT'
          fnLibraryRebuilt = GetDocument()->LibraryRebuilt.Register(this, &LanguagePageView::OnLibraryRebuilt);
+         fnPageUpdated = GetDocument()->PageUpdated.Register(this, &LanguagePageView::OnPageUpdated);
 
          // Populate pages
          Populate();
@@ -135,7 +136,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Inserts a page item.</summary>
    /// <param name="index">Zero-based index.</param>
    /// <param name="page">The page.</param>
-   void LanguagePageView::InsertItem(UINT index, LanguagePageRef page)
+   void LanguagePageView::InsertPage(UINT index, LanguagePageRef page)
    {
       // Define item
       LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
@@ -145,6 +146,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       GetListCtrl().InsertItem(&item);
       GetListCtrl().SetItemText(item.iItem, 1, page.Title.c_str());
    }
+
+   
 
    /// <summary>Populates pages.</summary>
    void LanguagePageView::Populate()
@@ -158,7 +161,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Populate pages
       int index = 0;
       for (const auto& pair : GetDocument()->Content) 
-         InsertItem(index++, pair.second);
+         InsertPage(index++, pair.second);
 
       // Refresh
       GetListCtrl().SetRedraw(TRUE);
@@ -191,6 +194,21 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
 
       *pResult = 0;
+   }
+
+   /// <summary>Refreshes the currently selected item</summary>
+   void LanguagePageView::OnPageUpdated()
+   {
+      try 
+      {  
+         REQUIRED(GetDocument()->SelectedPage);  
+
+         // Update page
+         UpdatePage(GetListCtrl().GetNextItem(-1, LVNI_SELECTED), *GetDocument()->SelectedPage);
+      }
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e);
+      }
    }
    
    /// <summary>Performs a menu command</summary>
@@ -284,6 +302,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
+
+   /// <summary>Updates a page.</summary>
+   /// <param name="index">The index.</param>
+   /// <param name="page">Page data.</param>
+   void LanguagePageView::UpdatePage(UINT index, LanguagePageRef page)
+   {
+      // Validate index
+      if (index >= (UINT)GetListCtrl().GetItemCount())
+         throw IndexOutOfRangeException(HERE, index, GetListCtrl().GetItemCount());
+
+      // Define 1st sub-item
+      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+      item.iImage = page.Voiced ? 1 : 0;
+
+      // Set ID/Icon/Text
+      GetListCtrl().SetItem(&item);
+      GetListCtrl().SetItemText(index, 1, page.Title.c_str());
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    

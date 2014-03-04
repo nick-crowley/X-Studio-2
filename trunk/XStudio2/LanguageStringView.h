@@ -532,7 +532,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
       handler void OnInitialUpdate() override;
       afx_msg void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
-      handler void onPageSelectionChanged();
+      handler void OnPageSelectionChanged();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryMode(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
