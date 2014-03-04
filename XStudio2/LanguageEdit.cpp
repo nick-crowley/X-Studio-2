@@ -168,6 +168,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return txt;
    }
 
+   /// <summary>Gets the author.</summary>
+   /// <returns></returns>
+   wstring  LanguageEdit::GetAuthor() const
+   {
+      return Content.Author;
+   }
+
    /// <summary>Gets button data.</summary>
    /// <param name="pos">position.</param>
    /// <returns></returns>
@@ -192,6 +199,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return reinterpret_cast<LanguageButton*>(reObject.dwUser);
    }
 
+   /// <summary>Gets the title.</summary>
+   /// <returns></returns>
+   wstring  LanguageEdit::GetTitle() const
+   {
+      return Content.Title;
+   }
+
    /// <summary>Initializes the specified document.</summary>
    /// <param name="doc">The document.</param>
    /// <exception cref="Logic::ArgumentNullException">doc is nullptr</exception>
@@ -212,8 +226,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Callback.Attach(new EditCallback(this), true);
       SetOLECallback(Callback);
 
-      // Listen for 'CONTENT CHANGED' + 'MODE CHANGED'
-      fnContentChanged = Document->StringContentChanged.Register(this, &LanguageEdit::OnContentChanged);
+      // Listen for 'MODE CHANGED'
       fnEditModeChanged = Document->EditModeChanged.Register(this, &LanguageEdit::OnEditModeChanged);
    }
 
@@ -297,10 +310,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Document->SelectedButton = GetButton(sel);
 
          // Raise 'CONTENT CHANGED'
-         Document->StringContentChanged.Raise();
+         //Document->StringContentChanged.Raise();
 
-         // Update string
-         //Document->SelectedStringText = GetSourceText();
+         // Update string  (Raise 'STRING UPDATED')
+         Document->SelectedStringText = GetSourceText();
       }
       catch (ExceptionBase& e) 
       {
@@ -351,6 +364,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
          SetWindowText(Document->SelectedString->Text.c_str());
          UpdateHighlighting();
       }
+   }
+
+   /// <summary>Sets the author.</summary>
+   /// <param name="author">The author.</param>
+   void LanguageEdit::SetAuthor(const wstring& author)
+   {
+      Content.Author = author;
+
+      // Update string  (Raise 'STRING UPDATED')
+      Document->SelectedStringText = GetSourceText();
+   }
+
+   /// <summary>Sets the title.</summary>
+   /// <param name="title">The title.</param>
+   void LanguageEdit::SetTitle(const wstring& title)
+   {
+      Content.Title = title;
+
+      // Update string  (Raise 'STRING UPDATED')
+      Document->SelectedStringText = GetSourceText();
    }
 
    /// <summary>Toggles the formatting.</summary>
@@ -415,20 +448,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSelectionCharFormat(cf);
    }
    
-   /// <summary>Called when text changes or a property that affects text changes.</summary>
-   /// <remarks>This event is only raised in 'Editor' mode</remarks>
-   void  LanguageEdit::OnContentChanged()
-   {
-      try
-      {
-         // Generate new source text
-         Document->SelectedString->Text = GetSourceText();
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-   }
-
    /// <summary>Refreshes the contents when the editor mode changes</summary>
    /// <exception cref="Logic::ArgumentNullException">Control not initialized</exception>
    /// <exception cref="Logic::AlgorithmException">Error in richText parsing algorithm</exception>
@@ -508,15 +527,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Save contents
          switch (Document->CurrentMode)
          {
-         // Source: Save verbatim + highlight
+         // Source: Save + highlight  (Raise 'STRING UPDATED')
          case EditMode::Source:
-            Document->SelectedString->Text = GetAllText();
+            Document->SelectedStringText = GetAllText();
             UpdateHighlighting();
             break;
 
-         // Edit: Raise 'CONTENT CHANGED' [which generates source + saves]
+         // Edit: Save string  (Raise 'STRING UPDATED')
          case EditMode::Edit:
-            Document->StringContentChanged.Raise();
+            Document->SelectedStringText = GetSourceText();
             break;
          }
       }

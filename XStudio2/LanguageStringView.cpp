@@ -226,7 +226,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Listen for PAGE CHANGED + TEXT CHANGED
          fnPageSelectionChanged = GetDocument()->PageSelectionChanged.Register(this, &LanguageStringView::onPageSelectionChanged);
-         fnStringTextChanged = GetDocument()->StringContentChanged.Register(this, &LanguageStringView::OnStringContentChanged);
+         fnStringUpdated = GetDocument()->StringUpdated.Register(this, &LanguageStringView::OnStringUpdated);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -363,8 +363,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
-   /// <summary>Refreshes the item matching the currently selected string</summary>
-   void LanguageStringView::OnStringContentChanged()
+   /// <summary>Refreshes the currently selected item</summary>
+   void LanguageStringView::OnStringUpdated()
    {
       try 
       {  

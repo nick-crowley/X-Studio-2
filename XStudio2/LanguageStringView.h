@@ -45,6 +45,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          LanguageString& String;
       };
 
+
       /// <summary>colour tags property grid item</summary>
       class ColourTagProperty : public StringPropertyBase
       {
@@ -52,10 +53,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       public:
          /// <summary>Create string colour-tags property.</summary>
          /// <param name="doc">document.</param>
-         /// <param name="string">string.</param>
+         /// <param name="str">string.</param>
          /// <exception cref="Logic::ArgumentException">Colour tags are still undetermined</exception>
-         ColourTagProperty(LanguageDocument& doc, LanguageString& string) 
-            : StringPropertyBase(doc, string, L"Colour Tags", GetString(string.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
+         ColourTagProperty(LanguageDocument& doc, LanguageString& str) 
+            : StringPropertyBase(doc, str, L"Colour Tags", GetString(str.TagType).c_str(),  L"Determines whether to use named colour tags or escape codes")
          {
             // Require tags to be already determined
             if (String.TagType == ColourTag::Undetermined)
@@ -96,9 +97,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Update tag. Raise 'STRING CONTENT CHANGED'
+            // Update tag-types. (Raises 'STRING UPDATED')
             String.TagType = (value == L"Colour Codes" ? ColourTag::Unix : ColourTag::Message);
-            Document.StringContentChanged.Raise();
+            Document.StringUpdated.Raise();
 
             // Modify document
             __super::OnValueChanged(value);    
@@ -177,9 +178,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Convert zero-based index into GameVersion.  Raise 'STRING CONTENT CHANGED'
+            // Convert zero-based index into GameVersion.  (Raise 'STRING UPDATED')
             String.Version = GameVersionIndex(Find(value.c_str())).Version;      
-            Document.StringContentChanged.Raise();
+            Document.StringUpdated.Raise();
 
             // Modify document
             __super::OnValueChanged(value);    
@@ -536,14 +537,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnQueryMode(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
-      handler void OnStringContentChanged();
+      handler void OnStringUpdated();
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
       
    protected:
       SelectionChangedHandler  fnPageSelectionChanged;
-      EventHandler             fnStringTextChanged;
+      EventHandler             fnStringUpdated;
       ImageListEx              Images;
       StringCustomDraw         CustomDraw;
       HACCEL                   Accelerators;
