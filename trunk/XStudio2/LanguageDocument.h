@@ -179,9 +179,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Change language + path + title
             File.Language = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
+            Document.Rename(File.ID, File.Language);
             
-            __super::OnValueChanged(value);    // Modify document
+              // Modify document
+            __super::OnValueChanged(value);  
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -203,21 +206,25 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // ----------------------- MUTATORS ------------------------
       protected:
-         /// <summary>Ensures ID is between 0 and 1000</summary>
+         /// <summary>Ensures ID is between 1 and 9999</summary>
          /// <param name="value">The value.</param>
          /// <returns>True to accept, false to reject</returns>
          bool OnValidateValue(GuiString& value) override
          {
-            return !value.length() || (value.IsNumeric() && value.ToInt() >= 1 && value.ToInt() <= 1000);
+            return value.length() && value.IsNumeric()               // Not empty
+                && value.ToInt() >= 1 && value.ToInt() <= 9999;      // 1 <= val <= 9999
          }
 
-         /// <summary>Update file ID</summary>
+         /// <summary>Update file ID and title</summary>
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
+            // Change ID + Path + title
             File.ID = value.ToInt();
-            
-            __super::OnValueChanged(value);    // Modify document
+            Document.Rename(File.ID, File.Language);
+
+            // Modify document
+            __super::OnValueChanged(value);    
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -276,6 +283,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       LanguageString  CreateString(UINT page, LanguageString* insertAt = nullptr);
       void  InsertPage(LanguagePage& page);
       void  InsertString(LanguageString& str);
+      void  Rename(UINT id, GameLanguage lang);
       void  RenamePage(LanguagePage& page, UINT newID);
       void  RenameString(LanguageString& str, UINT newID);
       void  RemovePage(UINT page);
