@@ -12,6 +12,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    IMPLEMENT_DYNCREATE(LanguagePageView, CListView)
 
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
+      ON_WM_CONTEXTMENU()
       ON_WM_SIZE()
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguagePageView::OnItemStateChanged)
       ON_COMMAND(ID_EDIT_CUT, &LanguagePageView::OnCommandEditCut)
@@ -66,6 +67,37 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
    
 
+   /// <summary>Inserts a page item.</summary>
+   /// <param name="index">Zero-based index.</param>
+   /// <param name="page">The page.</param>
+   /// <param name="display">Whether to ensure visible after insert</param>
+   void LanguagePageView::InsertPage(UINT index, LanguagePageRef page, bool display)
+   {
+      // Define item
+      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+      item.iImage = page.Voiced ? 1 : 0;
+
+      // Add item.  Set title
+      GetListCtrl().InsertItem(&item);
+      GetListCtrl().SetItemText(item.iItem, 1, page.Title.c_str());
+
+      // Ensure visible
+      if (display)
+      {
+         GetListCtrl().EnsureVisible(index, FALSE);
+         GetListCtrl().SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
+      }
+   }
+
+   
+   /// <summary>Removes a page.</summary>
+   /// <param name="index">The index.</param>
+   void LanguagePageView::RemovePage(UINT index)
+   {
+      GetListCtrl().EnsureVisible(index, FALSE);
+      GetListCtrl().DeleteItem(index);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -95,6 +127,25 @@ NAMESPACE_BEGIN2(GUI,Views)
       __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
+   /// <summary>Called when context menu.</summary>
+   /// <param name="pWnd">The WND.</param>
+   /// <param name="point">The point.</param>
+   void LanguagePageView::OnContextMenu(CWnd* pWnd, CPoint point)
+   {
+      CMenu menu;
+	   menu.LoadMenu(IDM_STRINGVIEW_POPUP);
+
+      // Create MFC custom menu
+	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
+		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
+			return;
+
+      // Show menu:
+		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
+		UpdateDialogControls(this, FALSE);
+	   SetFocus();
+   }
+
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
    {
@@ -132,22 +183,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          Console.Log(HERE, e);
       }
    }
-   
-   /// <summary>Inserts a page item.</summary>
-   /// <param name="index">Zero-based index.</param>
-   /// <param name="page">The page.</param>
-   void LanguagePageView::InsertPage(UINT index, LanguagePageRef page)
-   {
-      // Define item
-      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-      item.iImage = page.Voiced ? 1 : 0;
-
-      // Add item.  Set title
-      GetListCtrl().InsertItem(&item);
-      GetListCtrl().SetItemText(item.iItem, 1, page.Title.c_str());
-   }
-
-   
 
    /// <summary>Populates pages.</summary>
    void LanguagePageView::Populate()
@@ -161,7 +196,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Populate pages
       int index = 0;
       for (const auto& pair : GetDocument()->Content) 
-         InsertPage(index++, pair.second);
+         InsertPage(index++, pair.second, false);
 
       // Refresh
       GetListCtrl().SetRedraw(TRUE);
@@ -215,24 +250,19 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="nID">Command identifier.</param>
    void LanguagePageView::OnPerformCommand(UINT nID)
    {
-      //AfxMessageBox(L"LanguagePageView::OnPerformCommand");
-
       try 
       {
          switch (nID)
          {
-         // TODO:
-         case ID_EDIT_COPY:   
-         case ID_EDIT_CUT:    
-         case ID_EDIT_PASTE:  
-            break;
+         // Cut/Copy/Paste/Delete
+         /*case ID_EDIT_CUT:    GetDocument()->Execute(new CutSelectedString(*GetDocument()));       break;
+         case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedString(*GetDocument()));      break;
+         case ID_EDIT_PASTE:  GetDocument()->Execute(new PasteString(*GetDocument()));             break;*/
+         case ID_EDIT_CLEAR:  GetDocument()->Execute(new DeleteSelectedPage(*GetDocument()));    break;
+         //case ID_EDIT_INSERT: GetDocument()->Execute(new InsertNewString(*GetDocument()));         break;
 
          // Select All
-         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);            break;
-
-         // Remove selected
-         case ID_EDIT_CLEAR:       //GetDocument()->Execute(new RemoveSelectedString(*this, *GetDocument())); break;
-            break;
+         //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);   break;
          }
       }
       catch (ExceptionBase& e) {

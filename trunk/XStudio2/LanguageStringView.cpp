@@ -292,8 +292,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="nID">Command identifier.</param>
    void LanguageStringView::OnPerformCommand(UINT nID)
    {
-      //AfxMessageBox(L"LanguageStringView::OnPerformCommand");
-
       try 
       {
          switch (nID)

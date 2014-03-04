@@ -350,6 +350,9 @@ namespace Logic
       
          StringCollection Strings;
       };
+
+      /// <summary>Write page to console</summary>
+      ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page);
    }
 }
 

@@ -121,6 +121,29 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return CurrentString;
    }
+   
+   /// <summary>Inserts a Page into the file</summary>
+   /// <param name="page">The Page.</param>
+   /// <exception cref="Logic::ApplicationException">Page ID already in use</exception>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+   void  LanguageDocument::InsertPage(LanguagePage& page)
+   {
+      // Feedback
+      Console << "Inserting document Page: " << page << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
+      // Insert into file
+      UINT index = File.Insert(page);
+      if (index == -1)
+         throw ApplicationException(HERE, L"Unable to insert Page - the ID is already in use");
+      
+      // Update view
+      GetView<LanguagePageView>()->InsertPage(index, page, true);
+   }
 
    /// <summary>Inserts a string into the appropriate page</summary>
    /// <param name="str">The string.</param>
@@ -131,6 +154,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // Feedback
       Console << "Inserting document string: " << str << ENDL;
+
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
 
       // Select+Display page
       SelectedPageIndex = Content.IndexOf(str.Page);
@@ -308,7 +335,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
       RemoveString(str.Page, str.ID);
       InsertString(newStr);
    }
+   
+   /// <summary>Removes a page</summary>
+   /// <param name="page">Page ID.</param>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   /// <exception cref="Logic::PageNotFoundException">Page does not exist</exception>
+   void  LanguageDocument::RemovePage(UINT page)
+   {
+      // Feedback
+      Console << "Removing document page: id=" << page << ENDL;
 
+      // Ensure not library
+      if (Virtual)
+         throw InvalidOperationException(HERE, L"Cannot alter virtual documents");
+
+      // Select+Display page
+      //SelectedPageIndex = Content.IndexOf(page);
+
+      // Remove from view first
+      GetView<LanguagePageView>()->RemovePage(File.IndexOf(page));
+
+      // Remove from languagePage
+      File.Remove(page);
+   }
+   
    /// <summary>Removes the string from the appropriate page</summary>
    /// <param name="page">Page ID.</param>
    /// <param name="id">string ID.</param>
