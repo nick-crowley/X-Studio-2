@@ -7,22 +7,44 @@ namespace Logic
    namespace IO
    {
       /// <summary>Defines how a file is opened or created</summary>
-      enum class FileMode { CreateNew = CREATE_NEW, CreateAlways = CREATE_ALWAYS, OpenAlways = OPEN_ALWAYS, OpenExisting = OPEN_EXISTING, TruncateExisting = TRUNCATE_EXISTING };
+      enum class FileMode 
+      { 
+         CreateNew = CREATE_NEW,                // Create new, fail if exists
+         CreateAlways = CREATE_ALWAYS,          // Create new, overwrite if exists
+         OpenAlways = OPEN_ALWAYS,              // Open file, create if does not exist
+         OpenExisting = OPEN_EXISTING,          // Open file, fail if does not exist
+         TruncateExisting = TRUNCATE_EXISTING   // Truncate existing, fail if does not exist
+      };
 
       /// <summary>Defines read/write access on a stream</summary>
-      enum class FileAccess : UINT { Read = GENERIC_READ, Write = GENERIC_WRITE, ReadWrite = GENERIC_READ|GENERIC_WRITE };
+      enum class FileAccess : UINT 
+      { 
+         Read = GENERIC_READ,                      // Read access
+         Write = GENERIC_WRITE,                    // Write access
+         ReadWrite = GENERIC_READ|GENERIC_WRITE    // Read/Write access
+      };
 
       /// <summary>Defines how a stream is shared</summary>
-      enum class FileShare : UINT { AllowRead = FILE_SHARE_READ, AllowWrite = FILE_SHARE_WRITE, AllowDelete = FILE_SHARE_DELETE, AllowNone = 0 };
+      enum class FileShare : UINT 
+      { 
+         AllowRead = FILE_SHARE_READ,        // Permit others to read
+         AllowWrite = FILE_SHARE_WRITE,      // Permit others to write
+         AllowDelete = FILE_SHARE_DELETE,    // Permit others to delete
+         AllowNone = 0                       // Permit nothing
+      };
 
       /// <summary>Defines the origin of a stream seeking operation</summary>
-      enum class SeekOrigin { Begin = FILE_BEGIN, Current = FILE_CURRENT, End = FILE_END };
+      enum class SeekOrigin 
+      { 
+         Begin = FILE_BEGIN,           // Beginning of file
+         Current = FILE_CURRENT,       // Current position
+         End = FILE_END                // End of file
+      };
 
       /// <summary>Represents any stream</summary>
       class Stream
       {
          // --------------------- CONSTRUCTION ----------------------
-
       protected:
          Stream() {}
       public:
@@ -35,7 +57,7 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
-
+      public:
          virtual bool  CanRead() const PURE;
          virtual bool  CanSeek() const PURE;
          virtual bool  CanWrite() const PURE;
@@ -44,7 +66,7 @@ namespace Logic
          virtual DWORD GetPosition() const PURE;
 
          // ----------------------- MUTATORS ------------------------
-
+      public:
          virtual void  Close() PURE;
          virtual void  Flush() PURE;
          virtual void  SafeClose() PURE;
@@ -87,7 +109,6 @@ namespace Logic
       class StreamFacade : public Stream
       {
          // --------------------- CONSTRUCTION ----------------------
-
       protected:
          /// <summary>Creates the stream using another stream as input</summary>
          /// <param name="src">The input stream.</param>
@@ -110,7 +131,7 @@ namespace Logic
 			// --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
-
+      public:
          /// <summary>Queries whether the stream is readable</summary>
          bool  CanRead() const                         { return Source->CanRead();  }
 
@@ -131,7 +152,7 @@ namespace Logic
          DWORD GetPosition() const                     { return Source->GetPosition(); }
 
          // ----------------------- MUTATORS ------------------------
-
+      public:
          /// <summary>Closes the stream.</summary>
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
          void  Close()                                 { return Source->Close(); }
@@ -173,9 +194,8 @@ namespace Logic
          /// <exception cref="Logic::IOException">An I/O error occurred</exception>
          DWORD Write(const BYTE* buffer, DWORD length) { return Source->Write(buffer, length); }
 
-      private:
          // -------------------- REPRESENTATION ---------------------
-
+      private:
          StreamPtr  Source;
       };
       

@@ -10,6 +10,7 @@
 #include "PropertiesWnd.h"
 #include "Logic/FileStream.h"
 #include "Logic/LanguageFileReader.h"
+#include "Logic/LanguageFileWriter.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/WorkerFeedback.h"
 #include "Logic/StringLibrary.h"
@@ -270,6 +271,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
 	   if (!DocumentBase::OnNewDocument())
 		   return FALSE;
+      
+      // Set default properties
+      File.ID = 0;
+      File.Language = GameLanguage::English;
+
+#ifdef RESCINDED
+      // Set default title, revert document to 'unmodified'
+      Rename(File.ID, File.Language);
+      SetModifiedFlag(FALSE);     
+#endif
+
 	   return TRUE;
    }
 
@@ -318,6 +330,39 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Feedback/Display error
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
+         return FALSE;
+      }
+   }
+
+   /// <summary>Saves contents to disc</summary>
+   /// <param name="szPathName">Full path</param>
+   /// <returns></returns>
+   BOOL LanguageDocument::OnSaveDocument(LPCTSTR szPathName)
+   {
+      WorkerData data(Operation::LoadSaveDocument);
+
+      try
+      {
+         // Feedback
+         Console << Cons::UserAction << L"Saving language file: " << FullPath << " as " << Path(szPathName) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving language file '%s'", szPathName));
+
+         // Verify not library
+         if (GuiString(L"String Library") == szPathName)
+            throw InvalidOperationException(HERE, L"Cannot save string library");
+         
+         // Write contents
+         StreamPtr fs2( new FileStream(szPathName, FileMode::OpenAlways, FileAccess::Write) );
+         File = LanguageFileWriter(fs2).WriteFile(File);
+
+         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file saved successfully");
+         return TRUE;
+      }
+      catch (ExceptionBase&  e)
+      {
+         // Feedback/Display error
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to save language file");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to save language file '%s'", szPathName));
          return FALSE;
       }
    }
