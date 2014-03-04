@@ -36,7 +36,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguagePageView::LanguagePageView()
+   LanguagePageView::LanguagePageView() : Accelerators(nullptr)
    {
    }
 
@@ -90,7 +90,17 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetListCtrl().SetItemState(index, LVIS_SELECTED, LVIS_SELECTED);
       }
    }
+   
+   /// <summary>Translates custom accelerators for this window.</summary>
+   /// <param name="pMsg">The MSG.</param>
+   /// <returns></returns>
+   BOOL LanguagePageView::PreTranslateMessage(MSG* pMsg)
+   {
+      if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+	      return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
 
+      return __super::PreTranslateMessage(pMsg);
+   }
    
    /// <summary>Removes a page.</summary>
    /// <param name="index">The index.</param>
@@ -173,6 +183,9 @@ NAMESPACE_BEGIN2(GUI,Views)
             LVGroup g(i, GuiString(i+IDS_FIRST_LANGUAGE_GROUP));
             GetListCtrl().InsertGroup(i, &g);
          }
+
+         // Custom accelerators
+         Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_STRINGVIEW));
 
          // Listen for 'LIBRARY REBUILT'
          fnLibraryRebuilt = GetDocument()->LibraryRebuilt.Register(this, &LanguagePageView::OnLibraryRebuilt);
