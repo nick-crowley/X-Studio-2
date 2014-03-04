@@ -236,8 +236,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       bool state = false, 
            checked = false;
 
-      // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode == EditMode::Edit && ::GetFocus() == RichEdit))
+      // Query relevant states
+      bool selection = GetDocument()->SelectedString != nullptr,
+           library   = GetDocument()->Virtual,
+           editMode  = GetDocument()->CurrentMode == EditMode::Edit,
+           hasFocus  = ::GetFocus() == RichEdit;
+
+      // Require: string, edit mode, non-library document, input-focus
+      if (state = selection && !library && editMode && hasFocus)
       {
          ParaFormat  pf(PFM_ALIGNMENT);
          
@@ -263,42 +269,35 @@ NAMESPACE_BEGIN2(GUI,Views)
       bool state = false, 
            checked = false;
 
-      // Require selected string + Edit/Source mode
-      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode != EditMode::Display && ::GetFocus() == RichEdit))
-      {
-         // Query selection
+      // Query relevant states
+      bool selection = RichEdit.HasSelection(),
+           library   = GetDocument()->Virtual,
+           validMode = GetDocument()->CurrentMode != EditMode::Display,
+           hasFocus  = ::GetFocus() == RichEdit;
+
+      // Disable-all if tool window is focused, or using 'display' mode
+      if (hasFocus && validMode)
          switch (pCmd->m_nID)
          {
-         case ID_EDIT_CUT:
-         case ID_EDIT_COPY:    
-            state = RichEdit.HasSelection();
-            break;
+         // Non-modifying
+         case ID_EDIT_COPY:        state = selection;    break;
+         case ID_EDIT_SELECT_ALL:  state = true;         break;
+         case ID_EDIT_FIND:        state = false;        break;
 
-         // Paste/Delete/SelectAll: Always enabled
-         case ID_EDIT_PASTE:   
-         case ID_EDIT_CLEAR:   
-         case ID_EDIT_SELECT_ALL:
-            state = true;
-            break;
+         // Modifying
+         case ID_EDIT_CLEAR:  
+         case ID_EDIT_CUT:         state = !library && selection;                            break;
+         case ID_EDIT_PASTE:       state = !library && RichEdit.CanPaste(CF_UNICODETEXT);    break;
+         case ID_EDIT_INSERT:      state = !library;                                         break;
 
-         // Find: Not supported
-         case ID_EDIT_FIND:
-            state = false;
-            break;
+         // Modifying: Set item text
+         case ID_EDIT_UNDO:        state = !library && RichEdit.CanUndo();
+                                   pCmd->SetText(RichEdit.GetUndoMenuItem().c_str());        break;
 
-         // Undo:
-         case ID_EDIT_UNDO:
-            state = RichEdit.CanUndo() != FALSE;
-            pCmd->SetText(RichEdit.GetUndoMenuItem().c_str());
-            break;
-
-         // Redo:
-         case ID_EDIT_REDO:
-            state = RichEdit.CanRedo() != FALSE;
-            pCmd->SetText(RichEdit.GetRedoMenuItem().c_str());
-            break;
+         case ID_EDIT_REDO:        state = !library && RichEdit.CanRedo();
+                                   pCmd->SetText(RichEdit.GetRedoMenuItem().c_str());        break;
          }
-      }
+
 
       // Set state
       pCmd->Enable(state ? TRUE : FALSE);
@@ -311,8 +310,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       bool state = false, 
            checked = false;
 
-      // Require selected string + editor mode
-      if (state = (GetDocument()->SelectedString && GetDocument()->CurrentMode == EditMode::Edit && ::GetFocus() == RichEdit))
+      // Query relevant states
+      bool selection = GetDocument()->SelectedString != nullptr,
+           library   = GetDocument()->Virtual,
+           editMode  = GetDocument()->CurrentMode == EditMode::Edit,
+           hasFocus  = ::GetFocus() == RichEdit;
+
+      // Require: string, edit mode, non-library document, input-focus
+      if (state = selection && !library && editMode && hasFocus)
       {
          CharFormat  cf(CFM_BOLD|CFM_ITALIC|CFM_UNDERLINE, 0);
          

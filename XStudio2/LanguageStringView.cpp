@@ -321,22 +321,36 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       bool state = false;
 
-      // Ensure focused
-      if (::GetFocus() == GetListCtrl())
+      // Query relevant states
+      bool selection = GetDocument()->SelectedString != nullptr,
+           library   = GetDocument()->Virtual,
+           hasFocus  = ::GetFocus() == GetListCtrl();
+
+      // Disable-all if tool window is focused
+      if (hasFocus)
          switch (pCmdUI->m_nID)
          {
-         // Require selection
-         case ID_EDIT_CLEAR: 
-         case ID_EDIT_COPY:   
-         case ID_EDIT_CUT:         state = (GetDocument()->SelectedString != nullptr);    break;
-     
-         // Require string on clipboard
-         case ID_EDIT_PASTE:       state = theClipboard.HasLanguageString();              break;
+         // Non-modifying
+         case ID_EDIT_COPY:        state = selection;    break;
+         case ID_EDIT_SELECT_ALL:  state = true;         break;
+         case ID_EDIT_FIND:        state = false;        break;
 
-         // Always Enabled/Disabled
-         case ID_EDIT_INSERT:
-         case ID_EDIT_SELECT_ALL:  state = true;  break;
-         case ID_EDIT_FIND:        state = false; break;
+         // Modifying
+         case ID_EDIT_CLEAR:  
+         case ID_EDIT_CUT:         state = !library && selection;                            break;
+         case ID_EDIT_PASTE:       state = !library && theClipboard.HasLanguageString();     break;
+         case ID_EDIT_INSERT:      state = !library;                                         break;    
+
+         // Formatting: Unchecked/Disabled
+         case ID_EDIT_BOLD:       
+         case ID_EDIT_ITALIC:     
+         case ID_EDIT_UNDERLINE:  
+         // Alignment: Unchecked/Disabled
+         case ID_EDIT_LEFT:       
+         case ID_EDIT_RIGHT:      
+         case ID_EDIT_CENTRE:     
+         case ID_EDIT_JUSTIFY:    
+            break;
          }
 
       // Set state
