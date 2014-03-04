@@ -47,28 +47,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ------------------------ TYPES --------------------------
    public:
       /// <summary>Base class for all Rich-text string properties</summary>
-      class RichStringPropertyBase : public LanguageDocument::LanguagePropertyBase
+      class RichTextPropertyBase : public LanguageDocument::LanguagePropertyBase
       {
       public:
          /// <summary>Create Rich-text string property.</summary>
          /// <param name="doc">document.</param>
-         /// <param name="str">string.</param>
+         /// <param name="edit">edit.</param>
          /// <param name="name">name.</param>
          /// <param name="val">value</param>
          /// <param name="desc">description.</param>
-         RichStringPropertyBase(LanguageDocument& doc, RichString& str, wstring name, _variant_t val, wstring desc)
-            : String(str), LanguagePropertyBase(doc, name, val, desc)
+         RichTextPropertyBase(LanguageDocument& doc, LanguageEdit& edit, wstring name, _variant_t val, wstring desc)
+            : Edit(edit), LanguagePropertyBase(doc, name, val, desc)
          {
             // Require 'Editor' mode
             Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
       protected:
-         RichString& String;
+         LanguageEdit& Edit;
       };
 
       /// <summary>Author property grid item</summary>
-      class AuthorProperty : public RichStringPropertyBase
+      class AuthorProperty : public RichTextPropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -76,7 +76,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="doc">document.</param>
          /// <param name="edit">edit.</param>
          AuthorProperty(LanguageDocument& doc, LanguageEdit& edit) 
-            : RichStringPropertyBase(doc, edit.Content, L"Author", edit.Content.Author.c_str(),  L"Author displayed when used as a message")
+            : RichTextPropertyBase(doc, edit, L"Author", edit.Author.c_str(),  L"Author displayed when used as a message")
          {}
 
          // ------------------------ STATIC -------------------------
@@ -89,10 +89,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Update author. Raise 'STRING CONTENT CHANGED'
-            String.Author = value;
-            Document.StringContentChanged.Raise();
-
+            // Update author. (Raises 'STRING UPDATED')
+            Edit.Author = value;
             // Modify document
             __super::OnValueChanged(value);    
          }
@@ -102,7 +100,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       };
 
       /// <summary>Title property grid item</summary>
-      class TitleProperty : public RichStringPropertyBase
+      class TitleProperty : public RichTextPropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -110,7 +108,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="doc">document.</param>
          /// <param name="edit">edit.</param>
          TitleProperty(LanguageDocument& doc, LanguageEdit& edit) 
-            : RichStringPropertyBase(doc, edit.Content, L"Title", edit.Content.Title.c_str(),  L"Title displayed when used as a message")
+            : RichTextPropertyBase(doc, edit, L"Title", edit.Title.c_str(),  L"Title displayed when used as a message")
          {}
 
          // ------------------------ STATIC -------------------------
@@ -123,10 +121,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            // Update Title. Raise 'STRING CONTENT CHANGED'
-            String.Title = value;
-            Document.StringContentChanged.Raise();
-
+            // Update Title. (Raise 'STRING UPDATED')
+            Edit.Title = value;
             // Modify document
             __super::OnValueChanged(value);    
          }
@@ -213,13 +209,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // --------------------- PROPERTIES ------------------------
    public:
-      
+      PROPERTY_GET_SET(wstring,Author,GetAuthor,SetAuthor);
+      PROPERTY_GET_SET(wstring,Title,GetTitle,SetTitle);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       wstring         GetAllText() const;
+      wstring         GetAuthor() const;
       LanguageButton* GetButton(CHARRANGE pos) const;
-      
+      wstring         GetTitle() const;
+
    protected:
 
       // ----------------------- MUTATORS ------------------------
@@ -229,6 +228,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  InsertButton(const wstring& txt, const wstring& id);
       void  OnButtonChanged(LanguageButton& btn);
       void  Refresh();
+      void  SetAuthor(const wstring& author);
+      void  SetTitle(const wstring& title);
       void  ToggleFormatting(DWORD fx);
 
    protected:
@@ -239,7 +240,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void    UpdateHighlighting();
 
       handler void  OnButtonRemoved(IOleObjectPtr obj);
-      handler void  OnContentChanged();
       handler void  OnEditModeChanged();
       handler void  OnRequestTooltip(CustomTooltip::TooltipData* data) override;
       handler void  OnTextChange() override;
@@ -252,8 +252,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       EditCallbackPtr   Callback;            // Object removal notification callback
       RichString        Content;             // [EDITOR] Current content 
       ButtonDataList    ActiveData;          // Temporary storage for button data
-      EventHandler      fnContentChanged,    // String Text/Properties changed
-                        fnEditModeChanged;   // Edit mode changed
+      EventHandler      fnEditModeChanged;   // Edit mode changed
    };
   
    

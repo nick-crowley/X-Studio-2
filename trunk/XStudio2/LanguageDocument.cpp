@@ -410,21 +410,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
          CurrentString = s;
          CurrentButton = nullptr;
 
-         // Display properties. Raise STRING SELECTION CHANGED
-         
-         StringSelectionChanged.Raise();
+         // Display properties. (Raise STRING SELECTION CHANGED)
          CPropertiesWnd::Connect(this, true);
+         StringSelectionChanged.Raise();
       }
    }
 
-   //void  LanguageDocument::SetSelectedStringText(const wstring& txt)
-   //{
-   //   REQUIRED(SelectedString);
+   /// <summary>Sets the text of the selected string.  Raises STRING UPDATED.</summary>
+   /// <param name="txt">The text.</param>
+   void  LanguageDocument::SetSelectedStringText(const wstring& txt)
+   {
+      REQUIRED(SelectedString);
 
-   //   // Update text. Raise STRING TEXT CHANGED
-   //   SelectedString->Text = txt;
-   //   StringContentChanged.Raise();
-   //}
+      // Update text. (Raise STRING UPDATED)
+      SelectedString->Text = txt;
+      StringUpdated.Raise();
+   }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
