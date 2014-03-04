@@ -213,6 +213,32 @@ namespace Logic
          { 
             return Pages.Find(page,id); 
          }
+         
+         /// <summary>Finds an available ID for a new Page</summary>
+         /// <param name="start">ID of insertion point, or -1 to append after last Page.</param>
+         /// <returns>ID preceeding input, if available, otherwise the first ID following the input.</returns>
+         int  GetAvailableID(int start) const
+         {
+            // Empty/Append: Return LastID+1
+            if (start == -1 || Pages.empty())
+               return !Pages.empty() ? (--Pages.end())->first+1 : 1;
+
+            // Prev Available: Use previous ID
+            if (Pages.find(start-1) == Pages.end())
+               return start-1;
+
+            // Find next ID
+            auto pos = Pages.find(start);
+            for (int id = start; pos != Pages.end(); id++)
+            {
+               // Gap Detected: Use first available ID
+               if ((UINT)id < (pos++)->first)
+                  return id;
+            }
+
+            // Contiguous: Use LastID+1
+            return (--Pages.end())->first+1;
+         }
 
          /// <summary>Find zero-based index of a page</summary>
          /// <param name="page">page id.</param>

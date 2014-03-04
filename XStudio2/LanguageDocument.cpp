@@ -69,6 +69,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Creates a new Page.</summary>
+   /// <param name="insertAt">insertion point</param>
+   /// <returns>Page with available ID</returns>
+   /// <exception cref="Logic::InvalidOperationException">Document is virtual</exception>
+   LanguagePage  LanguageDocument::CreatePage(LanguagePage* insertAt /*= nullptr*/)
+   {
+      // Determine ID
+      UINT newID = File.GetAvailableID(insertAt ? insertAt->ID : -1);
+      
+      // Generate Page 
+      return LanguagePage(newID, L"<New Page>", L"", false);
+   }
+
    /// <summary>Creates a new string.</summary>
    /// <param name="page">destination page.</param>
    /// <param name="insertAt">insertion point</param>

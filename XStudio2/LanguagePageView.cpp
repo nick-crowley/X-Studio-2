@@ -19,12 +19,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COPY, &LanguagePageView::OnCommandEditCopy)
       ON_COMMAND(ID_EDIT_PASTE, &LanguagePageView::OnCommandEditPaste)
       ON_COMMAND(ID_EDIT_CLEAR, &LanguagePageView::OnCommandEditClear)
+      ON_COMMAND(ID_EDIT_INSERT, &LanguagePageView::OnCommandEditInsert)
       ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguagePageView::OnCommandEditSelectAll)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &LanguagePageView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_INSERT, &LanguagePageView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SELECT_ALL, &LanguagePageView::OnQueryCommand)
       // Toolbar Commands
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SOURCE, ID_VIEW_DISPLAY, &LanguagePageView::OnQueryMode)
@@ -255,11 +257,11 @@ NAMESPACE_BEGIN2(GUI,Views)
          switch (nID)
          {
          // Cut/Copy/Paste/Delete
-         /*case ID_EDIT_CUT:    GetDocument()->Execute(new CutSelectedString(*GetDocument()));       break;
-         case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedString(*GetDocument()));      break;
-         case ID_EDIT_PASTE:  GetDocument()->Execute(new PasteString(*GetDocument()));             break;*/
+         case ID_EDIT_CUT:    GetDocument()->Execute(new CutSelectedPage(*GetDocument()));       break;
+         case ID_EDIT_COPY:   GetDocument()->Execute(new CopySelectedPage(*GetDocument()));      break;
+         case ID_EDIT_PASTE:  GetDocument()->Execute(new PastePage(*GetDocument()));             break;
          case ID_EDIT_CLEAR:  GetDocument()->Execute(new DeleteSelectedPage(*GetDocument()));    break;
-         //case ID_EDIT_INSERT: GetDocument()->Execute(new InsertNewString(*GetDocument()));         break;
+         case ID_EDIT_INSERT: GetDocument()->Execute(new InsertNewPage(*GetDocument()));         break;
 
          // Select All
          //case ID_EDIT_SELECT_ALL:  GetListCtrl().SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);   break;
@@ -293,9 +295,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Modifying
          case ID_EDIT_CLEAR:  
-         case ID_EDIT_CUT:         state = !library && selection;                            break;
-         case ID_EDIT_PASTE:       state = !library /*TODO: && theClipboard.HasLanguagePage()*/;     break;
-         case ID_EDIT_INSERT:      state = !library;                                         break;    
+         case ID_EDIT_CUT:         state = !library && selection;                        break;
+         case ID_EDIT_PASTE:       state = !library && theClipboard.HasLanguagePage();   break;
+         case ID_EDIT_INSERT:      state = !library;                                     break;    
 
          // Formatting: Unchecked/Disabled
          case ID_EDIT_BOLD:       
