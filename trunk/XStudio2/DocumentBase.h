@@ -22,15 +22,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual ~DocumentBase();
        
       // ------------------------ STATIC -------------------------
+      DECLARE_DYNCREATE(DocumentBase)
+      DECLARE_MESSAGE_MAP()
+
    public:
       static DocumentBase* GetActive();
 
-      DECLARE_DYNCREATE(DocumentBase)
-      DECLARE_MESSAGE_MAP()
-	  
       // --------------------- PROPERTIES ------------------------
    public:
       PROPERTY_GET_SET(IO::Path,FullPath,GetFullPath,SetFullPath);
+      PROPERTY_GET_SET(bool,Virtual,GetVirtual,SetVirtual);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
@@ -38,6 +39,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual CHARRANGE GetSelection() const;
       IO::Path          GetFullPath() const;
       DocumentType      GetType() const;
+      bool              GetVirtual() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -46,10 +48,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(IO::Path path);
       virtual void  SetSelection(CHARRANGE rng);
+      void          SetVirtual(bool v);
+
+   protected:
+      void  OnQueryCommand(CCmdUI* pCmdUI);
 	   
       // -------------------- REPRESENTATION ---------------------
    protected:
       DocumentType  Type;
+
+   private:
+      bool          IsVirtual;
    };
 
    /// <summary>List of documents</summary>

@@ -48,8 +48,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(LanguageDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(LanguageDocument, DocumentBase)
-      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &LanguageDocument::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &LanguageDocument::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &LanguageDocument::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &LanguageDocument::OnQueryCommand)
       ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageDocument::OnPerformCommand)
@@ -59,8 +57,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), 
                                           CurrentString(nullptr), CurrentPage(nullptr), CurrentButton(nullptr),
-                                          Mode(EditMode::Edit), 
-                                          Virtual(false)
+                                          Mode(EditMode::Edit)
    {
    }
 

@@ -297,7 +297,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       LanguageFile     File;
       PageCollection   Library;
-      bool             Virtual;
       
       SelectionChangedEvent  StringSelectionChanged,
                              PageSelectionChanged;

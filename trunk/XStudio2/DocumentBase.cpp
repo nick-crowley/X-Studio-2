@@ -10,15 +10,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(DocumentBase, CDocument)
 
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   DocumentBase::DocumentBase()
+   DocumentBase::DocumentBase() : IsVirtual(false)
    {
    }
 
-   DocumentBase::DocumentBase(DocumentType t) : Type(t)
+   DocumentBase::DocumentBase(DocumentType t) : Type(t), IsVirtual(false)
    {
    }
 
@@ -62,26 +64,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return false;
    }
 
-   /// <summary>Gets the text selection.</summary>
-   /// <returns></returns>
-   CHARRANGE DocumentBase::GetSelection() const
-   {
-      return {0,0};
-   }
-
-   /// <summary>Replaces the current match</summary>
-   /// <param name="m">Match data</param>
-   /// <returns>True if replaced, false if match was no longer selected</returns>
-   bool  DocumentBase::Replace(MatchData& m)
-   {
-      return false;
-   }
-
    /// <summary>Get the full document path.</summary>
    /// <returns></returns>
    IO::Path  DocumentBase::GetFullPath() const
    {
       return IO::Path((const wchar*)GetPathName());
+   }
+   
+   /// <summary>Gets the text selection.</summary>
+   /// <returns></returns>
+   CHARRANGE  DocumentBase::GetSelection() const
+   {
+      return {0,0};
    }
 
    /// <summary>Get document type.</summary>
@@ -90,12 +84,26 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return Type;
    }
+
+   /// <summary>Get whether virtual.</summary>
+   bool  DocumentBase::GetVirtual() const
+   {
+      return IsVirtual;
+   }
    
    /// <summary>Changes the document filename and updates the title.</summary>
    /// <param name="name">New filename.</param>
-   void DocumentBase::Rename(const wstring& name)
+   void  DocumentBase::Rename(const wstring& name)
    {
       FullPath = FullPath.RenameFileName(name);
+   }
+   
+   /// <summary>Replaces the current match</summary>
+   /// <param name="m">Match data</param>
+   /// <returns>True if replaced, false if match was no longer selected</returns>
+   bool  DocumentBase::Replace(MatchData& m)
+   {
+      return false;
    }
 
    /// <summary>Changes the path of the document.</summary>
@@ -116,8 +124,34 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
    }
    
+   /// <summary>Sets whether virtual.</summary>
+   /// <param name="v">state.</param>
+   void  DocumentBase::SetVirtual(bool v)
+   {
+      IsVirtual = v;
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void  DocumentBase::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+
+      switch (pCmdUI->m_nID)
+      {
+      // Save/SaveAs: Require file document
+      case ID_FILE_SAVE:
+      case ID_FILE_SAVE_AS:
+         pCmdUI->Enable(!Virtual ? TRUE : FALSE);
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
+   }
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    
