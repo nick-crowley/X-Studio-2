@@ -42,7 +42,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      PROPERTY_GET_SET(BOOL,ReadOnly,IsReadOnly,SetReadOnly);
+
       // ---------------------- ACCESSORS ------------------------			
    public:
       bool      FindNext(UINT start, MatchData& m) const;
@@ -57,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CHARRANGE GetSelection() const;
       wstring   GetUndoMenuItem() const;
       bool      HasSelection() const;
-      bool      IsReadOnly() const;
+      BOOL      IsReadOnly() const;
       int       LineLength(int nChar = -1) const;
 
    protected:
