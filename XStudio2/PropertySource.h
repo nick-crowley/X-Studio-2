@@ -117,7 +117,7 @@ NAMESPACE_BEGIN2(GUI,Utils)
       /// <returns></returns>
       BOOL OnUpdateValue() override
       {
-         CString strText, origVal(GetValue());
+         CString strText, origValue(GetValue());
 
          // Get editing text
 	      m_pWndInPlace->GetWindowText(strText);
@@ -129,14 +129,15 @@ NAMESPACE_BEGIN2(GUI,Utils)
             if (!OnValidateValue(value))
                return FALSE;
 
-            // Replace input
-            m_pWndInPlace->SetWindowTextW(value.c_str());
+            // [MODIFIED] Replace input
+            if (value != (LPCWSTR)origValue)
+               m_pWndInPlace->SetWindowTextW(value.c_str());
 
             // Update property
             __super::OnUpdateValue();
 
-            // Changed: Raise 'CHANGED'
-            if (value != (LPCTSTR)origVal)
+            // [MODIFIED] Raise 'CHANGED'
+            if (value != (LPCTSTR)origValue)
                OnValueChanged(value);
             return TRUE;
          }

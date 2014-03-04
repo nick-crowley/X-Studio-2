@@ -199,6 +199,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return reinterpret_cast<LanguageButton*>(reObject.dwUser);
    }
 
+   /// <summary>Gets the columns.</summary>
+   /// <returns></returns>
+   ColumnType  LanguageEdit::GetColumns() const
+   {
+      return Content.Columns;
+   }
+   
+   /// <summary>Gets the column spacing.</summary>
+   /// <returns></returns>
+   UINT  LanguageEdit::GetColumnSpacing() const
+   {
+      return Content.Spacing;
+   }
+   
+   /// <summary>Gets the width of the column.</summary>
+   /// <returns></returns>
+   UINT  LanguageEdit::GetColumnWidth() const
+   {
+      return Content.Width;
+   }
+
    /// <summary>Gets the title.</summary>
    /// <returns></returns>
    wstring  LanguageEdit::GetTitle() const
@@ -309,11 +330,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          InsertButton(btn.Text, btn.ID);
          Document->SelectedButton = GetButton(sel);
 
-         // Raise 'CONTENT CHANGED'
-         //Document->StringContentChanged.Raise();
-
-         // Update string  (Raise 'STRING UPDATED')
-         Document->SelectedStringText = GetSourceText();
+         // Save contents  (Raise 'STRING UPDATED')
+         SaveString();
       }
       catch (ExceptionBase& e) 
       {
@@ -370,20 +388,45 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="author">The author.</param>
    void LanguageEdit::SetAuthor(const wstring& author)
    {
+      // Set value + Save contents  (Raise 'STRING UPDATED')
       Content.Author = author;
+      SaveString();
+   }
 
-      // Update string  (Raise 'STRING UPDATED')
-      Document->SelectedStringText = GetSourceText();
+   /// <summary>Sets the columns.</summary>
+   /// <param name="cols">The cols.</param>
+   void  LanguageEdit::SetColumns(ColumnType cols)
+   {
+      // Set value + Save contents  (Raise 'STRING UPDATED')
+      Content.Columns = cols;
+      SaveString();
+   }
+
+   /// <summary>Sets the width of the column.</summary>
+   /// <param name="w">The width.</param>
+   void  LanguageEdit::SetColumnWidth(UINT w)
+   {
+      // Set value + Save contents  (Raise 'STRING UPDATED')
+      Content.Width = w;
+      SaveString();
+   }
+
+   /// <summary>Sets the column spacing.</summary>
+   /// <param name="s">The spacing.</param>
+   void  LanguageEdit::SetColumnSpacing(UINT s)
+   {
+      // Set value + Save contents  (Raise 'STRING UPDATED')
+      Content.Spacing = s;
+      SaveString();
    }
 
    /// <summary>Sets the title.</summary>
    /// <param name="title">The title.</param>
    void LanguageEdit::SetTitle(const wstring& title)
    {
+      // Set value + Save contents  (Raise 'STRING UPDATED')
       Content.Title = title;
-
-      // Update string  (Raise 'STRING UPDATED')
-      Document->SelectedStringText = GetSourceText();
+      SaveString();
    }
 
    /// <summary>Toggles the formatting.</summary>
@@ -524,20 +567,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Ensure selection exists
          REQUIRED(Document->SelectedString);
 
-         // Save contents
-         switch (Document->CurrentMode)
-         {
-         // Source: Save + highlight  (Raise 'STRING UPDATED')
-         case EditMode::Source:
-            Document->SelectedStringText = GetAllText();
-            UpdateHighlighting();
-            break;
+         // Save contents  (Raise 'STRING UPDATED')
+         SaveString();
 
-         // Edit: Save string  (Raise 'STRING UPDATED')
-         case EditMode::Edit:
-            Document->SelectedStringText = GetSourceText();
-            break;
-         }
+         // SourceMode: Update highlighting
+         if (Document->CurrentMode == EditMode::Source)
+            UpdateHighlighting();
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -545,6 +580,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Reset tootlip
       __super::OnTextChange();
+   }
+
+   /// <summary>Saves the string and raises 'STRING UPDATED'</summary>
+   void  LanguageEdit::SaveString()
+   {
+      // Save verbatim/rich-text
+      switch (Document->CurrentMode)
+      {
+      case EditMode::Source:  Document->SelectedStringText = GetAllText();       break;   // Raises 'STRING UPDATED'
+      case EditMode::Edit:    Document->SelectedStringText = GetSourceText();    break;   // Raises 'STRING UPDATED'
+      }
    }
 
    /// <summary>Replace edit contents with rich text.</summary>

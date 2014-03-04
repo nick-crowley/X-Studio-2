@@ -63,18 +63,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
             Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
          }
 
-         /// <summary>Create Rich-text group property.</summary>
-         /// <param name="doc">document.</param>
-         /// <param name="edit">edit.</param>
-         /// <param name="group">name.</param>
-         /// <param name="valueList">is list of values</param>
-         RichTextPropertyBase(LanguageDocument& doc, LanguageEdit& edit, wstring group, bool valueList = false)
-            : Edit(edit), PropertyBase(doc, group, valueList)
-         {
-            // Require 'Editor' mode
-            Enable(Document.CurrentMode == EditMode::Edit ? TRUE : FALSE);
-         }
-
       protected:
          LanguageEdit& Edit;
       };
@@ -111,29 +99,90 @@ NAMESPACE_BEGIN2(GUI,Controls)
       protected:
       };
 
-      /// <summary>Columns property grid item</summary>
-      class ColumnsProperty : public RichTextPropertyBase
+      /// <summary>Column Spacing property grid item</summary>
+      class ColumnSpacingProperty : public RichTextPropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create Columns property.</summary>
+         /// <summary>Create Columns spacing property.</summary>
          /// <param name="doc">document.</param>
          /// <param name="edit">edit.</param>
-         ColumnsProperty(LanguageDocument& doc, LanguageEdit& edit) 
-            : RichTextPropertyBase(doc, edit, L"Columns", true)
-         {
-            // DEBUG:
-            auto prop = new CMFCPropertyGridProperty(_T("Height"), (_variant_t) 250l, _T("Specifies the window's height"));
-	         prop->EnableSpinControl(TRUE, 50, 300);
-	         AddSubItem(prop);
+         ColumnSpacingProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichTextPropertyBase(doc, edit, L"Column Spacing", edit.ColumnSpacing, L"Spacing between columns when displayed as a message")
+         {}
 
-            prop = new CMFCPropertyGridProperty(_T("Width"), (_variant_t) 200l, _T("Specifies the window's height"));
-	         prop->EnableSpinControl(TRUE, 50, 300);
-	         AddSubItem(prop);
+         // ------------------------ STATIC -------------------------
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Ensures value is numeric</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            // Reset to zero on clear
+            if (value.empty())
+               value = L"0";
+
+            // Ensure: 0 <= value <= 250
+            return value.length() && value.IsNumeric() 
+                && value.ToInt() >= 0 && value.ToInt() <= 250;
+         }
+
+         /// <summary>Update Columns</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Update Columns. (Raises 'STRING UPDATED')
+            Edit.ColumnSpacing = value.ToInt();
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Column type property grid item</summary>
+      class ColumnTypeProperty : public RichTextPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Column type property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         ColumnTypeProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichTextPropertyBase(doc, edit, L"Columns", GetString(edit.Content.Columns), L"Layout of columns when displayed as a message")
+         {
+            AddOption(GetString(ColumnType::Default), FALSE);
+            AddOption(GetString(ColumnType::Single), FALSE);
+            AddOption(GetString(ColumnType::Double), FALSE);
+            AddOption(GetString(ColumnType::Triple), FALSE);
+            AllowEdit(FALSE);
          }
 
          // ------------------------ STATIC -------------------------
-         
+      protected:
+         /// <summary>Convert name to enum.</summary>
+         /// <param name="val">The value.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentException">Unrecognised</exception>
+         static ColumnType ToEnum(GuiString& val)
+         {
+            if (val == L"Default")
+               return ColumnType::Default;
+            else if (val == L"Single")
+               return ColumnType::Single;
+            else if (val == L"Double")
+               return ColumnType::Double;
+            else if (val == L"Triple")
+               return ColumnType::Triple;
+
+            throw ArgumentException(HERE, val, L"Unknown column spacing" + val);
+         }
+
          // ---------------------- ACCESSORS ------------------------	
 
          // ----------------------- MUTATORS ------------------------
@@ -143,7 +192,53 @@ NAMESPACE_BEGIN2(GUI,Controls)
          void OnValueChanged(GuiString value) override
          {
             // Update Columns. (Raises 'STRING UPDATED')
-            //Edit.Columns = value;
+            Edit.Columns = ToEnum(value);
+            // Modify document
+            __super::OnValueChanged(value);    
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+
+      /// <summary>Column width property grid item</summary>
+      class ColumnWidthProperty : public RichTextPropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create Columns width property.</summary>
+         /// <param name="doc">document.</param>
+         /// <param name="edit">edit.</param>
+         ColumnWidthProperty(LanguageDocument& doc, LanguageEdit& edit) 
+            : RichTextPropertyBase(doc, edit, L"Column Width", edit.ColumnWidth, L"Width of columns when displayed as a message")
+         {}
+
+         // ------------------------ STATIC -------------------------
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Ensures value is numeric</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            // Reset to zero on clear
+            if (value.empty())
+               value = L"0";
+
+            // Ensure: 0 <= value <= 500
+            return value.length() && value.IsNumeric() 
+                && value.ToInt() >= 0 && value.ToInt() <= 500;
+         }
+
+         /// <summary>Update Columns</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+            // Update Columns. (Raises 'STRING UPDATED')
+            Edit.ColumnWidth = value.ToInt();
             // Modify document
             __super::OnValueChanged(value);    
          }
@@ -264,12 +359,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
       PROPERTY_GET_SET(wstring,Author,GetAuthor,SetAuthor);
       PROPERTY_GET_SET(wstring,Title,GetTitle,SetTitle);
+      PROPERTY_GET_SET(ColumnType,Columns,GetColumns,SetColumns);
+      PROPERTY_GET_SET(UINT,ColumnWidth,GetColumnWidth,SetColumnWidth);
+      PROPERTY_GET_SET(UINT,ColumnSpacing,GetColumnSpacing,SetColumnSpacing);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       wstring         GetAllText() const;
       wstring         GetAuthor() const;
       LanguageButton* GetButton(CHARRANGE pos) const;
+      ColumnType      GetColumns() const;
+      UINT            GetColumnSpacing() const;
+      UINT            GetColumnWidth() const;
       wstring         GetTitle() const;
 
    protected:
@@ -282,6 +383,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  OnButtonChanged(LanguageButton& btn);
       void  Refresh();
       void  SetAuthor(const wstring& author);
+      void  SetColumns(ColumnType t);
+      void  SetColumnWidth(UINT w);
+      void  SetColumnSpacing(UINT s);
       void  SetTitle(const wstring& title);
       void  ToggleFormatting(DWORD fx);
 
@@ -289,6 +393,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       wstring GetSourceText();
       void    InsertPhrase(const RichPhrase& p);
       void    HighlightMatch(UINT pos, UINT length, CharFormat& cf);
+      void    SaveString();
       void    SetRichText(const RichString& str);
       void    UpdateHighlighting();
 
