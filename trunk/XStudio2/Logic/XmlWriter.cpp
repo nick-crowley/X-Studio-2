@@ -156,18 +156,18 @@ namespace Logic
       }
 
       /// <summary>Writes a comment.</summary>
-      /// <param name="node">The parent node.</param>
+      /// <param name="parent">The parent node.</param>
       /// <param name="txt">The text.</param>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  XmlWriter::WriteComment(XmlElementPtr& node, const wstring& txt)
+      void  XmlWriter::WriteComment(XmlElementPtr& parent, const wstring& txt)
       {
-         REQUIRED(node);
+         REQUIRED(parent);
 
          try
          {
             // Create/Attach comment
-            node->appendChild( Document->createComment(txt.c_str()) );
+            parent->appendChild( Document->createComment(txt.c_str()) );
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
@@ -175,20 +175,20 @@ namespace Logic
       }
 
       /// <summary>Writes an element.</summary>
-      /// <param name="node">The element parent.</param>
+      /// <param name="parent">The element parent.</param>
       /// <param name="name">The element name.</param>
       /// <returns>New element</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& node, const wstring& name)
+      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& parent, const wstring& name)
       {
-         REQUIRED(node);
+         REQUIRED(parent);
 
          try
          {
             // Create/Attach/Return element
             XmlElementPtr e = Document->createElement(name.c_str());
-            node->appendChild(e);
+            parent->appendChild(e);
             return e;
          }
          catch (_com_error& ex) {
@@ -197,15 +197,15 @@ namespace Logic
       }
 
       /// <summary>Writes an element with text</summary>
-      /// <param name="node">The element parent.</param>
+      /// <param name="parent">The element parent.</param>
       /// <param name="name">The element name.</param>
       /// <param name="name">The text</param>
       /// <returns>New element</returns>
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& node, const wstring& name, const wstring& txt)
+      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& parent, const wstring& name, const wstring& txt)
       {
-         auto e = WriteElement(node, name);
+         auto e = WriteElement(parent, name);
          WriteText(e, txt);
          return e;
       }
