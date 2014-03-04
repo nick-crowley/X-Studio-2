@@ -169,17 +169,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
          grid.AddProperty(group);
       }
 
-      // Group: StringID/ColourTag/Version
+      // Group: StringID/Author/ColourTag/Title/Version
       if (SelectedString)
       {
-         LanguageEdit& edit = GetView<LanguageEditView>()->GetEdit();
-
          CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("String"));
-         group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
-         group->AddSubItem(new LanguageEdit::AuthorProperty(*this, edit));
-         group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
-         group->AddSubItem(new LanguageEdit::TitleProperty(*this, edit));
-         group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         
+         if (CurrentMode != EditMode::Source)
+         {
+            LanguageEdit& edit = GetView<LanguageEditView>()->GetEdit();
+
+            group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
+            group->AddSubItem(new LanguageEdit::AuthorProperty(*this, edit));
+            group->AddSubItem(new LanguageStringView::ColourTagProperty(*this, *SelectedString));
+            group->AddSubItem(new LanguageEdit::TitleProperty(*this, edit));
+            group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         }
+         else
+         {
+            group->AddSubItem(new LanguageStringView::IDProperty(*this, *SelectedPage, *SelectedString));
+            group->AddSubItem(new LanguageStringView::VersionProperty(*this, *SelectedString));
+         }
+         
          grid.AddProperty(group);
       }
 
@@ -410,9 +420,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
          CurrentString = s;
          CurrentButton = nullptr;
 
-         // Display properties. (Raise STRING SELECTION CHANGED)
-         CPropertiesWnd::Connect(this, true);
+         // Raise STRING SELECTION CHANGED first, so LanguageEdit can parse the rich-text
          StringSelectionChanged.Raise();
+
+         // Display string properties 
+         CPropertiesWnd::Connect(this, true);
       }
    }
 
@@ -425,6 +437,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Update text. (Raise STRING UPDATED)
       SelectedString->Text = txt;
       StringUpdated.Raise();
+
+      // Update string properties
+      CPropertiesWnd::Connect(this, true);
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
