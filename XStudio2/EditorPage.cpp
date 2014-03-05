@@ -38,6 +38,14 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Populates this page.</summary>
+   void EditorPage::Populate()
+   {
+      // General
+      auto group = new PropertyBase(*this, L"General");
+      group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
+      Grid.AddProperty(group);
+   }
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    

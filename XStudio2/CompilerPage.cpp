@@ -15,7 +15,13 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CompilerPage::CompilerPage() : PreferencesPage(CompilerPage::IDD)
+   CompilerPage::CompilerPage() 
+      : PreferencesPage(CompilerPage::IDD),
+        CaseSensitiveVariables(nullptr), 
+        CheckArgumentNames(nullptr), 
+        CheckArgumentTypes(nullptr),
+        UseDoIfSyntax(nullptr), 
+        UseCppOperators(nullptr)
    {
    }
 
@@ -37,6 +43,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Populates this page.</summary>
+   void CompilerPage::Populate()
+   {
+      // General
+      auto group = new PropertyBase(*this, L"General");
+      group->AddSubItem(UseCppOperators = new UseCppOperatorsProperty(*this));
+      group->AddSubItem(UseDoIfSyntax = new UseDoIfSyntaxProperty(*this));
+      group->AddSubItem(CheckArgumentNames = new CheckArgumentNamesProperty(*this));
+      group->AddSubItem(CheckArgumentTypes = new CheckArgumentTypesProperty(*this));
+      group->AddSubItem(CaseSensitiveVariables = new CaseSensitiveVariablesProperty(*this));
+      Grid.AddProperty(group);
+   }
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    

@@ -100,6 +100,23 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
 
+      // Compiler:
+      /// <summary>Check name of arguments in varg script calls</summary>
+      PREFERENCE_PROPERTY(bool,Bool,CheckArgumentNames,true);
+
+      /// <summary>Static type checking of varg script calls</summary>
+      PREFERENCE_PROPERTY(bool,Bool,CheckArgumentTypes,true);
+
+      /// <summary>Use case senstive variable names</summary>
+      PREFERENCE_PROPERTY(bool,Bool,CaseSensitiveVariables,true);
+
+      /// <summary>Use 'do-if' syntax when translating 'skip-if-not' conditionals</summary>
+      PREFERENCE_PROPERTY(bool,Bool,UseDoIfSyntax,true);
+
+      /// <summary>Use C++ operators when translating operators</summary>
+      PREFERENCE_PROPERTY(bool,Bool,UseCppOperators,true);
+
+
       // Find Dialog
       /// <summary>Show options in the find dialog</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowFindOptions,true);
@@ -112,6 +129,9 @@ namespace Logic
 
 
       // Game Data:
+      /// <summary>Continue loading game data if a language file fails to load</summary>
+      PREFERENCE_PROPERTY(bool,Bool,SkipBrokenFiles,true);
+
       /// <summary>Game data folder</summary>
       PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
 

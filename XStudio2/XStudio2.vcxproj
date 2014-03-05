@@ -133,7 +133,6 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CompilerPage.h" />
     <ClInclude Include="EditorPage.h" />
-    <ClInclude Include="GameDataPage.h" />
     <ClInclude Include="GeneralPage.h" />
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
@@ -277,7 +276,6 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
     <ClCompile Include="EditorPage.cpp" />
-    <ClCompile Include="GameDataPage.cpp" />
     <ClCompile Include="GeneralPage.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />

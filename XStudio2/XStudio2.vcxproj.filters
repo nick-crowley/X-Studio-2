@@ -537,9 +537,6 @@
     <ClInclude Include="EditorPage.h">
       <Filter>Header Files\GUI\Preferences</Filter>
     </ClInclude>
-    <ClInclude Include="GameDataPage.h">
-      <Filter>Header Files\GUI\Preferences</Filter>
-    </ClInclude>
     <ClInclude Include="PreferencesPage.h">
       <Filter>Header Files\GUI\Preferences</Filter>
     </ClInclude>
@@ -885,9 +882,6 @@
       <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
     <ClCompile Include="EditorPage.cpp">
-      <Filter>Source Files\GUI\Preferences</Filter>
-    </ClCompile>
-    <ClCompile Include="GameDataPage.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
     <ClCompile Include="PreferencesPage.cpp">

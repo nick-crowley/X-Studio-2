@@ -52,6 +52,9 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
          // Adjust layout
          AdjustLayout();
+
+         // Populate grid
+         Populate();
 	      return TRUE;
       }
       catch (ExceptionBase& e) {
