@@ -45,7 +45,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
 	      // Grid
-         Grid.EnableHeaderCtrl(TRUE);
+         Grid.EnableHeaderCtrl(FALSE);
 	      Grid.EnableDescriptionArea();
 	      Grid.SetVSDotNetLook();
 	      Grid.MarkModifiedProperties();
@@ -79,7 +79,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       /*wnd.DeflateRect(8,8);
       Grid.SetWindowPos(nullptr, -1, -1, wnd.Width(), wnd.Height(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);*/
 
-      CtrlRect  ctrl(this, &Grid);
+      //CtrlRect  ctrl(this, &Grid);
 
       // Allow space for page header
       //Grid.SetWindowPos(nullptr, ctrl.left, 30, -1, -1, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);

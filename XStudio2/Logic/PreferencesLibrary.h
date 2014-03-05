@@ -118,7 +118,8 @@ namespace Logic
       /// <summary>Game data version</summary>
       PREFERENCE_PROPERTY_ENUM(GameVersion,GameDataVersion,GameVersion::TerranConflict);
 
-      
+      /// <summary>Game data language</summary>
+      PREFERENCE_PROPERTY_ENUM(GameLanguage,GameDataLanguage,GameLanguage::English);
 
       // ---------------------- ACCESSORS ------------------------			
    private:
