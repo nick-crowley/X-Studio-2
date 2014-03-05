@@ -95,6 +95,47 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       
          // -------------------- REPRESENTATION ---------------------
       };
+
+      /// <summary>Base class for colour properties</summary>
+      class ColourProperty : public CMFCPropertyGridColorProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create colour property</summary>
+         /// <param name="page">owner page.</param>
+         /// <param name="name">property name.</param>
+         /// <param name="col">colour.</param>
+         /// <param name="desc">property description.</param>
+         ColourProperty(PreferencesPage& page, const CString& name, COLORREF col, const wchar* desc)
+            : Page(page), CMFCPropertyGridColorProperty(name, col, nullptr, desc, 0)
+         {
+            // Enable more colours dialog
+            EnableOtherButton(L"More Colours", FALSE, TRUE);
+         }
+
+         // ------------------------ STATIC -------------------------
+
+         // ---------------------- ACCESSORS ------------------------	
+   
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Called when value is being updated</summary>
+         /// <returns></returns>
+         BOOL OnUpdateValue() override
+         {
+            // Update property
+            if (!__super::OnUpdateValue())
+               return FALSE;
+
+            // Mark page as modified
+            Page.SetModified(TRUE);
+            return TRUE;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         PreferencesPage& Page;
+      };
       
       /// <summary>Base class for folder properties</summary>
       class FolderProperty : public CMFCPropertyGridFileProperty
