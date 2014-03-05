@@ -96,6 +96,49 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          // -------------------- REPRESENTATION ---------------------
       };
       
+      /// <summary>Base class for folder properties</summary>
+      class FolderProperty : public CMFCPropertyGridFileProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create folder property</summary>
+         /// <param name="page">owner page.</param>
+         /// <param name="name">property name.</param>
+         /// <param name="folder">initial folder.</param>
+         /// <param name="desc">property description.</param>
+         FolderProperty(PreferencesPage& page, const CString& name, IO::Path folder, const wchar* desc) 
+            : Page(page), CMFCPropertyGridFileProperty(name, folder.c_str(), 0, desc)
+         {}
+
+         // ---------------------- ACCESSORS ------------------------
+         
+         /// <summary>Gets folder as path.</summary>
+         /// <returns></returns>
+         IO::Path GetFolder() const
+         {
+            return (const wchar*)CString(GetValue());
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Called when value is being updated</summary>
+         /// <returns></returns>
+         BOOL OnUpdateValue() override
+         {
+            // Update property
+            if (!__super::OnUpdateValue())
+               return FALSE;
+
+            // Mark page as modified
+            Page.SetModified(TRUE);
+            return TRUE;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         PreferencesPage&  Page;
+      };
+
       /// <summary>Base class for font properties</summary>
       class FontProperty : public CMFCPropertyGridFontProperty
       {
@@ -112,19 +155,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
 
          // ------------------------ STATIC -------------------------
-      protected:
-         /// <summary>Gets logical font data.</summary>
-         /// <param name="font">font name.</param>
-         /// <param name="size">size in points.</param>
-         /// <returns></returns>
-         /*static LOGFONT  LookupFont(LPCWSTR font, int size)
-         {
-            CFont f;
-            LOGFONT lf;
-            f.CreatePointFont(size*10, font);
-            f.GetLogFont(&lf);
-            return lf;
-         }*/
 
          // ---------------------- ACCESSORS ------------------------	
    
@@ -135,10 +165,12 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          BOOL OnUpdateValue() override
          {
             // Update property
-            __super::OnUpdateValue();
+            if (!__super::OnUpdateValue())
+               return FALSE;
 
             // Mark page as modified
             Page.SetModified(TRUE);
+            return TRUE;
          }
 
          // -------------------- REPRESENTATION ---------------------

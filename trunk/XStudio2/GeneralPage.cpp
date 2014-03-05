@@ -67,10 +67,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    /// <summary>Populates this page.</summary>
    void GeneralPage::Populate()
    {
-      // Populate grid
-      Grid.AddProperty(new PropertyBase(*this, L"General"));
-      Grid.AddProperty(LargeToolbars = new LargeToolbarsProperty(*this));
-      Grid.AddProperty(ToolWindowFont = new ToolWindowFontProperty(*this));
+      // General
+      auto group = new PropertyBase(*this, L"General");
+      group->AddSubItem(LargeMenus = new LargeMenusProperty(*this));
+      group->AddSubItem(LargeToolbars = new LargeToolbarsProperty(*this));
+      group->AddSubItem(ToolWindowFont = new ToolWindowFontProperty(*this));
+      Grid.AddProperty(group);
+
+      // Game Data
+      group = new PropertyBase(*this, L"Game Data");
+      group->AddSubItem(GameDataFolder = new GameDataFolderProperty(*this));
+      group->AddSubItem(GameDataVersion = new GameVersionProperty(*this));
+      Grid.AddProperty(group);
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
