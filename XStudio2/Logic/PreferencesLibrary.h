@@ -99,8 +99,14 @@ namespace Logic
       /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
+      /// <summary>Script editor font</summary>
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Arial");
+
 
       // Compiler:
+      /// <summary>Enable background compiler</summary>
+      PREFERENCE_PROPERTY(bool,Bool,BackgroundCompiler,true);
+
       /// <summary>Check name of arguments in varg script calls</summary>
       PREFERENCE_PROPERTY(bool,Bool,CheckArgumentNames,true);
 
@@ -114,7 +120,7 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,UseDoIfSyntax,true);
 
       /// <summary>Use C++ operators when translating operators</summary>
-      PREFERENCE_PROPERTY(bool,Bool,UseCppOperators,true);
+      PREFERENCE_PROPERTY(bool,Bool,UseCppOperators,false);
 
 
       // Find Dialog

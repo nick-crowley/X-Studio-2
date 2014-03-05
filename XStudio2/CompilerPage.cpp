@@ -17,6 +17,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    CompilerPage::CompilerPage() 
       : PreferencesPage(CompilerPage::IDD),
+        BackgroundCompiler(nullptr),
         CaseSensitiveVariables(nullptr), 
         CheckArgumentNames(nullptr), 
         CheckArgumentTypes(nullptr),
@@ -48,10 +49,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    {
       // General
       auto group = new PropertyBase(*this, L"General");
-      group->AddSubItem(UseCppOperators = new UseCppOperatorsProperty(*this));
-      group->AddSubItem(UseDoIfSyntax = new UseDoIfSyntaxProperty(*this));
       group->AddSubItem(CheckArgumentNames = new CheckArgumentNamesProperty(*this));
       group->AddSubItem(CheckArgumentTypes = new CheckArgumentTypesProperty(*this));
+      group->AddSubItem(BackgroundCompiler = new BackgroundCompilerProperty(*this));
+      group->AddSubItem(UseCppOperators = new UseCppOperatorsProperty(*this));
+      group->AddSubItem(UseDoIfSyntax = new UseDoIfSyntaxProperty(*this));
       group->AddSubItem(CaseSensitiveVariables = new CaseSensitiveVariablesProperty(*this));
       Grid.AddProperty(group);
    }

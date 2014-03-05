@@ -16,7 +16,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   EditorPage::EditorPage() : PreferencesPage(EditorPage::IDD)
+   EditorPage::EditorPage() 
+      : PreferencesPage(EditorPage::IDD),
+        ScriptViewFont(nullptr),
+        ShowLineNumbers(nullptr)
    {
    }
 
@@ -44,6 +47,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // General
       auto group = new PropertyBase(*this, L"General");
       group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
+      group->AddSubItem(ScriptViewFont = new ScriptViewFontProperty(*this));
+      Grid.AddProperty(group);
+
+      // Highlighting
+      group = new PropertyBase(*this, L"Syntax Highlighting");
       Grid.AddProperty(group);
    }
    

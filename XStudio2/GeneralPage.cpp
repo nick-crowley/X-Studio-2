@@ -21,6 +21,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         LargeToolbars(nullptr), 
         ToolWindowFont(nullptr), 
         GameDataFolder(nullptr), 
+        GameDataLanguage(nullptr),
         GameDataVersion(nullptr), 
         SkipBrokenFiles(nullptr)
    {
@@ -64,8 +65,9 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // Game Data
       group = new PropertyBase(*this, L"Game Data");
       group->AddSubItem(GameDataFolder = new GameDataFolderProperty(*this));
-      group->AddSubItem(GameDataVersion = new GameVersionProperty(*this));
       group->AddSubItem(SkipBrokenFiles = new SkipBrokenFilesProperty(*this));
+      group->AddSubItem(GameDataLanguage = new GameLanguageProperty(*this));
+      group->AddSubItem(GameDataVersion = new GameVersionProperty(*this));
       Grid.AddProperty(group);
    }
 
