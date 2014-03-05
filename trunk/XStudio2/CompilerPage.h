@@ -12,6 +12,37 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       enum { IDD = IDD_COMPILER_PAGE };
    
    protected:
+      /// <summary>BackgroundCompiler property</summary>
+      class BackgroundCompilerProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'BackgroundCompiler' property</summary>
+         /// <param name="page">Owner page.</param>
+         BackgroundCompilerProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Background Compiler", L"", L"Change whether to check code as you type and underline errors using squiggles")
+         {
+            AddOption(L"Check code as I type", FALSE);
+            AddOption(L"Don't check code as I type", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.BackgroundCompiler ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      
+         // -------------------- REPRESENTATION ---------------------
+      };
+
       /// <summary>Case Sensitive Variables property</summary>
       class CaseSensitiveVariablesProperty : public PropertyBase
       {
@@ -51,10 +82,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'CheckArgumentNames' property</summary>
          /// <param name="page">Owner page.</param>
          CheckArgumentNamesProperty(PreferencesPage& page) 
-            : PropertyBase(page, L"Script-call Argument Names", L"", L"Check the name of arguments in script-calls")
+            : PropertyBase(page, L"Argument Names", L"", L"Check the name of arguments used in script-call commands match the names used in the target script")
          {
-            AddOption(L"Check", FALSE);
-            AddOption(L"Don't check", FALSE);
+            AddOption(L"Check Argument Names", FALSE);
+            AddOption(L"Don't Check Argument Names", FALSE);
             AllowEdit(FALSE);
             // Set initial value
             SetValue(GetOption(PrefsLib.CheckArgumentNames ? 0 : 1));
@@ -81,10 +112,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'CheckArgumentTypes' property</summary>
          /// <param name="page">Owner page.</param>
          CheckArgumentTypesProperty(PreferencesPage& page) 
-            : PropertyBase(page, L"Script-call Argument Types", L"", L"Check the type of argument values passed via script-calls")
+            : PropertyBase(page, L"Argument Values", L"", L"Check the type of values passed via script-call commands match the type specified by the target script")
          {
-            AddOption(L"Check", FALSE);
-            AddOption(L"Don't check", FALSE);
+            AddOption(L"Check Argument Values", FALSE);
+            AddOption(L"Don't Check Argument Values", FALSE);
             AllowEdit(FALSE);
             // Set initial value
             SetValue(GetOption(PrefsLib.CheckArgumentTypes ? 0 : 1));
@@ -113,8 +144,8 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          UseDoIfSyntaxProperty(PreferencesPage& page) 
             : PropertyBase(page, L"Do-If Conditionals", L"", L"Choose whether to use newer 'do-if' syntax or older 'skip-if-not' syntax by default")
          {
-            AddOption(L"Use 'do-if'", FALSE);
-            AddOption(L"Use 'skip-if-not'", FALSE);
+            AddOption(L"Use 'do-if' by default", FALSE);
+            AddOption(L"Use 'skip-if-not' by default", FALSE);
             AllowEdit(FALSE);
             // Set initial value
             SetValue(GetOption(PrefsLib.UseDoIfSyntax ? 0 : 1));
@@ -144,8 +175,8 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          UseCppOperatorsProperty(PreferencesPage& page) 
             : PropertyBase(page, L"Binary Operators", L"", L"Choose whether to use named operators (AND, OR, MOD) or C++ operators (&&, ||, %) by default")
          {
-            AddOption(L"X³ Style", FALSE);
-            AddOption(L"C++", FALSE);
+            AddOption(L"Use named operators", FALSE);
+            AddOption(L"Use C++ operators", FALSE);
             AllowEdit(FALSE);
             // Set initial value
             SetValue(GetOption(PrefsLib.UseCppOperators ? 1 : 0));
@@ -187,6 +218,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:
+      BackgroundCompilerProperty*      BackgroundCompiler;
       CaseSensitiveVariablesProperty*  CaseSensitiveVariables;
       CheckArgumentNamesProperty*      CheckArgumentNames;
       CheckArgumentTypesProperty*      CheckArgumentTypes;

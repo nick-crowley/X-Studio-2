@@ -13,7 +13,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       enum { IDD = IDD_GENERAL_PAGE };
 
    protected:
-      
       /// <summary>Game data folder property</summary>
       class GameDataFolderProperty : public FolderProperty
       {
@@ -22,8 +21,40 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'game data folder' property</summary>
          /// <param name="page">Owner page.</param>
          GameDataFolderProperty(PreferencesPage& page) 
-            : FolderProperty(page, L"Game Folder", PrefsLib.GameDataFolder, L"Folder containing X3 executable")
+            : FolderProperty(page, L"Base Folder", PrefsLib.GameDataFolder, L"Folder containing X3 executable")
          {}
+      };
+
+      /// <summary>Game data language property</summary>
+      class GameLanguageProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create game language property.</summary>
+         /// <param name="page">Owner page.</param>
+         GameLanguageProperty(PreferencesPage& page)
+            : PropertyBase(page, L"Language", ::GetString(PrefsLib.GameDataLanguage).c_str(),  L"Change which language to use when loading game data")
+         {
+            // Populate game languages
+            for (int i = 0; i <= 7; i++)
+               AddOption(::GetString(GameLanguageIndex(i).Language).c_str(), FALSE);
+
+            // Strict dropdown
+            AllowEdit(FALSE);
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+      public:
+         /// <summary>Gets the selected language.</summary>
+         /// <returns></returns>
+         GameLanguage  GetLanguage() const
+         {
+            return GameLanguageIndex(Find(GetString())).Language;
+         }
+         // ----------------------- MUTATORS ------------------------
+         
+         // -------------------- REPRESENTATION ---------------------
+      protected:
       };
 
       /// <summary>Game version property</summary>
@@ -34,7 +65,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create game version property.</summary>
          /// <param name="page">Owner page.</param>
          GameVersionProperty(PreferencesPage& page)
-            : PropertyBase(page, L"Game Version", VersionString(PrefsLib.GameDataVersion).c_str(),  L"Game version")  
+            : PropertyBase(page, L"Version", VersionString(PrefsLib.GameDataVersion).c_str(),  L"Change which version to use when loading game data")  
          {
             // Populate game versions
             AddOption(VersionString(GameVersion::Threat).c_str(), FALSE);
@@ -54,6 +85,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {
             return GameVersionIndex(Find(GetString())).Version;
          }
+
          // ----------------------- MUTATORS ------------------------
 
          // -------------------- REPRESENTATION ---------------------
@@ -94,7 +126,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          SkipBrokenFilesProperty(PreferencesPage& page) 
             : PropertyBase(page, L"Corrupt Files", L"", L"Change whether to continue loading game data if a language file cannot be loaded")
          {
-            AddOption(L"Skip and Continue", FALSE);
+            AddOption(L"Skip and Continue Loading", FALSE);
             AddOption(L"Abort Loading", FALSE);
             AllowEdit(FALSE);
             // Set initial value
@@ -123,7 +155,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'tool window font' property</summary>
          /// <param name="page">Owner page.</param>
          ToolWindowFontProperty(PreferencesPage& page) 
-            : FontProperty(page, L"Tool Window Font", PrefsLib.ToolWindowFont, L"Font used in all tool windows")
+            : FontProperty(page, L"Window Font", PrefsLib.ToolWindowFont, L"Change the font used in all tool/helper windows like properties, project etc.")
          {}
       };
 
@@ -153,11 +185,12 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // -------------------- REPRESENTATION ---------------------
    protected:
       SkipBrokenFilesProperty* SkipBrokenFiles;
-      GameDataFolderProperty* GameDataFolder;
-      GameVersionProperty*    GameDataVersion;
-      LargeMenusProperty*     LargeMenus;
-      LargeToolbarsProperty*  LargeToolbars;
-      ToolWindowFontProperty* ToolWindowFont;
+      GameDataFolderProperty*  GameDataFolder;
+      GameLanguageProperty*    GameDataLanguage;
+      GameVersionProperty*     GameDataVersion;
+      LargeMenusProperty*      LargeMenus;
+      LargeToolbarsProperty*   LargeToolbars;
+      ToolWindowFontProperty*  ToolWindowFont;
       
    public:
       

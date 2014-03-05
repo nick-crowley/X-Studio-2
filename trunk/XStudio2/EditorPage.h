@@ -24,6 +24,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
 
+      /// <summary>ScriptViewFont property</summary>
+      class ScriptViewFontProperty : public FontProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'ScriptViewFont' property</summary>
+         /// <param name="page">Owner page.</param>
+         ScriptViewFontProperty(PreferencesPage& page) 
+            : FontProperty(page, L"Window Font", PrefsLib.ScriptViewFont, L"Change the font used in the script editor")
+         {}
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       EditorPage();    
@@ -46,6 +58,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // -------------------- REPRESENTATION ---------------------
    protected:
       ShowLineNumbersProperty*   ShowLineNumbers;
+      ScriptViewFontProperty*    ScriptViewFont;
    };
    
 NAMESPACE_END2(GUI,Preferences)
