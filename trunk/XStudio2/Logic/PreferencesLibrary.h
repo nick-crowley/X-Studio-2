@@ -1,9 +1,12 @@
 #pragma once
 
-//#include "Common.h"  Included in stdafx.h
+// Do not include common.h, this file included via stdafx.h
+#define MACRO_REGION
 
 namespace Logic
 {
+#ifdef MACRO_REGION
+
    /// <summary>Generate get/set methods+property for a preference</summary>
    /// <param name="valType">Property type</param>
    /// <param name="funcType">Registry function to use, must be Bool, Int or String</param>
@@ -58,6 +61,8 @@ namespace Logic
             Set##funcType(L#name, val); \
          }
 
+#endif
+
    /// <summary></summary>
    class PreferencesLibrary
    {
@@ -79,29 +84,41 @@ namespace Logic
 
       // --------------------- PROPERTIES ------------------------
    public:
+      // Application/GUI:
       /// <summary>Show large menus throughout app</summary>
-      PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false);
+      PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false)
 
       /// <summary>Show large toolbars throughout app</summary>
-      PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false);
+      PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false)
 
+      /// <summary>Tool window font</summary>
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,ToolWindowFont,L"Arial");
+
+
+      // Script Editor:
       /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
+
+      // Find Dialog
       /// <summary>Show options in the find dialog</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowFindOptions,true);
-
-      /// <summary>Game data folder</summary>
-      PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
-
-      /// <summary>Game data version</summary>
-      PREFERENCE_PROPERTY_ENUM(GameVersion,GameDataVersion,GameVersion::TerranConflict);
 
       /// <summary>Find dialog search terms</summary>
       PREFERENCE_PROPERTY_LIST(wstring,StringList,SearchTerms);
 
       /// <summary>Find dialog replace terms</summary>
       PREFERENCE_PROPERTY_LIST(wstring,StringList,ReplaceTerms);
+
+
+      // Game Data:
+      /// <summary>Game data folder</summary>
+      PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
+
+      /// <summary>Game data version</summary>
+      PREFERENCE_PROPERTY_ENUM(GameVersion,GameDataVersion,GameVersion::TerranConflict);
+
+      
 
       // ---------------------- ACCESSORS ------------------------			
    private:
@@ -112,6 +129,34 @@ namespace Logic
       bool  GetBool(const wchar* name, bool defaultValue) const
       {
          return theApp.GetProfileInt(L"Settings", name, defaultValue) != FALSE;
+      }
+
+      /// <summary>Get font preference</summary>
+      /// <param name="name">preference name</param>
+      /// <param name="font">default font name</param>
+      /// <returns></returns>
+      LOGFONT  GetLogFont(const wchar* name, const wchar* font) const
+      {
+         LOGFONT lf;
+         BYTE* buf = nullptr;
+         UINT  len = 0;
+
+         // Read value
+         if (theApp.GetProfileBinary(L"Settings", name, &buf, &len))
+         {
+            // Success: Extract data
+            lf = *reinterpret_cast<LOGFONT*>(buf);
+            delete [] buf;
+         }
+         else
+         {
+            CFont f;
+            // Failed/Missing: Create default font, size 10pt
+            f.CreatePointFont(10*10, font);
+            f.GetLogFont(&lf);
+         }
+
+         return lf;
       }
 
       /// <summary>Get integer preference</summary>
@@ -139,6 +184,15 @@ namespace Logic
       void  SetBool(const wchar* name, bool value) const
       {
          theApp.WriteProfileInt(L"Settings", name, value ? TRUE : FALSE);
+      }
+
+      /// <summary>Set font preference</summary>
+      /// <param name="name">name</param>
+      /// <param name="font">font data</param>
+      /// <returns></returns>
+      void  SetLogFont(const wchar* name, LOGFONT font) const
+      {
+         theApp.WriteProfileBinary(L"Settings", name, reinterpret_cast<BYTE*>(&font), sizeof(LOGFONT));
       }
 
       /// <summary>Set integer preference</summary>

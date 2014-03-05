@@ -12,7 +12,31 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    public:
       enum { IDD = IDD_GENERAL_PAGE };
 
-   private:
+   protected:
+      /// <summary></summary>
+      class LargeToolbarsProperty : public BooleanProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create property</summary>
+         /// <param name="page">Owner page.</param>
+         LargeToolbarsProperty(PreferencesPage& page) 
+            : BooleanProperty(page, L"LargeToolbars", PrefsLib.LargeToolbars, L"Show large toolbars")
+         {}
+      };
+
+      /// <summary></summary>
+      class ToolWindowFontProperty : public FontProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create property</summary>
+         /// <param name="page">Owner page.</param>
+         ToolWindowFontProperty(PreferencesPage& page) 
+            : FontProperty(page, L"Tool Window Font", PrefsLib.ToolWindowFont, L"Font used in all tool windows")
+         {}
+      };
+
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -35,9 +59,12 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-	  
+	   void Populate() override;
+
       // -------------------- REPRESENTATION ---------------------
    protected:
+      LargeToolbarsProperty*  LargeToolbars;
+      ToolWindowFontProperty* ToolWindowFont;
       
    public:
       
