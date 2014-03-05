@@ -29,12 +29,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    public:
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      BOOL OnInitDialog() override;
+      void OnOK() override;
+
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	  
       // -------------------- REPRESENTATION ---------------------
+   protected:
       
-   private:
+   public:
+      
    };
    
 NAMESPACE_END2(GUI,Preferences)

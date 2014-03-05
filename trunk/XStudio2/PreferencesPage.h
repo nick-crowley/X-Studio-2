@@ -25,11 +25,20 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    public:
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      BOOL OnInitDialog() override;
+      void OnOK() override;
+
    protected:
+      void AdjustLayout();
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-	  
+
+	   afx_msg void OnSize(UINT nType, int cx, int cy);
+
       // -------------------- REPRESENTATION ---------------------
    protected:
+      CMFCPropertyGridCtrl  Grid;
+   
    };
    
 NAMESPACE_END2(GUI,Preferences)
