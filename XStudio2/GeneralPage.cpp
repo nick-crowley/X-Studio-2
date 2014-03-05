@@ -44,11 +44,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	      if (!__super::OnInitDialog())
 		      throw Win32Exception(HERE, L"Failed to create dialog base");
 
-
-         // DEBUG: Populate grid
-         auto prop = new CMFCPropertyGridProperty(L"Example", L"Value", L"Description");
-         Grid.AddProperty(prop);
-
+         Populate();
 	      return TRUE;
       }
       catch (ExceptionBase& e) {
@@ -60,7 +56,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    void GeneralPage::OnOK()
    {
-      // TODO: Add your specialized code here and/or call the base class
+      Console << "GeneralPage::OnOK() LargeToolbars=" << LargeToolbars->GetBool() << ENDL;
 
       __super::OnOK();
    }
@@ -68,7 +64,15 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   
+   /// <summary>Populates this page.</summary>
+   void GeneralPage::Populate()
+   {
+      // Populate grid
+      Grid.AddProperty(new PropertyBase(*this, L"General"));
+      Grid.AddProperty(LargeToolbars = new LargeToolbarsProperty(*this));
+      Grid.AddProperty(ToolWindowFont = new ToolWindowFontProperty(*this));
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    

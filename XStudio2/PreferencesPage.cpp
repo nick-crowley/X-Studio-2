@@ -105,6 +105,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       AdjustLayout();
    }
 
+   /// <summary>Stub.</summary>
+   void PreferencesPage::Populate()
+   {
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
