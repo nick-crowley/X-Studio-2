@@ -29,7 +29,7 @@ namespace Logic
    /// <param name="funcType">Registry function to use, must be Bool, Int or String</param>
    /// <param name="name">Name of preference/property</param>
    /// <param name="defaultVal">Default value when does not exist</param>
-   #define PREFERENCE_PROPERTY2(valueType,storageType,funcType,name,defaultVal) \
+   #define PREFERENCE_PROPERTY_EX(valueType,storageType,funcType,name,defaultVal) \
       public: \
          __declspec(property(get=Get##name,put=Set##name)) valueType name; \
          \
@@ -44,7 +44,7 @@ namespace Logic
    /// <param name="valueType">Property type</param>
    /// <param name="name">Name of preference/property</param>
    /// <param name="defaultVal">Default value when does not exist</param>
-   #define PREFERENCE_PROPERTY_ENUM(valueType,name,defaultVal)       PREFERENCE_PROPERTY2(valueType,int,Int,name,defaultVal)
+   #define PREFERENCE_PROPERTY_ENUM(valueType,name,defaultVal)       PREFERENCE_PROPERTY_EX(valueType,int,Int,name,defaultVal)
 
    /// <summary>Generate get/set methods+property for a list based preference</summary>
    /// <param name="valueType">List element type</param>
@@ -94,6 +94,9 @@ namespace Logic
       /// <summary>Tool window font</summary>
       PREFERENCE_PROPERTY(LOGFONT,LogFont,ToolWindowFont,L"Arial");
 
+      /// <summary>Tooltip font</summary>
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,TooltipFont,L"Arial");
+
 
       // Script Editor:
       /// <summary>Show line numbers in the script view</summary>
@@ -101,6 +104,49 @@ namespace Logic
 
       /// <summary>Script editor font</summary>
       PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Arial");
+
+      /// <summary>Script editor line numbers colour</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,LineNumberColour,RGB(255,255,255));
+
+      /// <summary>Script editor background colour</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,BackgroundColour,RGB(0,0,0));
+
+
+      /// <summary>Syntax highlighting colour for arguments</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ArgumentColour,RGB(255,128,40));
+
+      /// <summary>Syntax highlighting colour for comments</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,CommentColour,RGB(128,128,128));
+      
+      /// <summary>Syntax highlighting colour for game-objects</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,GameObjectColour,RGB(0,255,255));
+
+      /// <summary>Syntax highlighting colour for keywords</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,KeywordColour,RGB(0,0,255));
+      
+      /// <summary>Syntax highlighting colour for labels</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,LabelColour,RGB(255,0,255));
+      
+      /// <summary>Syntax highlighting colour for null</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,NullColour,RGB(0,255,0));
+
+      /// <summary>Syntax highlighting colour for numbers</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,NumberColour,RGB(255,0,0));
+
+      /// <summary>Syntax highlighting colour for operators</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,OperatorColour,RGB(255,255,255));
+      
+      /// <summary>Syntax highlighting colour for script-objects</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ScriptObjectColour,RGB(255,255,0));
+      
+      /// <summary>Syntax highlighting colour for strings</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,StringColour,RGB(255,0,0));
+
+      /// <summary>Syntax highlighting colour for command text</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,TextColour,RGB(255,255,255));
+
+      /// <summary>Syntax highlighting colour for variables</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,VariableColour,RGB(0,255,0));
 
 
       // Compiler:

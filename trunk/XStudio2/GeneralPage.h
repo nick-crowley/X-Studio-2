@@ -159,6 +159,17 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
 
+      /// <summary>Tooltip font property</summary>
+      class TooltipFontProperty : public FontProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'tooltip font' property</summary>
+         /// <param name="page">Owner page.</param>
+         TooltipFontProperty(PreferencesPage& page) 
+            : FontProperty(page, L"Tooltip Font", PrefsLib.TooltipFont, L"Change the font used in all tooltips")
+         {}
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -190,6 +201,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       GameVersionProperty*     GameDataVersion;
       LargeMenusProperty*      LargeMenus;
       LargeToolbarsProperty*   LargeToolbars;
+      TooltipFontProperty*     TooltipFont;
       ToolWindowFontProperty*  ToolWindowFont;
       
    public:

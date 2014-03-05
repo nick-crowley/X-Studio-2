@@ -20,6 +20,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         LargeMenus(nullptr), 
         LargeToolbars(nullptr), 
         ToolWindowFont(nullptr), 
+        TooltipFont(nullptr),
         GameDataFolder(nullptr), 
         GameDataLanguage(nullptr),
         GameDataVersion(nullptr), 
@@ -60,6 +61,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group->AddSubItem(LargeMenus = new LargeMenusProperty(*this));
       group->AddSubItem(LargeToolbars = new LargeToolbarsProperty(*this));
       group->AddSubItem(ToolWindowFont = new ToolWindowFontProperty(*this));
+      group->AddSubItem(TooltipFont = new TooltipFontProperty(*this));
       Grid.AddProperty(group);
 
       // Game Data
