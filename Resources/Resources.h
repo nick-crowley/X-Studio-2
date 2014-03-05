@@ -158,6 +158,9 @@
 // Project Dialog
 #define IDC_PROJECT_TREE                822
 
+// Preferences dialog
+#define IDC_PROPERTY_GRID               823
+
 ///////////////////////////////// STRINGS ///////////////////////////////
 
 // Customization

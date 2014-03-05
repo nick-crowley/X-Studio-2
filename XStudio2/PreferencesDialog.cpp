@@ -17,11 +17,12 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    PreferencesDialog::PreferencesDialog(CWnd* parent) : CMFCPropertySheet(L"Preferences", parent, 0)
    {
+      //EnablePageHeader(30);
       AddPage(&General);
       AddPage(&GameData);
       AddPage(&Editor);
       AddPage(&Compiler);
-      SetLook(PropSheetLook::PropSheetLook_List);
+      SetLook(CMFCPropertySheet::PropSheetLook_List);
    }
 
    PreferencesDialog::~PreferencesDialog()

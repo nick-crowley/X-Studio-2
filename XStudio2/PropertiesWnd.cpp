@@ -18,8 +18,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Properties window instance.</summary>
    CPropertiesWnd*  CPropertiesWnd::Instance = nullptr;
 
-   const UINT IDC_PROPERTY_GRID = 4;
-
    // --------------------------------- APP WIZARD ---------------------------------
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)

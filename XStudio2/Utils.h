@@ -3,7 +3,7 @@
 /// <summary>User interface</summary>
 namespace GUI
 {
-   /// <summary></summary>
+   /// <summary>Client rectangle</summary>
    class ClientRect : public CRect
    {
       // ------------------------ TYPES --------------------------
@@ -12,13 +12,45 @@ namespace GUI
       // --------------------- CONSTRUCTION ----------------------
 
    public:
-      ClientRect(CWnd* wnd)
+      ClientRect(CWnd* wnd) : CRect(0,0,0,0)
       {
          wnd->GetClientRect(this);
       }
 
       DEFAULT_COPY(ClientRect);	// Default copy semantics
       DEFAULT_MOVE(ClientRect);	// Default move semantics
+
+      // ------------------------ STATIC -------------------------
+
+      // --------------------- PROPERTIES ------------------------
+
+      // ---------------------- ACCESSORS ------------------------			
+
+      // ----------------------- MUTATORS ------------------------
+
+      // -------------------- REPRESENTATION ---------------------
+   };
+
+   /// <summary>Control rectangle in parent client co-ordinates</summary>
+   class CtrlRect : public CRect
+   {
+      // ------------------------ TYPES --------------------------
+   private:
+
+      // --------------------- CONSTRUCTION ----------------------
+
+   public:
+      /// <summary>Create control rectangle in parent client co-ordinates</summary>
+      /// <param name="parent">The parent.</param>
+      /// <param name="ctrl">The control.</param>
+      CtrlRect(CWnd* parent, CWnd* ctrl) : CRect(0, 0, 0, 0)
+      {
+         ctrl->GetWindowRect(this);
+         parent->ScreenToClient(this);
+      }
+
+      DEFAULT_COPY(CtrlRect);	// Default copy semantics
+      DEFAULT_MOVE(CtrlRect);	// Default move semantics
 
       // ------------------------ STATIC -------------------------
 
