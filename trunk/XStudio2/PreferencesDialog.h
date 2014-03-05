@@ -2,7 +2,6 @@
 #include "GeneralPage.h"
 #include "CompilerPage.h"
 #include "EditorPage.h"
-#include "GameDataPage.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Preferences)
@@ -35,7 +34,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    protected:
       CompilerPage  Compiler;
       EditorPage    Editor;
-      GameDataPage  GameData;
       GeneralPage   General;
    };
    

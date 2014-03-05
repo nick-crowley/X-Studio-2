@@ -15,7 +15,14 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   GeneralPage::GeneralPage() : PreferencesPage(GeneralPage::IDD)
+   GeneralPage::GeneralPage() 
+      : PreferencesPage(GeneralPage::IDD),
+        LargeMenus(nullptr), 
+        LargeToolbars(nullptr), 
+        ToolWindowFont(nullptr), 
+        GameDataFolder(nullptr), 
+        GameDataVersion(nullptr), 
+        SkipBrokenFiles(nullptr)
    {
    }
 
@@ -34,26 +41,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	   __super::DoDataExchange(pDX);
    }
    
-   /// <summary>Populates property grid.</summary>
-   /// <returns></returns>
-   BOOL GeneralPage::OnInitDialog()
-   {
-      try
-      {
-         // Create base
-	      if (!__super::OnInitDialog())
-		      throw Win32Exception(HERE, L"Failed to create dialog base");
-
-         Populate();
-	      return TRUE;
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-         return FALSE;
-      }
-   }
-
-
    void GeneralPage::OnOK()
    {
       Console << "GeneralPage::OnOK() LargeToolbars=" << LargeToolbars->GetBool() << ENDL;
@@ -78,6 +65,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group = new PropertyBase(*this, L"Game Data");
       group->AddSubItem(GameDataFolder = new GameDataFolderProperty(*this));
       group->AddSubItem(GameDataVersion = new GameVersionProperty(*this));
+      group->AddSubItem(SkipBrokenFiles = new SkipBrokenFilesProperty(*this));
       Grid.AddProperty(group);
    }
 

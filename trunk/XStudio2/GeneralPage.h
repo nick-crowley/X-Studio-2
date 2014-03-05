@@ -13,6 +13,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       enum { IDD = IDD_GENERAL_PAGE };
 
    protected:
+      
       /// <summary>Game data folder property</summary>
       class GameDataFolderProperty : public FolderProperty
       {
@@ -82,6 +83,37 @@ NAMESPACE_BEGIN2(GUI,Preferences)
             : BooleanProperty(page, L"Large Toolbars", PrefsLib.LargeToolbars, L"Enlarge all toolbar buttons")
          {}
       };
+      
+      /// <summary>SkipBrokenFiles property</summary>
+      class SkipBrokenFilesProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'SkipBrokenFiles' property</summary>
+         /// <param name="page">Owner page.</param>
+         SkipBrokenFilesProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Corrupt Files", L"", L"Change whether to continue loading game data if a language file cannot be loaded")
+         {
+            AddOption(L"Skip and Continue", FALSE);
+            AddOption(L"Abort Loading", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.SkipBrokenFiles ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      
+         // -------------------- REPRESENTATION ---------------------
+      };
 
       /// <summary>Tool window font property</summary>
       class ToolWindowFontProperty : public FontProperty
@@ -112,7 +144,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL OnInitDialog() override;
       void OnOK() override;
 
    protected:
@@ -121,6 +152,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       // -------------------- REPRESENTATION ---------------------
    protected:
+      SkipBrokenFilesProperty* SkipBrokenFiles;
       GameDataFolderProperty* GameDataFolder;
       GameVersionProperty*    GameDataVersion;
       LargeMenusProperty*     LargeMenus;

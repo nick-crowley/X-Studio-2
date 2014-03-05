@@ -121,7 +121,6 @@
 #define IDD_GENERAL_PAGE                703
 #define IDD_COMPILER_PAGE               704
 #define IDD_EDITOR_PAGE                 705
-#define IDD_GAMEDATA_PAGE               706
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 

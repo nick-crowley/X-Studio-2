@@ -19,7 +19,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    {
       //EnablePageHeader(30);
       AddPage(&General);
-      AddPage(&GameData);
       AddPage(&Editor);
       AddPage(&Compiler);
       SetLook(CMFCPropertySheet::PropSheetLook_List);
