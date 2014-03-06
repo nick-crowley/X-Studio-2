@@ -26,6 +26,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_NOTIFY_REFLECT(TTN_SHOW, &CustomTooltip::OnShow)
       ON_WM_PAINT()
       ON_WM_ERASEBKGND()
+      ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -42,16 +43,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   /// <summary>Creates or re-creates the tooltip</summary>
+   /// <summary>Creates the tooltip</summary>
    /// <param name="pParentWnd">The parent WND.</param>
    /// <param name="dwStyle">The style.</param>
    /// <returns></returns>
    bool  CustomTooltip::Create(CWnd* view, CWnd* edit)
    {
-      // Destroy if exists
-      if (m_hWnd && !DestroyWindow())
-         throw Win32Exception(HERE, L"Unable to destroy tooltip");
-
       // Create window
       if (!__super::Create(view, 0))
          throw Win32Exception(HERE, L"Unable to create tooltip");
@@ -64,11 +61,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetDelayTime(TTDT_AUTOPOP, 30*1000);
       SetDelayTime(TTDT_RESHOW, 3000);
 
+      // Set font
+      //SetFont(&theApp.TooltipFont);
+
       // Activate
       Activate(TRUE);
       return TRUE;
    }
 
+   /// <summary>Resets the tooltip.</summary>
    void  CustomTooltip::Reset()
    {
       Activate(FALSE);
@@ -199,6 +200,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
+   /// <summary>Updates font.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void CustomTooltip::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      // Set font
+      //SetFont(&theApp.TooltipFont);
+   }
 
    /// <summary>Resizes the tooltip accordingly</summary>
    /// <param name="pNMHDR">The NMHDR.</param>
@@ -211,7 +220,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CClientDC  dc(this);
 
       // Prepare
-      auto font = dc.SelectObject(&afxGlobalData.fontTooltip);
+      auto font = dc.SelectObject(&theApp.TooltipFont);
 
       try
       {
@@ -267,7 +276,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ClientRect wnd(this);
 
       // Prepare
-      auto font = dc.SelectObject(&afxGlobalData.fontTooltip);
+      auto font = dc.SelectObject(&theApp.TooltipFont);
       dc.SetBkMode(TRANSPARENT);
 
       try

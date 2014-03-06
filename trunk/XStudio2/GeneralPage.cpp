@@ -56,7 +56,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    /// <summary>Commits values to preferences library.</summary>
    void GeneralPage::Commit()
    {
+      // General
+      PrefsLib.LargeMenus = LargeMenus->GetBool();
+      PrefsLib.LargeToolbars = LargeToolbars->GetBool();
       PrefsLib.ToolWindowFont = *ToolWindowFont->GetLogFont();
+      PrefsLib.TooltipFont = *TooltipFont->GetLogFont();
+
+      // Game Data
+      PrefsLib.GameDataFolder = GameDataFolder->GetFolder().c_str();
+      PrefsLib.SkipBrokenFiles = SkipBrokenFiles->GetBool();
+      PrefsLib.GameDataLanguage = GameDataLanguage->GetLanguage();
+      PrefsLib.GameDataVersion = GameDataVersion->GetVersion();
+
    }
 
    /// <summary>Populates this page.</summary>
