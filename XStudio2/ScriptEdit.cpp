@@ -634,6 +634,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // Get drawing dc
       ScriptEditDC dc(this, L"Arial");
+      dc.SetTextColor(PrefsLib.LineNumberColour);
 
       // Get first line number rectangle
       LineRect rect = dc.GetLineRect(GetFirstVisibleLine());
@@ -699,6 +700,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetGutterWidth(GutterRect(this).Width());
 
       // Update all highlighting
+      SetBackgroundColor(FALSE, PrefsLib.BackgroundColour);
       UpdateHighlighting(0, GetLineCount()-1);
    }
    
