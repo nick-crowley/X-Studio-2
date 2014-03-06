@@ -20,7 +20,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   ON_WM_CONTEXTMENU()
 	   ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
-	   ON_COMMAND(ID_VIEW_OUTPUT, OnViewOutput)
 	   ON_WM_WINDOWPOSCHANGING()
       ON_WM_SETTINGCHANGE()
       ON_WM_SIZE()
@@ -114,7 +113,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Copies item to clipboard</summary>
    void OutputList::OnEditCopy()
    {
-	   MessageBox(_T("Copy output"));
+	   MessageBox(_T("Not implemented"));
    }
 
    /// <summary>Clears all items</summary>
@@ -123,20 +122,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   DeleteAllItems();
    }
 
-   /// <summary>Toggles window display</summary>
-   void OutputList::OnViewOutput()
-   {
-	   CDockablePane* pParentBar = DYNAMIC_DOWNCAST(CDockablePane, GetOwner());
-	   CMDIFrameWndEx* pMainFrame = DYNAMIC_DOWNCAST(CMDIFrameWndEx, GetTopLevelFrame());
-
-	   if (pMainFrame != NULL && pParentBar != NULL)
-	   {
-		   pMainFrame->SetFocus();
-		   pMainFrame->ShowPane(pParentBar, FALSE, FALSE, FALSE);
-		   pMainFrame->RecalcLayout();
-
-	   }
-   }
    
    /// <summary>Updates window font.</summary>
    /// <param name="uFlags">The u flags.</param>

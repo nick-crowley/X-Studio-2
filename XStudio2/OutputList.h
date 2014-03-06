@@ -34,7 +34,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   afx_msg void OnEditClear();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
-	   afx_msg void OnViewOutput();
    };
 
 
