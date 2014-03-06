@@ -100,8 +100,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'large menus' property</summary>
          /// <param name="page">Owner page.</param>
          LargeMenusProperty(PreferencesPage& page) 
-            : BooleanProperty(page, L"Large Menus", PrefsLib.LargeMenus, L"Enlarge all menu items and icons")
-         {}
+            : BooleanProperty(page, L"Large Menus", PrefsLib.LargeMenus, L"[Not Implemented] Enlarge all menu items and icons")
+         {
+            Enable(FALSE);
+         }
       };
 
       /// <summary>Large toolbars property</summary>
@@ -112,8 +114,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'large toolbars' property</summary>
          /// <param name="page">Owner page.</param>
          LargeToolbarsProperty(PreferencesPage& page) 
-            : BooleanProperty(page, L"Large Toolbars", PrefsLib.LargeToolbars, L"Enlarge all toolbar buttons")
-         {}
+            : BooleanProperty(page, L"Large Toolbars", PrefsLib.LargeToolbars, L"[Not Implemented] Enlarge all toolbar buttons")
+         {
+            Enable(FALSE);
+         }
       };
       
       /// <summary>SkipBrokenFiles property</summary>
