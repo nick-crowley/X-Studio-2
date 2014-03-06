@@ -20,6 +20,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
+      ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -117,7 +118,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Insert columns
          ListView.InsertColumn(0, L"Item", LVCFMT_LEFT, 200, 0);
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-         ListView.SetFont(&afxGlobalData.fontRegular);
+         ListView.SetFont(&theApp.ToolWindowFont);
          ListView.EnableGroupView(TRUE);
          
          // Setup ImageList:
@@ -127,13 +128,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // create Search edit
 	      if (!Search.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL, rectDummy, this, IDC_EDIT))
             throw Win32Exception(HERE, L"Unable to create game data window edit control");
-         Search.SetFont(&afxGlobalData.fontRegular);
+         Search.SetFont(&theApp.ToolWindowFont);
          Search.SetCueBanner(L"Enter search term...");
 
          // create Groups ComboBox
 	      if (!Groups.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST, rectDummy, this, IDC_COMBO))
             throw Win32Exception(HERE, L"Unable to create game data window combo box");
-         Groups.SetFont(&afxGlobalData.fontRegular);
+         Groups.SetFont(&theApp.ToolWindowFont);
 
          // Populate groups
          PopulateGroupCombo();
@@ -174,6 +175,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       UpdateContent();
    }
+   
+
+   /// <summary>Change the window fonts when settings change.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void CGameDataWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      CDockablePane::OnSettingChange(uFlags, lpszSection);
+
+      // Update window fonts
+      Groups.SetFont(&theApp.ToolWindowFont);
+      Search.SetFont(&theApp.ToolWindowFont);
+      ListView.SetFont(&theApp.ToolWindowFont);
+
+      // Adjust layout
+      AdjustLayout();
+   }
 
    void CGameDataWnd::OnSize(UINT nType, int cx, int cy)
    {
@@ -183,25 +201,24 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
+   /// <summary>Adjusts the layout.</summary>
    void CGameDataWnd::AdjustLayout()
    {
       // Destroyed/Minimised
 	   if (GetSafeHwnd() == NULL || (AfxGetMainWnd() != NULL && AfxGetMainWnd()->IsIconic()))
          return;
 
-	   CRect client, edit, combo;
-	   GetClientRect(client);
-      Search.GetClientRect(edit);
-      Groups.GetClientRect(combo);
+      ClientRect client(this);
+      CtrlRect   combo(this, &Groups);
 
       // Anchor Edit to top
       Search.SetWindowPos(NULL, client.left, client.top, client.Width(), combo.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
 
       // Anchor Group below Edit
-      Groups.SetWindowPos(NULL, client.left, client.top+edit.Height(), client.Width(), combo.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+      Groups.SetWindowPos(NULL, client.left, client.top+combo.Height(), client.Width(), combo.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
 
       // Stretch ListView over remaining area
-      UINT header = edit.Height()+combo.Height();
+      UINT header = combo.Height()+combo.Height();
       ListView.SetWindowPos(NULL, client.left, client.top+header, client.Width(), client.Height()-header, SWP_NOACTIVATE | SWP_NOZORDER);
 
       // Stretch ListView column

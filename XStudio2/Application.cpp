@@ -210,6 +210,9 @@ BOOL Application::InitInstance()
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
+   // Create window fonts
+   UpdateFonts();
+
 	// document templates
 	AddDocTemplate(new ScriptDocTemplate());
 	AddDocTemplate(new LanguageDocTemplate());
@@ -301,6 +304,15 @@ void Application::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
+/// <summary>Update all windows</summary>
+void Application::OnPreferencesChanged()
+{
+   // Update fonts
+   UpdateFonts();
+
+   // Raise 'PREFERENCES CHANGED'
+   GetMainWindow()->SendMessageToDescendants(WM_SETTINGCHANGE);
+}
 
 /// <summary>Opens the string library.</summary>
 /// <returns></returns>
@@ -378,6 +390,22 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
 
    // Exception: Display source/sink data
    return AfxMessageBox(GuiString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+}
+
+/// <summary>Re-creates the window fonts.</summary>
+void Application::UpdateFonts()
+{
+   // Cleanup previous
+   ToolWindowFont.DeleteObject();
+   TooltipFont.DeleteObject();
+
+   // Toolwindow
+   auto lf = PrefsLib.ToolWindowFont;
+   ToolWindowFont.CreateFontIndirectW(&lf);
+
+   // Tooltip
+   lf = PrefsLib.TooltipFont;
+   TooltipFont.CreateFontIndirectW(&lf);
 }
 
 // ------------------------------ PROTECTED METHODS -----------------------------

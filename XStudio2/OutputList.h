@@ -24,6 +24,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  Create(CWnd* parent, DWORD style, UINT nID, CImageList* images);
       void  InsertItem(const WorkerProgress& wp);
 
    protected:
@@ -31,9 +32,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnEditCopy();
 	   afx_msg void OnEditClear();
-	   afx_msg void OnViewOutput();
-   public:
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
+	   afx_msg void OnViewOutput();
    };
 
 

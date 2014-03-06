@@ -92,10 +92,10 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false)
 
       /// <summary>Tool window font</summary>
-      PREFERENCE_PROPERTY(LOGFONT,LogFont,ToolWindowFont,L"Arial");
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,ToolWindowFont,L"Regular");
 
       /// <summary>Tooltip font</summary>
-      PREFERENCE_PROPERTY(LOGFONT,LogFont,TooltipFont,L"Arial");
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,TooltipFont,L"Tooltip");
 
 
       // Script Editor:
@@ -103,7 +103,7 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
       /// <summary>Script editor font</summary>
-      PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Arial");
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Regular");
 
       /// <summary>Script editor line numbers colour</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,LineNumberColour,RGB(255,255,255));
@@ -208,7 +208,7 @@ namespace Logic
       /// <param name="name">preference name</param>
       /// <param name="font">default font name</param>
       /// <returns></returns>
-      LOGFONT  GetLogFont(const wchar* name, const wchar* font) const
+      LOGFONT  GetLogFont(const wchar* name, const wstring& font) const
       {
          LOGFONT lf;
          BYTE* buf = nullptr;
@@ -221,11 +221,18 @@ namespace Logic
             lf = *reinterpret_cast<LOGFONT*>(buf);
             delete [] buf;
          }
+         // Regular
+         else if (font == L"Regular")
+            GetGlobalData()->fontRegular.GetLogFont(&lf);
+         // Tooltip
+         else if (font == L"Tooltip")
+            GetGlobalData()->fontTooltip.GetLogFont(&lf);
+         // Custom
          else
          {
             CFont f;
             // Failed/Missing: Create default font, size 10pt
-            f.CreatePointFont(10*10, font);
+            f.CreatePointFont(10*10, font.c_str());
             f.GetLogFont(&lf);
          }
 

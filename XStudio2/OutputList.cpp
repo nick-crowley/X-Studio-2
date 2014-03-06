@@ -22,6 +22,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
 	   ON_COMMAND(ID_VIEW_OUTPUT, OnViewOutput)
 	   ON_WM_WINDOWPOSCHANGING()
+      ON_WM_SETTINGCHANGE()
       ON_WM_SIZE()
    END_MESSAGE_MAP()
 
@@ -39,6 +40,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Creates the specified parent.</summary>
+   /// <param name="parent">The parent.</param>
+   /// <param name="style">The style.</param>
+   /// <param name="nID">The n identifier.</param>
+   /// <param name="images">The images.</param>
+   void OutputList::Create(CWnd* parent, DWORD style, UINT nID, CImageList* images)
+   {
+      CRect rc;
+      rc.SetRectEmpty();
+
+      // Create
+      if (!CreateEx(LVS_EX_FULLROWSELECT, style, rc, parent, nID))
+         throw Win32Exception(HERE, L"Unable to create output window listview");
+
+      // Set images + font
+      SetImageList(images, LVSIL_SMALL);
+      SetFont(&theApp.ToolWindowFont);
+   }
+
    /// <summary>Add progress item to bottom of list.</summary>
    /// <param name="wp">The wp.</param>
    void OutputList::InsertItem(const WorkerProgress& wp)
@@ -55,13 +75,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Called when [create].</summary>
+   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <returns></returns>
    int OutputList::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
 	   if (CListCtrl::OnCreate(lpCreateStruct) == -1)
 		   return -1;
 
       // Set font
-      SetFont(&afxGlobalData.fontRegular);
+      SetFont(&theApp.ToolWindowFont);
 
       // Insert hidden column
       InsertColumn(0, L"Text");
@@ -69,37 +92,38 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   return 0;
    }
 
+   /// <summary>Displays context menu.</summary>
+   /// <param name="">The .</param>
+   /// <param name="point">The point.</param>
    void OutputList::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
    {
-	   CMenu menu;
+      CMenu menu;
 	   menu.LoadMenu(IDM_OUTPUT_POPUP);
 
-	   CMenu* pSumMenu = menu.GetSubMenu(0);
+      // Create MFC custom menu
+	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
+		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
+			return;
 
-	   if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx)))
-	   {
-		   CMFCPopupMenu* pPopupMenu = new CMFCPopupMenu;
-
-		   if (!pPopupMenu->Create(this, point.x, point.y, (HMENU)pSumMenu->m_hMenu, FALSE, TRUE))
-			   return;
-
-		   ((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(pPopupMenu);
-		   UpdateDialogControls(this, FALSE);
-	   }
-
+      // Show
+		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
+		UpdateDialogControls(this, FALSE);
 	   SetFocus();
    }
 
+   /// <summary>Copies item to clipboard</summary>
    void OutputList::OnEditCopy()
    {
 	   MessageBox(_T("Copy output"));
    }
 
+   /// <summary>Clears all items</summary>
    void OutputList::OnEditClear()
    {
-	   MessageBox(_T("Clear output"));
+	   DeleteAllItems();
    }
 
+   /// <summary>Toggles window display</summary>
    void OutputList::OnViewOutput()
    {
 	   CDockablePane* pParentBar = DYNAMIC_DOWNCAST(CDockablePane, GetOwner());
@@ -113,8 +137,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
 	   }
    }
-
    
+   /// <summary>Updates window font.</summary>
+   /// <param name="uFlags">The u flags.</param>
+   /// <param name="lpszSection">The LPSZ section.</param>
+   void OutputList::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      // Update font
+      SetFont(&theApp.ToolWindowFont);
+   }
+   
+   /// <summary>Adjust column width</summary>
+   /// <param name="nType">Type of the n.</param>
+   /// <param name="cx">The width.</param>
+   /// <param name="cy">The height.</param>
    void OutputList::OnSize(UINT nType, int cx, int cy)
    {
       CListCtrl::OnSize(nType, cx, cy);

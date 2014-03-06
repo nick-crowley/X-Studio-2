@@ -32,6 +32,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_NOTIFY(NM_DBLCLK, IDC_PROJECT_TREE, OnTreeView_DoubleClick)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
+      ON_WM_SETTINGCHANGE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -113,34 +114,38 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
+         // Create base
 	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		      throw Win32Exception(HERE, L"Unable to create project window base pane");
 
 	      CRect rectDummy;
 	      rectDummy.SetRectEmpty();
 
-	      // Create view:
-	      const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_EDITLABELS | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
+	      // Toolbar:
+         if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project"))
+            throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
-	      if (!TreeView.Create(dwViewStyle, rectDummy, this, IDC_PROJECT_TREE))
+         // Create TreeView:
+	      const DWORD style = WS_CHILD | WS_VISIBLE | TVS_EDITLABELS | TVS_HASLINES | TVS_HASBUTTONS; //TVS_LINESATROOT | 
+	      if (!TreeView.Create(style, rectDummy, this, IDC_PROJECT_TREE))
             throw Win32Exception(HERE, L"Unable to create project window tree view");
 	      
 	      // ImageList:
 	      if (!Images.Create(IDB_PROJECT_ICONS, 16, 0, RGB(255, 0, 255)))
             throw Win32Exception(HERE, L"Unable to create project window imageList");
-	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
-         // Toolbar:
-         if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project"))
-            throw Win32Exception(HERE, L"Unable to create project window toolbar");
+         // Update tree
+         TreeView.SetFont(&theApp.ToolWindowFont);
+	      TreeView.SetImageList(&Images, TVSIL_NORMAL);
 
          // Custom accelerators
          Accelerators = ::LoadAccelerators(AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_PROJECTVIEW));
          
+         // Do layout
+         AdjustLayout();
 
 	      // Populate
 	      TreeView.Populate();
-	      AdjustLayout();
 	      return 0;
       }
       catch (ExceptionBase& e) {
@@ -149,38 +154,43 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-
+#ifdef RESCINDED
    /// <summary>App-wizard generated.</summary>
    void CProjectWnd::OnChangeVisualStyle()
    {
-	   //Toolbar.CleanUpLockedImages();
-	   //Toolbar.LoadBitmap(IDR_PROJECTVIEW, 0, 0, TRUE /* Locked */);
+	   Toolbar.CleanUpLockedImages();
+	   Toolbar.LoadBitmap(IDR_PROJECTVIEW, 0, 0, TRUE /* Locked */);
 
-	   //Images.DeleteImageList();
+	   Images.DeleteImageList();
 
-	   //CBitmap bmp;
-	   //if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
-	   //{
-		  // TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
-		  // ASSERT(FALSE);
-		  // return;
-	   //}
+	   CBitmap bmp;
+	   if (!bmp.LoadBitmap(IDB_PROJECT_ICONS))
+	   {
+		   TRACE(_T("Can't load bitmap: %x\n"), IDB_PROJECT_ICONS);
+		   ASSERT(FALSE);
+		   return;
+	   }
 
-	   //BITMAP bmpObj;
-	   //bmp.GetBitmap(&bmpObj);
+	   BITMAP bmpObj;
+	   bmp.GetBitmap(&bmpObj);
 
-	   //Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
-	   //Images.Add(&bmp, RGB(255, 0, 255));
+	   Images.Create(16, bmpObj.bmHeight, ILC_MASK|ILC_COLOR24, 0, 0);
+	   Images.Add(&bmp, RGB(255, 0, 255));
 
-	   //TreeView.SetImageList(&Images, TVSIL_NORMAL);
+	   TreeView.SetImageList(&Images, TVSIL_NORMAL);
    }
+#endif
 
 
+   /// <summary>Select item and display context menu.</summary>
+   /// <param name="pWnd">The p WND.</param>
+   /// <param name="point">The point.</param>
    void CProjectWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
 	   CTreeCtrl* pWndTree = (CTreeCtrl*) &TreeView;
 	   ASSERT_VALID(pWndTree);
 
+      // Display pane pop-up menu for toolbar
 	   if (pWnd != pWndTree)
 	   {
 		   CDockablePane::OnContextMenu(pWnd, point);
@@ -425,6 +435,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   TreeView.SetFocus();
    }
 
+   /// <summary>Updates window font.</summary>
+   /// <param name="uFlags">The u flags.</param>
+   /// <param name="lpszSection">The LPSZ section.</param>
+   void CProjectWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      // Update font
+      TreeView.SetFont(&theApp.ToolWindowFont);
+   }
 
    /// <summary>Adjust layout.</summary>
    /// <param name="nType">Type of the n.</param>

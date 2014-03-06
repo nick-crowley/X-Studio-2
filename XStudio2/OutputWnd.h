@@ -30,16 +30,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    public:
       void ActivatePane(Operation op);
-      //BOOL CanBeClosed() const override { return FALSE; }
       void Create(CWnd* parent);
 
    protected:
-	   void AdjustHorzScroll(CListBox& wndListBox);
+	   //void AdjustHorzScroll(CListBox& wndListBox);
+      void UpdateFonts();
 
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       handler void onFindReplaceFeedback(const WorkerProgress& wp);
       handler void onGameDataFeedback(const WorkerProgress& wp);
       handler void onLoadSaveFeedback(const WorkerProgress& wp);
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 
 
