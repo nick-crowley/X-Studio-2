@@ -7,27 +7,22 @@
 	#error "include 'stdafx.h' before including this file for PCH"
 #endif
 
-
 /// <summary>Forward declarations</summary>
-namespace GUI
-{
-   namespace Documents
-   {
-      class DocumentBase;
-   }
-   namespace Windows
-   {
-      class MainWnd;
-   }
-}
+FORWARD_DECLARATION2(GUI,Documents,class DocumentBase)
+FORWARD_DECLARATION2(GUI,Windows,class MainWnd)
 
+// ------------------------ ENUMS --------------------------
 
 /// <summary>Application state</summary>
 enum class AppState  { NoGameData, GameDataPresent };
 
+// -------------------- EVENTS & DELEGATES -----------------
+
 /// <summary>Raise when application state changes</summary>
 typedef Event<AppState>                    AppStateChangedEvent;
 typedef AppStateChangedEvent::DelegatePtr  AppStateChangedHandler;
+
+// ------------------------ CLASSES ------------------------
 
 /// <summary>Main thread</summary>
 class Application : public CWinAppEx
@@ -155,7 +150,8 @@ public:
    virtual int   ExitInstance();
 	virtual BOOL  InitInstance();
    void          OnPreferencesChanged();
-   BOOL          OpenStringLibrary();
+   DocumentBase* OpenStringLibrary();
+   afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 	virtual void  PreLoadState();
    void          SetState(AppState s);
    void          UpdateFonts();

@@ -33,6 +33,9 @@ BEGIN_MESSAGE_MAP(Application, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &Application::OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+   ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &Application::OnQueryCommand)
+   ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &Application::OnQueryCommand)
+   ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, &Application::OnQueryCommand)
 END_MESSAGE_MAP()
 
 // -------------------------------- CONSTRUCTION --------------------------------
@@ -316,17 +319,54 @@ void Application::OnPreferencesChanged()
 
 /// <summary>Opens the string library.</summary>
 /// <returns></returns>
-BOOL  Application::OpenStringLibrary()
+DocumentBase* Application::OpenStringLibrary()
 {
-   for (POSITION pos = GetFirstDocTemplatePosition(); pos != NULL; )
-   {
-      LanguageDocTemplate* doc = dynamic_cast<LanguageDocTemplate*>(GetNextDocTemplate(pos));
-      if (doc != nullptr)
-         return doc->OpenDocumentFile(L"String Library", FALSE, TRUE) != nullptr;
-   }
-   return FALSE;
+   // Ensure not already open
+   if (auto doc = GetOpenDocument(L"String Library"))
+      return doc;
+   
+   // Open manually
+   for (POSITION pos = GetFirstDocTemplatePosition(); pos != nullptr; )
+      if (auto doc = dynamic_cast<LanguageDocTemplate*>(GetNextDocTemplate(pos)))
+         return dynamic_cast<DocumentBase*>(doc->OpenDocumentFile(L"String Library", FALSE, TRUE));
+
+   // Error
+   throw AlgorithmException(HERE, L"Unable to find language document template");
 }
 
+/// <summary>Query file menu item state</summary>
+void Application::OnQueryCommand(CCmdUI* pCmdUI)
+{
+   bool state = false;
+   
+   // Query 
+   switch (pCmdUI->m_nID)
+   {
+   case ID_FILE_NEW:
+   case ID_FILE_OPEN:
+   case ID_FILE_MRU_FILE1:
+   case ID_FILE_MRU_FILE2:
+   case ID_FILE_MRU_FILE3:
+   case ID_FILE_MRU_FILE4:
+   case ID_FILE_MRU_FILE5:
+   case ID_FILE_MRU_FILE6:
+   case ID_FILE_MRU_FILE7:
+   case ID_FILE_MRU_FILE8:
+   case ID_FILE_MRU_FILE9:
+   case ID_FILE_MRU_FILE10:
+   case ID_FILE_MRU_FILE11:
+   case ID_FILE_MRU_FILE12:
+   case ID_FILE_MRU_FILE13:
+   case ID_FILE_MRU_FILE14:
+   case ID_FILE_MRU_FILE15:
+   case ID_FILE_MRU_FILE16:
+      state = State == AppState::GameDataPresent;
+      break;
+   }
+
+   // Set state
+   pCmdUI->Enable(state ? TRUE : FALSE);
+}
 
 /// <summary>Application customization load/save methods</summary>
 void Application::PreLoadState()

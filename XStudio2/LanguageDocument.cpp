@@ -264,6 +264,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       __super::OnCloseDocument();
    }
+   
+   /// <summary>Manually set the path of the string library document</summary>
+   /// <param name="deEvent">The de event.</param>
+   void LanguageDocument::OnDocumentEvent(DocumentEvent deEvent)
+   {
+      // Manually set 'String Library' path
+      if (Virtual && deEvent == onAfterOpenDocument)
+         m_strPathName = L"String Library";
+   }
 
    /// <summary>Initializes new document</summary>
    /// <returns></returns>
@@ -290,6 +299,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    BOOL LanguageDocument::OnOpenDocument(LPCTSTR szPathName)
    {
+      
       WorkerData data(Operation::LoadSaveDocument);
 
       try

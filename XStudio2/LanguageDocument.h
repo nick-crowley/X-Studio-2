@@ -290,6 +290,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  RemoveString(UINT page, UINT id);
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;
+      void  OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR szPathName) override;
       BOOL  OnSaveDocument(LPCTSTR szPathName) override;

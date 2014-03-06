@@ -62,9 +62,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandPreferences)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryFindText)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryPreferences)
-      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryShowWindow)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -276,7 +277,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Display string library.</summary>
    void MainWnd::OnCommandStringLibrary()
    {
-      theApp.OpenStringLibrary();
+      try
+      {
+         theApp.OpenStringLibrary();   
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
    /// <summary>Display window manager.</summary>
@@ -400,46 +407,42 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_dlgFind.Create(FindDialog::IDD, this);
    }
 
-
-   /// <summary>Query state of 'find text'.</summary>
-   /// <param name="pCmdUI">The command UI.</param>
-   void MainWnd::OnQueryFindText(CCmdUI *pCmdUI)
+   /// <summary>Query menu item state</summary>
+   void MainWnd::OnQueryCommand(CCmdUI* pCmdUI)
    {
-      // Require active script document
-      pCmdUI->Enable(ScriptDocument::GetActive() != nullptr);
-      // Check if visible
-      pCmdUI->SetCheck(m_dlgFind.IsWindowVisible());
-   }
-
-   /// <summary>Query state of 'edit preferences'.</summary>
-   /// <param name="pCmdUI">The command UI.</param>
-   void MainWnd::OnQueryPreferences(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(TRUE);
-      pCmdUI->SetCheck(FALSE);
-   }
+      BOOL state = TRUE,
+           check = FALSE;
    
-   /// <summary>Query state of tool window command.</summary>
-   void MainWnd::OnQueryShowWindow(CCmdUI* pCmdUI)
-   {
-      BOOL state = TRUE, 
-           checked = FALSE;
-
-      // Query windows
+      // Query 
       switch (pCmdUI->m_nID)
       {
-      case ID_VIEW_PROJECT:         checked = m_wndProject.IsVisible();        break;
-      case ID_VIEW_SCRIPT_OBJECTS:  checked = m_wndScriptObjects.IsVisible();  break;
-      case ID_VIEW_GAME_OBJECTS:    checked = m_wndGameObjects.IsVisible();    break;
-      case ID_VIEW_COMMANDS:        checked = m_wndCommands.IsVisible();       break;
-      case ID_VIEW_OUTPUT:          checked = m_wndOutput.IsVisible();         break;
-      case ID_VIEW_PROPERTIES:      checked = m_wndProperties.IsVisible();     break;
+      case ID_EDIT_PREFERENCES:  
+         state = TRUE;  
+         break;
+
+      case ID_EDIT_FIND:
+         state = (ScriptDocument::GetActive() ? TRUE : FALSE);
+         check = m_dlgFind.IsWindowVisible();
+         break;
+
+      case ID_VIEW_PROJECT:         check = m_wndProject.IsVisible();        break;
+      case ID_VIEW_SCRIPT_OBJECTS:  check = m_wndScriptObjects.IsVisible();  break;
+      case ID_VIEW_GAME_OBJECTS:    check = m_wndGameObjects.IsVisible();    break;
+      case ID_VIEW_COMMANDS:        check = m_wndCommands.IsVisible();       break;
+      case ID_VIEW_OUTPUT:          check = m_wndOutput.IsVisible();         break;
+      case ID_VIEW_PROPERTIES:      check = m_wndProperties.IsVisible();     break;
+
+      case ID_VIEW_STRING_LIBRARY:
+         state = (theApp.State == AppState::GameDataPresent ? TRUE : FALSE);
+         check = theApp.IsDocumentOpen(L"String Library") ? TRUE : FALSE;
+         break;
       }
 
       // Set state
       pCmdUI->Enable(state);
-      pCmdUI->SetCheck(checked);
+      pCmdUI->SetCheck(check);
    }
+   
 
    /// <summary>Called to request tab tooltip.</summary>
    /// <param name="wp">The wp.</param>
