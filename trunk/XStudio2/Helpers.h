@@ -271,7 +271,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    };
 
    /// <summary>Character format helper</summary>
-   class ParaFormat : public PARAFORMAT
+   class ParaFormat : public PARAFORMAT2
    {
    public:
       /// <summary>Create empty.</summary>
@@ -294,8 +294,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Clear formatting</summary>
       void  Clear()
       {
-         ZeroMemory((PARAFORMAT*)this, sizeof(PARAFORMAT));
-         cbSize = sizeof(PARAFORMAT);
+         ZeroMemory((PARAFORMAT2*)this, sizeof(PARAFORMAT2));
+         cbSize = sizeof(PARAFORMAT2);
       }
    };
 

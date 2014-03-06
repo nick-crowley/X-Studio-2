@@ -182,8 +182,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Set RTF
       RichEditEx::SetRtf(rtf);
 
+      // Set default character format
+      SetDefaultCharFormat(CharFormat(PrefsLib.ScriptViewFont, this));
+
       // Adjust gutter
-      SetGutterWidth(GutterRect(this).Width()+10);
+      SetGutterWidth(GutterRect(this).Width());
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -626,7 +629,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       __super::OnPaint();
 
       // Get drawing dc
-      ScriptEditDC dc(this);
+      ScriptEditDC dc(this, L"Arial");
 
       // Get first line number rectangle
       LineRect rect = dc.GetLineRect(GetFirstVisibleLine());
@@ -636,7 +639,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // Draw 1-based line number
          auto s = GuiString(L"%d", 1+rect.LineNumber);
-         dc.DrawText(s.c_str(), s.length(), rect, DT_RIGHT);
+         dc.DrawText(s.c_str(), s.length(), rect, DT_RIGHT|DT_BOTTOM|DT_SINGLELINE);
 
          // Move to next line
          rect.Advance();
@@ -687,6 +690,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Restore
       FreezeWindow(false);
       SuspendUndo(false);
+
+      // Adjust gutter
+      SetGutterWidth(GutterRect(this).Width());
 
       // Update all highlighting
       UpdateHighlighting(0, GetLineCount()-1);
@@ -786,15 +792,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="width">width in pixels</param>
    void ScriptEdit::SetGutterWidth(UINT width)
    {
-      ParaFormat pf(PFM_OFFSET);
+      ParaFormat pf(PFM_OFFSET|PFM_STARTINDENT);
       
       // Freeze+select text
+      SuspendUndo(true);
       FreezeWindow(true);
       SetSel(0, -1);
 
       // Calculate width in twips
       ScriptEditDC dc(this);
-      pf.dxOffset = dc.TwipsToPixels(width, LOGPIXELSX);
+      pf.dxOffset = 0;
+      pf.dxStartIndent = dc.PixelsToTwips(width+10, LOGPIXELSX);
 
       // Set paragraph formatting for entire text
       SetParaFormat(pf);
@@ -802,6 +810,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Restore
       FreezeWindow(false);
+      SuspendUndo(false);
    }
 
    /// <summary>Shows the suggestion list</summary>
