@@ -26,15 +26,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Defines whether suggestions visible</summary>
       enum class InputState : UINT { Normal, Suggestions };
 
-      /// <summary>Device context containing same font as ScriptEdit</summary>
+      /// <summary>Device context containing same size font as ScriptEdit</summary>
       class FontDC : public CClientDC
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         FontDC(ScriptEdit* wnd) : CClientDC(wnd)
+         /// <summary>Create DC containing same size font as script edit.</summary>
+         /// <param name="wnd">script edit.</param>
+         /// <param name="font">custom font.</param>
+         FontDC(ScriptEdit* wnd, const wchar* font = nullptr) : CClientDC(wnd)
          {
+            // Copy ScriptEdit font
+            auto lf = PrefsLib.ScriptViewFont;
+            if (font)
+               StringCchCopy(lf.lfFaceName, LF_FACESIZE, font);
+            Font.CreateFontIndirectW(&lf);
+
             // Set font
-            Font.CreatePointFont(10*10, L"Arial");
             OldFont = SelectObject(&Font);
          }
          ~FontDC()
@@ -53,9 +61,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create gutter rectangle, with space for four digits in Arial.</summary>
+         /// <param name="wnd">The WND.</param>
          GutterRect(ScriptEdit* wnd) : ClientRect(wnd)
          {
-            FontDC dc(wnd);
+            FontDC dc(wnd, L"Arial");
             right = dc.GetTextExtent(CString(L"0000")).cx;
          }
       };
@@ -107,7 +117,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptEditDC(ScriptEdit* wnd) : FontDC(wnd)
+         /// <summary>Create script edit DC</summary>
+         /// <param name="wnd">script edit.</param>
+         /// <param name="font">custom font.</param>
+         ScriptEditDC(ScriptEdit* wnd, const wchar* font = nullptr) : FontDC(wnd, font)
          {
             SCROLLINFO horz, vert;
       
@@ -125,8 +138,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             SetViewportOrg(static_cast<int>(-0.5f*horz.nPos), static_cast<int>(-0.5f*vert.nPos));
 
             // Set colour
-            SetBkColor(0);
-            SetTextColor(0x00ffffff);
+            SetBkColor(PrefsLib.BackgroundColour);
+            SetTextColor(PrefsLib.TextColour);
          }
 
          // --------------------- PROPERTIES ------------------------
@@ -139,13 +152,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
          LineRect GetLineRect(int line)
          {
             ScriptEdit* wnd = dynamic_cast<ScriptEdit*>(GetWindow());
+            int height = 0;
 
             // Get line height
-            CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
-            wnd->GetDefaultCharFormat(cf);
+            if (wnd->GetLineCount() == 1)
+            {
+               // Calculate from character height (Isn't accurate for some reason)
+               CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
+               wnd->GetDefaultCharFormat(cf);
+               height = (cf.yHeight/10);  //TwipsToPixels(cf.yHeight, LOGPIXELSY);  [Should be Twips->Pixels, but /10 seems to work better..)
+            }
+            else
+               // Calculate from character positions
+               height = wnd->PosFromChar(wnd->LineIndex(1)).y - wnd->PosFromChar(wnd->LineIndex(0)).y;
 
             // Get line rect in device co-ordinates  
-            LineRect rc(wnd, line, cf.yHeight/10); 
+            LineRect rc(wnd, line, height); 
             LPtoDP(rc);
             return rc;
          }

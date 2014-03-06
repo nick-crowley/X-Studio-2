@@ -242,6 +242,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       RichEdit.Redo();
    }
 
+   /// <summary>Displays script and populates variables/scope combos</summary>
    void ScriptView::OnInitialUpdate()
    {
 	   CFormView::OnInitialUpdate();
