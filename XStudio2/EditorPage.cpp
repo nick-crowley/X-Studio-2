@@ -56,6 +56,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Stub.</summary>
+   void EditorPage::Commit()
+   {
+   }
+
    /// <summary>Populates this page.</summary>
    void EditorPage::Populate()
    {
@@ -66,7 +71,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group->AddSubItem(BackgroundColour = new BackgroundColourProperty(*this));
       group->AddSubItem(LineNumberColour = new LineNumberColourProperty(*this));
       Grid.AddProperty(group);
-
+      
       // Highlighting
       group = new PropertyBase(*this, L"Syntax Highlighting");
       group->AddSubItem(ArgumentColour = new ArgumentColourProperty(*this));

@@ -235,8 +235,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Execute debugging tests.</summary>
    void MainWnd::OnCommandPreferences()
    {
+      // Display dialog
       PreferencesDialog dlg(this);
       dlg.DoModal();
+
+      // Raise 'SETTINGS CHANGED'
+      if (dlg.Modified)
+         this->SendMessageToDescendants(WM_SETTINGCHANGE);
    }
 
    /// <summary>Execute debugging tests.</summary>

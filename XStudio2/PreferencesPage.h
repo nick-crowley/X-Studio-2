@@ -5,7 +5,10 @@
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Preferences)
-   
+
+   /// <summary>Forward declaration</summary>
+   class PreferencesDialog;
+
    /// <summary>Base class for all preference pages</summary>
    class PreferencesPage : public CMFCPropertyPage
    {
@@ -235,12 +238,14 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      BOOL OnApply() override;
       BOOL OnInitDialog() override;
       void OnOK() override;
 
    protected:
-      void AdjustLayout();
-      void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+      void         AdjustLayout();
+      virtual void Commit();
+      void         DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
       virtual void Populate();
 
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
