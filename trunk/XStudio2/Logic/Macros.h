@@ -73,7 +73,7 @@
 
 
 // Macro: Forward declarations nested in namespaces
-#define FORWARD_DECLARATION(ns,decl)  namespace ns { decl }
+#define FORWARD_DECLARATION(ns,decl)  namespace ns { decl; }
 #define FORWARD_DECLARATION2(outer, inner,decl)  namespace outer { namespace inner { decl; } }
 
 

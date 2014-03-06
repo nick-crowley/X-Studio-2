@@ -543,6 +543,9 @@
     <ClInclude Include="Logic\LegacySyntaxFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\SyntaxHighlight.h">
+      <Filter>Header Files\Logic\Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -889,6 +892,9 @@
     </ClCompile>
     <ClCompile Include="Logic\LegacySyntaxFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\SyntaxHighlight.cpp">
+      <Filter>Source Files\Logic\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

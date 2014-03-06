@@ -138,6 +138,7 @@
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
+    <ClInclude Include="Logic\SyntaxHighlight.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
     <ClInclude Include="PreferencesDialog.h" />
     <ClInclude Include="PreferencesPage.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
+    <ClCompile Include="Logic\SyntaxHighlight.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
     <ClCompile Include="RichEditEx.cpp" />

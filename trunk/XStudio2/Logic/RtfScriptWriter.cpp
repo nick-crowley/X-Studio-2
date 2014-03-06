@@ -5,6 +5,7 @@
 #include "CommandLexer.h"
 #include "IndentationStack.h"
 #include "RtfScriptWriter.h"
+#include "PreferencesLibrary.h"
 
 namespace Logic
 {
@@ -16,24 +17,34 @@ namespace Logic
       /// <param name="out">Output stream</param>
       RtfScriptWriter::RtfScriptWriter(string&  out) : RtfWriter(out)
       {
-         // Define colours
-         list<COLORREF> col;
-         col.push_back(Black);
-         col.push_back(White);
-         col.push_back(Red);
-         col.push_back(Green);
-         col.push_back(Blue);
-         col.push_back(Yellow);
-         col.push_back(Purple);
-         col.push_back(Cyan);
-         col.push_back(Grey);
+         set<COLORREF> colours;
+
+         //enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, BinaryOp, UnaryOp, Comment, Whitespace };
+
+         // Define unique colours
+         colours.insert(Highlights.GetColour(TokenType::Text));
+         colours.insert(Highlights.GetColour(TokenType::Number));
+         colours.insert(Highlights.GetColour(TokenType::String));
+         colours.insert(Highlights.GetColour(TokenType::GameObject));
+         colours.insert(Highlights.GetColour(TokenType::ScriptObject));
+         colours.insert(Highlights.GetColour(TokenType::Keyword));
+         colours.insert(Highlights.GetColour(TokenType::Variable));
+         colours.insert(Highlights.GetColour(TokenType::Null));
+         colours.insert(Highlights.GetColour(TokenType::Label));
+         colours.insert(Highlights.GetColour(TokenType::BinaryOp));
+         colours.insert(Highlights.GetColour(TokenType::UnaryOp));
+         colours.insert(Highlights.GetColour(TokenType::Comment));
+         colours.insert(PrefsLib.ArgumentColour);
+         colours.insert(PrefsLib.BackgroundColour);
 
          // Init writer
-         RtfWriter::Open(L"Arial", 10, col);
+         RtfWriter::Open(L"Arial", 10, list<COLORREF>(colours.begin(), colours.end()));
+
+         // Set colours
+         RtfWriter::SetForeColour(Highlights.GetColour(TokenType::Text));
+         RtfWriter::SetBackColour(PrefsLib.BackgroundColour);
 
          // Set properties
-         RtfWriter::SetForeColour(White);
-         RtfWriter::SetBackColour(Black);
          RtfWriter::SetAlignment(Alignment::Left);
          RtfWriter::SetLeftMargin(500);
       }
@@ -61,7 +72,7 @@ namespace Logic
             indent.PreDisplay(cmd);
 
             // Write command
-            WriteCommand(cmd, 3*indent.Size);
+            WriteCommand(f, cmd, 3*indent.Size);
 
             // Identation
             indent.PostDisplay(cmd);
@@ -75,7 +86,7 @@ namespace Logic
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
       /// <param name="indent">Indent in characters</param>
-      void  RtfScriptWriter::WriteCommand(const ScriptCommand& cmd, UINT  indent)
+      void  RtfScriptWriter::WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, UINT  indent)
       {
          CommandLexer lex(cmd.Text, false);
 
@@ -84,7 +95,7 @@ namespace Logic
 
          // Write command text
          for (const ScriptToken& tok : lex.Tokens)
-            WriteToken(tok);
+            WriteToken(f, tok);
 
          // Add CRLF
          RtfWriter::WriteLn(L"");
@@ -92,37 +103,20 @@ namespace Logic
 
       /// <summary>Writes a token to the output.</summary>
       /// <param name="p">The token</param>
-      void  RtfScriptWriter::WriteToken(const ScriptToken& tok)
+      void  RtfScriptWriter::WriteToken(const ScriptFile& f, const ScriptToken& tok)
       {
-         COLORREF col;
+         // Whitespace: Write verbatim
+         if (tok.Type == TokenType::Whitespace)
+            RtfWriter::Write(tok.Text); 
+         else
+         {  
+            // Token: Determine colour
+            RtfWriter::SetForeColour(Highlights.GetColour(f, tok));
+            RtfWriter::Write(tok.Text);
 
-         // Determine colour
-         switch (tok.Type)
-         {
-         case TokenType::Whitespace:   RtfWriter::Write(tok.Text);  return;
-
-         case TokenType::Comment:      col = Grey;    break;
-         case TokenType::Null: 
-         case TokenType::Variable:     col = Green;   break;
-         case TokenType::Label:        col = Purple;  break;
-         case TokenType::Keyword:      col = Blue;    break;
-         case TokenType::Number:     
-         case TokenType::String:       col = Red;     break;    
-         case TokenType::GameObject:   col = Cyan;    break;    
-         case TokenType::ScriptObject: col = Yellow;  break;        
-         case TokenType::BinaryOp: 
-         case TokenType::UnaryOp: 
-         case TokenType::Text:         col = White;   break;
-
-         throw ArgumentException(HERE, L"tok", GuiString(L"Unknown token type: %s", tok.Text.c_str()));
+            // Reset colour
+            RtfWriter::SetForeColour(Highlights.GetColour(TokenType::Text));
          }
-
-         // Write token
-         RtfWriter::SetForeColour(col);
-         RtfWriter::Write(tok.Text);
-
-         // Reset colour
-         RtfWriter::SetForeColour(White);
       }
 
       
