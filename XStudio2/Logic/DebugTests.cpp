@@ -6,7 +6,7 @@
 #include "StringReader.h"
 #include "LanguageFileReader.h"
 #include "XFileSystem.h"
-#include "LegacySyntaxReader.h"
+#include "LegacySyntaxFileReader.h"
 #include "SyntaxLibrary.h"
 #include "ScriptFileReader.h"
 #include "StringLibrary.h"
@@ -141,7 +141,7 @@ namespace Logic
 
       try
       {
-         //// Test LegacySyntaxReader
+         //// Test LegacySyntaxFileReader
          //SyntaxLib.Enumerate(nullptr);
 
          //// Test Lookup
@@ -891,7 +891,7 @@ namespace Logic
       {
          // Load legacy syntax file
          StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
-         auto file = LegacySyntaxReader(fs).ReadFile();
+         auto file = LegacySyntaxFileReader(fs).ReadFile();
 
          // Convert to new format
          SyntaxWriter w( StreamPtr(new FileStream(path, FileMode::CreateAlways, FileAccess::Write)) );
@@ -912,7 +912,7 @@ namespace Logic
    
       try
       {
-         // Test LegacySyntaxReader
+         // Test LegacySyntaxFileReader
          StreamPtr fs( new FileStream(path, FileMode::CreateAlways, FileAccess::Write) );
          XmlWriter w(fs);
 

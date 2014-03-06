@@ -170,7 +170,7 @@
     <ClInclude Include="Logic\GameObject.h" />
     <ClInclude Include="Logic\GameObjectLibrary.h" />
     <ClInclude Include="Logic\IndentationStack.h" />
-    <ClInclude Include="Logic\LegacyProjectReader.h" />
+    <ClInclude Include="Logic\LegacyProjectFileReader.h" />
     <ClInclude Include="Logic\MapIterator.hpp" />
     <ClInclude Include="Logic\ParameterTypes.h" />
     <ClInclude Include="Logic\PreferencesLibrary.h" />
@@ -208,7 +208,7 @@
     <ClInclude Include="Logic\LanguageFile.h" />
     <ClInclude Include="Logic\LanguageFileReader.h" />
     <ClInclude Include="Logic\LanguagePage.h" />
-    <ClInclude Include="Logic\LegacySyntaxReader.h" />
+    <ClInclude Include="Logic\LegacySyntaxFileReader.h" />
     <ClInclude Include="Logic\LookupString.h" />
     <ClInclude Include="Logic\Macros.h" />
     <ClInclude Include="Logic\MemoryStream.h" />
@@ -307,7 +307,7 @@
     <ClCompile Include="Logic\GameObject.cpp" />
     <ClCompile Include="Logic\GameObjectLibrary.cpp" />
     <ClCompile Include="Logic\LanguageString.cpp" />
-    <ClCompile Include="Logic\LegacyProjectReader.cpp" />
+    <ClCompile Include="Logic\LegacyProjectFileReader.cpp" />
     <ClCompile Include="Logic\PreferencesLibrary.cpp" />
     <ClCompile Include="Logic\ProjectFile.cpp" />
     <ClCompile Include="Logic\RichString.cpp" />
@@ -337,7 +337,7 @@
     <ClCompile Include="Logic\GZipStream.cpp" />
     <ClCompile Include="Logic\LanguageFileReader.cpp" />
     <ClCompile Include="Logic\LanguagePage.cpp" />
-    <ClCompile Include="Logic\LegacySyntaxReader.cpp" />
+    <ClCompile Include="Logic\LegacySyntaxFileReader.cpp" />
     <ClCompile Include="Logic\LookupString.cpp" />
     <ClCompile Include="Logic\MemoryStream.cpp" />
     <ClCompile Include="Logic\ParameterSyntax.cpp" />

@@ -195,9 +195,6 @@
     <ClInclude Include="Logic\LanguageFileReader.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\LegacySyntaxReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\ScriptFile.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
@@ -489,9 +486,6 @@
     <ClInclude Include="Logic\ProjectFile.h">
       <Filter>Header Files\Logic\Projects</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\LegacyProjectReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="ProjectTreeCtrl.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -543,6 +537,12 @@
     <ClInclude Include="PreferencesDialog.h">
       <Filter>Header Files\GUI\Preferences</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\LegacyProjectFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\LegacySyntaxFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -591,9 +591,6 @@
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LanguageFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\LegacySyntaxReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="Logic\ScriptFile.cpp">
@@ -842,9 +839,6 @@
     <ClCompile Include="Logic\ProjectFile.cpp">
       <Filter>Source Files\Logic\Projects</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\LegacyProjectReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="ProjectTreeCtrl.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -889,6 +883,12 @@
     </ClCompile>
     <ClCompile Include="PreferencesDialog.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LegacyProjectFileReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LegacySyntaxFileReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
