@@ -33,6 +33,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 	   ON_WM_RBUTTONUP()
       ON_WM_SIZE()
       ON_WM_SETFOCUS()
+      ON_WM_SETTINGCHANGE()
       ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
       ON_COMMAND(ID_EDIT_COMMENT, &ScriptView::OnEditComment)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
@@ -122,6 +123,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Adjusts the layout.</summary>
    void  ScriptView::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -251,6 +253,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Attach edit to document
       GetDocument()->AttachEdit(RichEdit);
 
+      // Set font
+      ScopeCombo.SetFont(&theApp.ToolWindowFont);
+      VariablesCombo.SetFont(&theApp.ToolWindowFont);
+
       try
       {
          string txt;
@@ -351,6 +357,19 @@ NAMESPACE_BEGIN2(GUI,Views)
       if (ScopeCombo.GetCurSel() > 0)
          // Scroll to a couple of lines preceeding the label 
          RichEdit.EnsureVisible( GetScript().Labels[ScopeCombo.GetCurSel()-1].LineNumber - 4 );
+   }
+
+   /// <summary>Updates combobox fonts.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void ScriptView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      // Set font
+      ScopeCombo.SetFont(&theApp.ToolWindowFont);
+      VariablesCombo.SetFont(&theApp.ToolWindowFont);
+
+      // Adjust layout
+      AdjustLayout();
    }
    
    /// <summary>Set the focus to the script Edit</summary>
