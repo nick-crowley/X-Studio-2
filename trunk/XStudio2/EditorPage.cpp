@@ -56,10 +56,28 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Stub.</summary>
+   /// <summary>Save values.</summary>
    void EditorPage::Commit()
    {
+      // General
+      PrefsLib.ShowLineNumbers = ShowLineNumbers->GetBool();
+      PrefsLib.ScriptViewFont = *ScriptViewFont->GetLogFont();
+      PrefsLib.BackgroundColour = BackgroundColour->GetColor();
+      PrefsLib.LineNumberColour = LineNumberColour->GetColor();
       
+      // Highlighting
+      PrefsLib.ArgumentColour = ArgumentColour->GetColor();
+      PrefsLib.CommentColour = CommentColour->GetColor();
+      PrefsLib.GameObjectColour = GameObjectColour->GetColor();
+      PrefsLib.KeywordColour = KeywordColour->GetColor();
+      PrefsLib.LabelColour = LabelColour->GetColor();
+      PrefsLib.NumberColour = NumberColour->GetColor();
+      PrefsLib.NullColour = NullColour->GetColor();
+      PrefsLib.OperatorColour = OperatorColour->GetColor();
+      PrefsLib.ScriptObjectColour = ScriptObjectColour->GetColor();
+      PrefsLib.StringColour = StringColour->GetColor();
+      PrefsLib.TextColour = TextColour->GetColor();
+      PrefsLib.VariableColour = VariableColour->GetColor();
    }
 
    /// <summary>Populates this page.</summary>

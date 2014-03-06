@@ -213,15 +213,53 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class CharFormat : public CHARFORMAT3
    {
    public:
+      /// <summary>Create empty.</summary>
       CharFormat() { Clear(); }
+
+      /// <summary>Set initial mask and effects</summary>
+      /// <param name="mask">The mask.</param>
+      /// <param name="effects">The effects.</param>
       CharFormat(DWORD mask, DWORD effects) : CharFormat()
       {
          dwMask = mask;
          dwEffects = effects;
       }
+
+      /// <summary>Set initial mask, effects and text colour.</summary>
+      /// <param name="mask">The mask.</param>
+      /// <param name="effects">The effects.</param>
+      /// <param name="col">text colour.</param>
       CharFormat(DWORD mask, DWORD effects, COLORREF col) : CharFormat(mask, effects)
       {
          crTextColor = col;
+      }
+
+      /// <summary>Create from logFont</summary>
+      /// <param name="lf">The lf.</param>
+      /// <param name="wnd">window to use for font height conversion.</param>
+      CharFormat(LOGFONT lf, CWnd* wnd) : CharFormat(CFM_FACE | CFM_CHARSET | CFM_WEIGHT | CFM_WEIGHT | CFM_ITALIC | CFM_UNDERLINE | CFM_SIZE, 0)
+      {
+         // Font
+         StringCchCopy(szFaceName, LF_FACESIZE, lf.lfFaceName);
+         bPitchAndFamily = lf.lfPitchAndFamily;
+         bCharSet = lf.lfCharSet;
+
+         // Height (Points -> twips)
+         if (lf.lfHeight >= 0)
+            yHeight = lf.lfHeight * 20;   
+         else
+         {  // Height (Pixels -> twips)
+            auto dc = wnd->GetDC();
+            yHeight = -lf.lfHeight * 1440 / dc->GetDeviceCaps(LOGPIXELSY);  // == 20 * MulDiv(-lf.lfHeight, 72, dc->GetDeviceCaps(LOGPIXELSY));
+            wnd->ReleaseDC(dc);
+         }
+         
+         // Formatting
+         wWeight = (WORD)lf.lfWeight;
+         if (lf.lfItalic)
+            dwEffects |= CFE_ITALIC;
+         if (lf.lfUnderline)
+            dwEffects |= CFE_UNDERLINE;
       }
 
       /// <summary>Clear formatting</summary>
@@ -236,11 +274,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class ParaFormat : public PARAFORMAT
    {
    public:
+      /// <summary>Create empty.</summary>
       ParaFormat() { Clear(); }
+
+      /// <summary>Set initial mask.</summary>
+      /// <param name="mask">The mask.</param>
       ParaFormat(DWORD mask) : ParaFormat()
       {
          dwMask = mask;
       }
+      /// <summary>Set mask and alignment</summary>
+      /// <param name="mask">The mask.</param>
+      /// <param name="align">The align.</param>
       ParaFormat(DWORD mask, Alignment align) : ParaFormat(mask)
       {
          wAlignment = (UINT)align;

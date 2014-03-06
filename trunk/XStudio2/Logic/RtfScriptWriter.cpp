@@ -15,7 +15,9 @@ namespace Logic
 
       /// <summary>Create an Rtf script writer</summary>
       /// <param name="out">Output stream</param>
-      RtfScriptWriter::RtfScriptWriter(string&  out) : RtfWriter(out)
+      /// <param name="font">Font name</param>
+      /// <param name="size">Size in points</param>
+      RtfScriptWriter::RtfScriptWriter(string&  out, wstring font, UINT size) : RtfWriter(out)
       {
          set<COLORREF> colours;
 
@@ -38,7 +40,7 @@ namespace Logic
          colours.insert(PrefsLib.BackgroundColour);
 
          // Init writer
-         RtfWriter::Open(L"Arial", 10, list<COLORREF>(colours.begin(), colours.end()));
+         RtfWriter::Open(font, size, list<COLORREF>(colours.begin(), colours.end()));
 
          // Set colours
          RtfWriter::SetForeColour(Highlights.GetColour(TokenType::Text));

@@ -25,6 +25,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_VSCROLL()
       ON_WM_KEYUP()
       ON_WM_SETFOCUS()
+      ON_WM_SETTINGCHANGE()
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
    END_MESSAGE_MAP()
@@ -668,6 +669,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));           break;
       default:                      data->ResetTo(CustomTooltip::NoTooltip);                      break;
       }  
+   }
+   
+   /// <summary>Updates font and syntax highlighting.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void ScriptEdit::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      // Suspend
+      SuspendUndo(true);
+      FreezeWindow(true);
+         
+      // Change font of all text
+      SetSel(0, -1);
+      SetSelectionCharFormat(CharFormat(PrefsLib.ScriptViewFont, this));
+      
+      // Restore
+      FreezeWindow(false);
+      SuspendUndo(false);
+
+      // Update all highlighting
+      UpdateHighlighting(0, GetLineCount()-1);
    }
    
    /// <summary>Performs syntax colouring on the current line</summary>

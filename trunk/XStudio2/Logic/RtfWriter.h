@@ -51,13 +51,12 @@ namespace Logic
          void  Write(const CHAR* str);
          void  WriteColour(COLORREF c);
          void  WriteFooter();
-         void  WriteHeader();
+         void  WriteHeader(const wstring& font);
          
 		   // -------------------- REPRESENTATION ---------------------
 
       private:
          bool              Closed;
-         wstring           Font;
          vector<COLORREF>  Colours;
          COLORREF          ForeColour,
                            BackColour;
