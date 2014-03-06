@@ -54,7 +54,7 @@ namespace Logic
             vfs.Enumerate(data->GameFolder, data->Version, data);
 
             // language files
-            StringLib.Enumerate(vfs, GameLanguage::English, data);
+            StringLib.Enumerate(vfs, PrefsLib.GameDataLanguage, data);
 
             // script/game objects
             ScriptObjectLib.Enumerate(data);

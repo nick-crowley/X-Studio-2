@@ -42,19 +42,18 @@ namespace Logic
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       UINT  SyntaxLibrary::Enumerate(WorkerData* data)
       {
-         const Path path(L"D:\\My Projects\\XStudio2\\XStudio2\\Command Syntax.txt");
-
-         // Clear previous contents
-         Clear();
-
-         // Feedback
-         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading command syntax...");
-
          try
          {
+            // Clear previous contents
+            Clear();
+
+            // Feedback
+            data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading command syntax...");
+
             // TODO: Check for new format syntax file
 
             // Feedback
+            const AppPath path(L"Command Syntax.txt");
             Console << L"Reading legacy syntax file: " << path << "...";
          
             // Load/Merge legacy syntax file

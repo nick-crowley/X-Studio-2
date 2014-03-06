@@ -393,7 +393,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void MainWnd::OnInitialUpdate()
    {
       // Load game data
-      GameDataThread.Start(new GameDataWorkerData(L"D:\\X3 Albion Prelude", GameVersion::AlbionPrelude));
+      GameDataThread.Start(new GameDataWorkerData(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion));
 
       
       // Find & Replace dialog:

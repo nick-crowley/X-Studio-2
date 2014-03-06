@@ -46,17 +46,16 @@ namespace Logic
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       UINT  DescriptionLibrary::Enumerate(WorkerData* data)
       {
-         const Path path(L"D:\\My Projects\\XStudio2\\XStudio2\\Descriptions.xml");
-
-         // Clear previous contents
-         Clear();
-
-         // Feedback
-         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading commands and objects tooltips...");
-         
          try
          {
+            // Clear previous contents
+            Clear();
+
             // Feedback
+            data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading commands and objects tooltips...");
+
+            // Feedback
+            const AppPath path(L"Descriptions.xml");
             Console << L"Reading descriptions file: " << path << "...";
 
             // Load descriptions file

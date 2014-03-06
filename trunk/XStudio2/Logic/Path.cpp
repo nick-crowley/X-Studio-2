@@ -43,6 +43,31 @@ namespace Logic
       Path::~Path()
       {}
 
+      /// <summary>Create path of application folder</summary>
+      /// <exception cref="Logic::Win32Exception">API function failed</exception>
+      AppPath::AppPath()
+      {
+         // Get app path
+         if (!GetModuleFileName(NULL, Buffer.get(), MAX_PATH))
+            throw Win32Exception(HERE, L"Unable to get application path");
+            
+         // Remove filename
+         Assign(RenameFileName(L"").c_str());
+      }
+
+      /// <summary>Create path of file in the application format</summary>
+      /// <param name="filename">filename</param>
+      /// <exception cref="Logic::Win32Exception">API function failed</exception>
+      AppPath::AppPath(const wstring& filename)
+      {
+         // Get app path
+         if (!GetModuleFileName(NULL, Buffer.get(), MAX_PATH))
+            throw Win32Exception(HERE, L"Unable to get application path");
+            
+         // Rename 
+         Assign(RenameFileName(filename).c_str());
+      }
+
       /// <summary>Create temporary file path</summary>
       /// <param name="prefix">three letter filename prefix</param>
       /// <exception cref="Logic::Win32Exception">API function failed</exception>
