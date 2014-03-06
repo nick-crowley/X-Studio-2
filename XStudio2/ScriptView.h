@@ -83,6 +83,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnScopeSelectionChange();
       afx_msg void OnSetFocus(CWnd* pOldWnd);
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
       afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
 
