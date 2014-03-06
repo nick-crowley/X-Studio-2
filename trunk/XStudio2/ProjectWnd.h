@@ -58,7 +58,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void  AdjustLayout();
       
-      handler void OnChangeVisualStyle();
+      //handler void OnChangeVisualStyle();
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommand_AddExisting();
@@ -72,11 +72,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       handler void OnProjectLoaded();
       afx_msg void OnQueryCommand(CCmdUI* pCmd);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
 	   
-	   
-
    private:
 
       // -------------------- REPRESENTATION ---------------------

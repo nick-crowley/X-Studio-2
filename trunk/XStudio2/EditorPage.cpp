@@ -59,6 +59,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    /// <summary>Stub.</summary>
    void EditorPage::Commit()
    {
+      
    }
 
    /// <summary>Populates this page.</summary>

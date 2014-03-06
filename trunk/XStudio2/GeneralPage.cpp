@@ -53,9 +53,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Stub.</summary>
+   /// <summary>Commits values to preferences library.</summary>
    void GeneralPage::Commit()
    {
+      PrefsLib.ToolWindowFont = *ToolWindowFont->GetLogFont();
    }
 
    /// <summary>Populates this page.</summary>

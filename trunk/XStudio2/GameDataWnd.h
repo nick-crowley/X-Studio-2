@@ -37,11 +37,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       handler void OnAppStateChanged(AppState s);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSearchTermChanged();
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+      afx_msg void OnSize(UINT nType, int cx, int cy);
 
    private:
       void  AdjustLayout();

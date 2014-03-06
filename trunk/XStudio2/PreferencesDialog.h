@@ -31,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       /// <returns></returns>
       bool  GetModified() const
       {
-         return Modified;
+         return IsModified;
       }
 
       // ----------------------- MUTATORS ------------------------
@@ -40,7 +40,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       /// <param name="m">Modified</param>
       void  SetModified(bool m)
       {
-         Modified = m;
+         IsModified = m;
       }
 
    protected:
@@ -51,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       CompilerPage  Compiler;
       EditorPage    Editor;
       GeneralPage   General;
-      bool          Modified;
+      bool          IsModified;
    };
    
 NAMESPACE_END2(GUI,Preferences)

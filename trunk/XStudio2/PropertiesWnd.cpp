@@ -25,12 +25,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SIZE()
       ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
-	   ON_COMMAND(ID_EXPAND_ALL, OnExpandAllProperties)
-      ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
+	   ON_COMMAND(ID_EXPAND_ALL, OnCommandExpandAll)
+      ON_COMMAND(ID_SORTPROPERTIES, OnCommandSort)
       ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyUpdated)
       ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
-      ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnQueryExpandAllProperties)
-      ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnQuerySortProperties)
+      ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -127,7 +127,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndPropList.Invalidate();
       m_wndPropList.UpdateWindow();
    }
+   
+   /// <summary>expands all properties.</summary>
+   void CPropertiesWnd::OnCommandExpandAll()
+   {
+	   m_wndPropList.ExpandAll();
+   }
 
+   /// <summary>Sorts all properties</summary>
+   void CPropertiesWnd::OnCommandSort()
+   {
+	   m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
+   }
+   
    /// <summary>Create child controls</summary>
    /// <param name="lpCreateStruct">create params</param>
    /// <returns></returns>
@@ -145,12 +157,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
 	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
-         SetPropListFont();
+         // Set font
+         UpdateFont();
 
 	      // Grid
          m_wndPropList.EnableHeaderCtrl(FALSE);
 	      m_wndPropList.EnableDescriptionArea();
-	      m_wndPropList.SetVSDotNetLook();
+         m_wndPropList.SetVSDotNetLook(TRUE);
+		   m_wndPropList.SetGroupNameFullWidth(TRUE);
 	      m_wndPropList.MarkModifiedProperties();
 
          // Toolbar
@@ -166,23 +180,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   void CPropertiesWnd::OnExpandAllProperties()
-   {
-	   m_wndPropList.ExpandAll();
-   }
-
+   /// <summary>Informs source a propery has been updated</summary>
+   /// <param name="wParam">The w parameter.</param>
+   /// <param name="lParam">The l parameter.</param>
+   /// <returns></returns>
    LRESULT CPropertiesWnd::OnPropertyUpdated(WPARAM wParam, LPARAM lParam)
    {
       CMFCPropertyGridProperty* p = reinterpret_cast<CMFCPropertyGridProperty*>(lParam);
 
+      // Inform source
       if (Source)
          Source->OnPropertyUpdated(p);
 
       return 0;
    }
 
+   /// <summary>Query state of custom toolbar command</summary>
+   /// <param name="pCmdUI">The p command UI.</param>
    void CPropertiesWnd::OnQueryCustomCommand(CCmdUI* pCmdUI)
    {
+      // Delegate
       if (Source)
          Source->OnQueryCustomCommand(pCmdUI);
 	   
@@ -191,42 +208,52 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    
-   void CPropertiesWnd::OnQueryExpandAllProperties(CCmdUI* /* pCmdUI */)
+   /// <summary>Called when query state of command.</summary>
+   /// <param name="pCmdUI">The p command UI.</param>
+   void CPropertiesWnd::OnQueryCommand(CCmdUI* pCmdUI)
    {
-   }
-
-   void CPropertiesWnd::OnQuerySortProperties(CCmdUI* pCmdUI)
-   {
-	   pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+      switch (pCmdUI->m_nID)
+      {
+      case ID_EXPAND_ALL:     break;
+      case ID_SORTPROPERTIES: pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+      }
    }
 
    
+   /// <summary>Set focus to properties grid</summary>
+   /// <param name="pOldWnd">The p old WND.</param>
    void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
    {
       CDockablePane::OnSetFocus(pOldWnd);
 	   m_wndPropList.SetFocus();
    }
 
+   /// <summary>Update font when settings change.</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
    void CPropertiesWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
 	   CDockablePane::OnSettingChange(uFlags, lpszSection);
-	   SetPropListFont();
+
+      // Update font
+	   UpdateFont();
+      AdjustLayout();
    }
 
+   /// <summary>Adjusts the layout</summary>
+   /// <param name="nType">Type of the n.</param>
+   /// <param name="cx">The width.</param>
+   /// <param name="cy">The height.</param>
    void CPropertiesWnd::OnSize(UINT nType, int cx, int cy)
    {
 	   CDockablePane::OnSize(nType, cx, cy);
 	   AdjustLayout();
    }
-
-   void CPropertiesWnd::OnSortProperties()
-   {
-	   m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
-   }
    
-   void CPropertiesWnd::SetPropListFont()
+   /// <summary>Updates the font.</summary>
+   void CPropertiesWnd::UpdateFont()
    {
-	   ::DeleteObject(m_fntPropList.Detach());
+	   /*::DeleteObject(m_fntPropList.Detach());
 
 	   LOGFONT lf;
 	   afxGlobalData.fontRegular.GetLogFont(&lf);
@@ -242,90 +269,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   m_fntPropList.CreateFontIndirect(&lf);
 
-	   m_wndPropList.SetFont(&m_fntPropList);
+	   m_wndPropList.SetFont(&m_fntPropList);*/
+
+      // Set font
+      m_wndPropList.SetFont(&theApp.ToolWindowFont);
    }
-   
-   void CPropertiesWnd::SetVSDotNetLook(BOOL bSet)
-	{
-		m_wndPropList.SetVSDotNetLook(bSet);
-		m_wndPropList.SetGroupNameFullWidth(bSet);
-	}
-   
-   /*void CPropertiesWnd::InitPropList()
-   {
-	   CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Appearance"));
-
-	   pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("3D Look"), (_variant_t) false, _T("Specifies the window's font will be non-bold and controls will have a 3D border")));
-
-	   CMFCPropertyGridProperty* pProp = new CMFCPropertyGridProperty(_T("Border"), _T("Dialog Frame"), _T("One of: None, Thin, Resizable, or Dialog Frame"));
-	   pProp->AddOption(_T("None"));
-	   pProp->AddOption(_T("Thin"));
-	   pProp->AddOption(_T("Resizable"));
-	   pProp->AddOption(_T("Dialog Frame"));
-	   pProp->AllowEdit(FALSE);
-
-	   pGroup1->AddSubItem(pProp);
-	   pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Caption"), (_variant_t) _T("About"), _T("Specifies the text that will be displayed in the window's title bar")));
-
-	   m_wndPropList.AddProperty(pGroup1);
-
-	   CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(_T("Window Size"), 0, TRUE);
-
-	   pProp = new CMFCPropertyGridProperty(_T("Height"), (_variant_t) 250l, _T("Specifies the window's height"));
-	   pProp->EnableSpinControl(TRUE, 50, 300);
-	   pSize->AddSubItem(pProp);
-
-	   pProp = new CMFCPropertyGridProperty( _T("Width"), (_variant_t) 150l, _T("Specifies the window's width"));
-	   pProp->EnableSpinControl(TRUE, 50, 200);
-	   pSize->AddSubItem(pProp);
-
-	   m_wndPropList.AddProperty(pSize);
-
-	   CMFCPropertyGridProperty* pGroup2 = new CMFCPropertyGridProperty(_T("Font"));
-
-	   LOGFONT lf;
-	   CFont* font = CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	   font->GetLogFont(&lf);
-
-	   lstrcpy(lf.lfFaceName, _T("Arial"));
-
-	   pGroup2->AddSubItem(new CMFCPropertyGridFontProperty(_T("Font"), lf, CF_EFFECTS | CF_SCREENFONTS, _T("Specifies the default font for the window")));
-	   pGroup2->AddSubItem(new CMFCPropertyGridProperty(_T("Use System Font"), (_variant_t) true, _T("Specifies that the window uses MS Shell Dlg font")));
-
-	   m_wndPropList.AddProperty(pGroup2);
-
-	   CMFCPropertyGridProperty* pGroup3 = new CMFCPropertyGridProperty(_T("Misc"));
-	   pProp = new CMFCPropertyGridProperty(_T("(Name)"), _T("Application"));
-	   pProp->Enable(FALSE);
-	   pGroup3->AddSubItem(pProp);
-
-	   CMFCPropertyGridColorProperty* pColorProp = new CMFCPropertyGridColorProperty(_T("Window Color"), RGB(210, 192, 254), NULL, _T("Specifies the default window color"));
-	   pColorProp->EnableOtherButton(_T("Other..."));
-	   pColorProp->EnableAutomaticButton(_T("Default"), ::GetSysColor(COLOR_3DFACE));
-	   pGroup3->AddSubItem(pColorProp);
-
-	   static const TCHAR szFilter[] = _T("Icon Files(*.ico)|*.ico|All Files(*.*)|*.*||");
-	   pGroup3->AddSubItem(new CMFCPropertyGridFileProperty(_T("Icon"), TRUE, _T(""), _T("ico"), 0, szFilter, _T("Specifies the window icon")));
-
-	   pGroup3->AddSubItem(new CMFCPropertyGridFileProperty(_T("Folder"), _T("c:\\")));
-
-	   m_wndPropList.AddProperty(pGroup3);
-
-	   CMFCPropertyGridProperty* pGroup4 = new CMFCPropertyGridProperty(_T("Hierarchy"));
-
-	   CMFCPropertyGridProperty* pGroup41 = new CMFCPropertyGridProperty(_T("First sub-level"));
-	   pGroup4->AddSubItem(pGroup41);
-
-	   CMFCPropertyGridProperty* pGroup411 = new CMFCPropertyGridProperty(_T("Second sub-level"));
-	   pGroup41->AddSubItem(pGroup411);
-
-	   pGroup411->AddSubItem(new CMFCPropertyGridProperty(_T("Item 1"), (_variant_t) _T("Value 1"), _T("This is a description")));
-	   pGroup411->AddSubItem(new CMFCPropertyGridProperty(_T("Item 2"), (_variant_t) _T("Value 2"), _T("This is a description")));
-	   pGroup411->AddSubItem(new CMFCPropertyGridProperty(_T("Item 3"), (_variant_t) _T("Value 3"), _T("This is a description")));
-
-	   pGroup4->Expand(FALSE);
-	   m_wndPropList.AddProperty(pGroup4);
-   }*/
    
    
    // ------------------------------- PRIVATE METHODS ------------------------------

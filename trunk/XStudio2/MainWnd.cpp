@@ -241,7 +241,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Raise 'SETTINGS CHANGED'
       if (dlg.Modified)
-         this->SendMessageToDescendants(WM_SETTINGCHANGE);
+         theApp.OnPreferencesChanged();
    }
 
    /// <summary>Execute debugging tests.</summary>

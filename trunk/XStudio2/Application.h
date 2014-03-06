@@ -128,7 +128,6 @@ public:
    PROPERTY_GET_SET(AppState,State,GetState,SetState);
 
    // ---------------------- ACCESSORS ------------------------			
-   
 public:
    DocumentIterator  begin() const;
    DocumentIterator  begin();
@@ -155,14 +154,20 @@ public:
 public:
    virtual int   ExitInstance();
 	virtual BOOL  InitInstance();
+   void          OnPreferencesChanged();
    BOOL          OpenStringLibrary();
 	virtual void  PreLoadState();
    void          SetState(AppState s);
+   void          UpdateFonts();
    
 protected:
 	afx_msg void OnAppAbout();
 
    // -------------------- REPRESENTATION ---------------------
+public:
+   CFont  ToolWindowFont,
+          TooltipFont;
+
 protected:
    AppState    GameDataState;
 };

@@ -56,31 +56,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // ----------------------- MUTATORS ------------------------
    public:
-      //BOOL  CanBeClosed() const override { return FALSE; }
       void  Create(CWnd* parent);
    
    protected:
       void AdjustLayout();
       void ConnectSource(PropertySource* src, bool connect);
-	   void SetPropListFont();
-      void SetVSDotNetLook(BOOL bSet);
+	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-      afx_msg void OnExpandAllProperties();
+      afx_msg void OnCommandExpandAll();
+      afx_msg void OnCommandSort();
+      afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
-      afx_msg void OnQueryExpandAllProperties(CCmdUI* pCmdUI);
-      afx_msg void OnQuerySortProperties(CCmdUI* pCmdUI);
       afx_msg LRESULT OnPropertyUpdated(WPARAM wParam, LPARAM lParam);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
-      afx_msg void OnSortProperties();
+      
 
 	   DECLARE_MESSAGE_MAP()
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-      CFont                m_fntPropList;
+      //CFont                m_fntPropList;
 	   CPropertiesToolBar   m_wndToolBar;
 	   CMFCPropertyGridCtrl m_wndPropList;
 
