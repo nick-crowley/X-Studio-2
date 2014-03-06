@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScriptEdit.h"
 #include "Logic/CommandLexer.h"
+#include "Logic/SyntaxHighlight.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -808,6 +809,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try 
       {
+         SyntaxHighlight  Highlights;
          CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, NULL);
          
          // Caret:
@@ -825,22 +827,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // Format tokens
             for (const auto& tok : lex.Tokens)
             {
-               // Set colour
-               switch (tok.Type)
-               {
-               case TokenType::Comment:      cf.crTextColor = RGB(128,128,128);  break;
-               case TokenType::Label:        cf.crTextColor = RGB(255,0,255);    break;
-               case TokenType::Null:
-               case TokenType::Variable:     cf.crTextColor = RGB(0,255,0);      break;
-               case TokenType::Keyword:      cf.crTextColor = RGB(0,0,255);      break;
-               case TokenType::Number:  
-               case TokenType::String:       cf.crTextColor = RGB(255,0,0);      break;
-               case TokenType::ScriptObject: cf.crTextColor = RGB(255,255,0);    break;
-               case TokenType::GameObject:   cf.crTextColor = RGB(0,255,255);    break;
-               default:                      cf.crTextColor = RGB(255,255,255);  break;
-               }
-
-               // Set format
+               cf.crTextColor = Highlights.GetColour(Document->Script, tok);
                FormatToken(offset, tok, cf);
             }
          }
