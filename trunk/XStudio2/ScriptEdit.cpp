@@ -628,6 +628,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Paint window
       __super::OnPaint();
 
+      // Show Line Numbers?
+      if (!PrefsLib.ShowLineNumbers)
+         return;
+      
       // Get drawing dc
       ScriptEditDC dc(this, L"Arial");
 
@@ -794,6 +798,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       ParaFormat pf(PFM_OFFSET|PFM_STARTINDENT);
       
+      // Show Line Numbers?
+      if (!PrefsLib.ShowLineNumbers)
+         width = 0;
+
       // Freeze+select text
       SuspendUndo(true);
       FreezeWindow(true);
