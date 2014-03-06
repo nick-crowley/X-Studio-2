@@ -252,9 +252,19 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try
       {
-         // Convert script to RTF (ansi)
          string txt;
-         RtfScriptWriter w(txt);
+
+         // Get font size
+         int size = PrefsLib.ScriptViewFont.lfHeight;
+         if (size < 0)
+         {  // Height (Pixels -> points)
+            auto dc = GetDC();
+            size = MulDiv(-size, 72, dc->GetDeviceCaps(LOGPIXELSY));
+            ReleaseDC(dc);
+         }
+
+         // Convert script to RTF (ansi)
+         RtfScriptWriter w(txt, PrefsLib.ScriptViewFont.lfFaceName, size);
          w.Write(GetScript());
          w.Close();
 

@@ -519,6 +519,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       handler void OnRequestTooltip(CustomTooltip::TooltipData* data) override;
+      afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

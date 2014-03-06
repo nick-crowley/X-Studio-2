@@ -57,7 +57,7 @@ namespace Logic
             Colours.push_back(c);
 
          // Write header
-         WriteHeader();
+         WriteHeader(font);
          SetFontSize(size);
       }
 
@@ -379,7 +379,8 @@ namespace Logic
       }
 
       /// <summary>Writes RTF header</summary>
-      void  RtfWriter::WriteHeader()
+      /// <param name="font">Font name</param>
+      void  RtfWriter::WriteHeader(const wstring& font)
       {
          // Header
          Write("{\\rtf1\\ansi");
@@ -391,7 +392,7 @@ namespace Logic
 
          // Font table
          Write("{\\fonttbl{\\f0\\fswiss\\fcharset0 "); 
-         Write(Font); 
+         Write(font); 
          Write(";}}\n");
 
          // Colour table
