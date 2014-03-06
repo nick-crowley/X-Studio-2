@@ -87,6 +87,14 @@ namespace Logic
          CharArrayPtr  Buffer;
       };
 
+      /// <summary>Represents the path of a file/folder in the application folder</summary>
+      class AppPath : public Path
+      {
+      public:
+         AppPath();
+         AppPath(const wstring& filename);
+      };
+
       /// <summary>Represents the path of a temporary file</summary>
       class TempPath : public Path
       {

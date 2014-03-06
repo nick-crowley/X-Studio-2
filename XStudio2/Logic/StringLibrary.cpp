@@ -37,7 +37,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Enumerating language files");
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, GuiString(L"Enumerating %s language files", GetString(lang).c_str()));
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))
@@ -61,15 +61,24 @@ namespace Logic
                // Parse language file
                LanguageFile file = LanguageFileReader(f.OpenRead()).ReadFile(f.FullPath);
 
-               // Skip files that turn out to be foreign
+               // check language tag matches filename
                if (file.Language == lang)
+               {
                   Files.insert(move(file));
-
-               Console << Cons::Green << L"Success" << ENDL;
+                  Console << Cons::Green << L"Success" << ENDL;
+               }
+               else
+               {  // Skip files that turn out to be foreign
+                  data->SendFeedback(ProgressType::Warning, 3, GuiString(L"Skipping %s language file...", GetString(file.Language).c_str()) );
+                  Console << Cons::Yellow << L"Skipped" << ENDL;
+               }
             }
             catch (ExceptionBase& e) {
-               data->SendFeedback(Cons::Error, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);
-               // Do not re-throw
+               data->SendFeedback(Cons::Error, ProgressType::Error, 3, GuiString(L"Failed: ") + e.Message);
+               
+               // SkipBroken: Abort/Continue after error
+               if (!PrefsLib.SkipBrokenFiles)
+                  throw;
             }
          }
 

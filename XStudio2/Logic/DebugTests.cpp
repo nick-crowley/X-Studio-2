@@ -184,7 +184,7 @@ namespace Logic
 
    void  DebugTests::Test_DescriptionReader()
    {
-      const WCHAR* path = L"D:\\My Projects\\XStudio2\\XStudio2\\Descriptions.xml";
+      const AppPath path = L"Descriptions.xml";
    
       try
       {
