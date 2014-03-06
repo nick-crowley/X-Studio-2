@@ -2,7 +2,7 @@
 #include "SyntaxLibrary.h"
 #include "CommandLexer.h"
 #include "FileStream.h"
-#include "LegacySyntaxReader.h"
+#include "LegacySyntaxFileReader.h"
 
 namespace Logic
 {
@@ -59,7 +59,7 @@ namespace Logic
          
             // Load/Merge legacy syntax file
             StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-            Merge( LegacySyntaxReader(fs).ReadFile() );
+            Merge( LegacySyntaxFileReader(fs).ReadFile() );
 
             // Feedback
             data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded legacy syntax file '%s'", path.FileName.c_str()));

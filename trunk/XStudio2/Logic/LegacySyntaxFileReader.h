@@ -14,21 +14,21 @@ namespace Logic
       #define  PARAMETER_SYNTAX_COUNT  72
 
       /// <summary>Reads the XStudio syntax file</summary>
-      class LegacySyntaxReader : protected StringReader
+      class LegacySyntaxFileReader : protected StringReader
       {
          typedef list<ParameterType>  ParamList;
 
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LegacySyntaxReader(StreamPtr src);
-         LegacySyntaxReader(LegacySyntaxReader&& r);
-         virtual ~LegacySyntaxReader();
+         LegacySyntaxFileReader(StreamPtr src);
+         LegacySyntaxFileReader(LegacySyntaxFileReader&& r);
+         virtual ~LegacySyntaxFileReader();
 
          // Class cannot be copied
-         NO_COPY(LegacySyntaxReader);
+         NO_COPY(LegacySyntaxFileReader);
          // Move assign not implemented
-         NO_MOVE_ASSIGN(LegacySyntaxReader);
+         NO_MOVE_ASSIGN(LegacySyntaxFileReader);
 
          // ------------------------ STATIC -------------------------
       private:

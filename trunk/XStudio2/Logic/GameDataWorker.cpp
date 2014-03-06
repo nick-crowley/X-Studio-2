@@ -7,7 +7,7 @@
 #include "SyntaxLibrary.h"
 #include "StringLibrary.h"
 #include "ScriptObjectLibrary.h"
-#include "LegacySyntaxReader.h"
+#include "LegacySyntaxFileReader.h"
 #include "GameObjectLibrary.h"
 #include "DescriptionLibrary.h"
 

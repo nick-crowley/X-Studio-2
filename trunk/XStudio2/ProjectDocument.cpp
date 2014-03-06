@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProjectDocument.h"
 #include "Logic/FileIdentifier.h"
-#include "Logic/LegacyProjectReader.h"
+#include "Logic/LegacyProjectFileReader.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
@@ -341,7 +341,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Read file
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
-         Project = LegacyProjectReader(fs).ReadFile(szPath);
+         Project = LegacyProjectFileReader(fs).ReadFile(szPath);
          
          // Success: 
          return TRUE;

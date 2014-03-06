@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "LegacyProjectReader.h"
+#include "LegacyProjectFileReader.h"
 
 namespace Logic
 {
@@ -13,12 +13,12 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      LegacyProjectReader::LegacyProjectReader(StreamPtr in) : XmlReader(in)
+      LegacyProjectFileReader::LegacyProjectFileReader(StreamPtr in) : XmlReader(in)
       {
       }
 
 
-      LegacyProjectReader::~LegacyProjectReader()
+      LegacyProjectFileReader::~LegacyProjectFileReader()
       {
       }
 
@@ -33,7 +33,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      ProjectFile  LegacyProjectReader::ReadFile(Path path)
+      ProjectFile  LegacyProjectFileReader::ReadFile(Path path)
       {
          try
          {
@@ -85,7 +85,7 @@ namespace Logic
          }
       }
 
-      ProjectFileItem*  LegacyProjectReader::ReadDocument(XmlNodePtr node)
+      ProjectFileItem*  LegacyProjectFileReader::ReadDocument(XmlNodePtr node)
       {
          // Verify node
          ReadElement(node, L"document");
@@ -105,7 +105,7 @@ namespace Logic
          throw FileFormatException(HERE, L"Unrecognised file type");
       }
 
-      ProjectVariableItem*  LegacyProjectReader::ReadVariable(XmlNodePtr node)
+      ProjectVariableItem*  LegacyProjectFileReader::ReadVariable(XmlNodePtr node)
       {
          // Verify node
          ReadElement(node, L"variable");
@@ -126,7 +126,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">File format is corrupt</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      void  LegacyProjectReader::LoadDocument() 
+      void  LegacyProjectFileReader::LoadDocument() 
       {
          // Parse document
          XmlReader::LoadDocument();

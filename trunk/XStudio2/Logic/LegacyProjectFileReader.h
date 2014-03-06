@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary></summary>
-      class LegacyProjectReader : public XmlReader
+      class LegacyProjectFileReader : public XmlReader
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -18,11 +18,11 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         LegacyProjectReader(StreamPtr in);
-         virtual ~LegacyProjectReader();
+         LegacyProjectFileReader(StreamPtr in);
+         virtual ~LegacyProjectFileReader();
 
-         DEFAULT_COPY(LegacyProjectReader);	// Default copy semantics
-         DEFAULT_MOVE(LegacyProjectReader);	// Default move semantics
+         DEFAULT_COPY(LegacyProjectFileReader);	// Default copy semantics
+         DEFAULT_MOVE(LegacyProjectFileReader);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
 

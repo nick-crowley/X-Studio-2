@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "LegacySyntaxReader.h"
+#include "LegacySyntaxFileReader.h"
 
 
 namespace Logic
@@ -12,17 +12,17 @@ namespace Logic
 
       /// <summary>Create reader using an input stream</summary>
       /// <param name="src">The input</param>
-      LegacySyntaxReader::LegacySyntaxReader(StreamPtr src) : StringReader(src)
+      LegacySyntaxFileReader::LegacySyntaxFileReader(StreamPtr src) : StringReader(src)
       {
       }
 
       /// <summary>Move reader</summary>
       /// <param name="r">The source</param>
-      LegacySyntaxReader::LegacySyntaxReader(LegacySyntaxReader&& r) : StringReader(std::move(r))
+      LegacySyntaxFileReader::LegacySyntaxFileReader(LegacySyntaxFileReader&& r) : StringReader(std::move(r))
       {
       }
 
-      LegacySyntaxReader::~LegacySyntaxReader()
+      LegacySyntaxFileReader::~LegacySyntaxFileReader()
       {
       }
 
@@ -33,7 +33,7 @@ namespace Logic
       /// <param name="syntax">The legacy format command syntax string</param>
       /// <param name="params">Parameter types in physical index order</param>
       /// <returns>New format Parameter array</returns>
-      ParamSyntaxArray  LegacySyntaxReader::GenerateParams(UINT id, const wstring& syntax, const list<ParameterType>& params)
+      ParamSyntaxArray  LegacySyntaxFileReader::GenerateParams(UINT id, const wstring& syntax, const list<ParameterType>& params)
       {
          ParamSyntaxArray  output;
          vector<int>       displayIndicies(params.size()),
@@ -83,7 +83,7 @@ namespace Logic
       /// <summary>Generates the new format syntax string from the old</summary>
       /// <param name="syntax">The old syntax text</param>
       /// <returns></returns>
-      wstring  LegacySyntaxReader::GenerateSyntax(const wstring& syntax)
+      wstring  LegacySyntaxFileReader::GenerateSyntax(const wstring& syntax)
       {
          wstring output(syntax);
 
@@ -111,7 +111,7 @@ namespace Logic
       /// <param name="id">The command ID</param>
       /// <param name="index">The physical parameter index</param>
       /// <returns>Usage</returns>
-      ExecutionType  LegacySyntaxReader::IdentifyExecution(UINT id)
+      ExecutionType  LegacySyntaxFileReader::IdentifyExecution(UINT id)
       {
          switch (id)
          {
@@ -134,7 +134,7 @@ namespace Logic
       /// <param name="id">The command ID</param>
       /// <param name="index">The physical parameter index</param>
       /// <returns>Usage</returns>
-      ParameterUsage  LegacySyntaxReader::IdentifyUsage(UINT id, UINT index)
+      ParameterUsage  LegacySyntaxFileReader::IdentifyUsage(UINT id, UINT index)
       {
          // Examine command ID
          switch (id)
@@ -287,7 +287,7 @@ namespace Logic
       /// <param name="id">Command ID</param>
       /// <param name="g">Command group</param>
       /// <returns>Standard/Auxiliary</returns>
-      CommandType   LegacySyntaxReader::IdentifyType(UINT id, CommandGroup  g)
+      CommandType   LegacySyntaxFileReader::IdentifyType(UINT id, CommandGroup  g)
       {
          if (g == CommandGroup::MACRO)
             return CommandType::Macro;
@@ -312,7 +312,7 @@ namespace Logic
       /// <summary>Identifies variable argument commands</summary>
       /// <param name="id">Command ID</param>
       /// <returns></returns>
-      bool   LegacySyntaxReader::IsVariableArgument(UINT id)
+      bool   LegacySyntaxFileReader::IsVariableArgument(UINT id)
       {
          switch (id)
          {
@@ -336,7 +336,7 @@ namespace Logic
       /// <summary>Identifies variable argument commands</summary>
       /// <param name="id">Command ID</param>
       /// <returns></returns>
-      UINT   LegacySyntaxReader::GetVariableArgumentCount(UINT id)
+      UINT   LegacySyntaxFileReader::GetVariableArgumentCount(UINT id)
       {
          switch (id)
          {
@@ -366,7 +366,7 @@ namespace Logic
 
       /// <summary>Reads the entire syntax file</summary>
       /// <returns></returns>
-      SyntaxFile   LegacySyntaxReader::ReadFile()
+      SyntaxFile   LegacySyntaxFileReader::ReadFile()
       {
          SyntaxFile   file;
          
@@ -395,7 +395,7 @@ namespace Logic
       /// <param name="name">The group name</param>
       /// <returns></returns>
       /// <exception cref="Logic::InvalidValueException">Unknown group</exception>
-      CommandGroup  LegacySyntaxReader::LookupCommandGroup(const SyntaxFile& f, const wstring& name)
+      CommandGroup  LegacySyntaxFileReader::LookupCommandGroup(const SyntaxFile& f, const wstring& name)
       {
          // Lookup group
          auto pair = f.Groups.find(name);
@@ -410,7 +410,7 @@ namespace Logic
       /// <param name="name">The parameter type name</param>
       /// <returns></returns>
       /// <exception cref="Logic::InvalidValueException">Unknown parameter type</exception>
-      ParameterType  LegacySyntaxReader::LookupParameterType(const SyntaxFile& f, const wstring& name)
+      ParameterType  LegacySyntaxFileReader::LookupParameterType(const SyntaxFile& f, const wstring& name)
       {
          // Lookup type
          auto pair = f.Types.find(name);
@@ -426,7 +426,7 @@ namespace Logic
       /// <returns>true if successful, false on EOF</returns>
       /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
       /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
-      bool  LegacySyntaxReader::ReadSyntax(const SyntaxFile& f, CommandSyntax::Declaration& dec)
+      bool  LegacySyntaxFileReader::ReadSyntax(const SyntaxFile& f, CommandSyntax::Declaration& dec)
       {
          list<ParameterType> params;
          wstring line;
@@ -488,7 +488,7 @@ namespace Logic
       /// <param name="help">Meaning of line</param>
       /// <returns>true</returns>
       /// <exception cref="Logic::FileFormatException">Line Missing</exception>
-      bool  LegacySyntaxReader::RequireLine(wstring& line, const WCHAR* help)
+      bool  LegacySyntaxFileReader::RequireLine(wstring& line, const WCHAR* help)
       {
          // Ensure line exists
          if (!ReadLine(line))
@@ -499,7 +499,7 @@ namespace Logic
 
       
       // Hard-coded Command group names, used only for resolving parameter syntax from the syntax definitions file
-      const WCHAR*  LegacySyntaxReader::szCommandGroups[COMMAND_GROUP_COUNT] =  
+      const WCHAR*  LegacySyntaxFileReader::szCommandGroups[COMMAND_GROUP_COUNT] =  
       {
          TEXT("ARRAY"),		         // CG_ARRAY
          TEXT("CUSTOM"),		      // CG_CUSTOM
@@ -537,7 +537,7 @@ namespace Logic
       };
 
       // Hard-coded parameter syntax, used only for resolving parameter syntax from the syntax definitions file
-      const WCHAR*  LegacySyntaxReader::szParameterSyntax[PARAMETER_SYNTAX_COUNT] = 
+      const WCHAR*  LegacySyntaxFileReader::szParameterSyntax[PARAMETER_SYNTAX_COUNT] = 
       {
          TEXT("Var"),
          TEXT("Label Name"),
