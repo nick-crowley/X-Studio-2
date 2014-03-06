@@ -53,6 +53,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Stub.</summary>
+   void GeneralPage::Commit()
+   {
+   }
+
    /// <summary>Populates this page.</summary>
    void GeneralPage::Populate()
    {

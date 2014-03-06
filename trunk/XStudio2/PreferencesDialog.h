@@ -22,19 +22,36 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      PROPERTY_GET_SET(bool,Modified,GetModified,SetModified);
+
       // ---------------------- ACCESSORS ------------------------			
    public:
+      /// <summary>Gets whether modified.</summary>
+      /// <returns></returns>
+      bool  GetModified() const
+      {
+         return Modified;
+      }
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      /// <summary>Sets whether modified.</summary>
+      /// <param name="m">Modified</param>
+      void  SetModified(bool m)
+      {
+         Modified = m;
+      }
+
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-	  
+   
       // -------------------- REPRESENTATION ---------------------
    protected:
       CompilerPage  Compiler;
       EditorPage    Editor;
       GeneralPage   General;
+      bool          Modified;
    };
    
 NAMESPACE_END2(GUI,Preferences)

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PreferencesPage.h"
 #include "afxdialogex.h"
-
+#include "PreferencesDialog.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Preferences)
@@ -27,6 +27,20 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+   
+   /// <summary>Commits changes</summary>
+   BOOL PreferencesPage::OnApply()
+   {
+      // Save
+      Commit();
+
+      // Mark parent as modified
+      if (auto parent = dynamic_cast<PreferencesDialog*>(GetParent()))
+         parent->Modified = true;
+
+      // Apply
+      return __super::OnApply();
+   }
 
    /// <summary>Initializes the property grid.</summary>
    /// <returns></returns>
@@ -64,9 +78,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    }
 
 
+   /// <summary>Commits changes</summary>
    void PreferencesPage::OnOK()
    {
-      // TODO: Add your specialized code here and/or call the base class
+      // Save
+      Commit();
 
       __super::OnOK();
    }
@@ -88,6 +104,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       //Grid.SetWindowPos(nullptr, ctrl.left, 30, -1, -1, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);
    }
 
+   /// <summary>Stub.</summary>
+   void PreferencesPage::Commit()
+   {
+   }
    
    /// <summary>Performs data exchange.</summary>
    /// <param name="pDX">The dx.</param>

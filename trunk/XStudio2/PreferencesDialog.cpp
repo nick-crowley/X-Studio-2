@@ -15,7 +15,9 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   PreferencesDialog::PreferencesDialog(CWnd* parent) : CMFCPropertySheet(L"Preferences", parent, 0)
+   PreferencesDialog::PreferencesDialog(CWnd* parent) 
+      : CMFCPropertySheet(L"Preferences", parent, 0),
+        Modified(false)
    {
       //EnablePageHeader(30);
       AddPage(&General);

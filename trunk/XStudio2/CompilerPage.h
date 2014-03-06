@@ -213,6 +213,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       // ----------------------- MUTATORS ------------------------
    protected:
+      void Commit() override;
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	   void Populate() override;
 	  
