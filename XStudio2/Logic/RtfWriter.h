@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "Stream.h"
 
 namespace Logic
 {
@@ -16,7 +17,7 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         RtfWriter(string& out);
+         RtfWriter(StreamPtr out);
          virtual ~RtfWriter();
 
          // ------------------------ STATIC -------------------------
@@ -47,8 +48,8 @@ namespace Logic
          void  SetCodePage(UINT cp);
          void  SetDefaultFont(UINT font);
          void  SetLanguage(UINT lang);
-         void  Write(UINT i);
-         void  Write(const CHAR* str);
+         void  WriteChar(CHAR chr);
+         void  WriteString(const CHAR* str);
          void  WriteColour(COLORREF c);
          void  WriteFooter();
          void  WriteHeader(const wstring& font);
@@ -65,7 +66,7 @@ namespace Logic
                            Underline,
                            Superscript;
 
-         string&           Output;
+         StreamPtr         Output;
       };
 
    }

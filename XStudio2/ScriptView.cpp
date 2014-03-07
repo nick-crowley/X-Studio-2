@@ -271,7 +271,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          // Convert script to RTF (ansi)
-         RtfScriptWriter w(txt, PrefsLib.ScriptViewFont.lfFaceName, size);
+         RtfScriptWriter w(new StringStream(txt), PrefsLib.ScriptViewFont.lfFaceName, size);
          w.Write(GetScript());
          w.Close();
 

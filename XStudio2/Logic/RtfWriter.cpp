@@ -10,7 +10,7 @@ namespace Logic
 
       /// <summary>Creates an RTF Writer</summary>
       /// <param name="out">Output</param>
-      RtfWriter::RtfWriter(string& out) 
+      RtfWriter::RtfWriter(StreamPtr out) 
          : Output(out), Closed(true), ForeColour(COLOUR_NONE), BackColour(COLOUR_NONE), Bold(false), Italic(false), Underline(false)
       {
          
@@ -69,7 +69,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Writer is closed");
 
          // Write
-         Write("\\pard ");
+         WriteString("\\pard ");
       }
       
       /// <summary>Sets paragraph alignment</summary>
@@ -83,10 +83,10 @@ namespace Logic
          // set alignment
          switch (al)
          {
-         case Alignment::Left:      Write("\\ql ");  break;
-         case Alignment::Centre:    Write("\\qc ");  break;
-         case Alignment::Right:     Write("\\qr ");  break;
-         case Alignment::Justify:   Write("\\qj ");  break;
+         case Alignment::Left:      WriteString("\\ql ");  break;
+         case Alignment::Centre:    WriteString("\\qc ");  break;
+         case Alignment::Right:     WriteString("\\qr ");  break;
+         case Alignment::Justify:   WriteString("\\qj ");  break;
          }
       }
 
@@ -112,7 +112,7 @@ namespace Logic
             if (Colours[id] == c)
             {  // Write colour change
                StringCchPrintfA(buf, 10, "\\cb%d ", id+1);
-               Write(buf);
+               WriteString(buf);
                BackColour = c;
                return;
             }
@@ -136,7 +136,7 @@ namespace Logic
          
          // Set/Clear Bold
          Bold = b;
-         Write(Bold ? "\\b " : "\\b0 ");
+         WriteString(Bold ? "\\b " : "\\b0 ");
       }
 
       /// <summary>Sets the text colour</summary>
@@ -160,7 +160,7 @@ namespace Logic
             if (Colours[id] == c)
             {  // Write colour change
                StringCchPrintfA(buf, 10, "\\cf%d ", id+1);
-               Write(buf);
+               WriteString(buf);
                ForeColour = c;
                return;
             }
@@ -182,7 +182,7 @@ namespace Logic
 
          // Set size
          StringCchPrintfA(buf, 10, "\\fs%d ", size*2);
-         Write(buf);
+         WriteString(buf);
       }
 
       /// <summary>Sets or clears italic text</summary>
@@ -200,7 +200,7 @@ namespace Logic
          
          // Set/Clear Italic
          Italic = i;
-         Write(Italic ? "\\i " : "\\i0 ");
+         WriteString(Italic ? "\\i " : "\\i0 ");
       }
 
       /// <summary>Sets size of left margin for current paragraph</summary>
@@ -216,7 +216,7 @@ namespace Logic
 
          // Set margin size
          StringCchPrintfA(buf, 10, "\\li%d ", twips);
-         Write(buf);
+         WriteString(buf);
       }
       
       /// <summary>Sets or clears Underline text</summary>
@@ -234,7 +234,7 @@ namespace Logic
          
          // Set/Clear Underline
          Underline = u;
-         Write(Underline ? "\\ul " : "\\ul0 ");
+         WriteString(Underline ? "\\ul " : "\\ul0 ");
       }
       
       /// <summary>Starts a new paragraph</summary>
@@ -245,7 +245,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Writer is closed");
 
          // Write
-         Write("\\par ");
+         WriteString("\\par ");
       }
       
       /// <summary>Writes UNICODE character to the stream, converting to RTF as necessary</summary>
@@ -264,22 +264,22 @@ namespace Logic
          {
          case L'{':
          case L'}':  
-            Output.push_back('\\'); 
-            Output.push_back((CHAR)ch);   
+            WriteChar('\\'); 
+            WriteChar((CHAR)ch);   
             break;
 
-         case L'\\': Write("\\\\");     break;
-         case L'\n': Write("\\line ");  break;
-         case L'\t': Write("\\tab ");   break;
+         case L'\\': WriteString("\\\\");     break;
+         case L'\n': WriteString("\\line ");  break;
+         case L'\t': WriteString("\\tab ");   break;
 
          default:
             // ANSI char:
             if (ch <= 0x7f)
-               Output.push_back((CHAR)ch);
+               WriteChar((CHAR)ch);
             else
             {  // UNICODE char:
                StringCchPrintfA(buf, 10, "\\u%u?", (UINT)ch);
-               Output.append(buf);
+               WriteString(buf);
             }
             break;
          }
@@ -312,7 +312,7 @@ namespace Logic
 
          // Write str + CRLF
          Write(str);
-         Write("\\line ");
+         WriteString("\\line ");
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
@@ -325,7 +325,7 @@ namespace Logic
       {
          CHAR buf[10];
          StringCchPrintfA(buf, 10, "\\ansicpg%d ", cp);
-         Write(buf);
+         WriteString(buf);
       }
 
       /// <summary>Sets default font</summary>
@@ -334,7 +334,7 @@ namespace Logic
       {
          CHAR buf[10];
          StringCchPrintfA(buf, 10, "\\deff%d ", font);
-         Write(buf);
+         WriteString(buf);
       }
 
       /// <summary>Sets the language.</summary>
@@ -343,23 +343,21 @@ namespace Logic
       {
          CHAR buf[10];
          StringCchPrintfA(buf, 10, "\\deflang%d ", lang);
-         Write(buf);
+         WriteString(buf);
       }
 
-      /// <summary>Writes a number to the stream as ANSI text</summary>
-      /// <param name="i">Number</param>
-      void  RtfWriter::Write(UINT i) 
+      /// <summary>Writes ANSI char to the stream verbatim</summary>
+      /// <param name="chr">The char</param>
+      void  RtfWriter::WriteChar(CHAR chr) 
       { 
-         CHAR buf[16];
-         _itoa_s(i, buf, 16, 10);
-         Output += buf; 
+         Output->Write((BYTE*)&chr, 1);
       }
 
       /// <summary>Writes ANSI text to the stream verbatim</summary>
       /// <param name="str">The text</param>
-      void  RtfWriter::Write(const CHAR* str) 
+      void  RtfWriter::WriteString(const CHAR* str) 
       { 
-         Output += str; 
+         Output->Write((BYTE*)str, lstrlenA(str));
       }
       
       /// <summary>Writes an RTF colour table colour definition</summary>
@@ -368,14 +366,14 @@ namespace Logic
       {
          char buf[64];
          StringCchPrintfA(buf, 64, "\\red%d\\green%d\\blue%d;", GetRValue(c), GetGValue(c), GetBValue(c));
-         Write(buf);
+         WriteString(buf);
       }
 
       /// <summary>Writes RTF footer</summary>
       void  RtfWriter::WriteFooter()
       {
          // End paragraph
-         Write("\\par\n}");
+         WriteString("\\par\n}");
       }
 
       /// <summary>Writes RTF header</summary>
@@ -383,7 +381,7 @@ namespace Logic
       void  RtfWriter::WriteHeader(const wstring& font)
       {
          // Header
-         Write("{\\rtf1\\ansi");
+         WriteString("{\\rtf1\\ansi");
 
          // Set codepage + language
          SetCodePage(1250);
@@ -391,15 +389,15 @@ namespace Logic
          SetLanguage(2057);      // English UK  (0x0809 == 2057)
 
          // Font table
-         Write("{\\fonttbl{\\f0\\fswiss\\fcharset0 "); 
+         WriteString("{\\fonttbl{\\f0\\fswiss\\fcharset0 "); 
          Write(font); 
-         Write(";}}\n");
+         WriteString(";}}\n");
 
          // Colour table
-         Write("{\\colortbl;");
+         WriteString("{\\colortbl;");
          for (COLORREF c : Colours)
             WriteColour(c);
-         Write("}\n");
+         WriteString("}\n");
 
 
          // Unknown previous formatting: //\\sa200\\sl276\\slmult1
@@ -410,10 +408,10 @@ namespace Logic
          // \pard == reset paragraph formatting
          
          // Set view: 0==None, 1==Page Layout view, 2==Outline view, 3==Master Document view, 4==Normal view, 5==Online Layout view
-         Write("\\viewkind4");
+         WriteString("\\viewkind4");
 
          // Set unicode destination (not sure)
-         Write("\\uc1 ");   
+         WriteString("\\uc1 ");   
 
          // Reset paragraph
          ResetParagraph();
