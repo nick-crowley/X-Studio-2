@@ -56,15 +56,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
+      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandPreferences)
 	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
+      ON_COMMAND(ID_HELP_CONSOLE, &MainWnd::OnCommandConsole)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommandCustomizeToolbar)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
-      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandPreferences)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_HELP_CONSOLE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryCommand)
    END_MESSAGE_MAP()
 
@@ -218,13 +220,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndOutput.Create(this);
 	   DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
    }
-
+   
+   /// <summary>Display console.</summary>
+   void MainWnd::OnCommandConsole()
+   {
+	   Console.Visible = !Console.Visible;
+   }
+   
    /// <summary>Displays the Find & Replace dialog.</summary>
    void MainWnd::OnCommandFindText()
    {
       m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
    }
-   
+
    /// <summary>Display customize toolbar dialog.</summary>
    void MainWnd::OnCommandCustomizeToolbar()
    {
@@ -416,15 +424,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Query 
       switch (pCmdUI->m_nID)
       {
+      // Always enabled
       case ID_EDIT_PREFERENCES:  
          state = TRUE;  
          break;
 
+      // Query find dialog
       case ID_EDIT_FIND:
          state = (ScriptDocument::GetActive() ? TRUE : FALSE);
          check = m_dlgFind.IsWindowVisible();
          break;
 
+      // Query appropriate window
       case ID_VIEW_PROJECT:         check = m_wndProject.IsVisible();        break;
       case ID_VIEW_SCRIPT_OBJECTS:  check = m_wndScriptObjects.IsVisible();  break;
       case ID_VIEW_GAME_OBJECTS:    check = m_wndGameObjects.IsVisible();    break;
@@ -432,9 +443,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       case ID_VIEW_OUTPUT:          check = m_wndOutput.IsVisible();         break;
       case ID_VIEW_PROPERTIES:      check = m_wndProperties.IsVisible();     break;
 
+      // Query string library document
       case ID_VIEW_STRING_LIBRARY:
          state = (theApp.State == AppState::GameDataPresent ? TRUE : FALSE);
          check = theApp.IsDocumentOpen(L"String Library") ? TRUE : FALSE;
+         break;
+
+      // Query console
+      case ID_HELP_CONSOLE:
+         state = TRUE;
+         check = Console.Visible ? TRUE : FALSE;
+         pCmdUI->SetText(Console.Visible ? L"Hide Console" : L"Show Console");
          break;
       }
 

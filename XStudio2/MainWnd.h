@@ -72,6 +72,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
 
    protected:
+      afx_msg void    OnCommandConsole();
       afx_msg void    OnCommandFindText();
       afx_msg void    OnCommandCustomizeToolbar();
       afx_msg void    OnCommandPreferences();
