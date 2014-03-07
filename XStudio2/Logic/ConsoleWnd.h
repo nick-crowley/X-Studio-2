@@ -376,17 +376,6 @@ namespace Logic
       /// <summary>Writes text to the output.</summary>
       /// <param name="txt">The text.</param>
       void WriteText(const wstring& txt);
-//      {
-//         DWORD written=0;
-//
-//         // Ensure exists
-//         if (Handle)
-//            WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
-//         
-//#ifdef _DEBUG
-//         OutputDebugString(txt.c_str());
-//#endif
-//      }
 
       // -------------------- REPRESENTATION ---------------------
    public:

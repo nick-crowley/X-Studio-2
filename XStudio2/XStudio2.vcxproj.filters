@@ -553,6 +553,9 @@
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="Logic\LogFileWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -909,7 +912,10 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Logic\LogFileWriter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ConsoleLog.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

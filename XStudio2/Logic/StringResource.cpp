@@ -102,7 +102,7 @@ namespace Logic
                szFormat[512];
       
       // Load string 
-      if (!LoadString(theApp.ResourceLibrary, id, szFormat, 512))
+      if (!LoadString(AfxGetResourceHandle(), id, szFormat, 512))
          return Missing(id);
          
       // Format + Return
