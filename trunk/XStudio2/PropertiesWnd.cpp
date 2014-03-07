@@ -88,11 +88,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   GetClientRect(rectClient);
 
       // Toolbar height
-	   int barHeight = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
+	   int barHeight = ToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
       // Snap toolbar to top, stretch grid over remainder
-	   m_wndToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	   m_wndPropList.SetWindowPos(nullptr, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   ToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   Grid.SetWindowPos(nullptr, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
    /// <summary>Connects a source of properties.</summary>
@@ -107,37 +107,40 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!connect && Source != src)
          return;
 
-      // Clear 
-      SetRedraw(FALSE);
-      m_wndPropList.RemoveAll();
+      if (IsWindowVisible())
+         SetRedraw(FALSE);
+
+      // Clear items
+      Grid.RemoveAll();
 
       // Disconnect
       if (!connect)
          Source = nullptr;
-      
-      // Connect + Populate
       else 
-      {
+      {  // Connect + Populate
          Source = src;
-         Source->OnDisplayProperties(m_wndPropList);
+         Source->OnDisplayProperties(Grid);
       }
 
       // Redraw
-      SetRedraw(TRUE);
-      m_wndPropList.Invalidate();
-      m_wndPropList.UpdateWindow();
+      if (IsWindowVisible())
+      {
+         SetRedraw(TRUE);
+         Grid.Invalidate();
+         Grid.UpdateWindow();
+      }
    }
    
    /// <summary>expands all properties.</summary>
    void CPropertiesWnd::OnCommandExpandAll()
    {
-	   m_wndPropList.ExpandAll();
+	   Grid.ExpandAll();
    }
 
    /// <summary>Sorts all properties</summary>
    void CPropertiesWnd::OnCommandSort()
    {
-	   m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
+	   Grid.SetAlphabeticMode(!Grid.IsAlphabeticMode());
    }
    
    /// <summary>Create child controls</summary>
@@ -154,21 +157,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
          // Create property grid
-	      if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
+	      if (!Grid.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
 	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
          // Set font
          UpdateFont();
 
 	      // Grid
-         m_wndPropList.EnableHeaderCtrl(FALSE);
-	      m_wndPropList.EnableDescriptionArea();
-         m_wndPropList.SetVSDotNetLook(TRUE);
-		   m_wndPropList.SetGroupNameFullWidth(TRUE);
-	      m_wndPropList.MarkModifiedProperties();
+         Grid.EnableHeaderCtrl(FALSE);
+	      Grid.EnableDescriptionArea();
+         Grid.SetVSDotNetLook(TRUE);
+		   Grid.SetGroupNameFullWidth(TRUE);
+	      Grid.MarkModifiedProperties();
 
          // Toolbar
-         m_wndToolBar.Create(this, IDR_PROPERTIES, L"Properties");
+         ToolBar.Create(this, IDR_PROPERTIES, L"Properties");
 
          // Layout
 	      AdjustLayout();
@@ -215,7 +218,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       switch (pCmdUI->m_nID)
       {
       case ID_EXPAND_ALL:     break;
-      case ID_SORTPROPERTIES: pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+      case ID_SORTPROPERTIES: pCmdUI->SetCheck(Grid.IsAlphabeticMode());
       }
    }
 
@@ -225,7 +228,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
    {
       CDockablePane::OnSetFocus(pOldWnd);
-	   m_wndPropList.SetFocus();
+	   Grid.SetFocus();
    }
 
    /// <summary>Update font when settings change.</summary>
@@ -269,10 +272,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   m_fntPropList.CreateFontIndirect(&lf);
 
-	   m_wndPropList.SetFont(&m_fntPropList);*/
+	   Grid.SetFont(&m_fntPropList);*/
 
       // Set font
-      m_wndPropList.SetFont(&theApp.ToolWindowFont);
+      Grid.SetFont(&theApp.ToolWindowFont);
    }
    
    

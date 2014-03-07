@@ -74,7 +74,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // -------------------------------- CONSTRUCTION --------------------------------
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
-                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved)),
+                        fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::OnScriptCaretMoved)),
                         FirstShow(true)
    {
    }
@@ -176,7 +176,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
 	   m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
       // Init indicators
-      onScriptCaretMoved(POINT {0,0});
+      OnScriptCaretMoved(POINT {0,0});
 
 
       // Enable docking
@@ -492,7 +492,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>Display caret co-ordinates in status bar</summary>
    /// <param name="pt">The caret position</param>
-   void MainWnd::onScriptCaretMoved(POINT pt)
+   void MainWnd::OnScriptCaretMoved(POINT pt)
    {
       m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
    }
