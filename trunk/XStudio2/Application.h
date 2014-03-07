@@ -114,9 +114,7 @@ public:
 protected:
    DECLARE_MESSAGE_MAP()
 
-public:
-   AppStateChangedEvent     StateChanged;
-   HINSTANCE                ResourceLibrary;
+   static void   OnCriticalError();
 
    // --------------------- PROPERTIES ------------------------
 	
@@ -173,11 +171,13 @@ protected:
 
    // -------------------- REPRESENTATION ---------------------
 public:
-   CFont  ToolWindowFont,
-          TooltipFont;
-
+   CFont                 ToolWindowFont,
+                         TooltipFont;
+   AppStateChangedEvent  StateChanged;
+   
 protected:
    AppState    GameDataState;
+   HINSTANCE   ResourceLibrary;
 };
 
 extern Application theApp;

@@ -138,6 +138,7 @@
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
+    <ClInclude Include="Logic\ConsoleLog.h" />
     <ClInclude Include="Logic\LogFileWriter.h" />
     <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
@@ -284,6 +285,7 @@
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
+    <ClCompile Include="Logic\ConsoleLog.cpp" />
     <ClCompile Include="Logic\LogFileWriter.cpp" />
     <ClCompile Include="Logic\SyntaxHighlight.cpp" />
     <ClCompile Include="NewDocumentDialog.cpp" />

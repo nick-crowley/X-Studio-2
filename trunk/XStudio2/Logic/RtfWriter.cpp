@@ -38,7 +38,10 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Writer is closed");
 
          // Writer footer
-         WriteFooter(); 
+         WriteFooter();
+
+         // Flush+Close output
+         Output->Flush();
          Output->Close();
          Closed = true;
       }
@@ -419,7 +422,8 @@ namespace Logic
          WriteString(";}}\n");
 
          // Colour table
-         WriteString("{\\colortbl;");
+         WriteString("{\\colortbl");
+         WriteString(";");  // Define colour 0 as 'auto-colour'
          for (COLORREF c : Colours)
             WriteColour(c);
          WriteString("}\n");

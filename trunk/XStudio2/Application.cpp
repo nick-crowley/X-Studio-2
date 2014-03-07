@@ -15,6 +15,8 @@
 #include "LanguageDocument.h"
 #include "ProjectDocument.h"
 
+#include "Logic/ConsoleLog.h"
+
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 
@@ -47,6 +49,17 @@ Application::Application() : GameDataState(AppState::NoGameData)
 }
 
 // ------------------------------- STATIC METHODS -------------------------------
+
+void  Application::OnCriticalError()
+{
+   try
+   {
+      // Ensure console is valid RTF by appending footer
+      LogFile.Close();
+   }
+   catch (ExceptionBase&) {
+   }
+}
 
 // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -83,10 +96,18 @@ Application::DocumentIterator  Application::end() const
 /// <returns></returns>
 int Application::ExitInstance()
 {
-   // Free resources
-   FreeLibrary(ResourceLibrary);
-   ResourceLibrary = NULL;
+   try
+   {
+      // Free resources
+      FreeLibrary(ResourceLibrary);
+      ResourceLibrary = NULL;
 
+      // Close LogFile
+      LogFile.Close();
+   }
+   catch (ExceptionBase& e) {
+      theApp.ShowError(HERE, e);
+   }
 	
 	return CWinAppEx::ExitInstance();
 }
@@ -159,83 +180,89 @@ AppState  Application::GetState() const
 /// <returns></returns>
 BOOL Application::InitInstance()
 {
-	
+	// Visual Leak Detector
    VLDEnable();
-   //VLDDisable();
-   //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
-   
-   // Load resource library
-   ResourceLibrary = LoadLibrary(_T("X-Studio II.Resources.dll"));
-   if(ResourceLibrary)
-      AfxSetResourceHandle(ResourceLibrary);
-   else
+
+   try
    {
-      AfxMessageBox(L"Failed to load resource library");
+      // Set termination handler
+      set_terminate(OnCriticalError);
+
+      // Load resource library
+      if(ResourceLibrary = LoadLibrary(L"X-Studio II.Resources.dll"))
+         AfxSetResourceHandle(ResourceLibrary);
+      else
+         throw Win32Exception(HERE, L"Unable to load resource library");
+
+      // LogFile
+      LogFile.Open();
+
+	   // Init common controls
+	   INITCOMMONCONTROLSEX InitCtrls;
+	   InitCtrls.dwSize = sizeof(InitCtrls);
+	   InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	   if (!InitCommonControlsEx(&InitCtrls))
+         throw Win32Exception(HERE, L"Unable to initialize common controls library");
+
+      // Initialise OLE/COM
+	   CWinAppEx::InitInstance();
+      AfxOleInit();
+
+      // Sockets
+	   if (!AfxSocketInit())
+         throw Win32Exception(HERE, L"Windows sockets initialization failed.");
+
+      // ITaskBar
+	   EnableTaskbarInteraction();
+
+	   // Initialise RichEdit
+      AfxInitRichEdit2();
+	   AfxInitRichEdit5();
+
+	
+	   // Set app registry key 
+	   SetRegistryKey(L"Bearware");
+	   LoadStdProfileSettings(10);  // Load MRU
+
+      // Menu manager
+	   InitContextMenuManager();
+
+      // Keyboard manager
+	   InitKeyboardManager();
+
+      // Tooltip manager
+	   InitTooltipManager();
+	   CMFCToolTipInfo ttParams;
+	   ttParams.m_bVislManagerTheme = TRUE;
+	   theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
+
+      // Create window fonts
+      UpdateFonts();
+
+	   // document templates
+	   AddDocTemplate(new ScriptDocTemplate());
+	   AddDocTemplate(new LanguageDocTemplate());
+      AddDocTemplate(new ProjectDocTemplate());
+
+	   // Frame window
+	   MainWnd* pMainFrame = new MainWnd;
+	   if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
+	   {
+		   delete pMainFrame;
+		   return FALSE;
+	   }
+	   m_pMainWnd = pMainFrame;
+
+	   // Show window
+	   pMainFrame->ShowWindow(m_nCmdShow);
+	   pMainFrame->UpdateWindow();
+
+	   return TRUE;
+   }
+   catch (ExceptionBase& e) {
+      theApp.ShowError(HERE, e);
       return FALSE;
    }
-
-
-	// Init common controls
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
-
-   // Initialise OLE/COM
-	CWinAppEx::InitInstance();
-   AfxOleInit();
-
-	if (!AfxSocketInit())
-	{
-		AfxMessageBox(IDS_SOCKETS_INIT_FAILED);
-		return FALSE;
-	}
-
-	EnableTaskbarInteraction();
-
-	// Initialise RichEdit
-   AfxInitRichEdit2();
-	AfxInitRichEdit5();
-
-	
-	// Set app registry key 
-	SetRegistryKey(L"Bearware");
-	LoadStdProfileSettings(10);  // Load MRU
-
-   // Menu manager
-	InitContextMenuManager();
-
-   // Keyboard manager
-	InitKeyboardManager();
-
-   // Tooltip manager
-	InitTooltipManager();
-	CMFCToolTipInfo ttParams;
-	ttParams.m_bVislManagerTheme = TRUE;
-	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
-
-   // Create window fonts
-   UpdateFonts();
-
-	// document templates
-	AddDocTemplate(new ScriptDocTemplate());
-	AddDocTemplate(new LanguageDocTemplate());
-   AddDocTemplate(new ProjectDocTemplate());
-
-	// Frame window
-	MainWnd* pMainFrame = new MainWnd;
-	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
-	{
-		delete pMainFrame;
-		return FALSE;
-	}
-	m_pMainWnd = pMainFrame;
-
-	// Show window
-	pMainFrame->ShowWindow(m_nCmdShow);
-	pMainFrame->UpdateWindow();
-
-	return TRUE;
 }
 
 

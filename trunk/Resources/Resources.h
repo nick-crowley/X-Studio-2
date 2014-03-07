@@ -290,8 +290,6 @@
 
 
 // Errors
-#define IDS_SOCKETS_INIT_FAILED         1009
-
 #define ERR_XML_MISSING_ELEMENT         1000
 #define ERR_XML_UNEXPECTED_ELEMENT      1001
 #define ERR_XML_MISSING_ATTRIBUTE       1002
