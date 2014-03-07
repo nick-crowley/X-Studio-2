@@ -138,6 +138,7 @@
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
+    <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
     <ClInclude Include="NewDocumentDialog.h" />
