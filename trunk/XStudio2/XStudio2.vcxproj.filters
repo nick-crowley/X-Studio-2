@@ -552,6 +552,9 @@
     <ClInclude Include="Logic\StringStream.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\LogFileWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -904,6 +907,9 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LogFileWriter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
