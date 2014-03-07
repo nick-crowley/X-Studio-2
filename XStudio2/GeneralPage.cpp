@@ -63,7 +63,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.TooltipFont = *TooltipFont->GetLogFont();
 
       // Game Data
-      PrefsLib.GameDataFolder = GameDataFolder->GetFolder().c_str();
+      PrefsLib.GameDataFolder = GameDataFolder->GetFolder();
       PrefsLib.SkipBrokenFiles = SkipBrokenFiles->GetBool();
       PrefsLib.GameDataLanguage = GameDataLanguage->GetLanguage();
       PrefsLib.GameDataVersion = GameDataVersion->GetVersion();

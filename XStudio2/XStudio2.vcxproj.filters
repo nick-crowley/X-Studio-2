@@ -546,6 +546,9 @@
     <ClInclude Include="Logic\SyntaxHighlight.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="NewDocumentDialog.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -806,9 +809,6 @@
     <ClCompile Include="Logic\Common.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\GUI\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="FindDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
@@ -895,6 +895,12 @@
     </ClCompile>
     <ClCompile Include="Logic\SyntaxHighlight.cpp">
       <Filter>Source Files\Logic\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="NewDocumentDialog.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

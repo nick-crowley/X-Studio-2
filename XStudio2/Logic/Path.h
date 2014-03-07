@@ -33,6 +33,7 @@ namespace Logic
       public:
          Path     AppendBackslash() const;
          Path     Append(wstring  path) const;
+         bool     Empty() const;
          bool     Exists() const;
          wstring  GetExtension() const;
          wstring  GetFileName() const;

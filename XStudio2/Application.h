@@ -147,17 +147,18 @@ public:
    
    // ----------------------- MUTATORS ------------------------
 public:
-   virtual int   ExitInstance();
-	virtual BOOL  InitInstance();
+   int           ExitInstance() override;
+	BOOL          InitInstance() override;
    void          OnPreferencesChanged();
    DocumentBase* OpenStringLibrary();
-   afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
-	virtual void  PreLoadState();
+	void          PreLoadState() override;
    void          SetState(AppState s);
    void          UpdateFonts();
    
 protected:
-	afx_msg void OnAppAbout();
+	afx_msg void OnCommandAbout();
+   afx_msg void OnCommandNew();
+   afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 
    // -------------------- REPRESENTATION ---------------------
 public:
