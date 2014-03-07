@@ -97,6 +97,9 @@ namespace Logic
       /// <summary>Tooltip font</summary>
       PREFERENCE_PROPERTY(LOGFONT,LogFont,TooltipFont,L"Tooltip");
 
+      /// <summary>FullPaths of previously open documents</summary>
+      PREFERENCE_PROPERTY_LIST(wstring,StringList,WorkspaceDocuments);
+
 
       // Script Editor:
       /// <summary>Show line numbers in the script view</summary>
@@ -179,9 +182,11 @@ namespace Logic
       /// <summary>Find dialog replace terms</summary>
       PREFERENCE_PROPERTY_LIST(wstring,StringList,ReplaceTerms);
 
+
       // NewDocument dialog
       /// <summary>Last new document folder</summary>
       PREFERENCE_PROPERTY_EX(IO::Path,LPCWSTR,String,NewDocumentFolder,L"");
+
 
       // Game Data:
       /// <summary>Continue loading game data if a language file fails to load</summary>

@@ -32,7 +32,11 @@ namespace Logic
 
    void  DebugTests::RunAll()
    {
-      AfxGetMainWnd()->UpdateDialogControls(AfxGetMainWnd(), TRUE);
+      //AfxGetMainWnd()->UpdateDialogControls(AfxGetMainWnd(), TRUE);
+
+      /*int* violation= nullptr;
+      *violation = 42;*/
+      throw exception("hahaha");
 
       //Test_LanguageFileReader();
       //Test_LanguageEditRegEx();

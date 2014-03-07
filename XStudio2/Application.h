@@ -117,7 +117,7 @@ protected:
    static void   OnCriticalError();
 
    // --------------------- PROPERTIES ------------------------
-	
+public:
    PROPERTY_GET_SET(AppState,State,GetState,SetState);
 
    // ---------------------- ACCESSORS ------------------------			

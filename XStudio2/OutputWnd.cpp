@@ -31,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::onGameDataFeedback)),
+   COutputWnd::COutputWnd() : fnGameDataFeedback(MainWnd::GameDataFeedback.Register(this, &COutputWnd::OnGameDataFeedback)),
                               fnFindReplaceFeedback(MainWnd::FindReplaceFeedback.Register(this, &COutputWnd::onFindReplaceFeedback)),
                               fnLoadSaveFeedback(MainWnd::LoadSaveFeedback.Register(this, &COutputWnd::onLoadSaveFeedback))
    {
@@ -156,7 +156,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>Displays game data feedback.</summary>
    /// <param name="wp">The wp.</param>
-   void COutputWnd::onGameDataFeedback(const WorkerProgress& wp)
+   void COutputWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
       // Insert item
       GameDataList.InsertItem(wp);
