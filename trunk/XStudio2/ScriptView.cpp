@@ -9,6 +9,7 @@
 #include "Logic/DebugTests.h"
 #include "Logic/RtfScriptWriter.h"
 #include "Logic/ScriptParser.h"
+#include "Logic/StringStream.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -271,7 +272,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
          // Convert script to RTF (ansi)
-         RtfScriptWriter w(new StringStream(txt), PrefsLib.ScriptViewFont.lfFaceName, size);
+         RtfScriptWriter w(StreamPtr(new StringStream(txt)), PrefsLib.ScriptViewFont.lfFaceName, size);
          w.Write(GetScript());
          w.Close();
 

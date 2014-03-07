@@ -10,7 +10,8 @@ namespace Logic
       /// <summary>Provides stream access to the contents of catalogs</summary>
       class EncryptedStream : public StreamFacade
       {
-      const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);
+      private:
+         const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);
 
          // --------------------- CONSTRUCTION ----------------------
 
@@ -28,7 +29,7 @@ namespace Logic
 			// ---------------------- ACCESSORS ------------------------
 
 			// ----------------------- MUTATORS ------------------------
-
+      public:
          DWORD  Read(BYTE* buffer, DWORD length);
          DWORD  Write(const BYTE* buffer, DWORD length);
 
@@ -36,7 +37,7 @@ namespace Logic
          void  Encode(byte* buffer, DWORD length);
 
          // -------------------- REPRESENTATION ---------------------
-
+      private:
          DWORD  Position;
       };
 
