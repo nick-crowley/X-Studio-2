@@ -82,6 +82,11 @@ namespace GUI
    /// <summary>Write size to the console</summary>
    ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
 
+   /// <summary>Dialog data exchange for std::wstring</summary>
+   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value);
+
+   /// <summary>Dialog data exchange for paths</summary>
+   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, IO::Path& path);
 }
 
 

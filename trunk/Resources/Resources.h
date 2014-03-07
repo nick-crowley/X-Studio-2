@@ -37,6 +37,7 @@
 #define IDB_LANGUAGE_ICONS              122
 #define IDB_RICH_BUTTON                 123
 #define IDB_USER_IMAGES                 124
+#define IDB_NEWDOCUMENT_ICONS           125
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -121,6 +122,7 @@
 #define IDD_GENERAL_PAGE                703
 #define IDD_COMPILER_PAGE               704
 #define IDD_EDITOR_PAGE                 705
+#define IDD_NEW_DOCUMENT                706
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -159,6 +161,13 @@
 
 // Preferences dialog
 #define IDC_PROPERTY_GRID               823
+
+// New document dialog
+#define IDC_TEMPLATE_LIST               825
+#define IDC_FILENAME_EDIT               826
+#define IDC_FOLDER_EDIT                 827
+#define IDC_DESCRIPTION_EDIT            828
+#define IDC_ADD_PROJECT_CHECK           829
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

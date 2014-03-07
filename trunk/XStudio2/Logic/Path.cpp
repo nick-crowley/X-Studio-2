@@ -125,7 +125,14 @@ namespace Logic
          PathAddBackslash(buf.get());
          return buf.get();
       }
-   
+      
+      /// <summary>Determines whether path is empty</summary>
+      /// <returns>true/false</returns>
+      bool  Path::Empty() const
+      { 
+         return lstrlen(Buffer.get()) == 0; 
+      }
+
       /// <summary>Determines whether a file or folder exists</summary>
       /// <returns>true/false</returns>
       bool  Path::Exists() const

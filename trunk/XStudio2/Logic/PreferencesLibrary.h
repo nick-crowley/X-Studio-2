@@ -179,13 +179,16 @@ namespace Logic
       /// <summary>Find dialog replace terms</summary>
       PREFERENCE_PROPERTY_LIST(wstring,StringList,ReplaceTerms);
 
+      // NewDocument dialog
+      /// <summary>Last new document folder</summary>
+      PREFERENCE_PROPERTY_EX(IO::Path,LPCWSTR,String,NewDocumentFolder,L"");
 
       // Game Data:
       /// <summary>Continue loading game data if a language file fails to load</summary>
       PREFERENCE_PROPERTY(bool,Bool,SkipBrokenFiles,true);
 
       /// <summary>Game data folder</summary>
-      PREFERENCE_PROPERTY(GuiString,String,GameDataFolder,L"");
+      PREFERENCE_PROPERTY_EX(IO::Path,LPCWSTR,String,GameDataFolder,L"");
 
       /// <summary>Game data version</summary>
       PREFERENCE_PROPERTY_ENUM(GameVersion,GameDataVersion,GameVersion::TerranConflict);
@@ -256,6 +259,15 @@ namespace Logic
       {
          return (LPCWSTR)theApp.GetProfileString(L"Settings", name, defaultValue);
       }
+
+      /// <summary>Get path preference</summary>
+      /// <param name="name">name</param>
+      /// <param name="defaultValue">Ignored</param>
+      /// <returns></returns>
+      /*IO::Path  GetPath(const wchar* name, const wchar* defaultValue) const
+      {
+         return (LPCWSTR)theApp.GetProfileString(L"Settings", name, L"");
+      }*/
 
       /// <summary>Set boolean preference</summary>
       /// <param name="name">name</param>

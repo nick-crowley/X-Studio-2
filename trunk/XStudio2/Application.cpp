@@ -8,6 +8,7 @@
 #include "afxcview.h"
 #include "Application.h"
 #include "AboutDlg.h"
+#include "NewDocumentDialog.h"
 #include "MainWnd.h"
 
 #include "ScriptDocument.h"
@@ -30,8 +31,8 @@ Application theApp;
 // --------------------------------- APP WIZARD ---------------------------------
   
 BEGIN_MESSAGE_MAP(Application, CWinAppEx)
-	ON_COMMAND(ID_APP_ABOUT, &Application::OnAppAbout)
-	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_APP_ABOUT, &Application::OnCommandAbout)
+	ON_COMMAND(ID_FILE_NEW, &Application::OnCommandNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
    ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &Application::OnQueryCommand)
    ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &Application::OnQueryCommand)
@@ -301,10 +302,18 @@ CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) cons
 
 
 /// <summary>Dispay about box</summary>
-void Application::OnAppAbout()
+void Application::OnCommandAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+
+/// <summary>Dispay new document dialog</summary>
+void Application::OnCommandNew()
+{
+	NewDocumentDialog dlg;
+	dlg.DoModal();
 }
 
 /// <summary>Update all windows</summary>
