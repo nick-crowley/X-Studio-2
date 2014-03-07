@@ -17,6 +17,7 @@ namespace Logic
       /// <param name="out">Output stream</param>
       /// <param name="font">Font name</param>
       /// <param name="size">Size in points</param>
+      /// <exception cref="Logic::ArgumentNullException">Output is nullptr</exception>
       RtfScriptWriter::RtfScriptWriter(StreamPtr out, wstring font, UINT size) : RtfWriter(out)
       {
          set<COLORREF> colours;
@@ -56,6 +57,7 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes the writer.</summary>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfScriptWriter::Close()
       {
          RtfWriter::Close();
@@ -63,6 +65,7 @@ namespace Logic
 
       /// <summary>Writes a script file to the output</summary>
       /// <param name="f">The script</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void RtfScriptWriter::Write(ScriptFile& f)
       {
          IndentationStack indent;
@@ -88,6 +91,7 @@ namespace Logic
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
       /// <param name="indent">Indent in characters</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfScriptWriter::WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, UINT  indent)
       {
          CommandLexer lex(cmd.Text, false);
@@ -105,6 +109,7 @@ namespace Logic
 
       /// <summary>Writes a token to the output.</summary>
       /// <param name="p">The token</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfScriptWriter::WriteToken(const ScriptFile& f, const ScriptToken& tok)
       {
          // Whitespace: Write verbatim

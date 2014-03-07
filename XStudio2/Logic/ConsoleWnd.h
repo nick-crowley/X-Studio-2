@@ -68,19 +68,21 @@ namespace Logic
       WORD GetAttributes()
       {
          CONSOLE_SCREEN_BUFFER_INFO info;
-         if (Handle)
-         {
-            GetConsoleScreenBufferInfo(Handle, &info);
-            return info.wAttributes;
-         }
-         return 0;
+
+         // Ensure connected
+         if (Handle == INVALID_HANDLE_VALUE)
+            return 0;
+         
+         // Get attributes
+         GetConsoleScreenBufferInfo(Handle, &info);
+         return info.wAttributes;
       }
 
       /// <summary>Sets the attributes.</summary>
       /// <param name="attr">The attribute.</param>
       void SetAttributes(WORD attr)
       {
-         if (Handle)
+         if (Handle != INVALID_HANDLE_VALUE)
             SetConsoleTextAttribute(Handle, attr);
       }
 
@@ -371,18 +373,20 @@ namespace Logic
       }
 
    private:
-      void WriteText(const wstring& txt)
-      {
-         DWORD written=0;
-
-         // Ensure exists
-         if (Handle)
-            WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
-         
-#ifdef _DEBUG
-         OutputDebugString(txt.c_str());
-#endif
-      }
+      /// <summary>Writes text to the output.</summary>
+      /// <param name="txt">The text.</param>
+      void WriteText(const wstring& txt);
+//      {
+//         DWORD written=0;
+//
+//         // Ensure exists
+//         if (Handle)
+//            WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
+//         
+//#ifdef _DEBUG
+//         OutputDebugString(txt.c_str());
+//#endif
+//      }
 
       // -------------------- REPRESENTATION ---------------------
    public:

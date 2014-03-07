@@ -10,17 +10,18 @@ namespace Logic
 
       /// <summary>Creates an RTF Writer</summary>
       /// <param name="out">Output</param>
+      /// <exception cref="Logic::ArgumentNullException">Output is nullptr</exception>
       RtfWriter::RtfWriter(StreamPtr out) 
          : Output(out), Closed(true), ForeColour(COLOUR_NONE), BackColour(COLOUR_NONE), Bold(false), Italic(false), Underline(false)
       {
-         
+         REQUIRED(out);
       }
 
       /// <summary>Closes the writer, if open</summary>
       RtfWriter::~RtfWriter()
       {
          if (!Closed)
-            Close();
+            Output->SafeClose();
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
@@ -29,6 +30,7 @@ namespace Logic
 
       /// <summary>Appends the RTF footer and closes the writer</summary>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::Close()
       { 
          // Check stream is open
@@ -37,6 +39,7 @@ namespace Logic
 
          // Writer footer
          WriteFooter(); 
+         Output->Close();
          Closed = true;
       }
 
@@ -45,6 +48,7 @@ namespace Logic
       /// <param name="size">Font size in points</param>
       /// <param name="cols">List of colours</param>
       /// <exception cref="Logic::InvalidOperationException">Write is already open</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::Open(const wstring& font, UINT size, list<COLORREF> cols) 
       {
          // Check stream is closed
@@ -62,6 +66,7 @@ namespace Logic
       }
 
       /// <summary>Resets paragraph properties</summary>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::ResetParagraph()
       {
          // Check stream is open
@@ -74,6 +79,7 @@ namespace Logic
       
       /// <summary>Sets paragraph alignment</summary>
       /// <param name="al">Alignment</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::SetAlignment(Alignment al)
       {
          // Check stream is open
@@ -95,6 +101,7 @@ namespace Logic
       /// <param name="c">The colour</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetBackColour(COLORREF c)
       {
          CHAR buf[10];
@@ -124,6 +131,7 @@ namespace Logic
       /// <summary>Sets or clears bold text</summary>
       /// <param name="b">True to set, False to clear</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetBold(bool b)
       {
          // Check stream is open
@@ -143,6 +151,7 @@ namespace Logic
       /// <param name="c">The colour</param>
       /// <exception cref="Logic::ArgumentException">Unrecognised colour</exception>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetForeColour(COLORREF c)
       {
          CHAR buf[10];
@@ -172,6 +181,7 @@ namespace Logic
       /// <summary>Sets the font size</summary>
       /// <param name="size">The size in points</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetFontSize(UINT size)
       {
          CHAR buf[10];
@@ -188,6 +198,7 @@ namespace Logic
       /// <summary>Sets or clears italic text</summary>
       /// <param name="i">True to set, False to clear</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetItalic(bool i)
       {
          // Check stream is open
@@ -206,6 +217,7 @@ namespace Logic
       /// <summary>Sets size of left margin for current paragraph</summary>
       /// <param name="size">size in twips</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetLeftMargin(UINT twips)
       {
          CHAR buf[10];
@@ -222,6 +234,7 @@ namespace Logic
       /// <summary>Sets or clears Underline text</summary>
       /// <param name="u">True to set, False to clear</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::SetUnderline(bool u)
       {
          // Check stream is open
@@ -238,6 +251,7 @@ namespace Logic
       }
       
       /// <summary>Starts a new paragraph</summary>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::StartParagraph()
       {
          // Check stream is open
@@ -251,6 +265,7 @@ namespace Logic
       /// <summary>Writes UNICODE character to the stream, converting to RTF as necessary</summary>
       /// <param name="ch">The character</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::Write(WCHAR ch)
       {
          CHAR buf[10];
@@ -288,6 +303,7 @@ namespace Logic
       /// <summary>Writes UNICODE text to the stream, converting to RTF as necessary</summary>
       /// <param name="str">The text</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::Write(const wstring& str)
       {
          // Check stream is open
@@ -304,6 +320,7 @@ namespace Logic
       /// <summary>Writes UNICODE text to the stream followed by a line break, converting to RTF as necessary</summary>
       /// <param name="str">The text</param>
       /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void   RtfWriter::WriteLn(const wstring& str)
       {
          // Check stream is open
@@ -321,6 +338,7 @@ namespace Logic
 
       /// <summary>Sets the code page.</summary>
       /// <param name="cp">Code page</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void RtfWriter::SetCodePage(UINT cp)
       {
          CHAR buf[10];
@@ -330,6 +348,7 @@ namespace Logic
 
       /// <summary>Sets default font</summary>
       /// <param name="font">Font table index</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void RtfWriter::SetDefaultFont(UINT font)
       {
          CHAR buf[10];
@@ -339,6 +358,7 @@ namespace Logic
 
       /// <summary>Sets the language.</summary>
       /// <param name="lang">Decimal language ID</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void RtfWriter::SetLanguage(UINT lang)
       {
          CHAR buf[10];
@@ -348,6 +368,7 @@ namespace Logic
 
       /// <summary>Writes ANSI char to the stream verbatim</summary>
       /// <param name="chr">The char</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteChar(CHAR chr) 
       { 
          Output->Write((BYTE*)&chr, 1);
@@ -355,6 +376,7 @@ namespace Logic
 
       /// <summary>Writes ANSI text to the stream verbatim</summary>
       /// <param name="str">The text</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteString(const CHAR* str) 
       { 
          Output->Write((BYTE*)str, lstrlenA(str));
@@ -362,6 +384,7 @@ namespace Logic
       
       /// <summary>Writes an RTF colour table colour definition</summary>
       /// <param name="c">The colour to define</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteColour(COLORREF c)
       {
          char buf[64];
@@ -370,6 +393,7 @@ namespace Logic
       }
 
       /// <summary>Writes RTF footer</summary>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteFooter()
       {
          // End paragraph
@@ -378,6 +402,7 @@ namespace Logic
 
       /// <summary>Writes RTF header</summary>
       /// <param name="font">Font name</param>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteHeader(const wstring& font)
       {
          // Header
