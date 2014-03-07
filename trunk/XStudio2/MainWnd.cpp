@@ -68,11 +68,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_CONSOLE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryCommand)
+      ON_WM_CLOSE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::onGameDataFeedback)),
+   MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
                         fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::onScriptCaretMoved)),
                         FirstShow(true)
    {
@@ -294,6 +295,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
 	   ShowWindowsDialog();
    }
+   
+   /// <summary>Stores current workspace.</summary>
+   void MainWnd::OnClose()
+   {
+      list<wstring> docs;
+
+      // Get path of non-virtual files
+      for (auto& doc : theApp.GetOpenDocuments())
+         if (!doc->Virtual)
+            docs.push_back(doc->FullPath.c_str());
+
+      // Save current open docs to preferences
+      PrefsLib.WorkspaceDocuments = docs;
+
+      // Close 
+      CMDIFrameWndEx::OnClose();
+   }
 
    /// <summary>Creates child windows and sets up MFC GUI classes</summary>
    /// <param name="lpCreateStruct">The create data.</param>
@@ -380,7 +398,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary>Changes app state once game data is loaded.</summary>
    /// <param name="wp">The wp.</param>
-   void MainWnd::onGameDataFeedback(const WorkerProgress& wp)
+   void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
       // Success: Change app state
       if (wp.Type == ProgressType::Succcess)
@@ -389,13 +407,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
          theApp.State = AppState::GameDataPresent;
          GameDataThread.Close(true);
 
-         // Parse command line for standard shell commands, DDE, file open
+         // Parse command line 
 	      CCommandLineInfo cmdInfo;
 	      theApp.ParseCommandLine(cmdInfo);
 
-	      // Dispatch commands specified on the command line.
+	      // Open file:
          if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
 	         theApp.ProcessShellCommand(cmdInfo);
+         else
+         {
+            // Default: Restore previous workspace
+            for (auto& doc : PrefsLib.WorkspaceDocuments)
+               if (IO::Path(doc).Exists())
+                  theApp.OpenDocumentFile(doc.c_str(), FALSE);
+         }
       }
    }
    
@@ -523,4 +548,5 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)
+
 

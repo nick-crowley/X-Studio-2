@@ -72,6 +72,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
 
    protected:
+      afx_msg void    OnClose();
       afx_msg void    OnCommandConsole()   { OnCommandShowWindow(ID_VIEW_CONSOLE); }
       afx_msg void    OnCommandFindText();
       afx_msg void    OnCommandCustomizeToolbar();
@@ -81,7 +82,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommandStringLibrary();
       afx_msg void    OnCommandWindowManager();
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
-      handler void    onGameDataFeedback(const WorkerProgress& wp);
+      handler void    OnGameDataFeedback(const WorkerProgress& wp);
       handler void    OnInitialUpdate();
       afx_msg void    OnQueryCommand(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
