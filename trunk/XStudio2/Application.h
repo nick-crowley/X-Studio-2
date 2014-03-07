@@ -129,8 +129,19 @@ public:
    DocumentIterator  end() const;
    DocumentIterator  end();
 
-   GUI::Windows::MainWnd*  GetMainWindow() const;
+   /// <summary>Gets the document template.</summary>
+   template<typename DOC>
+   DOC*  GetDocumentTemplate() const
+   {
+      // Linear search
+      for (POSITION pos = GetFirstDocTemplatePosition(); pos != nullptr; )
+         if (auto doc = dynamic_cast<DOC*>(GetNextDocTemplate(pos)))
+            return doc;
+      
+      throw AlgorithmException(HERE, L"Document template not found");
+   }
 
+   GUI::Windows::MainWnd*  GetMainWindow() const;
    DocumentBase* GetOpenDocument(IO::Path p) const;
    DocumentList  GetOpenDocuments() const;
    GuiString     GetProfileSectionPath(const wstring& section) const;

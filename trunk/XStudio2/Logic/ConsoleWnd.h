@@ -36,7 +36,6 @@ namespace Logic
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
-
    private:
       ConsoleWnd();
    public:
@@ -46,31 +45,46 @@ namespace Logic
 		NO_MOVE(ConsoleWnd);	// Cannot be moved
 
       // ------------------------ STATIC -------------------------
-
+   
       // --------------------- PROPERTIES ------------------------
+   public:
+      PROPERTY_GET_SET(bool,Visible,IsVisible,Show);
+
    protected:
       PROPERTY_GET_SET(WORD,Attributes,GetAttributes,SetAttributes);
 
       // ---------------------- ACCESSORS ------------------------			
-   protected:
-      /// <summary>Sets the attributes.</summary>
-      /// <param name="attr">The attribute.</param>
-      void ConsoleWnd::SetAttributes(WORD attr)
+   public:
+      /// <summary>Determines whether console is visible.</summary>
+      /// <returns></returns>
+      bool IsVisible() const
       {
-         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), attr);
+         return IsWindowVisible(GetConsoleWindow()) != FALSE;
       }
 
+   protected:
       /// <summary>Gets the attributes.</summary>
       /// <returns></returns>
-      WORD ConsoleWnd::GetAttributes()
+      WORD GetAttributes()
       {
          CONSOLE_SCREEN_BUFFER_INFO info;
-         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-         return info.wAttributes;
+         if (Handle)
+         {
+            GetConsoleScreenBufferInfo(Handle, &info);
+            return info.wAttributes;
+         }
+         return 0;
+      }
+
+      /// <summary>Sets the attributes.</summary>
+      /// <param name="attr">The attribute.</param>
+      void SetAttributes(WORD attr)
+      {
+         if (Handle)
+            SetConsoleTextAttribute(Handle, attr);
       }
 
       // ----------------------- MUTATORS ------------------------
-
    public:
       /// <summary>Logs an exception to the console.</summary>
       /// <param name="src">Handler location</param>
@@ -113,6 +127,13 @@ namespace Logic
                << Cons::Error     << e.what()
                << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << src << ENDL;
+      }
+
+      /// <summary>Shows/Hides the console.</summary>
+      /// <param name="show">The show.</param>
+      void  Show(bool show)
+      {
+         ShowWindow(GetConsoleWindow(), show ? SW_SHOW : SW_HIDE);
       }
 
       /// <summary>Inserts associated text colour manipulator, if any</summary>
@@ -353,20 +374,23 @@ namespace Logic
       void WriteText(const wstring& txt)
       {
          DWORD written=0;
-         WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), txt.c_str(), txt.length(), &written, NULL);
 
+         // Ensure exists
+         if (Handle)
+            WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
+         
 #ifdef _DEBUG
          OutputDebugString(txt.c_str());
 #endif
       }
 
       // -------------------- REPRESENTATION ---------------------
-
    public:
       static ConsoleWnd  Instance;
 
    private:
       deque<WORD> AttributeStack;
+      HANDLE      Handle;
    };
 
    // Provide singleton access

@@ -77,6 +77,7 @@
 
 // Help
 #define ID_HELP_FORUMS                  221
+#define ID_HELP_CONSOLE                 222
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 

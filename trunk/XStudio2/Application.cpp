@@ -335,12 +335,8 @@ DocumentBase* Application::OpenStringLibrary()
       return doc;
    
    // Open manually
-   for (POSITION pos = GetFirstDocTemplatePosition(); pos != nullptr; )
-      if (auto doc = dynamic_cast<LanguageDocTemplate*>(GetNextDocTemplate(pos)))
-         return dynamic_cast<DocumentBase*>(doc->OpenDocumentFile(L"String Library", FALSE, TRUE));
-
-   // Error
-   throw AlgorithmException(HERE, L"Unable to find language document template");
+   auto templ = GetDocumentTemplate<LanguageDocTemplate>();
+   return (DocumentBase*)templ->OpenDocumentFile(L"String Library", FALSE, TRUE);
 }
 
 /// <summary>Query file menu item state</summary>
