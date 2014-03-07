@@ -78,9 +78,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // -------------------- REPRESENTATION ---------------------
    protected:
-      //CFont                m_fntPropList;
-	   CPropertiesToolBar   m_wndToolBar;
-	   CMFCPropertyGridCtrl m_wndPropList;
+      CPropertiesToolBar   ToolBar;
+	   CMFCPropertyGridCtrl Grid;
 
       PropertySource*    Source;
    };

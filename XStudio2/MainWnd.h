@@ -86,7 +86,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       handler void    OnInitialUpdate();
       afx_msg void    OnQueryCommand(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
-      handler void    onScriptCaretMoved(POINT pt);
+      handler void    OnScriptCaretMoved(POINT pt);
       afx_msg void    OnShowWindow(BOOL bShow, UINT nStatus);
       afx_msg LRESULT OnCreateNewToolbar(WPARAM wp, LPARAM lp);
       afx_msg LRESULT OnRequestTabTooltip(WPARAM wp, LPARAM lp);
