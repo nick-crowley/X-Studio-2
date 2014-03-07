@@ -15,7 +15,7 @@ namespace Logic
       private:
          // --------------------- CONSTRUCTION ----------------------
       public:
-         RtfScriptWriter(string&  out, wstring font, UINT size);
+         RtfScriptWriter(StreamPtr out, wstring font, UINT size);
 
          // ------------------------ STATIC -------------------------
       

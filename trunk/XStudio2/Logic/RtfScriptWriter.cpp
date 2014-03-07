@@ -17,7 +17,7 @@ namespace Logic
       /// <param name="out">Output stream</param>
       /// <param name="font">Font name</param>
       /// <param name="size">Size in points</param>
-      RtfScriptWriter::RtfScriptWriter(string&  out, wstring font, UINT size) : RtfWriter(out)
+      RtfScriptWriter::RtfScriptWriter(StreamPtr out, wstring font, UINT size) : RtfWriter(out)
       {
          set<COLORREF> colours;
 
