@@ -30,8 +30,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void Create(CWnd* parent);
 
    protected:
-      virtual void PopulateGroupCombo();
-      virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup);
+      wstring GetItemText(UINT index) override;
+      void    PopulateGroupCombo() override;
+      void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) override;
 
       // -------------------- REPRESENTATION ---------------------
 

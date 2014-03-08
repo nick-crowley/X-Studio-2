@@ -37,6 +37,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Gets the item text.</summary>
+   /// <param name="index">The index.</param>
+   /// <returns></returns>
+   wstring  CScriptObjectWnd::GetItemText(UINT index)
+   {
+      auto obj = reinterpret_cast<const ScriptObject*>(ListView.GetItemData(index));
+
+      // Format item
+      return obj ? obj->GetDisplayText() : L"";
+   }
 
    /// <summary>Populates the group combo.</summary>
    void  CScriptObjectWnd::PopulateGroupCombo()
@@ -71,15 +82,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       // Generate/insert display text for each command
-      for (UINT i = 0; i < Content.size(); ++i)
+      UINT i = 0;
+      for (auto& obj : Content)
       {
          // Define item
-         LVItem item(i, Content[i].Text, (UINT)Content[i].Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
-         item.iImage = 3 + GameVersionIndex(Content[i].Version).Index;
+         LVItem item(i++, obj->Text, (UINT)obj->Group, LVIF_TEXT|LVIF_GROUPID|LVIF_IMAGE|LVIF_PARAM);
+         item.iImage = 3 + GameVersionIndex(obj->Version).Index;
+         item.lParam = (LPARAM)obj;
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert %s '%s' (item %d)", GetString(Content[i].Group).c_str(), item.pszText, i));
+            throw Win32Exception(HERE, GuiString(L"Unable to insert %s '%s' (item %d)", GetString(obj->Group).c_str(), item.pszText, i-1));
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------

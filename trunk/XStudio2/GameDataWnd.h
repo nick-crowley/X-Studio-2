@@ -31,13 +31,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void Create(CWnd* parent, wstring title, UINT nID, UINT nIconID);
 
    protected:
-      virtual void Clear();
-      virtual void PopulateGroupCombo() PURE;
-      virtual void PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
+      virtual void    Clear();
+      virtual wstring GetItemText(UINT index) PURE;
+      virtual void    PopulateGroupCombo() PURE;
+      virtual void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
 
       handler void OnAppStateChanged(AppState s);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
 	   afx_msg void OnPaint();
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSearchTermChanged();

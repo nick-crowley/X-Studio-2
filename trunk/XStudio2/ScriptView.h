@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // ----------------------- MUTATORS ------------------------
    public:
       bool  Replace(MatchData& m);
+      void  Replace(const wstring& txt);
       void  SetSelection(CHARRANGE rng);
       BOOL  PreTranslateMessage(MSG* pMsg) override;
 

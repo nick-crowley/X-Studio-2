@@ -153,7 +153,7 @@ namespace Logic
          // Linear search for partial substring
          for (const auto& obj : *this)
             if (!obj.IsHidden() && (FindAll || obj.Text.Contains(str, false)))
-               Results.push_back(obj);
+               Results.push_back(&obj);
 
          return Results;
       }

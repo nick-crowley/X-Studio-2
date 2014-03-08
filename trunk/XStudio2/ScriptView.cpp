@@ -106,6 +106,13 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       return RichEdit.Replace(m);
    }
+   
+   /// <summary>Replaces the contents of the current text selection</summary>
+   /// <param name="txt">Text</param>
+   void  ScriptView::Replace(const wstring& txt)
+   {
+      RichEdit.ReplaceSel(txt.c_str(), TRUE);
+   }
 
    /// <summary>Sets the text selection.</summary>
    /// <param name="rng">text range</param>
