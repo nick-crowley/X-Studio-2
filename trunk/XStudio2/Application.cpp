@@ -147,7 +147,7 @@ DocumentList  Application::GetOpenDocuments() const
 /// <returns></returns>
 GUI::Windows::MainWnd*  Application::GetMainWindow() const
 {
-   return dynamic_cast<MainWnd*>(AfxGetMainWnd());
+   return dynamic_cast<MainWnd*>(theApp.m_pMainWnd);
 }
 
 
@@ -245,17 +245,16 @@ BOOL Application::InitInstance()
       AddDocTemplate(new ProjectDocTemplate());
 
 	   // Frame window
-	   MainWnd* pMainFrame = new MainWnd;
-	   if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
+	   m_pMainWnd = new MainWnd;
+	   if (!dynamic_cast<MainWnd*>(m_pMainWnd)->LoadFrame(IDR_MAINFRAME))
 	   {
-		   delete pMainFrame;
+		   delete m_pMainWnd;
 		   return FALSE;
 	   }
-	   m_pMainWnd = pMainFrame;
 
 	   // Show window
-	   pMainFrame->ShowWindow(m_nCmdShow);
-	   pMainFrame->UpdateWindow();
+	   m_pMainWnd->ShowWindow(m_nCmdShow);
+	   m_pMainWnd->UpdateWindow();
 
 	   return TRUE;
    }
@@ -295,6 +294,12 @@ bool Application::IsDocumentOpen(DocumentBase* d) const
    return false;
 }
 
+/// <summary>Query whether main window is minimized</summary>
+/// <returns></returns>
+bool Application::IsMimized() const
+{
+   return m_pMainWnd && m_pMainWnd->IsIconic();
+}
 
 /// <summary>Loads an icon.</summary>
 /// <param name="nResID">The resource identifier.</param>
@@ -321,8 +326,13 @@ HICON  Application::LoadIconW(UINT nResID, UINT iSize) const
 /// <returns></returns>
 CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) const
 {
-   CBitmap* bmp = new CBitmap();
+   // Load bitmap
    HBITMAP h = (HBITMAP)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(nResID), IMAGE_BITMAP, cx, cy, flags);
+   if (!h)
+      throw Win32Exception(HERE, L"Failed to load bitmap");
+
+   // Attach to CBitmap
+   CBitmap* bmp = new CBitmap();
    bmp->Attach(h);
    return bmp;
 }

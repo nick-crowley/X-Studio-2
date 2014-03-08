@@ -116,7 +116,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void  LanguagePageView::AdjustLayout()
    {
       // Destroyed/Minimised
-	   if (GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
+	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
          
       CRect wnd;

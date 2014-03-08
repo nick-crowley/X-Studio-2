@@ -135,7 +135,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void  ScriptView::AdjustLayout()
    {
       // Destroyed/Minimised
-	   if (RichEdit.GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
+	   if (!RichEdit.GetSafeHwnd() || theApp.IsMimized())
          return;
          
       CRect view, combo;

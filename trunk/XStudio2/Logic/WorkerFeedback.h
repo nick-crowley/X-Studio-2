@@ -43,7 +43,7 @@ namespace Logic
          /// <summary>Creates worker data for an operation</summary>
          /// <param name="op">operation.</param>
          /// <exception cref="Logic::ArgumentNullException">Main window does not exist</exception>
-         WorkerData(Operation op) : ParentWnd(AfxGetMainWnd()), Operation(op), Aborted(false)
+         WorkerData(Operation op) : ParentWnd(theApp.m_pMainWnd), Operation(op), Aborted(false)
          {
             REQUIRED(ParentWnd);
          }
