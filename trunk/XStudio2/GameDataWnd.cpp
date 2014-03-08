@@ -93,7 +93,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (ScriptDocument::GetActive())
       {
          // Ignore item number provided by system, somtimes invalid.
-         auto txt = GetItemText( ListView.HitTest(CursorPoint(this)) );
+         auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
 
          // Insert into current document
          if (!txt.empty())
