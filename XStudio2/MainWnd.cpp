@@ -407,6 +407,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          theApp.State = AppState::GameDataPresent;
          GameDataThread.Close(true);
 
+         // Hide splash screen
+         m_dlgSplash.DestroyWindow();
+         //EnableWindow(TRUE);
+
          // Parse command line 
 	      CCommandLineInfo cmdInfo;
 	      theApp.ParseCommandLine(cmdInfo);
@@ -427,10 +431,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Called on first display</summary>
    void MainWnd::OnInitialUpdate()
    {
+      // Show splash screen
+      m_dlgSplash.Create(IDD_SPLASH, this);
+      m_dlgSplash.ShowWindow(SW_SHOW);
+      //EnableWindow(FALSE);
+
       // Load game data
       GameDataThread.Start(new GameDataWorkerData(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion));
 
-      
       // Find & Replace dialog:
       m_dlgFind.Create(FindDialog::IDD, this);
    }
