@@ -558,6 +558,9 @@
     <ClInclude Include="Logic\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SplashWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -916,6 +919,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ConsoleLog.cpp">
       <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashWnd.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

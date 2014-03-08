@@ -38,6 +38,7 @@
 #define IDB_RICH_BUTTON                 123
 #define IDB_USER_IMAGES                 124
 #define IDB_NEWDOCUMENT_ICONS           125
+#define IDB_SPLASH                      126
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -124,6 +125,7 @@
 #define IDD_COMPILER_PAGE               704
 #define IDD_EDITOR_PAGE                 705
 #define IDD_NEW_DOCUMENT                706
+#define IDD_SPLASH                      707
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 

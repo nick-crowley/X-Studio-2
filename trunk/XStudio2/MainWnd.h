@@ -14,6 +14,7 @@
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
 #include "FindDialog.h"
+#include "SplashWnd.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -62,7 +63,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    public:
 
       // ----------------------- MUTATORS ------------------------
-   
    public:
       void         ActivateOutputPane(Operation pane);
       void         CreateToolBars();
@@ -93,9 +93,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------
-
    protected: 
       FindDialog        m_dlgFind;
+      SplashWnd         m_dlgSplash;
 	   CMFCMenuBar       m_wndMenuBar;
 	   ToolBarEx         m_wndFileToolBar,
                         m_wndEditToolBar,
