@@ -147,6 +147,7 @@ public:
    AppState      GetState() const;
    bool          IsDocumentOpen(IO::Path p) const;
    bool          IsDocumentOpen(DocumentBase* d) const;
+   bool          IsMimized() const;
 
    HICON     LoadIconW(UINT nResID, UINT iSize) const;
    CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;

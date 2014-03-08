@@ -103,7 +103,7 @@ namespace GUI
             try
             {
                // Open clipboard
-               if (!OpenClipboard(AfxGetMainWnd()->m_hWnd))
+               if (!OpenClipboard(theApp.m_pMainWnd))
                   throw Win32Exception(HERE, L"Unable to open clipboard");
             
                // Allocate+Open buffer
@@ -145,7 +145,7 @@ namespace GUI
             try
             {
                // Open clipboard
-               if (!OpenClipboard(AfxGetMainWnd()->m_hWnd))
+               if (!OpenClipboard(theApp.m_pMainWnd))
                   throw Win32Exception(HERE, L"Unable to open clipboard");
 
                // Clear

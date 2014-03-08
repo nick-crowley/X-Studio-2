@@ -50,6 +50,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BEGIN_MESSAGE_MAP(MainWnd, CMDIFrameWndEx)
 	   ON_WM_CREATE()
+      ON_WM_CLOSE()
       ON_WM_SETTINGCHANGE()
       ON_WM_SHOWWINDOW()
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
@@ -68,7 +69,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_CONSOLE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryCommand)
-      ON_WM_CLOSE()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -400,6 +400,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="wp">The wp.</param>
    void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
+      EnableWindow(TRUE);
+
       // Success: Change app state
       if (wp.Type == ProgressType::Succcess)
       {
@@ -409,8 +411,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Hide splash screen
          m_dlgSplash.DestroyWindow();
-         //EnableWindow(TRUE);
-
+         
          // Parse command line 
 	      CCommandLineInfo cmdInfo;
 	      theApp.ParseCommandLine(cmdInfo);
@@ -427,20 +428,27 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
       }
    }
+
    
    /// <summary>Called on first display</summary>
    void MainWnd::OnInitialUpdate()
    {
-      // Show splash screen
-      m_dlgSplash.Create(IDD_SPLASH, this);
-      m_dlgSplash.ShowWindow(SW_SHOW);
-      //EnableWindow(FALSE);
+      try
+      {
+         // Show splash screen
+         m_dlgSplash.Create(this, 0);
+         m_dlgSplash.ShowWindow(SW_SHOW);
+         EnableWindow(FALSE);
 
-      // Load game data
-      GameDataThread.Start(new GameDataWorkerData(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion));
+         // Load game data
+         GameDataThread.Start(new GameDataWorkerData(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion));
 
-      // Find & Replace dialog:
-      m_dlgFind.Create(FindDialog::IDD, this);
+         // Find & Replace dialog:
+         m_dlgFind.Create(FindDialog::IDD, this);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
    }
 
    /// <summary>Query menu item state</summary>
@@ -556,5 +564,4 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)
-
 

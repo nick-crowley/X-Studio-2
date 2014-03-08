@@ -113,7 +113,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void  LanguageEditView::AdjustLayout()
    {
       // Destroyed/Minimised
-	   if (RichEdit.GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
+	   if (!RichEdit.GetSafeHwnd() || theApp.IsMimized())
          return;
          
       ClientRect view(this);

@@ -80,8 +80,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Adjusts the layout.</summary>
    void CPropertiesWnd::AdjustLayout()
    {
-      // Ensure exists
-	   if (!GetSafeHwnd() || (AfxGetMainWnd() && AfxGetMainWnd()->IsIconic()))
+      // Destroyed/Minimised
+	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
 
 	   CRect rectClient;

@@ -220,7 +220,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CGameDataWnd::AdjustLayout()
    {
       // Destroyed/Minimised
-	   if (GetSafeHwnd() == NULL || (AfxGetMainWnd() != NULL && AfxGetMainWnd()->IsIconic()))
+	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
 
       ClientRect client(this);
