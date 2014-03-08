@@ -125,8 +125,8 @@ namespace Logic
       };
 
 
-      /// <summary>Vector of script objects</summary>
-      typedef vector<ScriptObject>  ScriptObjectArray;
+      /// <summary>Vector of script objects pointers</summary>
+      typedef vector<const ScriptObject*>  ScriptObjectArray;
    
    }
 }

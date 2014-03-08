@@ -245,7 +245,7 @@ namespace Logic
          // Linear search for partial substring
          for (auto& pair : Lookup)
             if (FindAll || pair.first.Contains(search, false))
-               Results.push_back(pair.second);
+               Results.push_back(&pair.second);
 
          return Results;
       }

@@ -1,12 +1,10 @@
 #pragma once
 #include "afxcmn.h"
+#include "Logic/ScriptFile.h"
 #include "Logic/ScriptToken.h"
 
 /// <summary>Forward declaration</summary>
-NAMESPACE_BEGIN2(Logic,Scripts)
-   class ScriptFile;
-NAMESPACE_END2(Logic,Scripts)
-
+//FORWARD_DECLARATION2(Logic,Scripts,class ScriptFile)
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -24,14 +22,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       /// <summary>Item in the list</summary>
       struct SuggestionItem
       {
+         // --------------------- CONSTRUCTION ----------------------
       public:
          SuggestionItem(const wstring& txt, const wstring& type, const wstring& sort) : Text(txt), Type(type), Key(sort)
          {}
          SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type), Key(txt)
          {}
-         wstring Text, // Item text
-                 Type, // Type/Group text
-                 Key;  // Sorting key
+
+         // -------------------- REPRESENTATION ---------------------
+      public:
+         wstring Text,  // Item text
+                 Type,  // Type/Group text
+                 Key;   // Sorting key
       };
 
       /// <summary>Vector of items</summary>
@@ -51,10 +53,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
       ScriptEdit* GetParent() const;
       wstring GetSelected() const;
    
@@ -72,13 +70,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
 	  
       // -------------------- REPRESENTATION ---------------------
-      
    private:
       const CSize DefaultSize = CSize(300,200),
                   CommandSize = CSize(600,200);
       
-      Suggestion   SuggestionType;
-      ContentArray Content;
+      Suggestion        SuggestionType;
+      ContentArray      Content;
       const ScriptFile* Script;
    };
    

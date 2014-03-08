@@ -327,6 +327,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  AttachEdit(GUI::Controls::ScriptEdit& edit);
       bool  FindNext(UINT start, MatchData& src) const override;
       bool  Replace(MatchData& m) override;
+      void  Replace(const wstring& txt);
       void  SetSelection(CHARRANGE rng) override;
 
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;

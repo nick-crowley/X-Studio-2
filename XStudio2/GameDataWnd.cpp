@@ -19,8 +19,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
-      ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_WM_SETTINGCHANGE()
+      ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
+      ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -59,47 +60,53 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Clears all items.</summary>
    void  CGameDataWnd::Clear()
    {
       ListView.RemoveAllGroups();
-         ListView.DeleteAllItems();
+      ListView.DeleteAllItems();
    }
 
+   /// <summary>Populate when application state changes.</summary>
+   /// <param name="s">The s.</param>
    void CGameDataWnd::OnAppStateChanged(AppState s)
    {
       UpdateContent();
    }
 
+   /// <summary>Called when [context menu].</summary>
+   /// <param name="pWnd">The p WND.</param>
+   /// <param name="point">The point.</param>
    void CGameDataWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
-	   //CTreeCtrl* pWndTree = (CTreeCtrl*) &TreeView;
-	   //ASSERT_VALID(pWndTree);
-
-	   //if (pWnd != pWndTree)
-	   //{
-		  // CDockablePane::OnContextMenu(pWnd, point);
-		  // return;
-	   //}
-
-	   //if (point != CPoint(-1, -1))
-	   //{
-		  // // Select clicked item:
-		  // CPoint ptTree = point;
-		  // pWndTree->ScreenToClient(&ptTree);
-
-		  // UINT flags = 0;
-		  // HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
-		  // if (hTreeItem != NULL)
-		  // {
-			 //  pWndTree->SelectItem(hTreeItem);
-		  // }
-	   //}
-
-	   //pWndTree->SetFocus();
-	   //theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
    }
 
+   
+   /// <summary>Insert item into current script</summary>
+   /// <param name="pNMHDR">The p NMHDR.</param>
+   /// <param name="pResult">The p result.</param>
+   void CGameDataWnd::OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      auto info = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
 
+      // Require script document
+      if (ScriptDocument::GetActive())
+      {
+         // Ignore item number provided by system, somtimes invalid.
+         auto txt = GetItemText( ListView.HitTest(CursorPoint(this)) );
+
+         // Insert into current document
+         if (!txt.empty())
+            ScriptDocument::GetActive()->Replace(txt);
+      }
+
+      *pResult = 0;
+   }
+   
+
+   /// <summary>Create child controls.</summary>
+   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <returns></returns>
    int CGameDataWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       try
@@ -151,6 +158,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
+   /// <summary>(App-Wizard Generated) Draw border.</summary>
    void CGameDataWnd::OnPaint()
    {
 	   CPaintDC dc(this); 
@@ -164,6 +172,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   dc.Draw3dRect(rc, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
+   /// <summary>set focus to the listView.</summary>
+   /// <param name="pOldWnd">The p old WND.</param>
    void CGameDataWnd::OnSetFocus(CWnd* pOldWnd)
    {
 	   CDockablePane::OnSetFocus(pOldWnd);
@@ -171,6 +181,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ListView.SetFocus();
    }
 
+   /// <summary>Refresh items when search text changes.</summary>
    void CGameDataWnd::OnSearchTermChanged()
    {
       UpdateContent();
@@ -193,6 +204,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       AdjustLayout();
    }
 
+   /// <summary>Adjusts layout on resize</summary>
+   /// <param name="nType">Type of the n.</param>
+   /// <param name="cx">The width.</param>
+   /// <param name="cy">The height.</param>
    void CGameDataWnd::OnSize(UINT nType, int cx, int cy)
    {
 	   CDockablePane::OnSize(nType, cx, cy);
@@ -225,6 +240,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ListView.SetColumnWidth(0, client.Width()-GetSystemMetrics(SM_CXVSCROLL));
    }
 
+   /// <summary>Updates the content.</summary>
    void  CGameDataWnd::UpdateContent()
    {
       try

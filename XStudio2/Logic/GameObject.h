@@ -107,8 +107,8 @@ namespace Logic
                          Description;
       };
 
-      /// <summary>Vector of game objects</summary>
-      typedef vector<GameObject> GameObjectArray;
+      /// <summary>Vector of game object pointers</summary>
+      typedef vector<const GameObject*> GameObjectArray;
    }
 }
 

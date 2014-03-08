@@ -97,15 +97,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return GetView()->GetSelection();
    }
-
+   
    /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if replaced, false if match was no longer selected</returns>
    bool  ScriptDocument::Replace(MatchData& m)
    {
+      SetModifiedFlag(TRUE);
       return GetView()->Replace(m);
    }
    
+   /// <summary>Inserts current selection with text.</summary>
+   /// <param name="txt">The text.</param>
+   void  ScriptDocument::Replace(const wstring& txt)
+   {
+      SetModifiedFlag(TRUE);
+      GetView()->Replace(txt);
+   }
+
    /// <summary>Sets the text selection in the view</summary>
    /// <param name="rng">text range.</param>
    void  ScriptDocument::SetSelection(CHARRANGE rng)

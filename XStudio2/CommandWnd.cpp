@@ -36,6 +36,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 
+   /// <summary>Gets the item text.</summary>
+   /// <param name="index">The index.</param>
+   /// <returns></returns>
+   wstring  CCommandWnd::GetItemText(UINT index)
+   {
+      auto cmd = reinterpret_cast<const CommandSyntax*>(ListView.GetItemData(index));
+
+      // Format item
+      return cmd ? cmd->GetDisplayText() : L"";
+   }
+
+
    /// <summary>Populates the group combo.</summary>
    void  CCommandWnd::PopulateGroupCombo()
    {
@@ -68,22 +80,24 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       // Generate/insert display text for each command
-      for (UINT i = 0; i < Content.size(); ++i)
+      UINT i = 0;
+      for (auto& obj : Content)
       {
-         LVItem item(i, Content[i]->DisplayText, (UINT)Content[i]->Group, LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+         LVItem item(i++, obj->DisplayText, (UINT)obj->Group, LVIF_TEXT|LVIF_GROUPID|LVIF_IMAGE|LVIF_PARAM);
          item.iImage = 0;
+         item.lParam = (LPARAM)obj;
 
          // Set icon
-         if (Content[i]->IsCompatible(GameVersion::Threat))
+         if (obj->IsCompatible(GameVersion::Threat))
             item.iImage = 3;
-         else if (Content[i]->IsCompatible(GameVersion::Reunion))
+         else if (obj->IsCompatible(GameVersion::Reunion))
             item.iImage = 4;
          else
-            item.iImage = Content[i]->IsCompatible(GameVersion::TerranConflict) ? 5 : 6;
+            item.iImage = obj->IsCompatible(GameVersion::TerranConflict) ? 5 : 6;
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert %s command '%s' (item %d)", GetString(Content[i]->Group).c_str(), item.pszText, i) );
+            throw Win32Exception(HERE, GuiString(L"Unable to insert %s command '%s' (item %d)", GetString(obj->Group).c_str(), item.pszText, i-1) );
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------

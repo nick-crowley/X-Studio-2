@@ -36,18 +36,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   #ifdef _DEBUG
-   void SuggestionList::AssertValid() const
-   {
-	   CListCtrl::AssertValid();
-   }
-   
-   void SuggestionList::Dump(CDumpContext& dc) const
-   {
-	   CListCtrl::Dump(dc);
-   }
-   #endif //_DEBUG
-
    /// <summary>Creates the specified parent.</summary>
    /// <param name="parent">The script edit</param>
    /// <param name="pt">The character position in script edit client co-ordinates</param>
@@ -154,17 +142,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
       case Suggestion::GameObject:  
          for (auto& obj : GameObjectLib.Query(L""))
-            Content.push_back( SuggestionItem(obj.Name, GetString(obj.Type)) );
+            Content.push_back( SuggestionItem(obj->Name, GetString(obj->Type)) );
          break;
 
       case Suggestion::ScriptObject:
          for (auto& obj : ScriptObjectLib.Query(L""))
-            Content.push_back( SuggestionItem(obj.Text, GetString(obj.Group)) );
+            Content.push_back( SuggestionItem(obj->Text, GetString(obj->Group)) );
          break;
 
       case Suggestion::Variable:    
          for (auto& var : Script->Variables)
-            Content.push_back( SuggestionItem(var.Name, var.Type==VariableType::Variable?L"Variable":L"Argument") );
+            Content.push_back( SuggestionItem(var.Name, GetString(var.Type).c_str()) );
          break;
 
       case Suggestion::Label:       
@@ -178,7 +166,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          break;
       }
 
-      // Sort alphabetically
+      // Sort keys alphabetically
       sort(Content.begin(), Content.end(), [](SuggestionItem& a, SuggestionItem& b) {return a.Key < b.Key;} );
    }
 
