@@ -11,6 +11,9 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
 
+   /// <summary>Empty list used by text colour menu</summary>
+   CList<COLORREF,COLORREF> LanguageEditView::TextColourMenu::Dummy;
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -181,8 +184,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguageEditView::OnPerformCommand(UINT nID)
    {
       static int LastButtonID = 1;  
-      
-      //AfxMessageBox(L"LanguageEditView::OnCommandChangeText");
 
       try
       {
@@ -203,16 +204,20 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Button: Insert at caret
          case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");  break;
 
-         // Colour: Not implemented
-         case ID_EDIT_COLOUR: 
+         // Colour: Set colour
+         case ID_EDIT_COLOUR:  {
+            CharFormat cf(CFM_COLOR, 0);
+            RichEdit.GetSelectionCharFormat(cf);
+            auto menu = new TextColourMenu(RichEdit, cf.crTextColor, TextColours);
+            menu->Create(this);
             break;
-
-         // Format: Require editor mode
+         }
+         // Format: Toggle formatting
          case ID_EDIT_BOLD:       RichEdit.ToggleFormatting(CFE_BOLD);       break;
          case ID_EDIT_ITALIC:     RichEdit.ToggleFormatting(CFE_ITALIC);     break;
          case ID_EDIT_UNDERLINE:  RichEdit.ToggleFormatting(CFE_UNDERLINE);  break;
 
-         // Alignment: Require editor mode
+         // Alignment: Set alignment
          case ID_EDIT_LEFT:       RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Left));     break;
          case ID_EDIT_RIGHT:      RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Right));    break;
          case ID_EDIT_CENTRE:     RichEdit.SetParaFormat(ParaFormat(PFM_ALIGNMENT, Alignment::Centre));   break;

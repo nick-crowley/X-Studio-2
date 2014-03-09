@@ -16,6 +16,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       /// <summary>Dialog ID.</summary>
 	   enum { IDD = IDR_LANGUAGEVIEW };
 
+      typedef CArray<COLORREF, COLORREF>  MFCColourArray;
+
       /// <summary>Base class for all button properties</summary>
       class ButtonPropertyBase : public LanguageDocument::PropertyBase
       {
@@ -115,6 +117,68 @@ NAMESPACE_BEGIN2(GUI,Views)
          // -------------------- REPRESENTATION ---------------------
       protected:
       };
+
+      /// <summary>Text colours array</summary>
+      class TextColourArray : public MFCColourArray
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         TextColourArray()
+         {
+            Add((COLORREF)RichTextColour::Black);
+            Add((COLORREF)RichTextColour::Blue);
+            Add((COLORREF)RichTextColour::Cyan);
+            Add((COLORREF)RichTextColour::Default);
+            Add((COLORREF)RichTextColour::Green);
+            Add((COLORREF)RichTextColour::Grey);
+            Add((COLORREF)RichTextColour::Orange);
+            Add((COLORREF)RichTextColour::Purple);
+            Add((COLORREF)RichTextColour::Red);
+            Add((COLORREF)RichTextColour::Silver);
+            Add((COLORREF)RichTextColour::White);
+            Add((COLORREF)RichTextColour::Yellow);
+         }
+      };
+
+      /// <summary>Text colour dialog</summary>
+      class TextColourMenu : public CMFCColorPopupMenu
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create colour menu.</summary>
+         /// <param name="txt">Text colour.</param>
+         /// <param name="cols">Available colours.</param>
+         TextColourMenu(LanguageEdit& ctrl, COLORREF txt, MFCColourArray& cols)
+            : Edit(ctrl), CMFCColorPopupMenu(nullptr, cols, txt, L"Default", nullptr, nullptr, Dummy, 6, (COLORREF)RichTextColour::Default)
+         {}
+
+         // ------------------------ STATIC -------------------------
+      private:
+         static CList<COLORREF,COLORREF>  Dummy;
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Display menu at position.</summary>
+         /// <param name="parent">parent.</param>
+         /// <returns></returns>
+         BOOL  Create(CWnd* parent)
+         {
+            CursorPoint pt;
+            return __super::Create(parent, pt.x, pt.y, nullptr, FALSE, TRUE);
+         }
+
+      protected:
+         void  OnChooseItem(UINT nID) override
+         {
+            Console << "User chose item "<< nID << ENDL;
+            /*CharFormat cf(CFM_COLOR, 0, col);
+            Edit.SetSelectionCharFormat(cf);*/
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         LanguageEdit& Edit;
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    protected:
@@ -165,6 +229,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // -------------------- REPRESENTATION ---------------------
    protected:
       SelectionChangedHandler  fnStringSelectionChanged;
+      TextColourArray          TextColours;
       LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
    };
