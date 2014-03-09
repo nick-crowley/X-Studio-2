@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NewDocumentDialog.h"
 #include "ProjectDocument.h"
+#include "ScriptDocument.h"
+#include "LanguageDocument.h"
 #include "afxdialogex.h"
 #include "Helpers.h"
 
@@ -73,31 +75,38 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
+         // Get data
          UpdateData(TRUE);
+         auto t = GetTemplate(-1);
 
          // Require selection + filename + folder
-         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || FileName.Empty() || GetTemplate(-1)->Type == DocumentType::Mission)
+         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || /*FileName.Empty() ||*/ t->Type == DocumentType::Mission)
             return;
 
          // Manually check for extension (scripts almost always have dots in their name)
-         if (!FileName.HasExtension(L".xml") && !FileName.HasExtension(L".pck") && !FileName.HasExtension(L".xprj"))
+         /*if (!FileName.HasExtension(L".xml") && !FileName.HasExtension(L".pck") && !FileName.HasExtension(L".xprj"))
          {
             FileName = wstring(FileName.c_str()) + GetTemplate(-1)->Extension;
             UpdateData(FALSE);
-         }
+         }*/
 
          // Check folder exists
          if (!Folder.Exists() || !Folder.IsDirectory())
             throw ApplicationException(HERE, L"The folder does not exist");
 
          // Check file doesn't exist
-         if (FileName.Exists())
-            throw ApplicationException(HERE, L"The file already exists");
+         /*if (FileName.Exists())
+            throw ApplicationException(HERE, L"The file already exists");*/
 
          // Save folder
          PrefsLib.NewDocumentFolder = Folder;
 
-         // TODO: Open document
+         // Open document
+         switch (t->Type)
+         {
+         case DocumentType::Script:   theApp.GetDocumentTemplate<ScriptDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);    break;
+         case DocumentType::Language: theApp.GetDocumentTemplate<LanguageDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);  break;
+         }
 
          // OK
          CDialogEx::OnOK();
@@ -117,9 +126,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Control(pDX, IDC_TEMPLATE_LIST, Templates);
       DDX_Control(pDX, IDC_ADD_PROJECT_CHECK, AddProject);
       DDX_Control(pDX, IDC_DESCRIPTION_EDIT, Description);
-      DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
+      //DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
-      //DDX_Control(pDX, IDOK, OK);
    }
    
    /// <summary>Enable OK button when user selects a template</summary>

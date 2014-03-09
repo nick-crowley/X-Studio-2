@@ -57,7 +57,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    // -------------------------------- CONSTRUCTION --------------------------------
    
    ScriptView::ScriptView() 
-             : CFormView(ScriptView::IDD), fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete))
+             : CFormView(ScriptView::IDD), 
+               fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete))
    {
    }
 
@@ -286,6 +287,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Display script text
          RichEdit.Initialize(GetDocument());
          RichEdit.SetRtf(txt);
+         RichEdit.EmptyUndoBuffer();
 
          // Populate variables/scope
          PopulateVariables();
