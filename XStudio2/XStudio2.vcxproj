@@ -272,6 +272,7 @@
     <ClInclude Include="SplashWnd.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuggestionList.h" />
+    <ClInclude Include="SymbolDialog.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
@@ -398,6 +399,7 @@
     </ClCompile>
     <ClCompile Include="ProjectTreeCtrl.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
+    <ClCompile Include="SymbolDialog.cpp" />
     <ClCompile Include="Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="Testing\ScriptValidator.cpp" />

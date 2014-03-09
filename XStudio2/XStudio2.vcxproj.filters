@@ -558,10 +558,13 @@
     <ClInclude Include="Logic\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SplashWnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RefactorDialog.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashWnd.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -924,9 +927,12 @@
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="SplashWnd.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="RefactorDialog.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

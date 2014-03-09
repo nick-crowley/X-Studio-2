@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScriptEdit.h"
 #include "RefactorDialog.h"
+#include "SymbolDialog.h"
 #include "Logic/CommandLexer.h"
 #include "Logic/SyntaxHighlight.h"
 
@@ -51,6 +52,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Determines whether token at caret can be refactored.</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanRefactor() const
+   {
+      // Lookup token @ caret
+      CommandLexer lex(GetLineText(-1), true);
+      TokenIterator pos = lex.Find(GetCaretIndex());
+
+      // Ensure variable/label
+      return lex.Valid(pos) && (pos->Type == TokenType::Label || pos->Type == TokenType::Variable);
+   }
 
    /// <summary>Toggles comment on the selected lines.</summary>
    void  ScriptEdit::CommentSelection()
@@ -776,36 +789,56 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    
-   /// <summary>Refactors the specified symbol.</summary>
-   /// <param name="symbol">The symbol.</param>
-   /// <param name="type">The type.</param>
-   /// <param name="replace">The replace.</param>
-   void ScriptEdit::Refactor(const wstring& symbol, SymbolType type, const wstring& replace)
+   /// <summary>Refactors the symbol at the caret.</summary>
+   void ScriptEdit::Refactor()
    {
       SymbolList matches;
-      list<TextRangePtr> targets;
+      list<TextRangePtr> tokens;
       
       try
       {
-         // Find all matches
-         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
-         parser.FindAll(symbol, SymbolType::Variable, matches);
-
-         // Display refactor dialog
-         RefactorDialog dlg(matches);
-         if (dlg.DoModal() == IDCANCEL)
+         // Validate
+         if (!CanRefactor())
             return;
 
+         // Lookup token @ caret
+         CommandLexer  lex(GetLineText(-1), true);
+         TokenIterator symbol = lex.Find(GetCaretIndex());
+
+         // Identify type
+         SymbolType type = (symbol->Type == TokenType::Variable ? SymbolType::Variable : SymbolType::Label);
+
+         // Display 'rename symbol' dialog
+         SymbolDialog symbolDlg(symbol->ValueText, type, this);
+         if (symbolDlg.DoModal() == IDCANCEL)
+            return;
+
+         // Feedback
+         Console << Cons::UserAction << "Refactoring " << Cons::Yellow << symbol->Text 
+                 << Cons::White << " into " << Cons::Yellow << symbolDlg.RenameText;
+
+         // Find all matches
+         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
+         parser.FindAll(symbol->ValueText, type, matches);
+
+         // Display refactor dialog
+         RefactorDialog refactorDlg(matches, this);
+         if (refactorDlg.DoModal() == IDCANCEL)
+         {
+            Console << Cons::UserAction << "Refactoring aborted" << ENDL;
+            return;
+         }
+
          // Generate text ranges for all replacements
-         for (auto& m : dlg.Accepted)
+         for (auto& m : refactorDlg.Accepted)
          {
             auto offset = LineIndex(m.LineNumber-1);
-            TextDocument->Range(offset+m.Token.Start, offset+m.Token.End);
+            tokens.push_back( TextDocument->Range(offset+m.Token.Start, offset+m.Token.End) );
          }
 
          // Perform replacements
-         for (auto& t : targets)
-            t->Text = replace.c_str();
+         for (auto& tok : tokens)
+            tok->Text = symbolDlg.RenameText.c_str();
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);

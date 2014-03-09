@@ -5,25 +5,24 @@
 NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary></summary>
-   class RefactorDialog : public CDialog
+   class SymbolDialog : public CDialog
    {
       // ------------------------ TYPES --------------------------
    public:
-      enum { IDD = IDD_REFACTOR };
+      enum { IDD = IDD_SYMBOL };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
-      RefactorDialog(SymbolList matches, CWnd* parent);
-      virtual ~RefactorDialog();
+      SymbolDialog(const wstring& symbol, SymbolType type, CWnd* parent);    
+      virtual ~SymbolDialog();
        
       // ------------------------ STATIC -------------------------
-      //DECLARE_DYNCREATE(RefactorDialog)
       DECLARE_MESSAGE_MAP()
 	  
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
-
+   public:
       // ----------------------- MUTATORS ------------------------
    public:
       BOOL OnInitDialog() override;
@@ -37,12 +36,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
-      SymbolList    Accepted;
+      wstring  RenameText;
 
    protected:
-      vector<Symbol> AllSymbols;
-      CCheckListBox  List;
-      
+      wstring     SymbolText,
+                  SymbolName;
+      SymbolType  Type;
    };
    
 
