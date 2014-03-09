@@ -67,7 +67,9 @@ namespace GUI
    class CursorPoint : public CPoint
    {
    public:
-      CursorPoint(const CWnd* wnd) : CPoint(0,0)
+      /// <summary>Create cursor position.</summary>
+      /// <param name="wnd">Window for client co=ordinates, or nullptr for screen co-ords</param>
+      CursorPoint(const CWnd* wnd = nullptr) : CPoint(0, 0)
       {
          // Get position in screen co-ords
          if (GetCursorPos(this) && wnd)
