@@ -177,11 +177,12 @@
 
 // Refactor dialog
 #define IDC_SYMBOL_LIST                 800
+//#define IDC_SYMBOL_EDIT                 801
 
 // Symbol dialog
-#define IDC_SYMBOL_EDIT                 800
-#define IDC_RENAME_EDIT                 801
-#define IDC_PREVIEW_CHECK               802
+#define IDC_SYMBOL_EDIT                 802
+#define IDC_RENAME_EDIT                 803
+#define IDC_PREVIEW_CHECK               804
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

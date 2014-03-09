@@ -59,6 +59,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    bool  RichEditEx::EnsureVisible(int line)
    {
       SetScrollCoordinates(CPoint(0, max(0,line)));
+      SendMessage(WM_HSCROLL, SB_LEFT, 0);
       return true;
    }
    
@@ -320,6 +321,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
 
+   /// <summary>Selects the line.</summary>
+   /// <param name="line">Zero-based line number, or -1 for line containing the caret.</param>
+   void RichEditEx::SelectLine(int line)
+   {
+      SetSel(GetLineStart(line), GetLineEnd(line));
+   }
+   
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
    /// <exception cref="Logic::Win32Exception">Unable to set text</exception>
@@ -573,7 +581,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (CanPaste(nClipFormat) && !ReadOnly)
          PasteSpecial(nClipFormat);
    }
-
+   
    /// <summary>Scrolls window to the position of a character</summary>
    /// <param name="pt">Character co-orindates</param>
    void RichEditEx::SetScrollCoordinates(const CPoint& pt)

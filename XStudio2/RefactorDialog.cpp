@@ -10,12 +10,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BEGIN_MESSAGE_MAP(RefactorDialog, CDialog)
       ON_WM_SIZE()
+      ON_LBN_SELCHANGE(IDC_SYMBOL_LIST, OnSelectionChanged)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   RefactorDialog::RefactorDialog(SymbolList matches, CWnd* parent) 
-       : CDialog(IDD_REFACTOR, parent), AllSymbols(matches.begin(), matches.end())
+   RefactorDialog::RefactorDialog(ScriptDocument& doc, const wstring& text, SymbolList matches, CWnd* parent) 
+       : CDialog(IDD_REFACTOR, parent), 
+         AllSymbols(matches.begin(), matches.end()),
+         Document(doc),
+         DocumentText(text)
    {
    }
 
@@ -34,16 +38,27 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Init
       __super::OnInitDialog();
 
-      // Populate symbols
-      UINT i = 0;
-      for (auto& s : AllSymbols)
+      try
       {
-         // Format: (line) text
-         GuiString line(L"(%d) %s%s", s.LineNumber, s.Commented ? L"*" : L"", s.LineText.TrimLeft(L" \t").c_str());
+         // Populate symbols
+         UINT i = 0;
+         for (auto& s : AllSymbols)
+         {
+            // Format: (line) text
+            GuiString line(L"(%d) %s%s", s.LineNumber, s.Commented ? L"* " : L"", s.LineText.TrimLeft(L" \t").c_str());
 
-         // Insert item
-         List.InsertString(i, line.c_str());
-         List.SetCheck(i++, !s.Commented ? BST_CHECKED : BST_UNCHECKED);
+            // Insert item
+            List.InsertString(i, line.c_str());
+            List.SetCheck(i++, !s.Commented ? BST_CHECKED : BST_UNCHECKED);
+         }
+
+         // Populate edit
+         RichEdit.Initialize(&Document);
+         RichEdit.SetPlainText(DocumentText);
+         
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unable to initialise the refactor dialog");
       }
 
       return TRUE;
@@ -80,7 +95,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void RefactorDialog::DoDataExchange(CDataExchange* pDX)
    {
       DDX_Control(pDX, IDC_SYMBOL_LIST, List);
+      DDX_Control(pDX, IDC_SYMBOL_EDIT, RichEdit);
       __super::DoDataExchange(pDX);
+   }
+
+   /// <summary>Displays the selected line</summary>
+   void RefactorDialog::OnSelectionChanged()
+   {
+      // Require selection
+      if (List.GetCurSel() == LB_ERR)
+         return;
+
+      // Select line + display
+      auto symbol = AllSymbols[List.GetCurSel()];
+      RichEdit.SelectLine( symbol.LineNumber-1 );
+      RichEdit.EnsureVisible( symbol.LineNumber-4 );
    }
 
    /// <summary>Adjusts the layout on resize</summary>

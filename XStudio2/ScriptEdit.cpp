@@ -181,6 +181,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Initialize
       RichEditEx::Initialize(RGB(0,0,0));
+
+      // Set default character format
+      SetDefaultCharFormat(CharFormat(PrefsLib.ScriptViewFont, this));
+
+      // Adjust gutter
+      SetGutterWidth(GutterRect(this).Width());
+   }
+
+   /// <summary>Replace entire contents with plain text.</summary>
+   /// <param name="txt">text.</param>
+   /// <exception cref="Logic::InvalidOperationException">No document attached</exception>
+   void ScriptEdit::SetPlainText(const wstring& txt)
+   {
+      // Require document
+      if (Document == nullptr)
+         throw InvalidOperationException(HERE, L"Must attach document prior to displaying text");
+
+      // Set text
+      SetWindowText(txt.c_str());
+
+      // Set default character format
+      SetDefaultCharFormat(CharFormat(PrefsLib.ScriptViewFont, this));
+
+      // Adjust gutter
+      SetGutterWidth(GutterRect(this).Width());
+
+      // Update highlighting
+      UpdateHighlighting(0, GetLineCount()-1);
+      EnsureVisible(0);
    }
 
    /// <summary>Replace entire contents with RTF.</summary>
@@ -201,6 +230,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width());
+      EnsureVisible(0);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
@@ -680,7 +710,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       auto tok = lex.Tokens.Find(cursor.x);
       
       // None: show nothing
-      if (!tok)
+      if (!tok || ReadOnly)
          *data = CustomTooltip::NoTooltip;
 
       // Provide approriate data
@@ -722,7 +752,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnTextChange()
    {
       // Set/Reset background compiler timer
-      SetCompilerTimer(true);
+      if (!ReadOnly)
+         SetCompilerTimer(true);
 
       // Update current line
       UpdateHighlighting(-1, -1);
@@ -822,7 +853,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          parser.FindAll(symbol->ValueText, type, matches);
 
          // Display refactor dialog
-         RefactorDialog refactorDlg(matches, this);
+         RefactorDialog refactorDlg(*Document, GetAllText(), matches, this);
          if (symbolDlg.Preview && refactorDlg.DoModal() == IDCANCEL)
          {
             Console << Cons::UserAction << "Refactoring aborted" << ENDL;

@@ -36,6 +36,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Populate
       SymbolText = GuiString(L"%s::%s", Type == SymbolType::Variable ? L"Variable" : L"Label", SymbolName.c_str());
+      RenameText = SymbolName;
       UpdateData(FALSE);
 
       // Set focus to name edit
