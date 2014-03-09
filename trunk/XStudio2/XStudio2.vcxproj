@@ -136,6 +136,14 @@
     <ClInclude Include="GeneralPage.h" />
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="LanguageEdit.h" />
+    <ClInclude Include="Logic\dtl\Diff.hpp" />
+    <ClInclude Include="Logic\dtl\Diff3.hpp" />
+    <ClInclude Include="Logic\dtl\dtl.hpp" />
+    <ClInclude Include="Logic\dtl\functors.hpp" />
+    <ClInclude Include="Logic\dtl\Lcs.hpp" />
+    <ClInclude Include="Logic\dtl\Sequence.hpp" />
+    <ClInclude Include="Logic\dtl\Ses.hpp" />
+    <ClInclude Include="Logic\dtl\variables.hpp" />
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
     <ClInclude Include="Logic\ConsoleLog.h" />

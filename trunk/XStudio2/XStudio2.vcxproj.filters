@@ -115,6 +115,9 @@
     <Filter Include="Header Files\GUI\Preferences">
       <UniqueIdentifier>{062daa7a-f7f9-4204-a264-7d8dc2c82202}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\DTL">
+      <UniqueIdentifier>{3bd91329-b83e-47a7-a4d3-0a1ab1803321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Command Syntax.txt" />
@@ -564,8 +567,32 @@
     <ClInclude Include="SplashWnd.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\dtl\Diff.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\Diff3.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\dtl.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\functors.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\Lcs.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\Sequence.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\Ses.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\dtl\variables.hpp">
+      <Filter>Header Files\Logic\DTL</Filter>
+    </ClInclude>
     <ClInclude Include="SymbolDialog.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -933,7 +960,7 @@
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="SymbolDialog.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
