@@ -37,6 +37,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // -------------------- REPRESENTATION ---------------------
    public:
       wstring  RenameText;
+      BOOL     Preview;
 
    protected:
       wstring     SymbolText,

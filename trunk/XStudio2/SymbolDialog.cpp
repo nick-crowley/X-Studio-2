@@ -15,6 +15,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    SymbolDialog::SymbolDialog(const wstring& symbol, SymbolType type, CWnd* parent) 
       : CDialog(IDD_SYMBOL, parent),
         SymbolName(symbol),
+        Preview(TRUE),
         Type(type)
    {
    }
@@ -37,6 +38,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       SymbolText = GuiString(L"%s::%s", Type == SymbolType::Variable ? L"Variable" : L"Label", SymbolName.c_str());
       UpdateData(FALSE);
 
+      // Set focus to name edit
       GetDlgItem(IDC_RENAME_EDIT)->SetFocus();
       return FALSE;
    }
@@ -79,6 +81,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       __super::DoDataExchange(pDX);
       DDX_Text(pDX, IDC_SYMBOL_EDIT, SymbolText);
       DDX_Text(pDX, IDC_RENAME_EDIT, RenameText);
+      DDX_Check(pDX, IDC_PREVIEW_CHECK, Preview);
    }
    
    void SymbolDialog::OnSize(UINT nType, int cx, int cy)
