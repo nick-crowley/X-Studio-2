@@ -181,6 +181,7 @@
 // Symbol dialog
 #define IDC_SYMBOL_EDIT                 800
 #define IDC_RENAME_EDIT                 801
+#define IDC_PREVIEW_CHECK               802
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

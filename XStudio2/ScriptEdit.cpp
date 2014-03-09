@@ -823,14 +823,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // Display refactor dialog
          RefactorDialog refactorDlg(matches, this);
-         if (refactorDlg.DoModal() == IDCANCEL)
+         if (symbolDlg.Preview && refactorDlg.DoModal() == IDCANCEL)
          {
             Console << Cons::UserAction << "Refactoring aborted" << ENDL;
             return;
          }
 
          // Generate text ranges for all replacements
-         for (auto& m : refactorDlg.Accepted)
+         for (auto& m : symbolDlg.Preview ? refactorDlg.Accepted : matches)
          {
             auto offset = LineIndex(m.LineNumber-1);
             tokens.push_back( TextDocument->Range(offset+m.Token.Start, offset+m.Token.End) );
