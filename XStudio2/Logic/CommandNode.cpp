@@ -209,19 +209,22 @@ namespace Logic
          /// <param name="results">The results.</param>
          void  CommandNode::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
+            bool comment = CmdComment || Is(CMD_COMMENT);
+
+            // Perform Search
             switch (type)
             {
             // Label: Search for 'define label', 'goto label', 'gosub label'
             case SymbolType::Label:
                if ((Is(CMD_DEFINE_LABEL) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB)) && !Parameters.empty()) 
-                  results.push_back(Symbol(Parameters[0].Token, SymbolType::Label, LineNumber, LineText));
+                  results.push_back(Symbol(Parameters[0].Token, SymbolType::Label, LineNumber, LineText, comment));
                break;
 
             // Variable: Search all commands
             case SymbolType::Variable:
                for (const auto& p : Parameters)
                   if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String && p.Token.ValueText == name)
-                     results.push_back(Symbol(p.Token, SymbolType::Variable, LineNumber, LineText));
+                     results.push_back(Symbol(p.Token, SymbolType::Variable, LineNumber, LineText, comment));
                break;
             }
 

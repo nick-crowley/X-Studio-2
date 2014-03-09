@@ -38,8 +38,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       UINT i = 0;
       for (auto& s : AllSymbols)
       {
-         List.InsertString(i, s.LineText.c_str());
-         List.SetCheck(i++, BST_CHECKED);
+         // Format: (line) text
+         GuiString line(L"(%d) %s%s", s.LineNumber, s.Commented ? L"*" : L"", s.LineText.TrimLeft(L" \t").c_str());
+
+         // Insert item
+         List.InsertString(i, line.c_str());
+         List.SetCheck(i++, !s.Commented ? BST_CHECKED : BST_UNCHECKED);
       }
 
       return TRUE;

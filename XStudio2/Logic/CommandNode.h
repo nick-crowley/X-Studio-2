@@ -69,10 +69,10 @@ namespace Logic
             {}
          };
 
-         /// <summary></summary>
+         /// <summary>Types of symbol available</summary>
          enum class SymbolType { Variable, Label };
 
-         /// <summary></summary>
+         /// <summary>Represents a symbol used during refactoring process</summary>
          class Symbol
          {
          public:
@@ -80,15 +80,18 @@ namespace Logic
             /// <param name="name">name without operators.</param>
             /// <param name="t">type.</param>
             /// <param name="line">1-based line number</param>
-            Symbol(const ScriptToken& tok, SymbolType t, UINT line, const wstring& txt) 
-               : Token(tok), Type(t), LineNumber(line), LineText(txt)
+            /// <param name="txt">line text</param>
+            /// <param name="comment">Whether line is commented</param>
+            Symbol(const ScriptToken& tok, SymbolType t, UINT line, const wstring& txt, bool comment) 
+               : Token(tok), Type(t), LineNumber(line), LineText(txt), Commented(comment)
             {}
 
          public:
-            SymbolType  Type;          // Type
-            ScriptToken Token;         // Name
-            UINT        LineNumber;    // 1-based line number
-            wstring     LineText;
+            const SymbolType  Type;          // Type
+            const ScriptToken Token;         // Name
+            const UINT        LineNumber;    // 1-based line number
+            const GuiString   LineText;      // Line text
+            const bool        Commented;     // Whether commented
          };
 
          /// <summary></summary>
