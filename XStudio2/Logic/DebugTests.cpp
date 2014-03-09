@@ -20,6 +20,7 @@
 #include "RichStringParser.h"
 #include "DescriptionFileReader.h"
 #include "../Testing/ScriptValidator.h"
+#include "dtl/dtl.hpp"
 
 namespace Logic
 {
@@ -36,7 +37,16 @@ namespace Logic
 
       /*int* violation= nullptr;
       *violation = 42;*/
-      throw exception("hahaha");
+      //throw exception("hahaha");
+
+      wstring A(L"abc"),
+              B(L"abd");
+      dtl::Diff<wchar, wstring> d(A, B);
+      d.compose();
+
+      for (auto s : d.getSes().getSequence())
+         s.second.type == dtl::SES_DELETE;
+      
 
       //Test_LanguageFileReader();
       //Test_LanguageEditRegEx();
