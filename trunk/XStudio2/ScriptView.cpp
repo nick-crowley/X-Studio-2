@@ -39,19 +39,21 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COMMENT, &ScriptView::OnEditComment)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
       ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
+      ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
       ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
       ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
       ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
       ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
       ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryClipboardCut)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryClipboardPaste)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, &ScriptView::OnQueryEditComment)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, &ScriptView::OnQueryEditIndent)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryEditOutdent)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryEditUndo)
-      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryEditRedo)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REFACTOR, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -241,6 +243,23 @@ NAMESPACE_BEGIN2(GUI,Views)
          RichEdit.IndentSelection(false);
    }
 
+   /// <summary>Refactor label/variable symbol</summary>
+   void ScriptView::OnEditRefactor()
+   {
+      // Ensure we have selection
+      if (!RichEdit.HasSelection())
+         return;
+
+      // TODO: Query for renamed symbol
+      /*SymbolDialog dlg;
+      if (dlg.DoModal() == IDCANCEL)
+         return;*/
+      const wchar* symbol = L"newMenu";
+      
+      // Refactor
+      RichEdit.Refactor(L"aMenu", SymbolType::Variable, symbol);
+   }
+
    /// <summary>Undo last edit operation</summary>
    void ScriptView::OnEditUndo()
    {
@@ -298,58 +317,44 @@ NAMESPACE_BEGIN2(GUI,Views)
          theApp.ShowError(HERE, e, L"Unable to initialise the script view");
       }
    }
-   
+
    /// <summary>Query state of clipboard copy context menu command</summary>
    /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryClipboardCut(CCmdUI *pCmdUI)
+   void ScriptView::OnQueryCommand(CCmdUI *pCmdUI)
    {
-      pCmdUI->Enable(RichEdit.HasSelection());
-   }
+      BOOL state = TRUE, 
+           check = FALSE;
 
-   /// <summary>Query state of clipboard paste context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryClipboardPaste(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(RichEdit.CanPaste(CF_UNICODETEXT));
+      //
+      switch (pCmdUI->m_nID)
+      {
+      // Clipboard
+      case ID_EDIT_CUT:     
+      case ID_EDIT_COPY:     state = RichEdit.HasSelection();            break;
+      case ID_EDIT_PASTE:    state = RichEdit.CanPaste(CF_UNICODETEXT);  break;
+
+      // Commment
+      case ID_EDIT_COMMENT:  state = TRUE;                               break;
+
+      case ID_EDIT_REFACTOR: state = TRUE;                               break;
+
+      // Indent/Outdent
+      case ID_EDIT_INDENT:
+      case ID_EDIT_OUTDENT:  state = RichEdit.HasSelection();            break;
+
+      // Undo/Redo
+      case ID_EDIT_UNDO:     state = RichEdit.CanUndo();
+                             pCmdUI->SetText(RichEdit.GetUndoMenuItem().c_str());    break;
+
+      case ID_EDIT_REDO:     state = RichEdit.CanRedo();
+                             pCmdUI->SetText(RichEdit.GetRedoMenuItem().c_str());    break;
+      }
+
+      // Set state
+      pCmdUI->SetCheck(check);
+      pCmdUI->Enable(state);
    }
    
-   /// <summary>Query state of COMMENT context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryEditComment(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(TRUE);
-   }
-
-   /// <summary>Query state of INDENT  context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryEditIndent(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(RichEdit.HasSelection());
-   }
-
-   /// <summary>Query state of OUTDENT context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryEditOutdent(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(RichEdit.HasSelection());
-   }
-
-   /// <summary>Query state of UNDO context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryEditUndo(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(RichEdit.CanUndo());
-      pCmdUI->SetText(RichEdit.GetUndoMenuItem().c_str());
-   }
-
-   /// <summary>Query state of REDO context menu command</summary>
-   /// <param name="pCmdUI">UI object</param>
-   void ScriptView::OnQueryEditRedo(CCmdUI *pCmdUI)
-   {
-      pCmdUI->Enable(RichEdit.CanRedo());
-      pCmdUI->SetText(RichEdit.GetRedoMenuItem().c_str());
-   }
-
    /// <summary>Invoke context menu</summary>
    /// <param name="nFlags">flags.</param>
    /// <param name="point">point in client co-ords.</param>

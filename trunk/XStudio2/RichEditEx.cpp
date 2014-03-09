@@ -338,6 +338,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
+         SetWindowText(L" ");
       }
 
       // Protect text

@@ -54,31 +54,32 @@
 #define ID_EDIT_INSERT                  203
 #define ID_EDIT_COMMENT                 204
 #define ID_EDIT_LOCALIZE                205
-#define ID_EDIT_INDENT                  206
-#define ID_EDIT_OUTDENT                 207
-#define ID_EDIT_PREFERENCES             208
+#define ID_EDIT_REFACTOR                206
+#define ID_EDIT_INDENT                  207
+#define ID_EDIT_OUTDENT                 208
+#define ID_EDIT_PREFERENCES             209
 
 // Test menu
-#define ID_TEST_RUN_ALL                 209
-#define ID_TEST_COMPILE                 210
+#define ID_TEST_RUN_ALL                 210
+#define ID_TEST_COMPILE                 211
 
 // View menu
-#define ID_VIEW_PROJECT                 211
-#define ID_VIEW_SCRIPT_OBJECTS          212
-#define ID_VIEW_GAME_OBJECTS            213
-#define ID_VIEW_COMMANDS                214
-#define ID_VIEW_OUTPUT                  215
-#define ID_VIEW_PROPERTIES              216
-#define ID_VIEW_STRING_LIBRARY          217
-#define ID_VIEW_MEDIA_LIBRARY           218
-#define ID_VIEW_CUSTOMIZE               219
+#define ID_VIEW_PROJECT                 212
+#define ID_VIEW_SCRIPT_OBJECTS          213
+#define ID_VIEW_GAME_OBJECTS            214
+#define ID_VIEW_COMMANDS                215
+#define ID_VIEW_OUTPUT                  216
+#define ID_VIEW_PROPERTIES              217
+#define ID_VIEW_STRING_LIBRARY          218
+#define ID_VIEW_MEDIA_LIBRARY           219
+#define ID_VIEW_CUSTOMIZE               220
 
 // Window menu
-#define ID_WINDOW_MANAGER               220
+#define ID_WINDOW_MANAGER               221
 
 // Help
-#define ID_HELP_FORUMS                  221
-#define ID_VIEW_CONSOLE                 222
+#define ID_HELP_FORUMS                  222
+#define ID_VIEW_CONSOLE                 223
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
@@ -126,6 +127,7 @@
 #define IDD_EDITOR_PAGE                 705
 #define IDD_NEW_DOCUMENT                706
 #define IDD_SPLASH                      707
+#define IDD_REFACTOR                    708
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -171,6 +173,9 @@
 #define IDC_FOLDER_EDIT                 827
 #define IDC_DESCRIPTION_EDIT            828
 #define IDC_ADD_PROJECT_CHECK           829
+
+// Refactor dialog
+#define IDC_SYMBOL_LIST                 830
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
