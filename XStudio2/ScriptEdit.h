@@ -500,6 +500,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
+      void      Refactor(const wstring& symbol, SymbolType type, const wstring& replace);
       void      PasteFormat(UINT nClipFormat) override;
 
    protected:

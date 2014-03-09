@@ -15,6 +15,8 @@ namespace Logic
    {
       namespace Compiler
       {
+         class CommandNode;
+
          /// <summary>Script error</summary>
          class ErrorToken : public TokenBase
          {
@@ -57,8 +59,6 @@ namespace Logic
             }
          };
 
-         class CommandNode;
-            
          /// <summary>Shared pointer to a parse tree node</summary>
          class CommandNodePtr : public shared_ptr<CommandNode> 
          {
@@ -68,6 +68,31 @@ namespace Logic
             CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
             {}
          };
+
+         /// <summary></summary>
+         enum class SymbolType { Variable, Label };
+
+         /// <summary></summary>
+         class Symbol
+         {
+         public:
+            /// <summary>Create symbol match.</summary>
+            /// <param name="name">name without operators.</param>
+            /// <param name="t">type.</param>
+            /// <param name="line">1-based line number</param>
+            Symbol(const ScriptToken& tok, SymbolType t, UINT line, const wstring& txt) 
+               : Token(tok), Type(t), LineNumber(line), LineText(txt)
+            {}
+
+         public:
+            SymbolType  Type;          // Type
+            ScriptToken Token;         // Name
+            UINT        LineNumber;    // 1-based line number
+            wstring     LineText;
+         };
+
+         /// <summary></summary>
+         typedef list<Symbol>  SymbolList;
             
          /// <summary>Represents a script command and its descendants, if any</summary>
          class CommandNode 
@@ -113,6 +138,7 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------		
          public:
+            void          FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             BranchLogic   GetBranchLogic() const;
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;

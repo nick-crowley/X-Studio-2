@@ -105,6 +105,16 @@ namespace Logic
 #endif
          }
 
+         /// <summary>Finds all instances of a symbol</summary>
+         /// <param name="name">symbol.</param>
+         /// <param name="type">type.</param>
+         /// <param name="results">The results.</param>
+         void  ScriptParser::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
+         {
+            results.clear();
+            Root->FindAll(name, type, results);
+         }
+
          /// <summary>Prints current state of the parse tree to the console</summary>
          void  ScriptParser::Print()
          {

@@ -561,6 +561,9 @@
     <ClInclude Include="SplashWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RefactorDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -921,6 +924,9 @@
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="SplashWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RefactorDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

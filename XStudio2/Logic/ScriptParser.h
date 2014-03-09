@@ -34,7 +34,6 @@ namespace Logic
 
          public:
             ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v);
-            //ScriptParser(ScriptFile& file, const wstring& line, GameVersion  v);
             virtual ~ScriptParser();
 
             DEFAULT_COPY(ScriptParser);	// Default copy semantics
@@ -49,6 +48,9 @@ namespace Logic
             PROPERTY_GET(UINT,LineNumber,GetLineNumber);
 
             // ---------------------- ACCESSORS ------------------------			
+         public:
+            void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
+
          private:
             UINT        GetLineNumber() const;
             ErrorToken  MakeError(const wstring& msg, const CommandLexer& lex) const;

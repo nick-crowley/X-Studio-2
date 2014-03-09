@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptEdit.h"
+#include "RefactorDialog.h"
 #include "Logic/CommandLexer.h"
 #include "Logic/SyntaxHighlight.h"
 
@@ -772,6 +773,43 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Highlight pasted text
       UpdateHighlighting(prevLine, LineFromChar(-1));
+   }
+
+   
+   /// <summary>Refactors the specified symbol.</summary>
+   /// <param name="symbol">The symbol.</param>
+   /// <param name="type">The type.</param>
+   /// <param name="replace">The replace.</param>
+   void ScriptEdit::Refactor(const wstring& symbol, SymbolType type, const wstring& replace)
+   {
+      SymbolList matches;
+      list<TextRangePtr> targets;
+      
+      try
+      {
+         // Find all matches
+         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
+         parser.FindAll(symbol, SymbolType::Variable, matches);
+
+         // Display refactor dialog
+         RefactorDialog dlg(matches);
+         if (dlg.DoModal() == IDCANCEL)
+            return;
+
+         // Generate text ranges for all replacements
+         for (auto& m : dlg.Accepted)
+         {
+            auto offset = LineIndex(m.LineNumber-1);
+            TextDocument->Range(offset+m.Token.Start, offset+m.Token.End);
+         }
+
+         // Perform replacements
+         for (auto& t : targets)
+            t->Text = replace.c_str();
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
    }
 
    /// <summary>Invalidates the line number gutter.</summary>

@@ -203,6 +203,33 @@ namespace Logic
             State = InputState::Compiled;
          }
          
+         /// <summary>Finds all instances of a symbol.</summary>
+         /// <param name="name">symbol.</param>
+         /// <param name="type">type.</param>
+         /// <param name="results">The results.</param>
+         void  CommandNode::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
+         {
+            switch (type)
+            {
+            // Label: Search for 'define label', 'goto label', 'gosub label'
+            case SymbolType::Label:
+               if ((Is(CMD_DEFINE_LABEL) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB)) && !Parameters.empty()) 
+                  results.push_back(Symbol(Parameters[0].Token, SymbolType::Label, LineNumber, LineText));
+               break;
+
+            // Variable: Search all commands
+            case SymbolType::Variable:
+               for (const auto& p : Parameters)
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String && p.Token.ValueText == name)
+                     results.push_back(Symbol(p.Token, SymbolType::Variable, LineNumber, LineText));
+               break;
+            }
+
+            // Examine children
+            for (const auto& cmd : Children)
+               cmd->FindAll(name, type, results);
+         }
+
          /// <summary>Query command syntax ID</summary>
          /// <param name="id">Command ID</param>
          /// <returns>True if command is uncommented and has a matching ID, otherwise false</returns>
@@ -646,7 +673,7 @@ namespace Logic
 
    #ifdef VALIDATION
                // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
-               // by enumerating variables in physical syntax order. (Required all parameters be present)
+               // by enumerating variables in physical syntax order. (Requires all parameters be present)
                if (Parameters.size() == Syntax.Parameters.size())
                   for (const auto& ps : Syntax.Parameters)
                   {
