@@ -1,4 +1,6 @@
 #pragma once
+#include "ScriptDocument.h"
+#include "ScriptEdit.h"
 #include "Logic/CommandNode.h"
 
 /// <summary>User interface</summary>
@@ -13,7 +15,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
-      RefactorDialog(SymbolList matches, CWnd* parent);
+      RefactorDialog(ScriptDocument& doc, const wstring& text, SymbolList matches, CWnd* parent);
       virtual ~RefactorDialog();
        
       // ------------------------ STATIC -------------------------
@@ -33,6 +35,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void AdjustLayout();
       void DoDataExchange(CDataExchange* pDX) override;
 	  
+      afx_msg void OnSelectionChanged();
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
@@ -40,8 +43,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       SymbolList    Accepted;
 
    protected:
-      vector<Symbol> AllSymbols;
+      vector<Symbol>  AllSymbols;
+      ScriptDocument& Document;
+      wstring         DocumentText;
+
       CCheckListBox  List;
+      ScriptEdit     RichEdit;
       
    };
    

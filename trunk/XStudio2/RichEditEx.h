@@ -66,7 +66,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CPoint     GetCursorLocation() const;
       int        GetLineEnd(int line = -1) const;
       int        GetLineStart(int line = -1) const;
-      CPoint     GetScrollCoordinates() const;
+      CPoint    GetScrollCoordinates() const;
       void       GroupUndo(bool start);
       
       // ----------------------- MUTATORS ------------------------
@@ -77,11 +77,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       virtual void   PasteFormat(UINT nClipFormat);
       virtual BOOL   PreTranslateMessage(MSG* pMsg) override;
       virtual void   SetRtf(const string& rtf);
+      void   SelectLine(int line = -1);
       void   SuspendUndo(bool suspend);
 
    protected:
       void   FreezeWindow(bool freeze, bool invalidate = true);
-      void   SelectLine(int line = -1);
       void   SetScrollCoordinates(const CPoint& pt);
       
       afx_msg void HScroll(UINT nSBCode, UINT nPos);

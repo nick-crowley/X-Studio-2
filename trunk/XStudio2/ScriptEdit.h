@@ -514,6 +514,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   Initialize(ScriptDocument* doc);
       void   PasteFormat(UINT nClipFormat) override;
       void   Refactor();
+      void   SetPlainText(const wstring& txt);
       void   SetRtf(const string& rtf) override;
 
    protected:
