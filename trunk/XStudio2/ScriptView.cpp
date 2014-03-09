@@ -243,21 +243,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          RichEdit.IndentSelection(false);
    }
 
-   /// <summary>Refactor label/variable symbol</summary>
+   /// <summary>Refactor label/variable symbol at the caret</summary>
    void ScriptView::OnEditRefactor()
    {
-      // Ensure we have selection
-      if (!RichEdit.HasSelection())
-         return;
-
-      // TODO: Query for renamed symbol
-      /*SymbolDialog dlg;
-      if (dlg.DoModal() == IDCANCEL)
-         return;*/
-      const wchar* symbol = L"newMenu";
-      
-      // Refactor
-      RichEdit.Refactor(L"aMenu", SymbolType::Variable, symbol);
+      RichEdit.Refactor();
    }
 
    /// <summary>Undo last edit operation</summary>
@@ -336,7 +325,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Commment
       case ID_EDIT_COMMENT:  state = TRUE;                               break;
 
-      case ID_EDIT_REFACTOR: state = TRUE;                               break;
+      case ID_EDIT_REFACTOR: state = RichEdit.CanRefactor();             break;
 
       // Indent/Outdent
       case ID_EDIT_INDENT:

@@ -500,8 +500,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      void      Refactor(const wstring& symbol, SymbolType type, const wstring& replace);
-      void      PasteFormat(UINT nClipFormat) override;
+      bool       CanRefactor() const;
 
    protected:
       bool       HasDocument() const;
@@ -513,6 +512,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   CommentSelection();
       void   IndentSelection(bool indent);
       void   Initialize(ScriptDocument* doc);
+      void   PasteFormat(UINT nClipFormat) override;
+      void   Refactor();
       void   SetRtf(const string& rtf) override;
 
    protected:

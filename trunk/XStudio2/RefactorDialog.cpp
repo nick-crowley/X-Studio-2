@@ -14,7 +14,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   RefactorDialog::RefactorDialog(SymbolList matches) : AllSymbols(matches.begin(), matches.end())
+   RefactorDialog::RefactorDialog(SymbolList matches, CWnd* parent) 
+       : CDialog(IDD_REFACTOR, parent), AllSymbols(matches.begin(), matches.end())
    {
    }
 
@@ -26,6 +27,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Populates the symbol matches.</summary>
+   /// <returns></returns>
    BOOL RefactorDialog::OnInitDialog()
    {
       // Init
@@ -42,6 +45,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return TRUE;
    }
    
+   /// <summary>Populates the accepted matches.</summary>
    void RefactorDialog::OnOK()
    { 
       // Populate 'Accepted' from checked items
@@ -59,11 +63,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void  RefactorDialog::AdjustLayout()
    {
       // Destroyed/Minimised
-	   if (GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()))
+	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
          
-      CRect wnd;
-      GetClientRect(wnd);
+      ClientRect wnd(this);
 
       // TODO: Layout code
    }
@@ -73,8 +76,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void RefactorDialog::DoDataExchange(CDataExchange* pDX)
    {
       DDX_Control(pDX, IDC_SYMBOL_LIST, List);
-
-      CDialog::DoDataExchange(pDX);
+      __super::DoDataExchange(pDX);
    }
 
    /// <summary>Adjusts the layout on resize</summary>
