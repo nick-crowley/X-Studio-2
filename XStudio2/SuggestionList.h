@@ -66,6 +66,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       void AdjustLayout();
       void PopulateContent();
+      void ShrinkToFit();
 	  
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnKillFocus(CWnd* pNewWnd);

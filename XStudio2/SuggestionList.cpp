@@ -133,6 +133,61 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Initialises control and populates</summary>
+   /// <param name="lpCreateStruct">The create structure.</param>
+   /// <returns></returns>
+   int SuggestionList::OnCreate(LPCREATESTRUCT lpCreateStruct)
+   {
+      if (CListCtrl::OnCreate(lpCreateStruct) == -1)
+         return -1;
+      
+      // Setup control
+      InsertColumn(0, L"text");
+      InsertColumn(1, L"type", LVCFMT_RIGHT);
+      SetColumnWidth(0, lpCreateStruct->cx-GetSystemMetrics(SM_CXVSCROLL)-120);
+      SetColumnWidth(1, 120);
+      SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+      // Populate
+      PopulateContent();
+
+      // Display contents
+      SetItemCountEx(Content.size());
+      SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+
+      // Shrink to fit
+      ShrinkToFit();
+      return 0;
+   }
+   
+   /// <summary>Destroys self if focus to lost</summary>
+   /// <param name="pNewWnd">The new WND.</param>
+   void SuggestionList::OnKillFocus(CWnd* pNewWnd)
+   {
+      CListCtrl::OnKillFocus(pNewWnd);
+
+      // Close if focus lost to anything but parent
+      if (pNewWnd != GetParent())
+         GetParent()->CloseSuggestions();
+   }
+
+   /// <summary>Supplies virtual list item</summary>
+   /// <param name="pNMHDR">notify NMHDR.</param>
+   /// <param name="pResult">notify result.</param>
+   void SuggestionList::OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
+      
+      // Supply text/type
+      if (item.mask & LVIF_TEXT)
+      {
+         const wstring& txt = (item.iSubItem==0 ? Content[item.iItem].Text : Content[item.iItem].Type);
+         item.pszText = (WCHAR*)txt.c_str();
+      }
+
+      *pResult = 0;
+   }
+   
    /// <summary>Populates the list.</summary>
    /// <returns></returns>
    void SuggestionList::PopulateContent() 
@@ -177,57 +232,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Sort keys alphabetically
       sort(Content.begin(), Content.end(), [](SuggestionItem& a, SuggestionItem& b) {return a.Key < b.Key;} );
    }
-
-   /// <summary>Initialises control and populates</summary>
-   /// <param name="lpCreateStruct">The create structure.</param>
-   /// <returns></returns>
-   int SuggestionList::OnCreate(LPCREATESTRUCT lpCreateStruct)
-   {
-      if (CListCtrl::OnCreate(lpCreateStruct) == -1)
-         return -1;
-      
-      // Setup control
-      InsertColumn(0, L"text");
-      InsertColumn(1, L"type", LVCFMT_RIGHT);
-      SetColumnWidth(0, lpCreateStruct->cx-GetSystemMetrics(SM_CXVSCROLL)-120);
-      SetColumnWidth(1, 120);
-      SetExtendedStyle(LVS_EX_FULLROWSELECT);
-
-      // Populate
-      PopulateContent();
-
-      // Display contents
-      SetItemCountEx(Content.size());
-      SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
-      return 0;
-   }
    
-   /// <summary>Destroys self if focus to lost</summary>
-   /// <param name="pNewWnd">The new WND.</param>
-   void SuggestionList::OnKillFocus(CWnd* pNewWnd)
+   /// <summary>Shrinks to fit.</summary>
+   void  SuggestionList::ShrinkToFit()
    {
-      CListCtrl::OnKillFocus(pNewWnd);
-
-      // Close if focus lost to anything but parent
-      if (pNewWnd != GetParent())
-         GetParent()->CloseSuggestions();
-   }
-
-   /// <summary>Supplies virtual list item</summary>
-   /// <param name="pNMHDR">notify NMHDR.</param>
-   /// <param name="pResult">notify result.</param>
-   void SuggestionList::OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult)
-   {
-      LVITEM& item = reinterpret_cast<NMLVDISPINFO*>(pNMHDR)->item;
-      
-      // Supply text/type
-      if (item.mask & LVIF_TEXT)
+      try
       {
-         const wstring& txt = (item.iSubItem==0 ? Content[item.iItem].Text : Content[item.iItem].Type);
-         item.pszText = (WCHAR*)txt.c_str();
-      }
+         // Check if less than 1 page of items
+         if (GetCountPerPage() > (int)Content.size())
+         {
+            ClientRect wnd(this);
+            CRect rc(0,0,0,0);
 
-      *pResult = 0;
+            // Resize
+            if (!GetItemRect(0, &rc, LVIR_LABEL) || !rc.Height())
+               throw Win32Exception(HERE, L"Unable to retrieve item height");
+            SetWindowPos(nullptr,-1,-1, wnd.Width(), rc.Height()*Content.size(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+         }
+      }
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e);
+      }
    }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
