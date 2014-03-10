@@ -54,6 +54,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_WM_SETTINGCHANGE()
       ON_WM_SHOWWINDOW()
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
+      ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &MainWnd::OnDocumentSwitched)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
@@ -317,6 +318,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       CMDIFrameWndEx::OnClose();
    }
 
+
    /// <summary>Creates child windows and sets up MFC GUI classes</summary>
    /// <param name="lpCreateStruct">The create data.</param>
    /// <returns></returns>
@@ -398,6 +400,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   return lres;
    }
 
+   
+   /// <summary>Called when document switched.</summary>
+   /// <param name="wParam">Tab Index</param>
+   /// <param name="lParam">TabCtrl pointer.</param>
+   /// <returns></returns>
+   LRESULT  MainWnd::OnDocumentSwitched(WPARAM wParam, LPARAM lParam)
+   {
+      UINT Index = wParam;
+      auto tab = reinterpret_cast<CMFCTabCtrl*>(lParam);
+
+      //Console << "MainWnd::OnDocumentSwitched" << ENDL;
+
+      /*GetMDITabs().SetActiveTabColor(RGB(255,0,0));
+      GetMDITabs().SetTabBkColor(0, RGB(255,0,0));*/
+
+      return 0;
+   }
 
    
    /// <summary>Changes app state once game data is loaded.</summary>

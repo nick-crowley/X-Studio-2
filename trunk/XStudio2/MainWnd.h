@@ -34,7 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          {
 	         m_style = CMFCTabCtrl::STYLE_3D_VS2005; 
 	         m_bActiveTabCloseButton = TRUE;      // Document close button
-	         m_bAutoColor = TRUE;                 // Coloured tags
+	         m_bAutoColor = TRUE;                 // Coloured tabs
 	         m_bDocumentMenu = TRUE;              // Document selection context menu
             m_bTabIcons = TRUE;                  // Document icons
             m_bEnableTabSwap = TRUE;             // Swap tabs
@@ -82,6 +82,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommandStringLibrary();
       afx_msg void    OnCommandWindowManager();
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);
       handler void    OnInitialUpdate();
       afx_msg void    OnQueryCommand(CCmdUI *pCmdUI);
