@@ -24,7 +24,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    class DiffDocument;
 
-   /// <summary>Language document template</summary>
+   /// <summary>Diff document template</summary>
    class DiffDocTemplate : public CMultiDocTemplate
    {
       // --------------------- CONSTRUCTION ----------------------
@@ -46,13 +46,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
+      /// <summary>Create empty phrase.</summary>
+      /// <param name="type">type.</param>
+      /// <param name="start">start index.</param>
       DiffPhrase(const dtl::edit_t type, UINT start) : Type(type), Start(start)
       {
-         auto sz = type==dtl::SES_ADD    ? L"ADD" 
+         // DEBUG:
+         /*auto sz = type==dtl::SES_ADD    ? L"ADD" 
                  : type==dtl::SES_DELETE ? L"DELETE" 
                  :                         L"COMMON";
 
-         Console << sz << " start=" << Start << ENDL;
+         Console << sz << " start=" << Start << ENDL;*/
       }
 
       // ---------------------- ACCESSORS ------------------------	
@@ -78,7 +82,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       UINT        Start;
    };
 
-   /// <summary>Language document</summary>
+   /// <summary>Script diff document</summary>
    class DiffDocument : public DocumentBase, public PropertySource
    {
 	   // ------------------------ TYPES --------------------------

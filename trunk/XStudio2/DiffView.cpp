@@ -62,6 +62,8 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
 
+   /// <summary>Sets whether view is original or alternate.</summary>
+   /// <param name="t">The t.</param>
    void  DiffView::SetType(DiffViewType t)
    {
       Type = t;
@@ -78,7 +80,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          
       ClientRect wnd(this);
 
-      // Stretch RichEdit over view
+      // Stretch Edit over view
       RichEdit.SetWindowPos(nullptr, 0, 0, wnd.Width(), wnd.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
@@ -149,7 +151,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
 
-   /// <summary>Displays script and populates variables/scope combos</summary>
+   /// <summary>Initialize and populate the edit</summary>
    void DiffView::OnInitialUpdate()
    {
       // Init
@@ -199,7 +201,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    }
 
    
-   /// <summary></summary>
+   /// <summary>Adjust layout</summary>
    /// <param name="uFlags">The flags.</param>
    /// <param name="lpszSection">The section.</param>
    void DiffView::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
@@ -208,7 +210,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
-   /// <summary>Set the focus to the script Edit</summary>
+   /// <summary>Set the focus to the diff Edit</summary>
    /// <param name="pOldWnd">The old WND.</param>
    void DiffView::OnSetFocus(CWnd* pOldWnd)
    {
