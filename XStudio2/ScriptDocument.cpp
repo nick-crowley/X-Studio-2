@@ -271,20 +271,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Success: Write
          if (parser.Errors.empty())
          {
-            // DEBUG: Tweak name
-            wstring orig_name(Script.Name);
-            if (Script.Name.front() == L'!')
-               Script.Name.erase(0, 1);
-            Script.Name.insert(0, L"zz.");
-
             // Write to X-Studio program folder
             StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\XStudio2\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
             w.Write(Script);
             w.Close();
 
-            // DEBUG: Revert name
-            Script.Name = orig_name;
+            // Remove 'Modified'
+            SetModifiedFlag(FALSE);
 
             // Feedback
             data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script saved successfully");
