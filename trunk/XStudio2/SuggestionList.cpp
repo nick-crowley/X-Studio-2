@@ -29,6 +29,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    SuggestionList::SuggestionList() : CustomDraw(*this)
    {
+      // Highlight selected item whether focused or not
+      CustomDraw.ActiveHighlight = GetSysColor(COLOR_HIGHLIGHT);
+      CustomDraw.InactiveHighlight = GetSysColor(COLOR_HIGHLIGHT);
    }
 
    SuggestionList::~SuggestionList()
@@ -180,31 +183,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Get item
          auto data = reinterpret_cast<SuggestionList&>(ListView).Content[item.Index];
 
-         // Text:
-         if (item.SubItem == 0)
-         {
+         // Get entire item rectangle
+         ListView.GetItemRect(item.Index, item.Rect, LVIR_BOUNDS);
+         item.Rect.DeflateRect(GetSystemMetrics(SM_CXEDGE),0);
 
-            dc->SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
-            dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE|DT_END_ELLIPSIS);
+         // Type: RHS. Grey text. Don't truncate.
+         if (item.SubItem == 1)
+         {
+            if (!item.Selected)
+               dc->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
+
+            dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE);
          }
-         // Type:
-         else if (item.SubItem == 1)
+         // Text: Stretch over remainder of LHS, however much that is
+         else if (item.SubItem == 0)
          {
-            dc->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
-            dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE|DT_END_ELLIPSIS);
+            // Exclude 'Type' column
+            item.Rect.right -= dc->GetTextExtent(data.Type.c_str()).cx;
 
-            //auto src = ListView.GetItemText(item.Index, 1);
-            //auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
-
-            //try
-            //{  // Parse+Draw
-            //   RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((LPCWSTR)src).Output, flags);
-            //}
-            //catch (ExceptionBase&) {
-            //   dc->SetTextColor((COLORREF)RichTextColour::Red);
-            //   dc->DrawText(src, item.Rect, DT_LEFT|DT_SINGLELINE);
-            //}
-            
+            // Draw left. Truncate if necessary
+            dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE|DT_END_ELLIPSIS);
          }
       }
       catch (ExceptionBase& e) {
