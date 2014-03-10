@@ -68,8 +68,9 @@ namespace GUI
             {
                // Get sub-item rectangle
                ListView.GetSubItemRect(item.Index, item.SubItem, LVIR_LABEL, item.Rect);
+               item.Rect.DeflateRect(GetSystemMetrics(SM_CXEDGE),0);
 
-               // Set/Invert text colour
+               // Reset text colour   [Invert if selected]
                dc.SetTextColor(GetSysColor(item.Selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
 
                // Allow derived-class to do drawing
