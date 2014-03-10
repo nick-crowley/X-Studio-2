@@ -1,0 +1,113 @@
+Colours:
+--------
+
+[black], [blue], [cyan], [green], [magenta], [orange], [silver], [white], [red], [yellow]
+\033Z    \033B   \033C   \033G    \033M      \033O     \033A     \033W    \033R  \033Y      \033X (default)
+
+
+Paragraph alignments:
+--------------------
+
+[left], [right], [center], [justify]
+
+
+
+Character formatting:
+--------------------
+
+[b], [i], [u]
+
+
+
+Text Columns:
+------------
+
+[text]....[/text]
+
+optional 'cols' property == # of columns
+optional 'colwidth' property == width of columns (pixels)
+optional 'colspacing' property == spacing between columns (pixels)
+
+
+Author:  Must be at start
+-------
+
+[author]txt[/author]
+
+
+
+Title:  Must be at start
+-------
+
+[title]txt[/title]
+
+
+
+Button:
+-------
+
+[select]button text[/select]
+
+optional 'value' property == button ID
+
+
+
+Rank: Must be at start. Self closing
+-----
+
+[rank type='fight' title='...'/]
+
+required 'type' property == 'fight'|'trade'
+required 'title' property == text
+
+
+
+Article: Unknown syntax, tag is rescinded anyway. Here are examples:
+--------
+
+[article state='0']
+[declare name='setstate' script='!bbsnews.misc.setstate' args='$PAGE$,$ARG$'/]
+[declare name='if_state' script='!bbsnews.eval.state.eq' args='$PAGE$,$ARG$'/]
+[declare name='ifnot_state' script='!bbsnews.eval.state.eq' args='$PAGE$,$ARG$' neg='1'/]
+[declare name='if_state_le' script='!bbsnews.eval.state.le' args='$PAGE$,$ARG$'/]
+[declare name='if_state_gt' script='!bbsnews.eval.state.le' args='$PAGE$,$ARG$' neg='1'/]
+[declare name='if_sector' script='!bbsnews.eval.sector'/]
+[declare name='ifnot_sector' script='!bbsnews.eval.sector' neg='1'/]
+[declare name='if_split_fire' script='!bbsnews.eval.sector' args='3,5'/]
+[declare name='if_race' script='!bbsnews.eval.ownerrace' args='{$ARG$}'/]
+[declare name='ifnot_race' script='!bbsnews.eval.ownerrace' args='{$ARG$}' neg='1'/]
+[declare name='if_product' script='!bbsnews.eval.product' args='{$ARG$}'/]
+[declare name='ifnot_product' script='!bbsnews.eval.product' args='{$ARG$}' neg='1'/]
+[declare name='if_type' script='!bbsnews.eval.stationtype' args='{$ARG$}'/]
+[declare name='ifnot_type' script='!bbsnews.eval.stationtype' args='{$ARG$}' neg='1'/]
+[declare name='if_age_min' script='!bbsnews.eval.age'/][declare name='if_age_max' script='!bbsnews.eval.age' neg='1' /][declare name='if_sysdate' script='!bbsnews.eval.sysdate'/][var name='RACE' script='!bbsnews.get.ownerrace'/][var name='STATION' script='!bbsnews.get.environment'/][var name='SECTOR' script='!bbsnews.get.sector'/][var name='PRODUCT' script='!bbsnews.get.product'/][/article]
+
+
+
+
+
+Testing Text:
+-------------
+
+[article state='0']
+[text]blurb[/text] 
+[text cols="4"]blurb[/text]
+[text cols="4" colwidth="232"]blurb[/text]
+[text cols="4" colwidth="232" colspacing="100"]blurb[/text]
+[select value="uninstall"]Uninstall FCC[/select]
+[select]button text[/select]
+[rank type='fight' title='...'/]
+[declare name='if_age_min' script='!bbsnews.eval.age'/]
+[declare name='if_type' script='!bbsnews.eval.stationtype' args='{$ARG$}'/]
+[declare name='ifnot_type' script='!bbsnews.eval.stationtype' args='{$ARG$}' neg='1'/]
+[var name='RACE' script='!bbsnews.get.ownerrace'/]
+[/article]
+{17,1502}
+{1502}
+{}
+{player.age@something}
+{player.age@{param@L2 Disc}}
+{object.sector.name@{param@Cue}.{param@ID} L0Start} 
+{actor.name@{param@Cue}.{param@ID} L0Passenger}
+{object.name@{param@HQ}}
+{{actor.voice@L2M41.Guide},841}
