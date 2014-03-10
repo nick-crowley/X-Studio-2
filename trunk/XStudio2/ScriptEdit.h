@@ -391,9 +391,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
                // Identify command
                auto cmd = ScriptParser::Parse(lineText, ver);
 
-               // Unknown: Display nothing
+               // Unknown: Cancel
                if (cmd == CommandSyntax::Unrecognised)
-                  ResetTo(CustomTooltip::NoTooltip);
+                  Cancel();
                else
                {  
                   // Lookup description 
@@ -406,7 +406,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // No description: Hasn't been documented
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(CustomTooltip::NoDocumentationCmd);
+               ResetTo(CustomTooltip::UndocumentedCommand);
             }
          }
       };
@@ -436,7 +436,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(CustomTooltip::NoTooltip);
+               Cancel();
             }
          }
       };
@@ -463,7 +463,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             // No description: Hasn't been documented
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               ResetTo(CustomTooltip::NoDocumentationObj);
+               ResetTo(CustomTooltip::UndocumentedObject);
             }
          }
       };

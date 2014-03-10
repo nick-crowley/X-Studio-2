@@ -799,15 +799,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // None: show nothing
       if (!tok || ReadOnly)
-         *data = CustomTooltip::NoTooltip;
-
-      // Provide approriate data
+         data->Cancel();
+      
+      // Valid: Provide approriate data
       else switch (tok->Type)
       {
       case TokenType::Text:         data->ResetTo(CommandTooltipData(text, Document->Script.Game));   break;
       case TokenType::Label:        data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
       case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));           break;
-      default:                      data->ResetTo(CustomTooltip::NoTooltip);                      break;
+
+      default: data->Cancel(); break;
       }  
    }
    

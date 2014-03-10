@@ -43,7 +43,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Set initial icon</summary>
          /// <param name="iconID">The icon identifier.</param>
          /// <param name="iconSize">Size of the icon.</param>
-         TooltipData(int iconID, int iconSize) : IconID(iconID), IconSize(iconSize)
+         TooltipData(int iconID, int iconSize) : IconID(iconID), IconSize(iconSize), Cancelled(false)
          {}
          /// <summary>Set icon and text</summary>
          /// <param name="label">RichText label source.</param>
@@ -51,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <param name="nIcon">Icon resource ID.</param>
          /// <param name="iconSize">Size of the icon.</param>
          TooltipData(wstring label, wstring desc, int nIcon = 0, int iconSize = 0)
-            : LabelSource(label), DescriptionSource(desc), IconID(nIcon), IconSize(iconSize)
+            : LabelSource(label), DescriptionSource(desc), IconID(nIcon), IconSize(iconSize), Cancelled(false)
          {}
          virtual ~TooltipData()
          {}
@@ -63,6 +63,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Cancel display of tooltip.</summary>
+         void  Cancel()
+         {
+            Cancelled = true;
+         }
+
          /// <summary>Sets data to a sentinel value</summary>
          /// <param name="r">The r.</param>
          void  ResetTo(const TooltipData& r)
@@ -76,6 +82,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                   DescriptionSource;
          int      IconID,
                   IconSize;
+         bool     Cancelled;
       };
 
       // --------------------- CONSTRUCTION ----------------------
@@ -88,9 +95,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DECLARE_MESSAGE_MAP()
 	
    public:
-      const static TooltipData NoTooltip,
-                               NoDocumentationCmd,
-                               NoDocumentationObj;
+      const static TooltipData UndocumentedCommand,
+                               UndocumentedObject;
 
       // --------------------- PROPERTIES ------------------------
 	  
@@ -103,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void Reset();
 
    protected:
-      void  GetTooltipData();
+      bool  GetTooltipData();
 
       void  OnDrawBackground(CDC* dc, CRect wnd);
       CSize OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly);
@@ -123,11 +129,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
                     IconSize;
       RichString    Description,
                     Label;
-      bool          HasDescription;
+      bool          HasDescription,
+                    Cancelled;
 
       CRect         rcIcon,      // Drawing rectangle
                     rcLabel, 
                     rcDesc;
+public:
+   afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 };
 
    /// <summary></summary>
