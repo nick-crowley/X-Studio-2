@@ -12,33 +12,34 @@
 #define IDR_LANGUAGEVIEW                107
 #define IDR_SCRIPTVIEW                  108
 #define IDR_PROJECTVIEW                 109
-#define IDR_STRINGVIEW                  150
+#define IDR_DIFFVIEW                    110
+#define IDR_STRINGVIEW                  111
 
 ///////////////////////////////// TOOLBARS /////////////////////////////
 
-#define IDT_FILE                        110
-#define IDT_EDIT                        111
-#define IDT_VIEW                        112
-#define IDT_MENU_IMAGES                 113
+#define IDT_FILE                        150
+#define IDT_EDIT                        151
+#define IDT_VIEW                        152
+#define IDT_MENU_IMAGES                 153
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  114
-#define IDM_PROJECT_POPUP               115
-#define IDM_OUTPUT_POPUP                116
-#define IDM_STRINGVIEW_POPUP            117
+#define IDM_EDIT_POPUP                  154
+#define IDM_PROJECT_POPUP               155
+#define IDM_OUTPUT_POPUP                156
+#define IDM_STRINGVIEW_POPUP            157
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_GREY                 118
-#define IDB_PROJECT_ICONS               119
-#define IDB_OUTPUT_ICONS                120
-#define IDB_GAMEDATA_ICONS              121
-#define IDB_LANGUAGE_ICONS              122
-#define IDB_RICH_BUTTON                 123
-#define IDB_USER_IMAGES                 124
-#define IDB_NEWDOCUMENT_ICONS           125
-#define IDB_SPLASH                      126
+#define IDB_EDITOR_GREY                 158
+#define IDB_PROJECT_ICONS               159
+#define IDB_OUTPUT_ICONS                160
+#define IDB_GAMEDATA_ICONS              161
+#define IDB_LANGUAGE_ICONS              162
+#define IDB_RICH_BUTTON                 163
+#define IDB_USER_IMAGES                 164
+#define IDB_NEWDOCUMENT_ICONS           165
+#define IDB_SPLASH                      166
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -141,6 +142,9 @@
 #define IDC_PAGE_LIST                   800
 #define IDC_STRING_LIST                 801
 #define IDC_STRING_EDIT                 802
+
+// Diff View
+#define IDC_DIFF_EDIT                   800
 
 // Find Dialog
 #define IDC_FIND                        800

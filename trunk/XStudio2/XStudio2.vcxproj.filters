@@ -594,6 +594,15 @@
     <ClInclude Include="SymbolDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="DiffFrame.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffView.h">
+      <Filter>Header Files\GUI\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffDocument.h">
+      <Filter>Header Files\GUI\Documents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -961,6 +970,15 @@
     </ClCompile>
     <ClCompile Include="SymbolDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffFrame.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffView.cpp">
+      <Filter>Source Files\GUI\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffDocument.cpp">
+      <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

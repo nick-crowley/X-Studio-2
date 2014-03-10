@@ -6,7 +6,7 @@
 NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary></summary>
-   enum class DocumentType { Script, Language, Mission, Project };
+   enum class DocumentType { Script, Language, Mission, Project, Diff };
 
    /// <summary></summary>
    class DocumentBase : public CDocument

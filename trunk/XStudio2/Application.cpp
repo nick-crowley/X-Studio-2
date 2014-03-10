@@ -14,6 +14,7 @@
 #include "ScriptDocument.h"
 #include "LanguageDocument.h"
 #include "ProjectDocument.h"
+#include "DiffDocument.h"
 
 #include "Logic/ConsoleLog.h"
 
@@ -243,6 +244,7 @@ BOOL Application::InitInstance()
 	   AddDocTemplate(new ScriptDocTemplate());
 	   AddDocTemplate(new LanguageDocTemplate());
       AddDocTemplate(new ProjectDocTemplate());
+      AddDocTemplate(new DiffDocTemplate());
 
 	   // Frame window
 	   m_pMainWnd = new MainWnd;

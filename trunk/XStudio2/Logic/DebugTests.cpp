@@ -21,6 +21,8 @@
 #include "DescriptionFileReader.h"
 #include "../Testing/ScriptValidator.h"
 #include "dtl/dtl.hpp"
+#include "../ScriptDocument.h"
+#include "../DiffDocument.h"
 
 namespace Logic
 {
@@ -39,13 +41,7 @@ namespace Logic
       *violation = 42;*/
       //throw exception("hahaha");
 
-      wstring A(L"abc"),
-              B(L"abd");
-      dtl::Diff<wchar, wstring> d(A, B);
-      d.compose();
-
-      for (auto s : d.getSes().getSequence())
-         s.second.type == dtl::SES_DELETE;
+      Test_DiffDocument();
       
 
       //Test_LanguageFileReader();
@@ -219,7 +215,7 @@ namespace Logic
       }
    }
 
-   void DebugTests::Text_DescriptionRegEx()
+   void DebugTests::Test_DescriptionRegEx()
    {
       try
       {
@@ -301,6 +297,29 @@ namespace Logic
       {
          Console.Log(HERE, RegularExpressionException(HERE, e));
       }
+   }
+
+   void  DebugTests::Test_DiffDocument()
+   {
+      if (!ScriptDocument::GetActive())
+         return;
+
+      /*wstring A(L"abc"),
+              B(L"abd");
+      dtl::Diff<wchar, wstring> d(A, B);
+      d.compose();
+
+      for (auto s : d.getSes().getSequence())
+         s.second.type == dtl::SES_DELETE;*/
+
+      const wstring txt = L"$a = 152\r\n" L"goto hello:\r\n" L"$b = {bongo bongo}\r\n" L"return null\r\n" ;
+
+      // Get document/template
+      auto doc = ScriptDocument::GetActive();
+      auto templ = theApp.GetDocumentTemplate<DiffDocTemplate>();
+
+      // Open document
+      templ->OpenDocumentFile(*doc, txt, txt);
    }
 
    void  DebugTests::Test_ExpressionParser()
