@@ -10,7 +10,9 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
-   #define CTRL_ID   666
+   /// <summary>Default list sizes.</summary>
+   const CSize SuggestionList::DefaultSize = CSize(300,200),
+               SuggestionList::CommandSize = CSize(600,200);
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -34,25 +36,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Gets the default list size for suggestions.</summary>
+   /// <param name="type">The type.</param>
+   /// <returns></returns>
+   CSize  SuggestionList::GetDefaultSize(Suggestion type)
+   {
+      switch (type)
+      {
+      case Suggestion::Command:
+         return CommandSize;
+
+      default:
+         return DefaultSize;
+      }
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Creates the specified parent.</summary>
    /// <param name="parent">The script edit</param>
-   /// <param name="pt">The character position in script edit client co-ordinates</param>
+   /// <param name="rc">Initial display rectangle</param>
    /// <param name="type">suggestion type.</param>
    /// <param name="scr">Script file.</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentException">Suggestion type is None</exception>
-   BOOL SuggestionList::Create(ScriptEdit* parent, CPoint& pt, Suggestion type, const ScriptFile* scr)
+   BOOL SuggestionList::Create(ScriptEdit* parent, CRect rc, Suggestion type, const ScriptFile* scr)
    {
       // Validate type
       if (type == Suggestion::None)
          throw ArgumentException(HERE, L"type", L"Suggestion type cannot be 'None'");
-
-      // Calculate position  (Offset rectangle above line)
-      CSize sz = (type == Suggestion::Command ? CommandSize : DefaultSize);
-      CRect rc(pt, sz);
-      rc.OffsetRect(0, -sz.cy);
 
       // Set type
       SuggestionType = type;
@@ -60,7 +72,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Create
       DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
-      return CListCtrl::Create(style, rc, parent, CTRL_ID);
+      return CListCtrl::Create(style, rc, parent, IDC_SUGGESTION_LIST);
    }
 
    /// <summary>Gets the script edit parent</summary>
@@ -131,26 +143,31 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Populate
       switch (SuggestionType)
       {
+      // Query GameObjectLibrary 
       case Suggestion::GameObject:  
          for (auto& obj : GameObjectLib.Query(L""))
             Content.push_back( SuggestionItem(obj->Name, GetString(obj->Type)) );
          break;
 
+      // Query ScriptObjectLibrary 
       case Suggestion::ScriptObject:
          for (auto& obj : ScriptObjectLib.Query(L""))
             Content.push_back( SuggestionItem(obj->Text, GetString(obj->Group)) );
          break;
 
+      // Query ScriptFile
       case Suggestion::Variable:    
          for (auto& var : Script->Variables)
             Content.push_back( SuggestionItem(var.Name, GetString(var.Type).c_str()) );
          break;
 
+      // Query ScriptFile
       case Suggestion::Label:       
          for (auto& lab : Script->Labels)
             Content.push_back( SuggestionItem(lab.Name, GuiString(L"Line %d", lab.LineNumber)) );
          break;
 
+      // Query SyntaxLibrary
       case Suggestion::Command: 
          for (auto& obj : SyntaxLib.Query(L"", Script->Game))
             Content.push_back( SuggestionItem(obj->DisplayText, GetString(obj->Group), obj->Hash) );

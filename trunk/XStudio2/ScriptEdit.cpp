@@ -296,6 +296,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSel(offset+t.Start, offset+t.End);
       SetSelectionCharFormat(cf);
    }
+   
+   /// <summary>Gets the height of each line.</summary>
+   /// <returns></returns>
+   UINT  ScriptEdit::GetLineHeight() const
+   {
+      // Get line height
+      if (GetLineCount() == 1)
+      {
+         // Calculate from character height (Isn't accurate for some reason)
+         CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
+         GetDefaultCharFormat(cf);
+         return (cf.yHeight/10);  //TwipsToPixels(cf.yHeight, LOGPIXELSY);  [Should be Twips->Pixels, but /10 seems to work better..)
+      }
+      
+      // Calculate from character positions
+      return PosFromChar(LineIndex(1)).y - PosFromChar(LineIndex(0)).y;
+   }
+
+   /// <summary>Gets the suggestion rect.</summary>
+   /// <param name="type">The type.</param>
+   /// <returns></returns>
+   CRect  ScriptEdit::GetSuggestionRect(Suggestion type)
+   {
+      // Position beneath current line
+      CRect rc(GetCharPos(GetSelection().cpMin), SuggestionList::GetDefaultSize(type));
+      rc.OffsetRect(0, GetLineHeight());
+
+      return rc;
+   }
 
    /// <summary>Determines whether document is connected</summary>
    /// <returns></returns>
@@ -971,7 +1000,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw InvalidOperationException(HERE, L"suggestion list already exists");
 
       // Show list
-      if (!SuggestionsList.Create(this, GetCharPos(GetSelection().cpMin), SuggestionType, &Document->Script)) 
+      if (!SuggestionsList.Create(this, GetSuggestionRect(SuggestionType), SuggestionType, &Document->Script)) 
          throw Win32Exception(HERE, L"Unable to create suggestion list");
 
       // Update state

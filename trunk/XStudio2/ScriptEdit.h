@@ -152,22 +152,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          LineRect GetLineRect(int line)
          {
             ScriptEdit* wnd = dynamic_cast<ScriptEdit*>(GetWindow());
-            int height = 0;
-
-            // Get line height
-            if (wnd->GetLineCount() == 1)
-            {
-               // Calculate from character height (Isn't accurate for some reason)
-               CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
-               wnd->GetDefaultCharFormat(cf);
-               height = (cf.yHeight/10);  //TwipsToPixels(cf.yHeight, LOGPIXELSY);  [Should be Twips->Pixels, but /10 seems to work better..)
-            }
-            else
-               // Calculate from character positions
-               height = wnd->PosFromChar(wnd->LineIndex(1)).y - wnd->PosFromChar(wnd->LineIndex(0)).y;
-
+            
             // Get line rect in device co-ordinates  
-            LineRect rc(wnd, line, height); 
+            LineRect rc(wnd, line, wnd->GetLineHeight()); 
             LPtoDP(rc);
             return rc;
          }
@@ -503,6 +490,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       bool       CanRefactor() const;
 
    protected:
+      UINT       GetLineHeight() const;
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
@@ -525,6 +513,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
+      CRect  GetSuggestionRect(Suggestion type);
       void   InsertSuggestion();
       void   RefreshGutter();
       void   SetCompilerTimer(bool set);

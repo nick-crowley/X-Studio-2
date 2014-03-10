@@ -137,6 +137,7 @@
 #define IDC_SCOPE_COMBO                 800
 #define IDC_VARIABLES_COMBO             801
 #define IDC_SCRIPT_EDIT                 802
+#define IDC_SUGGESTION_LIST             803
 
 // Language View
 #define IDC_PAGE_LIST                   800
