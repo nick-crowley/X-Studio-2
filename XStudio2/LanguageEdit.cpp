@@ -556,7 +556,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void LanguageEdit::OnRequestTooltip(CustomTooltip::TooltipData* data)
    {
       // None: show nothing
-      *data = CustomTooltip::NoTooltip;
+      data->Cancel();
    }
 
    /// <summary>Saves the current text into the currently selected string</summary>

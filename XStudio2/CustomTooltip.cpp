@@ -10,13 +10,13 @@
 NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Sentinel for displaying no tooltip</summary>
-   const CustomTooltip::TooltipData  CustomTooltip::NoTooltip(L"Nothing", L"");
+   //const CustomTooltip::TooltipData  CustomTooltip::NoTooltip(L"Nothing", L"");
 
    /// <summary>Sentinel tooltip for commands with no documentation</summary>
-   const CustomTooltip::TooltipData  CustomTooltip::NoDocumentationCmd(L"Command has no description", L"");
+   const CustomTooltip::TooltipData  CustomTooltip::UndocumentedCommand(L"Command has no description", L"");
 
    /// <summary>Sentinel tooltip for commands with no documentation</summary>
-   const CustomTooltip::TooltipData  CustomTooltip::NoDocumentationObj(L"Script object has no description", L"");
+   const CustomTooltip::TooltipData  CustomTooltip::UndocumentedObject(L"Script object has no description", L"");
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -27,6 +27,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_PAINT()
       ON_WM_ERASEBKGND()
       ON_WM_SETTINGCHANGE()
+      ON_WM_WINDOWPOSCHANGED()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -79,11 +80,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------ PROTECTED METHODS -----------------------------   
    
    /// <summary>Gets the tooltip data from the parent</summary>
-   void CustomTooltip::GetTooltipData()
+   /// <returns>False if client cancelled tooltip, otherwise true</returns>
+   bool  CustomTooltip::GetTooltipData()
    {
       // Request data
       TooltipData data(0,0);
       RequestData.Raise(&data);
+
+      // CANCEL: Abort
+      if (Cancelled = data.Cancelled)
+         return false;
 
       // Icon
       IconSize = data.IconSize;
@@ -97,6 +103,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // DEBUG:
       //Console << Cons::Yellow << data.Description << ENDL << ENDL;
       //Console << Cons::Green << Description << ENDL << ENDL;
+
+      return true;
    }
    
    /// <summary>Draws the background</summary>
@@ -221,41 +229,49 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Prepare
       auto font = dc.SelectObject(&theApp.TooltipFont);
+      *pResult = UNMOVED;
 
       try
       {
          // Request tooltip data
          GetTooltipData();
 
-         // Set window width according to description 
-         auto desc = OnDrawDescription(&dc, wnd, true);
-         desc.cx = max(100, desc.cx);
+         // Cancelled: Generate fake WM_WINDOWPOSMOVED
+         if (Cancelled)
+            SetWindowPos(nullptr, wnd.left, wnd.top, wnd.Width(), wnd.Height(), SWP_NOACTIVATE|SWP_NOZORDER);
+         else
+         {
+            // Set window width according to description 
+            auto desc = OnDrawDescription(&dc, wnd, true);
+            desc.cx = max(100, desc.cx);
 
-         // Set header height according to icon/label height
-         auto label = CRect(IconSize, 0, HasDescription ? desc.cx : 300, IconSize);
-         auto header = OnDrawLabel(&dc, label, true);
-         header.cy = max(IconSize, header.cy);
+            // Set header height according to icon/label height
+            auto label = CRect(IconSize, 0, HasDescription ? desc.cx : 300, IconSize);
+            auto header = OnDrawLabel(&dc, label, true);
+            header.cy = max(IconSize, header.cy);
 
-         // Set window dimensions
-         wnd.right = HasDescription ? desc.cx : header.cx;
-         wnd.bottom = HasDescription ? header.cy + desc.cy : header.cy;
+            // Set window dimensions
+            wnd.right = HasDescription ? desc.cx : header.cx;
+            wnd.bottom = HasDescription ? header.cy + desc.cy : header.cy;
 
-         // Set drawing rectangles
-         rcIcon = CRect(CPoint(0, 0), CSize(IconSize,IconSize));
-         rcLabel = label;
-         rcDesc = CRect(CPoint(0, header.cy), desc);
+            // Set drawing rectangles
+            rcIcon = CRect(CPoint(0, 0), CSize(IconSize,IconSize));
+            rcLabel = label;
+            rcDesc = CRect(CPoint(0, header.cy), desc);
 
-         // Set margins
-         wnd.InflateRect(2*MARGIN, 2*MARGIN);
-         for (CRect* r : {&rcIcon,&rcLabel,&rcDesc})
-            r->OffsetRect(MARGIN,MARGIN);
+            // Set margins
+            wnd.InflateRect(2*MARGIN, 2*MARGIN);
+            for (CRect* r : {&rcIcon,&rcLabel,&rcDesc})
+               r->OffsetRect(MARGIN,MARGIN);
 
-         // Set internal margins
-         rcLabel.OffsetRect(MARGIN,0);
-         rcDesc.OffsetRect(0,MARGIN);
+            // Set internal margins
+            rcLabel.OffsetRect(MARGIN,0);
+            rcDesc.OffsetRect(0,MARGIN);
 
-         // Size window
-         SetWindowPos(nullptr, -1, -1, wnd.Width(), wnd.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+            // Size window
+            SetWindowPos(nullptr, -1, -1, wnd.Width(), wnd.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+         }
+
          *pResult = MOVED;
       }
       catch (ExceptionBase& e) {
@@ -267,7 +283,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       dc.SelectObject(font);
    }
    
-
 
    /// <summary>Paints the tooltip</summary>
    void CustomTooltip::OnPaint()
@@ -298,6 +313,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Cleanup
       dc.SetBkMode(OPAQUE);
       dc.SelectObject(font);
+   }
+   
+
+   /// <summary>Hook window position changed and hide window if tooltip was cancelled.</summary>
+   /// <param name="lpwndpos">The lpwndpos.</param>
+   void CustomTooltip::OnWindowPosChanged(WINDOWPOS* lpwndpos)
+   {
+      // DEBUG:
+      //Console << "CustomTooltip::OnWindowPosChanged()  Cancelled=" << Cancelled << ENDL;
+      
+      // Cancelled: Hide window 
+      if (Cancelled)
+         ShowWindow(SW_HIDE);
+      else
+         CToolTipCtrl::OnWindowPosChanged(lpwndpos);
    }
 
    

@@ -551,7 +551,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void RichEditEx::OnRequestTooltip(CustomTooltip::TooltipData* data)
    {
       // None: show nothing
-      *data = CustomTooltip::NoTooltip;
+      data->Cancel();
    }
    
    /// <summary>Enable tooltip.</summary>
