@@ -87,11 +87,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
-   /// <summary>Activates an output window pane.</summary>
-   /// <param name="pane">The pane.</param>
-   void  MainWnd::ActivateOutputPane(Operation pane)
+   /// <summary>Set the current output window tab.</summary>
+   /// <param name="pane">Operation type.</param>
+   /// <param name="show">Whether to pop-up output window.</param>
+   void  MainWnd::ActivateOutputPane(Operation pane, bool show)
    {
       m_wndOutput.ActivatePane(pane);
+
+      if (show)
+         m_wndOutput.ShowPane(TRUE, FALSE, TRUE);
    }
 
    /// <summary>Gets the active script view.</summary>
@@ -545,6 +549,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    LRESULT MainWnd::OnWorkerFeedback(WPARAM wParam, LPARAM lParam)
    {
       WorkerProgress* p = reinterpret_cast<WorkerProgress*>(lParam);
+
+      // Initial Feedback: Activate appropriate pane
+      if (p->Type == ProgressType::Operation)
+         ActivateOutputPane(p->Operation, false);
 
       // Raise appropriate event
       switch (p->Operation)

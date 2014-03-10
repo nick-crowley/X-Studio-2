@@ -44,12 +44,16 @@ namespace Logic
             static CommandSyntaxRef  Parse(const wstring& line, GameVersion ver);
 
             // --------------------- PROPERTIES ------------------------
+         public:
+            PROPERTY_GET(bool,Successful,IsSuccessful);
+
          private:
             PROPERTY_GET(UINT,LineNumber,GetLineNumber);
 
             // ---------------------- ACCESSORS ------------------------			
          public:
             void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
+            bool        IsSuccessful() const;
 
          private:
             UINT        GetLineNumber() const;
@@ -86,7 +90,6 @@ namespace Logic
             CommandNodePtr   ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
-
          public:
             ErrorArray     Errors;     // Compilation errors
             ScriptFile&    Script;     // Script

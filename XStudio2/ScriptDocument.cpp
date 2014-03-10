@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "MainWnd.h"
 #include <propkey.h>
 #include "Logic/FileStream.h"
 #include "Logic/XFileInfo.h"
@@ -254,22 +255,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
          ScriptParser parser(Script, Edit->GetLines(), Script.Game);
 
          // Compile 
-         if (parser.Errors.empty())
+         if (parser.Successful)
             parser.Compile();
 
-         // ERRORS: Print tree
-         //DEBUG: if (!parser.Errors.empty())
-            parser.Print();
-         
-         // ERRORS: Feedback messages in output window
-         for (const auto& err : parser.Errors)
-         {
-            GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
-            data.SendFeedback(ProgressType::Error, 1, msg);
-         }
-
-         // Success: Write
-         if (parser.Errors.empty())
+         if (parser.Successful)
          {
             // Write to X-Studio program folder
             StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
@@ -284,14 +273,32 @@ NAMESPACE_BEGIN2(GUI,Documents)
             data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script saved successfully");
             return TRUE;
          }
-      }
-      catch (ExceptionBase&  e) {
-         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", lpszPathName));
-      }
+         else
+         {
+            // Display compiler output window
+            theApp.GetMainWindow()->ActivateOutputPane(Operation::LoadSaveDocument, true);
 
-      // Feedback
-      data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
-      return FALSE;
+            // DEBUG: Print tree 
+            //parser.Print();
+
+            // Feedback messages in output window
+            for (const auto& err : parser.Errors)
+            {
+               GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
+               data.SendFeedback(ProgressType::Error, 1, msg);
+            }
+
+            // Feedback
+            data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
+            return FALSE;
+         }
+      }
+      catch (ExceptionBase&  e) 
+      {
+         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", lpszPathName));
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
+         return FALSE;
+      }
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

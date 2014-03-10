@@ -115,6 +115,12 @@ namespace Logic
             Root->FindAll(name, type, results);
          }
 
+         /// <summary>Get whether there are no errors</summary>
+         bool ScriptParser::IsSuccessful() const
+         {
+            return Errors.empty();
+         }
+
          /// <summary>Prints current state of the parse tree to the console</summary>
          void  ScriptParser::Print()
          {
