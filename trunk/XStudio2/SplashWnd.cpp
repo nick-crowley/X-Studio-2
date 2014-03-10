@@ -85,10 +85,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void SplashWnd::OnPaint()
    {
       CPaintDC dc(this); 
+      ClientRect wnd(this);
 
       CImage img;
       img.LoadFromResource(AfxGetResourceHandle(), IDB_SPLASH);
       img.SetHasAlphaChannel(TRUE);
+
+      dc.FillSolidRect(wnd, GetSysColor(COLOR_APPWORKSPACE));
       img.AlphaBlend(dc, 0, 0, 0xff, AC_SRC_OVER); 
       //img.BitBlt(dc, CPoint(0,0), SRCCOPY);
 
