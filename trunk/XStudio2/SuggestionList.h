@@ -82,8 +82,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void OnKeyDown(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
+      afx_msg LRESULT OnVisibleItemsChanged(WPARAM wParam = 0, LPARAM lParam = 0);
       afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
+      afx_msg void OnScrollBegin(NMHDR *pNMHDR, LRESULT *pResult);
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:

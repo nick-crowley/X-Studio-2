@@ -6,11 +6,7 @@ namespace GUI
    /// <summary>Client rectangle</summary>
    class ClientRect : public CRect
    {
-      // ------------------------ TYPES --------------------------
-   private:
-
       // --------------------- CONSTRUCTION ----------------------
-
    public:
       ClientRect(CWnd* wnd) : CRect(0,0,0,0)
       {
@@ -20,25 +16,13 @@ namespace GUI
       DEFAULT_COPY(ClientRect);	// Default copy semantics
       DEFAULT_MOVE(ClientRect);	// Default move semantics
 
-      // ------------------------ STATIC -------------------------
-
-      // --------------------- PROPERTIES ------------------------
-
-      // ---------------------- ACCESSORS ------------------------			
-
-      // ----------------------- MUTATORS ------------------------
-
       // -------------------- REPRESENTATION ---------------------
    };
 
    /// <summary>Control rectangle in parent client co-ordinates</summary>
    class CtrlRect : public CRect
    {
-      // ------------------------ TYPES --------------------------
-   private:
-
       // --------------------- CONSTRUCTION ----------------------
-
    public:
       /// <summary>Create control rectangle in parent client co-ordinates</summary>
       /// <param name="parent">The parent.</param>
@@ -52,15 +36,6 @@ namespace GUI
       DEFAULT_COPY(CtrlRect);	// Default copy semantics
       DEFAULT_MOVE(CtrlRect);	// Default move semantics
 
-      // ------------------------ STATIC -------------------------
-
-      // --------------------- PROPERTIES ------------------------
-
-      // ---------------------- ACCESSORS ------------------------			
-
-      // ----------------------- MUTATORS ------------------------
-
-      // -------------------- REPRESENTATION ---------------------
    };
 
    /// <summary>Position of mouse cursor</summary>
@@ -76,6 +51,22 @@ namespace GUI
             // Window: Convert to client co-ords
             ScreenToClient(*wnd, this);
       }
+   };
+
+   /// <summary>Window rectangle</summary>
+   class WindowRect : public CRect
+   {
+      // --------------------- CONSTRUCTION ----------------------
+   public:
+      WindowRect(CWnd* wnd) : CRect(0,0,0,0)
+      {
+         wnd->GetWindowRect(this);
+      }
+
+      DEFAULT_COPY(WindowRect);	// Default copy semantics
+      DEFAULT_MOVE(WindowRect);	// Default move semantics
+
+      // -------------------- REPRESENTATION ---------------------
    };
 
    /// <summary>Write rectangle to the console</summary>
