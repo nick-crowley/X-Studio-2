@@ -62,6 +62,13 @@ namespace Logic
          assign( StringResource::LoadV(id, va_start(args, id)) );
       }
 
+      /// <summary>Create from char array</summary>
+      /// <param name="src">Source</param>
+      /*GuiString(const WCHAR* src)
+      {
+         assign(src);
+      }*/
+
       /// <summary>Loads and formats a string</summary>
       /// <param name="format">Formatting string</param>
       /// <param name="">Arguments</param>
@@ -215,10 +222,17 @@ namespace Logic
       {
          GuiString s(*this);
 
+         // Find start of chars to trim
          auto pos = s.find_first_not_of(chars);
-         // Strip chars
-         if (pos != 0 && pos != npos)
+         
+         // None: String is entirely made of target chars
+         if (pos == npos)
+            s.clear();
+
+         // Found: Strip chars
+         else if (pos != 0)
             s.erase(0, pos);
+
          return s;
       }
 
@@ -229,10 +243,16 @@ namespace Logic
       {
          GuiString s(*this);
 
+         // Find start of chars to trim
          auto pos = s.find_last_not_of(chars);
-         // Strip chars
+
+         // Found: Strip chars 
          if (pos != npos)
             s.erase(s.begin()+pos+1, s.end());
+         
+         else // Not Found: String is entirely made of target chars
+            s.clear();
+
          return s;
       }
 
