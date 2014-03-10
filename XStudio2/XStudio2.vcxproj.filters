@@ -120,9 +120,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Command Syntax.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -989,15 +986,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="plugin.piracy.enslavepassengers.xml" />
-    <Xml Include="Command Syntax.xml" />
-    <Xml Include="plugin.piracy.lib.logic.xml" />
-    <Xml Include="plugin.piracy.lib.ui.xml" />
-    <Xml Include="plugin.piracy.astronaut.cmd.repair.xml" />
-    <Xml Include="output.xml" />
-    <Xml Include="Descriptions.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">

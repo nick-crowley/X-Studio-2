@@ -126,9 +126,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="Command Syntax.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CompilerPage.h" />
@@ -424,15 +421,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="Command Syntax.xml" />
-    <Xml Include="Descriptions.xml" />
-    <Xml Include="output.xml" />
-    <Xml Include="plugin.piracy.astronaut.cmd.repair.xml" />
-    <Xml Include="plugin.piracy.enslavepassengers.xml" />
-    <Xml Include="plugin.piracy.lib.logic.xml" />
-    <Xml Include="plugin.piracy.lib.ui.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />

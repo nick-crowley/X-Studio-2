@@ -272,7 +272,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (parser.Errors.empty())
          {
             // Write to X-Studio program folder
-            StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\XStudio2\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
+            StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
             w.Write(Script);
             w.Close();
