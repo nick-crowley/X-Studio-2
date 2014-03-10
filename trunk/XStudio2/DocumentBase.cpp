@@ -119,10 +119,46 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SetTitle(path.FileName.c_str());
    }
 
+   /// <summary>Sets the modified flag and updates the document title</summary>
+   /// <param name="bModified">modified flag.</param>
+   void  DocumentBase::SetModifiedFlag(BOOL bModified)
+   {
+      // Update flag
+      __super::SetModifiedFlag(bModified);
+
+      // Get title
+      wstring title = (LPCWSTR)GetTitle();
+      if (title.empty())
+         return;
+
+      // Add/Remove trailing '*'
+      if (bModified && title.back() != '*')
+         title += L'*';
+      else if (!bModified && title.back() == '*')
+         title.pop_back();
+
+      // Update title
+      __super::SetTitle(title.c_str());
+   }
+
    /// <summary>Sets the selection.</summary>
    /// <param name="rng">char range.</param>
    void  DocumentBase::SetSelection(CHARRANGE rng)
    {
+   }
+
+   /// <summary>Sets the title, and adds a trailing '*' if document is modified</summary>
+   /// <param name="title">title.</param>
+   void  DocumentBase::SetTitle(LPCTSTR title) 
+   {
+      wstring txt(title);
+
+      // Modified: Append *
+      if (IsModified())
+         txt += L"*";
+
+      // Set title
+      __super::SetTitle(txt.c_str());
    }
    
    /// <summary>Sets whether virtual.</summary>

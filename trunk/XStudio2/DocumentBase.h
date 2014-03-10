@@ -47,7 +47,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual void  Rename(const wstring& name);
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(IO::Path path);
+      void          SetModifiedFlag(BOOL bModified = TRUE) override;
       virtual void  SetSelection(CHARRANGE rng);
+      void          SetTitle(LPCTSTR title) override;
       void          SetVirtual(bool v);
 
    protected:
