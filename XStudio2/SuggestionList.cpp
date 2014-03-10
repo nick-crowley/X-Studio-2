@@ -96,36 +96,27 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="tok">Token to match</param>
    void  SuggestionList::MatchSuggestion(const ScriptToken& tok)
    {
-      GuiString str(tok.Text);
-
-      // Format token text
-      switch (tok.Type)
-      {
-      case TokenType::GameObject:
-      case TokenType::ScriptObject:
-         str = str.TrimLeft(L"{[");
-         str = str.TrimRight(L"}]");
-         break;
-
-      case TokenType::Variable:  str = str.TrimLeft(L"$");  break;
-      case TokenType::Label:     str = str.TrimRight(L":"); break;
-      }
+      // Exclude {,[,$,: etc.
+      GuiString str(tok.ValueText); 
 
       // Linear search for partial substring
       int index = 0;
-      auto it = find_if(Content.begin(), Content.end(), [&](const SuggestionItem& item)->bool { 
-         return item.Key.find(str) != wstring::npos ? true : (++index, false); 
-      });
+      for (auto& item : Content)
+      {
+         if (StrCmpNI(str.c_str(), item.Key.c_str(), str.length()) == 0)
+            break;
+         ++index;
+      }
 
       // Search/display closest match
-      if (it != Content.end())
+      if (index != Content.size())
       {
-         Console << L"Search for " << str << L" matched " << it->Text << ENDL;
+         //Console << L"Search for " << str << L" matched " << Content[index].Text << ENDL;
          SetItemState(index, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
          EnsureVisible(index, FALSE);
       }
-      else
-         Console << L"Search for " << str << L" provided no match" << ENDL;
+      /*else
+         Console << L"Search for " << str << L" provided no match" << ENDL;*/
    }
    
    // ------------------------------ PROTECTED METHODS -----------------------------
