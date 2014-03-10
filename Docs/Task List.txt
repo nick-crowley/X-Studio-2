@@ -6,3 +6,24 @@
 3. Cleanup new vArg flags in parameter/command syntax
 
 4. script-calls and argument name resolution are both case sensitive, make them case insensitive
+
+# Properly format script editor tooltips
+
+# Fix matching of current suggestion in auto-complete
+
+# Connect saving of script documents to output file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

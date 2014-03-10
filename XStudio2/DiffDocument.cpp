@@ -20,10 +20,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       : CMultiDocTemplate(IDR_LANGUAGEVIEW, RUNTIME_CLASS(DiffDocument), RUNTIME_CLASS(DiffFrame), nullptr)
    {}
 
-   /// <summary>Queries whether an external file should be opened as a language file</summary>
+   /// <summary>Matches open documents only</summary>
    /// <param name="lpszPathName">Path of file.</param>
    /// <param name="rpDocMatch">The already open document, if any.</param>
-   /// <returns>yesAlreadyOpen if already open, yesAttemptNative if language file, noAttempt if unrecognised</returns>
+   /// <returns>yesAlreadyOpen if already open, otherwise noAttempt</returns>
    CDocTemplate::Confidence DiffDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
    {
       Confidence conf;
@@ -37,9 +37,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return noAttempt;
    }
 
-   /// <summary>Opens the document file.</summary>
+   /// <summary>Creates and opens a diff document.</summary>
    /// <param name="doc">Script document.</param>
-   /// <param name="alternate">Alternate text.</param>
+   /// <param name="alternate">Text to perform diff against.</param>
    /// <returns></returns>
    DiffDocument* DiffDocTemplate::OpenDocumentFile(ScriptDocument& doc, const wstring& alternate)
    {
@@ -162,16 +162,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       __super::OnCloseDocument();
    }
    
-   /// <summary>Manually set the path of the string library document</summary>
+   /// <summary>No longer used</summary>
    /// <param name="deEvent">The de event.</param>
    void DiffDocument::OnDocumentEvent(DocumentEvent deEvent)
    {
-      // Manually set 'String Library' path
-      /*if (Virtual && deEvent == onAfterOpenDocument)
-         m_strPathName = L"Diff";*/
    }
 
-   /// <summary>Populates from a script document</summary>
+   /// <summary>Populates from source document and alternate text</summary>
    /// <param name="doc"></param>
    /// <param name="alternate"></param>
    /// <returns></returns>
@@ -208,7 +205,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   /// <summary>Saves contents to disc</summary>
+   /// <summary>Do nothing</summary>
    /// <param name="szPathName">Full path</param>
    /// <returns></returns>
    BOOL DiffDocument::OnSaveDocument(LPCTSTR szPathName)
@@ -273,7 +270,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   /// <summary>Performs a menu command</summary>
+   /// <summary>Blocks undo/redo</summary>
    /// <param name="nID">Command identifier.</param>
    void DiffDocument::OnPerformCommand(UINT nID)
    {
@@ -303,12 +300,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       switch (pCmdUI->m_nID)
       {
-      // Save/SaveAs: Require file document
+      // Save/SaveAs: Not supported
       case ID_FILE_SAVE:
       case ID_FILE_SAVE_AS:
          break;
 
-      // Undo: 
+      // Undo: Not supported
       case ID_EDIT_UNDO:   
       case ID_EDIT_REDO:   
          break;
