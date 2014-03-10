@@ -146,6 +146,18 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Display original/alternate text
          RichEdit.SetPlainText(Type == DiffViewType::Original ? GetDocument()->Original : GetDocument()->Alternate);
+
+         // Highlight changes
+         for (auto p : GetDocument()->Phrases)
+         {
+            CharFormat cf(CFM_BACKCOLOR,0);
+            cf.crBackColor = RGB(80,80,80);
+
+            // Highlight
+            RichEdit.SetSel(p.GetStart(), p.GetEnd());
+            RichEdit.SetSelectionCharFormat(cf);
+         }
+         RichEdit.SetSel(0,0);
       }
       catch (ExceptionBase& e)
       {

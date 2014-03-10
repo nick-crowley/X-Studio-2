@@ -32,19 +32,41 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DiffDocument* OpenDocumentFile(ScriptDocument& doc, const wstring& alternate);
    };
 
-   /// <summary>Language document</summary>
+   /// <summary>Phrase that was added or removed</summary>
    class DiffPhrase
    {
+      // --------------------- CONSTRUCTION ----------------------
    public:
-      DiffPhrase(const dtl::edit_t type, UINT start, UINT end, const wstring& txt) : Text(txt), Type(type), Start(start), End(end)
+      DiffPhrase(const dtl::edit_t type, UINT start) : Type(type), Start(start)
       {
-         Console << "Phrase " << txt << " start=" << start << " end=" << end << ENDL;
+         auto sz = type==dtl::SES_ADD    ? L"ADD" 
+                 : type==dtl::SES_DELETE ? L"DELETE" 
+                 :                         L"COMMON";
+
+         Console << sz << " start=" << Start << ENDL;
       }
 
+      // ---------------------- ACCESSORS ------------------------	
+
+      /// <summary>Gets the start char index.</summary>
+      /// <returns></returns>
+      UINT  GetStart() const
+      {
+         return Start;
+      }
+
+      /// <summary>Gets the end char index.</summary>
+      /// <returns></returns>
+      UINT  GetEnd() const
+      {
+         return Start + Text.length();
+      }
+
+      // -------------------- REPRESENTATION ---------------------
    public:
-      const wstring     Text;
-      const dtl::edit_t Type;
-      const UINT        Start, End;
+      wstring     Text;
+      dtl::edit_t Type;
+      UINT        Start;
    };
 
    /// <summary>Language document</summary>
@@ -93,6 +115,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BOOL  OnSaveDocument(LPCTSTR szPathName) override;
 
    protected:
+      void  GeneratePhrases(dtl::Ses<wchar>& ses);
       void  OnPerformCommand(UINT nID);
       void  OnQueryCommand(CCmdUI* pCmdUI);
 
