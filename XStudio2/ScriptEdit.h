@@ -490,7 +490,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       bool       CanRefactor() const;
 
    protected:
-      UINT       GetLineHeight() const;
+      int        GetLineHeight() const;
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       IsKeyPressed(UINT vKey) const;

@@ -299,7 +299,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    /// <summary>Gets the height of each line.</summary>
    /// <returns></returns>
-   UINT  ScriptEdit::GetLineHeight() const
+   int  ScriptEdit::GetLineHeight() const
    {
       // Get line height
       if (GetLineCount() == 1)
@@ -319,10 +319,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    CRect  ScriptEdit::GetSuggestionRect(Suggestion type)
    {
+      ClientRect wnd(this);
+
       // Position beneath current line
       CRect rc(GetCharPos(GetSelection().cpMin), SuggestionList::GetDefaultSize(type));
       rc.OffsetRect(0, GetLineHeight());
 
+      // Intersects Bottom: Position above line
+      if (rc.bottom >= wnd.bottom)
+         rc.OffsetRect(0, -GetLineHeight() - SuggestionList::GetDefaultSize(type).cy);
+
+      // Intersects Right: Move left until visible
+      if (rc.right >= wnd.right)
+         rc.OffsetRect(-(rc.right-wnd.right), 0);
+      
       return rc;
    }
 
