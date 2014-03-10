@@ -296,6 +296,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "SuggestionList::OnVisibleItemsChanged()" << ENDL;
 
       CWindowDC dc(this);
+      WindowRect wnd(this);
       int width = 0;
 
       // Measure visible items
@@ -309,13 +310,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Enforce min/max widths
       width = max(width, 200);
       width = min(width, 700);
+      
+      // Adjust for scrollBar
+      auto wndWidth = width + 2*GetSystemMetrics(SM_CXEDGE);
+      if (GetCountPerPage() < (int)Content.size())
+         wndWidth += GetSystemMetrics(SM_CXVSCROLL);
 
-      // Adjust width
-      WindowRect wnd(this);
-      SetWindowPos(nullptr,-1,-1, width, wnd.Height(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-
-      // Adjust column width to match
-      SetColumnWidth(0, width-GetSystemMetrics(SM_CXEDGE)-GetSystemMetrics(SM_CXVSCROLL));
+      // Resize window + column
+      SetWindowPos(nullptr,-1,-1, wndWidth, wnd.Height(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+      SetColumnWidth(0, width);
 
       return 0;
    }
