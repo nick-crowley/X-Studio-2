@@ -567,11 +567,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "RichEditEx::OnSetFocus" << ENDL;
    }
 
-   /// <summary>Performs syntax colouring on the current line</summary>
+   /// <summary>Reset the tooltip. Raises 'TEXT CHANGED'</summary>
    void RichEditEx::OnTextChange()
    {
       // Reset tooltip
       Tooltip.Reset();
+
+      // Raise 'TEXT CHANGED'
+      TextChanged.Raise();
    }
 
    /// <summary>Reset the tooltip</summary>

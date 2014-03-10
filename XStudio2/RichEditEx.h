@@ -97,6 +97,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // -------------------- REPRESENTATION ---------------------
    public:
+      SimpleEvent  TextChanged;
 
    protected:
       TextDocumentPtr  TextDocument;

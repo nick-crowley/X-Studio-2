@@ -60,7 +60,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    ScriptView::ScriptView() 
              : CFormView(ScriptView::IDD), 
-               fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete))
+               fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete)),
+               fnTextChanged(RichEdit.TextChanged.Register(this, &ScriptView::OnTextChanged))
    {
    }
 
@@ -299,6 +300,9 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Populate variables/scope
          PopulateVariables();
          PopulateScope();
+
+         // Ensure init hasn't modified document
+         GetDocument()->SetModifiedFlag(FALSE);
       }
       catch (ExceptionBase& e)
       {
@@ -393,6 +397,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       AdjustLayout();
    }
    
+   /// <summary>Modify document when text changes.</summary>
+   void ScriptView::OnTextChanged()
+   {
+      GetDocument()->SetModifiedFlag(TRUE);
+   }
 
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>
    /// <param name="pNMHDR">Message header</param>
