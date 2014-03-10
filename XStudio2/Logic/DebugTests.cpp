@@ -304,26 +304,25 @@ namespace Logic
       if (!ScriptDocument::GetActive())
          return;
 
-      /*wstring A(L"abc"),
-              B(L"abd");
-      dtl::Diff<wchar, wstring> d(A, B);
-      d.compose();
-
-      for (auto s : d.getSes().getSequence())
-         s.second.type == dtl::SES_DELETE;*/
-
       const wstring txt = L"$a = 152\r\n" L"goto hello:\r\n" L"$b = {bongo bongo}\r\n" L"return null\r\n" ;
 
       // Get document/template
       auto doc = ScriptDocument::GetActive();
       auto templ = theApp.GetDocumentTemplate<DiffDocTemplate>();
 
-      // backup
-      auto backup = doc->GetAllText();
-      backup.insert(10, L"NEW NEW NEW NEW NEW");
+      // Create different version
+      FileStream fs(L"D:\\My Projects\\XStudio2\\XStudio2\\add.dynamic.logic.diff", FileMode::OpenExisting, FileAccess::Read);
+      auto bytes = fs.ReadAllBytes();
+      auto alt = StringResource::Convert((char*)bytes.get(), CP_ACP);
+
+      /*auto alt = doc->GetAllText();
+      alt.erase(50, 15);
+      alt.insert(140, L"NEW NEW NEW NEW NEW");
+      alt.insert(70, L"NEW NEW NEW NEW NEW");
+      alt.insert(10, L"NEW NEW NEW NEW NEW");*/
 
       // Open document
-      templ->OpenDocumentFile(*doc, backup);
+      templ->OpenDocumentFile(*doc, alt);
    }
 
    void  DebugTests::Test_ExpressionParser()
