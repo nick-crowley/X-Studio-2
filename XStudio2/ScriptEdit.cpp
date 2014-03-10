@@ -19,15 +19,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    BEGIN_MESSAGE_MAP(ScriptEdit, CRichEditCtrl)
       ON_WM_TIMER()
+      ON_WM_HSCROLL()
       ON_WM_KILLFOCUS()
       ON_WM_CHAR()
       ON_WM_KEYDOWN()
       ON_WM_PAINT()
-      ON_WM_HSCROLL()
-      ON_WM_VSCROLL()
       ON_WM_KEYUP()
       ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
+      ON_WM_VSCROLL()
+      ON_WM_HSCROLL_REFLECT()
+      ON_WM_VSCROLL_REFLECT()
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
    END_MESSAGE_MAP()
@@ -506,14 +508,29 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Refreshes the line numbers after a scroll</summary>
-   void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   void ScriptEdit::HScroll(UINT nSBCode, UINT nPos)
    {
+      //Console << "ScriptEdit::HScroll" << ENDL;
+
       // Redraw the line numbers after a scroll or drag
       if (nSBCode == SB_ENDSCROLL)
          RefreshGutter();
 
       // Reset tooltip
-      __super::OnHScroll(nSBCode, nPos, pScrollBar);
+      __super::HScroll(nSBCode, nPos);
+   }
+   
+   /// <summary>Refreshes the line numbers after a scroll</summary>
+   void ScriptEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
+   {
+      //Console << "ScriptEdit::OnHScroll" << ENDL;
+
+      // Redraw the line numbers after a scroll or drag
+      if (nSBCode == SB_ENDSCROLL)
+         RefreshGutter();
+
+      // Reset tooltip
+      __super::OnHScroll(nSBCode, nPos, bar);
    }
    
    /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
@@ -781,14 +798,29 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
    
    /// <summary>Refreshes the line numbers after a scroll</summary>
-   void ScriptEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+   void ScriptEdit::VScroll(UINT nSBCode, UINT nPos)
    {
+      //Console << "ScriptEdit::VScroll" << ENDL;
+
       // Redraw the line numbers after a scroll or drag
       if (nSBCode == SB_ENDSCROLL)
          RefreshGutter();
 
       // Reset Tooltip + Scroll
-      __super::OnVScroll(nSBCode, nPos, pScrollBar);
+      __super::VScroll(nSBCode, nPos);
+   }
+   
+   /// <summary>Refreshes the line numbers after a scroll</summary>
+   void ScriptEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
+   {
+      //Console << "ScriptEdit::OnVScroll" << ENDL;
+
+      // Redraw the line numbers after a scroll or drag
+      if (nSBCode == SB_ENDSCROLL)
+         RefreshGutter();
+
+      // Reset Tooltip + Scroll
+      __super::OnVScroll(nSBCode, nPos, bar);
    }
 
    /// <summary>Matches a token type against the current suggestion type</summary>

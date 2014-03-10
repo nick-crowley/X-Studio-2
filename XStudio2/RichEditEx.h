@@ -84,14 +84,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   FreezeWindow(bool freeze, bool invalidate = true);
       void   SetScrollCoordinates(const CPoint& pt);
       
-      afx_msg void HScroll(UINT nSBCode, UINT nPos);
+      virtual void HScroll(UINT nSBCode, UINT nPos);
+      virtual void VScroll(UINT nSBCode, UINT nPos);
+      virtual void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       virtual void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
       virtual void OnTextChange();
-      afx_msg void VScroll(UINT nSBCode, UINT nPos);
+      virtual void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar);
       
       // -------------------- REPRESENTATION ---------------------
    public:

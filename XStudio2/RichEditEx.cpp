@@ -12,9 +12,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    IMPLEMENT_DYNAMIC(RichEditEx, CRichEditCtrl)
 
    BEGIN_MESSAGE_MAP(RichEditEx, CRichEditCtrl)
+      ON_WM_HSCROLL()
       ON_WM_HSCROLL_REFLECT()
       ON_WM_KILLFOCUS()
       ON_WM_SETFOCUS()
+      ON_WM_VSCROLL()
       ON_WM_VSCROLL_REFLECT()
       ON_CONTROL_REFLECT(EN_CHANGE, &RichEditEx::OnTextChange)
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &RichEditEx::OnInputMessage)
@@ -462,13 +464,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Reset the tooltip</summary>
-   void RichEditEx::HScroll(UINT nSBCode, UINT nPos)
+   void RichEditEx::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
    {
+      //Console << "RichEditEx::OnHScroll" << ENDL;
+
       // Reset tooltip
       Tooltip.Reset();
 
       // Scroll
-      //__super::OnHScroll(nSBCode, nPos, nullptr);
+      __super::OnHScroll(nSBCode, nPos, bar);
+   }
+
+   /// <summary>Reset the tooltip</summary>
+   void RichEditEx::HScroll(UINT nSBCode, UINT nPos)
+   {
+      //Console << "RichEditEx::HScroll" << ENDL;
+
+      // Reset tooltip
+      Tooltip.Reset();
    }
 
    /// <summary>Resets the tooltip</summary>
@@ -566,11 +579,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Reset the tooltip</summary>
    void RichEditEx::VScroll(UINT nSBCode, UINT nPos)
    {
+      //Console << "RichEditEx::VScroll" << ENDL;
+
+      // Reset tooltip
+      Tooltip.Reset();
+   }
+
+   /// <summary>Reset the tooltip</summary>
+   void RichEditEx::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
+   {
+      //Console << "RichEditEx::OnVScroll" << ENDL;
+
       // Reset tooltip
       Tooltip.Reset();
 
       // Scroll
-      //__super::OnVScroll(nSBCode, nPos, nullptr);
+      __super::OnHScroll(nSBCode, nPos, bar);
    }
    
    /// <summary>Pastes text from clipboard.</summary>

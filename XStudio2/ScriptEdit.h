@@ -533,11 +533,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       virtual void   UpdateHighlighting(int first, int last);
       void   UpdateSuggestions();
       
+      afx_msg void HScroll(UINT nSBCode, UINT nPos) override;
+      afx_msg void VScroll(UINT nSBCode, UINT nPos) override;
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       handler void OnCharNewLine();
       handler void OnCharTab(bool shift);
-      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult) override;
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -547,7 +549,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
-      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
