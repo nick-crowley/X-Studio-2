@@ -18,7 +18,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    class SuggestionList : public CListCtrl
    {
       // ------------------------ TYPES --------------------------
-   private:
+   protected:
       /// <summary>Item in the list</summary>
       struct SuggestionItem
       {
@@ -45,9 +45,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
       virtual ~SuggestionList();
        
       // ------------------------ STATIC -------------------------
-   
       DECLARE_DYNAMIC(SuggestionList)
       DECLARE_MESSAGE_MAP()
+
+   public:
+      static CSize  GetDefaultSize(Suggestion type);
 	  
       // --------------------- PROPERTIES ------------------------
 	  
@@ -58,7 +60,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
-      BOOL Create(ScriptEdit* parent, CPoint& pt, Suggestion type, const ScriptFile* script);
+      BOOL Create(ScriptEdit* parent, CRect rc, Suggestion type, const ScriptFile* script);
       void MatchSuggestion(const ScriptToken& tok);
 
    protected:
@@ -70,9 +72,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
 	  
       // -------------------- REPRESENTATION ---------------------
-   private:
-      const CSize DefaultSize = CSize(300,200),
-                  CommandSize = CSize(600,200);
+   protected:
+      const static CSize DefaultSize,
+                         CommandSize;
       
       Suggestion        SuggestionType;
       ContentArray      Content;
