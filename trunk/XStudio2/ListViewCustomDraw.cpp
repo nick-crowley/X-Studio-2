@@ -9,8 +9,8 @@ namespace GUI
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ListViewCustomDraw::ListViewCustomDraw(CWnd* wnd, CListCtrl& ctrl) 
-         : CustomDrawImpl<NMLVCUSTOMDRAW>(wnd, (UINT)DrawCycle::Paint|(UINT)DrawCycle::Items), ListView(ctrl)
+      ListViewCustomDraw::ListViewCustomDraw(CListCtrl& ctrl) 
+         : CustomDrawImpl<NMLVCUSTOMDRAW>((UINT)DrawCycle::Paint|(UINT)DrawCycle::Items), ListView(ctrl)
       {
       }
 
@@ -52,7 +52,7 @@ namespace GUI
             item.Focused  = ListView.GetItemState(item.Index, LVIS_FOCUSED) != 0;
 
             // Draw background
-            bool ListHasFocus = (Wnd->GetFocus()->GetSafeHwnd() == ListView.GetSafeHwnd());
+            bool ListHasFocus = (::GetFocus() == ListView.GetSafeHwnd());
             auto backColour   = (item.Selected ? GetSysColor(ListHasFocus ? COLOR_HIGHLIGHT : COLOR_GRAYTEXT) : ListView.GetBkColor());
             dc.FillSolidRect(item.Rect, backColour);
 

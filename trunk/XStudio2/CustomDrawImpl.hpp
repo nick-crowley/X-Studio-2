@@ -39,9 +39,8 @@ namespace GUI
 
       public:
          /// <summary>Creates a custom draw implementation</summary>
-         /// <param name="wnd">Owner window</param>
          /// <param name="flags">Desired paint handlers</param>
-         CustomDrawImpl(CWnd* wnd, UINT flags) : Wnd(wnd), Flags(flags)
+         CustomDrawImpl(UINT flags) : Flags(flags)
          {
             // Validate flags
             if ((flags & ((UINT)DrawCycle::Paint | (UINT)DrawCycle::Erase)) == NULL)
@@ -161,9 +160,7 @@ namespace GUI
          bool  onEraseSubItem(NMCUSTOMDRAW* pDraw, Stage stage);*/
 
          // -------------------- REPRESENTATION ---------------------
-
       protected:
-         CWnd*  Wnd;
 
       private:
          UINT   Flags;
