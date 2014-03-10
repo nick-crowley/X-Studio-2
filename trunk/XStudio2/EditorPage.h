@@ -13,15 +13,57 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    protected:
       /// <summary>Show line numbers property</summary>
-      class ShowLineNumbersProperty : public BooleanProperty
+      class ShowLineNumbersProperty : public PropertyBase
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create 'show line numbers' property</summary>
          /// <param name="page">Owner page.</param>
          ShowLineNumbersProperty(PreferencesPage& page) 
-            : BooleanProperty(page, L"Show Line Numbers", PrefsLib.ShowLineNumbers, L"Display line numbers in the editor")
-         {}
+            : PropertyBase(page, L"Line Numbers", L"", L"Display line numbers in the editor")
+         {
+            AddOption(L"Show Line Numbers", FALSE);
+            AddOption(L"Don't Show Line Numbers", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.ShowLineNumbers ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+      };
+
+      /// <summary>Show Script Tooltips property</summary>
+      class ShowScriptTooltipsProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'Show Script Tooltips' property</summary>
+         /// <param name="page">Owner page.</param>
+         ShowScriptTooltipsProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Code Tooltips", L"", L"Display tooltips when hovering over script-code")
+         {
+            AddOption(L"Show Code Tooltips", FALSE);
+            AddOption(L"Don't Show Code Tooltips", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.ShowScriptTooltips ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
       };
 
       /// <summary>ScriptViewFont property</summary>
@@ -35,6 +77,21 @@ NAMESPACE_BEGIN2(GUI,Preferences)
             : FontProperty(page, L"Window Font", PrefsLib.ScriptViewFont, L"Change the font used in the script editor")
          {}
       };
+
+      /// <summary>ScriptTooltipDelay property</summary>
+      class ScriptTooltipDelayProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'ScriptTooltipDelay' property</summary>
+         /// <param name="page">Owner page.</param>
+         ScriptTooltipDelayProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Code Tooltips Delay", _variant_t(PrefsLib.ScriptTooltipDelay), L"Length of time (in seconds) before code tooltips are shown")
+         {
+            // 1 <= delay <= 30
+            EnableSpinControl(TRUE, 1, 30);
+         }
+      };
       
       /// <summary>LineNumber colour property</summary>
       class LineNumberColourProperty : public ColourProperty
@@ -44,7 +101,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'LineNumberColour' property</summary>
          /// <param name="page">Owner page.</param>
          LineNumberColourProperty(PreferencesPage& page) 
-            : ColourProperty(page, L"Line Numbers", PrefsLib.LineNumberColour, L"Change the line number colour used in the script editor")
+            : ColourProperty(page, L"Line Number Colour", PrefsLib.LineNumberColour, L"Change the line number colour used in the script editor")
          {}
       };
 
@@ -56,7 +113,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'BackgroundColour' property</summary>
          /// <param name="page">Owner page.</param>
          BackgroundColourProperty(PreferencesPage& page) 
-            : ColourProperty(page, L"Background", PrefsLib.BackgroundColour, L"Change the background colour used in the script editor")
+            : ColourProperty(page, L"Background Colour", PrefsLib.BackgroundColour, L"Change the background colour used in the script editor")
          {}
       };
 
@@ -227,9 +284,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:
-      ShowLineNumbersProperty*   ShowLineNumbers;
-      ScriptViewFontProperty*    ScriptViewFont;
       LineNumberColourProperty*     LineNumberColour;
+      ShowLineNumbersProperty*      ShowLineNumbers;
+      ShowScriptTooltipsProperty*   ShowScriptTooltips;
+      ScriptViewFontProperty*       ScriptViewFont;
+      ScriptTooltipDelayProperty*   ScriptTooltipDelay;
 
       BackgroundColourProperty*     BackgroundColour;
       ArgumentColourProperty*       ArgumentColour;
