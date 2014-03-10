@@ -7,6 +7,7 @@
 #include "DiffView.h"
 #include "PropertiesWnd.h"
 #include "Logic/WorkerFeedback.h"
+#include "Logic/dtl/dtl.hpp"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -153,10 +154,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Console << Cons::UserAction << L"Loading diff: " << doc.FullPath << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading diff '%s'", (LPCWSTR)doc.GetTitle()));
 
-         // Store data
+         // Store document
          Source = &doc;
-         Original = doc.GetAllText();
-         Alternate = alternate;
+         /*Original = doc.GetAllText();
+         Alternate = alternate;*/
+
+         // Perform DIFF
+         dtl::Diff<wchar, wstring> d(doc.GetAllText(), alternate);
+         d.compose();
+
+         // Generate text
+         for (auto s : d.getSes().getSequence())
+         {
+            // Common/NewLine: Insert both
+            if (s.first == '\v' || s.second.type == dtl::SES_COMMON)
+            {
+               Original.push_back(s.first);
+               Alternate.push_back(s.first);
+            }
+            // Added: 
+            else if (s.second.type == dtl::SES_ADD)
+            {
+               Original.push_back('+');
+               Alternate.push_back(s.first);
+            }
+            // Deleted:
+            else if (s.second.type == dtl::SES_DELETE)
+            {
+               Original.push_back(s.first);
+               Alternate.push_back('?');
+            }
+         }
 
          // Feedback
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
