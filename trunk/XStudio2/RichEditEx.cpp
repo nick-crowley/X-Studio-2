@@ -566,7 +566,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::OnSetFocus(pOldWnd);
 
       // Activate tooltip
-      Tooltip.Activate(TRUE);   
+      Tooltip.Activate(TRUE); 
+
+      // DEBUG:
+      //Console << "RichEditEx::OnSetFocus" << ENDL;
    }
 
    /// <summary>Performs syntax colouring on the current line</summary>

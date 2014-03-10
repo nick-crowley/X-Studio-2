@@ -69,9 +69,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   ASSERT_VALID(pFrame);
 
       // Identify views
-      auto pos = pDocument->GetFirstViewPosition();
-      reinterpret_cast<DiffView*>(pDocument->GetNextView(pos))->SetType(DiffViewType::Original);
-      reinterpret_cast<DiffView*>(pDocument->GetNextView(pos))->SetType(DiffViewType::Alternate);
+      pDocument->GetView(0)->SetType(DiffViewType::Original);
+      pDocument->GetView(1)->SetType(DiffViewType::Alternate);
 
 	   // open document
 		CWaitCursor wait;
@@ -111,8 +110,41 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   /// <summary>Toggle a diff view type</summary>
+   DiffViewType operator!(const DiffViewType& t)
+   {
+      return t == DiffViewType::Original ? DiffViewType::Alternate : DiffViewType::Original;
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Gets either diff view</summary>
+   /// <param name="index">View index.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::AlgorithmException">View not found</exception>
+   DiffView*  DiffDocument::GetView(UINT index) const
+   {
+      POSITION pos = GetFirstViewPosition();
+      UINT i = 0;
+
+      // Iterate thru views
+      while (DiffView* v = dynamic_cast<DiffView*>(GetNextView(pos)))
+         if (index == i++)
+            return v;
+
+      // Error: Not found
+      throw AlgorithmException(HERE, L"Cannot find desired View");
+   }
+   
+   /// <summary>Gets either diff view</summary>
+   /// <param name="t">View type.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::AlgorithmException">View not found</exception>
+   DiffView*  DiffDocument::GetView(DiffViewType t) const
+   {
+      return GetView((UINT)t);
+   }
+
    /// <summary>Populates the properties window</summary>
    /// <param name="grid">The grid.</param>
    void  DiffDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
