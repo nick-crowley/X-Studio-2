@@ -66,7 +66,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CPoint     GetCursorLocation() const;
       int        GetLineEnd(int line = -1) const;
       int        GetLineStart(int line = -1) const;
-      CPoint    GetScrollCoordinates() const;
+      CPoint     GetScrollCoordinates() const;
       void       GroupUndo(bool start);
       
       // ----------------------- MUTATORS ------------------------
