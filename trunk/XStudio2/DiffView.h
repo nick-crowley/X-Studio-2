@@ -51,6 +51,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnDestroy();
       afx_msg void OnClipboardCopy();
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnEditHScroll();
+      afx_msg void OnEditVScroll();
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnQueryCommand(CCmdUI *pCmdUI);
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);

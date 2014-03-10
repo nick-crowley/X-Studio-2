@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DiffEdit.h"
+#include "DiffView.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -28,21 +29,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Initializes the control</summary>
-   /// <param name="doc">The document.</param>
+   /// <param name="view">View type.</param>
+   /// <param name="diff">Diff document.</param>
+   /// <param name="doc">Source script document.</param>
    /// <exception cref="Logic::ArgumentNullException">document is null</exception>
    /// <exception cref="Logic::Win32Exception">Unable to retrieve COM pointers</exception>
-   void  DiffEdit::Initialize(GUI::Documents::DiffDocument* diff, ScriptDocument* doc)
+   void  DiffEdit::Initialize(DiffViewType view, GUI::Documents::DiffDocument* diff, ScriptDocument* doc)
    {
       REQUIRED(diff);
 
       // Set document
       DiffDocument = diff;
+      ViewType = view;
 
       // Set ReadOnly
       ReadOnly = TRUE;
 
       // Initialize
       __super::Initialize(doc);
+   }
+   
+   /// <summary>Scrolls the opposing view, if this view has focus</summary>
+   void  DiffEdit::ScrollSibling()
+   {
+      // Focus: Command alternate view to scroll
+      if (::GetFocus() == *this)
+      {
+         //Console << "Adjusting sibling scroll co-ords" << ENDL;
+         DiffDocument->GetView(!ViewType)->RichEdit.SetScrollCoordinates(GetScrollCoordinates());
+      }
    }
 
    /// <summary>Replace entire contents with plain text.</summary>
@@ -99,112 +114,32 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Refreshes the line numbers after a scroll</summary>
-   //void DiffEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-   //{
-   //   // Redraw the line numbers after a scroll or drag
-   //   if (nSBCode == SB_ENDSCROLL)
-   //      RefreshGutter();
+   /// <summary>Command opposing view to scroll</summary>
+   void DiffEdit::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
+   {
+      //Console << "DiffEdit::OnHScroll" << ENDL;
 
-   //   // Reset tooltip
-   //   __super::OnHScroll(nSBCode, nPos, pScrollBar);
-   //}
+      // Refresh gutter
+      __super::OnHScroll(nSBCode, nPos, bar);
+
+      // Drag: Scroll manually  [notification not received by view]
+      if (nSBCode == SB_THUMBTRACK)
+         ScrollSibling();
+   }
    
-   /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
-   /// <param name="pNMHDR">The notify header</param>
-   /// <param name="pResult">message result</param>
-   //void DiffEdit::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
-   //{
-   //   static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
+   /// <summary>Command opposing view to scroll</summary>
+   void DiffEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
+   {
+      //Console << "DiffEdit::OnVScroll" << ENDL;
 
-   //   // Get character
-   //   MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
-   //   wchar chr = pFilter->wParam;
+      // Refresh gutter
+      __super::OnVScroll(nSBCode, nPos, bar);
 
-   //   // Reset tooltip
-   //   __super::OnInputMessage(pNMHDR, pResult);
-   //
-   //   // Allow input by default
-   //   *pResult = ALLOW_INPUT;
-
-   //   try
-   //   {
-   //      if (State == InputState::Suggestions)
-   //         switch (pFilter->msg)
-   //         {
-   //         case WM_CHAR:
-   //            switch (chr)
-   //            {
-   //            // TAB: Insert suggestion.  Prevent focus switch
-   //            case VK_TAB:
-   //               InsertSuggestion();
-   //               *pResult = BLOCK_INPUT;
-   //               break;
-   //         
-   //            // ESCAPE: Close suggestions
-   //            case VK_ESCAPE:
-   //               CloseSuggestions();
-   //               *pResult = BLOCK_INPUT;
-   //               break;
-   //            }
-   //            break;
-
-   //         // NAVIGATION: Update suggestions / Forward message
-   //         case WM_KEYDOWN:
-   //            switch (chr)
-   //            {
-   //            // TAB: Insert suggestion
-   //            case VK_TAB:
-   //               InsertSuggestion();
-   //               *pResult = BLOCK_INPUT;
-   //               break;
-
-   //            // ESCAPE: Close suggestions
-   //            case VK_ESCAPE:
-   //               CloseSuggestions();
-   //               *pResult = BLOCK_INPUT;
-   //               break;
-
-   //            // UP/DOWN/PAGEUP/PAGEDOWN: Navigate suggestions list
-   //            case VK_UP:    
-   //            case VK_DOWN:
-   //            case VK_PRIOR: 
-   //            case VK_NEXT:  
-   //               SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
-   //               *pResult = BLOCK_INPUT;
-   //               return;
-   //            }
-   //            break;
-
-   //         // CLICK: Close Suggestions
-   //         case WM_LBUTTONDOWN:
-   //         case WM_RBUTTONDOWN:
-   //         case WM_MBUTTONDOWN:
-   //            CloseSuggestions();
-   //            break;
-
-   //         // WHEEL: Forward to list
-   //         case WM_MOUSEWHEEL:
-   //            SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
-   //            *pResult = BLOCK_INPUT;
-   //            break;
-   //         }
-   //   }
-   //   catch (ExceptionBase& e) { 
-   //      Console.Log(HERE, e, GuiString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
-   //   }
-   //}
-
-   /// <summary>Refreshes the line numbers after a scroll</summary>
-   //void DiffEdit::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-   //{
-   //   // Redraw the line numbers after a scroll or drag
-   //   if (nSBCode == SB_ENDSCROLL)
-   //      RefreshGutter();
-
-   //   // Reset Tooltip + Scroll
-   //   __super::OnVScroll(nSBCode, nPos, pScrollBar);
-   //}
+      // Drag: Scroll manually  [notification not received by view]
+      if (nSBCode == SB_THUMBTRACK)
+         ScrollSibling();
+   }
+   
 
    /// <summary>Updates the highlighting.</summary>
    /// <param name="first">first zero-based line number</param>

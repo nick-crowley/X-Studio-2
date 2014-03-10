@@ -29,23 +29,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
-      void   Initialize(DiffDocument* diff, ScriptDocument* doc);
+      void   Initialize(DiffViewType view, DiffDocument* diff, ScriptDocument* doc);
       //void   SetPlainText(const wstring& txt);
       //void   SetRtf(const string& rtf) override;
+      void   ScrollSibling();
 
    protected:
       void   UpdateHighlighting(int first, int last) override;
       
-      /*afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-      afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult) override;
-      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);*/
+      afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
+      afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
 
    protected:
       DiffDocument*  DiffDocument;
-};
+      DiffViewType   ViewType;
+   };
    
 
 NAMESPACE_END2(GUI,Controls)

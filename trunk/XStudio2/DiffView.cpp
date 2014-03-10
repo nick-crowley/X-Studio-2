@@ -34,6 +34,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SETTINGCHANGE()
       ON_COMMAND(ID_EDIT_COPY, &DiffView::OnClipboardCopy)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &DiffView::OnQueryCommand)
+      ON_EN_HSCROLL(IDC_DIFF_EDIT, &DiffView::OnEditHScroll)
+      ON_EN_VSCROLL(IDC_DIFF_EDIT, &DiffView::OnEditVScroll)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -118,7 +120,23 @@ NAMESPACE_BEGIN2(GUI,Views)
 	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
    }
 
+   /// <summary>Scroll the opposite view</summary>
+   void  DiffView::OnEditHScroll()
+   {
+      //Console << "DiffView::OnEditHScroll" << ENDL;
 
+      // Scroll opposite view
+      RichEdit.ScrollSibling();
+   }
+
+   /// <summary>Scroll the opposite view.</summary>
+   void  DiffView::OnEditVScroll()
+   {
+      //Console << "DiffView::OnEditVScroll" << ENDL;
+
+      // Scroll opposite view
+      RichEdit.ScrollSibling();
+   }
 
    /// <summary>Clear properties</summary>
    void DiffView::OnDestroy()
@@ -141,7 +159,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       try
       {
          // Init DiffEdit
-         RichEdit.Initialize(GetDocument(), GetDocument()->Source);
+         RichEdit.Initialize(Type, GetDocument(), GetDocument()->Source);
 
          // Display original/alternate text
          RichEdit.SetPlainText(Type == DiffViewType::Original ? GetDocument()->Original : GetDocument()->Alternate);
