@@ -2,6 +2,7 @@
 #include "DocumentBase.h"
 #include "PropertySource.h"
 #include "ScriptDocument.h"
+#include "Logic/dtl/dtl.hpp"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -29,6 +30,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       virtual Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
       DiffDocument* OpenDocumentFile(ScriptDocument& doc, const wstring& alternate);
+   };
+
+   /// <summary>Language document</summary>
+   class DiffPhrase
+   {
+   public:
+      DiffPhrase(const dtl::edit_t type, UINT start, UINT end, const wstring& txt) : Text(txt), Type(type), Start(start), End(end)
+      {
+         Console << "Phrase " << txt << " start=" << start << " end=" << end << ENDL;
+      }
+
+   public:
+      const wstring     Text;
+      const dtl::edit_t Type;
+      const UINT        Start, End;
    };
 
    /// <summary>Language document</summary>
@@ -85,6 +101,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       wstring         Original, 
                       Alternate;
       ScriptDocument* Source;
+
+      list<DiffPhrase> Phrases;
 
 };
 

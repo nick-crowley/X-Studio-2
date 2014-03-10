@@ -7,7 +7,6 @@
 #include "DiffView.h"
 #include "PropertiesWnd.h"
 #include "Logic/WorkerFeedback.h"
-#include "Logic/dtl/dtl.hpp"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -156,35 +155,71 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Store document
          Source = &doc;
-         /*Original = doc.GetAllText();
-         Alternate = alternate;*/
 
          // Perform DIFF
          dtl::Diff<wchar, wstring> d(doc.GetAllText(), alternate);
          d.compose();
 
          // Generate text
-         for (auto s : d.getSes().getSequence())
+         auto seq = d.getSes().getSequence();
+         for (auto pos = seq.begin(), end = seq.end(); pos != end; ++pos)
          {
+            wchar&      chr = pos->first;
+            dtl::edit_t type = pos->second.type;
+
             // Common/NewLine: Insert both
-            if (s.first == '\v' || s.second.type == dtl::SES_COMMON)
+            if (chr == '\v' || type == dtl::SES_COMMON)
             {
-               Original.push_back(s.first);
-               Alternate.push_back(s.first);
+               Original.push_back(chr);
+               Alternate.push_back(chr);
             }
-            // Added: 
-            else if (s.second.type == dtl::SES_ADD)
+            // Added/Removed: Generate+consume phrase
+            else 
             {
-               Original.push_back('+');
-               Alternate.push_back(s.first);
-            }
-            // Deleted:
-            else if (s.second.type == dtl::SES_DELETE)
-            {
-               Original.push_back(s.first);
-               Alternate.push_back('?');
+               wstring text;
+               int start = (int)pos->second.beforeIdx;
+
+               // Consume chars of matching type
+               for (auto p = pos; p != end && p->second.type == type; ++p)
+               {
+                  wchar chr = p->first;
+
+                  // Insert text/placeholders
+                  Original.push_back(type == dtl::SES_ADD && chr != '\v' ? '+' : chr);
+                  Alternate.push_back(type == dtl::SES_DELETE && chr != '\v' ? '?' : chr);
+                  
+                  // Append phrase
+                  text.push_back(chr);
+                  pos = p;
+               }
+
+               // Create new phrase
+               Phrases.push_back(DiffPhrase(type, start, (int)pos->second.beforeIdx, text));
             }
          }
+
+         // Generate text
+         //for (auto s : d.getSes().getSequence())
+         //{
+         //   // Common/NewLine: Insert both
+         //   if (s.first == '\v' || s.second.type == dtl::SES_COMMON)
+         //   {
+         //      Original.push_back(s.first);
+         //      Alternate.push_back(s.first);
+         //   }
+         //   // Added: 
+         //   else if (s.second.type == dtl::SES_ADD)
+         //   {
+         //      Original.push_back('+');
+         //      Alternate.push_back(s.first);
+         //   }
+         //   // Deleted:
+         //   else if (s.second.type == dtl::SES_DELETE)
+         //   {
+         //      Original.push_back(s.first);
+         //      Alternate.push_back('?');
+         //   }
+         //}
 
          // Feedback
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
