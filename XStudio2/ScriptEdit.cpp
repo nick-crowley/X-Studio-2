@@ -654,7 +654,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
       // [Shift]+Tab: Invoke indentation handler   (exclude 'switch document' ctrl+Tab)
-      if (nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
+      if (State != InputState::Suggestions && nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
          OnCharTab(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
 
       // Enter: Invoke newline indentation handler
