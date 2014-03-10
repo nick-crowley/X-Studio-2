@@ -132,6 +132,9 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CompilerPage.h" />
+    <ClInclude Include="DiffDocument.h" />
+    <ClInclude Include="DiffFrame.h" />
+    <ClInclude Include="DiffView.h" />
     <ClInclude Include="EditorPage.h" />
     <ClInclude Include="GeneralPage.h" />
     <ClInclude Include="GuiCommand.h" />
@@ -291,6 +294,9 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
+    <ClCompile Include="DiffDocument.cpp" />
+    <ClCompile Include="DiffFrame.cpp" />
+    <ClCompile Include="DiffView.cpp" />
     <ClCompile Include="EditorPage.cpp" />
     <ClCompile Include="GeneralPage.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
