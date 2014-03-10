@@ -97,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Uncomment: Remove '*' from start of each line
          else if (!comment && it->Commented)
          {
-            int i = txt.find('*');
+            UINT i = txt.find('*');
             // Erase '*' and any trailing whitespace
             while (i < txt.length() && (txt[i] == '*' || iswspace(txt[i])))
                txt.erase(i, 1);

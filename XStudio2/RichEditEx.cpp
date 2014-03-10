@@ -148,20 +148,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       line = (line == -1 ? LineFromChar(-1) : line);
 
       // Allocate buffer long enough to hold text + buffer length stored in first DWORD
-      int len = GetLineLength(line);
-      len = max(4, len);
+      int len = max(sizeof(DWORD), GetLineLength(line));
       
       // Get text. 
       CharArrayPtr txt(new WCHAR[len+1]);
       len = CRichEditCtrl::GetLine(line, txt.get(), len);
-
-      // Strip trailing \v if present
-      if (txt.get()[max(0,len-1)] == '\v')
-         --len;
-
-      // Null terminate
       txt.get()[len] = '\0';
-      return txt.get();
+
+      // Trim any trailing line-break
+      return GuiString(wstring(txt.get())).TrimRight(L"\r\n\v");
    }
    
    /// <summary>Get line text without indentation</summary>
