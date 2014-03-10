@@ -64,7 +64,7 @@ namespace GUI
             for (int count = ListView.GetHeaderCtrl()->GetItemCount(); item.SubItem < count; ++item.SubItem)
             {
                // Get sub-item rectangle
-               ListView.GetSubItemRect(item.Index, item.SubItem, LVIR_BOUNDS, item.Rect);
+               ListView.GetSubItemRect(item.Index, item.SubItem, LVIR_LABEL, item.Rect);
 
                // Set/Invert text colour
                dc.SetTextColor(GetSysColor(ListHasFocus && item.Selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
@@ -103,15 +103,20 @@ namespace GUI
          CImageList* imgList = ListView.GetImageList(LVSIL_SMALL);
          if (item.SubItem == 0 && imgList)
          {
-            CSize size(item.Rect.Height(), item.Rect.Height());
+            CRect icon;
 
+            // Get icon rectangle
+            ListView.GetSubItemRect(item.Index, 0, LVIR_ICON, icon);
+            
             // Draw transparent
-            if (!imgList->Draw(dc, data.iImage, item.Rect.TopLeft(), ILD_TRANSPARENT))
+            if (!imgList->Draw(dc, data.iImage, icon.TopLeft(), ILD_TRANSPARENT))
                throw Win32Exception(HERE, GuiString(L"Unable to draw icon for item %d", item.Index));
+
+            // Create gap betwen icon/label
+            item.Rect.left += 3;
          }
 
          // Draw Text:
-         ListView.GetSubItemRect(item.Index, item.SubItem, LVIR_LABEL, item.Rect);
          dc->DrawText(data.pszText, item.Rect, DT_VCENTER|DT_LEFT|DT_END_ELLIPSIS|DT_SINGLELINE);
       }
 
