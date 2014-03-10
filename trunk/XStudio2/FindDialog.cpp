@@ -356,7 +356,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                                           UseRegEx != FALSE));
 
          // Activate appropriate output window
-         theApp.GetMainWindow()->ActivateOutputPane(GetOutputPane());
+         theApp.GetMainWindow()->ActivateOutputPane(GetOutputPane(), false);
 
          // Add new terms to ComboBox
          switch (cmd)
