@@ -72,7 +72,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ClientRect wnd(this);
 
       // Stretch RichEdit over view
-      RichEdit.SetWindowPos(nullptr, 0, 0, wnd.Width(), wnd.Height(), SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
+      RichEdit.SetWindowPos(nullptr, 0, 0, wnd.Width(), wnd.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
    void DiffView::DoDataExchange(CDataExchange* pDX)
@@ -152,6 +152,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          //w.Close();
 
          // Display script text
+         RichEdit.ReadOnly = TRUE;
          RichEdit.Initialize(GetDocument()->Source);
          RichEdit.SetPlainText(GetDocument()->Original);
          RichEdit.EmptyUndoBuffer();

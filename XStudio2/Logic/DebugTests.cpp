@@ -319,7 +319,7 @@ namespace Logic
       auto templ = theApp.GetDocumentTemplate<DiffDocTemplate>();
 
       // Open document
-      templ->OpenDocumentFile(*doc, txt, txt);
+      templ->OpenDocumentFile(*doc, doc->GetAllText());
    }
 
    void  DebugTests::Test_ExpressionParser()
