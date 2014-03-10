@@ -167,6 +167,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Unfreeze window
       FreezeWindow(false);
       SetSel(first->Start, last->End);
+
+      // Highlight affected text
+      UpdateHighlighting(first.GetLineNumber(), last.GetLineNumber());
    }
 
 
