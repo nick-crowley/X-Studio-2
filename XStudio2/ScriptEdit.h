@@ -8,7 +8,7 @@
 #include "Logic/SyntaxLibrary.h"
 
 /// <summary>Forward declaration</summary>
-FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
+//FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -530,7 +530,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SetCompilerTimer(bool set);
       void   SetGutterWidth(UINT twips);
       void   ShowSuggestions();
-      void   UpdateHighlighting(int first, int last);
+      virtual void   UpdateHighlighting(int first, int last);
       void   UpdateSuggestions();
       
       handler void OnBackgroundCompile();

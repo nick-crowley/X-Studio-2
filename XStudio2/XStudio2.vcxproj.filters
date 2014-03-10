@@ -603,6 +603,9 @@
     <ClInclude Include="DiffDocument.h">
       <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
+    <ClInclude Include="DiffEdit.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -979,6 +982,9 @@
     </ClCompile>
     <ClCompile Include="DiffDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffEdit.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
