@@ -4,10 +4,19 @@
 #include "ScriptDocument.h"
 #include "Logic/dtl/dtl.hpp"
 
+/// <summary>Forward declaration</summary>
+FORWARD_DECLARATION2(GUI,Views,class DiffView)
+
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------- ENUMS -------------------------
+   
+   /// <summary>Identifies each difference view</summary>
+   enum DiffViewType : UINT  { Original = 0, Alternate = 1 };
+
+   /// <summary>Toggle a diff view type</summary>
+   DiffViewType operator!(const DiffViewType& t);
 
    // ----------------- EVENTS AND DELEGATES ------------------
 
@@ -89,22 +98,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      /// <summary>Gets any language view</summary>
-      /// <typeparam name="VIEW">View type</typeparam>
-      /// <returns></returns>
-      /// <exception cref="Logic::AlgorithmException">View not found</exception>
-      //template<typename VIEW>
-      //VIEW* GetView() const
-      //{
-      //   // Iterate thru views
-      //   for (POSITION pos = GetFirstViewPosition(); pos != NULL; )
-      //      if (VIEW* v = dynamic_cast<VIEW*>(GetNextView(pos)))
-      //         return v;
-
-      //   // Error: Not found
-      //   throw AlgorithmException(HERE, L"Cannot find desired View");
-      //}
-
+      GUI::Views::DiffView* GetView(UINT index) const;
+      GUI::Views::DiffView* GetView(DiffViewType t) const;
 
       // ----------------------- MUTATORS ------------------------
    public:

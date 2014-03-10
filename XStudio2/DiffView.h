@@ -11,8 +11,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------- ENUMS -------------------------
 
-   enum DiffViewType  { Original, Alternate };
-
    // ------------------ EVENTS AND DELEGATES -----------------
 
    // ------------------------ CLASSES ------------------------
