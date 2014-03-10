@@ -28,7 +28,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ---------------------- ACCESSORS ------------------------	
    public:
       virtual Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
-      DiffDocument* OpenDocumentFile(ScriptDocument& doc, const wstring& original, const wstring& copy);
+      DiffDocument* OpenDocumentFile(ScriptDocument& doc, const wstring& alternate);
    };
 
    /// <summary>Language document</summary>
@@ -73,7 +73,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       void  OnCloseDocument() override;
       void  OnDocumentEvent(DocumentEvent deEvent) override;
-      BOOL  OnOpenDocument(ScriptDocument& doc, const wstring& original, const wstring& copy);
+      BOOL  OnOpenDocument(ScriptDocument& doc, const wstring& alternate);
       BOOL  OnSaveDocument(LPCTSTR szPathName) override;
 
    protected:
@@ -83,7 +83,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // -------------------- REPRESENTATION ---------------------
    public:
       wstring         Original, 
-                      Copy;
+                      Alternate;
       ScriptDocument* Source;
 
 };

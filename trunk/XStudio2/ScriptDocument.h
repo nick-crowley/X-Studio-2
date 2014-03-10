@@ -319,6 +319,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 			
       // ---------------------- ACCESSORS ------------------------			
    public:
+      wstring                 GetAllText() const;
       CHARRANGE               GetSelection() const override;
       GUI::Views::ScriptView* GetView() const;
 

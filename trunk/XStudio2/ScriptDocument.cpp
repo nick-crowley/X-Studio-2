@@ -81,7 +81,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       Edit = &edit;
    }
-   
+
    /// <summary>Finds and highlights the next match, if any</summary>
    /// <param name="start">Starting offset</param>
    /// <param name="m">Match data</param>
@@ -90,7 +90,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return GetView()->FindNext(start, m);
    }
-
+   
+   /// <summary>Gets all text.</summary>
+   /// <returns></returns>
+   wstring  ScriptDocument::GetAllText() const
+   {
+      return Edit->GetAllText();
+   }
+   
    /// <summary>Gets the text selection.</summary>
    /// <returns></returns>
    CHARRANGE ScriptDocument::GetSelection() const

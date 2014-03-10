@@ -37,11 +37,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
    /// <summary>Opens the document file.</summary>
-   /// <param name="name">The name.</param>
-   /// <param name="original">The original.</param>
-   /// <param name="copy">The copy.</param>
+   /// <param name="doc">Script document.</param>
+   /// <param name="alternate">Alternate text.</param>
    /// <returns></returns>
-   DiffDocument* DiffDocTemplate::OpenDocumentFile(ScriptDocument& doc, const wstring& original, const wstring& copy)
+   DiffDocument* DiffDocTemplate::OpenDocumentFile(ScriptDocument& doc, const wstring& alternate)
    {
       // Create document
       DiffDocument* pDocument = dynamic_cast<DiffDocument*>(CreateNewDocument());
@@ -70,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
 	   // open document
 		CWaitCursor wait;
-		if (!pDocument->OnOpenDocument(doc, original, copy))
+		if (!pDocument->OnOpenDocument(doc, alternate))
 		{
 			// user has be alerted to what failed in OnOpenDocument
 			TRACE(traceAppMsg, 0, "CDocument::OnOpenDocument returned FALSE.\n");
@@ -79,7 +78,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		}
 
       // Set title
-		pDocument->SetPathName(GuiString(L"%s [Diff]", (LPCWSTR)doc.GetTitle()).c_str(), FALSE);
+		pDocument->SetPathName(GuiString(L"[Diff] %s", (LPCWSTR)doc.GetTitle()).c_str(), FALSE);
 		pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 
       // Update frame
@@ -134,11 +133,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
          m_strPathName = L"Diff";*/
    }
 
-   /// <summary>Populates from a file path</summary>
-   /// <param name="original"></param>
-   /// <param name="copy"></param>
+   /// <summary>Populates from a script document</summary>
+   /// <param name="doc"></param>
+   /// <param name="alternate"></param>
    /// <returns></returns>
-   BOOL DiffDocument::OnOpenDocument(ScriptDocument& doc, const wstring& original, const wstring& copy)
+   BOOL DiffDocument::OnOpenDocument(ScriptDocument& doc, const wstring& alternate)
    {
       WorkerData data(Operation::LoadSaveDocument);
 
@@ -150,8 +149,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Store data
          Source = &doc;
-         Original = original;
-         Copy = copy;
+         Original = doc.GetAllText();
+         Alternate = alternate;
 
          // Feedback
          data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
