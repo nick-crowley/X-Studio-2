@@ -38,7 +38,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // -------------------------------- CONSTRUCTION --------------------------------
    
-   DiffView::DiffView() : CFormView(DiffView::IDD)
+   DiffView::DiffView() : CFormView(DiffView::IDD), Type(DiffViewType::Original)
    {
    }
 
@@ -60,6 +60,11 @@ NAMESPACE_BEGIN2(GUI,Views)
 #endif
    }
 
+   void  DiffView::SetType(DiffViewType t)
+   {
+      Type = t;
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Adjusts the layout.</summary>
@@ -75,6 +80,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       RichEdit.SetWindowPos(nullptr, 0, 0, wnd.Width(), wnd.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
    }
 
+   /// <summary>Does the data exchange.</summary>
+   /// <param name="pDX">The p dx.</param>
    void DiffView::DoDataExchange(CDataExchange* pDX)
    {
       __super::DoDataExchange(pDX);
@@ -127,35 +134,18 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Displays script and populates variables/scope combos</summary>
    void DiffView::OnInitialUpdate()
    {
+      // Init
 	   __super::OnInitialUpdate();
 	   ResizeParentToFit();
 
-      // Attach edit to document
-      //GetDocument()->AttachEdit(RichEdit);
-
       try
       {
-         //string txt;
-
-         //// Get font size
-         //int size = PrefsLib.ScriptViewFont.lfHeight;
-         //if (size < 0)
-         //{  // Height (Pixels -> points)
-         //   auto dc = GetDC();
-         //   size = MulDiv(-size, 72, dc->GetDeviceCaps(LOGPIXELSY));
-         //   ReleaseDC(dc);
-         //}
-
-         //// Convert script to RTF (ansi)
-         //RtfScriptWriter w(StreamPtr(new StringStream(txt)), PrefsLib.ScriptViewFont.lfFaceName, size);
-         //w.Write(GetScript());
-         //w.Close();
-
-         // Display script text
+         // Init ScriptEdit
          RichEdit.ReadOnly = TRUE;
          RichEdit.Initialize(GetDocument()->Source);
-         RichEdit.SetPlainText(GetDocument()->Original);
-         RichEdit.EmptyUndoBuffer();
+
+         // Display original/alternate text
+         RichEdit.SetPlainText(Type == DiffViewType::Original ? GetDocument()->Original : GetDocument()->Alternate);
       }
       catch (ExceptionBase& e)
       {

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "DiffDocument.h"
 #include "DiffFrame.h"
+#include "DiffView.h"
 #include "PropertiesWnd.h"
 #include "Logic/WorkerFeedback.h"
 
@@ -66,6 +67,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   return NULL;
 	   }
 	   ASSERT_VALID(pFrame);
+
+      // Identify views
+      auto pos = pDocument->GetFirstViewPosition();
+      reinterpret_cast<DiffView*>(pDocument->GetNextView(pos))->SetType(DiffViewType::Original);
+      reinterpret_cast<DiffView*>(pDocument->GetNextView(pos))->SetType(DiffViewType::Alternate);
 
 	   // open document
 		CWaitCursor wait;

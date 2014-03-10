@@ -295,7 +295,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Display script text
          RichEdit.Initialize(GetDocument());
          RichEdit.SetRtf(txt);
-         RichEdit.EmptyUndoBuffer();
 
          // Populate variables/scope
          PopulateVariables();

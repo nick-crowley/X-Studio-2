@@ -210,6 +210,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Update highlighting
       UpdateHighlighting(0, GetLineCount()-1);
       EnsureVisible(0);
+
+      // Reset Undo
+      EmptyUndoBuffer();
    }
 
    /// <summary>Replace entire contents with RTF.</summary>
@@ -231,6 +234,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width());
       EnsureVisible(0);
+
+      // Reset Undo
+      EmptyUndoBuffer();
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
