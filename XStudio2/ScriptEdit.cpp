@@ -68,6 +68,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Toggles comment on the selected lines.</summary>
+   /// <remarks>Because RichEdit 5.0 doesn't implement undo grouping, this operation is performed by manually reformatting
+   /// affected block of text and replacing it in a single operation. Performing line-by-line adjustment is sadly not possible</remarks>
    void  ScriptEdit::CommentSelection()
    {
       GuiString  output;
@@ -95,12 +97,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Uncomment: Remove '*' from start of each line
          else if (!comment && it->Commented)
          {
-            // Erase spaces trailing '*'
-            auto end = txt.find_first_not_of(L' ', txt.find(L'*')+1);
-            if (end != GuiString::npos)
-               txt.erase(txt.find(L'*'), end);
-            else
-               txt.erase(txt.find(L'*'));
+            int i = txt.find('*');
+            // Erase '*' and any trailing whitespace
+            while (i < txt.length() && (txt[i] == '*' || iswspace(txt[i])))
+               txt.erase(i, 1);
          }
 
          // Add to output
@@ -121,6 +121,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Unfreeze window
       FreezeWindow(false);
       SetSel(first->Start, last->End);
+
+      // Update highlighting
+      UpdateHighlighting(first->Line, last->Line);
    }
    
    
@@ -169,7 +172,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSel(first->Start, last->End);
 
       // Highlight affected text
-      UpdateHighlighting(first.GetLineNumber(), last.GetLineNumber());
+      UpdateHighlighting(first->Line, last->Line);
    }
 
 
