@@ -15,7 +15,7 @@
 
 # [DONE] Highlighting not updated after Indent/Outdent 
 
-# Toggle comment is broken - the text becomes mangled if it's indented
+# [DONE] Toggle comment is broken - the text becomes mangled if it's indented
 
 # Typing in the script edit doesn't modify the document
 

@@ -328,7 +328,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 			
          // ---------------------- ACCESSORS ------------------------			
       public:
-         int  GetLineNumber() const            { return LineNumber; }
          const LineProxy& operator*() const    { return Line;  }
          const LineProxy* operator->() const   { return &Line; }
          LineProxy& operator*()                { return Line;  }
