@@ -17,7 +17,7 @@
 
 # [DONE] Toggle comment is broken - the text becomes mangled if it's indented
 
-# Typing in the script edit doesn't modify the document
+# [DONE] Typing in the script edit doesn't modify the document
 
 
 

@@ -82,6 +82,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);	  
       afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
+      handler void OnTextChanged();
 
       // -------------------- REPRESENTATION ---------------------
    public:
@@ -90,7 +91,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       CComboBox  VariablesCombo;
 
    protected:
-      EventHandler fnCompileComplete;
+      EventHandler fnCompileComplete,
+                   fnTextChanged;
 
    };
 

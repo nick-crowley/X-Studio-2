@@ -846,7 +846,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Update current line
       UpdateHighlighting(-1, -1);
 
-      // Reset tooltip
+      // Reset tooltip  (Raises 'TEXT CHANGED')
       __super::OnTextChange();
    }
    
