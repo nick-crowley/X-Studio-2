@@ -493,6 +493,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       UINT       GetLineHeight() const;
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
+      bool       IsKeyPressed(UINT vKey) const;
       bool       MatchSuggestionType(Compiler::TokenType t) const;
       
       // ----------------------- MUTATORS ------------------------

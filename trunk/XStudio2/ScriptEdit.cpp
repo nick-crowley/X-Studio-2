@@ -427,6 +427,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CloseSuggestions();
    }
    
+   /// <summary>Determines whether key is pressed</summary>
+   /// <param name="vKey">Virtual key.</param>
+   /// <returns></returns>
+   bool ScriptEdit::IsKeyPressed(UINT vKey) const
+   {
+      return HIBYTE(GetKeyState(vKey)) != 0;
+   }
+
    /// <summary>Compiles script to highlight errors</summary>
    void ScriptEdit::OnBackgroundCompile()
    {
@@ -653,21 +661,33 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="nFlags">The flags.</param>
    void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      // [Shift]+Tab: Invoke indentation handler   (exclude 'switch document' ctrl+Tab)
-      if (State != InputState::Suggestions && nChar == VK_TAB && !HIBYTE(GetKeyState(VK_CONTROL)))
-         OnCharTab(HIBYTE(GetKeyState(VK_SHIFT)) != 0);
+      try 
+      {  
+         // Dispatch key
+         switch (nChar)
+         {
+         // Tab/Shift+Tab: Invoke indentation handler   (exclude Ctrl+Tab 'switch document')
+         case VK_TAB:
+            if (State != InputState::Suggestions && !IsKeyPressed(VK_CONTROL)) 
+               OnCharTab(IsKeyPressed(VK_SHIFT));
+            else
+               __super::OnKeyDown(nChar, nRepCnt, nFlags);
+            break;
 
-      // Enter: Invoke newline indentation handler
-      else if (nChar == VK_RETURN)
-         OnCharNewLine();
+         // Enter: Invoke newline indentation handler
+         case VK_RETURN: 
+            OnCharNewLine();
+            break;
 
-      else  // Pass to RichEdit
-         __super::OnKeyDown(nChar, nRepCnt, nFlags);
-      
-      // Suggestions: Update in response to caret movement
-      if (State == InputState::Suggestions)
-         try 
-         {  
+         // Default: Pass to RichEdit
+         default:  
+            __super::OnKeyDown(nChar, nRepCnt, nFlags);
+            break;
+         }
+
+
+         // Suggestions: Update in response to caret movement
+         if (State == InputState::Suggestions)
             switch (nChar)
             {
             // TAB/LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
@@ -681,10 +701,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
                UpdateSuggestions();
                break;
             }
-         } 
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
-         }
+      } 
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
+      }
    }
    
    /// <summary>Not used</summary>
