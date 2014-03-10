@@ -14,6 +14,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    const CSize SuggestionList::DefaultSize = CSize(300,200),
                SuggestionList::CommandSize = CSize(600,200);
 
+   /// <summary>Visible items changed notification.</summary>
+   const UINT UM_VISIBLE_CHANGED = (WM_USER+100);
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNAMIC(SuggestionList, CListCtrl)
@@ -21,8 +24,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    BEGIN_MESSAGE_MAP(SuggestionList, CListCtrl)
       ON_WM_CREATE()
       ON_WM_KILLFOCUS()
+      ON_MESSAGE(UM_VISIBLE_CHANGED, &SuggestionList::OnVisibleItemsChanged)
       ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &SuggestionList::OnCustomDraw)
       ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &SuggestionList::OnRetrieveItem)
+      ON_NOTIFY_REFLECT(LVN_BEGINSCROLL, &SuggestionList::OnScrollBegin)
+      ON_NOTIFY_REFLECT(LVN_KEYDOWN, &SuggestionList::OnKeyDown)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -130,6 +136,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          //Console << L"Search for " << str << L" matched " << Content[index].Text << ENDL;
          SetItemState(index, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
          EnsureVisible(index, FALSE);
+
+         // Raise 'Visible Items Changed'
+         OnVisibleItemsChanged();
       }
       /*else
          Console << L"Search for " << str << L" provided no match" << ENDL;*/
@@ -145,11 +154,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (CListCtrl::OnCreate(lpCreateStruct) == -1)
          return -1;
       
-      // Setup control
+      // Display items using a single column. Custom Draw handles the column illusion
       InsertColumn(0, L"text");
-      InsertColumn(1, L"type", LVCFMT_RIGHT);
-      SetColumnWidth(0, lpCreateStruct->cx-GetSystemMetrics(SM_CXVSCROLL)-120);
-      SetColumnWidth(1, 120);
+      SetColumnWidth(0, lpCreateStruct->cx);
       SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
       // Populate
@@ -161,6 +168,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Shrink to fit
       ShrinkToFit();
+      OnVisibleItemsChanged();
       return 0;
    }
    
@@ -183,33 +191,58 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Get item
          auto data = reinterpret_cast<SuggestionList&>(ListView).Content[item.Index];
 
-         // Get entire item rectangle
-         ListView.GetItemRect(item.Index, item.Rect, LVIR_BOUNDS);
-         item.Rect.DeflateRect(GetSystemMetrics(SM_CXEDGE),0);
+         // Measure both items
+         CSize txt = dc->GetTextExtent(data.Text.c_str()),
+               type = dc->GetTextExtent(data.Type.c_str());
 
-         // Type: RHS. Grey text. Don't truncate.
-         if (item.SubItem == 1)
+         // TEXT: Truncate if necessary   [Indicates window has shrunk to maximum extent]
+         if (txt.cx + type.cx > item.Rect.Width())
          {
-            if (!item.Selected)
-               dc->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
-
-            dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE);
+            CRect rc(item.Rect.left, item.Rect.top, item.Rect.Width()-type.cx, item.Rect.bottom);
+            dc->DrawText(data.Text.c_str(), rc, DT_LEFT|DT_SINGLELINE|DT_END_ELLIPSIS);
          }
-         // Text: Stretch over remainder of LHS, however much that is
-         else if (item.SubItem == 0)
-         {
-            // Exclude 'Type' column
-            item.Rect.right -= dc->GetTextExtent(data.Type.c_str()).cx;
+         else 
+            dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE);
 
-            // Draw left. Truncate if necessary
-            dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE|DT_END_ELLIPSIS);
-         }
+
+         // Draw type in grey
+         if (!item.Selected)
+            dc->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
+
+         // TYPE: RHS. Don't Truncate. 
+         dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
    }
 
+   
+   /// <summary>Raise 'Visible Items Changed' when user scrolls with the keyboard</summary>
+   /// <param name="pNMHDR">notify NMHDR.</param>
+   /// <param name="pResult">notify result.</param>
+   void SuggestionList::OnKeyDown(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      auto data = reinterpret_cast<NMLVKEYDOWN*>(pNMHDR);
+      
+      //Console << "SuggestionList::OnKeyDown" << ENDL;
+
+      // Trap scroll keys
+      switch (data->wVKey)
+      {
+      case VK_UP:
+      case VK_DOWN:
+      case VK_PRIOR:
+      case VK_NEXT:
+      case VK_HOME:
+      case VK_END:
+         // Raise 'Visible Items Changed' after key processed
+         PostMessage(UM_VISIBLE_CHANGED);
+         break;
+      }
+
+      *pResult = 0;
+   }
    
    /// <summary>Destroys self if focus to lost</summary>
    /// <param name="pNewWnd">The new WND.</param>
@@ -237,6 +270,54 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
 
       *pResult = 0;
+   }
+   
+   /// <summary>Raise 'Visible Items Changed' when user scrolls</summary>
+   /// <param name="pNMHDR">notify NMHDR.</param>
+   /// <param name="pResult">notify result.</param>
+   void SuggestionList::OnScrollBegin(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      auto data = reinterpret_cast<NMLVSCROLL*>(pNMHDR);
+      
+      //Console << "SuggestionList::OnScrollBegin" << ENDL;
+      
+      // Raise 'Visible Items Changed' after scroll processed
+      PostMessage(UM_VISIBLE_CHANGED);
+
+      *pResult = 0;
+   }
+   
+   /// <summary>Resize window to fit current items</summary>
+   /// <param name="wParam">Ignored.</param>
+   /// <param name="lParam">Ignored.</param>
+   LRESULT SuggestionList::OnVisibleItemsChanged(WPARAM wParam, LPARAM lParam)
+   {
+      // DEBUG:
+      //Console << "SuggestionList::OnVisibleItemsChanged()" << ENDL;
+
+      CWindowDC dc(this);
+      int width = 0;
+
+      // Measure visible items
+      for (int index = GetTopIndex(), end = min(GetTopIndex()+GetCountPerPage(), (int)Content.size()); index < end; ++index)
+      {
+         auto& item = Content[index];
+         auto w = dc.GetTextExtent(item.Text.c_str()).cx + dc.GetTextExtent(item.Type.c_str()).cx + 10;
+         width = max(w, width);
+      }
+
+      // Enforce min/max widths
+      width = max(width, 200);
+      width = min(width, 700);
+
+      // Adjust width
+      WindowRect wnd(this);
+      SetWindowPos(nullptr,-1,-1, width, wnd.Height(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+
+      // Adjust column width to match
+      SetColumnWidth(0, width-GetSystemMetrics(SM_CXEDGE)-GetSystemMetrics(SM_CXVSCROLL));
+
+      return 0;
    }
    
    /// <summary>Populates the list.</summary>
@@ -295,9 +376,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
             ClientRect wnd(this);
             CRect rc(0,0,0,0);
 
-            // Resize
+            // Calculate item height
             if (!GetItemRect(0, &rc, LVIR_LABEL) || !rc.Height())
                throw Win32Exception(HERE, L"Unable to retrieve item height");
+
+            // Resize
             SetWindowPos(nullptr,-1,-1, wnd.Width(), rc.Height()*Content.size(), SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
          }
       }
@@ -305,6 +388,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console.Log(HERE, e);
       }
    }
+   
 
    // ------------------------------- PRIVATE METHODS ------------------------------
    
