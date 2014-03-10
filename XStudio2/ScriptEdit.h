@@ -328,11 +328,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
 			
          // ---------------------- ACCESSORS ------------------------			
       public:
+         int  GetLineNumber() const            { return LineNumber; }
          const LineProxy& operator*() const    { return Line;  }
          const LineProxy* operator->() const   { return &Line; }
          LineProxy& operator*()                { return Line;  }
          LineProxy* operator->()               { return &Line; }
-
+         
          bool operator==(const LineTextIterator& r) const  { return Edit.m_hWnd==r.Edit.m_hWnd && LineNumber==r.LineNumber; }
          bool operator!=(const LineTextIterator& r) const  { return Edit.m_hWnd!=r.Edit.m_hWnd || LineNumber!=r.LineNumber; }
          bool operator<(const LineTextIterator& r) const   { return LineNumber < r.LineNumber;  }

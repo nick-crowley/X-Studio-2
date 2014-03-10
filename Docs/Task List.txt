@@ -9,11 +9,11 @@
 
 # Properly format script editor tooltips
 
-# Fix matching of current suggestion in auto-complete
+# [DONE] Fix matching of current suggestion in auto-complete
 
 # Connect saving of script documents to output file
 
-# Highlighting not updated after Indent/Outdent 
+# [DONE] Highlighting not updated after Indent/Outdent 
 
 # Toggle comment is broken - the text becomes mangled if it's indented
 
