@@ -133,6 +133,7 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CompilerPage.h" />
     <ClInclude Include="DiffDocument.h" />
+    <ClInclude Include="DiffEdit.h" />
     <ClInclude Include="DiffFrame.h" />
     <ClInclude Include="DiffView.h" />
     <ClInclude Include="EditorPage.h" />
@@ -295,6 +296,7 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
     <ClCompile Include="DiffDocument.cpp" />
+    <ClCompile Include="DiffEdit.cpp" />
     <ClCompile Include="DiffFrame.cpp" />
     <ClCompile Include="DiffView.cpp" />
     <ClCompile Include="EditorPage.cpp" />

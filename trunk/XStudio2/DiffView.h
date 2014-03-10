@@ -3,7 +3,7 @@
 #include "afxcmn.h"
 #include "Logic/Common.h"
 #include "DiffDocument.h"
-#include "ScriptEdit.h"
+#include "DiffEdit.h"
 
 
 /// <summary>User interface</summary>
@@ -62,7 +62,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      ScriptEdit RichEdit;
+      DiffEdit RichEdit;
 
    protected:
       DiffViewType Type;
