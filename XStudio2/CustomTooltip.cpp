@@ -58,9 +58,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
 
       // Set timings
-      SetDelayTime(TTDT_INITIAL, 1500);
+      SetDelayTime(TTDT_INITIAL, PrefsLib.ScriptTooltipDelay*1000);
       SetDelayTime(TTDT_AUTOPOP, 30*1000);
-      SetDelayTime(TTDT_RESHOW, 3000);
+      SetDelayTime(TTDT_RESHOW, PrefsLib.ScriptTooltipDelay*1000);
 
       // Set font
       //SetFont(&theApp.TooltipFont);
@@ -208,13 +208,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
-   /// <summary>Updates font.</summary>
+   /// <summary>Updates timings.</summary>
    /// <param name="uFlags">The flags.</param>
    /// <param name="lpszSection">The section.</param>
    void CustomTooltip::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
-      // Set font
-      //SetFont(&theApp.TooltipFont);
+      // Set timings
+      SetDelayTime(TTDT_INITIAL, PrefsLib.ScriptTooltipDelay*1000);
+      SetDelayTime(TTDT_AUTOPOP, 30*1000);
+      SetDelayTime(TTDT_RESHOW, PrefsLib.ScriptTooltipDelay*1000);
    }
 
    /// <summary>Resizes the tooltip accordingly</summary>

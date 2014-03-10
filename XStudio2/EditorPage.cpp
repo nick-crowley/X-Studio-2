@@ -18,11 +18,13 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    EditorPage::EditorPage() 
       : PreferencesPage(EditorPage::IDD),
-        ScriptViewFont(nullptr),
-        ShowLineNumbers(nullptr),
         BackgroundColour(nullptr),
         LineNumberColour(nullptr),
-
+        ScriptViewFont(nullptr),
+        ShowLineNumbers(nullptr),
+        ShowScriptTooltips(nullptr),
+        ScriptTooltipDelay(nullptr),
+        
         ArgumentColour(nullptr),
         CommentColour(nullptr),
         GameObjectColour(nullptr),
@@ -61,7 +63,11 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    {
       // General
       PrefsLib.ShowLineNumbers = ShowLineNumbers->GetBool();
+      PrefsLib.ShowScriptTooltips = ShowScriptTooltips->GetBool();
       PrefsLib.ScriptViewFont = *ScriptViewFont->GetLogFont();
+      PrefsLib.ScriptTooltipDelay = ScriptTooltipDelay->GetInt();
+
+      // Colour
       PrefsLib.BackgroundColour = BackgroundColour->GetColor();
       PrefsLib.LineNumberColour = LineNumberColour->GetColor();
       
@@ -80,13 +86,19 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.VariableColour = VariableColour->GetColor();
    }
 
-   /// <summary>Populates this page.</summary>
+   /// <summary>Populates page.</summary>
    void EditorPage::Populate()
    {
       // General
       auto group = new PropertyBase(*this, L"General");
-      group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
       group->AddSubItem(ScriptViewFont = new ScriptViewFontProperty(*this));
+      group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
+      group->AddSubItem(ShowScriptTooltips = new ShowScriptTooltipsProperty(*this));
+      group->AddSubItem(ScriptTooltipDelay = new ScriptTooltipDelayProperty(*this));
+      Grid.AddProperty(group);
+
+      // Colours
+      group = new PropertyBase(*this, L"Colours");
       group->AddSubItem(BackgroundColour = new BackgroundColourProperty(*this));
       group->AddSubItem(LineNumberColour = new LineNumberColourProperty(*this));
       Grid.AddProperty(group);

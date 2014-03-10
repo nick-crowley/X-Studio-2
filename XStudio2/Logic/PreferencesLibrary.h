@@ -102,11 +102,19 @@ namespace Logic
 
 
       // Script Editor:
+      
+      /// <summary>Script editor font</summary>
+      PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Regular");
+
+      /// <summary>Script editor tooltip display delay (seconds)</summary>
+      PREFERENCE_PROPERTY(int,Int,ScriptTooltipDelay,3);
+
       /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 
-      /// <summary>Script editor font</summary>
-      PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Regular");
+      /// <summary>Show tooltips in the script view</summary>
+      PREFERENCE_PROPERTY(bool,Bool,ShowScriptTooltips,true);
+
 
       /// <summary>Script editor line numbers colour</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,LineNumberColour,RGB(255,255,255));
