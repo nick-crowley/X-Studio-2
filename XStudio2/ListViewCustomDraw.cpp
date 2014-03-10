@@ -12,6 +12,9 @@ namespace GUI
       ListViewCustomDraw::ListViewCustomDraw(CListCtrl& ctrl) 
          : CustomDrawImpl<NMLVCUSTOMDRAW>((UINT)DrawCycle::Paint|(UINT)DrawCycle::Items), ListView(ctrl)
       {
+         // Set default highlight colours
+         ActiveHighlight = GetSysColor(COLOR_HIGHLIGHT);
+         InactiveHighlight = GetSysColor(COLOR_GRAYTEXT);
       }
 
 
@@ -53,7 +56,7 @@ namespace GUI
 
             // Draw background
             bool ListHasFocus = (::GetFocus() == ListView.GetSafeHwnd());
-            auto backColour   = (item.Selected ? GetSysColor(ListHasFocus ? COLOR_HIGHLIGHT : COLOR_GRAYTEXT) : ListView.GetBkColor());
+            auto backColour   = (item.Selected ? (ListHasFocus ? ActiveHighlight : InactiveHighlight) : ListView.GetBkColor());
             dc.FillSolidRect(item.Rect, backColour);
 
             // BugFix: check for header ctrl
@@ -67,7 +70,7 @@ namespace GUI
                ListView.GetSubItemRect(item.Index, item.SubItem, LVIR_LABEL, item.Rect);
 
                // Set/Invert text colour
-               dc.SetTextColor(GetSysColor(ListHasFocus && item.Selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
+               dc.SetTextColor(GetSysColor(item.Selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
 
                // Allow derived-class to do drawing
                onDrawSubItem(&dc, item);

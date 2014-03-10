@@ -47,6 +47,9 @@ namespace GUI
          virtual void  onDrawSubItem(CDC* dc, ItemData& item);
 
          // -------------------- REPRESENTATION ---------------------
+      public:
+         COLORREF  ActiveHighlight,
+                   InactiveHighlight;
 
       protected:
          CListCtrl&  ListView;

@@ -180,15 +180,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Get item
          auto data = reinterpret_cast<SuggestionList&>(ListView).Content[item.Index];
 
-         Console << "SuggestionCustomDraw::onDrawSubItem(): iSubItem=" << item.SubItem << "  rect=" << item.Rect << ENDL;
          // Text:
          if (item.SubItem == 0)
          {
+
+            dc->SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
             dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE|DT_END_ELLIPSIS);
          }
          // Type:
          else if (item.SubItem == 1)
          {
+            dc->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
             dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE|DT_END_ELLIPSIS);
 
             //auto src = ListView.GetItemText(item.Index, 1);
