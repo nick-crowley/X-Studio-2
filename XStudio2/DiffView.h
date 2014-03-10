@@ -9,6 +9,10 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
 
+   // ------------------------- ENUMS -------------------------
+
+   enum DiffViewType  { Original, Alternate };
+
    // ------------------ EVENTS AND DELEGATES -----------------
 
    // ------------------------ CLASSES ------------------------
@@ -39,12 +43,12 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  SetType(DiffViewType t);
 
    protected:
       void AdjustLayout();
       virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       
-
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
       afx_msg void OnDestroy();
       afx_msg void OnClipboardCopy();
@@ -59,6 +63,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       // -------------------- REPRESENTATION ---------------------
    public:
       ScriptEdit RichEdit;
+
+   protected:
+      DiffViewType Type;
    };
 
 

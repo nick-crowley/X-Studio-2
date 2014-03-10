@@ -318,8 +318,12 @@ namespace Logic
       auto doc = ScriptDocument::GetActive();
       auto templ = theApp.GetDocumentTemplate<DiffDocTemplate>();
 
+      // backup
+      auto backup = doc->GetAllText();
+      backup.insert(10, L"NEW NEW NEW NEW NEW");
+
       // Open document
-      templ->OpenDocumentFile(*doc, doc->GetAllText());
+      templ->OpenDocumentFile(*doc, backup);
    }
 
    void  DebugTests::Test_ExpressionParser()
