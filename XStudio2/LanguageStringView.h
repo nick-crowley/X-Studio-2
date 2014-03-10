@@ -19,7 +19,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       class StringCustomDraw : public ListViewCustomDraw
       {
       public:
-         StringCustomDraw(LanguageStringView* view) : ListViewCustomDraw(view, view->GetListCtrl())
+         StringCustomDraw(LanguageStringView* view) : ListViewCustomDraw(view->GetListCtrl())
          {}
 
       protected:
@@ -507,7 +507,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguageDocument* GetDocument() const;
 
    protected:
-      LanguageString*   GetSelected() const;
+      LanguageString* GetSelected() const;
 
       // ----------------------- MUTATORS ------------------------
    public:

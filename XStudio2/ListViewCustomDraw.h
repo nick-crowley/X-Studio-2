@@ -29,7 +29,7 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         ListViewCustomDraw(CWnd* wnd, CListCtrl& ctrl);
+         ListViewCustomDraw(CListCtrl& ctrl);
          virtual ~ListViewCustomDraw();
 
          NO_COPY(ListViewCustomDraw);	// No copy semantics

@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 #include "Logic/ScriptFile.h"
 #include "Logic/ScriptToken.h"
+#include "ListViewCustomDraw.h"
 
 /// <summary>Forward declaration</summary>
 //FORWARD_DECLARATION2(Logic,Scripts,class ScriptFile)
@@ -19,6 +20,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    protected:
+      /// <summary>Custom draw implementation</summary>
+      class SuggestionCustomDraw : public ListViewCustomDraw
+      {
+      public:
+         SuggestionCustomDraw(SuggestionList& ctrl) : ListViewCustomDraw(ctrl)
+         {}
+
+      protected:
+         void  onDrawSubItem(CDC* dc, ItemData& item) override;
+      };
+
       /// <summary>Item in the list</summary>
       struct SuggestionItem
       {
@@ -69,6 +81,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void ShrinkToFit();
 	  
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnRetrieveItem(NMHDR *pNMHDR, LRESULT *pResult);
 	  
@@ -77,9 +90,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       const static CSize DefaultSize,
                          CommandSize;
       
-      Suggestion        SuggestionType;
-      ContentArray      Content;
-      const ScriptFile* Script;
+      Suggestion            SuggestionType;
+      SuggestionCustomDraw  CustomDraw;
+      ContentArray          Content;
+      const ScriptFile*     Script;
    };
    
 

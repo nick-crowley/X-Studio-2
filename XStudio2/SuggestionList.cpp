@@ -21,12 +21,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
    BEGIN_MESSAGE_MAP(SuggestionList, CListCtrl)
       ON_WM_CREATE()
       ON_WM_KILLFOCUS()
+      ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &SuggestionList::OnCustomDraw)
       ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &SuggestionList::OnRetrieveItem)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   SuggestionList::SuggestionList()
+   SuggestionList::SuggestionList() : CustomDraw(*this)
    {
    }
 
@@ -159,6 +160,55 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ShrinkToFit();
       return 0;
    }
+   
+   /// <summary>Custom draw the items</summary>
+   /// <param name="pNMHDR">header.</param>
+   /// <param name="pResult">result.</param>
+   void SuggestionList::OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      NMCUSTOMDRAW* pDraw = reinterpret_cast<NMCUSTOMDRAW*>(pNMHDR);
+      *pResult = CustomDraw.OnCustomDraw(pDraw);
+   }
+   
+   /// <summary>Custom draws the items</summary>
+   /// <param name="dc">Device context</param>
+   /// <param name="item">Item data.</param>
+   void  SuggestionList::SuggestionCustomDraw::onDrawSubItem(CDC* dc, ItemData& item) 
+   {
+      try
+      {
+         // Get item
+         auto data = reinterpret_cast<SuggestionList&>(ListView).Content[item.Index];
+
+         // Text:
+         if (item.SubItem == 0)
+         {
+            dc->DrawText(data.Text.c_str(), item.Rect, DT_LEFT|DT_SINGLELINE);
+         }
+         // Type:
+         else if (item.SubItem == 1)
+         {
+            dc->DrawText(data.Type.c_str(), item.Rect, DT_RIGHT|DT_SINGLELINE);
+
+            //auto src = ListView.GetItemText(item.Index, 1);
+            //auto flags = item.Selected ? RenderFlags::Selected : RenderFlags::Inverted;
+
+            //try
+            //{  // Parse+Draw
+            //   RichTextRenderer::DrawLine(dc, item.Rect, RichStringParser((LPCWSTR)src).Output, flags);
+            //}
+            //catch (ExceptionBase&) {
+            //   dc->SetTextColor((COLORREF)RichTextColour::Red);
+            //   dc->DrawText(src, item.Rect, DT_LEFT|DT_SINGLELINE);
+            //}
+            
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
+
    
    /// <summary>Destroys self if focus to lost</summary>
    /// <param name="pNewWnd">The new WND.</param>
