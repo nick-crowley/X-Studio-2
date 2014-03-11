@@ -18,6 +18,23 @@ namespace Logic
       /// <summary>Get branch logic name</summary>
       const WCHAR* GetString(BranchLogic l);
 
+      /// <summary>String ID referenced by a script command</summary>
+      class StringID
+      {
+      public:
+         /// <summary>Create string reference</summary>
+         /// <param name="page">page id parameter.</param>
+         /// <param name="id">string id parameter.</param>
+         StringID(ScriptParameter page, ScriptParameter id) : Page(page), String(id)
+         {}
+
+      public:
+         ScriptParameter Page, 
+                         String;
+      };
+
+      /// <summary>Script Parameter lamda predicates</summary>
+      typedef function<bool (const ScriptParameter&)>  ParameterPredicate;
 
       /// <summary>An MSCI script command</summary>
       class ScriptCommand
@@ -36,6 +53,10 @@ namespace Logic
       public:
          static ScriptCommand  Unrecognised;
 
+         static const ParameterPredicate IsScriptNameParam,
+                                         IsStringIDParam,
+                                         IsPageIDParam;
+
          // --------------------- PROPERTIES ------------------------
 			
          PROPERTY_GET(BranchLogic,Logic,GetLogic);
@@ -46,6 +67,7 @@ namespace Logic
          wstring      GetLabelName() const;
          UINT         GetJumpDestination() const;
          wstring      GetScriptCallName() const;
+         StringID     GetStringReference() const;
 
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
