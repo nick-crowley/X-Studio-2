@@ -21,6 +21,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
+      ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
       ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
    END_MESSAGE_MAP()
 
@@ -59,6 +60,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Dock left/right
       EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
    }
+   
+   /// <summary>Relay mouse events to tooltip</summary>
+   /// <param name="pMsg">MSG.</param>
+   /// <returns></returns>
+   BOOL CGameDataWnd::PreTranslateMessage(MSG* pMsg)
+   {
+      // Relay mouse messages to tooltip
+      if(pMsg->message== WM_LBUTTONDOWN ||
+         pMsg->message== WM_LBUTTONUP ||
+         pMsg->message== WM_MOUSEMOVE)
+      {
+         Tooltip.RelayEvent(pMsg);
+      }
+
+      return __super::PreTranslateMessage(pMsg);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
@@ -67,6 +84,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       ListView.RemoveAllGroups();
       ListView.DeleteAllItems();
+   }
+   
+   /// <summary>Gets the index of the item beneath the cursor.</summary>
+   /// <returns></returns>
+   int  CGameDataWnd::GetHotItemIndex() const
+   {
+      return ListView.HitTest(CursorPoint(this));
+   }
+
+   /// <summary>Gets the search term.</summary>
+   /// <returns></returns>
+   wstring  CGameDataWnd::GetSearchTerm() const
+   {
+      CString str;
+      Search.GetWindowTextW(str);
+      return (LPCWSTR)str;
    }
 
    /// <summary>Populate when application state changes.</summary>
@@ -149,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          PopulateGroupCombo();
 
          // Create tooltip
-         Tooltip.Create(this, this);
+         Tooltip.Create(this, &ListView);
          Tooltip.Activate(TRUE);
          Tooltip.SetTiming(3*1000, 30*1000);
          
@@ -179,7 +212,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   dc.Draw3dRect(rc, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
-   /// <summary>Supply tooltip data.</summary>
+   /// <summary>Base implementation cancels tooltip</summary>
    /// <param name="data">data.</param>
    void CGameDataWnd::OnRequestTooltip(CustomTooltip::TooltipData* data)
    {
@@ -192,9 +225,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
 	   CDockablePane::OnSetFocus(pOldWnd);
 
+      // Focus listview
 	   ListView.SetFocus();
+      Tooltip.Reset();
    }
+   
+   /// <summary>Reset the tooltip when listView becomes focused</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CGameDataWnd::OnSetFocusCtrl(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      // Reset tooltip
+      Tooltip.Reset();
 
+      *pResult = 0;
+   }
+   
    /// <summary>Refresh items when search text changes.</summary>
    void CGameDataWnd::OnSearchTermChanged()
    {
@@ -253,7 +299,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Stretch ListView column
       ListView.SetColumnWidth(0, client.Width()-GetSystemMetrics(SM_CXVSCROLL));
    }
-
+   
    /// <summary>Updates the content.</summary>
    void  CGameDataWnd::UpdateContent()
    {
@@ -265,13 +311,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Display nothing if no game data
          if (theApp.State == AppState::GameDataPresent)
          {
-            // Get search term
-            CString searchTerm;
-            Search.GetWindowTextW(searchTerm);
+            // Suspend
+            ListView.SetRedraw(FALSE);
 
             // Populate items
-            ListView.SetRedraw(FALSE);
-            PopulateItems((const WCHAR*)searchTerm, Groups.GetCurSel());
+            PopulateItems(GetSearchTerm(), Groups.GetCurSel());
+
+            // Redraw
             ListView.SetRedraw(TRUE);
             ListView.UpdateWindow();
          }

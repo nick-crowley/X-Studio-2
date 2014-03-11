@@ -67,7 +67,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CGameObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
       // Lookup matches
-      auto Content = GameObjectLib.Query(searchTerm.c_str());
+      auto Content = GameObjectLib.Query(searchTerm);
       ListView.SetItemCount(Content.size());
       
       // Redefine groups

@@ -48,6 +48,30 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Format item
       return obj ? obj->GetDisplayText() : L"";
    }
+   
+   /// <summary>Supply tooltip data.</summary>
+   /// <param name="data">data.</param>
+   void CScriptObjectWnd::OnRequestTooltip(CustomTooltip::TooltipData* data)
+   {
+      int index = GetHotItemIndex();
+
+      // Verify index
+      if (index != -1)
+      {
+         // Lookup current items
+         auto Content = ScriptObjectLib.Query(GetSearchTerm());
+
+         // Provide item
+         if (index < (int)Content.size())
+         {
+            data->ResetTo(ScriptObjectTooltipData(*Content[index]));
+            return;
+         }
+      }
+
+      // No item: Cancel
+      data->Cancel();
+   }
 
    /// <summary>Populates the group combo.</summary>
    void  CScriptObjectWnd::PopulateGroupCombo()
@@ -68,7 +92,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CScriptObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
       // Lookup matches
-      auto Content = ScriptObjectLib.Query(searchTerm.c_str());
+      auto Content = ScriptObjectLib.Query(searchTerm);
       ListView.SetItemCount(Content.size());
       
       // Redefine groups

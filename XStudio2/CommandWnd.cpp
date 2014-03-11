@@ -47,6 +47,33 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return cmd ? cmd->GetDisplayText() : L"";
    }
 
+   
+   /// <summary>Supply tooltip data.</summary>
+   /// <param name="data">data.</param>
+   void CCommandWnd::OnRequestTooltip(CustomTooltip::TooltipData* data)
+   {
+      int index = GetHotItemIndex();
+
+      // DEUBG:
+      Console << "Requesting tooltip for item index=" << index << ENDL;
+
+      // Verify index
+      if (index != -1)
+      {
+         // Lookup current items
+         auto Content = SyntaxLib.Query(GetSearchTerm(), GameVersion::TerranConflict);
+
+         // Provide item
+         if (index < (int)Content.size())
+         {
+            data->ResetTo(CommandTooltipData(*Content[index]));
+            return;
+         }
+      }
+
+      // No item: Cancel
+      data->Cancel();
+   }
 
    /// <summary>Populates the group combo.</summary>
    void  CCommandWnd::PopulateGroupCombo()
@@ -67,7 +94,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CCommandWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
       // Lookup matches
-      auto Content = SyntaxLib.Query(searchTerm.c_str(), GameVersion::TerranConflict);
+      auto Content = SyntaxLib.Query(searchTerm, GameVersion::TerranConflict);
       ListView.SetItemCount(Content.size());
             
       // Define groups

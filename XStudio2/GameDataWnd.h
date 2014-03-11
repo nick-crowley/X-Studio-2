@@ -25,11 +25,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // --------------------- PROPERTIES ------------------------
 	   
       // ---------------------- ACCESSORS ------------------------			
-      
+   protected:
+      wstring  GetSearchTerm() const;
+      int      GetHotItemIndex() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
-      //BOOL CanBeClosed() const override { return FALSE; }
       void Create(CWnd* parent, wstring title, UINT nID, UINT nIconID);
+      BOOL PreTranslateMessage(MSG* pMsg) override;
 
    protected:
       virtual void    Clear();
@@ -44,6 +47,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnPaint();
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
+      afx_msg void OnSetFocusCtrl(NMHDR* pNMHDR, LRESULT* pResult);
       afx_msg void OnSearchTermChanged();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
