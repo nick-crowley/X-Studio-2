@@ -186,8 +186,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Set document
       Document = doc;
-
+      
       // Initialize
+      ShowTooltip = PrefsLib.ShowScriptTooltips;
       RichEditEx::Initialize(RGB(0,0,0));
 
       // Set default character format
@@ -835,6 +836,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Update all highlighting
       SetBackgroundColor(FALSE, PrefsLib.BackgroundColour);
       UpdateHighlighting(0, GetLineCount()-1);
+
+      // Update Tooltip
+      ShowTooltip = PrefsLib.ShowScriptTooltips;
+      __super::OnTextChange();
    }
    
    /// <summary>Performs syntax colouring on the current line</summary>

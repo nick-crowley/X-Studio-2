@@ -82,6 +82,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    protected:
       void   FreezeWindow(bool freeze, bool invalidate = true);
+      void   ResetTooltip();
       void   SetScrollCoordinates(const CPoint& pt);
       
       virtual void HScroll(UINT nSBCode, UINT nPos);
@@ -92,6 +93,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnProtectedMessage(NMHDR *pNMHDR, LRESULT *pResult);
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
+      virtual void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       virtual void OnTextChange();
       virtual void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar);
       
@@ -102,9 +104,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       TextDocumentPtr  TextDocument;
       IRichEditOlePtr  OleDocument;
-      CustomTooltip    Tooltip;
+      bool             ShowTooltip;
       
    private:
+      CustomTooltip         Tooltip;
       TooltipEvent::Handler fnShowTooltip;
       DisplayState          PrevState;
 };
