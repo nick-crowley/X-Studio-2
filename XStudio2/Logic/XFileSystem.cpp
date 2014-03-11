@@ -24,6 +24,33 @@ namespace Logic
          Files.clear();
       }
       
+      // ------------------------------- STATIC METHODS -------------------------------
+
+      /// <summary>Gets the full path of a known subfolder</summary>
+      /// <param name="folder">Game folder.</param>
+      /// <param name="ver">Version.</param>
+      /// <param name="f">SubFolder.</param>
+      /// <returns>Full path with trailing backslash</returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised folder constant</exception>
+      Path  XFileSystem::GetPath(Path folder, GameVersion ver, XFolder f)
+      {
+         Path base = folder;
+
+         // X3AP: Append addon folder
+         if (ver == GameVersion::AlbionPrelude)
+            base = base + L"addon\\";
+
+         switch (f)
+         {
+         case XFolder::Director:  return base + L"director\\";
+         case XFolder::Language:  return base + L"t\\";
+         case XFolder::Scripts:   return base + L"scripts\\";
+         case XFolder::Types:     return base + L"types\\";
+         }
+
+         throw ArgumentException(HERE, L"f", L"Unknown XFolder constant");
+      }
+
 		// ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Searches for all files within a known folder</summary>
@@ -123,23 +150,10 @@ namespace Logic
       /// <summary>Gets the full path of a known subfolder</summary>
       /// <param name="f">The folder</param>
       /// <returns>Full path with trailing backslash</returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised folder constant</exception>
       Path   XFileSystem::GetFolder(XFolder f) const
       {
-         Path base = Folder;
-
-         // X3AP: Append addon folder
-         if (Version == GameVersion::AlbionPrelude)
-            base = base + L"addon\\";
-
-         switch (f)
-         {
-         case XFolder::Director:  return base + L"director\\";
-         case XFolder::Language:  return base + L"t\\";
-         case XFolder::Scripts:   return base + L"scripts\\";
-         case XFolder::Types:     return base + L"types\\";
-         }
-
-         throw ArgumentException(HERE, L"f", L"Unknown XFolder constant");
+         return GetPath(Folder, Version, f);
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

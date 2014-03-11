@@ -255,14 +255,14 @@ NAMESPACE_BEGIN2(GUI,Views)
          if (script.empty())
             return;
 
-         // Generate .PCK path [in same folder as document]
-         auto path = GetDocument()->FullPath.RenameFileName(script+L".pck");
+         // Check for .PCK/.XML in folder and game-folder
+         ScriptCallPath path(GetDocument()->FullPath.Folder, script);
 
-         // Open .PCK version if exists, otherwise .XML
-         if (path.Exists() || (path=path.RenameExtension(L".xml")).Exists())
+         // Open if found
+         if (path.Exists())
             theApp.OpenDocumentFile(path.c_str(), TRUE);
          else
-            theApp.ShowMessage(GuiString(L"Cannot find the script '%s' in the current folder", script.c_str()));
+            theApp.ShowMessage(GuiString(L"Cannot find the script '%s' in the document folder or game folder", script.c_str()));
       }
       // Unable to parse command
       catch (ExceptionBase&) {

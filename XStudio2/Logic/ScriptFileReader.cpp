@@ -39,11 +39,9 @@ namespace Logic
             if (!silent)
                Console << L"  Resolving script call: " << Cons::Yellow << script << Cons::White << L"...";
 
-            // Generate path
-            Path path(folder + (script + L".pck"));
-
-            // Check for PCK and XML versions
-            if (!path.Exists() && (path = path.RenameExtension(L".xml")).Exists() == false)
+            // Check for .PCK/.XML in folder and game-folder
+            ScriptCallPath path(folder, script);
+            if (!path.Exists())
                throw FileNotFoundException(HERE, folder+script);
 
             // Read script
