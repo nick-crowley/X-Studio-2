@@ -108,28 +108,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!connect && Source != src)
          return;
 
-      if (IsWindowVisible())
-         SetRedraw(FALSE);
+      // Freeze
+      SetRedraw(FALSE);
 
-      // Clear items
-      Grid.RemoveAll();
+      try
+      {
+         // Clear items
+         Grid.RemoveAll();
 
-      // Disconnect
-      if (!connect)
-         Source = nullptr;
-      else 
-      {  // Connect + Populate
-         Source = src;
-         Source->OnDisplayProperties(Grid);
+         // Disconnect
+         if (!connect)
+            Source = nullptr;
+         else 
+         {  // Connect + Populate
+            Source = src;
+            Source->OnDisplayProperties(Grid);
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
       }
 
       // Redraw
-      if (IsWindowVisible())
-      {
-         SetRedraw(TRUE);
-         Grid.Invalidate();
-         Grid.UpdateWindow();
-      }
+      SetRedraw(TRUE);
+      Grid.Invalidate();
+      Grid.UpdateWindow();
    }
    
    /// <summary>expands all properties.</summary>
