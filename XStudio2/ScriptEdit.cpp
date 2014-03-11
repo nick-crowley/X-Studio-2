@@ -839,7 +839,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Update Tooltip
       ShowTooltip = PrefsLib.ShowScriptTooltips;
-      __super::OnTextChange();
+      __super::OnSettingChange(uFlags, lpszSection);
    }
    
    /// <summary>Performs syntax colouring on the current line</summary>
