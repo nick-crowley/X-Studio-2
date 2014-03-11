@@ -1,5 +1,6 @@
 #pragma once
 #include "GameDataWnd.h"
+#include "Logic/DescriptionLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -8,7 +9,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
    class CScriptObjectWnd : public CGameDataWnd
    {
       // ------------------------ TYPES --------------------------
-   private:
+   protected:
+      /// <summary>Tooltip data for a script-object</summary>
+      class ScriptObjectTooltipData : public CustomTooltip::TooltipData
+      {
+      public:
+         /// <summary>Creates script object tooltip data.</summary>
+         /// <param name="obj">object</param>
+         ScriptObjectTooltipData(ScriptObjectRef obj) : TooltipData(IDR_SCRIPT_OBJECTS, 32)
+         {
+            try
+            {
+               // Lookup description 
+               DescriptionSource = DescriptionLib.Constants.Find(obj);
+               LabelSource = GuiString(L"[center][b]%s[/b][/center]", obj.Text.c_str());
+
+               // TODO: Supply icon
+            }
+            // Undocumented:
+            catch (ExceptionBase&) {
+               ResetTo(CustomTooltip::UndocumentedObject);
+            }
+         }
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
       
@@ -32,6 +55,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       wstring GetItemText(UINT index) override;
       void    PopulateGroupCombo() override;
       void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) override;
+
+      void    OnRequestTooltip(CustomTooltip::TooltipData* data) override;
 
       // -------------------- REPRESENTATION ---------------------
 
