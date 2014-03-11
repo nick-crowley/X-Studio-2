@@ -36,12 +36,13 @@ namespace Logic
             ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v);
             virtual ~ScriptParser();
 
-            DEFAULT_COPY(ScriptParser);	// Default copy semantics
-            DEFAULT_MOVE(ScriptParser);	// Default move semantics
+            NO_COPY(ScriptParser);	// Cannot copy semantics
+            NO_MOVE(ScriptParser);	// Cannot move semantics
 
             // ------------------------ STATIC -------------------------
          public:
-            static CommandSyntaxRef  Parse(const wstring& line, GameVersion ver);
+            static CommandSyntaxRef  Identify(ScriptFile script, const wstring& line);
+            static CommandNodePtr    Parse(ScriptFile script, const wstring& line);
 
             // --------------------- PROPERTIES ------------------------
          public:

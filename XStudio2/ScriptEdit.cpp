@@ -59,14 +59,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    bool  ScriptEdit::CanGotoLabel() const
    {
-      return false;
+      // Require 'Goto' or 'Gosub'
+      auto cmd = ScriptParser::Identify(Document->Script, GetLineText(-1));
+      return cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB);
    }
    
    /// <summary>Determines current line references a script</summary>
    /// <returns></returns>
    bool  ScriptEdit::CanOpenScript() const
    {
-      return false;
+      // Require command contain 'script-call' syntax
+      auto cmd = ScriptParser::Identify(Document->Script, GetLineText(-1));
+      return cmd.IsScriptCall();
    }
    
    /// <summary>Determines whether token at caret can be refactored.</summary>
@@ -85,7 +89,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    bool  ScriptEdit::CanViewString() const
    {
-      return false;
+      // Require command contain 'stringID/pageID' syntax
+      auto cmd = ScriptParser::Identify(Document->Script, GetLineText(-1));
+      return cmd.IsStringReference();
    }
 
    /// <summary>Toggles comment on the selected lines.</summary>
@@ -815,10 +821,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // Initialise
       auto cursor = GetCursorLocation();
-      auto text = GetLineText(cursor.y);
+      auto line = GetLineText(cursor.y);
       
       // Find token beneath cursor
-      CommandLexer lex(text);
+      CommandLexer lex(line);
       auto tok = lex.Tokens.Find(cursor.x);
       
       // None: show nothing
@@ -828,9 +834,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Valid: Provide approriate data
       else switch (tok->Type)
       {
-      case TokenType::Text:         data->ResetTo(CommandTooltipData(text, Document->Script.Game));   break;
-      case TokenType::Label:        data->ResetTo(LabelTooltipData(*this, tok->ValueText));           break;
-      case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));           break;
+      case TokenType::Text:         data->ResetTo(CommandTooltipData(Document->Script, line));   break;
+      case TokenType::Label:        data->ResetTo(LabelTooltipData(*this, tok->ValueText));      break;
+      case TokenType::ScriptObject: data->ResetTo(ScriptObjectTooltipData(tok->ValueText));      break;
 
       default: data->Cancel(); break;
       }  

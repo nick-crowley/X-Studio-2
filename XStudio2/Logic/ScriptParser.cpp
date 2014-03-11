@@ -63,16 +63,14 @@ namespace Logic
          }
 
          /// <summary>Identifies the command from line of text.</summary>
+         /// <param name="script">script.</param>
          /// <param name="line">line text.</param>
-         /// <param name="ver">game version.</param>
-         /// <returns>Command syntax or Unknown sentinel</returns>
-         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
-         CommandSyntaxRef  ScriptParser::Parse(const wstring& line, GameVersion ver)
+         /// <returns>Command syntax if successful, otherwise Unknown sentinel</returns>
+         CommandSyntaxRef  ScriptParser::Identify(ScriptFile script, const wstring& line)
          {
             try
             {
-               ScriptFile dummy;
-               ScriptParser parser(dummy, {line}, ver);
+               ScriptParser parser(script, {line}, script.Game);
 
                // Sanity check
                if (parser.Root->Children.empty())
@@ -84,6 +82,28 @@ namespace Logic
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
                return CommandSyntax::Unrecognised;
+            }
+         }
+         /// <summary>Parses a single command from a line of text.</summary>
+         /// <param name="script">script.</param>
+         /// <param name="line">line text.</param>
+         /// <returns>Command node if successful, otherwise root node sentinel</returns>
+         CommandNodePtr  ScriptParser::Parse(ScriptFile script, const wstring& line)
+         {
+            try
+            {
+               ScriptParser parser(script, {line}, script.Game);
+
+               // Sanity check
+               if (parser.Root->Children.empty())
+                  throw AlgorithmException(HERE, L"Parse tree has no children");
+
+               // Retrieve node
+               return parser.Root->Children.front();
+            }
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+               return CommandNodePtr(new CommandNode());
             }
          }
 
