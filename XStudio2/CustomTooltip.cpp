@@ -24,6 +24,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    BEGIN_MESSAGE_MAP(CustomTooltip, CToolTipCtrl)
       ON_NOTIFY_REFLECT(TTN_SHOW, &CustomTooltip::OnShow)
+      ON_NOTIFY_REFLECT(TTN_POP, &CustomTooltip::OnHide)
       ON_WM_PAINT()
       ON_WM_ERASEBKGND()
       ON_WM_SETTINGCHANGE()
@@ -207,6 +208,47 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return TRUE;
    }
 
+   /// <summary>Reset the tooltip after every display</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CustomTooltip::OnHide(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      //Reset();  //BUGFIX: Causes app to crash
+   }
+   
+
+   /// <summary>Paints the tooltip</summary>
+   void CustomTooltip::OnPaint()
+   {
+      CPaintDC dc(this); 
+      ClientRect wnd(this);
+
+      // Prepare
+      auto font = dc.SelectObject(&theApp.TooltipFont);
+      dc.SetBkMode(TRANSPARENT);
+
+      try
+      {
+         // Icon
+         if (IconID)
+            OnDrawIcon(&dc, rcIcon);
+
+         // Label
+         OnDrawLabel(&dc, rcLabel, false);
+
+         // Description
+         OnDrawDescription(&dc, rcDesc, false);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+
+      // Cleanup
+      dc.SetBkMode(OPAQUE);
+      dc.SelectObject(font);
+   }
+   
+
    /// <summary>Ignored.</summary>
    /// <param name="uFlags">The flags.</param>
    /// <param name="lpszSection">The section.</param>
@@ -277,38 +319,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
 
       // Cleanup
-      dc.SelectObject(font);
-   }
-   
-
-   /// <summary>Paints the tooltip</summary>
-   void CustomTooltip::OnPaint()
-   {
-      CPaintDC dc(this); 
-      ClientRect wnd(this);
-
-      // Prepare
-      auto font = dc.SelectObject(&theApp.TooltipFont);
-      dc.SetBkMode(TRANSPARENT);
-
-      try
-      {
-         // Icon
-         if (IconID)
-            OnDrawIcon(&dc, rcIcon);
-
-         // Label
-         OnDrawLabel(&dc, rcLabel, false);
-
-         // Description
-         OnDrawDescription(&dc, rcDesc, false);
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-
-      // Cleanup
-      dc.SetBkMode(OPAQUE);
       dc.SelectObject(font);
    }
    

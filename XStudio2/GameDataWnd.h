@@ -67,6 +67,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       AppStateChangedHandler  fnAppStateChanged;
       TooltipEvent::Handler   fnShowTooltip;
+   public:
+      afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
    };
    
 NAMESPACE_END2(GUI,Windows)

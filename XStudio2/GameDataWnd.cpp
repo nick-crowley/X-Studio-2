@@ -23,6 +23,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
       ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
+      ON_WM_SHOWWINDOW()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -67,12 +68,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    BOOL CGameDataWnd::PreTranslateMessage(MSG* pMsg)
    {
       // Relay mouse messages to tooltip
-      if(pMsg->message== WM_LBUTTONDOWN ||
-         pMsg->message== WM_LBUTTONUP ||
-         pMsg->message== WM_MOUSEMOVE)
-      {
+      if(pMsg->message >= WM_MOUSEFIRST && pMsg->message <= WM_MOUSELAST)
          Tooltip.RelayEvent(pMsg);
-      }
 
       return __super::PreTranslateMessage(pMsg);
    }
@@ -263,6 +260,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Adjust layout
       AdjustLayout();
    }
+
+   /// <summary>Resets tooltip on show</summary>
+   /// <param name="bShow">The show.</param>
+   /// <param name="nStatus">The status.</param>
+   void CGameDataWnd::OnShowWindow(BOOL bShow, UINT nStatus)
+   {
+      CDockablePane::OnShowWindow(bShow, nStatus);
+
+      // Reset tooltip
+      Tooltip.Reset();
+   }
+
 
    /// <summary>Adjusts layout on resize</summary>
    /// <param name="nType">Type of the n.</param>
