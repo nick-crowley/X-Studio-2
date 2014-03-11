@@ -2,18 +2,18 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
-#define IDR_PROPERTIES                  101
-#define IDR_OUTPUT                      102
-#define IDR_COMMANDS                    103
-#define IDR_GAME_OBJECTS                104
-#define IDR_SCRIPT_OBJECTS              105
-#define IDR_EDITOR                      106
+#define IDR_PROPERTIES                  120
+#define IDR_OUTPUT                      121
+#define IDR_COMMANDS                    122
+#define IDR_GAME_OBJECTS                123
+#define IDR_SCRIPT_OBJECTS              124
+#define IDR_EDITOR                      125
 
-#define IDR_LANGUAGEVIEW                107
-#define IDR_SCRIPTVIEW                  108
-#define IDR_PROJECTVIEW                 109
-#define IDR_DIFFVIEW                    110
-#define IDR_STRINGVIEW                  111
+#define IDR_LANGUAGEVIEW                126
+#define IDR_SCRIPTVIEW                  127
+#define IDR_PROJECTVIEW                 128
+#define IDR_DIFFVIEW                    129
+#define IDR_STRINGVIEW                  130
 
 ///////////////////////////////// TOOLBARS /////////////////////////////
 

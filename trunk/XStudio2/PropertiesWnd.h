@@ -66,6 +66,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnCommandExpandAll();
       afx_msg void OnCommandSort();
+      afx_msg void OnPaint();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
       afx_msg LRESULT OnPropertyUpdated(WPARAM wParam, LPARAM lParam);

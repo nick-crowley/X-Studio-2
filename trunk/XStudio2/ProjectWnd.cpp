@@ -95,7 +95,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   int cyTlb = Toolbar.CalcFixedLayout(FALSE, TRUE).cy;
 
 	   Toolbar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	   TreeView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
+	   TreeView.SetWindowPos(NULL, rectClient.left+1, rectClient.top+cyTlb+1, rectClient.Width()-2, rectClient.Height()-cyTlb-2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
    /// <summary>Determines whether window/treeview has focus.</summary>
@@ -354,6 +354,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
+   /// <summary>Manually paints border around tree.</summary>
    void CProjectWnd::OnPaint()
    {
 	   CPaintDC dc(this); // device context for painting
