@@ -61,7 +61,6 @@ namespace Logic
 
       public:
          // --------------------- CONSTRUCTION ----------------------
-
          XFileSystem();
          virtual ~XFileSystem();
 
@@ -69,21 +68,23 @@ namespace Logic
          NO_MOVE(XFileSystem);
          NO_COPY(XFileSystem);
 
+         // ----------------------- STATIC --------------------------
+      public:
+         static Path  GetPath(Path folder, GameVersion ver, XFolder f);
+
          // --------------------- PROPERTIES ------------------------
 
          // ---------------------- ACCESSORS ------------------------
-
-         XFileList Browse(XFolder  folder) const;
-         XFileList Browse(Path  folder) const;
-         bool      Contains(Path  path) const;
-         XFileInfo Find(Path  path) const;
-
+      public:
+         XFileList    Browse(XFolder folder) const;
+         XFileList    Browse(Path folder) const;
+         bool         Contains(Path path) const;
+         XFileInfo    Find(Path path) const;
          Path         GetFolder(XFolder f) const;
          Path         GetFolder() const            { return Folder;  }
          GameVersion  GetVersion() const           { return Version; }
 
 			// ----------------------- MUTATORS ------------------------
-
       public:
          DWORD   Enumerate(Path folder, GameVersion version, const WorkerData* data = &WorkerData::NoFeedback);
          
@@ -93,7 +94,6 @@ namespace Logic
          void    EnumerateFolder(Path  folder);
          
          // -------------------- REPRESENTATION ---------------------
-
       private:
          CatalogCollection  Catalogs;
          FileCollection     Files;
