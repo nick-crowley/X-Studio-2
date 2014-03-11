@@ -117,6 +117,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void  OnDrawIcon(CDC* pDC, CRect rectImage);
 	   CSize OnDrawLabel(CDC* pDC, CRect rect, bool bCalcOnly);
       BOOL  OnEraseBkgnd(CDC* pDC);
+      void  OnHide(NMHDR *pNMHDR, LRESULT *pResult);
       void  OnPaint();
       void  OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       void  OnShow(NMHDR *pNMHDR, LRESULT *pResult);
