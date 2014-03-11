@@ -78,6 +78,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       virtual BOOL   PreTranslateMessage(MSG* pMsg) override;
       virtual void   SetRtf(const string& rtf);
       void   SelectLine(int line = -1);
+      void   SetCaretLocation(CPoint pt);
       void   SuspendUndo(bool suspend);
 
    protected:
@@ -111,7 +112,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CustomTooltip         Tooltip;
       TooltipEvent::Handler fnShowTooltip;
       DisplayState          PrevState;
-};
+   };
    
 
 NAMESPACE_END2(GUI,Controls)
