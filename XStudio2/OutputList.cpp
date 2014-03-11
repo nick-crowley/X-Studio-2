@@ -92,22 +92,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Displays context menu.</summary>
-   /// <param name="">The .</param>
+   /// <param name="">window clicked</param>
    /// <param name="point">The point.</param>
-   void OutputList::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
+   void OutputList::OnContextMenu(CWnd* pWnd, CPoint point)
    {
-      CMenu menu;
-	   menu.LoadMenu(IDM_OUTPUT_POPUP);
-
-      // Create MFC custom menu
-	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
-		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
-			return;
-
-      // Show
-		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
-		UpdateDialogControls(this, FALSE);
-	   SetFocus();
+      SetFocus();
+      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_OUTPUT_POPUP, point.x, point.y, this, TRUE);
    }
 
    /// <summary>Copies item to clipboard</summary>
