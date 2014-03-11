@@ -23,6 +23,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
+      ON_WM_PAINT()
       ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
 	   ON_COMMAND(ID_EXPAND_ALL, OnCommandExpandAll)
@@ -92,7 +93,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Snap toolbar to top, stretch grid over remainder
 	   ToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	   Grid.SetWindowPos(nullptr, rectClient.left, rectClient.top + barHeight, rectClient.Width(), rectClient.Height() - barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	   Grid.SetWindowPos(nullptr, rectClient.left+1, rectClient.top+barHeight+1, rectClient.Width()-2, rectClient.Height()-barHeight-2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
 
    /// <summary>Connects a source of properties.</summary>
@@ -155,6 +156,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	      CRect rectDummy;
 	      rectDummy.SetRectEmpty();
+         
+         // Toolbar
+         ToolBar.Create(this, IDR_PROPERTIES, L"Properties");
 
          // Create property grid
 	      if (!Grid.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
@@ -170,9 +174,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 		   Grid.SetGroupNameFullWidth(TRUE);
 	      Grid.MarkModifiedProperties();
 
-         // Toolbar
-         ToolBar.Create(this, IDR_PROPERTIES, L"Properties");
-
          // Layout
 	      AdjustLayout();
 	      return 0;
@@ -181,6 +182,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console.Log(HERE, e);
          return -1;
       }
+   }
+   
+   /// <summary>Manually paints border around grid.</summary>
+   void CPropertiesWnd::OnPaint()
+   {
+	   CPaintDC dc(this); // device context for painting
+
+	   CRect rc;
+	   Grid.GetWindowRect(rc);
+	   ScreenToClient(rc);
+
+	   rc.InflateRect(1, 1);
+	   dc.Draw3dRect(rc, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
    /// <summary>Informs source a propery has been updated</summary>
