@@ -99,6 +99,9 @@ namespace Logic
          /// <summary>Query whether command is a script call</summary>
          bool  IsScriptCall() const;
 
+         /// <summary>Query whether command references a string/page ID</summary>
+         bool  IsStringReference() const;
+
          /// <summary>Query whether command has variable arguments</summary>
          bool  IsVariableArgument() const;
 

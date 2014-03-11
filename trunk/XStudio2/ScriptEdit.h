@@ -382,14 +382,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
       public:
          /// <summary>Create script command tooltip</summary>
-         /// <param name="lineText">The line text.</param>
-         /// <param name="ver">The version</param>
-         CommandTooltipData(wstring lineText, GameVersion ver) : TooltipData(IDR_GAME_OBJECTS, 32)
+         /// <param name="script">script.</param>
+         /// <param name="lineText">line text</param>
+         CommandTooltipData(const ScriptFile& script, wstring lineText) : TooltipData(IDR_GAME_OBJECTS, 32)
          {
             try
             {
                // Identify command
-               auto cmd = ScriptParser::Parse(lineText, ver);
+               auto cmd = ScriptParser::Identify(script, lineText);
 
                // Unknown: Cancel
                if (cmd == CommandSyntax::Unrecognised)
