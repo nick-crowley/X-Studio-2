@@ -81,6 +81,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   SuspendUndo(bool suspend);
 
    protected:
+      void   AdjustTooltip(bool enable, UINT delay, UINT display);
       void   FreezeWindow(bool freeze, bool invalidate = true);
       void   ResetTooltip();
       void   SetScrollCoordinates(const CPoint& pt);
@@ -104,9 +105,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    protected:
       TextDocumentPtr  TextDocument;
       IRichEditOlePtr  OleDocument;
-      bool             ShowTooltip;
       
    private:
+      bool                  ShowTooltip;
       CustomTooltip         Tooltip;
       TooltipEvent::Handler fnShowTooltip;
       DisplayState          PrevState;

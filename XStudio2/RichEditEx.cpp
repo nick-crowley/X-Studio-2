@@ -379,6 +379,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Adjusts the tooltip.</summary>
+   /// <param name="enable">enable/disable.</param>
+   /// <param name="delay">delay length.</param>
+   /// <param name="display">display time.</param>
+   void  RichEditEx::AdjustTooltip(bool enable, UINT delay, UINT display)
+   {
+      Tooltip.Activate(ShowTooltip = enable);
+      Tooltip.SetTiming(delay, display);
+   }
+
    /// <summary>Freezes or unfreezes the window.</summary>
    /// <param name="freeze">True to freeze, false to restore</param>
    /// <param name="invalidate">True to invalidate after unfreezing</param>
