@@ -36,12 +36,12 @@ namespace Logic
          {}
 
          // --------------------- PROPERTIES ------------------------
-
+      public:
          PROPERTY_GET(int,HighWord,GetHighWord);
          PROPERTY_GET(int,LowWord,GetLowWord);
 
          // ---------------------- ACCESSORS ------------------------			
-
+      public:
          /// <summary>Get HO word of integer value</summary>
          int  GetHighWord() const
          {
@@ -73,7 +73,7 @@ namespace Logic
          }
 
 		   // ----------------------- MUTATORS ------------------------
-
+      public:
          /// <summary>Assign integer value</summary>
          ParameterValue& operator=(int val)
          {
@@ -91,7 +91,7 @@ namespace Logic
          }
 
          // -------------------- REPRESENTATION ---------------------
-
+      public:
          ValueType Type;
          wstring   String;
          int       Int;

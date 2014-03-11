@@ -12,6 +12,27 @@ namespace Logic
       /// <summary>Unrecognised script command sentinel value</summary>
       ScriptCommand  ScriptCommand::Unrecognised;
 
+      /// <summary>Determines whether parameter usage is scriptName</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  ScriptCommand::IsScriptNameParam = [](const ScriptParameter& s) 
+      {
+         return s.Syntax.Usage == ParameterUsage::ScriptName;
+      };
+      
+      /// <summary>Determines whether parameter usage is StringID</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  ScriptCommand::IsStringIDParam = [](const ScriptParameter& s) 
+      {
+         return s.Syntax.Usage == ParameterUsage::StringID;
+      };
+
+      /// <summary>Determines whether parameter usage is PageID</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  ScriptCommand::IsPageIDParam = [](const ScriptParameter& s) 
+      {
+         return s.Syntax.Usage == ParameterUsage::PageID;
+      };
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates sentinel value (private ctor)</summary>
@@ -231,19 +252,40 @@ namespace Logic
       /// <exception cref="Logic::InvalidOperationException">Command is not a script call -or- name parameter is missing</exception>
       wstring  ScriptCommand::GetScriptCallName() const
       {
-         // Lookup script-call parameter syntax
-         auto param = find_if(Syntax.Parameters.begin(), Syntax.Parameters.end(), CommandSyntax::IsScriptNameParam);
-
-         // Validate command ID
-         if (param == Syntax.Parameters.end())
+         // Validate Command ID: 
+         if (!Syntax.IsScriptCall())
             throw InvalidOperationException(HERE, GuiString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
 
+         // Lookup script-call parameter
+         auto param = find_if(Parameters.begin(), Parameters.end(), IsScriptNameParam);
+
          // Ensure present
-         if (param->PhysicalIndex >= Parameters.size()) 
+         if (param == Parameters.end()) 
             throw InvalidOperationException(HERE, GuiString(L"Missing script name parameter"));
 
-         // Return name if exists, or empty string if variable
-         return Parameters[param->PhysicalIndex].Type == DataType::STRING ? Parameters[param->PhysicalIndex].Value.String : L"";
+         // Return name (or empty string if variable)
+         return param->Type == DataType::STRING ? param->Value.String : L"";
+      }
+      
+      /// <summary>Gets the ID of the string referenced by this command</summary>
+      /// <returns></returns>
+      /// <exception cref="Logic::InvalidOperationException">Command doesn't reference a string -or- parameter is missing</exception>
+      StringID  ScriptCommand::GetStringReference() const
+      {
+         // Validate Command ID: 
+         if (!Syntax.IsStringReference())
+            throw InvalidOperationException(HERE, GuiString(L"Cannot get string reference for a '%s' command", Syntax.Text.c_str()));
+
+         // Lookup stringID/pageID parameter
+         auto id   = find_if(Parameters.begin(), Parameters.end(), IsStringIDParam),
+              page = find_if(Parameters.begin(), Parameters.end(), IsPageIDParam);
+
+         // Ensure both present
+         if (id == Parameters.end() || page == Parameters.end()) 
+            throw InvalidOperationException(HERE, GuiString(L"Missing string ID or page ID parameter"));
+
+         // Return both
+         return StringID(*page, *id);
       }
       
       /// <summary>Compare command ID</summary>
@@ -287,7 +329,7 @@ namespace Logic
          for (ScriptParameter& p : Parameters)
             p.Translate(f);
 
-         // Format command
+         // Insert/Replace syntax '$n' markers with parameter text
          for (const ScriptToken& tok : lex.Tokens)
          {
             // Marker: Insert parameter text

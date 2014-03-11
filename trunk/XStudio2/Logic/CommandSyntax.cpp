@@ -14,14 +14,14 @@ namespace Logic
 
       /// <summary>Determines whether parameter usage is scriptName</summary>
       /// <param name="s">parameter</param>
-      const ParameterPredicate  CommandSyntax::IsScriptNameParam = [](const ParameterSyntax& s) 
+      const ParamSyntaxPredicate  CommandSyntax::IsScriptNameParam = [](const ParameterSyntax& s) 
       {
          return s.Usage == ParameterUsage::ScriptName;
       };
       
       /// <summary>Determines whether parameter usage is StringID or PageID</summary>
       /// <param name="s">parameter</param>
-      const ParameterPredicate  CommandSyntax::IsStringRefParam = [](const ParameterSyntax& s) 
+      const ParamSyntaxPredicate  CommandSyntax::IsStringRefParam = [](const ParameterSyntax& s) 
       {
          return s.Usage == ParameterUsage::StringID || s.Usage == ParameterUsage::PageID;
       };
@@ -156,20 +156,7 @@ namespace Logic
       /// <returns></returns>
       ParamSyntaxArray  CommandSyntax::GetParametersByDisplay() const
       {
-         //typedef pair<UINT,UINT> Index;   // {Physical,Display}
-
          ParamSyntaxArray params;
-         //vector<Index>    order;
-         //
-         //// Build array of {Physical,Display} tuples sorted by physical index
-         //transform(Parameters.begin(), Parameters.end(), back_inserter(order), [](const ParameterSyntax& p)->Index 
-         //{ 
-         //   return Index(p.PhysicalIndex, p.DisplayIndex); 
-         //});
-
-         //// Build array by display index
-         //for (const ParameterSyntax& ps : Parameters)
-         //   params.push_back( Parameters[order[ps.PhysicalIndex].second] );
 
          // Re-order by display index (ascending)
          for (UINT i = 0; i < Parameters.size(); ++i)
@@ -178,6 +165,7 @@ namespace Logic
             params.push_back(*p);
          }
 
+#ifdef DEBUGGING
          // DEBUG: Verify sizes equal
          if (params.size() != Parameters.size())
             throw AlgorithmException(HERE, L"");
@@ -194,7 +182,7 @@ namespace Logic
                throw AlgorithmException(HERE, GuiString(L"Parameter %d of %d has display index %d instead of %d : %s\n%s", 
                                                         i+1, params.size(), params[i].DisplayIndex, i, Text.c_str(), debug.c_str()));
             }
-
+#endif
          return params;
       }
 
