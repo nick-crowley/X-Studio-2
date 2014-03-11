@@ -11,6 +11,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    BEGIN_MESSAGE_MAP(RefactorDialog, CDialog)
       ON_WM_SIZE()
       ON_LBN_SELCHANGE(IDC_SYMBOL_LIST, OnSelectionChanged)
+      ON_CLBN_CHKCHANGE(IDC_SYMBOL_LIST, OnCheckChanged)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -40,8 +41,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       try
       {
-         // Populate symbols
          UINT i = 0;
+         
+         // Populate symbols list
          for (auto& s : AllSymbols)
          {
             // Format: (line) text
@@ -51,11 +53,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
             List.InsertString(i, line.c_str());
             List.SetCheck(i++, !s.Commented ? BST_CHECKED : BST_UNCHECKED);
          }
-
+         
          // Populate edit
          RichEdit.Initialize(&Document);
          RichEdit.SetPlainText(DocumentText);
-         
+         RichEdit.HighlightSymbols(AllSymbols);
+
+         // Scroll to first symbol
+         if (!AllSymbols.empty())
+            RichEdit.ScrollTo(AllSymbols.front());
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, L"Unable to initialise the refactor dialog");
@@ -98,6 +104,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Control(pDX, IDC_SYMBOL_EDIT, RichEdit);
       __super::DoDataExchange(pDX);
    }
+   
+   /// <summary>Toggles highlighting the selected token</summary>
+   void RefactorDialog::OnCheckChanged()
+   {
+      // Require selection
+      if (List.GetCurSel() == LB_ERR)
+         return;
+
+      Console << "RefactorDialog::OnCheckChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
+
+      // Highlight symbol
+      auto index = List.GetCurSel();
+      RichEdit.HighlightSymbol(AllSymbols[index], List.GetCheck(index) == BST_CHECKED);
+   }
 
    /// <summary>Displays the selected line</summary>
    void RefactorDialog::OnSelectionChanged()
@@ -106,10 +126,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (List.GetCurSel() == LB_ERR)
          return;
 
-      // Select line + display
+      Console << "RefactorDialog::OnSelectionChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
+
+      // Scroll to selected symbol
       auto symbol = AllSymbols[List.GetCurSel()];
-      RichEdit.SelectLine( symbol.LineNumber-1 );
-      RichEdit.EnsureVisible( symbol.LineNumber-4 );
+      RichEdit.ScrollTo(symbol);
    }
 
    /// <summary>Adjusts the layout on resize</summary>
@@ -125,6 +146,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- PRIVATE METHODS ------------------------------
    
    
-   NAMESPACE_END2(GUI, Windows)
+NAMESPACE_END2(GUI,Windows)
 
 
