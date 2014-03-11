@@ -139,23 +139,13 @@ NAMESPACE_BEGIN2(GUI,Views)
       __super::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
    
-   /// <summary>Called when context menu.</summary>
+   /// <summary>Display context menu.</summary>
    /// <param name="pWnd">The WND.</param>
    /// <param name="point">The point.</param>
    void LanguagePageView::OnContextMenu(CWnd* pWnd, CPoint point)
    {
-      CMenu menu;
-	   menu.LoadMenu(IDM_STRINGVIEW_POPUP);
-
-      // Create MFC custom menu
-	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
-		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
-			return;
-
-      // Show menu:
-		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
-		UpdateDialogControls(this, FALSE);
-	   SetFocus();
+      SetFocus();
+      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_STRINGVIEW_POPUP, point.x, point.y, this, TRUE);
    }
 
    /// <summary>Initialise listView and populate pages</summary>

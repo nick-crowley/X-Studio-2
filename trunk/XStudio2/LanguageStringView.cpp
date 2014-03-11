@@ -141,23 +141,13 @@ NAMESPACE_BEGIN2(GUI,Views)
       return item != -1 ? &GetDocument()->SelectedPage->Strings.FindByIndex(item) : nullptr;
    }
    
-   /// <summary>Called when context menu.</summary>
+   /// <summary>Display context menu.</summary>
    /// <param name="pWnd">The WND.</param>
    /// <param name="point">The point.</param>
    void LanguageStringView::OnContextMenu(CWnd* pWnd, CPoint point)
    {
-      CMenu menu;
-	   menu.LoadMenu(IDM_STRINGVIEW_POPUP);
-
-      // Create MFC custom menu
-	   CMFCPopupMenu* customMenu = new CMFCPopupMenu;
-		if (!menu.GetSubMenu(0) || !customMenu->Create(this, point.x, point.y, menu.GetSubMenu(0)->m_hMenu, FALSE, TRUE))
-			return;
-
-      // Show
-		((CMDIFrameWndEx*)AfxGetMainWnd())->OnShowPopupMenu(customMenu);
-		UpdateDialogControls(this, FALSE);
-	   SetFocus();
+      SetFocus();
+      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_STRINGVIEW_POPUP, point.x, point.y, this, TRUE);
    }
 
    /// <summary>Custom draw the strings</summary>
