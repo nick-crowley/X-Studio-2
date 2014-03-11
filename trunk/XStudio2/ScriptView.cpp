@@ -208,7 +208,14 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Ensure scriptEdit was clicked
       if (pWnd && pWnd->m_hWnd == RichEdit.m_hWnd)
+      {
+         // Move caret to cursor
+         if (!RichEdit.HasSelection())
+            RichEdit.SetCaretLocation(CursorPoint(&RichEdit));
+
+         // Popup
 	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_SCRIPTEDIT_POPUP, point.x, point.y, this, TRUE);
+      }
    }
 
 

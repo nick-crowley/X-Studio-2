@@ -328,6 +328,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSel(GetLineStart(line), GetLineEnd(line));
    }
    
+   /// <summary>Move caret to a position</summary>
+   /// <param name="point">The point in client co-ordinates.</param>
+   void  RichEditEx::SetCaretLocation(CPoint pt)
+   {
+      SetSel(CharFromPos(pt), CharFromPos(pt));
+   }
+   
    /// <summary>Replace entire contents with RTF.</summary>
    /// <param name="rtf">The RTF.</param>
    /// <exception cref="Logic::Win32Exception">Unable to set text</exception>
@@ -559,7 +566,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          break;
       }
    }
-   
+
    /// <summary>Supply tooltip data</summary>
    /// <param name="data">The data.</param>
    void RichEditEx::OnRequestTooltip(CustomTooltip::TooltipData* data)
