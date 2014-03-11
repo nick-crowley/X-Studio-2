@@ -25,7 +25,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   RichEditEx::RichEditEx() : fnShowTooltip(Tooltip.RequestData.Register(this, &RichEditEx::OnRequestTooltip))
+   RichEditEx::RichEditEx() 
+      : fnShowTooltip(Tooltip.RequestData.Register(this, &RichEditEx::OnRequestTooltip)),
+        ShowTooltip(false)
    {
    }
 
@@ -248,6 +250,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Create tooltip
       Tooltip.Create(this, this);
+      Tooltip.Activate(ShowTooltip);
 
       // Get IRichEditOle interface
       OleDocument = IRichEditOlePtr(GetIRichEditOle(), false);
@@ -354,7 +357,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       EmptyUndoBuffer();
 
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
 
       // Restore
       FreezeWindow(false);
@@ -464,7 +467,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "RichEditEx::OnHScroll" << ENDL;
 
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
 
       // Scroll
       __super::OnHScroll(nSBCode, nPos, bar);
@@ -476,7 +479,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "RichEditEx::HScroll" << ENDL;
 
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
    }
 
    /// <summary>Resets the tooltip</summary>
@@ -503,7 +506,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       case WM_MBUTTONDOWN:
       // WHEEL: 
       case WM_MOUSEWHEEL:
-         Tooltip.Reset();
+         ResetTooltip();
          break;
       }
    }
@@ -513,7 +516,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void RichEditEx::OnKillFocus(CWnd* pNewWnd)
    {
       // Deactivate tooltip
-      Tooltip.Activate(FALSE);  
+      if (ShowTooltip)
+         Tooltip.Activate(FALSE);  
 
       // Kill focus
       __super::OnKillFocus(pNewWnd);
@@ -553,7 +557,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // None: show nothing
       data->Cancel();
    }
-   
+
+   /// <summary>Activates/Deactives the tooltip</summary>
+   /// <param name="uFlags">The flags.</param>
+   /// <param name="lpszSection">The section.</param>
+   void RichEditEx::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+   {
+      Tooltip.Activate(ShowTooltip);
+   }
+
    /// <summary>Enable tooltip.</summary>
    /// <param name="pOldWnd">The old WND.</param>
    void RichEditEx::OnSetFocus(CWnd* pOldWnd)
@@ -561,7 +573,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CRichEditCtrl::OnSetFocus(pOldWnd);
 
       // Activate tooltip
-      Tooltip.Activate(TRUE); 
+      if (ShowTooltip)
+         Tooltip.Activate(TRUE); 
 
       // DEBUG:
       //Console << "RichEditEx::OnSetFocus" << ENDL;
@@ -571,7 +584,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void RichEditEx::OnTextChange()
    {
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
 
       // Raise 'TEXT CHANGED'
       TextChanged.Raise();
@@ -583,7 +596,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "RichEditEx::VScroll" << ENDL;
 
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
    }
 
    /// <summary>Reset the tooltip</summary>
@@ -592,7 +605,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //Console << "RichEditEx::OnVScroll" << ENDL;
 
       // Reset tooltip
-      Tooltip.Reset();
+      ResetTooltip();
 
       // Scroll
       __super::OnHScroll(nSBCode, nPos, bar);
@@ -607,6 +620,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
          PasteSpecial(nClipFormat);
    }
    
+   /// <summary>Resets the tooltip.</summary>
+   void RichEditEx::ResetTooltip()
+   {
+      // Reset tooltip
+      if (ShowTooltip)
+         Tooltip.Reset();
+   }
+
    /// <summary>Scrolls window to the position of a character</summary>
    /// <param name="pt">Character co-orindates</param>
    void RichEditEx::SetScrollCoordinates(const CPoint& pt)
