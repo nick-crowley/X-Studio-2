@@ -1,6 +1,7 @@
 #pragma once
 #include "afxdockablepane.h"
 #include "ImageListEx.h"
+#include "CustomTooltip.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -41,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
 	   afx_msg void OnPaint();
+      virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSearchTermChanged();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
@@ -53,12 +55,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // -------------------- REPRESENTATION ---------------------
 
    protected:
-      CListCtrl   ListView;
-	   ImageListEx Images;
-      CComboBox   Groups;
-      CEdit       Search;
+      CustomTooltip  Tooltip;
+      CListCtrl      ListView;
+	   ImageListEx    Images;
+      CComboBox      Groups;
+      CEdit          Search;
 
       AppStateChangedHandler  fnAppStateChanged;
+      TooltipEvent::Handler   fnShowTooltip;
    };
    
 NAMESPACE_END2(GUI,Windows)

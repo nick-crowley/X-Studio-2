@@ -45,17 +45,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // ------------------------------- PUBLIC METHODS -------------------------------
    
    /// <summary>Creates the tooltip</summary>
-   /// <param name="pParentWnd">The parent WND.</param>
-   /// <param name="dwStyle">The style.</param>
+   /// <param name="parent">parent window.</param>
+   /// <param name="ctrl">tool window.</param>
    /// <returns></returns>
-   bool  CustomTooltip::Create(CWnd* view, CWnd* edit)
+   bool  CustomTooltip::Create(CWnd* parent, CWnd* ctrl)
    {
       // Create window
-      if (!__super::Create(view, 0))
+      if (!__super::Create(parent, 0))
          throw Win32Exception(HERE, L"Unable to create tooltip");
 
       // Add tool
-      AddTool(edit, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
+      AddTool(ctrl, L"Title placeholder: Quick brown bear jumped over the lazy fox"); 
       return TRUE;
    }
 

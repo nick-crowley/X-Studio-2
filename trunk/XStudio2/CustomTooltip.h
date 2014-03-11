@@ -105,7 +105,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
       // ----------------------- MUTATORS ------------------------
    public:
-	   bool Create(CWnd* view, CWnd* edit);
+	   bool Create(CWnd* parent, CWnd* ctrl);
       void Reset();
       void SetTiming(UINT delay, UINT display);
 

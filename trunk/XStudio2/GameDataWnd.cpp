@@ -26,7 +26,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CGameDataWnd::CGameDataWnd() : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::OnAppStateChanged))
+   CGameDataWnd::CGameDataWnd() 
+      : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::OnAppStateChanged)),
+        fnShowTooltip(Tooltip.RequestData.Register(this, &CGameDataWnd::OnRequestTooltip))
    {
    }
 
@@ -145,6 +147,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Populate groups
          PopulateGroupCombo();
+
+         // Create tooltip
+         Tooltip.Create(this, this);
+         Tooltip.Activate(TRUE);
+         Tooltip.SetTiming(3*1000, 30*1000);
          
 	      // Layout controls + Populate
 	      AdjustLayout();
@@ -170,6 +177,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Draw border
 	   rc.InflateRect(1, 1);
 	   dc.Draw3dRect(rc, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
+   }
+
+   /// <summary>Supply tooltip data.</summary>
+   /// <param name="data">data.</param>
+   void CGameDataWnd::OnRequestTooltip(CustomTooltip::TooltipData* data)
+   {
+      data->Cancel();
    }
 
    /// <summary>set focus to the listView.</summary>
