@@ -55,6 +55,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
+   /// <summary>Determines current line references a label.</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanGotoLabel() const
+   {
+      return false;
+   }
+   
+   /// <summary>Determines current line references a script</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanOpenScript() const
+   {
+      return false;
+   }
+   
    /// <summary>Determines whether token at caret can be refactored.</summary>
    /// <returns></returns>
    bool  ScriptEdit::CanRefactor() const
@@ -65,6 +79,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Ensure variable/label
       return lex.Valid(pos) && (pos->Type == TokenType::Label || pos->Type == TokenType::Variable);
+   }
+
+   /// <summary>Determines current line references a string.</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanViewString() const
+   {
+      return false;
    }
 
    /// <summary>Toggles comment on the selected lines.</summary>

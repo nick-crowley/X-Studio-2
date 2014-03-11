@@ -19,7 +19,9 @@
 
 # [DONE] Typing in the script edit doesn't modify the document
 
+# Clear the compiler output window before displaying output during save
 
+# GameDataWindows are displaying tooltips for the wrong item indicies
 
 
 

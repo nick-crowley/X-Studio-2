@@ -67,6 +67,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnEditIndent();
       afx_msg void OnEditOutdent();
       afx_msg void OnEditRefactor();
+      afx_msg void OnEditGotoLabel();
+      afx_msg void OnEditOpenScript();
+      afx_msg void OnEditViewString();
       afx_msg void OnEditUndo();
       afx_msg void OnEditRedo();
       afx_msg void OnClipboardCopy();

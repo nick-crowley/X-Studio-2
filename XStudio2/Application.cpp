@@ -421,8 +421,12 @@ void Application::OnQueryCommand(CCmdUI* pCmdUI)
 /// <summary>Application customization load/save methods</summary>
 void Application::PreLoadState()
 {
-	GetContextMenuManager()->AddMenu(GuiString(IDS_EDIT_MENU).c_str(), IDM_EDIT_POPUP);
-	GetContextMenuManager()->AddMenu(GuiString(IDR_PROJECTVIEW).c_str(), IDM_PROJECT_POPUP);
+   // Load context menus
+	GetContextMenuManager()->AddMenu(GuiString(IDM_EDIT_POPUP).c_str(), IDM_EDIT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_OUTPUT_POPUP).c_str(), IDM_OUTPUT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_PROJECT_POPUP).c_str(), IDM_PROJECT_POPUP);
+	GetContextMenuManager()->AddMenu(GuiString(IDM_SCRIPTEDIT_POPUP).c_str(), IDM_SCRIPTEDIT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_STRINGVIEW_POPUP).c_str(), IDM_STRINGVIEW_POPUP);
 }
 
 
