@@ -23,6 +23,7 @@
 
 # GameDataWindows are displaying tooltips for the wrong item indicies
 
+# return keyword is highlighted when found in command text
 
 
 
