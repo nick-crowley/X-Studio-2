@@ -156,19 +156,20 @@ namespace Logic
          return Parameters[0].Value.Int;
       }
       
-      /// <summary>Gets the name of the label.</summary>
+      /// <summary>Gets the name of the label defined or referenced by this command.</summary>
       /// <returns></returns>
-      /// <exception cref="Logic::InvalidOperationException">Command is not label name definition -or- name parameter is missing</exception>
+      /// <exception cref="Logic::InvalidOperationException">Command is not label definition/reference -or- name parameter is missing</exception>
       wstring  ScriptCommand::GetLabelName() const
       {
          // Validate command ID
-         if (!Syntax.Is(CMD_DEFINE_LABEL))
+         if (!Syntax.Is(CMD_DEFINE_LABEL) && !Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
             throw InvalidOperationException(HERE, GuiString(L"Cannot get label name for a '%s' command", Syntax.Text.c_str()));
 
          // Validate label name parameter
          if (Parameters.size() == 0 || Parameters[0].Value.Type != ValueType::String)
             throw InvalidOperationException(HERE, GuiString(L"Missing label name parameter"));
 
+         // Return name
          return Parameters[0].Value.String;
       }
 
@@ -238,7 +239,7 @@ namespace Logic
             throw InvalidOperationException(HERE, GuiString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
 
          // Ensure present
-         if (Parameters.size() < param->PhysicalIndex+1) 
+         if (param->PhysicalIndex >= Parameters.size()) 
             throw InvalidOperationException(HERE, GuiString(L"Missing script name parameter"));
 
          // Return name if exists, or empty string if variable

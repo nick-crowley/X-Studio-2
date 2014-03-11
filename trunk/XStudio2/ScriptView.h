@@ -54,30 +54,31 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      void ScrollTo(const ScriptLabel& l);
       void PopulateVariables();
       void PopulateScope();
       virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
       void UpdateScope();
       
-
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
       afx_msg void OnDestroy();
-      afx_msg void OnEditComment();
-      afx_msg void OnEditIndent();
-      afx_msg void OnEditOutdent();
-      afx_msg void OnEditRefactor();
-      afx_msg void OnEditGotoLabel();
-      afx_msg void OnEditOpenScript();
-      afx_msg void OnEditViewString();
-      afx_msg void OnEditUndo();
-      afx_msg void OnEditRedo();
-      afx_msg void OnClipboardCopy();
-      afx_msg void OnClipboardCut();
-      afx_msg void OnClipboardPaste();
+      afx_msg void OnEditComment()       { OnPerformCommand(ID_EDIT_COMMENT);     }
+      afx_msg void OnEditIndent()        { OnPerformCommand(ID_EDIT_INDENT);      }
+      afx_msg void OnEditOutdent()       { OnPerformCommand(ID_EDIT_OUTDENT);     }
+      afx_msg void OnEditRefactor()      { OnPerformCommand(ID_EDIT_REFACTOR);    }
+      afx_msg void OnEditGotoLabel();   //  { OnPerformCommand(ID_EDIT_GOTO_LABEL);  }
+      afx_msg void OnEditOpenScript();  //  { OnPerformCommand(ID_EDIT_OPEN_SCRIPT); }
+      afx_msg void OnEditViewString();  //  { OnPerformCommand(ID_EDIT_VIEW_STRING); }
+      afx_msg void OnEditUndo()          { OnPerformCommand(ID_EDIT_UNDO);        }
+      afx_msg void OnEditRedo()          { OnPerformCommand(ID_EDIT_REDO);        }
+      afx_msg void OnClipboardCopy()     { OnPerformCommand(ID_EDIT_COPY);        }
+      afx_msg void OnClipboardCut()      { OnPerformCommand(ID_EDIT_CUT);         }
+      afx_msg void OnClipboardPaste()    { OnPerformCommand(ID_EDIT_PASTE);       }
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       handler void OnCompileComplete();
 	   virtual void OnInitialUpdate(); 
+      afx_msg void OnPerformCommand(UINT nID);
       afx_msg void OnQueryCommand(CCmdUI *pCmdUI);
       afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
       afx_msg void OnScopeSelectionChange();

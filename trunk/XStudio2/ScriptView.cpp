@@ -181,25 +181,6 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
    }
-   
-   /// <summary>Copy text selection to clipboard</summary>
-   void ScriptView::OnClipboardCopy()
-   {
-      RichEdit.Copy();
-   }
-
-   /// <summary>Cut text selection to clipboard</summary>
-   void ScriptView::OnClipboardCut()
-   {
-      RichEdit.Cut();
-   }
-
-   /// <summary>Paste clipboard contents</summary>
-   void ScriptView::OnClipboardPaste()
-   {
-      if (RichEdit.CanPaste(CF_UNICODETEXT))
-         RichEdit.PasteFormat(CF_UNICODETEXT);
-   }
 
    /// <summary>Display script edit context window</summary>
    /// <param name="pWnd">window clicked</param>
@@ -218,7 +199,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       }
    }
 
-
+   /// <summary>Called when compilation complete.</summary>
    void ScriptView::OnCompileComplete()
    {
       // Re-Populate variables/scope
@@ -237,57 +218,57 @@ NAMESPACE_BEGIN2(GUI,Views)
       CFormView::OnDestroy();
    }
 
-   /// <summary>Toggle comment on selected commands</summary>
-   void ScriptView::OnEditComment()
-   {
-      RichEdit.CommentSelection();
-   }
-   
-   /// <summary>Indent selected commands</summary>
-   void ScriptView::OnEditIndent()
-   {
-      if (RichEdit.HasSelection())
-         RichEdit.IndentSelection(true);
-   }
-
-   /// <summary>Outdent selected commands</summary>
-   void ScriptView::OnEditOutdent()
-   {
-      if (RichEdit.HasSelection())
-         RichEdit.IndentSelection(false);
-   }
-
-   /// <summary>Refactor label/variable symbol at the caret</summary>
-   void ScriptView::OnEditRefactor()
-   {
-      RichEdit.Refactor();
-   }
-   
    /// <summary>Goto label at the caret</summary>
    void ScriptView::OnEditGotoLabel()
    {
-   }
+      // Ensure label at caret
+      if (!RichEdit.CanGotoLabel())
+         return;
 
+      try
+      {
+         // Parse command at caret
+         auto cmd = ScriptParser::Parse(GetDocument()->Script, RichEdit.GetLineText(-1));
+
+         // Lookup and goto label
+         ScrollTo( GetDocument()->Script.Labels[cmd.GetLabelName()] );
+      }
+      // Unable to parse command
+      catch (ExceptionBase&) {
+      }
+   }
+   
    /// <summary>Open script name at the caret</summary>
    void ScriptView::OnEditOpenScript()
    {
+      // Ensure script-call at caret
+      if (!RichEdit.CanOpenScript())
+         return;
+
+      try
+      {
+         // Parse script-call name from command at caret
+         auto cmd = ScriptParser::Parse(GetDocument()->Script, RichEdit.GetLineText(-1));
+         auto script = cmd.GetScriptCallName();
+
+         // Generate .PCK path [in same folder as document]
+         auto path = GetDocument()->FullPath.RenameFileName(script+L".pck");
+
+         // Open .PCK version if exists, otherwise .XML
+         if (path.Exists() || (path=path.RenameExtension(L".xml")).Exists())
+            theApp.OpenDocumentFile(path.c_str(), TRUE);
+         else
+            theApp.ShowMessage(GuiString(L"Cannot find the script '%s' in the current folder", script.c_str()));
+      }
+      // Unable to parse command
+      catch (ExceptionBase&) {
+      }
    }
+
 
    /// <summary>View string at the caret</summary>
    void ScriptView::OnEditViewString()
    {
-   }
-
-   /// <summary>Undo last edit operation</summary>
-   void ScriptView::OnEditUndo()
-   {
-      RichEdit.Undo();
-   }
-
-   /// <summary>Redo last edit operation</summary>
-   void ScriptView::OnEditRedo()
-   {
-      RichEdit.Redo();
    }
 
    /// <summary>Displays script and populates variables/scope combos</summary>
@@ -335,6 +316,44 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (ExceptionBase& e)
       {
          theApp.ShowError(HERE, e, L"Unable to initialise the script view");
+      }
+   }
+   
+   /// <summary>Perform command</summary>
+   /// <param name="nID">ID</param>
+   void ScriptView::OnPerformCommand(UINT nID)
+   {
+      switch (nID)
+      {
+      // Undo/Redo
+      case ID_EDIT_UNDO:   RichEdit.Undo();     break;
+      case ID_EDIT_REDO:   RichEdit.Redo();     break;
+
+      // Clipboard
+      case ID_EDIT_CUT:    RichEdit.Cut();      break;
+      case ID_EDIT_COPY:   RichEdit.Copy();     break;
+      case ID_EDIT_PASTE:
+         if (RichEdit.CanPaste(CF_UNICODETEXT))
+            RichEdit.PasteFormat(CF_UNICODETEXT);
+         break;
+
+      // Indent/Outdent
+      case ID_EDIT_INDENT:
+      case ID_EDIT_OUTDENT:
+         if (RichEdit.HasSelection())
+            RichEdit.IndentSelection(nID == ID_EDIT_INDENT);
+         break;
+
+      // Comment:
+      case ID_EDIT_COMMENT:   RichEdit.CommentSelection();  break;
+
+      // Refactor:
+      case ID_EDIT_REFACTOR:  RichEdit.Refactor();          break;
+
+      // Goto Label
+      /*case ID_EDIT_GOTO_LABEL:
+      case ID_EDIT_VIEW_STRING:
+      case ID_EDIT_OPEN_SCRIPT:*/
       }
    }
 
@@ -394,8 +413,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Ensure item selected
       if (ScopeCombo.GetCurSel() > 0)
-         // Scroll to a couple of lines preceeding the label 
-         RichEdit.EnsureVisible( GetScript().Labels[ScopeCombo.GetCurSel()-1].LineNumber - 4 );
+         // Lookup and Scroll to label
+         ScrollTo(GetScript().Labels[ScopeCombo.GetCurSel()-1]);
    }
 
    /// <summary>Updates combobox fonts.</summary>
@@ -452,6 +471,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
+   }
+   
+   /// <summary>Scroll edit to a script label</summary>
+   /// <param name="l">label.</param>
+   void ScriptView::ScrollTo(const ScriptLabel& l)
+   {
+      // Scroll to a couple of lines preceeding the label 
+      RichEdit.EnsureVisible( l.LineNumber - 4 );
    }
 
    /// <summary>Populates the variables dropdown</summary>

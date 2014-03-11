@@ -42,7 +42,7 @@ namespace Logic
             // ------------------------ STATIC -------------------------
          public:
             static CommandSyntaxRef  Identify(ScriptFile script, const wstring& line);
-            static CommandNodePtr    Parse(ScriptFile script, const wstring& line);
+            static ScriptCommand     Parse(ScriptFile script, const wstring& line);
 
             // --------------------- PROPERTIES ------------------------
          public:

@@ -486,6 +486,15 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
    return AfxMessageBox(GuiString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 
+/// <summary>Shows a message.</summary>
+/// <param name="msg">The MSG.</param>
+/// <param name="flags">button/icon flags.</param>
+/// <returns></returns>
+BOOL  Application::ShowMessage(const wstring& msg, UINT flags) const
+{
+   return AfxMessageBox(msg.c_str(), flags);
+}
+
 /// <summary>Re-creates the window fonts.</summary>
 void Application::UpdateFonts()
 {

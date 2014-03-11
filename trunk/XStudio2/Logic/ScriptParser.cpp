@@ -65,7 +65,7 @@ namespace Logic
          /// <summary>Identifies the command from line of text.</summary>
          /// <param name="script">script.</param>
          /// <param name="line">line text.</param>
-         /// <returns>Command syntax if successful, otherwise Unknown sentinel</returns>
+         /// <returns>Command syntax if successful, otherwise 'Unknown' sentinel</returns>
          CommandSyntaxRef  ScriptParser::Identify(ScriptFile script, const wstring& line)
          {
             try
@@ -87,8 +87,8 @@ namespace Logic
          /// <summary>Parses a single command from a line of text.</summary>
          /// <param name="script">script.</param>
          /// <param name="line">line text.</param>
-         /// <returns>Command node if successful, otherwise root node sentinel</returns>
-         CommandNodePtr  ScriptParser::Parse(ScriptFile script, const wstring& line)
+         /// <returns>Command if successful, otherwise 'unrecognised' sentinel</returns>
+         ScriptCommand  ScriptParser::Parse(ScriptFile script, const wstring& line)
          {
             try
             {
@@ -99,11 +99,17 @@ namespace Logic
                   throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve node
-               return parser.Root->Children.front();
+               auto node = parser.Root->Children.front();
+
+               // Generate command
+               if (!node->Is(CMD_EXPRESSION))
+                  return ScriptCommand(node->LineText, node->Syntax, node->Parameters, node->CmdComment);
+               else
+                  return ScriptCommand(node->LineText, node->Syntax, node->Parameters, node->Postfix, node->CmdComment);
             }
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
-               return CommandNodePtr(new CommandNode());
+               return ScriptCommand::Unrecognised;
             }
          }
 

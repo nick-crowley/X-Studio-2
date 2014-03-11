@@ -154,6 +154,7 @@ public:
    BOOL      ShowError(const GuiString& src, const exception& e, const GuiString& msg) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
    BOOL      ShowError(const GuiString& src, const ExceptionBase& e) const;
+   BOOL      ShowMessage(const wstring& msg, UINT flags = MB_OK) const;
    
    // ----------------------- MUTATORS ------------------------
 public:
