@@ -40,6 +40,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
       ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
       ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
+      ON_COMMAND(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnEditOpenScript)
+      ON_COMMAND(ID_EDIT_GOTO_LABEL, &ScriptView::OnEditGotoLabel)
+      ON_COMMAND(ID_EDIT_VIEW_STRING, &ScriptView::OnEditViewString)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
       ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
       ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
@@ -52,6 +55,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REFACTOR, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_GOTO_LABEL, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_VIEW_STRING, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryCommand)
    END_MESSAGE_MAP()
@@ -202,7 +208,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Ensure scriptEdit was clicked
       if (pWnd && pWnd->m_hWnd == RichEdit.m_hWnd)
-	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_EDIT_POPUP, point.x, point.y, this, TRUE);
+	      theApp.GetContextMenuManager()->ShowPopupMenu(IDM_SCRIPTEDIT_POPUP, point.x, point.y, this, TRUE);
    }
 
 
@@ -248,6 +254,21 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnEditRefactor()
    {
       RichEdit.Refactor();
+   }
+   
+   /// <summary>Goto label at the caret</summary>
+   void ScriptView::OnEditGotoLabel()
+   {
+   }
+
+   /// <summary>Open script name at the caret</summary>
+   void ScriptView::OnEditOpenScript()
+   {
+   }
+
+   /// <summary>View string at the caret</summary>
+   void ScriptView::OnEditViewString()
+   {
    }
 
    /// <summary>Undo last edit operation</summary>
@@ -328,7 +349,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Commment
       case ID_EDIT_COMMENT:  state = TRUE;                               break;
 
-      case ID_EDIT_REFACTOR: state = RichEdit.CanRefactor();             break;
+      // Code
+      case ID_EDIT_REFACTOR:    state = RichEdit.CanRefactor();          break;
+      case ID_EDIT_OPEN_SCRIPT: state = RichEdit.CanOpenScript();        break;
+      case ID_EDIT_GOTO_LABEL:  state = RichEdit.CanGotoLabel();         break;
+      case ID_EDIT_VIEW_STRING: state = RichEdit.CanViewString();        break;
 
       // Indent/Outdent
       case ID_EDIT_INDENT:

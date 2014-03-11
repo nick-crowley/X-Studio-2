@@ -2,6 +2,7 @@
 ///////////////////////////////// ID //////////////////////////////////
 
 #define IDR_MAINFRAME                   100
+
 #define IDR_PROPERTIES                  120
 #define IDR_OUTPUT                      121
 #define IDR_COMMANDS                    122
@@ -24,22 +25,23 @@
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
-#define IDM_EDIT_POPUP                  154
-#define IDM_PROJECT_POPUP               155
-#define IDM_OUTPUT_POPUP                156
-#define IDM_STRINGVIEW_POPUP            157
+#define IDM_EDIT_POPUP                  160
+#define IDM_SCRIPTEDIT_POPUP            161
+#define IDM_PROJECT_POPUP               162
+#define IDM_OUTPUT_POPUP                163
+#define IDM_STRINGVIEW_POPUP            164
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_GREY                 158
-#define IDB_PROJECT_ICONS               159
-#define IDB_OUTPUT_ICONS                160
-#define IDB_GAMEDATA_ICONS              161
-#define IDB_LANGUAGE_ICONS              162
-#define IDB_RICH_BUTTON                 163
-#define IDB_USER_IMAGES                 164
-#define IDB_NEWDOCUMENT_ICONS           165
-#define IDB_SPLASH                      166
+#define IDB_EDITOR_GREY                 180
+#define IDB_PROJECT_ICONS               181
+#define IDB_OUTPUT_ICONS                182
+#define IDB_GAMEDATA_ICONS              183
+#define IDB_LANGUAGE_ICONS              184
+#define IDB_RICH_BUTTON                 185
+#define IDB_USER_IMAGES                 186
+#define IDB_NEWDOCUMENT_ICONS           187
+#define IDB_SPLASH                      188
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -52,35 +54,38 @@
 #define ID_FILE_EXPORT                  202
 
 // Edit Menu
-#define ID_EDIT_INSERT                  203
-#define ID_EDIT_COMMENT                 204
-#define ID_EDIT_LOCALIZE                205
-#define ID_EDIT_REFACTOR                206
-#define ID_EDIT_INDENT                  207
-#define ID_EDIT_OUTDENT                 208
-#define ID_EDIT_PREFERENCES             209
+#define ID_EDIT_INSERT                  210
+#define ID_EDIT_COMMENT                 211
+#define ID_EDIT_LOCALIZE                212
+#define ID_EDIT_REFACTOR                213
+#define ID_EDIT_OPEN_SCRIPT             214
+#define ID_EDIT_GOTO_LABEL              215
+#define ID_EDIT_VIEW_STRING             216
+#define ID_EDIT_INDENT                  217
+#define ID_EDIT_OUTDENT                 218
+#define ID_EDIT_PREFERENCES             219
 
 // Test menu
-#define ID_TEST_RUN_ALL                 210
-#define ID_TEST_COMPILE                 211
+#define ID_TEST_RUN_ALL                 230
+#define ID_TEST_COMPILE                 231
 
 // View menu
-#define ID_VIEW_PROJECT                 212
-#define ID_VIEW_SCRIPT_OBJECTS          213
-#define ID_VIEW_GAME_OBJECTS            214
-#define ID_VIEW_COMMANDS                215
-#define ID_VIEW_OUTPUT                  216
-#define ID_VIEW_PROPERTIES              217
-#define ID_VIEW_STRING_LIBRARY          218
-#define ID_VIEW_MEDIA_LIBRARY           219
-#define ID_VIEW_CUSTOMIZE               220
+#define ID_VIEW_PROJECT                 240
+#define ID_VIEW_SCRIPT_OBJECTS          241
+#define ID_VIEW_GAME_OBJECTS            242
+#define ID_VIEW_COMMANDS                243
+#define ID_VIEW_OUTPUT                  244
+#define ID_VIEW_PROPERTIES              245
+#define ID_VIEW_STRING_LIBRARY          246
+#define ID_VIEW_MEDIA_LIBRARY           247
+#define ID_VIEW_CUSTOMIZE               248
 
 // Window menu
-#define ID_WINDOW_MANAGER               221
+#define ID_WINDOW_MANAGER               260
 
 // Help
-#define ID_HELP_FORUMS                  222
-#define ID_VIEW_CONSOLE                 223
+#define ID_HELP_FORUMS                  270
+#define ID_VIEW_CONSOLE                 271
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
@@ -94,13 +99,13 @@
 #define ID_REMOVE_ARGUMENT              306
 
 // ProjectWnd Context menu
-#define ID_PROJECT_OPEN                 307
-#define ID_PROJECT_ADD_FILE             308
-#define ID_PROJECT_ADD_FOLDER           309
-#define ID_PROJECT_RENAME               310
-#define ID_PROJECT_REMOVE               311
-#define ID_PROJECT_DELETE               312
-#define ID_PROJECT_PROPERTIES           313
+#define ID_PROJECT_OPEN                 320
+#define ID_PROJECT_ADD_FILE             321
+#define ID_PROJECT_ADD_FOLDER           322
+#define ID_PROJECT_RENAME               323
+#define ID_PROJECT_REMOVE               324
+#define ID_PROJECT_DELETE               325
+#define ID_PROJECT_PROPERTIES           326
 
 ///////////////////////////// TOOLBAR COMMANDS //////////////////////////
 
@@ -190,9 +195,6 @@
 #define IDC_PREVIEW_CHECK               804
 
 ///////////////////////////////// STRINGS ///////////////////////////////
-
-// Customization
-#define IDS_EDIT_MENU                   1014
 
 // Status bar
 #define IDS_CARET_STATUS                1015
