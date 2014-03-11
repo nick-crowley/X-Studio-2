@@ -12,6 +12,20 @@ namespace Logic
       /// <summary>'unknown' command syntax sentinel value</summary>
       const CommandSyntax  CommandSyntax::Unrecognised;
 
+      /// <summary>Determines whether parameter usage is scriptName</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  CommandSyntax::IsScriptNameParam = [](const ParameterSyntax& s) 
+      {
+         return s.Usage == ParameterUsage::ScriptName;
+      };
+      
+      /// <summary>Determines whether parameter usage is StringID or PageID</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  CommandSyntax::IsStringRefParam = [](const ParameterSyntax& s) 
+      {
+         return s.Usage == ParameterUsage::StringID || s.Usage == ParameterUsage::PageID;
+      };
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create the 'unknown' command syntax sentinel value</summary>
@@ -222,32 +236,21 @@ namespace Logic
          }
       }
 
+      
       /// <summary>Determines whether command is a script call</summary>
       /// <returns></returns>
       bool  CommandSyntax::IsScriptCall() const
       {
-         // Lambda: Matches 'ScriptName' parameter syntax
-         static function<bool (const ParameterSyntax&)> hasScriptName = [](const ParameterSyntax& s) 
-         {
-            return s.Usage == ParameterUsage::ScriptName;
-         };
-
-         // Match any
-         return any_of(Parameters.begin(), Parameters.end(), hasScriptName);
+         // Match any 'ScriptName' parameter syntax
+         return any_of(Parameters.begin(), Parameters.end(), IsScriptNameParam);
       }      
       
       /// <summary>Determines whether command references a string or page ID</summary>
       /// <returns></returns>
       bool  CommandSyntax::IsStringReference() const
       {
-         // Lambda: Matches 'StringID'/'PageID' parameter syntax
-         static function<bool (const ParameterSyntax&)> hasStringRef = [](const ParameterSyntax& s) 
-         {
-            return s.Usage == ParameterUsage::StringID || s.Usage == ParameterUsage::PageID;
-         };
-
-         // Match any
-         return any_of(Parameters.begin(), Parameters.end(), hasStringRef);
+         // Matches any 'StringID'/'PageID' parameter syntax
+         return any_of(Parameters.begin(), Parameters.end(), IsStringRefParam);
       }      
 
       /// <summary>Query whether command has variable arguments</summary>
