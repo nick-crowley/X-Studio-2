@@ -107,6 +107,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    public:
 	   bool Create(CWnd* view, CWnd* edit);
       void Reset();
+      void SetTiming(UINT delay, UINT display);
 
    protected:
       bool  GetTooltipData();

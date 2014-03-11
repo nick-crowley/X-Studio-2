@@ -188,8 +188,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Document = doc;
       
       // Initialize
-      ShowTooltip = PrefsLib.ShowScriptTooltips;
       RichEditEx::Initialize(RGB(0,0,0));
+
+      // Setup tooltip
+      AdjustTooltip(PrefsLib.ShowScriptTooltips, PrefsLib.ScriptTooltipDelay*1000, 30*1000);
 
       // Set default character format
       SetDefaultCharFormat(CharFormat(PrefsLib.ScriptViewFont, this));
@@ -838,7 +840,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       UpdateHighlighting(0, GetLineCount()-1);
 
       // Update Tooltip
-      ShowTooltip = PrefsLib.ShowScriptTooltips;
+      AdjustTooltip(PrefsLib.ShowScriptTooltips, PrefsLib.ScriptTooltipDelay*1000, 30*1000);
       __super::OnSettingChange(uFlags, lpszSection);
    }
    
