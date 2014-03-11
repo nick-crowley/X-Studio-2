@@ -156,6 +156,7 @@
     <ClInclude Include="PreferencesDialog.h" />
     <ClInclude Include="PreferencesPage.h" />
     <ClInclude Include="RefactorDialog.h" />
+    <ClInclude Include="RefactorEdit.h" />
     <ClInclude Include="RichEditEx.h" />
     <ClInclude Include="CustomTooltip.h" />
     <ClInclude Include="CommandWnd.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
     <ClCompile Include="RefactorDialog.cpp" />
+    <ClCompile Include="RefactorEdit.cpp" />
     <ClCompile Include="RichEditEx.cpp" />
     <ClCompile Include="CustomTooltip.cpp" />
     <ClCompile Include="CommandWnd.cpp" />
