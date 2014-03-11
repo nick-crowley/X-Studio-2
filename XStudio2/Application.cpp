@@ -196,7 +196,13 @@ BOOL Application::InitInstance()
          throw Win32Exception(HERE, L"Unable to load resource library");
 
       // LogFile
-      LogFile.Open();
+      try
+      {
+         LogFile.Open();
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unable to open log file");
+      }
 
 	   // Init common controls
 	   INITCOMMONCONTROLSEX InitCtrls;
