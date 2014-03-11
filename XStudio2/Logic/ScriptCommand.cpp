@@ -232,7 +232,7 @@ namespace Logic
       wstring  ScriptCommand::GetScriptCallName() const
       {
          // Lookup script-call parameter syntax
-         auto param = find_if(Syntax.Parameters.begin(), Syntax.Parameters.end(), [](const ParameterSyntax& s) {return s.Usage == ParameterUsage::ScriptName;} );
+         auto param = find_if(Syntax.Parameters.begin(), Syntax.Parameters.end(), CommandSyntax::IsScriptNameParam);
 
          // Validate command ID
          if (param == Syntax.Parameters.end())

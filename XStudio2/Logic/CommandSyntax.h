@@ -24,6 +24,9 @@ namespace Logic
       /// <summary>Available execution types</summary>
       enum class ExecutionType  { Serial, Either, Concurrent };
 
+      /// <summary>Parameter syntax lamda predicates</summary>
+      typedef function<bool (const ParameterSyntax&)>  ParameterPredicate;
+
       /// <summary>Defines the syntax of a script command</summary>
       class CommandSyntax
       {
@@ -59,6 +62,9 @@ namespace Logic
          // ------------------------ STATIC -------------------------
       public:
          static const CommandSyntax  Unrecognised;
+
+         static const ParameterPredicate   IsScriptNameParam,
+                                           IsStringRefParam;
 
       private:
          wstring  GenerateHash(const wstring& syntax);
