@@ -251,6 +251,10 @@ NAMESPACE_BEGIN2(GUI,Views)
          auto cmd = ScriptParser::Parse(GetDocument()->Script, RichEdit.GetLineText(-1));
          auto script = cmd.GetScriptCallName();
 
+         // Not defined by string: Abort 
+         if (script.empty())
+            return;
+
          // Generate .PCK path [in same folder as document]
          auto path = GetDocument()->FullPath.RenameFileName(script+L".pck");
 
