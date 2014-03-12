@@ -1,8 +1,6 @@
-
 #pragma once
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
-#include "PropertySource.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -14,12 +12,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ----------------------------------- CLASSES ----------------------------------
 
    /// <summary>Dockable properties window</summary>
-   class CPropertiesWnd : public CDockablePane
+   class BackupWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------
    public:
-      /// <summary>Properties window toolbar</summary>
-      class PropertiesToolBar : public ToolBarEx
+      /// <summary>Backup window toolbar</summary>
+      class BackupToolBar : public ToolBarEx
       {
          // --------------------- CONSTRUCTION ----------------------
 
@@ -37,13 +35,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      CPropertiesWnd();
-      virtual ~CPropertiesWnd();
+      BackupWnd();
+      virtual ~BackupWnd();
        
       // ------------------------ STATIC -------------------------
    public:
-      static void  Connect(PropertySource* src, bool connect);
-      
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
@@ -56,29 +52,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    protected:
       void AdjustLayout();
-      void ConnectSource(PropertySource* src, bool connect);
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-      afx_msg void OnCommandExpandAll();
-      afx_msg void OnCommandSort();
       afx_msg void OnPaint();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
-      afx_msg LRESULT OnPropertyUpdated(WPARAM wParam, LPARAM lParam);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
       
       // -------------------- REPRESENTATION ---------------------
    private:
-      static CPropertiesWnd*  Instance;
+      static BackupWnd*  Instance;
 
    protected:
-      PropertiesToolBar    ToolBar;
-	   CMFCPropertyGridCtrl Grid;
-
-      PropertySource*    Source;
+      BackupToolBar  ToolBar;
+	   CListBox       List;
    };
 
 

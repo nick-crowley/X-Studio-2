@@ -5,6 +5,7 @@
 #pragma once
 #include "ProjectWnd.h"
 #include "OutputWnd.h"
+#include "BackupWnd.h"
 #include "PropertiesWnd.h"
 #include "CommandWnd.h"
 #include "GameObjectWnd.h"
@@ -108,7 +109,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       CCommandWnd       m_wndCommands;
       CGameObjectWnd    m_wndGameObjects;
       CScriptObjectWnd  m_wndScriptObjects;
-	   CPropertiesWnd    m_wndProperties;      
+	   CPropertiesWnd    m_wndProperties; 
+      BackupWnd         m_wndBackups;
 
       GameDataWorker    GameDataThread;
 

@@ -208,7 +208,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndProperties.Create(this);
       m_wndProperties.AttachToTabWnd(&m_wndProject, AFX_DOCK_METHOD::DM_SHOW);
 
+      // Backup: Dock left, Attach to LHS tab
+      m_wndBackups.Create(this);
+      m_wndBackups.AttachToTabWnd(&m_wndProject, AFX_DOCK_METHOD::DM_SHOW);
       
+
       // Commands: Dock right
       m_wndCommands.Create(this);
       DockPane(&m_wndCommands, AFX_IDW_DOCKBAR_RIGHT);
