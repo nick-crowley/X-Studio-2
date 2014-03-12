@@ -108,7 +108,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
          throw ComException(HERE, e);
       }
    }
-
+   
+   /// <summary>Gets entire script as array of plain-text lines.</summary>
+   /// <returns></returns>
+   LineArray RichEditEx::GetAllLines() const
+   {
+      LineArray lines; 
+      // Get lines
+      for (int i = 0; i < GetLineCount(); i++)
+         lines.push_back(GetLineText(i));
+      return lines;   
+   }
+   
    /// <summary>Gets entire script as a string delimited by single char (vertical tab) line breaks.</summary>
    /// <returns></returns>
    wstring  RichEditEx::GetAllText() const
@@ -167,17 +178,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    GuiString RichEditEx::GetLineTextEx(int line) const
    {
       return GuiString(GetLineText(line)).TrimLeft(L" \t");
-   }
-   
-   /// <summary>Gets entire script as array of plain-text lines.</summary>
-   /// <returns></returns>
-   LineArray RichEditEx::GetLines() const
-   {
-      LineArray lines; 
-      // Get lines
-      for (int i = 0; i < GetLineCount(); i++)
-         lines.push_back(GetLineText(i));
-      return lines;   
    }
    
    /// <summary>Gets the 'redo' menu item text</summary>

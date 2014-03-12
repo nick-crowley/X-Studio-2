@@ -252,7 +252,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       try
       {
          // Parse script 
-         ScriptParser parser(Script, Edit->GetLines(), Script.Game);
+         ScriptParser parser(Script, Edit->GetAllLines(), Script.Game);
 
          // Compile 
          if (parser.Successful)
