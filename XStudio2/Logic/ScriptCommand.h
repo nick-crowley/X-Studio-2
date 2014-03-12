@@ -79,11 +79,11 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         CommandSyntaxRef Syntax;
-         bool             Commented;
-         ParameterArray   Parameters;
-         GuiString        Text;
-         UINT             RefIndex;
+         CommandSyntaxRef Syntax;         // Syntax
+         bool             Commented;      // Whether command is commented  (false for comments)
+         ParameterArray   Parameters;     // Parameters in physical syntax order
+         GuiString        Text;           // Translated/Generated command Text
+         UINT             RefIndex;       // [Auxiliary] Index of associated standard command
       };
 
       /// <summary>List of script commands</summary>

@@ -291,6 +291,12 @@ namespace Logic
                }
             }
          }
+         
+         /// <summary>Get line text without indentation</summary>
+         GuiString   CommandNode::GetLineCode() const
+         {
+            return LineText.TrimLeft(L" ");
+         }
 
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
@@ -320,7 +326,7 @@ namespace Logic
                   colour = Cons::Cyan;
                   if (JumpTarget)
                      txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
-                                              : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->DebugText);
+                                              : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->LineCode);
                   break;
 
                // NOP:
@@ -375,6 +381,18 @@ namespace Logic
             // Spacing
             if (IsRoot())
                Console << ENDL;
+         }
+
+         /// <summary>Flattens the tree into a list.</summary>
+         /// <param name="l">output.</param>
+         void  CommandNode::ToList(CommandNodeArray& l) const
+         {
+            // Flatten children (if any) into list
+            for (auto& c : Children)
+            {
+               l.push_back(c);
+               c->ToList(l);
+            }
          }
 
          /// <summary>Verifies the entire tree</summary>
@@ -571,7 +589,7 @@ namespace Logic
 
                // Verify linkage
                if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-                  errors += MakeError( GuiString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->DebugText.c_str()) ); 
+                  errors += MakeError( GuiString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->LineCode.c_str()) ); 
             }
 
             // Recurse into children
@@ -736,12 +754,6 @@ namespace Logic
             Children.insert(pos, new CommandNode(this, target));
          }
          
-         /// <summary>Get line text without indentation</summary>
-         GuiString   CommandNode::GetDebugText() const
-         {
-            return LineText.TrimLeft(L" ");
-         }
-
          /// <summary>Query whether node is root</summary>
          bool  CommandNode::IsRoot() const
          {

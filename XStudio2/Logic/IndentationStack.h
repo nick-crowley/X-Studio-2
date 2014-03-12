@@ -2,13 +2,14 @@
 
 #include "Common.h"
 #include "ScriptCommand.h"
+#include "CommandNode.h"
 
 namespace Logic
 {
    namespace Scripts
    {
       /// <summary>Calculates code indentation</summary>
-      class IndentationStack : deque<BranchLogic>
+      class IndentationStack : protected deque<BranchLogic>
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -37,12 +38,41 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Called before displaying command</summary>
-         /// <param name="cmd">The command.</param>
+         /// <summary>Call before displaying command</summary>
+         /// <param name="cmd">command.</param>
          void PreDisplay(const ScriptCommand& cmd)
          {
+            PreDisplay(cmd.Logic);
+         }
+
+         /// <summary>Call before displaying command</summary>
+         /// <param name="cmd">command node.</param>
+         void PreDisplay(const CommandNodePtr& cmd)
+         {
+            PreDisplay(cmd->Logic);
+         }
+         
+         /// <summary>Call after displaying command</summary>
+         /// <param name="cmd">command.</param>
+         void PostDisplay(const ScriptCommand& cmd)
+         {
+            PostDisplay(cmd.Syntax.ID, cmd.Logic, cmd.Syntax.Type, cmd.Commented);
+         }
+
+         /// <summary>Call after displaying command</summary>
+         /// <param name="cmd">command.</param>
+         void PostDisplay(const CommandNodePtr& cmd)
+         {
+            PostDisplay(cmd->Syntax.ID, cmd->Logic, cmd->Syntax.Type, cmd->CmdComment);
+         }
+
+      protected:
+         /// <summary>Called before displaying command</summary>
+         /// <param name="logic">logic.</param>
+         void PreDisplay(BranchLogic logic)
+         {
             // Indentation calculations
-            switch (cmd.Logic)
+            switch (logic)
             {
             case BranchLogic::ElseIf:
             case BranchLogic::Else:    
@@ -53,29 +83,33 @@ namespace Logic
             }
          }
 
+
          /// <summary>Called after displaying command</summary>
          /// <param name="cmd">The command.</param>
-         void PostDisplay(const ScriptCommand& cmd)
+         void PostDisplay(UINT id, BranchLogic logic, CommandType type, bool commented)
          {
             // Indentation calculations
-            switch (cmd.Logic)
+            switch (logic)
             {
             case BranchLogic::If:
             case BranchLogic::While:
             case BranchLogic::Else:
             case BranchLogic::ElseIf:
-               push_back(cmd.Logic);
+               push_back(logic);
                break;
 
             case BranchLogic::SkipIf:
-               push_back(cmd.Logic); 
+               push_back(logic); 
                return;
             }
 
             // Pop 'SkipIf' after next standard command (or break/continue)
-            if (!empty() && back() == BranchLogic::SkipIf && !cmd.Commented && (cmd.Is(CommandType::Standard) || cmd.Is(CMD_BREAK) || cmd.Is(CMD_CONTINUE)))
+            if (!empty() && !commented 
+                && back() == BranchLogic::SkipIf 
+                && (type == CommandType::Standard || id == CMD_BREAK || id == CMD_CONTINUE))
                pop_back();
          }
+
 
          // -------------------- REPRESENTATION ---------------------
 

@@ -55,6 +55,7 @@ namespace Logic
          public:
             void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             bool        IsSuccessful() const;
+            CommandNodeArray ToList() const;
 
          private:
             UINT        GetLineNumber() const;
