@@ -173,13 +173,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Parse script into list of commands
          auto commands = ScriptParser(Document->Script, GetLines(), Document->Script.Game).ToList();
          
-         Console << "Received " << commands.size() << " commands" << ENDL;
-
          // Generate new document text
          for (auto& cmd : commands)
          {
             stack.PreDisplay(cmd);
-            newText += (Indent(stack.Size) + cmd->LineCode + L"\r\n");
+            newText += (stack.Indentation + cmd->LineCode + L"\r\n");
             stack.PostDisplay(cmd);
          }
 

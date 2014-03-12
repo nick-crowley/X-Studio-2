@@ -93,8 +93,7 @@ namespace Logic
             return;
 
          // Print node
-         wstring indent(depth, L' ');
-         Console << indent << L"Token: " << Cons::Yellow << Token.Text << Cons::White << L"   Syntax: " << Cons::Yellow << GetSyntax().Text << ENDL;
+         Console << Indent(depth) << L"Token: " << Cons::Yellow << Token.Text << Cons::White << L"   Syntax: " << Cons::Yellow << GetSyntax().Text << ENDL;
 
          // Print children
          for (auto c : Children)
