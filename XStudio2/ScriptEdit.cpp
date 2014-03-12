@@ -184,6 +184,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Replace entire text
          SetSel(0, -1);
          ReplaceSel(newText.c_str(), TRUE);
+
+         // Update highlighting
+         UpdateHighlighting(0, GetLineCount()-1);
       }
       catch (std::exception& e) 
       { 
@@ -219,11 +222,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          GuiString txt = it->Text;
 
-         // In/Outdent by adding/removing tab from start of each line
+         // Indent: Adding soft-tab to start of each line
          if (indent)
-            txt.insert(0, L"   ");
-         else if (txt.Left(3) == L"   ")
-            txt.erase(0, 3);
+            txt.insert(0, Indent(PrefsLib.ScriptIndentation));
+
+         // Outdent: Remove (up to) one soft-tab from start of each line. If less is available, trim that.
+         else if (txt.find_first_not_of(L" \t") != GuiString::npos) 
+            txt.erase(0, min(PrefsLib.ScriptIndentation, (int)txt.find_first_not_of(L" \t")));
 
          // Add to output
          length += txt.length();
