@@ -23,6 +23,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="legacyProject">Full path of legacy project.</param>
    ImportProjectDialog::ImportProjectDialog(IO::Path legacyProject)
       : CDialogEx(ImportProjectDialog::IDD),
+        LegacyFile(legacyProject),
         Folder(legacyProject.Folder)
    {
 
@@ -61,14 +62,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (!Folder.Exists() || !Folder.IsDirectory())
             throw ApplicationException(HERE, L"The folder does not exist");
 
-         // Open document
-         /*switch (t->Type)
-         {
-         case DocumentType::Script:   theApp.GetDocumentTemplate<ScriptDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);    break;
-         case DocumentType::Language: theApp.GetDocumentTemplate<LanguageDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);  break;
-         }*/
+         // Require different folder
+         if (Folder.Folder == LegacyFile.Folder)
+            throw ApplicationException(HERE, L"Cannot import project into its current folder");
 
-         // OK
+         // Set new path
+         NewPath = Folder + LegacyFile.FileName;
+
+         // Close
          __super::OnOK();
       }
       catch (ExceptionBase& e) {
