@@ -48,13 +48,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ---------------------- ACCESSORS ------------------------			
    public:
       bool      FindNext(UINT start, MatchData& m) const;
+      LineArray GetAllLines() const;
       wstring   GetAllText() const;
       int       GetCaretIndex() const;
       POINT     GetCaretLocation() const;
       int       GetLineLength(int line = -1) const;
       wstring   GetLineText(int line) const;
       GuiString GetLineTextEx(int line) const;
-      LineArray GetLines() const;
       wstring   GetRedoMenuItem() const;
       CHARRANGE GetSelection() const;
       wstring   GetUndoMenuItem() const;

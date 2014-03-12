@@ -157,6 +157,53 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Formats the selection.</summary>
    void ScriptEdit::FormatDocument()
    {
+      //IndentationStack stack;
+      //CWaitCursor      wait;
+      //wstring          newText;
+  
+      //// Freeze window
+      ////SuspendUndo(true);
+      //FreezeWindow(true);
+
+      //try 
+      //{ 
+      //   // Feedback
+      //   Console << Cons::UserAction << "Formatting document " << Document->GetFullPath() << ENDL;
+
+      //   // Parse script into list of commands
+      //   auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
+      //   
+      //   // Generate new document text
+      //   for (auto& cmd : commands)
+      //   {
+      //      stack.PreDisplay(cmd);
+      //      newText += (stack.Indentation + cmd->LineCode + L"\r\n");
+      //      stack.PostDisplay(cmd);
+      //   }
+
+      //   // Replace entire text
+      //   SetSel(0, -1);
+      //   ReplaceSel(newText.c_str(), TRUE);
+
+      //   // Update highlighting
+      //   UpdateHighlighting(0, GetLineCount()-1);
+      //}
+      //catch (std::exception& e) 
+      //{ 
+      //   Console.Log(HERE, e); 
+      //}
+
+      //// UnFreeze window
+      //FreezeWindow(false);
+      ////SuspendUndo(false);
+
+      SetSel(0,-1);
+      FormatSelection();
+   }
+
+   /// <summary>Formats the selection.</summary>
+   void ScriptEdit::FormatSelection()
+   {
       IndentationStack stack;
       CWaitCursor      wait;
       wstring          newText;
@@ -168,25 +215,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try 
       { 
          // Feedback
-         Console << Cons::UserAction << "Formatting document " << Document->GetFullPath() << ENDL;
+         Console << Cons::UserAction << "Formatting selection " << Document->GetFullPath() << ENDL;
 
          // Parse script into list of commands
-         auto commands = ScriptParser(Document->Script, GetLines(), Document->Script.Game).ToList();
+         auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
          
-         // Generate new document text
-         for (auto& cmd : commands)
+         // Select entirety of selected lines
+         auto first = sbegin(), last = send();
+         SetSel(first->Start, last->End);
+
+         // Generate selection text
+         for (int i = first->Line; i <= last->Line; ++i)
          {
+            auto& cmd = commands[i];
+
             stack.PreDisplay(cmd);
             newText += (stack.Indentation + cmd->LineCode + L"\r\n");
             stack.PostDisplay(cmd);
          }
 
-         // Replace entire text
-         SetSel(0, -1);
+         // Replace selection
          ReplaceSel(newText.c_str(), TRUE);
 
          // Update highlighting
-         UpdateHighlighting(0, GetLineCount()-1);
+         UpdateHighlighting(first->Line, last->Line);
       }
       catch (std::exception& e) 
       { 
@@ -196,11 +248,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // UnFreeze window
       FreezeWindow(false);
       //SuspendUndo(false);
-   }
-
-   /// <summary>Formats the selection.</summary>
-   void ScriptEdit::FormatSelection()
-   {
    }
    
    /// <summary>Indents or outdents the selected lines.</summary>
@@ -550,7 +597,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console << Cons::Heading << "Background compiling " << Document->GetFullPath() << ENDL;
 
          // Parse script 
-         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
+         ScriptParser parser(Document->Script, GetAllLines(), Document->Script.Game);
          
          // DEBUG:
          /*if (!parser.Errors.empty())
@@ -1038,7 +1085,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                  << Cons::White << " into " << Cons::Yellow << symbolDlg.RenameText;
 
          // Find all matches
-         ScriptParser parser(Document->Script, GetLines(), Document->Script.Game);
+         ScriptParser parser(Document->Script, GetAllLines(), Document->Script.Game);
          parser.FindAll(symbol->ValueText, type, matches);
 
          // Display refactor dialog
