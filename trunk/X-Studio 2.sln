@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XStudio2", "XStudio2\XStudio2.vcxproj", "{A45897BA-6214-4004-A6E5-005ED1B3BE8B}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -10,6 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XStudio2", "XStudio2\XStudi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C18D-400A-AEE7-55C4FD08B326}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\BackupFile (Example).xml = Docs\BackupFile (Example).xml
 		Docs\Command Syntax.txt = Docs\Command Syntax.txt
 		Docs\Command Syntax.xml = Docs\Command Syntax.xml
 		Docs\Descriptions.xml = Docs\Descriptions.xml
