@@ -2,9 +2,11 @@
 #include "ProjectDocument.h"
 #include "ImportProjectDialog.h"
 #include "Logic/FileIdentifier.h"
+#include "Logic/BackupFileReader.h"
 #include "Logic/LegacyProjectFileReader.h"
 #include "Logic/ProjectFileReader.h"
 #include "Logic/ProjectFileWriter.h"
+#include "Logic/XFileInfo.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
@@ -109,6 +111,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Not found
       return false;
+   }
+
+   /// <summary>Get backup file for a document.</summary>
+   /// <param name="doc">The document.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ArgumentNullException">Invalid file format</exception>
+   /// <exception cref="Logic::ComException">COM Error</exception>
+   /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
+   /// <exception cref="Logic::InvalidValueException">Invalid file format</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+   BackupFile  ProjectDocument::GetAllBackups(DocumentBase* doc) const
+   {
+      //auto path = FullPath.Folder + (doc->FullPath.FileName + L".zip");
+      auto path = L"D:\\My Projects\\XStudio2\\Docs\\BackupFile (Example).xml";
+
+      // Open backup
+      return BackupFileReader(XFileInfo(path).OpenRead()).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>

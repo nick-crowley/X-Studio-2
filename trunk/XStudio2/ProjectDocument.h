@@ -1,5 +1,6 @@
 #pragma once
 #include "DocumentBase.h"
+#include "Logic/BackupFile.h"
 #include "Logic/ProjectFile.h"
 #include "Logic/Event.h"
 
@@ -63,6 +64,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
+      BackupFile  GetAllBackups(DocumentBase* doc) const;
 
       // ----------------------- MUTATORS ------------------------
    public:

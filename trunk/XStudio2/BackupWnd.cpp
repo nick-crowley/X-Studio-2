@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BackupWnd.h"
 #include "MainWnd.h"
+#include "ProjectDocument.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -24,7 +25,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   BackupWnd::BackupWnd() 
+   BackupWnd::BackupWnd() : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched))
    {
    }
 
@@ -104,7 +105,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return -1;
       }
    }
-   
+
+   /// <summary>Loads backups for the activate document</summary>
+   void BackupWnd::OnDocumentSwitched()
+   {
+      Console << HERE << ENDL;
+
+      // Clear previous
+      List.ResetContent();
+
+      // Require project
+      if (auto proj = ProjectDocument::GetActive())
+         Populate( proj->GetAllBackups(DocumentBase::GetActive()) );
+   }
+
    /// <summary>Manually paints border around grid.</summary>
    void BackupWnd::OnPaint()
    {
@@ -162,6 +176,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   AdjustLayout();
    }
    
+   /// <summary>Populates from a backup file.</summary>
+   /// <param name="f">backup file.</param>
+   void BackupWnd::Populate(BackupFile& f)
+   {
+      try
+      {
+         Console << HERE << " size=" << f.Revisions.Count << ENDL;
+
+         for (auto& rev : f.Revisions)
+            List.AddString(rev.Title.c_str());
+      }
+      catch (ExceptionBase& e) {
+         List.ResetContent();
+         theApp.ShowError(HERE, e);
+      }
+   }
+
    /// <summary>Updates the font.</summary>
    void BackupWnd::UpdateFont()
    {

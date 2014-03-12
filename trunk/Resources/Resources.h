@@ -98,10 +98,12 @@
 #define ID_PROJECT_OPEN                 350
 #define ID_PROJECT_ADD_FILE             351
 #define ID_PROJECT_ADD_FOLDER           352
-#define ID_PROJECT_RENAME               353
-#define ID_PROJECT_REMOVE               354
-#define ID_PROJECT_DELETE               355
-#define ID_PROJECT_PROPERTIES           356
+#define ID_PROJECT_COMMIT               353
+#define ID_PROJECT_QUICK_COMMIT         354
+#define ID_PROJECT_RENAME               355
+#define ID_PROJECT_REMOVE               356
+#define ID_PROJECT_DELETE               357
+#define ID_PROJECT_PROPERTIES           358
 
 // LanguageEditor Toolbar
 #define ID_EDIT_BOLD                    400

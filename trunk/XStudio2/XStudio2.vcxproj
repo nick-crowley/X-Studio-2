@@ -155,6 +155,7 @@
     <ClInclude Include="Logic\LogFileWriter.h" />
     <ClInclude Include="Logic\ProjectFileReader.h" />
     <ClInclude Include="Logic\ProjectFileWriter.h" />
+    <ClInclude Include="Logic\ProjectItem.h" />
     <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
