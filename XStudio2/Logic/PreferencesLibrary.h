@@ -359,6 +359,9 @@ namespace Logic
          CSettingsStore ss(FALSE, FALSE);
          GuiString      key = theApp.GetProfileSectionPath(L"Settings", name);
 
+         // Clear previous
+         ss.DeleteKey(key.c_str());
+
          // Create/Open key
          if (!ss.CreateKey(key.c_str()))
             throw Win32Exception(HERE, GuiString(L"Unable to create registry key '%s'", key.c_str()));

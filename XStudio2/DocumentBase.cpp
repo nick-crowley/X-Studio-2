@@ -21,7 +21,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
    }
 
-   DocumentBase::DocumentBase(DocumentType t) : Type(t), IsVirtual(false)
+   DocumentBase::DocumentBase(DocumentType type, bool virt) : Type(type), IsVirtual(virt)
    {
    }
 

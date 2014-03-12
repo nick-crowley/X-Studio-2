@@ -26,7 +26,7 @@ namespace Logic
       
       /// <summary>Get file-type from name</summary>
       /// <exception cref="Logic::ArgumentException">Unrecognised file type</exception>
-      FileType  ParseFileType(const wstring& type)
+      FileType  ProjectFileReader::ParseFileType(const wstring& type)
       {
          // Case insensitive comparison
          if (StrCmpI(type.c_str(), L"Unknown") == 0)

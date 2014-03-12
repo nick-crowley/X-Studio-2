@@ -18,6 +18,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_DYNAMIC(ProjectDocTemplate)
 
       // ---------------------- ACCESSORS ------------------------	
+   protected:
+      bool IsLegacyProject(IO::Path path) const;
 
       // ----------------------- MUTATORS ------------------------
    public:

@@ -57,7 +57,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptDocument::ScriptDocument() : DocumentBase(DocumentType::Script)
+   ScriptDocument::ScriptDocument() : DocumentBase(DocumentType::Script, false)
    {
    }
 

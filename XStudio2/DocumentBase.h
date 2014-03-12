@@ -17,7 +17,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- CONSTRUCTION ----------------------
    protected:
       DocumentBase();
-      DocumentBase(DocumentType t);
+      DocumentBase(DocumentType type, bool virt);
    public:
       virtual ~DocumentBase();
        

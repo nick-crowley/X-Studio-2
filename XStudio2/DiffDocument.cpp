@@ -100,7 +100,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   DiffDocument::DiffDocument() : DocumentBase(DocumentType::Diff)
+   DiffDocument::DiffDocument() : DocumentBase(DocumentType::Diff, true)
    {
    }
 
