@@ -3,6 +3,7 @@
 #include "ImportProjectDialog.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/LegacyProjectFileReader.h"
+#include "Logic/ProjectFileWriter.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
@@ -356,14 +357,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Called on open document.</summary>
    /// <param name="legacy">Legacy project path.</param>
    /// <param name="upgrade">New project path.</param>
-   /// <returns></returns>
+   /// <returns>TRUE if successfully upgraded, otherwise FALSE</returns>
    BOOL ProjectDocument::OnImportDocument(IO::Path legacy, IO::Path upgrade)
    {
       try
       {
          // Read legacy
-         auto fs = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
-         Project = LegacyProjectFileReader(fs).ReadFile(legacy);
+         auto in = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
+         auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
+
+         // Write as updated
+         auto out = StreamPtr(new FileStream(upgrade, FileMode::CreateNew, FileAccess::Write));
+         ProjectFileWriter w(out);
+         w.Write(proj);
+         w.Close();
          
          // Success: 
          return TRUE;

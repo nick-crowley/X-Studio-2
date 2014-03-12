@@ -19,6 +19,23 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get file-type name</summary>
+      /// <exception cref="Logic::ArgumentException">Unrecognised file type</exception>
+      wstring GetString(FileType t)
+      {
+         switch (t)
+         {
+         case FileType::Unknown:   return L"Unknown";
+         case FileType::Universe:  return L"Universe";
+         case FileType::Project:   return L"Project";
+         case FileType::Mission:   return L"Mission";
+         case FileType::Language:  return L"Language";
+         case FileType::Script:    return L"Script";
+         }
+
+         throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised fileType '%d'", t));
+      }
+
       /// <summary>Identifies whether a file is supported by scanning it's header</summary>
       /// <param name="path">The path.</param>
       /// <returns>Filetype</returns>
