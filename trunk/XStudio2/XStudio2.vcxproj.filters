@@ -609,6 +609,12 @@
     <ClInclude Include="BackupWnd.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\BackupFileReader.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\BackupFile.h">
+      <Filter>Header Files\Logic\Projects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -994,6 +1000,9 @@
     </ClCompile>
     <ClCompile Include="BackupWnd.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\BackupFileReader.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
