@@ -138,6 +138,7 @@
 #define IDD_SPLASH                      707
 #define IDD_REFACTOR                    708
 #define IDD_SYMBOL                      709
+#define IDD_IMPORT_PROJECT              710
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
