@@ -3,6 +3,7 @@
 
 #define IDR_MAINFRAME                   100
 
+#define IDR_BACKUP                      119
 #define IDR_PROPERTIES                  120
 #define IDR_OUTPUT                      121
 #define IDR_COMMANDS                    122
@@ -176,6 +177,9 @@
 
 // Project Dialog
 #define IDC_PROJECT_TREE                800
+
+// Backup Window
+#define IDC_BACKUP_LIST                 800
 
 // Preferences dialog
 #define IDC_PROPERTY_GRID               800

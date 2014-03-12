@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="BackupWnd.h" />
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CompilerPage.h" />
     <ClInclude Include="DiffDocument.h" />
@@ -291,6 +292,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="BackupWnd.cpp" />
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
     <ClCompile Include="DiffDocument.cpp" />

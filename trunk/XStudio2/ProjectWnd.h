@@ -12,27 +12,27 @@ FORWARD_DECLARATION2(Logic,Projects,class ProjectItem)
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
-   /// <summary>Project explorer toolbar</summary>
-   class CProjectToolBar : public ToolBarEx
-   {
-      // --------------------- CONSTRUCTION ----------------------
-
-      // ----------------------- MUTATORS ------------------------
-
-   protected:
-	   virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
-	   {
-		   ToolBarEx::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
-	   }
-
-	   virtual BOOL AllowShowOnList() const { return FALSE; }
-   };
+   
 
    /// <summary>Project explorer docking pane</summary>
    class CProjectWnd : public CDockablePane
    {
       // ------------------------ TYPES --------------------------
-   private:
+   protected:
+      /// <summary>Project explorer toolbar</summary>
+      class ProjectToolBar : public ToolBarEx
+      {
+         // --------------------- CONSTRUCTION ----------------------
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+	      virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
+	      {
+		      __super::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
+	      }
+
+	      virtual BOOL AllowShowOnList() const { return FALSE; }
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -40,7 +40,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       virtual ~CProjectWnd();
 
       // ------------------------ STATIC -------------------------
-   protected:
       DECLARE_MESSAGE_MAP()
 
       // --------------------- PROPERTIES ------------------------
@@ -76,13 +75,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
 	   
-   private:
-
       // -------------------- REPRESENTATION ---------------------
    protected:
 	   ImageListEx     Images;
       ProjectTreeCtrl TreeView;
-	   CProjectToolBar Toolbar;
+	   ProjectToolBar  Toolbar;
       EventHandler    fnProjectLoaded;
       HACCEL          Accelerators;
    };
