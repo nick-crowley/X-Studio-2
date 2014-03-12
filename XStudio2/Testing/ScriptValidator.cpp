@@ -147,7 +147,7 @@ namespace Testing
 
             // Print
             indent.PreDisplay(cmd);
-            Console << Indent(indent.Size) << colour << logic << Cons::White << L" : " << colour << txt << ENDL;
+            Console << indent.Indentation << colour << logic << Cons::White << L" : " << colour << txt << ENDL;
             indent.PostDisplay(cmd);
 
             // Advance line/index

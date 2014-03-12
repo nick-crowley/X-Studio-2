@@ -29,7 +29,7 @@ namespace Logic
          void  Write(ScriptFile& f);
 
       private:
-         void  WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, UINT  indent);
+         void  WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, const Indent& indent);
          void  WriteToken(const ScriptFile& f, const ScriptToken& tok);
 
 		   // -------------------- REPRESENTATION ---------------------

@@ -102,9 +102,11 @@ namespace Logic
 
 
       // Script Editor:
-      
       /// <summary>Script editor font</summary>
       PREFERENCE_PROPERTY(LOGFONT,LogFont,ScriptViewFont,L"Regular");
+
+      /// <summary>Script editor line indentation (in characters)</summary>
+      PREFERENCE_PROPERTY(int,Int,ScriptIndentation,3);
 
       /// <summary>Script editor tooltip display delay (seconds)</summary>
       PREFERENCE_PROPERTY(int,Int,ScriptTooltipDelay,3);

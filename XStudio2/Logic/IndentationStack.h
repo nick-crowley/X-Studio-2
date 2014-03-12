@@ -27,13 +27,15 @@ namespace Logic
 
          // --------------------- PROPERTIES ------------------------
       public:
-         PROPERTY_GET(int,Size,GetSize);
+         PROPERTY_GET(Indent,Indentation,GetIndentation);
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         int  GetSize() const
+         /// <summary>Gets the current indentation, formatted according to script indentation preference</summary>
+         /// <returns></returns>
+         Indent GetIndentation() const
          {
-            return size();
+            return Indent(PrefsLib.ScriptIndentation * size());
          }
 
          // ----------------------- MUTATORS ------------------------

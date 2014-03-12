@@ -68,19 +68,19 @@ namespace Logic
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void RtfScriptWriter::Write(ScriptFile& f)
       {
-         IndentationStack indent;
+         IndentationStack stack;
 
          // Examine commands
          for (ScriptCommand& cmd : f.Commands.Input)
          {
             // Identation
-            indent.PreDisplay(cmd);
+            stack.PreDisplay(cmd);
 
             // Write command
-            WriteCommand(f, cmd, 3*indent.Size);
+            WriteCommand(f, cmd, stack.Indentation);
 
             // Identation
-            indent.PostDisplay(cmd);
+            stack.PostDisplay(cmd);
          }
       }
 
@@ -90,14 +90,14 @@ namespace Logic
       
       /// <summary>Writes a command to the output</summary>
       /// <param name="cmd">The command.</param>
-      /// <param name="indent">Indent in characters</param>
+      /// <param name="indent">Indentation</param>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
-      void  RtfScriptWriter::WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, UINT  indent)
+      void  RtfScriptWriter::WriteCommand(const ScriptFile& f, const ScriptCommand& cmd, const Indent& indent)
       {
          CommandLexer lex(cmd.Text, false);
 
          // Write indent
-         RtfWriter::Write(wstring(indent, L' '));
+         RtfWriter::Write(indent);
 
          // Write command text
          for (const ScriptToken& tok : lex.Tokens)
