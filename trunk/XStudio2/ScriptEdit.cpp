@@ -157,48 +157,48 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Formats the selection.</summary>
    void ScriptEdit::FormatDocument()
    {
-      //IndentationStack stack;
-      //CWaitCursor      wait;
-      //wstring          newText;
+      IndentationStack stack;
+      CWaitCursor      wait;
+      wstring          newText;
   
-      //// Freeze window
-      ////SuspendUndo(true);
+      // Freeze window
+      //SuspendUndo(true);
       //FreezeWindow(true);
 
-      //try 
-      //{ 
-      //   // Feedback
-      //   Console << Cons::UserAction << "Formatting document " << Document->GetFullPath() << ENDL;
+      try 
+      { 
+         // Feedback
+         Console << Cons::UserAction << "Formatting document " << Document->GetFullPath() << ENDL;
 
-      //   // Parse script into list of commands
-      //   auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
-      //   
-      //   // Generate new document text
-      //   for (auto& cmd : commands)
-      //   {
-      //      stack.PreDisplay(cmd);
-      //      newText += (stack.Indentation + cmd->LineCode + L"\r\n");
-      //      stack.PostDisplay(cmd);
-      //   }
+         // Parse script into list of commands
+         auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
+         
+         // Generate new document text
+         for (auto& cmd : commands)
+         {
+            stack.PreDisplay(cmd);
+            newText += (stack.Indentation + cmd->LineCode + L"\r\n");
+            stack.PostDisplay(cmd);
+         }
 
-      //   // Replace entire text
-      //   SetSel(0, -1);
-      //   ReplaceSel(newText.c_str(), TRUE);
+         // Strip last CRLF
+         if (!newText.empty())
+            newText.erase(newText.length()-2);
 
-      //   // Update highlighting
-      //   UpdateHighlighting(0, GetLineCount()-1);
-      //}
-      //catch (std::exception& e) 
-      //{ 
-      //   Console.Log(HERE, e); 
-      //}
+         // Replace entire text
+         SetSel(0, -1);
+         ReplaceSel(newText.c_str(), TRUE);
+      }
+      catch (std::exception& e) { 
+         Console.Log(HERE, e); 
+      }
 
-      //// UnFreeze window
+      // UnFreeze window
       //FreezeWindow(false);
-      ////SuspendUndo(false);
+      //SuspendUndo(false);
 
-      SetSel(0,-1);
-      FormatSelection();
+      // Update highlighting
+      UpdateHighlighting(0, GetLineCount()-1);
    }
 
    /// <summary>Formats the selection.</summary>
@@ -208,21 +208,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CWaitCursor      wait;
       wstring          newText;
   
-      // Freeze window
-      //SuspendUndo(true);
-      FreezeWindow(true);
-
       try 
       { 
          // Feedback
          Console << Cons::UserAction << "Formatting selection " << Document->GetFullPath() << ENDL;
 
-         // Parse script into list of commands
-         auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
-         
          // Select entirety of selected lines
          auto first = sbegin(), last = send();
          SetSel(first->Start, last->End);
+         //FreezeWindow(true);
+
+         // Parse script into list of commands
+         auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
 
          // Generate selection text
          for (int i = first->Line; i <= last->Line; ++i)
@@ -233,21 +230,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
             newText += (stack.Indentation + cmd->LineCode + L"\r\n");
             stack.PostDisplay(cmd);
          }
+         // Strip last CRLF
+         if (!newText.empty())
+            newText.erase(newText.length()-2);
 
          // Replace selection
          ReplaceSel(newText.c_str(), TRUE);
 
-         // Update highlighting
+         // Update window
+         //FreezeWindow(false);
          UpdateHighlighting(first->Line, last->Line);
       }
       catch (std::exception& e) 
       { 
+         //FreezeWindow(false);
          Console.Log(HERE, e); 
       }
-
-      // UnFreeze window
-      FreezeWindow(false);
-      //SuspendUndo(false);
    }
    
    /// <summary>Indents or outdents the selected lines.</summary>
