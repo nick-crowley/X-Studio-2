@@ -52,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DECLARE_MESSAGE_MAP()
 
    public:
+      static SimpleEvent      DocumentSwitched;
       static FeedbackEvent    GameDataFeedback,
                               FindReplaceFeedback,
                               LoadSaveFeedback;
@@ -95,6 +96,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg LRESULT OnWorkerFeedback(WPARAM wParam, LPARAM lParam);
 
       // -------------------- REPRESENTATION ---------------------
+   public:
+
    protected: 
       FindDialog        m_dlgFind;
       SplashWnd         m_dlgSplash;

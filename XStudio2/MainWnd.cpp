@@ -40,6 +40,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ----------------------------------- EVENTS -----------------------------------
 
+   /// <summary>Active Document changed</summary>
+   SimpleEvent    MainWnd::DocumentSwitched;
+
+   /// <summary>Feedback events</summary>
    FeedbackEvent   MainWnd::GameDataFeedback,
                    MainWnd::FindReplaceFeedback,
                    MainWnd::LoadSaveFeedback;
@@ -357,6 +361,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       //Console << "MainWnd::OnDocumentSwitched" << ENDL;
 
+      // Raise 'DOCUMENT SWITCHED'
+      DocumentSwitched.Raise();
+
       /*GetMDITabs().SetActiveTabColor(RGB(255,0,0));
       GetMDITabs().SetTabBkColor(0, RGB(255,0,0));*/
 
@@ -492,7 +499,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       case ID_FILE_PROJECT_SAVE:
       case ID_FILE_PROJECT_CLOSE: 
       case ID_FILE_PROJECT_SAVE_AS: 
-         check = ProjectDocument::GetActive() ? TRUE : FALSE;  
+         state = ProjectDocument::GetActive() ? TRUE : FALSE;  
          break;
 
       // Query string library document

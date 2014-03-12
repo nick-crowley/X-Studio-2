@@ -58,7 +58,23 @@ namespace Logic
             RevisionCollection()
             {}
 
+            // ---------------------- PROPERTIES ------------------------			
+         public:
+            PROPERTY_GET(UINT,Count,GetCount);
+
             // ---------------------- ACCESSORS ------------------------			
+         public:
+            iterator begin()              { return __super::begin(); }
+            iterator end()                { return __super::end();   }
+            const_iterator begin() const  { return __super::begin(); }
+            const_iterator end() const    { return __super::end();   }
+
+            /// <summary>Gets the count.</summary>
+            /// <returns></returns>
+            UINT GetCount() const
+            {
+               return size();
+            }
 
             // ----------------------- MUTATORS ------------------------
          public:

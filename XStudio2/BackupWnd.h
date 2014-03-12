@@ -1,4 +1,5 @@
 #pragma once
+#include "Logic/BackupFile.h"
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
 
@@ -52,9 +53,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    protected:
       void AdjustLayout();
+      void Populate(BackupFile& f);
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      handler void OnDocumentSwitched();
       afx_msg void OnPaint();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
@@ -69,6 +72,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       BackupToolBar  ToolBar;
 	   CListBox       List;
+      EventHandler   fnDocumentSwitched;
    };
 
 

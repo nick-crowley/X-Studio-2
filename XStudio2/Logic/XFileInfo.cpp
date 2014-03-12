@@ -115,7 +115,7 @@ namespace Logic
             s = StreamPtr(new DataStream(*this));
 
          // PCK: Wrap in GZip decompression stream
-         if (FullPath.HasExtension(L".pck"))
+         if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
             s = StreamPtr(new GZipStream(StreamPtr(s), GZipStream::Operation::Decompression));
 
          // Return stream
@@ -134,7 +134,7 @@ namespace Logic
          StreamPtr s(new FileStream(FullPath, FileMode::OpenAlways, FileAccess::Write));
 
          // PCK: Wrap in GZip compression stream
-         if (FullPath.HasExtension(L".pck"))
+         if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
             s = StreamPtr(new GZipStream(StreamPtr(s), GZipStream::Operation::Compression));
 
          // Return stream
