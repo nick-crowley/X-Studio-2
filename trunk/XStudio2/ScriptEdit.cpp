@@ -153,6 +153,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       UpdateHighlighting(first->Line, last->Line);
    }
    
+   /// <summary>Formats the selection.</summary>
+   void ScriptEdit::FormatDocument()
+   {
+   }
+
+   /// <summary>Formats the selection.</summary>
+   void ScriptEdit::FormatSelection()
+   {
+   }
    
    /// <summary>Indents or outdents the selected lines.</summary>
    /// <param name="indent">True to indent, false to outdent.</param>

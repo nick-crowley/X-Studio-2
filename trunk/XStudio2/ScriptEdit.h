@@ -502,6 +502,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    public:
       void   CommentSelection();
+      void   FormatDocument();
+      void   FormatSelection();
       void   IndentSelection(bool indent);
       void   Initialize(ScriptDocument* doc);
       void   PasteFormat(UINT nClipFormat) override;

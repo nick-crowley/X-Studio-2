@@ -109,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return;
 
       // Freeze
-      SetRedraw(FALSE);
+      //SetRedraw(FALSE);
 
       try
       {
@@ -130,9 +130,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       // Redraw
-      SetRedraw(TRUE);
-      Grid.Invalidate();
-      Grid.UpdateWindow();
+      //SetRedraw(TRUE);
+      /*Grid.Invalidate();
+      Grid.UpdateWindow();*/
    }
    
    /// <summary>expands all properties.</summary>
