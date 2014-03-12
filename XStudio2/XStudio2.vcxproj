@@ -153,6 +153,7 @@
     <ClInclude Include="Logic\LanguageFileWriter.h" />
     <ClInclude Include="Logic\ConsoleLog.h" />
     <ClInclude Include="Logic\LogFileWriter.h" />
+    <ClInclude Include="Logic\ProjectFileWriter.h" />
     <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
     <ClInclude Include="Logic\TextObjectModel.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
     <ClCompile Include="Logic\ConsoleLog.cpp" />
     <ClCompile Include="Logic\LogFileWriter.cpp" />
+    <ClCompile Include="Logic\ProjectFileWriter.cpp" />
     <ClCompile Include="Logic\SyntaxHighlight.cpp" />
     <ClCompile Include="NewDocumentDialog.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
