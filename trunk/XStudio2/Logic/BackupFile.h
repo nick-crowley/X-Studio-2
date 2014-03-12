@@ -16,8 +16,10 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptRevision();
-         virtual ~ScriptRevision();
+         ScriptRevision()
+         {}
+         virtual ~ScriptRevision()
+         {}
 
          DEFAULT_COPY(ScriptRevision);	// Default copy semantics
          DEFAULT_MOVE(ScriptRevision);	// Default move semantics
@@ -86,10 +88,10 @@ namespace Logic
 
             /// <summary>Removes a revision.</summary>
             /// <param name="r">revision.</param>
-            void  Remove(const ScriptRevision& r)
+            /*void  Remove(const ScriptRevision& r)
             {
                remove(r);
-            }
+            }*/
          };
 
          // --------------------- CONSTRUCTION ----------------------

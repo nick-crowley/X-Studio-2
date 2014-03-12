@@ -85,43 +85,67 @@ namespace Logic
          }
       }
 
+      /// <summary>Reads a single file/document node</summary>
+      /// <param name="node">node</param>
+      /// <returns>new file item</returns>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Unrecognised file type -or- Missing elements/attributes</exception>
       ProjectFileItem*  LegacyProjectFileReader::ReadDocument(XmlNodePtr node)
       {
-         // Verify node
-         ReadElement(node, L"document");
+         try
+         {
+            // Verify node
+            ReadElement(node, L"document");
 
-         // Verify path exists
-         if (!node->text.length())
-            throw FileFormatException(HERE, L"Missing document path");
+            // Verify path exists
+            if (!node->text.length())
+               throw FileFormatException(HERE, L"Missing document path");
 
-         // Script:
-         if (ReadAttribute(node, L"type") == L"script")
-            return new ProjectFileItem((const wchar*)node->text, FileType::Script);
+            // Script:
+            if (ReadAttribute(node, L"type") == L"script")
+               return new ProjectFileItem((const wchar*)node->text, FileType::Script);
 
-         else if (ReadAttribute(node, L"type") == L"language")
-            return new ProjectFileItem((const wchar*)node->text, FileType::Language);
+            else if (ReadAttribute(node, L"type") == L"language")
+               return new ProjectFileItem((const wchar*)node->text, FileType::Language);
 
-         // Unrecognised
-         throw FileFormatException(HERE, L"Unrecognised file type");
+            // Unrecognised
+            throw FileFormatException(HERE, L"Unrecognised file type");
+         }
+         catch (_com_error& ex) {
+            throw ComException(HERE, ex);
+         }
       }
 
+      /// <summary>Reads a single variable node</summary>
+      /// <param name="node">node</param>
+      /// <returns>new variable item</returns>
+      /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Missing name -or- Missing elements/attributes</exception>
       ProjectVariableItem*  LegacyProjectFileReader::ReadVariable(XmlNodePtr node)
       {
-         // Verify node
-         ReadElement(node, L"variable");
+         try
+         {
+            // Verify node
+            ReadElement(node, L"variable");
 
-         // Verify name exists
-         if (!node->text.length())
-            throw FileFormatException(HERE, L"Missing variable name");
+            // Verify name exists
+            if (!node->text.length())
+               throw FileFormatException(HERE, L"Missing variable name");
 
-         // Read value + name
-         int val =  _ttoi(ReadAttribute(node, L"value").c_str());
-         return new ProjectVariableItem((const wchar*)node->text, val);
+            // Read value + name
+            int val =  _ttoi(ReadAttribute(node, L"value").c_str());
+            return new ProjectVariableItem((const wchar*)node->text, val);
+         }
+         catch (_com_error& ex) {
+            throw ComException(HERE, ex);
+         }
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
 
-      /// <summary>Reads the source file and locates the CodeArray node</summary>
+      /// <summary>Reads the source file and locates the root node</summary>
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">File format is corrupt</exception>

@@ -127,9 +127,9 @@ namespace Logic
          REQUIRED(var);
          REQUIRED(parent);
 
-         // <variable name='..'>value</variable>
-         auto node = WriteElement(parent, L"variable", GuiString(L"%d", var->Value));
-         WriteAttribute(node, L"name", var->Name);
+         // <variable value='..'>name</variable>
+         auto node = WriteElement(parent, L"variable", var->Name);
+         WriteAttribute(node, L"value", var->Value);
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
