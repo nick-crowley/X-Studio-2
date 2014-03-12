@@ -37,8 +37,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
       
       // -------------------- REPRESENTATION ---------------------
+   public:
+      IO::Path  NewPath;
+
    protected:
-      IO::Path       Folder;
+      IO::Path  LegacyFile,
+                Folder;
    };
    
 NAMESPACE_END2(GUI,Windows)

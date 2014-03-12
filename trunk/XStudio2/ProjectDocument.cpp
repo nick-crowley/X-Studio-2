@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ProjectDocument.h"
+#include "ImportProjectDialog.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/LegacyProjectFileReader.h"
 #include "MainWnd.h"
@@ -25,20 +26,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {}
 
    /// <summary>Queries whether an external file should be opened as a script</summary>
-   /// <param name="lpszPathName">Path of file.</param>
+   /// <param name="szPathName">Path of file.</param>
    /// <param name="rpDocMatch">The already open document, if any.</param>
    /// <returns>yesAlreadyOpen if already open, yesAttemptNative if script, noAttempt if unrecognised</returns>
-   CDocTemplate::Confidence  ProjectDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
+   CDocTemplate::Confidence  ProjectDocTemplate::MatchDocType(LPCTSTR szPathName, CDocument*& rpDocMatch)
    {
       Confidence conf;
 
       // Ensure document not already open
-      if ((conf = CSingleDocTemplate::MatchDocType(lpszPathName, rpDocMatch)) == yesAlreadyOpen)
+      if ((conf = CSingleDocTemplate::MatchDocType(szPathName, rpDocMatch)) == yesAlreadyOpen)
          return yesAlreadyOpen;
 
       // Identify language file from header
       rpDocMatch = nullptr;
-      return FileIdentifier::Identify(lpszPathName) == FileType::Project ? yesAttemptNative : noAttempt;
+      return FileIdentifier::Identify(szPathName) == FileType::Project ? yesAttemptNative : noAttempt;
    }
 
    CFrameWnd*  ProjectDocTemplate::CreateNewFrame(CDocument* pDoc, CFrameWnd* pOther) 
@@ -47,35 +48,35 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return theApp.GetMainWindow();
    }
 
-   CDocument* ProjectDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible)
+   CDocument* ProjectDocTemplate::OpenDocumentFile(LPCTSTR szFullPath, BOOL bAddToMRU, BOOL bMakeVisible)
    {
-	   CDocument* pDocument = NULL;
-	   BOOL bCreated = FALSE;      // => doc and frame created
-	   BOOL bWasModified = FALSE;
+	   ProjectDocument* pDocument = nullptr;
+      bool Created = false;
 
-	   if (m_pOnlyDoc != NULL)
+      // already have a document - reinit it
+	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
 	   {
-		   // already have a document - reinit it
-		   pDocument = m_pOnlyDoc;
+		   // Query to save 
 		   if (!pDocument->SaveModified())
-		      return NULL;        // leave the original one
+		      return nullptr; 
 	   }
-	   else
-	   {
-		   // create a new document
-		   pDocument = CreateNewDocument();
-		   bCreated = TRUE;
-	   }
+	   else 
+      {
+	      // create a new document
+		   pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());
+         Created = true;
+      }
 
-	   if (pDocument == NULL)
+      // Verify created
+	   if (!pDocument)
 	   {
 		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-		   return NULL;
+		   return nullptr;
 	   }
 	   ASSERT(pDocument == m_pOnlyDoc);
 
-      // create a new document
-	   if (lpszPathName == NULL)
+      // New Document:
+	   if (!szFullPath)
 	   {
 		   SetDefaultTitle(pDocument);
 
@@ -83,55 +84,70 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   if (!bMakeVisible)
 			   pDocument->m_bEmbedded = TRUE;
 
+         // NEW DOCUMENT:
 		   if (!pDocument->OnNewDocument())
 		   {
-			   // user has been alerted to what failed in OnNewDocument
-			   TRACE(traceAppMsg, 0, "CDocument::OnNewDocument returned FALSE.\n");
-			   if (bCreated)
+			   Console << Cons::Error << "ProjectDocument::OnNewDocument returned FALSE";
+			 
+            // Cleanup
+            if (Created)
             {
                delete pDocument;
-               m_pOnlyDoc = NULL;
+               m_pOnlyDoc = nullptr;
             }
-				
-			   return NULL;
+			   return nullptr;
 		   }
 	   }
 	   else
 	   {
 		   CWaitCursor wait;
 
-		   // open an existing document
-		   bWasModified = pDocument->IsModified();
+		   // Preserve 'Modified' flag
+		   BOOL bWasModified = pDocument->IsModified();
 		   pDocument->SetModifiedFlag(FALSE);  // not dirty for open
 
-		   if (!pDocument->OnOpenDocument(lpszPathName))
+         // Upgrade:
+         ImportProjectDialog dlg(szFullPath);
+         if (dlg.DoModal() == IDOK)
+         {
+            // IMPORT DOCUMENT
+            if (!pDocument->OnImportDocument(szFullPath, dlg.NewPath))
+            {
+               Console << Cons::Error << "ProjectDocument::OnImportDocument returned FALSE";
+               return nullptr;
+            }
+
+            // Open upgraded project, not legacy
+            szFullPath = dlg.NewPath.c_str();
+            bAddToMRU = TRUE;
+         }
+
+         // OPEN DOCUMENT
+		   if (!pDocument->OnOpenDocument(szFullPath))
 		   {
-			   // user has been alerted to what failed in OnOpenDocument
-			   TRACE(traceAppMsg, 0, "CDocument::OnOpenDocument returned FALSE.\n");
-			   if (bCreated)
+			   Console << Cons::Error << "ProjectDocument::OnOpenDocument returned FALSE";
+
+            // Failed: Destroy
+			   if (Created)
 			   {
                delete pDocument;
-               m_pOnlyDoc = NULL;
+               m_pOnlyDoc = nullptr;
 			   }
+            // Failed (but Unmodified): Restore 'modified' flag
 			   else if (!pDocument->IsModified())
-			   {
-				   // original document is untouched
-				   pDocument->SetModifiedFlag(bWasModified);
-			   }
+			      pDocument->SetModifiedFlag(bWasModified);
 			   else
 			   {
-				   // we corrupted the original document
+				   // Failed (and Modified): Document is now corrupt. Start new document.
 				   SetDefaultTitle(pDocument);
 
+               // NEW DOCUMENT:
 				   if (!pDocument->OnNewDocument())
-				   {
-					   TRACE(traceAppMsg, 0, "Error: OnNewDocument failed after trying to open a document - trying to continue.\n");
-					   // assume we can continue
-				   }
+				      Console << Cons::Error << "ProjectDocument::OnNewDocument failed after trying to open a document";
 			   }
-			   return NULL;        // open failed
+			   return nullptr;        // open failed
 		   }
-		   pDocument->SetPathName(lpszPathName, bAddToMRU);
+		   pDocument->SetPathName(szFullPath, bAddToMRU);
 		   pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 	   }
 
@@ -326,6 +342,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Loaded.Raise();
    }
 
+   /// <summary>Called on new document.</summary>
+   /// <returns></returns>
    BOOL ProjectDocument::OnNewDocument()
    {
       // Raise 'PROJECT LOADED'
@@ -333,8 +351,33 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       return DocumentBase::OnNewDocument();
    }
+   
+
+   /// <summary>Called on open document.</summary>
+   /// <param name="legacy">Legacy project path.</param>
+   /// <param name="upgrade">New project path.</param>
+   /// <returns></returns>
+   BOOL ProjectDocument::OnImportDocument(IO::Path legacy, IO::Path upgrade)
+   {
+      try
+      {
+         // Read legacy
+         auto fs = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
+         Project = LegacyProjectFileReader(fs).ReadFile(legacy);
+         
+         // Success: 
+         return TRUE;
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+         return FALSE;
+      }
+   }
 
 
+   /// <summary>Called on open document.</summary>
+   /// <param name="szPath">The path.</param>
+   /// <returns></returns>
    BOOL ProjectDocument::OnOpenDocument(LPCTSTR szPath)
    {
       try
