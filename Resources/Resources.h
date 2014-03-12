@@ -49,47 +49,39 @@
 ///////////////////////////////// COMMANDS /////////////////////////////
 
 // File Menu
-#define ID_FILE_BROWSE                  200
-#define ID_FILE_SAVE_ALL                201
-#define ID_FILE_EXPORT                  202
+#define ID_FILE_BROWSE                  250
+#define ID_FILE_SAVE_ALL                251
+#define ID_FILE_EXPORT                  252
 
 // Edit Menu
-#define ID_EDIT_INSERT                  210
-#define ID_EDIT_COMMENT                 211
-#define ID_EDIT_LOCALIZE                212
-#define ID_EDIT_REFACTOR                213
-#define ID_EDIT_OPEN_SCRIPT             214
-#define ID_EDIT_GOTO_LABEL              215
-#define ID_EDIT_VIEW_STRING             216
-#define ID_EDIT_INDENT                  217
-#define ID_EDIT_OUTDENT                 218
-#define ID_EDIT_PREFERENCES             219
+#define ID_EDIT_INSERT                  253
+#define ID_EDIT_PREFERENCES             254
 
 // Test menu
-#define ID_TEST_RUN_ALL                 230
-#define ID_TEST_COMPILE                 231
+#define ID_TEST_RUN_ALL                 255
+#define ID_TEST_COMPILE                 256
 
 // View menu
-#define ID_VIEW_PROJECT                 240
-#define ID_VIEW_SCRIPT_OBJECTS          241
-#define ID_VIEW_GAME_OBJECTS            242
-#define ID_VIEW_COMMANDS                243
-#define ID_VIEW_OUTPUT                  244
-#define ID_VIEW_PROPERTIES              245
-#define ID_VIEW_STRING_LIBRARY          246
-#define ID_VIEW_MEDIA_LIBRARY           247
-#define ID_VIEW_CUSTOMIZE               248
+#define ID_VIEW_PROJECT                 257
+#define ID_VIEW_SCRIPT_OBJECTS          258
+#define ID_VIEW_GAME_OBJECTS            259
+#define ID_VIEW_COMMANDS                260
+#define ID_VIEW_OUTPUT                  261
+#define ID_VIEW_PROPERTIES              262
+#define ID_VIEW_STRING_LIBRARY          263
+#define ID_VIEW_MEDIA_LIBRARY           264
+#define ID_VIEW_CUSTOMIZE               265
 
 // Window menu
-#define ID_WINDOW_MANAGER               260
+#define ID_WINDOW_MANAGER               266
 
 // Help
-#define ID_HELP_FORUMS                  270
-#define ID_VIEW_CONSOLE                 271
+#define ID_HELP_FORUMS                  267
+#define ID_VIEW_CONSOLE                 268
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
-// PropertiesWnd Context
+// PropertiesWnd ContextMenu
 #define ID_EXPAND_ALL                   300
 #define ID_SORTPROPERTIES               301
 #define ID_INSERT_ARGUMENT              302
@@ -98,18 +90,16 @@
 #define ID_REORDER_ARGUMENT_DOWN        305
 #define ID_REMOVE_ARGUMENT              306
 
-// ProjectWnd Context menu
-#define ID_PROJECT_OPEN                 320
-#define ID_PROJECT_ADD_FILE             321
-#define ID_PROJECT_ADD_FOLDER           322
-#define ID_PROJECT_RENAME               323
-#define ID_PROJECT_REMOVE               324
-#define ID_PROJECT_DELETE               325
-#define ID_PROJECT_PROPERTIES           326
+// ProjectWnd ContextMenu
+#define ID_PROJECT_OPEN                 350
+#define ID_PROJECT_ADD_FILE             351
+#define ID_PROJECT_ADD_FOLDER           352
+#define ID_PROJECT_RENAME               353
+#define ID_PROJECT_REMOVE               354
+#define ID_PROJECT_DELETE               355
+#define ID_PROJECT_PROPERTIES           356
 
-///////////////////////////// TOOLBAR COMMANDS //////////////////////////
-
-// LanguageEditor
+// LanguageEditor Toolbar
 #define ID_EDIT_BOLD                    400
 #define ID_EDIT_ITALIC                  401
 #define ID_EDIT_UNDERLINE               402
@@ -122,6 +112,18 @@
 #define ID_VIEW_SOURCE                  409
 #define ID_VIEW_EDITOR                  410
 #define ID_VIEW_DISPLAY                 411
+
+// ScriptView ContextMenu
+#define ID_EDIT_COMMENT                 450
+#define ID_EDIT_LOCALIZE                451
+#define ID_EDIT_REFACTOR                452
+#define ID_EDIT_OPEN_SCRIPT             453
+#define ID_EDIT_GOTO_LABEL              454
+#define ID_EDIT_VIEW_STRING             455
+#define ID_EDIT_INDENT                  456
+#define ID_EDIT_OUTDENT                 457
+#define ID_EDIT_FORMAT_SEL              458
+#define ID_EDIT_FORMAT_DOC              459
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 

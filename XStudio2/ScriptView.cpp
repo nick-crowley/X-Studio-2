@@ -39,6 +39,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COMMENT, &ScriptView::OnEditComment)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
       ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
+      ON_COMMAND(ID_EDIT_FORMAT_SEL, &ScriptView::OnEditFormatSel)
+      ON_COMMAND(ID_EDIT_FORMAT_DOC, &ScriptView::OnEditFormatDoc)
       ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
       ON_COMMAND(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnEditOpenScript)
       ON_COMMAND(ID_EDIT_GOTO_LABEL, &ScriptView::OnEditGotoLabel)
@@ -54,6 +56,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OUTDENT, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FORMAT_SEL, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_FORMAT_DOC, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REFACTOR, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_GOTO_LABEL, &ScriptView::OnQueryCommand)
@@ -348,6 +352,10 @@ NAMESPACE_BEGIN2(GUI,Views)
             RichEdit.IndentSelection(nID == ID_EDIT_INDENT);
          break;
 
+      // Format:
+      case ID_EDIT_FORMAT_SEL: RichEdit.FormatSelection();  break;
+      case ID_EDIT_FORMAT_DOC: RichEdit.FormatDocument();   break;
+
       // Comment:
       case ID_EDIT_COMMENT:   RichEdit.CommentSelection();  break;
 
@@ -373,11 +381,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
       // Clipboard
       case ID_EDIT_CUT:     
-      case ID_EDIT_COPY:     state = RichEdit.HasSelection();            break;
-      case ID_EDIT_PASTE:    state = RichEdit.CanPaste(CF_UNICODETEXT);  break;
+      case ID_EDIT_COPY:        state = RichEdit.HasSelection();            break;
+      case ID_EDIT_PASTE:       state = RichEdit.CanPaste(CF_UNICODETEXT);  break;
 
       // Commment
-      case ID_EDIT_COMMENT:  state = TRUE;                               break;
+      case ID_EDIT_COMMENT:     state = TRUE;                            break;
 
       // Code
       case ID_EDIT_REFACTOR:    state = RichEdit.CanRefactor();          break;
@@ -387,14 +395,18 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Indent/Outdent
       case ID_EDIT_INDENT:
-      case ID_EDIT_OUTDENT:  state = RichEdit.HasSelection();            break;
+      case ID_EDIT_OUTDENT:     state = RichEdit.HasSelection();         break;
+
+      // Format 
+      case ID_EDIT_FORMAT_SEL:  state = RichEdit.HasSelection();         break;
+      case ID_EDIT_FORMAT_DOC:  state = TRUE;                            break;  
 
       // Undo/Redo
-      case ID_EDIT_UNDO:     state = RichEdit.CanUndo();
-                             pCmdUI->SetText(RichEdit.GetUndoMenuItem().c_str());    break;
+      case ID_EDIT_UNDO:        state = RichEdit.CanUndo();
+                                pCmdUI->SetText(RichEdit.GetUndoMenuItem().c_str());    break;
 
-      case ID_EDIT_REDO:     state = RichEdit.CanRedo();
-                             pCmdUI->SetText(RichEdit.GetRedoMenuItem().c_str());    break;
+      case ID_EDIT_REDO:        state = RichEdit.CanRedo();
+                                pCmdUI->SetText(RichEdit.GetRedoMenuItem().c_str());    break;
       }
 
       // Set state
