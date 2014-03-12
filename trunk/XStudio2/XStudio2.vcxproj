@@ -137,6 +137,7 @@
     <ClInclude Include="EditorPage.h" />
     <ClInclude Include="GeneralPage.h" />
     <ClInclude Include="GuiCommand.h" />
+    <ClInclude Include="ImportProjectDialog.h" />
     <ClInclude Include="LanguageEdit.h" />
     <ClInclude Include="Logic\BackupFile.h" />
     <ClInclude Include="Logic\BackupFileReader.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="DiffView.cpp" />
     <ClCompile Include="EditorPage.cpp" />
     <ClCompile Include="GeneralPage.cpp" />
+    <ClCompile Include="ImportProjectDialog.cpp" />
     <ClCompile Include="LanguageEdit.cpp" />
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\BackupFileReader.cpp" />
