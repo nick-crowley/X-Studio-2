@@ -69,6 +69,9 @@ namespace Logic
             {}
          };
 
+         /// <summary>Vector of parse tree node pointers</summary>
+         typedef vector<CommandNodePtr>   CommandNodeArray;
+
          /// <summary>Types of symbol available</summary>
          enum class SymbolType { Variable, Label };
 
@@ -101,11 +104,11 @@ namespace Logic
          class CommandNode 
          {
             // ------------------------ TYPES --------------------------
-         public:
-            typedef vector<CommandNodePtr>     NodeList;
-            typedef NodeList::const_iterator   NodeIterator;
+         protected:
+            /// <summary>CommandNode array iterator</summary>
+            typedef CommandNodeArray::const_iterator   NodeIterator;
 
-         private:
+            /// <summary>CommandNode predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
             /// <summary>Distinguishes tree state when printed to the console</summary>
@@ -120,7 +123,7 @@ namespace Logic
             ~CommandNode();
 
             // ------------------------ STATIC -------------------------
-         private:
+         protected:
             static NodeDelegate  isConditionalAlternate,
                                  isConditionalEnd,
                                  isExecutableCommand,
@@ -136,18 +139,19 @@ namespace Logic
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
-         private:
-            PROPERTY_GET(GuiString,DebugText,GetDebugText);
+            PROPERTY_GET(GuiString,LineCode,GetLineCode);
 
             // ---------------------- ACCESSORS ------------------------		
          public:
             void          FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             BranchLogic   GetBranchLogic() const;
+            GuiString     GetLineCode() const;
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;
             void          Print(int depth = 0) const;
+            void          ToList(CommandNodeArray& l) const;
                
-         private:
+         protected:
             CommandNode*  FindAncestor(BranchLogic l) const;
             NodeIterator  FindChild(const CommandNode* child) const;
             CommandNode*  FindConditionalAlternate() const;
@@ -158,7 +162,6 @@ namespace Logic
             CommandNode*  FindPrevSibling() const;
             CommandNode*  FindRoot() const;
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
-            GuiString     GetDebugText() const;
             CommandNode*  GetLastExecutableChild() const;
             wstring       GetScriptCallName() const;
             bool          HasExecutableChild() const;
@@ -175,7 +178,7 @@ namespace Logic
             void           Compile(ScriptFile& script, ErrorArray& errors);
             void           Verify(ScriptFile& script, ErrorArray& errors);
             
-         private:
+         protected:
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
             void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
@@ -187,8 +190,8 @@ namespace Logic
             
             // -------------------- REPRESENTATION ---------------------
          public:
-            CommandNode*  Parent;             // Parent node
-            NodeList      Children;           // Child commands
+            CommandNode*       Parent;        // Parent node
+            CommandNodeArray   Children;      // Child commands
 
             ParameterArray     Parameters,    // script parameters in display order
                                Postfix;       // expression parameters in postfix order

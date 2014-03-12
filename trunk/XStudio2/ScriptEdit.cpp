@@ -4,6 +4,7 @@
 #include "SymbolDialog.h"
 #include "Logic/CommandLexer.h"
 #include "Logic/SyntaxHighlight.h"
+#include "Logic/IndentationStack.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -156,6 +157,44 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Formats the selection.</summary>
    void ScriptEdit::FormatDocument()
    {
+      IndentationStack stack;
+      CWaitCursor      wait;
+      wstring          newText;
+  
+      // Freeze window
+      //SuspendUndo(true);
+      FreezeWindow(true);
+
+      try 
+      { 
+         // Feedback
+         Console << Cons::UserAction << "Formatting document " << Document->GetFullPath() << ENDL;
+
+         // Parse script into list of commands
+         auto commands = ScriptParser(Document->Script, GetLines(), Document->Script.Game).ToList();
+         
+         Console << "Received " << commands.size() << " commands" << ENDL;
+
+         // Generate new document text
+         for (auto& cmd : commands)
+         {
+            stack.PreDisplay(cmd);
+            newText += (Indent(stack.Size) + cmd->LineCode + L"\r\n");
+            stack.PostDisplay(cmd);
+         }
+
+         // Replace entire text
+         SetSel(0, -1);
+         ReplaceSel(newText.c_str(), TRUE);
+      }
+      catch (std::exception& e) 
+      { 
+         Console.Log(HERE, e); 
+      }
+
+      // UnFreeze window
+      FreezeWindow(false);
+      //SuspendUndo(false);
    }
 
    /// <summary>Formats the selection.</summary>
