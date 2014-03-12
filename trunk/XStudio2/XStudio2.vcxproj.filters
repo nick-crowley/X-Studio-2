@@ -1022,6 +1022,9 @@
     <ClCompile Include="Logic\ProjectFileReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
+    <ClCompile Include="ProjectDocTemplate.cpp">
+      <Filter>Source Files\GUI\Documents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

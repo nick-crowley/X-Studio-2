@@ -56,7 +56,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language), 
+   LanguageDocument::LanguageDocument() : DocumentBase(DocumentType::Language, false), 
                                           CurrentString(nullptr), CurrentPage(nullptr), CurrentButton(nullptr),
                                           Mode(EditMode::Edit)
    {

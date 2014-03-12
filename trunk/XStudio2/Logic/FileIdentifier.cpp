@@ -53,7 +53,7 @@ namespace Logic
             // Check for unique XML document root elements
             if (StrStrIA((char*)buf.get(), "<script>") != nullptr)
                return FileType::Script;
-
+            
             if (StrStrIA((char*)buf.get(), "<language") != nullptr)
                return FileType::Language;
 

@@ -3,6 +3,7 @@
 #include "ImportProjectDialog.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/LegacyProjectFileReader.h"
+#include "Logic/ProjectFileReader.h"
 #include "Logic/ProjectFileWriter.h"
 #include "MainWnd.h"
 
@@ -17,144 +18,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
                      ProjectDocument::ItemChanged,
                      ProjectDocument::ItemRemoved;
 
-   // ---------------------------------- TEMPLATE ----------------------------------
-
-   IMPLEMENT_DYNAMIC(ProjectDocTemplate, CSingleDocTemplate)
-   
-   /// <summary>Creates script document template</summary>
-   ProjectDocTemplate::ProjectDocTemplate()
-         : CSingleDocTemplate(IDR_PROJECTVIEW, RUNTIME_CLASS(ProjectDocument), RUNTIME_CLASS(CMDIChildWndEx), RUNTIME_CLASS(CView))
-   {}
-
-   /// <summary>Queries whether an external file should be opened as a script</summary>
-   /// <param name="szPathName">Path of file.</param>
-   /// <param name="rpDocMatch">The already open document, if any.</param>
-   /// <returns>yesAlreadyOpen if already open, yesAttemptNative if script, noAttempt if unrecognised</returns>
-   CDocTemplate::Confidence  ProjectDocTemplate::MatchDocType(LPCTSTR szPathName, CDocument*& rpDocMatch)
-   {
-      Confidence conf;
-
-      // Ensure document not already open
-      if ((conf = CSingleDocTemplate::MatchDocType(szPathName, rpDocMatch)) == yesAlreadyOpen)
-         return yesAlreadyOpen;
-
-      // Identify language file from header
-      rpDocMatch = nullptr;
-      return FileIdentifier::Identify(szPathName) == FileType::Project ? yesAttemptNative : noAttempt;
-   }
-
-   CFrameWnd*  ProjectDocTemplate::CreateNewFrame(CDocument* pDoc, CFrameWnd* pOther) 
-   {
-      Console << Cons::Error << "Framework attempting to create View for Project document" << ENDL;
-      return theApp.GetMainWindow();
-   }
-
-   CDocument* ProjectDocTemplate::OpenDocumentFile(LPCTSTR szFullPath, BOOL bAddToMRU, BOOL bMakeVisible)
-   {
-	   ProjectDocument* pDocument = nullptr;
-      bool Created = false;
-
-      // already have a document - reinit it
-	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
-	   {
-		   // Query to save 
-		   if (!pDocument->SaveModified())
-		      return nullptr; 
-	   }
-	   else 
-      {
-	      // create a new document
-		   pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());
-         Created = true;
-      }
-
-      // Verify created
-	   if (!pDocument)
-	   {
-		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-		   return nullptr;
-	   }
-	   ASSERT(pDocument == m_pOnlyDoc);
-
-      // New Document:
-	   if (!szFullPath)
-	   {
-		   SetDefaultTitle(pDocument);
-
-		   // avoid creating temporary compound file when starting up invisible
-		   if (!bMakeVisible)
-			   pDocument->m_bEmbedded = TRUE;
-
-         // NEW DOCUMENT:
-		   if (!pDocument->OnNewDocument())
-		   {
-			   Console << Cons::Error << "ProjectDocument::OnNewDocument returned FALSE";
-			 
-            // Cleanup
-            if (Created)
-            {
-               delete pDocument;
-               m_pOnlyDoc = nullptr;
-            }
-			   return nullptr;
-		   }
-	   }
-	   else
-	   {
-		   CWaitCursor wait;
-
-		   // Preserve 'Modified' flag
-		   BOOL bWasModified = pDocument->IsModified();
-		   pDocument->SetModifiedFlag(FALSE);  // not dirty for open
-
-         // Upgrade:
-         ImportProjectDialog dlg(szFullPath);
-         if (dlg.DoModal() == IDOK)
-         {
-            // IMPORT DOCUMENT
-            if (!pDocument->OnImportDocument(szFullPath, dlg.NewPath))
-            {
-               Console << Cons::Error << "ProjectDocument::OnImportDocument returned FALSE";
-               return nullptr;
-            }
-
-            // Open upgraded project, not legacy
-            szFullPath = dlg.NewPath.c_str();
-            bAddToMRU = TRUE;
-         }
-
-         // OPEN DOCUMENT
-		   if (!pDocument->OnOpenDocument(szFullPath))
-		   {
-			   Console << Cons::Error << "ProjectDocument::OnOpenDocument returned FALSE";
-
-            // Failed: Destroy
-			   if (Created)
-			   {
-               delete pDocument;
-               m_pOnlyDoc = nullptr;
-			   }
-            // Failed (but Unmodified): Restore 'modified' flag
-			   else if (!pDocument->IsModified())
-			      pDocument->SetModifiedFlag(bWasModified);
-			   else
-			   {
-				   // Failed (and Modified): Document is now corrupt. Start new document.
-				   SetDefaultTitle(pDocument);
-
-               // NEW DOCUMENT:
-				   if (!pDocument->OnNewDocument())
-				      Console << Cons::Error << "ProjectDocument::OnNewDocument failed after trying to open a document";
-			   }
-			   return nullptr;        // open failed
-		   }
-		   pDocument->SetPathName(szFullPath, bAddToMRU);
-		   pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
-	   }
-
-	   return pDocument;
-   }
-
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(ProjectDocument, DocumentBase)
@@ -164,7 +27,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project)
+   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project, false)
    {
 
    }
@@ -343,10 +206,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Loaded.Raise();
    }
 
-   /// <summary>Called on new document.</summary>
+   /// <summary>Called on new X-Studio 2 project.</summary>
    /// <returns></returns>
    BOOL ProjectDocument::OnNewDocument()
    {
+      // TODO: Clear existing data
+
       // Raise 'PROJECT LOADED'
       Loaded.Raise();
 
@@ -354,7 +219,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
    
 
-   /// <summary>Called on open document.</summary>
+   /// <summary>Called on convert an X-Studio 1 project to X-Studio 2.</summary>
    /// <param name="legacy">Legacy project path.</param>
    /// <param name="upgrade">New project path.</param>
    /// <returns>TRUE if successfully upgraded, otherwise FALSE</returns>
@@ -382,7 +247,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
 
-   /// <summary>Called on open document.</summary>
+   /// <summary>Called on open an X-Studio 2 project.</summary>
    /// <param name="szPath">The path.</param>
    /// <returns></returns>
    BOOL ProjectDocument::OnOpenDocument(LPCTSTR szPath)
@@ -391,7 +256,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Read file
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
-         Project = LegacyProjectFileReader(fs).ReadFile(szPath);
+         Project = ProjectFileReader(fs).ReadFile(szPath);
          
          // Success: 
          return TRUE;

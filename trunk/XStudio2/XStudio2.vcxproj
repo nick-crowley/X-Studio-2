@@ -319,6 +319,7 @@
     <ClCompile Include="NewDocumentDialog.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
+    <ClCompile Include="ProjectDocTemplate.cpp" />
     <ClCompile Include="RefactorDialog.cpp" />
     <ClCompile Include="RefactorEdit.cpp" />
     <ClCompile Include="RichEditEx.cpp" />
