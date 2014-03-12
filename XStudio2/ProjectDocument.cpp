@@ -278,6 +278,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void  ProjectDocument::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+
+      switch (pCmdUI->m_nID)
+      {
+      // Close/Save/SaveAs: Always enabled
+      case ID_FILE_PROJECT_SAVE:
+      case ID_FILE_PROJECT_CLOSE: 
+      case ID_FILE_PROJECT_SAVE_AS: 
+         state = true;
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
+   }
+   
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    

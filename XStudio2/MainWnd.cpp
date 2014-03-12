@@ -58,13 +58,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
-      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandPreferences)
+      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandEditPreferences)
 	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
       ON_COMMAND(ID_VIEW_CONSOLE, &MainWnd::OnCommandConsole)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommandCustomizeToolbar)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
-      ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnCommandShowWindow)
+      ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE_AS, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_CLOSE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
@@ -231,22 +234,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
    }
    
-   /// <summary>Displays the Find & Replace dialog.</summary>
-   void MainWnd::OnCommandFindText()
-   {
-      m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);
-   }
-
-   /// <summary>Display customize toolbar dialog.</summary>
-   void MainWnd::OnCommandCustomizeToolbar()
-   {
-	   CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
-	   pDlgCust->EnableUserDefinedToolbars();
-	   pDlgCust->Create();
-   }
-   
    /// <summary>Execute debugging tests.</summary>
-   void MainWnd::OnCommandPreferences()
+   void MainWnd::OnCommandEditPreferences()
    {
       // Display dialog
       PreferencesDialog dlg(this);
@@ -257,54 +246,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          theApp.OnPreferencesChanged();
    }
 
-   /// <summary>Execute debugging tests.</summary>
-   void MainWnd::OnCommandRunTests()
-   {
-      try
-      {
-         DebugTests::RunAll();
-         //AfxMessageBox(L"Tests completed successfully");
-         Console << ENDL << "Tests completed" << ENDL;
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e, L"Unhandled exception in debugging tests");
-      }
-   }
-
-   /// <summary>Display tool window.</summary>
-   void MainWnd::OnCommandShowWindow(UINT nID)
-   {
-      // Toggle display state of tool window
-      switch (nID)
-      {
-      case ID_VIEW_CONSOLE:         Console.Visible = !Console.Visible;                                         break;
-      case ID_VIEW_PROJECT:         m_wndProject.ShowPane(!m_wndProject.IsVisible(), FALSE, TRUE);              break;
-      case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(!m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
-      case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(!m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
-      case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(!m_wndCommands.IsVisible(), FALSE, TRUE);            break;
-      case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(!m_wndOutput.IsVisible(), FALSE, TRUE);                break;
-      case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(!m_wndProperties.IsVisible(), FALSE, TRUE);        break;
-      }
-   }
-
-   /// <summary>Display string library.</summary>
-   void MainWnd::OnCommandStringLibrary()
-   {
-      try
-      {
-         theApp.OpenStringLibrary();   
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-      }
-   }
-
-   /// <summary>Display window manager.</summary>
-   void MainWnd::OnCommandWindowManager()
-   {
-	   ShowWindowsDialog();
-   }
-   
    /// <summary>Stores current workspace.</summary>
    void MainWnd::OnClose()
    {
@@ -477,7 +418,47 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console.Log(HERE, e);
       }
    }
+   
+   /// <summary>Display tool window.</summary>
+   void MainWnd::OnPerformCommand(UINT nID)
+   {
+      CMFCToolBarsCustomizeDialog* pDlgCust;
 
+      try
+      {
+         switch (nID)
+         {
+         // Show/Hide window
+         case ID_WINDOW_MANAGER:       ShowWindowsDialog();                                                        break;
+         case ID_VIEW_CONSOLE:         Console.Visible = !Console.Visible;                                         break;
+         case ID_VIEW_STRING_LIBRARY:  theApp.OpenStringLibrary();                                                 break;
+         case ID_VIEW_PROJECT:         m_wndProject.ShowPane(!m_wndProject.IsVisible(), FALSE, TRUE);              break;
+         case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(!m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
+         case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(!m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
+         case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(!m_wndCommands.IsVisible(), FALSE, TRUE);            break;
+         case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(!m_wndOutput.IsVisible(), FALSE, TRUE);                break;
+         case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(!m_wndProperties.IsVisible(), FALSE, TRUE);        break;
+         case ID_EDIT_FIND:            m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);      break;
+
+         // Customize Toolbar
+         case ID_VIEW_CUSTOMIZE: 
+            pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
+	         pDlgCust->EnableUserDefinedToolbars();
+	         pDlgCust->Create();
+            break;
+
+         // Run Test
+         case ID_TEST_RUN_ALL: 
+            DebugTests::RunAll();   
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+
+   
    /// <summary>Query menu item state</summary>
    void MainWnd::OnQueryCommand(CCmdUI* pCmdUI)
    {
@@ -506,6 +487,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       case ID_VIEW_COMMANDS:        check = m_wndCommands.IsVisible();       break;
       case ID_VIEW_OUTPUT:          check = m_wndOutput.IsVisible();         break;
       case ID_VIEW_PROPERTIES:      check = m_wndProperties.IsVisible();     break;
+
+      // Project Close/Save/SaveAs: Require project
+      case ID_FILE_PROJECT_SAVE:
+      case ID_FILE_PROJECT_CLOSE: 
+      case ID_FILE_PROJECT_SAVE_AS: 
+         check = ProjectDocument::GetActive() ? TRUE : FALSE;  
+         break;
 
       // Query string library document
       case ID_VIEW_STRING_LIBRARY:

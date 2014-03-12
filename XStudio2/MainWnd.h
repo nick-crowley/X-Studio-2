@@ -74,18 +74,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected:
       afx_msg void    OnClose();
-      afx_msg void    OnCommandConsole()   { OnCommandShowWindow(ID_VIEW_CONSOLE); }
-      afx_msg void    OnCommandFindText();
-      afx_msg void    OnCommandCustomizeToolbar();
-      afx_msg void    OnCommandPreferences();
-      afx_msg void    OnCommandRunTests();
-      afx_msg void    OnCommandShowWindow(UINT nID);
-      afx_msg void    OnCommandStringLibrary();
-      afx_msg void    OnCommandWindowManager();
+      afx_msg void    OnCommandConsole()            { OnPerformCommand(ID_VIEW_CONSOLE);        }
+      afx_msg void    OnCommandFindText()           { OnPerformCommand(ID_EDIT_FIND);           }
+      afx_msg void    OnCommandCustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);      }
+      afx_msg void    OnCommandEditPreferences();
+      afx_msg void    OnCommandRunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);        }
+      afx_msg void    OnCommandStringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY); }
+      afx_msg void    OnCommandWindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);      }
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);
       handler void    OnInitialUpdate();
+      afx_msg void    OnPerformCommand(UINT nID);
       afx_msg void    OnQueryCommand(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       handler void    OnScriptCaretMoved(POINT pt);
