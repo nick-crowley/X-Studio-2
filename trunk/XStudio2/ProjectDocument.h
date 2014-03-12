@@ -81,6 +81,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  Rename(const wstring& name) override;
       void  RenameItem(ProjectItem* item, const wstring& name);
 
+   protected:
+      afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
+
       // -------------------- REPRESENTATION ---------------------
    public:
       ProjectFile  Project;

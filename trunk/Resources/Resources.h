@@ -53,32 +53,35 @@
 #define ID_FILE_BROWSE                  250
 #define ID_FILE_SAVE_ALL                251
 #define ID_FILE_EXPORT                  252
+#define ID_FILE_PROJECT_CLOSE                253
+#define ID_FILE_PROJECT_SAVE                 254
+#define ID_FILE_PROJECT_SAVE_AS              255
 
 // Edit Menu
-#define ID_EDIT_INSERT                  253
-#define ID_EDIT_PREFERENCES             254
+#define ID_EDIT_INSERT                  256
+#define ID_EDIT_PREFERENCES             257
 
 // Test menu
-#define ID_TEST_RUN_ALL                 255
-#define ID_TEST_COMPILE                 256
+#define ID_TEST_RUN_ALL                 258
+#define ID_TEST_COMPILE                 259
 
 // View menu
-#define ID_VIEW_PROJECT                 257
-#define ID_VIEW_SCRIPT_OBJECTS          258
-#define ID_VIEW_GAME_OBJECTS            259
-#define ID_VIEW_COMMANDS                260
-#define ID_VIEW_OUTPUT                  261
-#define ID_VIEW_PROPERTIES              262
-#define ID_VIEW_STRING_LIBRARY          263
-#define ID_VIEW_MEDIA_LIBRARY           264
-#define ID_VIEW_CUSTOMIZE               265
+#define ID_VIEW_PROJECT                 260
+#define ID_VIEW_SCRIPT_OBJECTS          261
+#define ID_VIEW_GAME_OBJECTS            262
+#define ID_VIEW_COMMANDS                263
+#define ID_VIEW_OUTPUT                  264
+#define ID_VIEW_PROPERTIES              265
+#define ID_VIEW_STRING_LIBRARY          266
+#define ID_VIEW_MEDIA_LIBRARY           267
+#define ID_VIEW_CUSTOMIZE               268
 
 // Window menu
-#define ID_WINDOW_MANAGER               266
+#define ID_WINDOW_MANAGER               269
 
 // Help
-#define ID_HELP_FORUMS                  267
-#define ID_VIEW_CONSOLE                 268
+#define ID_HELP_FORUMS                  270
+#define ID_VIEW_CONSOLE                 271
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
