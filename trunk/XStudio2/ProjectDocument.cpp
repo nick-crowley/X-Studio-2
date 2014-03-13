@@ -253,7 +253,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
 
          // Perform initial commits of file items
-         for (auto& item : proj.Items)
+         for (auto& item : proj.Items.ToList())
             if (auto file = dynamic_cast<ProjectFileItem*>(item.get()))
             {
                // Generate unique filename + Commit

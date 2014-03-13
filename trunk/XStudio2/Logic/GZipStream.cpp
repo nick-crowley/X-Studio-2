@@ -19,17 +19,40 @@ namespace Logic
          ZeroMemory(&ZStream, sizeof(ZStream));
          ZeroMemory(&ZHeader, sizeof(ZHeader));
 
-         // Ensure stream has read access
-         if (!src->CanRead())
-            throw ArgumentException(HERE, L"src", GuiString(ERR_NO_READ_ACCESS));
+         if (Mode == Operation::Decompression)
+         {
+            // Ensure stream has read/write access
+            if (!src->CanRead())
+               throw ArgumentException(HERE, L"src", GuiString(ERR_NO_READ_ACCESS));
 
-         // Init stream + extract header
-         if (inflateInit2(&ZStream, WINDOW_SIZE+DETECT_HEADER) != Z_OK) 
-            throw GZipException(HERE, ZStream.msg);
+            // Init stream + extract header
+            if (inflateInit2(&ZStream, WINDOW_SIZE+DETECT_HEADER) != Z_OK) 
+               throw GZipException(HERE, ZStream.msg);
 
-         // Allocate + set input buffer
-         Input.reset(new byte[src->GetLength()]);
-         ZStream.next_in = Input.get();
+            // Allocate + set input buffer
+            Buffer.reset(new byte[src->GetLength()]);
+            ZStream.next_in = Buffer.get();
+         }
+         else
+         {
+            // Ensure stream has write access
+            if (!src->CanWrite())
+               throw ArgumentException(HERE, L"src", GuiString(ERR_NO_WRITE_ACCESS));
+
+            // Init stream
+            if (deflateInit2(&ZStream, Z_BEST_COMPRESSION, Z_DEFLATED, WINDOW_SIZE+DETECT_HEADER, 9, Z_DEFAULT_STRATEGY) != Z_OK)
+               throw GZipException(HERE, ZStream.msg);
+
+            // Init header
+            ZHeader.name = (Bytef*)"filename";
+            if (deflateSetHeader(&ZStream, &ZHeader) != Z_OK)
+               throw GZipException(HERE, ZStream.msg);
+
+            // Allocate + set output buffer
+            Buffer.reset(new byte[COMPRESS_BUFFER]);
+            ZStream.next_out = Buffer.get();
+            ZStream.avail_out = COMPRESS_BUFFER;
+         }
       }
 
       /// <summary>Closes the stream without throwing</summary>
@@ -39,6 +62,13 @@ namespace Logic
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
+      
+      /// <summary>Stream is not seekable.</summary>
+      /// <returns></returns>
+      bool  GZipStream::CanSeek() const
+      { 
+         return false; 
+      }
 
       /// <summary>Closes the stream.</summary>
       /// <exception cref="Logic::GZipException">Unable to close stream</exception>
@@ -47,7 +77,12 @@ namespace Logic
       {
          if (!IsClosed())
          {
-            if (inflateEnd(&ZStream) != Z_OK)
+            // Decompression
+            if (Mode == Operation::Decompression && inflateEnd(&ZStream) != Z_OK)
+               throw GZipException(HERE, ZStream.msg);
+            
+            // Compression
+            else if (Mode == Operation::Compression && deflateEnd(&ZStream) != Z_OK)
                throw GZipException(HERE, ZStream.msg);
 
             StreamFacade::Close();
@@ -57,12 +92,17 @@ namespace Logic
       /// <summary>Gets the uncompressed stream length.</summary>
       /// <returns></returns>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+      /// <exception cref="Logic::NotSupportedException">Mode is compression</exception>
       DWORD  GZipStream::GetLength()
       {
          DWORD pos = StreamFacade::GetPosition(),
                size = 0;
 
-         // Extract uncompressed length from last four bytes
+         // Compress: Not supported
+         if (Mode == Operation::Compression)
+            throw NotSupportedException(HERE, L"Cannot get uncompressed length when compressing");
+
+         // Decompress: Extract uncompressed length from last four bytes
          StreamFacade::Seek(-4, SeekOrigin::End);
          StreamFacade::Read((byte*)&size, 4);
          StreamFacade::Seek(pos, SeekOrigin::Begin);
@@ -76,13 +116,18 @@ namespace Logic
          return ZStream.total_out;
       }
 
-      
       /// <summary>Closes the stream without throwing.</summary>
       void  GZipStream::SafeClose()
       {
          if (!IsClosed())
          {
-            inflateEnd(&ZStream);
+            // Close ZLib stream
+            if (Mode == Operation::Decompression)
+               inflateEnd(&ZStream);
+            else
+               deflateEnd(&ZStream);
+
+            // Close underlying stream
             StreamFacade::SafeClose();
          }
       }
@@ -127,7 +172,7 @@ namespace Logic
 
          // Re-Fill input buffer if necessary
          if (ZStream.avail_in == 0)
-            ZStream.avail_in += StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());
+            ZStream.avail_in = StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());
          
          // Decompress
          switch (int res = inflate(&ZStream, Z_FINISH))
@@ -149,11 +194,35 @@ namespace Logic
       /// <param name="length">The length of the buffer.</param>
       /// <returns>Number of bytes written</returns>
       /// <exception cref="Logic::NotImplementedException">Always</exception>
-      DWORD  GZipStream::Write(const BYTE* buffer, DWORD length)
+      DWORD  GZipStream::Write(const BYTE* input, DWORD length)
       {
-         REQUIRED(buffer);
+         REQUIRED(input);
 
-         throw NotImplementedException(HERE, L"GZip compression");
+         // Ensure we can write
+         if (!StreamFacade::CanWrite())
+            throw NotSupportedException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
+
+         // Supply input buffer
+         ZStream.next_in = const_cast<BYTE*>(input);
+         ZStream.avail_in = length;
+
+         // Re-Fill output buffer if necessary
+         /*if (ZStream.avail_out == 0)
+            ZStream.avail_out = StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());*/
+         
+         // Compress all input into the output buffer
+         switch (int res = deflate(&ZStream, Z_FINISH))
+         {
+         // Success: Write to underlying stream + Return count
+         case Z_STREAM_END:
+         /*case Z_BUF_ERROR:
+         case Z_OK:*/
+            return StreamFacade::Write(Buffer.get(), COMPRESS_BUFFER - ZStream.avail_out);
+
+         // Error: throw
+         default:
+            throw GZipException(HERE, ZStream.msg);
+         }
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
