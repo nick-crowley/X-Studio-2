@@ -9,6 +9,19 @@ namespace Logic
       /// <summary>Types of backup file</summary>
       enum class BackupType { MSCI, MD };
 
+      /// <summary>Get backup file type string</summary>
+      /// <param name="t">type.</param>
+      /// <exception cref="Logic::ArgumentException">Unknown type</exception>
+      inline wstring GetString(BackupType t)
+      {
+         switch (t)
+         {
+         case BackupType::MSCI:  return L"msci";
+         case BackupType::MD:    return L"md";
+         }
+         throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised backup type %d", t));
+      }
+
       /// <summary></summary>
       class ScriptRevision
       {
@@ -17,7 +30,15 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptRevision(const wstring& title, IO::Path path, const wstring& content, const ScriptFile& script) 
+         /// <summary>Create empty revision.</summary>
+         ScriptRevision()
+         {}
+         /// <summary>Create script revision.</summary>
+         /// <param name="title">Revision title.</param>
+         /// <param name="path">Script path.</param>
+         /// <param name="content">Script content.</param>
+         /// <param name="script">script properties.</param>
+         ScriptRevision(const wstring& title, IO::Path path, const wstring& content, const ScriptFile& script)
             : Title(title), 
               FullPath(path), 
               Content(content), 

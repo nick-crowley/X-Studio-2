@@ -3,6 +3,7 @@
 #include "ImportProjectDialog.h"
 #include "Logic/FileIdentifier.h"
 #include "Logic/BackupFileReader.h"
+#include "Logic/BackupFileWriter.h"
 #include "Logic/LegacyProjectFileReader.h"
 #include "Logic/ProjectFileReader.h"
 #include "Logic/ProjectFileWriter.h"
