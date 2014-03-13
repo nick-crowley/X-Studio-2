@@ -48,10 +48,12 @@
 
 
 // Import MS-XML library
-#include "Logic/msxml.h"
+#include "msxml.h"
+
 
 // Import tom
-#include "Logic/TextObjectModel.h"
+#include "tom.h"
+
 
 // Win32 
 #include <Windowsx.h>

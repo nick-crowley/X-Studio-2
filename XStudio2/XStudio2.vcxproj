@@ -158,7 +158,7 @@
     <ClInclude Include="Logic\ProjectItem.h" />
     <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
-    <ClInclude Include="Logic\TextObjectModel.h" />
+    <ClInclude Include="msxml.h" />
     <ClInclude Include="NewDocumentDialog.h" />
     <ClInclude Include="PreferencesDialog.h" />
     <ClInclude Include="PreferencesPage.h" />
@@ -235,7 +235,6 @@
     <ClInclude Include="Logic\LookupString.h" />
     <ClInclude Include="Logic\Macros.h" />
     <ClInclude Include="Logic\MemoryStream.h" />
-    <ClInclude Include="Logic\msxml.h" />
     <ClInclude Include="Logic\ParameterSyntax.h" />
     <ClInclude Include="Logic\Path.h" />
     <ClInclude Include="Logic\ReturnValue.h" />
@@ -293,6 +292,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
+    <ClInclude Include="tom.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -317,6 +317,8 @@
     <ClCompile Include="Logic\ProjectFileReader.cpp" />
     <ClCompile Include="Logic\ProjectFileWriter.cpp" />
     <ClCompile Include="Logic\SyntaxHighlight.cpp" />
+    <ClCompile Include="msftedit.cpp" />
+    <ClCompile Include="msxml6.cpp" />
     <ClCompile Include="NewDocumentDialog.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
@@ -436,6 +438,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="msftedit.tlh" />
+    <None Include="msxml6.tlh" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />

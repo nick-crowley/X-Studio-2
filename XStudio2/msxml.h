@@ -1,6 +1,6 @@
 #pragma once
 
-#import "MSXML6.dll" rename_namespace(_T("Xml"))
+#include "msxml6.tlh"      //#import "MSXML6.dll" rename_namespace(_T("Xml"))
 //#include <msxml2.h>
 
 /// <summary>Xml DOM document smart pointer</summary>
