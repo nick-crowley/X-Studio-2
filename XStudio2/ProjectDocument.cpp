@@ -58,47 +58,38 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Adds a file item.</summary>
    /// <param name="path">Full path.</param>
-   /// <param name="parent">parent item.</param>
+   /// <param name="folder">parent item.</param>
    /// <returns>True if added, False if already existed</returns>
-   /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
-   bool ProjectDocument::AddFile(IO::Path path, ProjectFolderItem* parent)
+   bool ProjectDocument::AddFile(IO::Path path, ProjectItem& folder)
    {
-      REQUIRED(parent);
-
       // Ensure not already present
       if (Contains(path))
          return false;
 
-      // Identify type
-      FileType type = FileIdentifier::Identify(path);
-
-      // Modify
-      SetModifiedFlag(TRUE);
+      // Create item
+      auto item = ProjectItem(FileIdentifier::Identify(path), path, L"");
 
       // Raise 'ITEM ADDED'
-      auto item = new ProjectFileItem(path, type);
-      parent->Add(item);
-      ItemAdded.Raise(item, parent);
+      ItemAdded.Raise(&folder.Add(item), &folder);
+
+      // Modify document
+      SetModifiedFlag(TRUE);
       return true;
    }
 
    /// <summary>Adds a new folder.</summary>
    /// <param name="name">name.</param>
-   /// <param name="parent">The parent.</param>
-   /// <exception cref="Logic::ArgumentNullException">Parent is null</exception>
-   void ProjectDocument::AddFolder(const wstring& name, ProjectFolderItem* parent)
+   /// <param name="parent">parent folder.</param>
+   void ProjectDocument::AddFolder(const wstring& name, ProjectItem& folder)
    {
-      REQUIRED(parent);
-
       // Modify
       SetModifiedFlag(TRUE);
 
       // Add new folder
-      auto folder = new ProjectFolderItem(name, false);
-      parent->Add(folder);
+      auto item = ProjectItem(name, false);
 
       // Raise 'ITEM ADDED'
-      ItemAdded.Raise(folder, parent);
+      ItemAdded.Raise(&folder.Add(item), &folder);
    }
 
    /// <summary>Check whether document contains a file</summary>
@@ -106,19 +97,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    bool ProjectDocument::Contains(IO::Path path) const
    {
-      // Search folders
-      for (auto& folder : Project.Items)
-         if (folder->Contains(path))
-            return true;
-
-      // Not found
-      return false;
+      return Project.Contains(path);
    }
 
    /// <summary>Get backup file for a document.</summary>
    /// <param name="doc">The document.</param>
    /// <returns></returns>
-   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   /// <exception cref="Logic::ProjectItemNotFoundException">Document not part of project</exception>
    /// <exception cref="Logic::ArgumentNullException">Invalid file format</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
@@ -126,15 +111,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    BackupFile  ProjectDocument::GetAllRevisions(DocumentBase* doc) const
    {
-      //auto path = FullPath.Folder + (doc->FullPath.FileName + L".zip");
-      //auto path = L"D:\\My Projects\\XStudio2\\Docs\\BackupFile (Example).xml";
-
       // Lookup project item
-      auto file = dynamic_cast<ProjectFileItem*>(Project.Items.Find(doc->FullPath).get());
-      if (!file)
-         throw ArgumentException(HERE, L"doc", L"Document is not a member of this project");
+      auto file = Project.Find(doc->FullPath);
 
-
+      // DEBUG:
       Console << "Opening backup file: " << file->BackupPath << ENDL;
 
       // Open backup file
@@ -144,39 +124,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Moves an item to a new folder</summary>
    /// <param name="item">item.</param>
    /// <param name="folder">Destination.</param>
-   /// <exception cref="Logic::ArgumentNullException">Item/folder is null</exception>
-   void ProjectDocument::MoveItem(ProjectItem* item, ProjectFolderItem* folder)
+   void ProjectDocument::MoveItem(ProjectItem& item, ProjectItem& folder)
    {
-      REQUIRED(item);
-      REQUIRED(folder);
-
-      // Modify
-      SetModifiedFlag(TRUE);
+      auto copy = ProjectItem(item);
 
       // Remove item. Raise 'ITEM REMOVED'
-      auto ptr = Project.Items.Remove(item);
-      ItemRemoved.Raise(ptr.get(), nullptr);
+      Project.Remove(&item);
+      ItemRemoved.Raise(&item);
+
+      // Modify document
+      SetModifiedFlag(TRUE);
 
       // Add to folder. Raise 'ITEM ADDED'
-      folder->Add(ptr);
-      ItemAdded.Raise(ptr.get(), folder);
+      ItemAdded.Raise(&folder.Add(copy), &folder);
    }
 
    /// <summary>Removes an item from the project</summary>
    /// <param name="item">item.</param>
-   /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-   ProjectItemPtr ProjectDocument::RemoveItem(ProjectItem* item)
+   void ProjectDocument::RemoveItem(ProjectItem& item)
    {
-      REQUIRED(item);
-
-      // Modify
-      SetModifiedFlag(TRUE);
-
       // Remove item. Raise 'ITEM REMOVED'
-      auto ptr = Project.Items.Remove(item);
-      ItemRemoved.Raise(ptr.get(), nullptr);
+      Project.Remove(&item);
+      ItemRemoved.Raise(&item);
 
-      return ptr;
+      // Modify document
+      SetModifiedFlag(TRUE);
    }
 
    /// <summary>Changes the project filename and title</summary>
@@ -187,46 +159,43 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DocumentBase::Rename(name);
 
       // Raise 'ITEM CHANGED'
-      ItemChanged.Raise(nullptr, nullptr);
+      ItemChanged.Raise(nullptr);
    }
 
    /// <summary>Renames a project item.</summary>
    /// <param name="item">The item.</param>
    /// <param name="name">New name.</param>
-   /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
    /// <exception cref="Logic::Win32Exception">Unable to rename file</exception>
-   void  ProjectDocument::RenameItem(ProjectItem* item, const wstring& name)
+   void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
    {
-      REQUIRED(item);
-
-      // Modify
-      SetModifiedFlag(TRUE);
-
       // Update name
-      item->Name = name;
+      item.Name = name;
 
       // File: Rename file/document
-      if (auto file = dynamic_cast<ProjectFileItem*>(item))
+      if (item.IsFile())
       {
          // Open: Rename document
-         if (auto doc = theApp.GetOpenDocument(file->FullPath))
+         if (auto doc = theApp.GetOpenDocument(item.FullPath))
             doc->Rename(name);
          else
          {
             // New file path
-            IO::Path newPath = file->FullPath.RenameFileName(name);
+            IO::Path newPath = item.FullPath.RenameFileName(name);
             
             // Closed: Rename file on disc
-            if (newPath.Exists() || !MoveFile(file->FullPath.c_str(), newPath.c_str()))
-               throw Win32Exception(HERE, GuiString(L"Unable to rename '%s' to '%s'", file->FullPath.FileName.c_str(), newPath.FileName.c_str()));
+            if (newPath.Exists() || !MoveFile(item.FullPath.c_str(), newPath.c_str()))
+               throw Win32Exception(HERE, GuiString(L"Unable to rename '%s' to '%s'", item.FullPath.FileName.c_str(), newPath.FileName.c_str()));
 
             // Set new path
-            file->FullPath = newPath;
+            item.FullPath = newPath;
          }
       }
 
+      // Modify document
+      SetModifiedFlag(TRUE);
+
       // Raise 'ITEM CHANGED'
-      ItemChanged.Raise(item, nullptr);
+      ItemChanged.Raise(&item);
    }
 
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
@@ -262,14 +231,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
 
          // Perform initial commits of file items
-         for (auto& item : proj.Items.ToList())
-            if (auto file = dynamic_cast<ProjectFileItem*>(item))
-               if (file->FileType == FileType::Script)
-               {
-                  // Generate unique filename + Commit
-                  file->SetBackupPath(upgrade.Folder);
-                  InitialCommit(*file);
-               }
+         for (auto& item : proj.ToList())
+            if (item->IsFile() && item->FileType == FileType::Script)
+            {
+               // Generate unique filename + Commit
+               item->SetBackupPath(upgrade.Folder);
+               InitialCommit(*item);
+            }
 
          // Write X-Studio2 project
          auto out = StreamPtr(new FileStream(upgrade, FileMode::CreateNew, FileAccess::Write));
@@ -327,14 +295,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
    /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::InitialCommit(const ProjectFileItem& item)
+   void ProjectDocument::InitialCommit(const ProjectItem& item)
    {
       try
       {
          BackupFile backup(BackupType::MSCI);
 
          // Ensure backup path has been set
-         if (item.BackupPath.Empty())
+         if (item.BackupName.empty())
             throw ArgumentException(HERE, L"item", GuiString(L"Missing backup file path for '%s'", item.Name.c_str()) );
 
          // Read script from disc
@@ -345,7 +313,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          backup.Revisions.Add(rev);
 
          // Save backup
-         BackupFileWriter w(XFileInfo(item.BackupPath).OpenWrite());
+         BackupFileWriter w(XFileInfo(FullPath.Folder+item.BackupName).OpenWrite());
          w.WriteFile(backup);
          w.Close();
       }

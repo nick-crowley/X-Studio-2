@@ -223,8 +223,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       try
       {
-         // Get selected folder
          auto folder = TreeView.SelectedItem;
+         
+         // Require selected folder
          if (!folder || !folder->IsFolder())
             return;
 
@@ -238,7 +239,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Console << Cons::UserAction << "Adding " << path << " to project item " << Cons::Yellow << folder->Name << "...";
 
             // Attempt to insert
-            bool added = ProjectDocument::GetActive()->AddFile(path, folder);
+            bool added = ProjectDocument::GetActive()->AddFile(path, *folder);
 
             // Feedback
             Console << (added ? Cons::Success : Cons::Failure) << ENDL;
@@ -254,8 +255,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
-	      // Get selected folder, if any
          auto folder = TreeView.SelectedItem;
+
+	      // Require selected folder
          if (!folder || !folder->IsFolder())
             return;
 
@@ -263,7 +265,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console << Cons::UserAction << "Adding new folder to project item " << Cons::Yellow << folder->Name << ENDL;
 
          // Insert new folder
-         ProjectDocument::GetActive()->AddFolder(L"New Folder", folder);
+         ProjectDocument::GetActive()->AddFolder(L"New Folder", *folder);
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
@@ -338,7 +340,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console << Cons::UserAction << "Removing project item: " << Cons::Yellow << item->Name << ENDL;
 
          // Remove item
-         ProjectDocument::GetActive()->RemoveItem(item);
+         ProjectDocument::GetActive()->RemoveItem(*item);
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);

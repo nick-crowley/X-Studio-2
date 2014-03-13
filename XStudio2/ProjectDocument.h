@@ -32,8 +32,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Project item added/changed/removed event</summary>
    /// <typeparam name="item">Item added/changed/removed</typeparam>
    /// <typeparam name="parent">Parent of item added (otherwise nullptr)</typeparam>
-   typedef Event<ProjectItem*, ProjectItem*>   ProjectItemEvent;
-   typedef ProjectItemEvent::DelegatePtr       ProjectItemHandler;
+   typedef Event<ProjectItem*, ProjectItem*>   ProjectItemAddedEvent;
+   typedef Event<ProjectItem*>                 ProjectItemEvent;
 
    /// <summary></summary>
    class ProjectDocument : public DocumentBase
@@ -52,10 +52,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static SimpleEvent       Loaded;
-      static ProjectItemEvent  ItemAdded,
-                               ItemChanged,
-                               ItemRemoved;
+      static SimpleEvent            Loaded;
+      static ProjectItemAddedEvent  ItemAdded;
+      static ProjectItemEvent       ItemChanged,
+                                    ItemRemoved;
 
       static ProjectDocument*  GetActive();
 	  
@@ -68,10 +68,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      bool  AddFile(IO::Path path, ProjectFolderItem* parent);
-      void  AddFolder(const wstring& name, ProjectFolderItem* parent);
+      bool  AddFile(IO::Path path, ProjectItem& folder);
+      void  AddFolder(const wstring& name, ProjectItem& folder);
       bool  Contains(IO::Path path) const;
-      void  MoveItem(ProjectItem* item, ProjectFolderItem* folder);
+      void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
       void  OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL  OnNewDocument() override;
@@ -79,12 +79,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
 
-      ProjectItemPtr  RemoveItem(ProjectItem* item);
+      void  RemoveItem(ProjectItem& item);
       void  Rename(const wstring& name) override;
-      void  RenameItem(ProjectItem* item, const wstring& name);
+      void  RenameItem(ProjectItem& item, const wstring& name);
 
    protected:
-      void  InitialCommit(const ProjectFileItem& item);
+      void  InitialCommit(const ProjectItem& item);
 
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 
