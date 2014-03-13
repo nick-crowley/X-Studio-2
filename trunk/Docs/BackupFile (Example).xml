@@ -44,7 +44,7 @@ remove element from array $aTemp at index $iCount
 end</text>
   </revision>
 
-  <revision title="second revision" date="2013-03-11 17:00:00" path="D:\X3 Albion Prelude\scripts\plugin.piracy.lib.logic.xml">
+  <revision title="second revision. This is an example of a revision with a detailed description" date="2013-03-11 17:00:00" path="D:\X3 Albion Prelude\scripts\plugin.piracy.lib.logic.xml">
     <scriptname>plugin.piracy.lib.logic</scriptname>
     <version>101</version>
     <game>X3TC</game>

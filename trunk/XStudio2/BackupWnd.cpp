@@ -21,6 +21,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_WM_PAINT()
       ON_WM_SETFOCUS()
 	   ON_WM_SETTINGCHANGE()
+      ON_WM_DRAWITEM()
+      ON_WM_MEASUREITEM()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -80,7 +82,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
-	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
+	      if (__super::OnCreate(lpCreateStruct) == -1)
 		      throw Win32Exception(HERE, L"Failed to create dockable pane");
 
 	      CRect rectDummy;
@@ -90,10 +92,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ToolBar.Create(this, IDR_BACKUP, L"Backup");
 
          // Create List
-	      if (!List.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_BACKUP_LIST))
+         DWORD style = WS_VISIBLE|WS_CHILD|WS_VSCROLL|LBS_DISABLENOSCROLL|LBS_OWNERDRAWVARIABLE|LBS_NOTIFY;
+	      if (!List.Create(style, rectDummy, this, IDC_BACKUP_LIST))
 	         throw Win32Exception(HERE, L"Failed to create backup list");
 
          // Setup list
+
+         // ImageList
+         Images.Create(IDB_BACKUP_ICONS, 24, 3, RGB(255,0,255));
          
          // Layout
          UpdateFont();
@@ -113,10 +119,104 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Clear previous
       List.ResetContent();
+      //List.SendMessage(LB_SETCOUNT, 0);
 
       // Require project
       if (auto proj = ProjectDocument::GetActive())
-         Populate( proj->GetAllBackups(DocumentBase::GetActive()) );
+      {
+         Content = proj->GetAllBackups(DocumentBase::GetActive());
+         Populate();
+      }
+   }
+   
+
+   void BackupWnd::OnDrawItem(int id, LPDRAWITEMSTRUCT draw)
+   {
+      try
+      {
+         SharedDC dc(draw->hDC);
+         CRect    rc(draw->rcItem);
+
+         // Empty: Draw focus only
+         if (draw->itemID == -1)
+            dc.DrawFocusRect(&draw->rcItem);
+         else
+         {
+            // Prepare
+            auto& item = Content.Revisions.FindByIndex(draw->itemID);
+            bool Selected = (draw->itemState & ODS_SELECTED) != 0,   // List.GetCurSel() == draw->itemID,
+                 Focused = (draw->itemState & ODS_FOCUS) != 0;   //List.GetCaretIndex() == draw->itemID;
+
+            // Background:
+            dc.FillSolidRect(rc, GetSysColor(Selected?COLOR_HIGHLIGHT:COLOR_WINDOW));
+            dc.SetTextColor(GetSysColor(Selected?COLOR_HIGHLIGHTTEXT:COLOR_WINDOWTEXT));
+
+            // Separator
+            if (!Focused)
+               dc.DrawEdge(rc, EDGE_ETCHED, BF_BOTTOM);
+            rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
+
+            // Icon
+            Images.Draw(dc, 0, CRect(rc.left, rc.top, rc.left+24, rc.bottom), CSize(24,24), Selected ? ODS_SELECTED : NULL);
+            rc.left += 24 + GetSystemMetrics(SM_CXEDGE);
+
+            // Date:
+            auto font = dc.SelectObject(&BoldFont);
+            dc.DrawText(item.Date.Format(L"%d %b '%y %I:%M%p"), rc, DT_RIGHT|DT_TOP);      // 5 Mar '14 14:20pm
+            dc.SelectObject(font);
+
+            // Title:
+            rc.top += dc.GetTextExtent(L"ABC").cy;
+            dc.DrawText(item.Title.c_str(), rc, DT_LEFT|DT_WORDBREAK);
+
+            // Focus:
+            if (Focused)
+               dc.DrawFocusRect(&draw->rcItem);
+         }
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+
+      __super::OnDrawItem(id, draw);
+   }
+
+
+   void BackupWnd::OnMeasureItem(int id, LPMEASUREITEMSTRUCT measure)
+   {
+      try
+      {
+         ClientRect rc(this);
+         CClientDC  dc(this);
+
+         Console << HERE << " item=" << measure->itemID << ENDL;
+
+         // Lookup item
+         auto& item = Content.Revisions.FindByIndex(measure->itemID);
+
+         // Prepare
+         auto font = dc.SelectObject(List.GetFont());
+         rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
+
+         // Icon
+         rc.left += 24 + GetSystemMetrics(SM_CXEDGE);
+      
+         // Measure Title/Date:
+         int dateHeight = dc.GetTextExtent(L"ABC").cy;
+         dc.DrawText(item.Title.c_str(), &rc, DT_LEFT|DT_TOP|DT_CALCRECT|DT_WORDBREAK);
+
+         // Set width/height
+         measure->itemHeight = rc.Height() + dateHeight + 3;
+         measure->itemWidth = rc.Width();
+
+         // Cleanup
+         dc.SelectObject(font);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+
+      __super::OnMeasureItem(id, measure);
    }
 
    /// <summary>Manually paints border around grid.</summary>
@@ -150,7 +250,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pOldWnd">The p old WND.</param>
    void BackupWnd::OnSetFocus(CWnd* pOldWnd)
    {
-      CDockablePane::OnSetFocus(pOldWnd);
+      __super::OnSetFocus(pOldWnd);
 	   List.SetFocus();
    }
 
@@ -159,7 +259,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="lpszSection">The section.</param>
    void BackupWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
-	   CDockablePane::OnSettingChange(uFlags, lpszSection);
+	   __super::OnSettingChange(uFlags, lpszSection);
 
       // Update font
 	   UpdateFont();
@@ -172,20 +272,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="cy">The height.</param>
    void BackupWnd::OnSize(UINT nType, int cx, int cy)
    {
-	   CDockablePane::OnSize(nType, cx, cy);
+	   __super::OnSize(nType, cx, cy);
 	   AdjustLayout();
    }
    
-   /// <summary>Populates from a backup file.</summary>
-   /// <param name="f">backup file.</param>
-   void BackupWnd::Populate(BackupFile& f)
+   /// <summary>Populates items from current backup file.</summary>
+   void BackupWnd::Populate()
    {
       try
       {
-         Console << HERE << " size=" << f.Revisions.Count << ENDL;
+         // Clear
+         List.ResetContent();
+         
+         // Fill list with dummy items
+         for (auto& rev : Content.Revisions)
+            List.InsertString(-1, L"-");
 
-         for (auto& rev : f.Revisions)
-            List.AddString(rev.Title.c_str());
+         //List.SendMessage(LB_SETCOUNT, f.Revisions.Count);      // Doesn't work
       }
       catch (ExceptionBase& e) {
          List.ResetContent();
@@ -197,6 +300,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void BackupWnd::UpdateFont()
    {
 	   List.SetFont(&theApp.ToolWindowFont);
+
+      // Generate bold font
+      LOGFONT lf;
+      theApp.ToolWindowFont.GetLogFont(&lf);
+      lf.lfWeight = FW_BOLD;
+
+      // Create
+      BoldFont.DeleteObject();
+      BoldFont.CreateFontIndirectW(&lf);
+
+      // Re-populate
+      //Populate();
    }
    
    
