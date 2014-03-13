@@ -37,10 +37,10 @@ namespace Logic
          ProjectFile  ReadFile(Path path);
 
       protected:
-         void                 LoadDocument() override;
-         ProjectFolderItem*   ReadFolderItem(XmlNodePtr node);
-         ProjectFileItem*     ReadFileItem(XmlNodePtr node);
-         ProjectVariableItem* ReadVariableItem(XmlNodePtr node);
+         void        LoadDocument() override;
+         ProjectItem ReadFolderItem(XmlNodePtr node);
+         ProjectItem ReadFileItem(XmlNodePtr node);
+         ProjectItem ReadVariableItem(XmlNodePtr node);
 
          // -------------------- REPRESENTATION ---------------------
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LegacyProjectFileReader.h"
+#include "ProjectFileReader.h"
 
 namespace Logic
 {
@@ -43,10 +44,10 @@ namespace Logic
             LoadDocument();
 
             // Create folders
-            file.Items.Add(new ProjectFolderItem(L"Language Files", true));
-            file.Items.Add(new ProjectFolderItem(L"MD Scripts", true));
-            file.Items.Add(new ProjectFolderItem(L"MSCI Scripts", true));
-            file.Items.Add(new ProjectFolderItem(L"Variables", true));
+            file.Add(ProjectItem(L"Language Files", true));
+            file.Add(ProjectItem(L"MD Scripts", true));
+            file.Add(ProjectItem(L"MSCI Scripts", true));
+            file.Add(ProjectItem(L"Variables", true));
 
             // Read documents/variables
             for (int i = 0; i < Root->childNodes->length; i++)
@@ -62,16 +63,16 @@ namespace Logic
                {
                   auto doc = ReadDocument(n);
                   // Script:
-                  if (doc->FileType == FileType::Script)
-                     file.Items[2]->Add(doc);
+                  if (doc.FileType == FileType::Script)
+                     file[2].Add(doc);
                   
                   // LanguageFile:
-                  else if (doc->FileType == FileType::Language)
-                     file.Items[0]->Add(doc);
+                  else if (doc.FileType == FileType::Language)
+                     file[0].Add(doc);
                }
                // Variable
                else if (n->nodeName == _bstr_t(L"variable"))
-                  file.Items[3]->Add(ReadVariable(n));
+                  file[3].Add(ReadVariable(n));
                else  
                   // Unrecognised
                   throw FileFormatException(HERE, L"Unrecognised element");;
@@ -91,26 +92,26 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Unrecognised file type -or- Missing elements/attributes</exception>
-      ProjectFileItem*  LegacyProjectFileReader::ReadDocument(XmlNodePtr node)
+      ProjectItem  LegacyProjectFileReader::ReadDocument(XmlNodePtr node)
       {
          try
          {
             // Verify node
             ReadElement(node, L"document");
 
-            // Verify path exists
+            // Require path
             if (!node->text.length())
                throw FileFormatException(HERE, L"Missing document path");
 
-            // Script:
-            if (ReadAttribute(node, L"type") == L"script")
-               return new ProjectFileItem((const wchar*)node->text, FileType::Script);
+            // Read type
+            FileType type = ProjectFileReader::ParseFileType(ReadAttribute(node, L"type"));
 
-            else if (ReadAttribute(node, L"type") == L"language")
-               return new ProjectFileItem((const wchar*)node->text, FileType::Language);
+            // Require Script/Language:
+            if (type != FileType::Language && type != FileType::Script)
+               throw FileFormatException(HERE, L"Unrecognised file type");
 
-            // Unrecognised
-            throw FileFormatException(HERE, L"Unrecognised file type");
+            // Create file (without backup)
+            return ProjectItem(type, (const wchar*)node->text, L"");
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
@@ -123,7 +124,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Missing name -or- Missing elements/attributes</exception>
-      ProjectVariableItem*  LegacyProjectFileReader::ReadVariable(XmlNodePtr node)
+      ProjectItem  LegacyProjectFileReader::ReadVariable(XmlNodePtr node)
       {
          try
          {
@@ -135,8 +136,8 @@ namespace Logic
                throw FileFormatException(HERE, L"Missing variable name");
 
             // Read value + name
-            int val =  _ttoi(ReadAttribute(node, L"value").c_str());
-            return new ProjectVariableItem((const wchar*)node->text, val);
+            int val =  GuiString(ReadAttribute(node, L"value")).ToInt();
+            return ProjectItem((const wchar*)node->text, val);
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
