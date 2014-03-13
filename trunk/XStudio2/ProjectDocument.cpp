@@ -118,18 +118,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Get backup file for a document.</summary>
    /// <param name="doc">The document.</param>
    /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ArgumentNullException">Invalid file format</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
    /// <exception cref="Logic::InvalidValueException">Invalid file format</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   BackupFile  ProjectDocument::GetAllBackups(DocumentBase* doc) const
+   BackupFile  ProjectDocument::GetAllRevisions(DocumentBase* doc) const
    {
       //auto path = FullPath.Folder + (doc->FullPath.FileName + L".zip");
-      auto path = L"D:\\My Projects\\XStudio2\\Docs\\BackupFile (Example).xml";
+      //auto path = L"D:\\My Projects\\XStudio2\\Docs\\BackupFile (Example).xml";
 
-      // Open backup
-      return BackupFileReader(XFileInfo(path).OpenRead()).ReadFile();
+      // Lookup project item
+      auto file = dynamic_cast<ProjectFileItem*>(Project.Items.Find(doc->FullPath).get());
+      if (!file)
+         throw ArgumentException(HERE, L"doc", L"Document is not a member of this project");
+
+      // Open backup file
+      return BackupFileReader(XFileInfo(file->BackupPath).OpenRead()).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>

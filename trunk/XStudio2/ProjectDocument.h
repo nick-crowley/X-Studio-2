@@ -64,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      BackupFile  GetAllBackups(DocumentBase* doc) const;
+      BackupFile  GetAllRevisions(DocumentBase* doc) const;
 
       // ----------------------- MUTATORS ------------------------
    public:

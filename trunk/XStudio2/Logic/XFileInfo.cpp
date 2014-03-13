@@ -137,7 +137,7 @@ namespace Logic
          if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
          {
             shared_ptr<GZipStream> gzip(new GZipStream(s, GZipStream::Operation::Compression));
-            gzip->SetFileName(FullPath.FileName);
+            gzip->SetFileName(FullPath.RemoveExtension().FileName);
             return gzip;
          }
 

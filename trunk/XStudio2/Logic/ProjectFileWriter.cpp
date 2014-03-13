@@ -96,6 +96,7 @@ namespace Logic
 
          // <file type='..'>full_path</file>
          auto node = WriteElement(parent, L"file", file->FullPath.c_str());
+         WriteAttribute(node, L"backup", file->BackupPath.c_str());
          WriteAttribute(node, L"type", ::GetString(file->FileType));
       }
 
