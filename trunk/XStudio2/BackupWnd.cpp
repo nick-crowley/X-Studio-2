@@ -82,6 +82,72 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ToolBar.SetWindowPos(nullptr, wnd.left, wnd.top, wnd.Width(), barHeight, SWP_NOACTIVATE | SWP_NOZORDER);
 	   List.SetWindowPos(nullptr, wnd.left+1, wnd.top+barHeight+1, wnd.Width()-2, wnd.Height()-barHeight-2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
+   
+   /// <summary>Draws an item or calculates the necessary space.</summary>
+   /// <param name="dc">The dc.</param>
+   /// <param name="rc">item rect (drawing) or client rect (measuring).</param>
+   /// <param name="index">zero-based index, or -1 if box is empty.</param>
+   /// <param name="state">item state.</param>
+   /// <param name="calculate">calculate only.</param>
+   void BackupWnd::DrawItem(CDC& dc, CRect& rc, int index, UINT state, bool calculate)
+   {
+      // Empty: Draw focus only
+      if (index == -1)
+         dc.DrawFocusRect(rc);
+      else
+      {
+         // Prepare
+         auto& item     = Content.Revisions.FindByIndex(index);
+         bool  Selected = (state & ODS_SELECTED) != 0, 
+               Focused  = (state & ODS_FOCUS) != 0;   
+         auto  font     = dc.SelectObject(List.GetFont());
+         auto  itemRect = rc;
+
+         // Left/Right edge
+         rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
+
+         // Background:
+         if (!calculate)
+         {
+            dc.FillSolidRect(itemRect, GetSysColor(Selected?COLOR_HIGHLIGHT:COLOR_WINDOW));
+            dc.SetTextColor(GetSysColor(Selected?COLOR_HIGHLIGHTTEXT:COLOR_WINDOWTEXT));   
+         }
+
+         // Icon:
+         if (!calculate)
+            Images.Draw(dc, GameVersionIndex(item.Game).Index, CRect(rc.left, rc.top, rc.left+24, rc.bottom), CSize(24,24), Selected ? ODS_SELECTED : NULL);
+         rc.left += 24 + GetSystemMetrics(SM_CXEDGE);
+
+         // Version/Date:
+         dc.SelectObject(&BoldFont);
+         if (!calculate)
+         {
+            dc.DrawText(GuiString(L"Version: %d", item.Version).c_str(), rc, DT_LEFT|DT_TOP);      // Version xyz
+            dc.DrawText(item.Date.Format(L"%d %b '%y %I:%M%p"), rc, DT_RIGHT|DT_TOP);              // dd mmm yy hh:mm pm
+         }
+         rc.top += dc.GetTextExtent(L"ABC").cy;
+
+         // Title:
+         dc.SelectObject(List.GetFont());
+         rc.top += GetSystemMetrics(SM_CYEDGE);
+         dc.DrawText(item.Title.c_str(), rc, DT_LEFT|DT_WORDBREAK|(calculate?DT_CALCRECT:0));
+
+         // Calculate: Return height of version/date + title
+         if (calculate)
+         {
+            rc.top = itemRect.top;
+            rc.bottom += GetSystemMetrics(SM_CYEDGE);
+         }
+         // Focus/Separator:
+         else if (Focused)
+            dc.DrawFocusRect(itemRect);
+         else 
+            dc.DrawEdge(itemRect, EDGE_ETCHED, BF_BOTTOM);
+         
+         // Cleanup
+         dc.SelectObject(font);
+      }
+   }
 
    /// <summary>Create child controls</summary>
    /// <param name="lpCreateStruct">create params</param>
@@ -122,7 +188,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary>Called when context menu.</summary>
    /// <param name="pWnd">The p WND.</param>
-   /// <param name="point">The point in screen co-ordinates.</param>
+   /// <param name="">The .</param>
    void BackupWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
       // Ensure List was clicked
@@ -167,6 +233,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
 
+   /// <summary>Owner draw items.</summary>
+   /// <param name="id">The identifier.</param>
+   /// <param name="draw">The draw.</param>
    void BackupWnd::OnDrawItem(int id, LPDRAWITEMSTRUCT draw)
    {
       try
@@ -174,42 +243,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          SharedDC dc(draw->hDC);
          CRect    rc(draw->rcItem);
 
-         // Empty: Draw focus only
-         if (draw->itemID == -1)
-            dc.DrawFocusRect(&draw->rcItem);
-         else
-         {
-            // Prepare
-            auto& item = Content.Revisions.FindByIndex(draw->itemID);
-            bool Selected = (draw->itemState & ODS_SELECTED) != 0,   // List.GetCurSel() == draw->itemID,
-                 Focused = (draw->itemState & ODS_FOCUS) != 0;   //List.GetCaretIndex() == draw->itemID;
-
-            // Background:
-            dc.FillSolidRect(rc, GetSysColor(Selected?COLOR_HIGHLIGHT:COLOR_WINDOW));
-            dc.SetTextColor(GetSysColor(Selected?COLOR_HIGHLIGHTTEXT:COLOR_WINDOWTEXT));
-
-            // Separator
-            if (!Focused)
-               dc.DrawEdge(rc, EDGE_ETCHED, BF_BOTTOM);
-            rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
-
-            // Icon
-            Images.Draw(dc, 0, CRect(rc.left, rc.top, rc.left+24, rc.bottom), CSize(24,24), Selected ? ODS_SELECTED : NULL);
-            rc.left += 24 + GetSystemMetrics(SM_CXEDGE);
-
-            // Date:
-            auto font = dc.SelectObject(&BoldFont);
-            dc.DrawText(item.Date.Format(L"%d %b '%y %I:%M%p"), rc, DT_RIGHT|DT_TOP);      // 5 Mar '14 14:20pm
-            dc.SelectObject(font);
-
-            // Title:
-            rc.top += dc.GetTextExtent(L"ABC").cy;
-            dc.DrawText(item.Title.c_str(), rc, DT_LEFT|DT_WORDBREAK);
-
-            // Focus:
-            if (Focused)
-               dc.DrawFocusRect(&draw->rcItem);
-         }
+         // Draw item
+         DrawItem(dc, rc, draw->itemID, draw->itemState, false);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -218,7 +253,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       __super::OnDrawItem(id, draw);
    }
 
-
+   /// <summary>Called when measure item.</summary>
+   /// <param name="id">The identifier.</param>
+   /// <param name="measure">The measure.</param>
    void BackupWnd::OnMeasureItem(int id, LPMEASUREITEMSTRUCT measure)
    {
       try
@@ -226,28 +263,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ClientRect rc(this);
          CClientDC  dc(this);
 
-         Console << HERE << " item=" << measure->itemID << ENDL;
+         // DEBUG:
+         //Console << HERE << " item=" << measure->itemID << ENDL;
 
-         // Lookup item
-         auto& item = Content.Revisions.FindByIndex(measure->itemID);
-
-         // Prepare
-         auto font = dc.SelectObject(List.GetFont());
-         rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
-
-         // Icon
-         rc.left += 24 + GetSystemMetrics(SM_CXEDGE);
-      
-         // Measure Title/Date:
-         int dateHeight = dc.GetTextExtent(L"ABC").cy;
-         dc.DrawText(item.Title.c_str(), &rc, DT_LEFT|DT_TOP|DT_CALCRECT|DT_WORDBREAK);
+         // Measure item
+         DrawItem(dc, rc, measure->itemID, NULL, true);
 
          // Set width/height
-         measure->itemHeight = rc.Height() + dateHeight + 3;
+         measure->itemHeight = rc.Height();
          measure->itemWidth = rc.Width();
-
-         // Cleanup
-         dc.SelectObject(font);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -274,10 +298,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       switch (nID)
       {
       case ID_BACKUP_DELETE:  
-         break;
-
-      case ID_BACKUP_DIFF:    
-         
          break;
 
       case ID_BACKUP_REVERT:  
@@ -325,9 +345,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
 	   __super::OnSettingChange(uFlags, lpszSection);
 
-      // Update font
+      // Update font, Adjust layout, re-populate
 	   UpdateFont();
       AdjustLayout();
+      Populate();
    }
 
    /// <summary>Adjusts the layout</summary>
@@ -337,27 +358,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void BackupWnd::OnSize(UINT nType, int cx, int cy)
    {
 	   __super::OnSize(nType, cx, cy);
+
+      // Adjust layout, re-populate  [Forces WM_MEASUREITEM to be sent]
 	   AdjustLayout();
+      Populate();
    }
    
    /// <summary>Populates items from current backup file.</summary>
    void BackupWnd::Populate()
    {
-      try
-      {
-         // Clear
-         List.ResetContent();
+      // Clear
+      List.SetRedraw(FALSE);
+      List.ResetContent();
          
-         // Fill list with dummy items
-         for (auto& rev : Content.Revisions)
-            List.InsertString(-1, L"-");
+      // Fill list with dummy items
+      for (auto& rev : Content.Revisions)
+         List.InsertString(-1, L"-");
 
-         //List.SendMessage(LB_SETCOUNT, f.Revisions.Count);      // Doesn't work
-      }
-      catch (ExceptionBase& e) {
-         List.ResetContent();
-         theApp.ShowError(HERE, e);
-      }
+      // Redraw
+      List.SetRedraw(TRUE);
+      List.UpdateWindow();
    }
 
    /// <summary>Updates the font.</summary>
@@ -373,9 +393,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Create
       BoldFont.DeleteObject();
       BoldFont.CreateFontIndirectW(&lf);
-
-      // Re-populate
-      //Populate();
    }
    
    
