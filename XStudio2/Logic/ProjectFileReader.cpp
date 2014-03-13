@@ -64,7 +64,7 @@ namespace Logic
       {
          try
          {
-            ProjectFile file;
+            ProjectFile file(path.FileName);
 
             // Read file
             LoadDocument();
@@ -153,8 +153,7 @@ namespace Logic
                   throw FileFormatException(HERE, L"'Unknown' file-type is not supported");
 
                // Create file
-               auto backup = ReadAttribute(node, L"backup");
-               return ProjectItem(type, (LPCWSTR)node->text, backup);
+               return ProjectItem(type, (LPCWSTR)node->text, ReadAttribute(node, L"backup"));
             }
             catch (ArgumentException& e) {
                throw FileFormatException(HERE, e.Message);

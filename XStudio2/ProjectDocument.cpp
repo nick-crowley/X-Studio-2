@@ -17,10 +17,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Project has been loaded/unloaded</summary>
    SimpleEvent   ProjectDocument::Loaded;
 
-   /// <summary>Project item has been added, changed or removed</summary>
-   ProjectItemEvent  ProjectDocument::ItemAdded,
-                     ProjectDocument::ItemChanged,
-                     ProjectDocument::ItemRemoved;
+   /// <summary>Project item has been added</summary>
+   ProjectItemAddedEvent  ProjectDocument::ItemAdded;
+
+   /// <summary>Project item has been changed or removed</summary>
+   ProjectItemEvent       ProjectDocument::ItemChanged,
+                          ProjectDocument::ItemRemoved;
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -31,7 +33,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project, false)
+   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project, false), Project(L"Untitled")
    {
 
    }
@@ -115,10 +117,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto file = Project.Find(doc->FullPath);
 
       // DEBUG:
-      Console << "Opening backup file: " << file->BackupPath << ENDL;
+      Console << "Opening backup file: " << file->BackupName << ENDL;
 
       // Open backup file
-      return BackupFileReader(XFileInfo(file->BackupPath).OpenRead()).ReadFile();
+      return BackupFileReader(XFileInfo(doc->FullPath.Folder+file->BackupName).OpenRead()).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>
@@ -129,7 +131,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto copy = ProjectItem(item);
 
       // Remove item. Raise 'ITEM REMOVED'
-      Project.Remove(&item);
+      Project.Remove(item);
       ItemRemoved.Raise(&item);
 
       // Modify document
@@ -144,7 +146,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void ProjectDocument::RemoveItem(ProjectItem& item)
    {
       // Remove item. Raise 'ITEM REMOVED'
-      Project.Remove(&item);
+      Project.Remove(item);
       ItemRemoved.Raise(&item);
 
       // Modify document

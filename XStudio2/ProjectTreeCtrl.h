@@ -54,8 +54,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             REQUIRED(item);
 
             // Generate name
-            if (auto var = dynamic_cast<ProjectVariableItem*>(item))
-               SetText(GuiString(L"%s = %d", var->Name.c_str(), var->Value));
+            if (item->IsVariable())
+               SetText(GuiString(L"%s = %d", item->Name.c_str(), item->Value));
             else
                SetText(item->Name);
 
@@ -65,7 +65,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             case ProjectItemType::Folder:    iImage = 0;  break;
             case ProjectItemType::Variable:  iImage = 6;  break;
             case ProjectItemType::File:      
-               switch (dynamic_cast<ProjectFileItem*>(item)->FileType)
+               switch (item->FileType)
                {
                case FileType::Script:   iImage = 2;  break;
                case FileType::Language: iImage = 3;  break;

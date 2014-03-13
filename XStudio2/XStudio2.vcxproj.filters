@@ -920,9 +920,6 @@
     <ClCompile Include="ProjectDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\ProjectFile.cpp">
-      <Filter>Source Files\Logic\Projects</Filter>
-    </ClCompile>
     <ClCompile Include="ProjectTreeCtrl.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -1039,6 +1036,9 @@
     </ClCompile>
     <ClCompile Include="Logic\BackupFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\ProjectItem.cpp">
+      <Filter>Source Files\Logic\Projects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

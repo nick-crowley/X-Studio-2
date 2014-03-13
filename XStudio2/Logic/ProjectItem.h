@@ -32,7 +32,7 @@ namespace Logic
          /// <param name="path">Full path.</param>
          /// <param name="backup">backup name.</param>
          ProjectItem(FileType file, IO::Path path, IO::Path backup)
-            : Type(ProjectItemType::File), FileType(file), FullPath(path), BackupName(backup), Name(path.FileName), Fixed(false), Value(-1)
+            : Type(ProjectItemType::File), FileType(file), FullPath(path), BackupName(backup.c_str()), Name(path.FileName), Fixed(false), Value(-1)
          {}
          /// <summary>Create variable item</summary>
          /// <param name="name">variable name.</param>
@@ -64,24 +64,25 @@ namespace Logic
             if (FullPath == path)
                return true;
 
-            return any_of(Children.begin(), Children.end(), [&path](ProjectItem& p) {return p.FullPath == path;} );
+            return any_of(Children.begin(), Children.end(), [&path](const ProjectItem& p) {return p.Contains(path);} );
          }
 
          /// <summary>Finds item by path.</summary>
          /// <param name="path">Full path.</param>
          /// <returns>Item if found, otherwise nullptr</returns>
-         //ProjectItem  Find(IO::Path path) const
-         //{
-         //   if (FullPath == path)
-         //      return *this;
+         ProjectItem*  Find(IO::Path path) const
+         {
+            // Check self
+            if (FullPath == path)
+               return const_cast<ProjectItem*>(this);
 
-         //   // Search children
-         //   auto pos = find_if(Children.begin(), Children.end(), [&path](ProjectItem& p) {return p.Find(path);} );
-         //   if (pos == Children.end())
-         //      throw;
+            // Search children
+            for (auto& c : Children)
+               if (auto it = c.Find(path))
+                  return it;
 
-         //   return *pos;
-         //}
+            return nullptr;
+         }
          
          /// <summary>Determines whether this instance is a file.</summary>
          /// <returns></returns>
@@ -106,9 +107,9 @@ namespace Logic
 
          /// <summary>Get all items as a list.</summary>
          /// <returns></returns>
-         void  ToList(ProjectItemList& list) const
+         void  ToList(list<ProjectItem*>& list) const
          {
-            list.push_back(*this);
+            list.push_back(const_cast<ProjectItem*>(this));
 
             // Add children
             for (auto& c : Children)
@@ -117,9 +118,9 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Append child item</summary>
+         /// <summary>Append copy of item as child</summary>
          /// <param name="p">item</param>
-         /// <returns>Item that was added</returns>
+         /// <returns>Reference to inserted child</returns>
          ProjectItem& Add(const ProjectItem& p)
          {
             Children.push_back(p);
@@ -167,17 +168,17 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         const ProjectItemType  Type;        // Item type
-         const bool             Fixed;       // Whether immoveable
-         wstring                Name;        // Item name
+         ProjectItemType   Type;        // Item type
+         bool              Fixed;       // Whether immoveable
+         wstring           Name;        // Item name
 
-         IO::Path               FullPath;    // [Files] Full path
-         wstring                BackupName;  // [Files] Filename of backup file
-         FileType               FileType;    // [Files] File type
+         IO::Path          FullPath;    // [Files] Full path
+         wstring           BackupName;  // [Files] Filename of backup file
+         FileType          FileType;    // [Files] File type
 
-         int                    Value;       // [Variables] Value
+         int               Value;       // [Variables] Value
 
-         ProjectItemList        Children;    // Children
+         ProjectItemList   Children;    // Children
       };
 
 

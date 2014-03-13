@@ -26,7 +26,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    ProjectTreeCtrl::ProjectTreeCtrl() 
       : DragIcon(nullptr), 
         fnItemAdded(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemAdded)),
-        fnItemChanged(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemChanged)),
+        fnItemChanged(ProjectDocument::ItemChanged.Register(this, &ProjectTreeCtrl::OnItemChanged)),
         fnItemRemoved(ProjectDocument::ItemRemoved.Register(this, &ProjectTreeCtrl::OnItemRemoved))
    {
    }
@@ -66,7 +66,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             auto root = InsertItem(TreeItem(doc), nullptr);
 
             // Folders: Populate recursively
-            for (auto& folder : doc->Project.Items)
+            for (auto& folder : doc->Project)
                InsertItem(TreeItem(&folder), root);
          }
       }

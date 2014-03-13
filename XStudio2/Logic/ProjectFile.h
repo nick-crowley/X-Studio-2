@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "ProjectItem.h"
 
+FORWARD_DECLARATION2(Logic,IO,class ProjectFileWriter)
+
 namespace Logic
 {
    namespace Projects
@@ -10,13 +12,17 @@ namespace Logic
       /// <summary></summary>
       class ProjectFile
       {
+         friend class ProjectFileWriter;
+
          // ------------------------ TYPES --------------------------
       public:
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ProjectFile();
-         virtual ~ProjectFile();
+         ProjectFile(const wstring& name) : Root(name)
+         {}
+         virtual ~ProjectFile()
+         {}
 
          DEFAULT_COPY(ProjectFile);	// Default copy semantics
          DEFAULT_MOVE(ProjectFile);	// Default move semantics
@@ -27,35 +33,33 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
+         ProjectItemList::iterator begin()   { return Root.Children.begin(); }
+         ProjectItemList::iterator end()     { return Root.Children.end();   }
+         ProjectItemList::const_iterator begin() const  { return Root.Children.begin(); }
+         ProjectItemList::const_iterator end() const    { return Root.Children.end();   }
+
          /// <summary>Query existence of item by path.</summary>
-         /// <param name="p">Full path.</param>
+         /// <param name="path">Full path.</param>
          /// <returns></returns>
          bool Contains(IO::Path path) const
          {
-            return any_of(Items.begin(), Items.end(), [&path](const ProjectItem& item) {return item.Contains(path);} );
+            return Root.Contains(path);
          }
 
          /// <summary>Finds item by path.</summary>
-         /// <param name="p">Full path.</param>
+         /// <param name="path">Full path.</param>
          /// <returns>Item if found, otherwise nullptr</returns>
-         //ProjectItem  Find(IO::Path p) const
-         //{
-         //   // Find 
-         //   for (auto& item : Items)
-         //      if ()
-         //         return ptr;
-
-         //   // Not found
-         //   return ProjectItemPtr(nullptr);
-         //}
+         ProjectItem*  Find(IO::Path path) const
+         {
+            return Root.Find(path);
+         }
 
          /// <summary>Get all items as a list.</summary>
          /// <returns></returns>
          list<ProjectItem*>  ToList() const
          {
             list<ProjectItem*> l;
-            for (auto& it : *this)
-               it->ToList(l);
+            Root.ToList(l);
             return l;
          }
          // ----------------------- MUTATORS ------------------------
@@ -63,58 +67,42 @@ namespace Logic
          /// <summary>Add base folder</summary>
          /// <param name="p">item</param>
          /// <exception cref="Logic::ArgumentException">Item is not fixed</exception>
-         void  Add(const ProjectItem& p)
+         ProjectItem&  Add(const ProjectItem& p)
          {
-            // Ensure base folder
-            if (!p.Fixed || !p.IsFolder())
-               throw ArgumentException(HERE, L"p", GuiString(L"Cannot add '%s' - not a base folder", p.Name.c_str()));
-
-            // Append
-            Items.push_back(p);
+            return Root.Add(p);
          }
 
-         ProjectItem& operator[](UINT index)
-         {
-            UINT i = 0;
+         //ProjectItem& operator[](UINT index)
+         //{
+         //   UINT i = 0;
 
-            // Linear search
-            for (auto& item : Items)
-               if (index == i++)
-                  return item;
-            
-            // Invalid index
-            throw IndexOutOfRangeException(HERE, index, Items.size());
-         }
+         //   // Linear search
+         //   for (auto& item : Items)
+         //      if (index == i++)
+         //         return item;
+         //   
+         //   // Invalid index
+         //   throw IndexOutOfRangeException(HERE, index, Items.size());
+         //}
 
          /// <summary>Finds an removes an item</summary>
          /// <param name="p">item</param>
          /// <returns>Item removed, or nullptr</returns>
-         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         /// <exception cref="Logic::AlgorithmException">Item is fixed</exception>
-         ProjectItemPtr  Remove(ProjectItem* p)
+         /// <exception cref="Logic::ArgumentException">Item is fixed</exception>
+         bool  Remove(ProjectItem& p)
          {
-            REQUIRED(p);
-
             // Cannot remove base folders
-            if (p->Fixed)
-               throw AlgorithmException(HERE, GuiString(L"Cannot remove fixed item '%s'", p->Name.c_str()));
+            if (p.Fixed)
+               throw ArgumentException(HERE, L"p", GuiString(L"Cannot remove fixed item '%s'", p.Name.c_str()));
 
-            // Find and remove
-            for (auto& folder : *this)
-            {
-               if (ProjectItemPtr ptr = folder->Remove(p))
-                  return ptr;
-            }
-
-            // Not found
-            return ProjectItemPtr(nullptr);
+            // Remove
+            return Root.Remove(p);
          }
 
          // -------------------- REPRESENTATION ---------------------
-      public:
+      protected:
          ProjectItem  Root;
          
-      private:
       };
 
    }

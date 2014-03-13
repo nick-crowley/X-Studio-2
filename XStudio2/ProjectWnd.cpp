@@ -277,8 +277,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       { 
-         // Get selected unfixed file/folder
          auto item = TreeView.SelectedItem;
+
+         // Require unfixed file/folder
          if (!item || item->Fixed)
             return;
 
@@ -286,7 +287,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console << Cons::UserAction << "Deleting project item: " << Cons::Yellow << item->Name << ENDL;
 
          // Remove item
-         ProjectDocument::GetActive()->RemoveItem(item);
+         ProjectDocument::GetActive()->RemoveItem(*item);
 
          // File: Ensure path exists, then delete
          if (item->IsFile())
