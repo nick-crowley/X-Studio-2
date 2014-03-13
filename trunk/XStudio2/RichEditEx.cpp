@@ -84,11 +84,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          TextRangePtr limits = TextDocument->Range(start, m.Target != SearchTarget::Selection ? GetTextLength() : m.RangeEnd);
          
          // Convert TOM search flags
-         UINT flags = (m.MatchCase ? tomMatchCase : 0) | (m.MatchWord ? tomMatchWord : 0) | (m.UseRegEx ? tomMatchPattern : 0);
+         UINT flags = (m.MatchCase ? TOM::tomMatchCase : 0) | (m.MatchWord ? TOM::tomMatchWord : 0) | (m.UseRegEx ? TOM::tomMatchPattern : 0);
 
          // Find next match
          TextRangePtr match(limits->Duplicate);
-         if (!match->FindText(m.SearchTerm.c_str(), tomForward, flags) || match->InRange(limits) != tomTrue)
+         if (!match->FindText(m.SearchTerm.c_str(), TOM::tomForward, flags) || match->InRange(limits) != TOM::tomTrue)
          {
             // Clear match/selection
             const_cast<RichEditEx*>(this)->SetSel(m.End, m.End);
@@ -377,7 +377,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       try
       {
-         TextDocument->Undo(suspend ? tomSuspend : tomResume);
+         TextDocument->Undo(suspend ? TOM::tomSuspend : TOM::tomResume);
       }
       catch (_com_error& e) {
          Console.Log(HERE, ComException(HERE, e));

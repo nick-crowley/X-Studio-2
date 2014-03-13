@@ -165,9 +165,6 @@
     <ClInclude Include="Logic\MemoryStream.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\msxml.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\Stream.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -498,9 +495,6 @@
     <ClInclude Include="LanguageEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\TextObjectModel.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\RichStringParser.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
@@ -554,9 +548,6 @@
     </ClInclude>
     <ClInclude Include="Logic\LogFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\ConsoleLog.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RefactorDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -626,6 +617,15 @@
     </ClInclude>
     <ClInclude Include="Logic\ProjectItem.h">
       <Filter>Header Files\Logic\Projects</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\ConsoleLog.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="msxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tom.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1028,9 +1028,21 @@
     <ClCompile Include="ProjectDocTemplate.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
+    <ClCompile Include="msftedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="msxml6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="msxml6.tlh">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="msftedit.tlh">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">

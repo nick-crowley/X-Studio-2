@@ -1,7 +1,6 @@
 #pragma once
 #include <richole.h>
 #include <Richedit.h>
-#include <tom.h> 
 #include "Helpers.h"
 #include "CustomTooltip.h"
 

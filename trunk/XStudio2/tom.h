@@ -5,7 +5,8 @@
 
 // Import TOM library
 #undef FindText
-#import "Msftedit.dll" rename_namespace(_T("TOM"))
+
+#include "msftedit.tlh"    //#import "Msftedit.dll" rename_namespace(_T("TOM"))
 
 
 /// <summary>TOM COM interface</summary>

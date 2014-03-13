@@ -1,0 +1,1476 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 12.00.21005.1 (180a4026).
+//
+// d:\my projects\xstudio2\xstudio2\release\msftedit.tlh
+//
+// C++ source equivalent of Win32 type library Msftedit.dll
+// compiler-generated file created 03/12/14 at 18:54:31 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+namespace TOM {
+
+   //
+   // Forward references and typedefs
+   //
+
+   struct __declspec(uuid("8cc497c9-a1df-11ce-8098-00aa0047be5d"))
+   /* LIBID */ __tom;
+   enum __MIDL___MIDL_itf_tom_0000_0001;
+   struct __declspec(uuid("8cc497c0-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextDocument;
+   struct __declspec(uuid("8cc497c1-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextSelection;
+   struct __declspec(uuid("8cc497c2-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextRange;
+   struct __declspec(uuid("8cc497c3-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextFont;
+   struct __declspec(uuid("8cc497c4-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextPara;
+   struct __declspec(uuid("8cc497c5-a1df-11ce-8098-00aa0047be5d"))
+   /* dual interface */ ITextStoryRanges;
+   struct __declspec(uuid("01c25500-4268-11d1-883a-3c8b00c10000"))
+   /* dual interface */ ITextDocument2;
+   struct __declspec(uuid("a3787420-4267-11d1-883a-3c8b00c10000"))
+   /* interface */ ITextMsgFilter;
+   typedef enum __MIDL___MIDL_itf_tom_0000_0001 tomConstants;
+   typedef unsigned long UINT_PTR;
+   typedef long LONG_PTR;
+
+   //
+   // Smart pointer typedef declarations
+   //
+
+   _COM_SMARTPTR_TYPEDEF(ITextFont, __uuidof(ITextFont));
+   _COM_SMARTPTR_TYPEDEF(ITextPara, __uuidof(ITextPara));
+   _COM_SMARTPTR_TYPEDEF(ITextRange, __uuidof(ITextRange));
+   _COM_SMARTPTR_TYPEDEF(ITextSelection, __uuidof(ITextSelection));
+   _COM_SMARTPTR_TYPEDEF(ITextStoryRanges, __uuidof(ITextStoryRanges));
+   _COM_SMARTPTR_TYPEDEF(ITextDocument, __uuidof(ITextDocument));
+   _COM_SMARTPTR_TYPEDEF(ITextDocument2, __uuidof(ITextDocument2));
+   _COM_SMARTPTR_TYPEDEF(ITextMsgFilter, __uuidof(ITextMsgFilter));
+
+   //
+   // Type library items
+   //
+
+   enum __MIDL___MIDL_itf_tom_0000_0001
+   {
+       tomFalse = 0,
+       tomTrue = -1,
+       tomUndefined = -9999999,
+       tomToggle = -9999998,
+       tomAutoColor = -9999997,
+       tomDefault = -9999996,
+       tomSuspend = -9999995,
+       tomResume = -9999994,
+       tomApplyNow = 0,
+       tomApplyLater = 1,
+       tomTrackParms = 2,
+       tomCacheParms = 3,
+       tomApplyTmp = 4,
+       tomBackward = -1073741823,
+       tomForward = 1073741823,
+       tomMove = 0,
+       tomExtend = 1,
+       tomNoSelection = 0,
+       tomSelectionIP = 1,
+       tomSelectionNormal = 2,
+       tomSelectionFrame = 3,
+       tomSelectionColumn = 4,
+       tomSelectionRow = 5,
+       tomSelectionBlock = 6,
+       tomSelectionInlineShape = 7,
+       tomSelectionShape = 8,
+       tomSelStartActive = 1,
+       tomSelAtEOL = 2,
+       tomSelOvertype = 4,
+       tomSelActive = 8,
+       tomSelReplace = 16,
+       tomEnd = 0,
+       tomStart = 32,
+       tomCollapseEnd = 0,
+       tomCollapseStart = 1,
+       tomClientCoord = 256,
+       tomAllowOffClient = 512,
+       tomNone = 0,
+       tomSingle = 1,
+       tomWords = 2,
+       tomDouble = 3,
+       tomDotted = 4,
+       tomDash = 5,
+       tomDashDot = 6,
+       tomDashDotDot = 7,
+       tomWave = 8,
+       tomThick = 9,
+       tomHair = 10,
+       tomDoubleWave = 11,
+       tomHeavyWave = 12,
+       tomLongDash = 13,
+       tomThickDash = 14,
+       tomThickDashDot = 15,
+       tomThickDashDotDot = 16,
+       tomThickDotted = 17,
+       tomThickLongDash = 18,
+       tomLineSpaceSingle = 0,
+       tomLineSpace1pt5 = 1,
+       tomLineSpaceDouble = 2,
+       tomLineSpaceAtLeast = 3,
+       tomLineSpaceExactly = 4,
+       tomLineSpaceMultiple = 5,
+       tomAlignLeft = 0,
+       tomAlignCenter = 1,
+       tomAlignRight = 2,
+       tomAlignJustify = 3,
+       tomAlignDecimal = 3,
+       tomAlignBar = 4,
+       tomAlignInterWord = 3,
+       tomAlignInterLetter = 4,
+       tomAlignScaled = 5,
+       tomAlignGlyphs = 6,
+       tomAlignSnapGrid = 7,
+       tomSpaces = 0,
+       tomDots = 1,
+       tomDashes = 2,
+       tomLines = 3,
+       tomThickLines = 4,
+       tomEquals = 5,
+       tomTabBack = -3,
+       tomTabNext = -2,
+       tomTabHere = -1,
+       tomListNone = 0,
+       tomListBullet = 1,
+       tomListNumberAsArabic = 2,
+       tomListNumberAsLCLetter = 3,
+       tomListNumberAsUCLetter = 4,
+       tomListNumberAsLCRoman = 5,
+       tomListNumberAsUCRoman = 6,
+       tomListNumberAsSequence = 7,
+       tomListParentheses = 65536,
+       tomListPeriod = 131072,
+       tomListPlain = 196608,
+       tomCharacter = 1,
+       tomWord = 2,
+       tomSentence = 3,
+       tomParagraph = 4,
+       tomLine = 5,
+       tomStory = 6,
+       tomScreen = 7,
+       tomSection = 8,
+       tomColumn = 9,
+       tomRow = 10,
+       tomWindow = 11,
+       tomCell = 12,
+       tomCharFormat = 13,
+       tomParaFormat = 14,
+       tomTable = 15,
+       tomObject = 16,
+       tomPage = 17,
+       tomMatchWord = 2,
+       tomMatchCase = 4,
+       tomMatchPattern = 8,
+       tomUnknownStory = 0,
+       tomMainTextStory = 1,
+       tomFootnotesStory = 2,
+       tomEndnotesStory = 3,
+       tomCommentsStory = 4,
+       tomTextFrameStory = 5,
+       tomEvenPagesHeaderStory = 6,
+       tomPrimaryHeaderStory = 7,
+       tomEvenPagesFooterStory = 8,
+       tomPrimaryFooterStory = 9,
+       tomFirstPageHeaderStory = 10,
+       tomFirstPageFooterStory = 11,
+       tomNoAnimation = 0,
+       tomLasVegasLights = 1,
+       tomBlinkingBackground = 2,
+       tomSparkleText = 3,
+       tomMarchingBlackAnts = 4,
+       tomMarchingRedAnts = 5,
+       tomShimmer = 6,
+       tomWipeDown = 7,
+       tomWipeRight = 8,
+       tomAnimationMax = 8,
+       tomLowerCase = 0,
+       tomUpperCase = 1,
+       tomTitleCase = 2,
+       tomSentenceCase = 4,
+       tomToggleCase = 5,
+       tomReadOnly = 256,
+       tomShareDenyRead = 512,
+       tomShareDenyWrite = 1024,
+       tomPasteFile = 4096,
+       tomCreateNew = 16,
+       tomCreateAlways = 32,
+       tomOpenExisting = 48,
+       tomOpenAlways = 64,
+       tomTruncateExisting = 80,
+       tomRTF = 1,
+       tomText = 2,
+       tomHTML = 3,
+       tomWordDocument = 4,
+       tomBold = -2147483647,
+       tomItalic = -2147483646,
+       tomUnderline = -2147483644,
+       tomStrikeout = -2147483640,
+       tomProtected = -2147483632,
+       tomLink = -2147483616,
+       tomSmallCaps = -2147483584,
+       tomAllCaps = -2147483520,
+       tomHidden = -2147483392,
+       tomOutline = -2147483136,
+       tomShadow = -2147482624,
+       tomEmboss = -2147481600,
+       tomImprint = -2147479552,
+       tomDisabled = -2147475456,
+       tomRevised = -2147467264,
+       tomNormalCaret = 0,
+       tomKoreanBlockCaret = 1,
+       tomIncludeInset = 1,
+       tomIgnoreCurrentFont = 0,
+       tomMatchFontCharset = 1,
+       tomMatchFontSignature = 2,
+       tomCharset = 0x80000000,
+       tomRE10Mode = 1,
+       tomUseAtFont = 2,
+       tomTextFlowMask = 12,
+       tomTextFlowES = 0,
+       tomTextFlowSW = 4,
+       tomTextFlowWN = 8,
+       tomTextFlowNE = 12,
+       tomUsePassword = 16,
+       tomNoIME = 524288,
+       tomSelfIME = 262144
+   };
+
+   struct __declspec(uuid("8cc497c3-a1df-11ce-8098-00aa0047be5d"))
+   ITextFont : IDispatch
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetDuplicate,put=PutDuplicate))
+       ITextFontPtr Duplicate;
+       __declspec(property(get=GetPosition,put=PutPosition))
+       float Position;
+       __declspec(property(get=GetProtected,put=PutProtected))
+       long Protected;
+       __declspec(property(get=GetShadow,put=PutShadow))
+       long Shadow;
+       __declspec(property(get=GetSize,put=PutSize))
+       float Size;
+       __declspec(property(get=GetSmallCaps,put=PutSmallCaps))
+       long SmallCaps;
+       __declspec(property(get=GetSpacing,put=PutSpacing))
+       float Spacing;
+       __declspec(property(get=GetStrikeThrough,put=PutStrikeThrough))
+       long StrikeThrough;
+       __declspec(property(get=GetSubscript,put=PutSubscript))
+       long Subscript;
+       __declspec(property(get=GetSuperscript,put=PutSuperscript))
+       long Superscript;
+       __declspec(property(get=GetUnderline,put=PutUnderline))
+       long Underline;
+       __declspec(property(get=GetWeight,put=PutWeight))
+       long Weight;
+       __declspec(property(get=GetStyle,put=PutStyle))
+       long Style;
+       __declspec(property(get=GetAllCaps,put=PutAllCaps))
+       long AllCaps;
+       __declspec(property(get=GetAnimation,put=PutAnimation))
+       long Animation;
+       __declspec(property(get=GetBackColor,put=PutBackColor))
+       long BackColor;
+       __declspec(property(get=GetBold,put=PutBold))
+       long Bold;
+       __declspec(property(get=GetEmboss,put=PutEmboss))
+       long Emboss;
+       __declspec(property(get=GetForeColor,put=PutForeColor))
+       long ForeColor;
+       __declspec(property(get=GetHidden,put=PutHidden))
+       long Hidden;
+       __declspec(property(get=GetEngrave,put=PutEngrave))
+       long Engrave;
+       __declspec(property(get=GetItalic,put=PutItalic))
+       long Italic;
+       __declspec(property(get=GetKerning,put=PutKerning))
+       float Kerning;
+       __declspec(property(get=GetLanguageID,put=PutLanguageID))
+       long LanguageID;
+       __declspec(property(get=GetName,put=PutName))
+       _bstr_t Name;
+       __declspec(property(get=GetOutline,put=PutOutline))
+       long Outline;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       ITextFontPtr GetDuplicate ( );
+       void PutDuplicate (
+           struct ITextFont * ppFont );
+       long CanChange ( );
+       long IsEqual (
+           struct ITextFont * pFont );
+       HRESULT Reset (
+           long Value );
+       long GetStyle ( );
+       void PutStyle (
+           long pValue );
+       long GetAllCaps ( );
+       void PutAllCaps (
+           long pValue );
+       long GetAnimation ( );
+       void PutAnimation (
+           long pValue );
+       long GetBackColor ( );
+       void PutBackColor (
+           long pValue );
+       long GetBold ( );
+       void PutBold (
+           long pValue );
+       long GetEmboss ( );
+       void PutEmboss (
+           long pValue );
+       long GetForeColor ( );
+       void PutForeColor (
+           long pValue );
+       long GetHidden ( );
+       void PutHidden (
+           long pValue );
+       long GetEngrave ( );
+       void PutEngrave (
+           long pValue );
+       long GetItalic ( );
+       void PutItalic (
+           long pValue );
+       float GetKerning ( );
+       void PutKerning (
+           float pValue );
+       long GetLanguageID ( );
+       void PutLanguageID (
+           long pValue );
+       _bstr_t GetName ( );
+       void PutName (
+           _bstr_t pbstr );
+       long GetOutline ( );
+       void PutOutline (
+           long pValue );
+       float GetPosition ( );
+       void PutPosition (
+           float pValue );
+       long GetProtected ( );
+       void PutProtected (
+           long pValue );
+       long GetShadow ( );
+       void PutShadow (
+           long pValue );
+       float GetSize ( );
+       void PutSize (
+           float pValue );
+       long GetSmallCaps ( );
+       void PutSmallCaps (
+           long pValue );
+       float GetSpacing ( );
+       void PutSpacing (
+           float pValue );
+       long GetStrikeThrough ( );
+       void PutStrikeThrough (
+           long pValue );
+       long GetSubscript ( );
+       void PutSubscript (
+           long pValue );
+       long GetSuperscript ( );
+       void PutSuperscript (
+           long pValue );
+       long GetUnderline ( );
+       void PutUnderline (
+           long pValue );
+       long GetWeight ( );
+       void PutWeight (
+           long pValue );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall get_Duplicate (
+           /*[out,retval]*/ struct ITextFont * * ppFont ) = 0;
+         virtual HRESULT __stdcall put_Duplicate (
+           /*[in]*/ struct ITextFont * ppFont ) = 0;
+         virtual HRESULT __stdcall raw_CanChange (
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_IsEqual (
+           /*[in]*/ struct ITextFont * pFont,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_Reset (
+           /*[in]*/ long Value ) = 0;
+         virtual HRESULT __stdcall get_Style (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Style (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_AllCaps (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_AllCaps (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Animation (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Animation (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_BackColor (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_BackColor (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Bold (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Bold (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Emboss (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Emboss (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_ForeColor (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_ForeColor (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Hidden (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Hidden (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Engrave (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Engrave (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Italic (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Italic (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Kerning (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_Kerning (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_LanguageID (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_LanguageID (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Name (
+           /*[out,retval]*/ BSTR * pbstr ) = 0;
+         virtual HRESULT __stdcall put_Name (
+           /*[in]*/ BSTR pbstr ) = 0;
+         virtual HRESULT __stdcall get_Outline (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Outline (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Position (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_Position (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_Protected (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Protected (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Shadow (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Shadow (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Size (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_Size (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_SmallCaps (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_SmallCaps (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Spacing (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_Spacing (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_StrikeThrough (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_StrikeThrough (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Subscript (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Subscript (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Superscript (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Superscript (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Underline (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Underline (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Weight (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Weight (
+           /*[in]*/ long pValue ) = 0;
+   };
+
+   struct __declspec(uuid("8cc497c4-a1df-11ce-8098-00aa0047be5d"))
+   ITextPara : IDispatch
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetDuplicate,put=PutDuplicate))
+       ITextParaPtr Duplicate;
+       __declspec(property(get=GetRightIndent,put=PutRightIndent))
+       float RightIndent;
+       __declspec(property(get=GetSpaceAfter,put=PutSpaceAfter))
+       float SpaceAfter;
+       __declspec(property(get=GetSpaceBefore,put=PutSpaceBefore))
+       float SpaceBefore;
+       __declspec(property(get=GetWidowControl,put=PutWidowControl))
+       long WidowControl;
+       __declspec(property(get=GetTabCount))
+       long TabCount;
+       __declspec(property(get=GetStyle,put=PutStyle))
+       long Style;
+       __declspec(property(get=GetAlignment,put=PutAlignment))
+       long Alignment;
+       __declspec(property(get=GetHyphenation,put=PutHyphenation))
+       long Hyphenation;
+       __declspec(property(get=GetFirstLineIndent))
+       float FirstLineIndent;
+       __declspec(property(get=GetKeepTogether,put=PutKeepTogether))
+       long KeepTogether;
+       __declspec(property(get=GetKeepWithNext,put=PutKeepWithNext))
+       long KeepWithNext;
+       __declspec(property(get=GetLeftIndent))
+       float LeftIndent;
+       __declspec(property(get=GetLineSpacing))
+       float LineSpacing;
+       __declspec(property(get=GetLineSpacingRule))
+       long LineSpacingRule;
+       __declspec(property(get=GetListAlignment,put=PutListAlignment))
+       long ListAlignment;
+       __declspec(property(get=GetListLevelIndex,put=PutListLevelIndex))
+       long ListLevelIndex;
+       __declspec(property(get=GetListStart,put=PutListStart))
+       long ListStart;
+       __declspec(property(get=GetListTab,put=PutListTab))
+       float ListTab;
+       __declspec(property(get=GetListType,put=PutListType))
+       long ListType;
+       __declspec(property(get=GetNoLineNumber,put=PutNoLineNumber))
+       long NoLineNumber;
+       __declspec(property(get=GetPageBreakBefore,put=PutPageBreakBefore))
+       long PageBreakBefore;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       ITextParaPtr GetDuplicate ( );
+       void PutDuplicate (
+           struct ITextPara * ppPara );
+       long CanChange ( );
+       long IsEqual (
+           struct ITextPara * pPara );
+       HRESULT Reset (
+           long Value );
+       long GetStyle ( );
+       void PutStyle (
+           long pValue );
+       long GetAlignment ( );
+       void PutAlignment (
+           long pValue );
+       long GetHyphenation ( );
+       void PutHyphenation (
+           long pValue );
+       float GetFirstLineIndent ( );
+       long GetKeepTogether ( );
+       void PutKeepTogether (
+           long pValue );
+       long GetKeepWithNext ( );
+       void PutKeepWithNext (
+           long pValue );
+       float GetLeftIndent ( );
+       float GetLineSpacing ( );
+       long GetLineSpacingRule ( );
+       long GetListAlignment ( );
+       void PutListAlignment (
+           long pValue );
+       long GetListLevelIndex ( );
+       void PutListLevelIndex (
+           long pValue );
+       long GetListStart ( );
+       void PutListStart (
+           long pValue );
+       float GetListTab ( );
+       void PutListTab (
+           float pValue );
+       long GetListType ( );
+       void PutListType (
+           long pValue );
+       long GetNoLineNumber ( );
+       void PutNoLineNumber (
+           long pValue );
+       long GetPageBreakBefore ( );
+       void PutPageBreakBefore (
+           long pValue );
+       float GetRightIndent ( );
+       void PutRightIndent (
+           float pValue );
+       HRESULT SetIndents (
+           float StartIndent,
+           float LeftIndent,
+           float RightIndent );
+       HRESULT SetLineSpacing (
+           long LineSpacingRule,
+           float LineSpacing );
+       float GetSpaceAfter ( );
+       void PutSpaceAfter (
+           float pValue );
+       float GetSpaceBefore ( );
+       void PutSpaceBefore (
+           float pValue );
+       long GetWidowControl ( );
+       void PutWidowControl (
+           long pValue );
+       long GetTabCount ( );
+       HRESULT AddTab (
+           float tbPos,
+           long tbAlign,
+           long tbLeader );
+       HRESULT ClearAllTabs ( );
+       HRESULT DeleteTab (
+           float tbPos );
+       HRESULT GetTab (
+           long iTab,
+           float * ptbPos,
+           long * ptbAlign,
+           long * ptbLeader );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall get_Duplicate (
+           /*[out,retval]*/ struct ITextPara * * ppPara ) = 0;
+         virtual HRESULT __stdcall put_Duplicate (
+           /*[in]*/ struct ITextPara * ppPara ) = 0;
+         virtual HRESULT __stdcall raw_CanChange (
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_IsEqual (
+           /*[in]*/ struct ITextPara * pPara,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_Reset (
+           /*[in]*/ long Value ) = 0;
+         virtual HRESULT __stdcall get_Style (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Style (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Alignment (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Alignment (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_Hyphenation (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Hyphenation (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_FirstLineIndent (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall get_KeepTogether (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_KeepTogether (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_KeepWithNext (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_KeepWithNext (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_LeftIndent (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall get_LineSpacing (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall get_LineSpacingRule (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall get_ListAlignment (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_ListAlignment (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_ListLevelIndex (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_ListLevelIndex (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_ListStart (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_ListStart (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_ListTab (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_ListTab (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_ListType (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_ListType (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_NoLineNumber (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_NoLineNumber (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_PageBreakBefore (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_PageBreakBefore (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_RightIndent (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_RightIndent (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall raw_SetIndents (
+           /*[in]*/ float StartIndent,
+           /*[in]*/ float LeftIndent,
+           /*[in]*/ float RightIndent ) = 0;
+         virtual HRESULT __stdcall raw_SetLineSpacing (
+           /*[in]*/ long LineSpacingRule,
+           /*[in]*/ float LineSpacing ) = 0;
+         virtual HRESULT __stdcall get_SpaceAfter (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_SpaceAfter (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_SpaceBefore (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_SpaceBefore (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall get_WidowControl (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_WidowControl (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_TabCount (
+           /*[out,retval]*/ long * pCount ) = 0;
+         virtual HRESULT __stdcall raw_AddTab (
+           /*[in]*/ float tbPos,
+           /*[in]*/ long tbAlign,
+           /*[in]*/ long tbLeader ) = 0;
+         virtual HRESULT __stdcall raw_ClearAllTabs ( ) = 0;
+         virtual HRESULT __stdcall raw_DeleteTab (
+           /*[in]*/ float tbPos ) = 0;
+         virtual HRESULT __stdcall raw_GetTab (
+           /*[in]*/ long iTab,
+           /*[out]*/ float * ptbPos,
+           /*[out]*/ long * ptbAlign,
+           /*[out]*/ long * ptbLeader ) = 0;
+   };
+
+   struct __declspec(uuid("8cc497c2-a1df-11ce-8098-00aa0047be5d"))
+   ITextRange : IDispatch
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetText,put=PutText))
+       _bstr_t Text;
+       __declspec(property(get=GetChar,put=PutChar))
+       long Char;
+       __declspec(property(get=GetDuplicate))
+       ITextRangePtr Duplicate;
+       __declspec(property(get=GetFormattedText,put=PutFormattedText))
+       ITextRangePtr FormattedText;
+       __declspec(property(get=GetStart,put=PutStart))
+       long Start;
+       __declspec(property(get=GetEnd,put=PutEnd))
+       long End;
+       __declspec(property(get=GetFont,put=PutFont))
+       ITextFontPtr Font;
+       __declspec(property(get=GetPara,put=PutPara))
+       ITextParaPtr Para;
+       __declspec(property(get=GetStoryLength))
+       long StoryLength;
+       __declspec(property(get=GetStoryType))
+       long StoryType;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       _bstr_t GetText ( );
+       void PutText (
+           _bstr_t pbstr );
+       long GetChar ( );
+       void PutChar (
+           long pch );
+       ITextRangePtr GetDuplicate ( );
+       ITextRangePtr GetFormattedText ( );
+       void PutFormattedText (
+           struct ITextRange * ppRange );
+       long GetStart ( );
+       void PutStart (
+           long pcpFirst );
+       long GetEnd ( );
+       void PutEnd (
+           long pcpLim );
+       ITextFontPtr GetFont ( );
+       void PutFont (
+           struct ITextFont * pFont );
+       ITextParaPtr GetPara ( );
+       void PutPara (
+           struct ITextPara * pPara );
+       long GetStoryLength ( );
+       long GetStoryType ( );
+       HRESULT Collapse (
+           long bStart );
+       long Expand (
+           long Unit );
+       long GetIndex (
+           long Unit );
+       HRESULT SetIndex (
+           long Unit,
+           long Index,
+           long Extend );
+       HRESULT SetRange (
+           long cpActive,
+           long cpOther );
+       long InRange (
+           struct ITextRange * pRange );
+       long InStory (
+           struct ITextRange * pRange );
+       long IsEqual (
+           struct ITextRange * pRange );
+       HRESULT Select ( );
+       long StartOf (
+           long Unit,
+           long Extend );
+       long EndOf (
+           long Unit,
+           long Extend );
+       long Move (
+           long Unit,
+           long Count );
+       long MoveStart (
+           long Unit,
+           long Count );
+       long MoveEnd (
+           long Unit,
+           long Count );
+       long MoveWhile (
+           VARIANT * Cset,
+           long Count );
+       long MoveStartWhile (
+           VARIANT * Cset,
+           long Count );
+       long MoveEndWhile (
+           VARIANT * Cset,
+           long Count );
+       long MoveUntil (
+           VARIANT * Cset,
+           long Count );
+       long MoveStartUntil (
+           VARIANT * Cset,
+           long Count );
+       long MoveEndUntil (
+           VARIANT * Cset,
+           long Count );
+       long FindText (
+           _bstr_t bstr,
+           long cch,
+           long Flags );
+       long FindTextStart (
+           _bstr_t bstr,
+           long cch,
+           long Flags );
+       long FindTextEnd (
+           _bstr_t bstr,
+           long cch,
+           long Flags );
+       long Delete (
+           long Unit,
+           long Count );
+       HRESULT Cut (
+           VARIANT * pVar );
+       HRESULT Copy (
+           VARIANT * pVar );
+       HRESULT Paste (
+           VARIANT * pVar,
+           long Format );
+       long CanPaste (
+           VARIANT * pVar,
+           long Format );
+       long CanEdit ( );
+       HRESULT ChangeCase (
+           long Type );
+       HRESULT GetPoint (
+           long Type,
+           long * px,
+           long * py );
+       HRESULT SetPoint (
+           long x,
+           long y,
+           long Type,
+           long Extend );
+       HRESULT ScrollIntoView (
+           long Value );
+       IUnknownPtr GetEmbeddedObject ( );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall get_Text (
+           /*[out,retval]*/ BSTR * pbstr ) = 0;
+         virtual HRESULT __stdcall put_Text (
+           /*[in]*/ BSTR pbstr ) = 0;
+         virtual HRESULT __stdcall get_Char (
+           /*[out,retval]*/ long * pch ) = 0;
+         virtual HRESULT __stdcall put_Char (
+           /*[in]*/ long pch ) = 0;
+         virtual HRESULT __stdcall get_Duplicate (
+           /*[out,retval]*/ struct ITextRange * * ppRange ) = 0;
+         virtual HRESULT __stdcall get_FormattedText (
+           /*[out,retval]*/ struct ITextRange * * ppRange ) = 0;
+         virtual HRESULT __stdcall put_FormattedText (
+           /*[in]*/ struct ITextRange * ppRange ) = 0;
+         virtual HRESULT __stdcall get_Start (
+           /*[out,retval]*/ long * pcpFirst ) = 0;
+         virtual HRESULT __stdcall put_Start (
+           /*[in]*/ long pcpFirst ) = 0;
+         virtual HRESULT __stdcall get_End (
+           /*[out,retval]*/ long * pcpLim ) = 0;
+         virtual HRESULT __stdcall put_End (
+           /*[in]*/ long pcpLim ) = 0;
+         virtual HRESULT __stdcall get_Font (
+           /*[out,retval]*/ struct ITextFont * * pFont ) = 0;
+         virtual HRESULT __stdcall put_Font (
+           /*[in]*/ struct ITextFont * pFont ) = 0;
+         virtual HRESULT __stdcall get_Para (
+           /*[out,retval]*/ struct ITextPara * * pPara ) = 0;
+         virtual HRESULT __stdcall put_Para (
+           /*[in]*/ struct ITextPara * pPara ) = 0;
+         virtual HRESULT __stdcall get_StoryLength (
+           /*[out,retval]*/ long * pcch ) = 0;
+         virtual HRESULT __stdcall get_StoryType (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall raw_Collapse (
+           /*[in]*/ long bStart ) = 0;
+         virtual HRESULT __stdcall raw_Expand (
+           /*[in]*/ long Unit,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_GetIndex (
+           /*[in]*/ long Unit,
+           /*[out,retval]*/ long * pIndex ) = 0;
+         virtual HRESULT __stdcall raw_SetIndex (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Index,
+           /*[in]*/ long Extend ) = 0;
+         virtual HRESULT __stdcall raw_SetRange (
+           /*[in]*/ long cpActive,
+           /*[in]*/ long cpOther ) = 0;
+         virtual HRESULT __stdcall raw_InRange (
+           /*[in]*/ struct ITextRange * pRange,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_InStory (
+           /*[in]*/ struct ITextRange * pRange,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_IsEqual (
+           /*[in]*/ struct ITextRange * pRange,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_Select ( ) = 0;
+         virtual HRESULT __stdcall raw_StartOf (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_EndOf (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_Move (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveStart (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveEnd (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveWhile (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveStartWhile (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveEndWhile (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveUntil (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveStartUntil (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveEndUntil (
+           /*[in]*/ VARIANT * Cset,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_FindText (
+           /*[in]*/ BSTR bstr,
+           /*[in]*/ long cch,
+           /*[in]*/ long Flags,
+           /*[out,retval]*/ long * pLength ) = 0;
+         virtual HRESULT __stdcall raw_FindTextStart (
+           /*[in]*/ BSTR bstr,
+           /*[in]*/ long cch,
+           /*[in]*/ long Flags,
+           /*[out,retval]*/ long * pLength ) = 0;
+         virtual HRESULT __stdcall raw_FindTextEnd (
+           /*[in]*/ BSTR bstr,
+           /*[in]*/ long cch,
+           /*[in]*/ long Flags,
+           /*[out,retval]*/ long * pLength ) = 0;
+         virtual HRESULT __stdcall raw_Delete (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_Cut (
+           /*[out]*/ VARIANT * pVar ) = 0;
+         virtual HRESULT __stdcall raw_Copy (
+           /*[out]*/ VARIANT * pVar ) = 0;
+         virtual HRESULT __stdcall raw_Paste (
+           /*[in]*/ VARIANT * pVar,
+           /*[in]*/ long Format ) = 0;
+         virtual HRESULT __stdcall raw_CanPaste (
+           /*[in]*/ VARIANT * pVar,
+           /*[in]*/ long Format,
+           /*[out,retval]*/ long * pB ) = 0;
+         virtual HRESULT __stdcall raw_CanEdit (
+           /*[out,retval]*/ long * pbCanEdit ) = 0;
+         virtual HRESULT __stdcall raw_ChangeCase (
+           /*[in]*/ long Type ) = 0;
+         virtual HRESULT __stdcall raw_GetPoint (
+           /*[in]*/ long Type,
+           /*[out]*/ long * px,
+           /*[out]*/ long * py ) = 0;
+         virtual HRESULT __stdcall raw_SetPoint (
+           /*[in]*/ long x,
+           /*[in]*/ long y,
+           /*[in]*/ long Type,
+           /*[in]*/ long Extend ) = 0;
+         virtual HRESULT __stdcall raw_ScrollIntoView (
+           /*[in]*/ long Value ) = 0;
+         virtual HRESULT __stdcall raw_GetEmbeddedObject (
+           /*[out,retval]*/ IUnknown * * ppv ) = 0;
+   };
+
+   struct __declspec(uuid("8cc497c1-a1df-11ce-8098-00aa0047be5d"))
+   ITextSelection : ITextRange
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetFlags,put=PutFlags))
+       long Flags;
+       __declspec(property(get=GetType))
+       long Type;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       long GetFlags ( );
+       void PutFlags (
+           long pFlags );
+       long GetType ( );
+       long MoveLeft (
+           long Unit,
+           long Count,
+           long Extend );
+       long MoveRight (
+           long Unit,
+           long Count,
+           long Extend );
+       long MoveUp (
+           long Unit,
+           long Count,
+           long Extend );
+       long MoveDown (
+           long Unit,
+           long Count,
+           long Extend );
+       long HomeKey (
+           long Unit,
+           long Extend );
+       long EndKey (
+           long Unit,
+           long Extend );
+       HRESULT TypeText (
+           _bstr_t bstr );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall get_Flags (
+           /*[out,retval]*/ long * pFlags ) = 0;
+         virtual HRESULT __stdcall put_Flags (
+           /*[in]*/ long pFlags ) = 0;
+         virtual HRESULT __stdcall get_Type (
+           /*[out,retval]*/ long * pType ) = 0;
+         virtual HRESULT __stdcall raw_MoveLeft (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveRight (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveUp (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_MoveDown (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Count,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_HomeKey (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_EndKey (
+           /*[in]*/ long Unit,
+           /*[in]*/ long Extend,
+           /*[out,retval]*/ long * pDelta ) = 0;
+         virtual HRESULT __stdcall raw_TypeText (
+           /*[in]*/ BSTR bstr ) = 0;
+   };
+
+   struct __declspec(uuid("8cc497c5-a1df-11ce-8098-00aa0047be5d"))
+   ITextStoryRanges : IDispatch
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetCount))
+       long Count;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       IUnknownPtr _NewEnum ( );
+       ITextRangePtr Item (
+           long Index );
+       long GetCount ( );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall raw__NewEnum (
+           /*[out,retval]*/ IUnknown * * ppunkEnum ) = 0;
+         virtual HRESULT __stdcall raw_Item (
+           /*[in]*/ long Index,
+           /*[out,retval]*/ struct ITextRange * * ppRange ) = 0;
+         virtual HRESULT __stdcall get_Count (
+           /*[out,retval]*/ long * pCount ) = 0;
+   };
+
+   struct __declspec(uuid("8cc497c0-a1df-11ce-8098-00aa0047be5d"))
+   ITextDocument : IDispatch
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetName))
+       _bstr_t Name;
+       __declspec(property(get=GetSelection))
+       ITextSelectionPtr Selection;
+       __declspec(property(get=GetStoryCount))
+       long StoryCount;
+       __declspec(property(get=GetStoryRanges))
+       ITextStoryRangesPtr StoryRanges;
+       __declspec(property(get=GetSaved,put=PutSaved))
+       long Saved;
+       __declspec(property(get=GetDefaultTabStop,put=PutDefaultTabStop))
+       float DefaultTabStop;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       _bstr_t GetName ( );
+       ITextSelectionPtr GetSelection ( );
+       long GetStoryCount ( );
+       ITextStoryRangesPtr GetStoryRanges ( );
+       long GetSaved ( );
+       void PutSaved (
+           long pValue );
+       float GetDefaultTabStop ( );
+       void PutDefaultTabStop (
+           float pValue );
+       HRESULT New ( );
+       HRESULT Open (
+           VARIANT * pVar,
+           long Flags,
+           long CodePage );
+       HRESULT Save (
+           VARIANT * pVar,
+           long Flags,
+           long CodePage );
+       long Freeze ( );
+       long Unfreeze ( );
+       HRESULT BeginEditCollection ( );
+       HRESULT EndEditCollection ( );
+       long Undo (
+           long Count );
+       long Redo (
+           long Count );
+       ITextRangePtr Range (
+           long cp1,
+           long cp2 );
+       ITextRangePtr RangeFromPoint (
+           long x,
+           long y );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall get_Name (
+           /*[out,retval]*/ BSTR * pName ) = 0;
+         virtual HRESULT __stdcall get_Selection (
+           /*[out,retval]*/ struct ITextSelection * * ppSel ) = 0;
+         virtual HRESULT __stdcall get_StoryCount (
+           /*[out,retval]*/ long * pCount ) = 0;
+         virtual HRESULT __stdcall get_StoryRanges (
+           /*[out,retval]*/ struct ITextStoryRanges * * ppStories ) = 0;
+         virtual HRESULT __stdcall get_Saved (
+           /*[out,retval]*/ long * pValue ) = 0;
+         virtual HRESULT __stdcall put_Saved (
+           /*[in]*/ long pValue ) = 0;
+         virtual HRESULT __stdcall get_DefaultTabStop (
+           /*[out,retval]*/ float * pValue ) = 0;
+         virtual HRESULT __stdcall put_DefaultTabStop (
+           /*[in]*/ float pValue ) = 0;
+         virtual HRESULT __stdcall raw_New ( ) = 0;
+         virtual HRESULT __stdcall raw_Open (
+           /*[in]*/ VARIANT * pVar,
+           /*[in]*/ long Flags,
+           /*[in]*/ long CodePage ) = 0;
+         virtual HRESULT __stdcall raw_Save (
+           /*[in]*/ VARIANT * pVar,
+           /*[in]*/ long Flags,
+           /*[in]*/ long CodePage ) = 0;
+         virtual HRESULT __stdcall raw_Freeze (
+           /*[out,retval]*/ long * pCount ) = 0;
+         virtual HRESULT __stdcall raw_Unfreeze (
+           /*[out,retval]*/ long * pCount ) = 0;
+         virtual HRESULT __stdcall raw_BeginEditCollection ( ) = 0;
+         virtual HRESULT __stdcall raw_EndEditCollection ( ) = 0;
+         virtual HRESULT __stdcall raw_Undo (
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * prop ) = 0;
+         virtual HRESULT __stdcall raw_Redo (
+           /*[in]*/ long Count,
+           /*[out,retval]*/ long * prop ) = 0;
+         virtual HRESULT __stdcall raw_Range (
+           /*[in]*/ long cp1,
+           /*[in]*/ long cp2,
+           /*[out,retval]*/ struct ITextRange * * ppRange ) = 0;
+         virtual HRESULT __stdcall raw_RangeFromPoint (
+           /*[in]*/ long x,
+           /*[in]*/ long y,
+           /*[out,retval]*/ struct ITextRange * * ppRange ) = 0;
+   };
+
+   struct __declspec(uuid("01c25500-4268-11d1-883a-3c8b00c10000"))
+   ITextDocument2 : ITextDocument
+   {
+       //
+       // Property data
+       //
+
+       __declspec(property(get=GetCaretType,put=PutCaretType))
+       long CaretType;
+       __declspec(property(get=GetNotificationMode,put=PutNotificationMode))
+       long NotificationMode;
+       __declspec(property(get=GetSelectionEx))
+       ITextSelectionPtr SelectionEx;
+
+       //
+       // Wrapper methods for error-handling
+       //
+
+       HRESULT AttachMsgFilter (
+           IUnknown * pFilter );
+       HRESULT SetEffectColor (
+           long Index,
+           unsigned long cr );
+       HRESULT GetEffectColor (
+           long Index,
+           unsigned long * pcr );
+       long GetCaretType ( );
+       void PutCaretType (
+           long pCaretType );
+       long GetImmContext ( );
+       HRESULT ReleaseImmContext (
+           long Context );
+       HRESULT GetPreferredFont (
+           long cp,
+           long CodePage,
+           long Option,
+           long curCodepage,
+           long curFontSize,
+           BSTR * pbstr,
+           long * pPitchAndFamily,
+           long * pNewFontSize );
+       long GetNotificationMode ( );
+       void PutNotificationMode (
+           long pMode );
+       HRESULT GetClientRect (
+           long Type,
+           long * pLeft,
+           long * pTop,
+           long * pRight,
+           long * pBottom );
+       ITextSelectionPtr GetSelectionEx ( );
+       HRESULT GetWindow (
+           long * phWnd );
+       HRESULT GetFEFlags (
+           long * pFlags );
+       HRESULT UpdateWindow ( );
+       HRESULT CheckTextLimit (
+           long cch,
+           long * pcch );
+       HRESULT IMEInProgress (
+           long Mode );
+       HRESULT SysBeep ( );
+       HRESULT Update (
+           long Mode );
+       HRESULT Notify (
+           long Notify );
+       ITextFontPtr GetDocumentFont ( );
+       ITextParaPtr GetDocumentPara ( );
+       IUnknownPtr GetCallManager ( );
+       HRESULT ReleaseCallManager (
+           IUnknown * pVoid );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall raw_AttachMsgFilter (
+           /*[in]*/ IUnknown * pFilter ) = 0;
+         virtual HRESULT __stdcall raw_SetEffectColor (
+           /*[in]*/ long Index,
+           /*[in]*/ unsigned long cr ) = 0;
+         virtual HRESULT __stdcall raw_GetEffectColor (
+           /*[in]*/ long Index,
+           /*[out]*/ unsigned long * pcr ) = 0;
+         virtual HRESULT __stdcall get_CaretType (
+           /*[out,retval]*/ long * pCaretType ) = 0;
+         virtual HRESULT __stdcall put_CaretType (
+           /*[in]*/ long pCaretType ) = 0;
+         virtual HRESULT __stdcall raw_GetImmContext (
+           /*[out,retval]*/ long * pContext ) = 0;
+         virtual HRESULT __stdcall raw_ReleaseImmContext (
+           /*[in]*/ long Context ) = 0;
+         virtual HRESULT __stdcall raw_GetPreferredFont (
+           /*[in]*/ long cp,
+           /*[in]*/ long CodePage,
+           /*[in]*/ long Option,
+           /*[in]*/ long curCodepage,
+           /*[in]*/ long curFontSize,
+           /*[out]*/ BSTR * pbstr,
+           /*[out]*/ long * pPitchAndFamily,
+           /*[out]*/ long * pNewFontSize ) = 0;
+         virtual HRESULT __stdcall get_NotificationMode (
+           /*[out,retval]*/ long * pMode ) = 0;
+         virtual HRESULT __stdcall put_NotificationMode (
+           /*[in]*/ long pMode ) = 0;
+         virtual HRESULT __stdcall raw_GetClientRect (
+           /*[in]*/ long Type,
+           /*[out]*/ long * pLeft,
+           /*[out]*/ long * pTop,
+           /*[out]*/ long * pRight,
+           /*[out]*/ long * pBottom ) = 0;
+         virtual HRESULT __stdcall get_SelectionEx (
+           /*[out,retval]*/ struct ITextSelection * * ppSel ) = 0;
+         virtual HRESULT __stdcall raw_GetWindow (
+           /*[out]*/ long * phWnd ) = 0;
+         virtual HRESULT __stdcall raw_GetFEFlags (
+           /*[out]*/ long * pFlags ) = 0;
+         virtual HRESULT __stdcall raw_UpdateWindow ( ) = 0;
+         virtual HRESULT __stdcall raw_CheckTextLimit (
+           long cch,
+           long * pcch ) = 0;
+         virtual HRESULT __stdcall raw_IMEInProgress (
+           long Mode ) = 0;
+         virtual HRESULT __stdcall raw_SysBeep ( ) = 0;
+         virtual HRESULT __stdcall raw_Update (
+           /*[in]*/ long Mode ) = 0;
+         virtual HRESULT __stdcall raw_Notify (
+           /*[in]*/ long Notify ) = 0;
+         virtual HRESULT __stdcall raw_GetDocumentFont (
+           /*[out,retval]*/ struct ITextFont * * ppITextFont ) = 0;
+         virtual HRESULT __stdcall raw_GetDocumentPara (
+           /*[out,retval]*/ struct ITextPara * * ppITextPara ) = 0;
+         virtual HRESULT __stdcall raw_GetCallManager (
+           /*[out,retval]*/ IUnknown * * ppVoid ) = 0;
+         virtual HRESULT __stdcall raw_ReleaseCallManager (
+           IUnknown * pVoid ) = 0;
+   };
+
+   struct __declspec(uuid("a3787420-4267-11d1-883a-3c8b00c10000"))
+   ITextMsgFilter : IUnknown
+   {
+       //
+       // Wrapper methods for error-handling
+       //
+
+       HRESULT AttachDocument (
+           wireHWND hwnd,
+           struct ITextDocument2 * pTextDoc,
+           IUnknown * punk );
+       HRESULT HandleMessage (
+           unsigned int * pmsg,
+           UINT_PTR * pwparam,
+           LONG_PTR * plparam,
+           LONG_PTR * plres );
+       HRESULT AttachMsgFilter (
+           struct ITextMsgFilter * pMsgFilter );
+
+       //
+       // Raw methods provided by interface
+       //
+
+         virtual HRESULT __stdcall raw_AttachDocument (
+           /*[in]*/ wireHWND hwnd,
+           /*[in]*/ struct ITextDocument2 * pTextDoc,
+           /*[in]*/ IUnknown * punk ) = 0;
+         virtual HRESULT __stdcall raw_HandleMessage (
+           /*[in,out]*/ unsigned int * pmsg,
+           /*[in,out]*/ UINT_PTR * pwparam,
+           /*[in,out]*/ LONG_PTR * plparam,
+           /*[out]*/ LONG_PTR * plres ) = 0;
+         virtual HRESULT __stdcall raw_AttachMsgFilter (
+           /*[in]*/ struct ITextMsgFilter * pMsgFilter ) = 0;
+   };
+
+   //
+   // Wrapper method implementations
+   //
+
+   //#include "d:\my projects\xstudio2\xstudio2\release\msftedit.tli"
+
+} // namespace TOM
+
+#pragma pack(pop)
