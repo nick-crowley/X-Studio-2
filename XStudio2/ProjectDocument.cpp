@@ -254,12 +254,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Perform initial commits of file items
          for (auto& item : proj.Items.ToList())
-            if (auto file = dynamic_cast<ProjectFileItem*>(item.get()))
-            {
-               // Generate unique filename + Commit
-               file->SetBackupPath(upgrade.Folder);
-               InitialCommit(*file);
-            }
+            if (auto file = dynamic_cast<ProjectFileItem*>(item))
+               if (file->FileType == FileType::Script)
+               {
+                  // Generate unique filename + Commit
+                  file->SetBackupPath(upgrade.Folder);
+                  InitialCommit(*file);
+               }
 
          // Write X-Studio2 project
          auto out = StreamPtr(new FileStream(upgrade, FileMode::CreateNew, FileAccess::Write));

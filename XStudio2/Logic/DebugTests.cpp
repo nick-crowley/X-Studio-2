@@ -492,7 +492,8 @@ namespace Logic
          auto bytes = input->ReadAllBytes();
          
          // Write .ZIP
-         zip->Write(bytes.get(), length);
+         zip->Write(bytes.get(), 1024);
+         zip->Write(&bytes.get()[1024], length-1024);
          zip->Close();
       }
       catch (ExceptionBase&  e) {

@@ -135,7 +135,11 @@ namespace Logic
 
          // PCK: Wrap in GZip compression stream
          if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
-            s = StreamPtr(new GZipStream(StreamPtr(s), GZipStream::Operation::Compression));
+         {
+            shared_ptr<GZipStream> gzip(new GZipStream(s, GZipStream::Operation::Compression));
+            gzip->SetFileName(FullPath.FileName);
+            return gzip;
+         }
 
          // Return stream
          return s;
