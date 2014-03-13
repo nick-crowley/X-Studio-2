@@ -134,6 +134,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (!file)
          throw ArgumentException(HERE, L"doc", L"Document is not a member of this project");
 
+
+      Console << "Opening backup file: " << file->BackupPath << ENDL;
+
       // Open backup file
       return BackupFileReader(XFileInfo(file->BackupPath).OpenRead()).ReadFile();
    }

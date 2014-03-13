@@ -80,15 +80,15 @@ namespace Logic
 
                // Folder
                else if (n->nodeName == _bstr_t(L"folder"))
-                  file.Items.Add(ReadFolderItem(n));
+                  file.Add(ReadFolderItem(n));
 
                // File
                else if (n->nodeName == _bstr_t(L"file"))
-                  file.Items.Add(ReadFileItem(n));
+                  file.Add(ReadFileItem(n));
 
                // Variable
                else if (n->nodeName == _bstr_t(L"variable"))
-                  file.Items.Add(ReadVariableItem(n));
+                  file.Add(ReadVariableItem(n));
 
                // Unrecognised
                else  
@@ -130,7 +130,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Unrecognised file type -or- Missing elements/attributes</exception>
-      ProjectFileItem*  ProjectFileReader::ReadFileItem(XmlNodePtr node)
+      ProjectItem  ProjectFileReader::ReadFileItem(XmlNodePtr node)
       {
          try
          {
@@ -154,7 +154,7 @@ namespace Logic
 
                // Create file
                auto backup = ReadAttribute(node, L"backup");
-               return new ProjectFileItem((const wchar*)node->text, type, backup);
+               return ProjectItem(type, (LPCWSTR)node->text, backup);
             }
             catch (ArgumentException& e) {
                throw FileFormatException(HERE, e.Message);
@@ -172,13 +172,13 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Unrecognised file type -or- Missing elements/attributes</exception>
-      ProjectFolderItem*  ProjectFileReader::ReadFolderItem(XmlNodePtr node)
+      ProjectItem  ProjectFileReader::ReadFolderItem(XmlNodePtr node)
       {
          // Verify node
          ReadElement(node, L"folder");
 
          // Read folder
-         auto* folder = new ProjectFolderItem(ReadAttribute(node, L"name"), ReadAttribute(node, L"fixed") == L"true");
+         auto folder = ProjectItem(ReadAttribute(node, L"name"), ReadAttribute(node, L"fixed") == L"true");
 
          // Read items
          for (int i = 0, count = node->childNodes->length; i < count; i++)
@@ -191,15 +191,15 @@ namespace Logic
 
             // Folder
             else if (n->nodeName == _bstr_t(L"folder"))
-               folder->Add( ReadFolderItem(n) );
+               folder.Add( ReadFolderItem(n) );
 
             // File
             else if (n->nodeName == _bstr_t(L"file"))
-               folder->Add( ReadFileItem(n) );
+               folder.Add( ReadFileItem(n) );
 
             // Variable
             else if (n->nodeName == _bstr_t(L"variable"))
-               folder->Add( ReadVariableItem(n) );
+               folder.Add( ReadVariableItem(n) );
 
             // Unrecognised
             else  
@@ -215,7 +215,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Missing name -or- Missing elements/attributes</exception>
-      ProjectVariableItem*  ProjectFileReader::ReadVariableItem(XmlNodePtr node)
+      ProjectItem  ProjectFileReader::ReadVariableItem(XmlNodePtr node)
       {
          try
          {
@@ -228,7 +228,7 @@ namespace Logic
 
             // Read value + name
             int val = GuiString(ReadAttribute(node, L"value")).ToInt();
-            return new ProjectVariableItem((const wchar*)node->text, val);
+            return ProjectItem((const wchar*)node->text, val);
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

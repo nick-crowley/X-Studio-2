@@ -224,8 +224,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          // Get selected folder
-         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
-         if (!folder)
+         auto folder = TreeView.SelectedItem;
+         if (!folder || !folder->IsFolder())
             return;
 
          // Query for file
@@ -255,8 +255,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
 	      // Get selected folder, if any
-         auto folder = dynamic_cast<ProjectFolderItem*>(TreeView.SelectedItem);
-         if (!folder)
+         auto folder = TreeView.SelectedItem;
+         if (!folder || !folder->IsFolder())
             return;
 
          // Feedback
@@ -284,12 +284,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console << Cons::UserAction << "Deleting project item: " << Cons::Yellow << item->Name << ENDL;
 
          // Remove item
-         auto ptr = ProjectDocument::GetActive()->RemoveItem(item);
+         ProjectDocument::GetActive()->RemoveItem(item);
 
          // File: Ensure path exists, then delete
-         if (auto file = dynamic_cast<ProjectFileItem*>(item))
-            if (file->FullPath.Exists() && !DeleteFile(file->FullPath.c_str()))
-               throw Win32Exception(HERE, GuiString(L"Unable to delete '%s'", file->FullPath.c_str()));
+         if (item->IsFile())
+            if (item->FullPath.Exists() && !DeleteFile(item->FullPath.c_str()))
+               throw Win32Exception(HERE, GuiString(L"Unable to delete '%s'", item->FullPath.c_str()));
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
@@ -302,15 +302,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          // Get selected file, if any
-         auto file = dynamic_cast<ProjectFileItem*>(TreeView.SelectedItem);
-         if (!file)
+         if (!TreeView.SelectedItem || !TreeView.SelectedItem->IsFile())
             return;
 
          // Feedback
-         Console << Cons::UserAction << "Opening project item: " << Cons::Yellow << file->Name << ENDL;
+         Console << Cons::UserAction << "Opening project item: " << Cons::Yellow << TreeView.SelectedItem->Name << ENDL;
 
          // Open document
-         theApp.OpenDocumentFile(file->FullPath.c_str(), TRUE);
+         theApp.OpenDocumentFile(TreeView.SelectedItem->FullPath.c_str(), TRUE);
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
