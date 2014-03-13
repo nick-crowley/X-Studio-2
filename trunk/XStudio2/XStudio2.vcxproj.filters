@@ -627,6 +627,9 @@
     <ClInclude Include="tom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\BackupFileWriter.h">
+      <Filter>Header Files\Logic\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -1033,6 +1036,9 @@
     </ClCompile>
     <ClCompile Include="msxml6.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\BackupFileWriter.cpp">
+      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
