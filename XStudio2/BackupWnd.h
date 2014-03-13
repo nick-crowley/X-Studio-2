@@ -2,6 +2,7 @@
 #include "Logic/BackupFile.h"
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
+#include "ImageListEx.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -34,6 +35,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      virtual BOOL AllowShowOnList() const { return FALSE; }
       };
 
+   protected:
+      /// <summary>Shared Device context that wraps DC handles</summary>
+      class SharedDC : public CDC
+      {
+      public:
+         SharedDC(HDC dc) { Attach(dc); }
+         ~SharedDC()      { Detach();   }
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       BackupWnd();
@@ -53,11 +63,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    protected:
       void AdjustLayout();
-      void Populate(BackupFile& f);
+      void Populate();
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       handler void OnDocumentSwitched();
+      afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+      afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
       afx_msg void OnPaint();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
@@ -70,9 +82,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       static BackupWnd*  Instance;
 
    protected:
+      ImageListEx    Images;
       BackupToolBar  ToolBar;
+      BackupFile     Content;
 	   CListBox       List;
       EventHandler   fnDocumentSwitched;
+      CFont          BoldFont;
    };
 
 

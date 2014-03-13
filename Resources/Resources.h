@@ -43,6 +43,7 @@
 #define IDB_USER_IMAGES                 186
 #define IDB_NEWDOCUMENT_ICONS           187
 #define IDB_SPLASH                      188
+#define IDB_BACKUP_ICONS                189
 
 ////////////////////////////////// ICONS ///////////////////////////////
 

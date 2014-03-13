@@ -23,13 +23,16 @@ NAMESPACE_BEGIN2(GUI,Utils)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-   #ifdef _DEBUG
-	   virtual void AssertValid() const;
-	   virtual void Dump(CDumpContext& dc) const;
-   #endif  
+
       // ----------------------- MUTATORS ------------------------
    public:
       BOOL Create(UINT nResID, UINT nSize, UINT nInitial, DWORD dwMask);
+      BOOL Draw(CDC& dc, UINT image, CRect rc, CSize sz, UINT state = 0);
+      
+      BOOL Draw(CDC* pDC, int nImage, POINT pt, UINT nStyle)
+      {
+         return __super::Draw(pDC, nImage, pt, nStyle);
+      }
 
       // -------------------- REPRESENTATION ---------------------
       
