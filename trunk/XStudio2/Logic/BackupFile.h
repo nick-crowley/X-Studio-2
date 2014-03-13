@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "ScriptFile.h"
 
 namespace Logic
 {
@@ -16,7 +17,14 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptRevision()
+         ScriptRevision(const wstring& title, IO::Path path, const wstring& content, const ScriptFile& script) 
+            : Title(title), 
+              FullPath(path), 
+              Content(content), 
+              ScriptName(script.Name), 
+              Description(script.Description), 
+              Game(script.Game), 
+              Version(script.Version)
          {}
          virtual ~ScriptRevision()
          {}
@@ -80,6 +88,13 @@ namespace Logic
          public:
             /// <summary>Adds a revision</summary>
             /// <param name="r">revision</param>
+            void  Add(const ScriptRevision& r)
+            {
+               push_front(r);
+            }
+
+            /// <summary>Adds a revision</summary>
+            /// <param name="r">revision</param>
             void  Add(ScriptRevision&& r)
             {
                push_front(r);
@@ -112,7 +127,7 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         BackupFile()
+         BackupFile(BackupType t) : Type(t)
          {}
 
          // ------------------------ STATIC -------------------------

@@ -540,6 +540,7 @@ namespace Logic
 
 		   // ---------------------- ACCESSORS ------------------------
       public:
+         wstring GetAllText() const;
          wstring GetCommandName() const;
 
       private:

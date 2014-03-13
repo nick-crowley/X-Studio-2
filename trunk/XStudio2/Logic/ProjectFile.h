@@ -52,6 +52,16 @@ namespace Logic
                return ProjectItemPtr(nullptr);
             }
 
+            /// <summary>Get all items as a list.</summary>
+            /// <returns></returns>
+            ProjectItemArray  ToList() const
+            {
+               ProjectItemArray l;
+               for (auto& it : *this)
+                  it->ToList(l);
+               return l;
+            }
+
             // ----------------------- MUTATORS ------------------------
          public:
             /// <summary>Add base folder</summary>

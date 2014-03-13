@@ -84,6 +84,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  RenameItem(ProjectItem* item, const wstring& name);
 
    protected:
+      void  InitialCommit(const ProjectFileItem& item);
+
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 
       // -------------------- REPRESENTATION ---------------------
