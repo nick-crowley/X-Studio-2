@@ -35,10 +35,10 @@ namespace Logic
          void  Write(const ProjectFile& f);
 
       protected:
-         void          WriteItem(const ProjectItemPtr& item, XmlElementPtr& parent);
-         void          WriteFile(const ProjectFileItem* file, XmlElementPtr& parent);
-         XmlElementPtr WriteFolder(const ProjectFolderItem* folder, XmlElementPtr& parent);
-         void          WriteVariable(const ProjectVariableItem* var, XmlElementPtr& parent);
+         void          WriteItem(const ProjectItem& item, XmlElementPtr& parent);
+         void          WriteFile(const ProjectItem& file, XmlElementPtr& parent);
+         XmlElementPtr WriteFolder(const ProjectItem& folder, XmlElementPtr& parent);
+         void          WriteVariable(const ProjectItem& var, XmlElementPtr& parent);
 
          // -------------------- REPRESENTATION ---------------------
 

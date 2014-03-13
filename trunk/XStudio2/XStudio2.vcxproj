@@ -354,7 +354,7 @@
     <ClCompile Include="Logic\LanguageString.cpp" />
     <ClCompile Include="Logic\LegacyProjectFileReader.cpp" />
     <ClCompile Include="Logic\PreferencesLibrary.cpp" />
-    <ClCompile Include="Logic\ProjectFile.cpp" />
+    <ClCompile Include="Logic\ProjectItem.cpp" />
     <ClCompile Include="Logic\RichString.cpp" />
     <ClCompile Include="Logic\ScriptFileWriter.cpp" />
     <ClCompile Include="Logic\ScriptObject.cpp" />

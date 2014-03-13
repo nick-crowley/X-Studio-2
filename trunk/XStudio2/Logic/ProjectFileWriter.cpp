@@ -46,7 +46,7 @@ namespace Logic
          WriteAttribute(root, L"version", 2);
 
          // Write Items recursively
-         for (auto& item : f.Items)
+         for (auto& item : f)
             WriteItem(item, root);
       }
 
@@ -56,31 +56,31 @@ namespace Logic
       /// <param name="item">The item.</param>
       /// <param name="parent">The parent.</param>
       /// <exception cref="Logic::ArgumentNullException">Parent is nullptr or Item type corrupted</exception>
-      void  ProjectFileWriter::WriteItem(const ProjectItemPtr& item, XmlElementPtr& parent)
+      void  ProjectFileWriter::WriteItem(const ProjectItem& item, XmlElementPtr& parent)
       {
          REQUIRED(parent);
 
          XmlElementPtr folder;
 
-         switch (item->Type)
+         switch (item.Type)
          {
          // Folder: Only folders can have children
          case ProjectItemType::Folder:
-            folder = WriteFolder(dynamic_cast<ProjectFolderItem*>(item.get()), parent);
+            folder = WriteFolder(item, parent);
             
             // Write Children
-            for (auto& c : item->Children)
+            for (auto& c : item.Children)
                WriteItem(c, folder);
             break;
 
          // File:
          case ProjectItemType::File:
-            WriteFile(dynamic_cast<ProjectFileItem*>(item.get()), parent);
+            WriteFile(item, parent);
             break;
 
          // Variable:
          case ProjectItemType::Variable:
-            WriteVariable(dynamic_cast<ProjectVariableItem*>(item.get()), parent);
+            WriteVariable(item, parent);
             break;
          }
       }
@@ -89,15 +89,14 @@ namespace Logic
       /// <param name="file">file.</param>
       /// <param name="parent">parent node.</param>
       /// <exception cref="Logic::ArgumentNullException">Missing parameter</exception>
-      void  ProjectFileWriter::WriteFile(const ProjectFileItem* file, XmlElementPtr& parent)
+      void  ProjectFileWriter::WriteFile(const ProjectItem& file, XmlElementPtr& parent)
       {
-         REQUIRED(file);
          REQUIRED(parent);
 
          // <file type='..'>full_path</file>
-         auto node = WriteElement(parent, L"file", file->FullPath.c_str());
-         WriteAttribute(node, L"backup", file->BackupPath.c_str());
-         WriteAttribute(node, L"type", ::GetString(file->FileType));
+         auto node = WriteElement(parent, L"file", file.FullPath.c_str());
+         WriteAttribute(node, L"backup", file.BackupName);
+         WriteAttribute(node, L"type", ::GetString(file.FileType));
       }
 
       /// <summary>Writes folder item.</summary>
@@ -105,15 +104,14 @@ namespace Logic
       /// <param name="parent">parent node.</param>
       /// <returns>Folder node</returns>
       /// <exception cref="Logic::ArgumentNullException">Missing parameter</exception>
-      XmlElementPtr  ProjectFileWriter::WriteFolder(const ProjectFolderItem* folder, XmlElementPtr& parent)
+      XmlElementPtr  ProjectFileWriter::WriteFolder(const ProjectItem& folder, XmlElementPtr& parent)
       {
-         REQUIRED(folder);
          REQUIRED(parent);
 
          // <folder name=.. fixed=..>  ... </folder>
          auto node = WriteElement(parent, L"folder");
-         WriteAttribute(node, L"name", folder->Name);
-         WriteAttribute(node, L"fixed", folder->Fixed ? L"true" : L"false");
+         WriteAttribute(node, L"name", folder.Name);
+         WriteAttribute(node, L"fixed", folder.Fixed ? L"true" : L"false");
          
          return node;
       }
@@ -123,14 +121,13 @@ namespace Logic
       /// <param name="parent">parent node.</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentNullException">Missing parameter</exception>
-      void  ProjectFileWriter::WriteVariable(const ProjectVariableItem* var, XmlElementPtr& parent)
+      void  ProjectFileWriter::WriteVariable(const ProjectItem& var, XmlElementPtr& parent)
       {
-         REQUIRED(var);
          REQUIRED(parent);
 
          // <variable value='..'>name</variable>
-         auto node = WriteElement(parent, L"variable", var->Name);
-         WriteAttribute(node, L"value", var->Value);
+         auto node = WriteElement(parent, L"variable", var.Name);
+         WriteAttribute(node, L"value", var.Value);
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------

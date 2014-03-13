@@ -8,14 +8,14 @@ namespace Logic
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ProjectFile::ProjectFile()
+      /*ProjectFile::ProjectFile(const wstring& name)
       {
       }
 
 
       ProjectFile::~ProjectFile()
       {
-      }
+      }*/
 
       // ------------------------------- STATIC METHODS -------------------------------
 

@@ -38,16 +38,16 @@ namespace Logic
       {
          try
          {
-            ProjectFile file;
+            ProjectFile file(path.FileName);
 
             // Read file
             LoadDocument();
 
-            // Create folders
-            file.Add(ProjectItem(L"Language Files", true));
-            file.Add(ProjectItem(L"MD Scripts", true));
-            file.Add(ProjectItem(L"MSCI Scripts", true));
-            file.Add(ProjectItem(L"Variables", true));
+            // Create base folders
+            auto language = file.Add(ProjectItem(L"Language Files", true));
+            auto scripts = file.Add(ProjectItem(L"MD Scripts", true));
+            auto missions = file.Add(ProjectItem(L"MSCI Scripts", true));
+            auto variables = file.Add(ProjectItem(L"Variables", true));
 
             // Read documents/variables
             for (int i = 0; i < Root->childNodes->length; i++)
@@ -62,17 +62,18 @@ namespace Logic
                else if (n->nodeName == _bstr_t(L"document"))
                {
                   auto doc = ReadDocument(n);
+
                   // Script:
                   if (doc.FileType == FileType::Script)
-                     file[2].Add(doc);
+                     scripts.Add(doc);
                   
                   // LanguageFile:
                   else if (doc.FileType == FileType::Language)
-                     file[0].Add(doc);
+                     language.Add(doc);
                }
                // Variable
                else if (n->nodeName == _bstr_t(L"variable"))
-                  file[3].Add(ReadVariable(n));
+                  variables.Add(ReadVariable(n));
                else  
                   // Unrecognised
                   throw FileFormatException(HERE, L"Unrecognised element");;
