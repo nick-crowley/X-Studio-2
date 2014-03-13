@@ -3,12 +3,15 @@
 #include "Logic/Path.h"
 #include "DocumentBase.h"
 
+
 #ifndef __AFXWIN_H__
 	#error "include 'stdafx.h' before including this file for PCH"
 #endif
 
 /// <summary>Forward declarations</summary>
 FORWARD_DECLARATION2(GUI,Documents,class DocumentBase)
+FORWARD_DECLARATION2(GUI,Documents,class DiffDocument)
+FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
 FORWARD_DECLARATION2(GUI,Windows,class MainWnd)
 
 // ------------------------ ENUMS --------------------------
@@ -161,6 +164,7 @@ public:
    int           ExitInstance() override;
 	BOOL          InitInstance() override;
    void          OnPreferencesChanged();
+   DiffDocument* OpenDiffDocument(GUI::Documents::ScriptDocument& doc, const wstring& diff);
    DocumentBase* OpenStringLibrary();
 	void          PreLoadState() override;
    void          SetState(AppState s);

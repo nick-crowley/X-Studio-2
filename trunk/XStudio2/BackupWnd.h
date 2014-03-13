@@ -67,12 +67,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnCommandDelete()     { OnPerformCommand(ID_BACKUP_DELETE); }
+      afx_msg void OnCommandDiff();
+      afx_msg void OnCommandRevert()     { OnPerformCommand(ID_BACKUP_REVERT); }
       handler void OnDocumentSwitched();
       afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
       afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
       afx_msg void OnPaint();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
-      afx_msg void OnQueryCustomCommand(CCmdUI* pCmdUI);
+      afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
 	   afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -88,6 +91,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   CListBox       List;
       EventHandler   fnDocumentSwitched;
       CFont          BoldFont;
+   public:
+      afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
    };
 
 
