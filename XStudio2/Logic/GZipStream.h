@@ -16,12 +16,13 @@ namespace Logic
       private:
          const int  WINDOW_SIZE = 15,
                     DETECT_HEADER = 16;
+         const int  COMPRESS_BUFFER = 256*1024;
          
       public:
          enum class Operation   { Compression, Decompression };
       
          // --------------------- CONSTRUCTION ----------------------
-
+      public:
          GZipStream(StreamPtr  src, Operation  op);
          ~GZipStream();
 
@@ -32,19 +33,18 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
-
-         bool   CanSeek() const   { return false; }
-
-         DWORD  GetLength();
+      public:
+         bool   CanSeek() const;
          DWORD  GetPosition() const;
 
-      private:
+      protected:
          bool   IsClosed() const;
 
          // ----------------------- MUTATORS ------------------------
 
       public:
          void   Close();
+         DWORD  GetLength();
          void   SafeClose();
          void   Seek(LONG  offset, SeekOrigin  mode);
          void   SetLength(DWORD  length);
@@ -53,10 +53,10 @@ namespace Logic
          DWORD  Write(const BYTE* buffer, DWORD length);
 
          // -------------------- REPRESENTATION ---------------------
-
+      protected:
          z_stream     ZStream;
          gz_header    ZHeader;
-         ByteArrayPtr Input;
+         ByteArrayPtr Buffer;
          Operation    Mode;
       };
 

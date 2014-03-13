@@ -35,7 +35,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   BackupWnd::BackupWnd() : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched))
+   BackupWnd::BackupWnd() 
+      : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched)),
+        Content(BackupType::MSCI)
    {
    }
 
