@@ -67,7 +67,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
             // Folders: Populate recursively
             for (auto& folder : doc->Project.Items)
-               InsertItem(TreeItem(folder.get()), root);
+               InsertItem(TreeItem(&folder), root);
          }
       }
       catch (ExceptionBase& e) {
@@ -114,8 +114,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Children: Insert children
       if (item.Data)
-         for (auto& ch : item.Data->Children)
-            InsertItem(TreeItem(ch.get()), node);
+         for (auto& c : item.Data->Children)
+            InsertItem(TreeItem(&c), node);
 
       // Return item
       return node;
@@ -175,7 +175,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
               << Cons::White << " to " << Cons::Yellow << target.Data->Name << ENDL;
 
       // Move item 
-      ProjectDocument::GetActive()->MoveItem(DragSource.Data, dynamic_cast<ProjectFolderItem*>(target.Data));
+      ProjectDocument::GetActive()->MoveItem(*DragSource.Data, *target.Data);
    }
 
    /// <summary>Called when item added.</summary>
@@ -188,8 +188,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Called when item or project renamed.</summary>
    /// <param name="item">The item, or nullptr for project</param>
-   /// <param name="parent">Always null</param>
-   void  ProjectTreeCtrl::OnItemChanged(ProjectItem* item, ProjectItem* /*parent = nullptr*/)
+   void  ProjectTreeCtrl::OnItemChanged(ProjectItem* item)
    {
       if (item)
          SetItemText(FindItem(item), item->Name.c_str());
@@ -199,8 +198,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    /// <summary>Called when item added.</summary>
    /// <param name="item">The item.</param>
-   /// <param name="parent">Always null</param>
-   void  ProjectTreeCtrl::OnItemRemoved(ProjectItem* item, ProjectItem* /*parent = nullptr*/)
+   void  ProjectTreeCtrl::OnItemRemoved(ProjectItem* item)
    {
       DeleteItem(FindItem(item));
    }
@@ -252,7 +250,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
             // Item: Rename item
             if (LabelItem.Data)
-               ProjectDocument::GetActive()->RenameItem(LabelItem.Data, newText);
+               ProjectDocument::GetActive()->RenameItem(*LabelItem.Data, newText);
             else
                // Project: Rename project
                ProjectDocument::GetActive()->Rename(newText);

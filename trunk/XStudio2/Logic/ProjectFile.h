@@ -30,24 +30,24 @@ namespace Logic
          /// <summary>Query existence of item by path.</summary>
          /// <param name="p">Full path.</param>
          /// <returns></returns>
-         bool Contains(IO::Path p) const
+         bool Contains(IO::Path path) const
          {
-            return any_of(begin(), end(), [&p](const ProjectItemPtr& item) {return item->Contains(p);} );
+            return any_of(Items.begin(), Items.end(), [&path](const ProjectItem& item) {return item.Contains(path);} );
          }
 
          /// <summary>Finds item by path.</summary>
          /// <param name="p">Full path.</param>
          /// <returns>Item if found, otherwise nullptr</returns>
-         ProjectItemPtr  Find(IO::Path p) const
-         {
-            // Find 
-            for (auto& folder : *this)
-               if (ProjectItemPtr ptr = folder->Find(p))
-                  return ptr;
+         //ProjectItem  Find(IO::Path p) const
+         //{
+         //   // Find 
+         //   for (auto& item : Items)
+         //      if ()
+         //         return ptr;
 
-            // Not found
-            return ProjectItemPtr(nullptr);
-         }
+         //   // Not found
+         //   return ProjectItemPtr(nullptr);
+         //}
 
          /// <summary>Get all items as a list.</summary>
          /// <returns></returns>
@@ -112,7 +112,7 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         ProjectItemList  Items;
+         ProjectItem  Root;
          
       private:
       };

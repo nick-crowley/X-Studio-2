@@ -9,7 +9,7 @@ namespace Logic
       class ProjectItem;
 
       /// <summary>Defines item types within a project</summary>
-      enum class ProjectItemType  { File, Folder, Variable };
+      enum class ProjectItemType  { Root, File, Folder, Variable };
 
       /// <summary>List of project items</summary>
       typedef list<ProjectItem>  ProjectItemList;
@@ -22,6 +22,11 @@ namespace Logic
          
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create root</summary>
+         /// <param name="name">project name.</param>
+         ProjectItem(const wstring& name) 
+            : Type(ProjectItemType::Root), Name(name), Fixed(true), FileType(FileType::Unknown), Value(-1)
+         {}
          /// <summary>Create file item</summary>
          /// <param name="file">file type.</param>
          /// <param name="path">Full path.</param>
@@ -65,18 +70,18 @@ namespace Logic
          /// <summary>Finds item by path.</summary>
          /// <param name="path">Full path.</param>
          /// <returns>Item if found, otherwise nullptr</returns>
-         ProjectItem  Find(IO::Path path) const
-         {
-            if (FullPath == path)
-               return *this;
+         //ProjectItem  Find(IO::Path path) const
+         //{
+         //   if (FullPath == path)
+         //      return *this;
 
-            // Search children
-            auto pos = find_if(Children.begin(), Children.end(), [&path](ProjectItem& p) {return p.FullPath == path;} );
-            if (pos == Children.end())
-               throw;
+         //   // Search children
+         //   auto pos = find_if(Children.begin(), Children.end(), [&path](ProjectItem& p) {return p.Find(path);} );
+         //   if (pos == Children.end())
+         //      throw;
 
-            return *pos;
-         }
+         //   return *pos;
+         //}
          
          /// <summary>Determines whether this instance is a file.</summary>
          /// <returns></returns>
@@ -114,47 +119,35 @@ namespace Logic
       public:
          /// <summary>Append child item</summary>
          /// <param name="p">item</param>
-         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         void  Add(ProjectItem* p)
+         /// <returns>Item that was added</returns>
+         ProjectItem& Add(const ProjectItem& p)
          {
-            REQUIRED(p);
-
-            Children.push_back(ProjectItemPtr(p));
-         }
-
-         /// <summary>Append child item</summary>
-         /// <param name="p">item</param>
-         /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         void  Add(ProjectItemPtr& p)
-         {
-            REQUIRED(p);
-
             Children.push_back(p);
+            return Children.back();
          }
 
          /// <summary>Removes a child without destroying it</summary>
          /// <param name="p">item</param>
          /// <returns>Item if found, otherwise nullptr</returns>
          /// <exception cref="Logic::ArgumentNullException">Item is null</exception>
-         ProjectItemPtr  Remove(ProjectItem* p)
+         bool Remove(const ProjectItem& p)
          {
             // Depth first search. 
-            for (auto pos = Children.begin(), end = Children.end(); pos != end; ++pos)
+            for (auto c = Children.begin(), end = Children.end(); c != end; ++c)
             {
                // Found: Remove child
-               if (p == pos->get())
+               if (&p == &*c)
                {
-                  ProjectItemPtr ptr(*pos);
-                  Children.erase(pos);
-                  return ptr;
+                  Children.erase(c);
+                  return true;
                }
                // Failed: Search grandchildren
-               else if (ProjectItemPtr ptr = pos->get()->Remove(p))
-                  return ptr;
+               else if (c->Remove(p))
+                  return true;
             }
 
             // Not found
-            return ProjectItemPtr(nullptr);
+            return false;
          }
 
          /// <summary>Generates a unique path for the backup file.</summary>

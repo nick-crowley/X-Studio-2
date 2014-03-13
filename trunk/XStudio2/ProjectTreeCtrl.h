@@ -186,8 +186,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void  OnDragBegin(NMHDR *pNMHDR, LRESULT *pResult);
       handler void  OnDragEnd(const TreeItem& target);
       handler void  OnItemAdded(ProjectItem* item, ProjectItem* parent);
-      handler void  OnItemRemoved(ProjectItem* item, ProjectItem*);
-      handler void  OnItemChanged(ProjectItem* item, ProjectItem*);
+      handler void  OnItemRemoved(ProjectItem* item);
+      handler void  OnItemChanged(ProjectItem* item);
       afx_msg void  OnLabelEditBegin(NMHDR* pNMHDR, LRESULT* pResult);
       afx_msg void  OnLabelEditEnd(NMHDR *pNMHDR, LRESULT *pResult);
       afx_msg void  OnLButtonUp(UINT nFlags, CPoint point);
@@ -201,9 +201,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       TreeItem     DragSource,
                    LabelItem;
       
-      ProjectItemHandler  fnItemAdded, 
-                          fnItemChanged,
-                          fnItemRemoved;
+      ProjectItemAddedEvent::Handler  fnItemAdded;
+      ProjectItemEvent::Handler       fnItemChanged,
+                                      fnItemRemoved;
       
    public:
       
