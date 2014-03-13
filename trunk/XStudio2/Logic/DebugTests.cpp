@@ -41,7 +41,9 @@ namespace Logic
       *violation = 42;*/
       //throw exception("hahaha");
 
-      Test_DiffDocument();
+      //Test_DiffDocument();
+
+      Test_GZip_Compress();
       
 
       //Test_LanguageFileReader();
@@ -469,6 +471,32 @@ namespace Logic
          CString sz;
          sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
+      }
+   }
+   
+   void  DebugTests::Test_GZip_Compress()
+   {
+      const WCHAR* path = L"D:\\My Projects\\XStudio2\\Files\\plugin.piracy.astronaut.cmd.repair.xml";
+   
+      try
+      {
+         // input
+         StreamPtr input( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
+
+         // output
+         StreamPtr output( new FileStream(L"d:\\Temp\\test.zip", FileMode::CreateAlways, FileAccess::Write) );
+         StreamPtr zip( new GZipStream(output, GZipStream::Operation::Compression) );
+
+         // Read input
+         auto length = input->GetLength();
+         auto bytes = input->ReadAllBytes();
+         
+         // Write .ZIP
+         zip->Write(bytes.get(), length);
+         zip->Close();
+      }
+      catch (ExceptionBase&  e) {
+         theApp.ShowError(HERE, e, L"Unable to compress");
       }
    }
 
