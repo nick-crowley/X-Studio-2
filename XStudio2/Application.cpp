@@ -371,6 +371,22 @@ void Application::OnPreferencesChanged()
    GetMainWindow()->SendMessageToDescendants(WM_SETTINGCHANGE);
 }
 
+
+/// <summary>Opens a difference document.</summary>
+/// <param name="doc">The document.</param>
+/// <param name="diff">The difference.</param>
+/// <returns></returns>
+DiffDocument* Application::OpenDiffDocument(ScriptDocument& doc, const wstring& diff)
+{
+   // Ensure not already open
+   /*if (auto doc = GetOpenDocument(L"String Library"))
+      return doc;*/
+   
+   // Open manually
+   auto templ = GetDocumentTemplate<DiffDocTemplate>();
+   return templ->OpenDocumentFile(doc, diff);
+}
+
 /// <summary>Opens the string library.</summary>
 /// <returns></returns>
 DocumentBase* Application::OpenStringLibrary()
@@ -425,6 +441,7 @@ void Application::PreLoadState()
 	GetContextMenuManager()->AddMenu(GuiString(IDM_EDIT_POPUP).c_str(), IDM_EDIT_POPUP);
    GetContextMenuManager()->AddMenu(GuiString(IDM_OUTPUT_POPUP).c_str(), IDM_OUTPUT_POPUP);
    GetContextMenuManager()->AddMenu(GuiString(IDM_PROJECT_POPUP).c_str(), IDM_PROJECT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_BACKUP_POPUP).c_str(), IDM_BACKUP_POPUP);
 	GetContextMenuManager()->AddMenu(GuiString(IDM_SCRIPTEDIT_POPUP).c_str(), IDM_SCRIPTEDIT_POPUP);
    GetContextMenuManager()->AddMenu(GuiString(IDM_STRINGVIEW_POPUP).c_str(), IDM_STRINGVIEW_POPUP);
 }

@@ -31,6 +31,7 @@
 #define IDM_PROJECT_POPUP               162
 #define IDM_OUTPUT_POPUP                163
 #define IDM_STRINGVIEW_POPUP            164
+#define IDM_BACKUP_POPUP                165
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
@@ -105,6 +106,11 @@
 #define ID_PROJECT_REMOVE               356
 #define ID_PROJECT_DELETE               357
 #define ID_PROJECT_PROPERTIES           358
+
+// ProjectWnd ContextMenu
+#define ID_BACKUP_DIFF                  370
+#define ID_BACKUP_REVERT                371
+#define ID_BACKUP_DELETE                372
 
 // LanguageEditor Toolbar
 #define ID_EDIT_BOLD                    400

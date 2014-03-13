@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BackupWnd.h"
 #include "MainWnd.h"
+#include "ScriptDocument.h"
 #include "ProjectDocument.h"
 
 #ifdef _DEBUG
@@ -23,8 +24,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SETTINGCHANGE()
       ON_WM_DRAWITEM()
       ON_WM_MEASUREITEM()
+      ON_WM_CONTEXTMENU()
+      ON_COMMAND(ID_BACKUP_DIFF, &BackupWnd::OnCommandDiff)
+      ON_COMMAND(ID_BACKUP_REVERT, &BackupWnd::OnCommandRevert)
+      ON_COMMAND(ID_BACKUP_DELETE, &BackupWnd::OnCommandDelete)
+      ON_UPDATE_COMMAND_UI(ID_BACKUP_DIFF, &BackupWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_BACKUP_REVERT, &BackupWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_BACKUP_DELETE, &BackupWnd::OnQueryCommand)
    END_MESSAGE_MAP()
-
+   
    // -------------------------------- CONSTRUCTION --------------------------------
 
    BackupWnd::BackupWnd() : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched))
@@ -110,6 +118,35 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console.Log(HERE, e);
          return -1;
       }
+   }
+   
+   /// <summary>Called when context menu.</summary>
+   /// <param name="pWnd">The p WND.</param>
+   /// <param name="point">The point in screen co-ordinates.</param>
+   void BackupWnd::OnContextMenu(CWnd* pWnd, CPoint point)
+   {
+      // Ensure List was clicked
+      if (pWnd && List.m_hWnd == pWnd->m_hWnd)
+      {
+         BOOL none = FALSE;
+          
+         // Select item beneath cursor
+         int item = List.ItemFromPoint(CursorPoint(&List), none);
+         List.SetCurSel(!none ? item : LB_ERR);
+
+         // Popup
+         theApp.GetContextMenuManager()->ShowPopupMenu(IDM_BACKUP_POPUP, point.x, point.y, this, TRUE);
+      }
+   }
+   
+   /// <summary>Display diff for selected revision</summary>
+   void  BackupWnd::OnCommandDiff()
+   {
+      auto script = ScriptDocument::GetActive();
+      
+      // Require document/selection
+      if (script && List.GetCurSel() != -1)
+         theApp.OpenDiffDocument(*script, Content.Revisions.FindByIndex(List.GetCurSel()).Content);
    }
 
    /// <summary>Loads backups for the activate document</summary>
@@ -229,21 +266,48 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   rc.InflateRect(1, 1);
 	   dc.Draw3dRect(rc, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
-
-   /// <summary>Query state of custom toolbar command</summary>
-   /// <param name="pCmdUI">The p command UI.</param>
-   void BackupWnd::OnQueryCustomCommand(CCmdUI* pCmdUI)
+   
+   /// <summary>Perform command</summary>
+   /// <param name="nID">ID</param>
+   void BackupWnd::OnPerformCommand(UINT nID)
    {
-      
+      switch (nID)
+      {
+      case ID_BACKUP_DELETE:  
+         break;
+
+      case ID_BACKUP_DIFF:    
+         
+         break;
+
+      case ID_BACKUP_REVERT:  
+         break;
+      }
    }
 
    
-   /// <summary>Called when query state of command.</summary>
-   /// <param name="pCmdUI">The p command UI.</param>
-   void BackupWnd::OnQueryCommand(CCmdUI* pCmdUI)
+   /// <summary>Query state of context menu command</summary>
+   /// <param name="pCmdUI">UI object</param>
+   void BackupWnd::OnQueryCommand(CCmdUI *pCmdUI)
    {
-      
+      BOOL state = TRUE, 
+           check = FALSE;
+
+      //
+      switch (pCmdUI->m_nID)
+      {
+      case ID_BACKUP_DELETE:  
+      case ID_BACKUP_DIFF:    
+      case ID_BACKUP_REVERT:  
+         state = (List.GetCurSel() != LB_ERR ? TRUE : FALSE);
+         break;
+      }
+
+      // Set state
+      pCmdUI->SetCheck(check);
+      pCmdUI->Enable(state);
    }
+   
 
    
    /// <summary>Set focus to properties grid</summary>
