@@ -50,9 +50,9 @@ namespace Logic
 
          /// <summary>Get all items as a list.</summary>
          /// <returns></returns>
-         void  ToList(ProjectItemArray& list) const
+         void  ToList(list<ProjectItem*>& list) const
          {
-            list.push_back(ProjectItemPtr(const_cast<ProjectItem*>(this)));
+            list.push_back(const_cast<ProjectItem*>(this));
 
             // Add children
             for (auto& c : Children)

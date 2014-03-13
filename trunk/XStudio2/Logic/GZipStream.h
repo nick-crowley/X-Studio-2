@@ -47,6 +47,7 @@ namespace Logic
          DWORD  GetLength();
          void   SafeClose();
          void   Seek(LONG  offset, SeekOrigin  mode);
+         void   SetFileName(const wstring& name);
          void   SetLength(DWORD  length);
 
          DWORD  Read(BYTE* buffer, DWORD length);
@@ -58,6 +59,7 @@ namespace Logic
          gz_header    ZHeader;
          ByteArrayPtr Buffer;
          Operation    Mode;
+         string       FileName;
       };
 
    }

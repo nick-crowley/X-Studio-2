@@ -54,9 +54,9 @@ namespace Logic
 
             /// <summary>Get all items as a list.</summary>
             /// <returns></returns>
-            ProjectItemArray  ToList() const
+            list<ProjectItem*>  ToList() const
             {
-               ProjectItemArray l;
+               list<ProjectItem*> l;
                for (auto& it : *this)
                   it->ToList(l);
                return l;

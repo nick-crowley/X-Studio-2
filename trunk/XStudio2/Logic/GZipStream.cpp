@@ -43,11 +43,6 @@ namespace Logic
             if (deflateInit2(&ZStream, Z_BEST_COMPRESSION, Z_DEFLATED, WINDOW_SIZE+DETECT_HEADER, 9, Z_DEFAULT_STRATEGY) != Z_OK)
                throw GZipException(HERE, ZStream.msg);
 
-            // Init header
-            ZHeader.name = (Bytef*)"filename";
-            if (deflateSetHeader(&ZStream, &ZHeader) != Z_OK)
-               throw GZipException(HERE, ZStream.msg);
-
             // Allocate + set output buffer
             Buffer.reset(new byte[COMPRESS_BUFFER]);
             ZStream.next_out = Buffer.get();
@@ -81,9 +76,29 @@ namespace Logic
             if (Mode == Operation::Decompression && inflateEnd(&ZStream) != Z_OK)
                throw GZipException(HERE, ZStream.msg);
             
-            // Compression
-            else if (Mode == Operation::Compression && deflateEnd(&ZStream) != Z_OK)
+            // Compression: Write internal compression buffer to disc
+            else if (Mode == Operation::Compression)
+            {
+               ZStream.avail_in = 0;      // No input
+               ZStream.next_in = Z_NULL;
+
+               // Flush remaining data into the output buffer
+               if (deflate(&ZStream, Z_FINISH) == Z_STREAM_END)
+               {
+                  //DWORD compressed = COMPRESS_BUFFER - ZStream.avail_out;
+
+                  // Success: Write GZIP to underlying stream 
+                  for (DWORD out = 0; out < ZStream.total_out; )
+                     out += StreamFacade::Write(&Buffer.get()[out], ZStream.total_out - out);
+
+                  // Close stream
+                  if (deflateEnd(&ZStream) == Z_OK)
+                     return;
+               }
+               
+               // Error: throw
                throw GZipException(HERE, ZStream.msg);
+            }
 
             StreamFacade::Close();
          }
@@ -139,6 +154,24 @@ namespace Logic
       void  GZipStream::Seek(LONG  offset, SeekOrigin  mode)
       {
          throw NotSupportedException(HERE, GuiString(ERR_NO_SEEK_ACCESS));
+      }
+
+      /// <summary>Sets the internal filename.</summary>
+      /// <param name="name">name.</param>
+      /// <exception cref="Logic::InvalidOperationException">Called after first write</exception>
+      /// <exception cref="Logic::GZipException">GZip error</exception>
+      void  GZipStream::SetFileName(const wstring& name)
+      {
+         if (ZStream.total_out > 0)
+            throw InvalidOperationException(HERE, L"Cannot set filename after writing");
+
+         // Convert to ANSI
+         FileName = StringResource::Convert(name, CP_ACP);
+         ZHeader.name = (Byte*)FileName.c_str();
+
+         // Set header
+         if (deflateSetHeader(&ZStream, &ZHeader) != Z_OK)
+            throw GZipException(HERE, ZStream.msg);
       }
 
       /// <summary>Not supported</summary>
@@ -209,17 +242,25 @@ namespace Logic
          // Re-Fill output buffer if necessary
          /*if (ZStream.avail_out == 0)
             ZStream.avail_out = StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());*/
+
+         DWORD start = ZStream.avail_out;
          
-         // Compress all input into the output buffer
-         switch (int res = deflate(&ZStream, Z_FINISH))
+         // Compress available input into the output buffer
+         switch (int res = deflate(&ZStream, Z_NO_FLUSH))
          {
-         // Success: Write to underlying stream + Return count
-         case Z_STREAM_END:
-         /*case Z_BUF_ERROR:
-         case Z_OK:*/
-            return StreamFacade::Write(Buffer.get(), COMPRESS_BUFFER - ZStream.avail_out);
+         // Complete: Write to underlying stream + Return count
+         /*case Z_STREAM_END:
+            DWORD compressed = COMPRESS_BUFFER - ZStream.avail_out;
+            for (DWORD out = 0; out < compressed; )
+               out += StreamFacade::Write(&Buffer.get()[out], compressed - out);
+            return compressed;*/
+
+         // Incomplete: Return # of bytes compressed
+         case Z_OK:
+            return ZStream.avail_out - start;
 
          // Error: throw
+         case Z_BUF_ERROR:
          default:
             throw GZipException(HERE, ZStream.msg);
          }
