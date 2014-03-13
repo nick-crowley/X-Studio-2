@@ -139,7 +139,7 @@ namespace Logic
             // Verify node
             ReadElement(node, L"file");
 
-            // Verify path exists
+            // Verify path is present
             if (!node->text.length())
                throw FileFormatException(HERE, L"Missing document path");
 
@@ -147,17 +147,18 @@ namespace Logic
             {
                // Resolve type
                type = ParseFileType(ReadAttribute(node, L"type"));
-
+               
                // Verify file-type
                if (type == FileType::Unknown)
                   throw FileFormatException(HERE, L"'Unknown' file-type is not supported");
+
+               // Create file
+               auto backup = ReadAttribute(node, L"backup");
+               return new ProjectFileItem((const wchar*)node->text, type, backup);
             }
             catch (ArgumentException& e) {
                throw FileFormatException(HERE, e.Message);
             }
-
-            // Create file
-            return new ProjectFileItem((const wchar*)node->text, type);
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);

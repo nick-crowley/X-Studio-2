@@ -161,7 +161,11 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ProjectFileItem(IO::Path path, FileType t) : ProjectItem(ProjectItemType::File, path.FileName, false), FullPath(path), FileType(t)
+         ProjectFileItem(IO::Path path, FileType t) 
+            : ProjectItem(ProjectItemType::File, path.FileName, false), FullPath(path), FileType(t)
+         {}
+         ProjectFileItem(IO::Path path, FileType t, IO::Path backup) 
+            : ProjectItem(ProjectItemType::File, path.FileName, false), FullPath(path), FileType(t), BackupPath(backup)
          {}
 
          // ------------------------ STATIC -------------------------

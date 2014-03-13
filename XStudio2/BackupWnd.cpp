@@ -223,14 +223,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
       Console << HERE << ENDL;
 
       // Clear previous
-      List.ResetContent();
-      //List.SendMessage(LB_SETCOUNT, 0);
+      if (List.m_hWnd)
+         List.ResetContent();
 
-      // Require project
-      if (auto proj = ProjectDocument::GetActive())
+      try
       {
-         Content = proj->GetAllBackups(DocumentBase::GetActive());
-         Populate();
+         auto proj = ProjectDocument::GetActive();
+         auto doc = DocumentBase::GetActive();
+
+         // Check document (if any) belongs to current project (if any)
+         if (doc && proj && proj->Contains(doc->FullPath))
+         {
+            Content = proj->GetAllRevisions(DocumentBase::GetActive());
+            Populate();
+         }
+      }
+      catch (ExceptionBase& e) 
+      {
+         List.ResetContent();
+         theApp.ShowError(HERE, e, GuiString(L"Cannot open backup file for '%s'", (LPCWSTR)DocumentBase::GetActive()->GetTitle()));
       }
    }
    
