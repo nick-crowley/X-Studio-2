@@ -41,7 +41,7 @@ namespace Logic
       {
          try
          {
-            BackupFile file;
+            BackupType type;
 
             // Read file
             LoadDocument();
@@ -52,11 +52,12 @@ namespace Logic
 
             // Read file properties
             if (ReadAttribute(Root, L"type") == L"msci")
-               file.Type = BackupType::MSCI;
+               type = BackupType::MSCI;
             else
                throw FileFormatException(HERE, L"Unrecognised backup type");
 
             // Read revisions
+            BackupFile file(type);
             ReadScriptRevisions(file);
 
             // Return file

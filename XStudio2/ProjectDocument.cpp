@@ -7,6 +7,7 @@
 #include "Logic/ProjectFileReader.h"
 #include "Logic/ProjectFileWriter.h"
 #include "Logic/XFileInfo.h"
+#include "Logic/ScriptFileReader.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
@@ -236,7 +237,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       return DocumentBase::OnNewDocument();
    }
-   
+
 
    /// <summary>Called on convert an X-Studio 1 project to X-Studio 2.</summary>
    /// <param name="legacy">Legacy project path.</param>
@@ -246,11 +247,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       try
       {
-         // Read legacy
+         // Read legacy project
          auto in = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
          auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
 
-         // Write as updated
+         // Perform initial commits of file items
+         for (auto& item : proj.Items)
+            if (auto file = dynamic_cast<ProjectFileItem*>(item.get()))
+            {
+               // Generate unique filename + Commit
+               file->SetBackupPath(upgrade.Folder);
+               InitialCommit(*file);
+            }
+
+         // Write X-Studio2 project
          auto out = StreamPtr(new FileStream(upgrade, FileMode::CreateNew, FileAccess::Write));
          ProjectFileWriter w(out);
          w.Write(proj);
@@ -296,6 +306,42 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Creates a backup file for a file item and performs an initial commit.</summary>
+   /// <param name="item">File item.</param>
+   /// <exception cref="Logic::ArgumentException">Backup path not set</exception>
+   /// <exception cref="Logic::ArgumentNullException">Script format invalid</exception>
+   /// <exception cref="Logic::ComException">COM Error</exception>
+   /// <exception cref="Logic::FileFormatException">Script format invalid</exception>
+   /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
+   /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+   void ProjectDocument::InitialCommit(const ProjectFileItem& item)
+   {
+      try
+      {
+         BackupFile backup(BackupType::MSCI);
+
+         // Ensure backup path has been set
+         if (item.BackupPath.Empty())
+            throw ArgumentException(HERE, L"item", GuiString(L"Missing backup file path for '%s'", item.Name.c_str()) );
+
+         // Read script from disc
+         auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
+         
+         // Create script revision
+         ScriptRevision rev(L"Initial Commit", item.FullPath, script.GetAllText(), script);
+         backup.Revisions.Add(rev);
+
+         // Save backup
+         BackupFileWriter w(XFileInfo(item.BackupPath).OpenWrite());
+         w.WriteFile(backup);
+         w.Close();
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, GuiString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
+      }
+   }
    
    /// <summary>Queries the state of a menu command.</summary>
    /// <param name="pCmdUI">The command UI.</param>

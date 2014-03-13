@@ -94,6 +94,42 @@ namespace Logic
          return m.Matched;
       }
 
+      /// <summary>Finds the name of the label that represents the scope of a line number</summary>
+      /// <param name="line">The 1-based line number</param>
+      /// <returns>Label name, or empty string if global</returns>
+      wstring  ScriptFile::FindScope(UINT line)
+      {
+         // Sort labels into descending order
+         vector<ScriptLabel> coll(Labels.begin(), Labels.end());
+         sort(coll.begin(), coll.end(), [](ScriptLabel& a, ScriptLabel&b){ return a.LineNumber > b.LineNumber; });
+
+         // Determine current scope
+         auto scope = find_if(coll.begin(), coll.end(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
+         return scope != coll.end() ? scope->Name : L"";
+      }
+
+      /// <summary>Gets all text in the offline buffer</summary>
+      /// <returns></returns>
+      wstring  ScriptFile::GetAllText() const
+      {
+         return OfflineBuffer;
+      }
+
+      /// <summary>Gets the name of the object command.</summary>
+      /// <returns>Name of command if any, otherwise empty string</returns>
+      wstring  ScriptFile::GetCommandName() const
+      {
+         const ScriptObject* cmd;
+
+         if (CommandID.Type == ValueType::String)
+            return CommandID.String;
+
+         else if (CommandID.Int != 0 && ScriptObjectLib.TryFind(ScriptObjectGroup::ObjectCommand, CommandID.Int, cmd))
+            return cmd->Text;
+         
+         return L"";   
+      }
+      
       /// <summary>Replaces the current match</summary>
       /// <param name="m">Match data</param>
       /// <exception cref="Logic::AlgorithmException">Previous match no longer matches</exception>
@@ -120,35 +156,6 @@ namespace Logic
 
          // Refresh line text
          m.UpdateLineText( GetLineText(m.LineNumber-1) );
-      }
-
-      /// <summary>Finds the name of the label that represents the scope of a line number</summary>
-      /// <param name="line">The 1-based line number</param>
-      /// <returns>Label name, or empty string if global</returns>
-      wstring  ScriptFile::FindScope(UINT line)
-      {
-         // Sort labels into descending order
-         vector<ScriptLabel> coll(Labels.begin(), Labels.end());
-         sort(coll.begin(), coll.end(), [](ScriptLabel& a, ScriptLabel&b){ return a.LineNumber > b.LineNumber; });
-
-         // Determine current scope
-         auto scope = find_if(coll.begin(), coll.end(), [line](ScriptLabel& l) {return line >= l.LineNumber;} );
-         return scope != coll.end() ? scope->Name : L"";
-      }
-
-      /// <summary>Gets the name of the object command.</summary>
-      /// <returns>Name of command if any, otherwise empty string</returns>
-      wstring  ScriptFile::GetCommandName() const
-      {
-         const ScriptObject* cmd;
-
-         if (CommandID.Type == ValueType::String)
-            return CommandID.String;
-
-         else if (CommandID.Int != 0 && ScriptObjectLib.TryFind(ScriptObjectGroup::ObjectCommand, CommandID.Int, cmd))
-            return cmd->Text;
-         
-         return L"";   
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

@@ -48,6 +48,17 @@ namespace Logic
          /// <returns>Item if found, otherwise nullptr</returns>
          virtual ProjectItemPtr  Find(IO::Path p) const PURE;
 
+         /// <summary>Get all items as a list.</summary>
+         /// <returns></returns>
+         void  ToList(ProjectItemArray& list) const
+         {
+            list.push_back(ProjectItemPtr(const_cast<ProjectItem*>(this)));
+
+            // Add children
+            for (auto& c : Children)
+               c->ToList(list);
+         }
+
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Append child item</summary>
@@ -174,12 +185,25 @@ namespace Logic
          {
             return ProjectItemPtr(FullPath == path ? const_cast<ProjectFileItem*>(this) : nullptr);
          }
-
+      
          // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Generates a unique path for the backup file.</summary>
+         /// <param name="folder">Project folder.</param>
+         void SetBackupPath(IO::Path folder)
+         {
+            // Set default path (Filename.zip)
+            BackupPath = folder + (FullPath.FileName + L".zip");
+            
+            // [EXISTS] Append numbers until unique
+            for (int i = 2; BackupPath.Exists(); ++i)
+               BackupPath = folder + GuiString(L"%s%d.zip", FullPath.FileName.c_str(), i);
+         }
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         IO::Path   FullPath;
+         IO::Path   FullPath,
+                    BackupPath;
          FileType   FileType;
       };
 
