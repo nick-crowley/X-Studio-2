@@ -51,7 +51,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Define normal/refactor highlight
       CharFormat cf(CFM_BACKCOLOR, 0);
-      cf.crBackColor = (highlight ? RGB(128,128,128) : PrefsLib.BackgroundColour);
+      cf.crBackColor = (highlight ? PrefsLib.RefactorHighlight : PrefsLib.BackgroundColour);
 
       // Highlight
       UINT offset = LineIndex(s.LineNumber-1);

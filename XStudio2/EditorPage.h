@@ -117,6 +117,30 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
 
+      /// <summary>Diff highlighting colour property</summary>
+      class DifferenceHighlightProperty : public ColourProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'DifferenceHighlight' property</summary>
+         /// <param name="page">Owner page.</param>
+         DifferenceHighlightProperty(PreferencesPage& page) 
+            : ColourProperty(page, L"Diff Highlight", PrefsLib.DifferenceHighlight, L"Change the colour used to highlight differences in the diff viewer")
+         {}
+      };
+      
+      /// <summary>Refactor highlighting colour property</summary>
+      class RefactorHighlightProperty : public ColourProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'RefactorHighlight' property</summary>
+         /// <param name="page">Owner page.</param>
+         RefactorHighlightProperty(PreferencesPage& page) 
+            : ColourProperty(page, L"Refactor Highlight", PrefsLib.RefactorHighlight, L"Change the colour used to highlight symbols when refactoring")
+         {}
+      };
+
 
       /// <summary>Argument syntax highlighting colour property</summary>
       class ArgumentColourProperty : public ColourProperty
@@ -284,13 +308,16 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:
-      LineNumberColourProperty*     LineNumberColour;
       ShowLineNumbersProperty*      ShowLineNumbers;
       ShowScriptTooltipsProperty*   ShowScriptTooltips;
       ScriptViewFontProperty*       ScriptViewFont;
       ScriptTooltipDelayProperty*   ScriptTooltipDelay;
 
       BackgroundColourProperty*     BackgroundColour;
+      LineNumberColourProperty*     LineNumberColour;
+      DifferenceHighlightProperty*  DifferenceHighlight;
+      RefactorHighlightProperty*    RefactorHighlight;
+
       ArgumentColourProperty*       ArgumentColour;
       CommentColourProperty*        CommentColour;
       GameObjectColourProperty*     GameObjectColour;
