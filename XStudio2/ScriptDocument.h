@@ -1,8 +1,10 @@
 #pragma once
 #include "Logic/ScriptFile.h"
+#include "Logic/ScriptRevision.h"
 #include "Logic/ScriptObjectLibrary.h"
 #include "DocumentBase.h"
 #include "PropertySource.h"
+
 
 /// <summary>Forward declarations</summary>
 FORWARD_DECLARATION2(GUI,Controls,class ScriptEdit)
@@ -319,13 +321,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 			
       // ---------------------- ACCESSORS ------------------------			
    public:
-      wstring                 GetAllText() const;
-      CHARRANGE               GetSelection() const override;
-      GUI::Views::ScriptView* GetView() const;
+      wstring                   GetAllText() const;
+      CHARRANGE                 GetSelection() const override;
+      ::GUI::Views::ScriptView* GetView() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void  AttachEdit(GUI::Controls::ScriptEdit& edit);
+      void  AttachEdit(::GUI::Controls::ScriptEdit& edit);
       bool  FindNext(UINT start, MatchData& src) const override;
       bool  Replace(MatchData& m) override;
       void  Replace(const wstring& txt);
@@ -338,6 +340,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
+      BOOL         OnRevertDocument(const ScriptRevision& r);
       virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
    
       // -------------------- REPRESENTATION ---------------------
@@ -345,8 +348,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ScriptFile  Script;
 
    protected:
-      GUI::Controls::ScriptEdit* Edit;
-      list<ArgumentProperty*>    ArgumentProperties;
+      ::GUI::Controls::ScriptEdit* Edit;
+      list<ArgumentProperty*>      ArgumentProperties;
    };
 
 

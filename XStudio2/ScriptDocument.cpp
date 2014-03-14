@@ -281,6 +281,42 @@ NAMESPACE_BEGIN2(GUI,Documents)
          break;
       }
    }   
+   
+   /// <summary>Called to revert document to a previous version.</summary>
+   /// <param name="r">Revision.</param>
+   /// <returns>TRUE if successfully reverted, otherwise FALSE</returns>
+   BOOL ScriptDocument::OnRevertDocument(const ScriptRevision& r)
+   {
+      try
+      {
+         // Feedback
+         Console << Cons::UserAction << "Reverting document " << FullPath << ENDL;
+
+         // Modify
+         SetModifiedFlag(TRUE);
+
+         // Set Properties
+         Script.Version     = r.Version;
+         Script.Name        = r.ScriptName;
+         Script.Description = r.Description;
+         Script.Game        = r.Game;
+
+         // Set text
+         SetAllText(r.Content);
+
+         // Rename if appropriate
+         if (FullPath != r.FullPath)
+            FullPath = r.FullPath;
+
+         // Success: Feedback
+         Console << Cons::UserAction << "Document reverted successfully" << ENDL;
+         return TRUE;
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+         return FALSE;
+      }
+   }
 
    /// <summary>Saves the document</summary>
    /// <param name="szPath">The new/existing path.</param>

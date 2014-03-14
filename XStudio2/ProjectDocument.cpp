@@ -293,7 +293,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
-
+   
 
    /// <summary>Called on open an X-Studio 2 project.</summary>
    /// <param name="szPath">The path.</param>
