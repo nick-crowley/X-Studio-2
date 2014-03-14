@@ -69,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return false;
 
       // Create item
-      auto item = ProjectItem(FileIdentifier::Identify(path), path, L"");
+      ProjectItem item(FileIdentifier::Identify(path), path, L"");
 
       // Raise 'ITEM ADDED'
       ItemAdded.Raise(&folder.Add(item), &folder);
@@ -88,7 +88,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SetModifiedFlag(TRUE);
 
       // Add new folder
-      auto item = ProjectItem(name, false);
+      ProjectItem item(name, false);
 
       // Raise 'ITEM ADDED'
       ItemAdded.Raise(&folder.Add(item), &folder);
@@ -120,7 +120,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       Console << "Opening backup file: " << file->BackupName << ENDL;
 
       // Open backup file
-      return BackupFileReader(XFileInfo(doc->FullPath.Folder+file->BackupName).OpenRead()).ReadFile();
+      return BackupFileReader(XFileInfo(FullPath.Folder+file->BackupName).OpenRead()).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>
@@ -228,6 +228,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       try
       {
+         // Feedback
+         Console << Cons::UserAction << "Importing legacy project " << legacy << " into " << upgrade << ENDL;
+
          // Read legacy project
          auto in = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
          auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
@@ -238,7 +241,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             {
                // Generate unique filename + Commit
                item->SetBackupPath(upgrade.Folder);
-               InitialCommit(*item);
+               InitialCommit(upgrade.Folder, *item);
             }
 
          // Write X-Studio2 project
@@ -247,7 +250,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          w.Write(proj);
          w.Close();
          
-         // Success: 
+         // Success: Feedback
+         Console << Cons::UserAction << "Importing completed successfully" << ENDL;
          return TRUE;
       }
       catch (ExceptionBase& e) {
@@ -262,17 +266,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    BOOL ProjectDocument::OnOpenDocument(LPCTSTR szPath)
    {
+      WorkerData data(Operation::LoadSaveDocument);
+
       try
       {
+         // Feedback
+         Console << Cons::UserAction << "Loading project: " << Path(szPath) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading project '%s'", szPath));
+
          // Read file
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
          Project = ProjectFileReader(fs).ReadFile(szPath);
          
-         // Success: 
+         // Success: Feedback
+         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Project loaded successfully");
          return TRUE;
       }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
+      catch (ExceptionBase& e) 
+      {
+         // Feedback/Display error
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load project");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to load project '%s'", szPath));
          return FALSE;
       }
    }
@@ -289,6 +303,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Creates a backup file for a file item and performs an initial commit.</summary>
+   /// <param name="folder">Backup folder.</param>
    /// <param name="item">File item.</param>
    /// <exception cref="Logic::ArgumentException">Backup path not set</exception>
    /// <exception cref="Logic::ArgumentNullException">Script format invalid</exception>
@@ -297,11 +312,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
    /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::InitialCommit(const ProjectItem& item)
+   void ProjectDocument::InitialCommit(const IO::Path& folder, const ProjectItem& item)
    {
       try
       {
-         BackupFile backup(BackupType::MSCI);
+         // Feedback
+         Console << Cons::Heading << "Performing Initial Commit: " << item.FullPath << ENDL;
 
          // Ensure backup path has been set
          if (item.BackupName.empty())
@@ -311,11 +327,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
          
          // Create script revision
-         ScriptRevision rev(L"Initial Commit", item.FullPath, script.GetAllText(), script);
-         backup.Revisions.Add(rev);
+         BackupFile backup(BackupType::MSCI);
+         backup.Revisions.Add( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
 
          // Save backup
-         BackupFileWriter w(XFileInfo(FullPath.Folder+item.BackupName).OpenWrite());
+         BackupFileWriter w(XFileInfo(folder+item.BackupName).OpenWrite(L"revisions.xml"));
          w.WriteFile(backup);
          w.Close();
       }

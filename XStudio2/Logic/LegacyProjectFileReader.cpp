@@ -44,10 +44,10 @@ namespace Logic
             LoadDocument();
 
             // Create base folders
-            auto language = file.Add(ProjectItem(L"Language Files", true));
-            auto scripts = file.Add(ProjectItem(L"MD Scripts", true));
-            auto missions = file.Add(ProjectItem(L"MSCI Scripts", true));
-            auto variables = file.Add(ProjectItem(L"Variables", true));
+            auto& language = file.Add(ProjectItem(L"Language Files", true));
+            auto& scripts = file.Add(ProjectItem(L"MD Scripts", true));
+            auto& missions = file.Add(ProjectItem(L"MSCI Scripts", true));
+            auto& variables = file.Add(ProjectItem(L"Variables", true));
 
             // Read documents/variables
             for (int i = 0; i < Root->childNodes->length; i++)

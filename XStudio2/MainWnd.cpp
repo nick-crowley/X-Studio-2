@@ -396,6 +396,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	         theApp.ProcessShellCommand(cmdInfo);
          else
          {
+            // Feedback:
+            Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
+
             // Default: Restore previous workspace
             for (auto& doc : PrefsLib.WorkspaceDocuments)
                if (IO::Path(doc).Exists())
