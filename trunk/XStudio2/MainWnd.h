@@ -72,17 +72,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void         CreateToolWindows();
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
+      BOOL         OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) override;
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
 
    protected:
       afx_msg void    OnClose();
-      afx_msg void    OnCommandConsole()            { OnPerformCommand(ID_VIEW_CONSOLE);        }
-      afx_msg void    OnCommandFindText()           { OnPerformCommand(ID_EDIT_FIND);           }
-      afx_msg void    OnCommandCustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);      }
+      afx_msg void    OnCommandConsole()            { OnPerformCommand(ID_VIEW_CONSOLE);         }
+      afx_msg void    OnCommandFindText()           { OnPerformCommand(ID_EDIT_FIND);            }
+      afx_msg void    OnCommandCustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);       }
       afx_msg void    OnCommandEditPreferences();
-      afx_msg void    OnCommandRunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);        }
-      afx_msg void    OnCommandStringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY); }
-      afx_msg void    OnCommandWindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);      }
+      afx_msg void    OnCommandRunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);         }
+      afx_msg void    OnCommandStringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY);  }
+      afx_msg void    OnCommandWindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);       }
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);

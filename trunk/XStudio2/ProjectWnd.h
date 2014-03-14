@@ -68,6 +68,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   afx_msg void OnCommand_RemoveItem();
 	   afx_msg void OnCommand_ViewProperties();
       afx_msg void OnPaint();
+      handler void OnProjectClosed();
       handler void OnProjectLoaded();
       afx_msg void OnQueryCommand(CCmdUI* pCmd);
       afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -80,7 +81,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ImageListEx     Images;
       ProjectTreeCtrl TreeView;
 	   ProjectToolBar  Toolbar;
-      EventHandler    fnProjectLoaded;
+      EventHandler    fnProjectLoaded,
+                      fnProjectClosed;
       HACCEL          Accelerators;
    };
 
