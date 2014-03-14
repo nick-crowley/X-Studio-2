@@ -70,11 +70,13 @@ namespace Logic
          //  <version>102</version>
          //  <game>X3TC</game>
          //  <description>Piracy logic library</description>
+         //  <command>1019</command>
          //  <text>* Validate Parameters...</text>
          WriteElement(node, L"scriptname", r.ScriptName);
          WriteElement(node, L"version", GuiString(L"%d", r.Version));
          WriteElement(node, L"game", VersionString(r.Game, true));
          WriteElement(node, L"description", r.Description);
+         WriteElement(node, L"command", GuiString(L"%d", r.CommandID));
          WriteElement(node, L"text", r.Content);
       }
 

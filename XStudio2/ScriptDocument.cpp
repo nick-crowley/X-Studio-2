@@ -300,6 +300,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Script.Name        = r.ScriptName;
          Script.Description = r.Description;
          Script.Game        = r.Game;
+         Script.CommandID   = r.CommandID;
 
          // Set text
          SetAllText(r.Content);
