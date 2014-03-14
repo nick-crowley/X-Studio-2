@@ -18,13 +18,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    EditorPage::EditorPage() 
       : PreferencesPage(EditorPage::IDD),
-        BackgroundColour(nullptr),
-        LineNumberColour(nullptr),
+        
         ScriptViewFont(nullptr),
         ShowLineNumbers(nullptr),
         ShowScriptTooltips(nullptr),
         ScriptTooltipDelay(nullptr),
         ScriptIndentation(nullptr),
+
+        CommitOnSave(nullptr),
+        IncrementOnSave(nullptr),
+
+        BackgroundColour(nullptr),
+        LineNumberColour(nullptr),
         DifferenceHighlight(nullptr),
         RefactorHighlight(nullptr),
         
@@ -64,13 +69,17 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    /// <summary>Save values.</summary>
    void EditorPage::Commit()
    {
-      // General
+      // Editor
       PrefsLib.ShowLineNumbers = ShowLineNumbers->GetBool();
       PrefsLib.ShowScriptTooltips = ShowScriptTooltips->GetBool();
       PrefsLib.ScriptViewFont = *ScriptViewFont->GetLogFont();
       PrefsLib.ScriptTooltipDelay = ScriptTooltipDelay->GetInt();
       PrefsLib.ScriptIndentation = ScriptIndentation->GetInt();
 
+      // Backups
+      PrefsLib.CommitOnSave = CommitOnSave->GetBool();
+      PrefsLib.IncrementOnSave = IncrementOnSave->GetBool();
+      
       // Colour
       PrefsLib.BackgroundColour = BackgroundColour->GetColor();
       PrefsLib.LineNumberColour = LineNumberColour->GetColor();
@@ -95,13 +104,19 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    /// <summary>Populates page.</summary>
    void EditorPage::Populate()
    {
-      // General
+      // Editor
       auto group = new PropertyBase(*this, L"Editor");
       group->AddSubItem(ScriptViewFont = new ScriptViewFontProperty(*this));
       group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
       group->AddSubItem(ShowScriptTooltips = new ShowScriptTooltipsProperty(*this));
       group->AddSubItem(ScriptTooltipDelay = new ScriptTooltipDelayProperty(*this));
       group->AddSubItem(ScriptIndentation = new ScriptIndentationProperty(*this));
+      Grid.AddProperty(group);
+
+      // Backup
+      group = new PropertyBase(*this, L"Version Control");
+      group->AddSubItem(CommitOnSave = new CommitOnSaveProperty(*this));
+      group->AddSubItem(IncrementOnSave = new IncrementOnSaveProperty(*this));
       Grid.AddProperty(group);
 
       // Colours

@@ -115,7 +115,7 @@ namespace Logic
       PREFERENCE_PROPERTY(bool,Bool,CommitOnSave,true);
 
       /// <summary>Increment script version upon save</summary>
-      PREFERENCE_PROPERTY(bool,Bool,IncrementVersionOnSave,true);
+      PREFERENCE_PROPERTY(bool,Bool,IncrementOnSave,true);
       
       /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
