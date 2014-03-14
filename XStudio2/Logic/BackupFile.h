@@ -64,6 +64,12 @@ namespace Logic
             iterator begin()  { return __super::begin(); }
             iterator end()    { return __super::end();   }
 
+            /// <summary>Clears this instance.</summary>
+            void  Clear()
+            {
+               __super::clear();
+            }
+
             /// <summary>Adds a new revision</summary>
             /// <param name="r">revision</param>
             void  Commit(const ScriptRevision& r)
@@ -97,10 +103,10 @@ namespace Logic
 
             /// <summary>Removes a revision.</summary>
             /// <param name="r">revision.</param>
-            /*void  Remove(const ScriptRevision& r)
+            void  Remove(const ScriptRevision& r)
             {
-               remove(r);
-            }*/
+               //__super::remove(r);
+            }
 
          protected:
             /// <summary>Appends a historic revision</summary>
@@ -128,6 +134,19 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Clears this instance.</summary>
+         void  Clear()
+         {
+            Revisions.Clear();
+         }
+
+         /// <summary>Removes a revision.</summary>
+         /// <param name="r">revsion.</param>
+         void  Remove(const ScriptRevision& r)
+         {
+            Revisions.Remove(r);
+         }
+
          /// <summary>Find a revision by index</summary>
          /// <param name="index">The index</param>
          /// <returns></returns>

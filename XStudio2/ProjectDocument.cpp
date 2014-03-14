@@ -26,6 +26,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    ProjectItemEvent       ProjectDocument::ItemChanged,
                           ProjectDocument::ItemRemoved;
 
+   /// <summary>Project item backups has been added/removed</summary>
+   ProjectItemEvent       ProjectDocument::BackupChanged;
+   
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(ProjectDocument, DocumentBase)
@@ -34,9 +38,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ON_COMMAND(ID_FILE_PROJECT_CLOSE, &ProjectDocument::OnCommandCloseProject)
       ON_COMMAND(ID_FILE_PROJECT_SAVE, &ProjectDocument::OnCommandSaveProject)
       ON_COMMAND(ID_FILE_PROJECT_SAVE_AS, &ProjectDocument::OnCommandSaveProjectAs)
-      /*ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE, &MainWnd::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE_AS, &MainWnd::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_CLOSE, &MainWnd::OnQueryCommand)*/
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -122,7 +123,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (!Contains(doc.FullPath))
          throw ArgumentException(HERE, L"doc", L"Document is not part of project");
 
-      // Convert RichEdit lineBreaks
+      // Convert RichEdit '\v' lineBreaks to '\n'
       wstring content = doc.GetAllText();
       for (auto& ch : content)
          if (ch == '\v')
@@ -139,6 +140,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BackupFileWriter w(XFileInfo(path).OpenWrite(L"revisions.xml"));
       w.WriteFile(backup);
       w.Close();
+
+      // Raise 'BACKUP CHANGED'
+      BackupChanged.Raise(Project.Find(doc.FullPath));
+   }
+
+   /// <summary>Removes a revision from a document's backup file.</summary>
+   /// <param name="doc">The document.</param>
+   /// <param name="r">Revision.</param>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   /// <exception cref="Logic::ComException">COM Error</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+   void ProjectDocument::DeleteRevision(ScriptDocument& doc, const ScriptRevision& r)
+   {
+      // Verify member of project
+      if (!Contains(doc.FullPath))
+         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
+
+      // Load backup. Delete revision
+      auto backup = GetBackupFile(doc);
+      backup.Revisions.Remove(r);
+
+      // Generate backup path
+      auto path = FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
+
+      // Overwrite backup file
+      BackupFileWriter w(XFileInfo(path).OpenWrite(L"revisions.xml"));
+      w.WriteFile(backup);
+      w.Close();
+
+      // Raise 'BACKUP CHANGED'
+      BackupChanged.Raise(Project.Find(doc.FullPath));
    }
 
    /// <summary>Get backup file for a document.</summary>

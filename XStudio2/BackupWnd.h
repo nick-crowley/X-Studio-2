@@ -3,6 +3,7 @@
 #include "Logic/Event.h"
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
+#include "ProjectDocument.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -67,6 +68,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void Populate();
 	   void UpdateFont();
 
+      handler void OnBackupChanged(ProjectItem* item);
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnCommandDelete()     { OnPerformCommand(ID_BACKUP_DELETE); }
       afx_msg void OnCommandDiff()       { OnPerformCommand(ID_BACKUP_DIFF);   }
@@ -76,6 +78,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
       afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
       afx_msg void OnPaint();
+      handler void OnProjectClosed();
+      handler void OnProjectLoaded();
       afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
       afx_msg void OnPerformCommand(UINT nID);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -91,8 +95,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       BackupToolBar  ToolBar;
       BackupFile     Backup;
 	   CListBox       List;
-      EventHandler   fnDocumentSwitched;
+      
       CFont          BoldFont;
+
+      ProjectItemHandler fnBackupChanged;
+      EventHandler       fnDocumentSwitched,
+                         fnProjectClosed,
+                         fnProjectLoaded;
    };
 
 

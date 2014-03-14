@@ -2,7 +2,6 @@
 #include "BackupWnd.h"
 #include "MainWnd.h"
 #include "ScriptDocument.h"
-#include "ProjectDocument.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -37,6 +36,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BackupWnd::BackupWnd() 
       : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched)),
+        fnBackupChanged(ProjectDocument::BackupChanged.Register(this, &BackupWnd::OnBackupChanged)),
+        fnProjectClosed(ProjectDocument::Closed.Register(this, &BackupWnd::OnProjectClosed)),
+        fnProjectLoaded(ProjectDocument::Loaded.Register(this, &BackupWnd::OnProjectLoaded)),
         Backup(BackupType::MSCI)
    {
    }
@@ -150,6 +152,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          dc.SelectObject(font);
       }
    }
+   
+   /// <summary>Re-Loads backups for the active document</summary>
+   void BackupWnd::OnBackupChanged(ProjectItem* item)
+   {
+      Populate();
+   }
+   
 
    /// <summary>Create child controls</summary>
    /// <param name="lpCreateStruct">create params</param>
@@ -207,32 +216,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
-   /// <summary>Loads backups for the activate document</summary>
+   /// <summary>Loads backups for the active document</summary>
    void BackupWnd::OnDocumentSwitched()
    {
-      //Console << HERE << ENDL;
-
-      // Clear previous
-      if (List.m_hWnd)
-         List.ResetContent();
-
-      try
-      {
-         auto proj = ProjectDocument::GetActive();
-         auto doc = ScriptDocument::GetActive();
-
-         // Check document (if any) belongs to current project (if any)
-         if (doc && proj && proj->Contains(doc->FullPath))
-         {
-            Backup = proj->GetBackupFile(*doc);
-            Populate();
-         }
-      }
-      catch (ExceptionBase& e) 
-      {
-         List.ResetContent();
-         theApp.ShowError(HERE, e, GuiString(L"Cannot open backup file for '%s'", (LPCWSTR)DocumentBase::GetActive()->GetTitle()));
-      }
+      if (List.GetSafeHwnd())    // Called excessively before documents exist
+         Populate();
    }
    
 
@@ -253,7 +241,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console.Log(HERE, e);
       }
 
-      __super::OnDrawItem(id, draw);
+      //__super::OnDrawItem(id, draw);
    }
 
    /// <summary>Called when measure item.</summary>
@@ -280,7 +268,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Console.Log(HERE, e);
       }
 
-      __super::OnMeasureItem(id, measure);
+      //__super::OnMeasureItem(id, measure);
    }
 
    /// <summary>Manually paints border around grid.</summary>
@@ -315,6 +303,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Delete selected revision
       case ID_BACKUP_DELETE: 
+         if (auto proj = ProjectDocument::GetActive())   // should always exist
+            proj->DeleteRevision(*script, rev);
          break;
 
       // Replace document contents with revision
@@ -324,7 +314,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   
+   /// <summary>Clears currently displayed backups (if any)</summary>
+   void BackupWnd::OnProjectClosed()
+   {
+      Populate();
+   }
+
+   /// <summary>Loads backups for the active document (if any)</summary>
+   void BackupWnd::OnProjectLoaded()
+   {
+      Populate();
+   }
+
    /// <summary>Query state of context menu command</summary>
    /// <param name="pCmdUI">UI object</param>
    void BackupWnd::OnQueryCommand(CCmdUI *pCmdUI)
@@ -378,27 +379,49 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
 	   __super::OnSize(nType, cx, cy);
 
-      // Adjust layout, re-populate  [Forces WM_MEASUREITEM to be sent]
+      // Adjust layout
 	   AdjustLayout();
-      Populate();
+
+      // Repopulate  [Forces WM_MEASUREITEM to be sent]
+      if (List.GetSafeHwnd())    // Does not exist on first WM_SIZE
+         Populate();
    }
    
    /// <summary>Populates items from current backup file.</summary>
    void BackupWnd::Populate()
    {
+      auto proj = ProjectDocument::GetActive();
+      auto doc = ScriptDocument::GetActive();
+
       // Clear
       List.SetRedraw(FALSE);
       List.ResetContent();
+
+      try
+      {
+         // Check document (if any) belongs to current project (if any)
+         if (doc && proj && proj->Contains(doc->FullPath))
+            Backup = proj->GetBackupFile(*doc);
+         else
+            Backup.Clear();
          
-      // Fill list with dummy items
-      for (auto& rev : Backup.Revisions)
-         List.InsertString(-1, L"-");
+         // Fill list with dummy items
+         for (auto& rev : Backup.Revisions)
+            List.InsertString(-1, L"-");
+      }
+      catch (ExceptionBase& e) 
+      {
+         List.ResetContent();
+
+         if (doc)
+            theApp.ShowError(HERE, e, GuiString(L"Cannot open backup file for '%s'", (LPCWSTR)doc->GetTitle()));
+      }
 
       // Redraw
       List.SetRedraw(TRUE);
       List.UpdateWindow();
    }
-
+   
    /// <summary>Updates the font.</summary>
    void BackupWnd::UpdateFont()
    {
