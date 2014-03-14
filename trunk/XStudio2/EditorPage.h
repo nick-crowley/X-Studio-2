@@ -194,7 +194,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'DifferenceHighlight' property</summary>
          /// <param name="page">Owner page.</param>
          DifferenceHighlightProperty(PreferencesPage& page) 
-            : ColourProperty(page, L"Diff Highlight", PrefsLib.DifferenceHighlight, L"Change the colour used to highlight differences in the diff viewer")
+            : ColourProperty(page, L"Difference Highlight", PrefsLib.DifferenceHighlight, L"Change the colour used to highlight differences in the diff viewer")
          {}
       };
       
