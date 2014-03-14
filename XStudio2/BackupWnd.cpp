@@ -294,13 +294,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Delete selected revision
       case ID_BACKUP_DELETE: 
-         if (auto proj = ProjectDocument::GetActive())   // should always exist
-            proj->DeleteRevision(*script, rev);
+         if (theApp.ShowMessage(L"Are you sure you want to delete this revision?", MB_YESNO|MB_ICONQUESTION) == IDYES)
+            if (auto proj = ProjectDocument::GetActive())   // should always exist
+               proj->DeleteRevision(*script, List.GetCurSel());
          break;
 
       // Replace document contents with revision
       case ID_BACKUP_REVERT:  
-         script->OnRevertDocument(rev);
+         if (theApp.ShowMessage(L"Are you sure you want to revert document to this revision?", MB_YESNO|MB_ICONQUESTION) == IDYES)
+            script->OnRevertDocument(rev);
          break;
       }
    }

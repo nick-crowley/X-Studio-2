@@ -89,9 +89,13 @@ namespace Logic
             // Ensure null terminated
             buffer.get()[length] = '\0';
 
+            // Empty:
+            if (length == 0)
+               return buffer;
+
             do
             {  // Read all bytes until EOF
-               count += Read(buffer.get()+count, length - count);
+               count += Read(&buffer.get()[count], length - count);
             } 
             while (count < length);
 

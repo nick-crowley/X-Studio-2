@@ -223,15 +223,19 @@ namespace Logic
             return 0;
 
          // Decompress
-         switch (int res = inflate(&ZStream, Z_FINISH))
+         switch (int res = inflate(&ZStream, Z_SYNC_FLUSH))
          {
          // Success/EOF: Return count decompressed
          case Z_STREAM_END:
+            // Ensure all input consumed
+            if (ZStream.avail_in > 0)
+               throw GZipException(HERE, GuiString(L"Unable to decompress entire buffer: %d bytes remaining", ZStream.avail_in));
+
+         // Success: Return count decompressed
          case Z_OK:
-            return length - ZStream.avail_out;
+            return ZStream.avail_out;
 
          // Error: throw
-         //case Z_BUF_ERROR:
          default:
             throw GZipException(HERE, ZStream.msg);
          }

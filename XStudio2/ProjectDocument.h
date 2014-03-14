@@ -88,7 +88,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool  AddFile(IO::Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
       void  Commit(ScriptDocument& doc, const wstring& title);
-      void  DeleteRevision(ScriptDocument& doc, const ScriptRevision& r);
+      void  DeleteRevision(ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
       void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
