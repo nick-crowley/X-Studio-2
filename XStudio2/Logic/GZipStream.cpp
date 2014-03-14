@@ -127,6 +127,11 @@ namespace Logic
          StreamFacade::Seek(-4, SeekOrigin::End);
          StreamFacade::Read((byte*)&size, 4);
          StreamFacade::Seek(pos, SeekOrigin::Begin);
+
+         // BugFix: Ensure file is not corrupted
+         if (!size)
+            throw GZipException(HERE, "GZip file corrupted - uncompressed file size is zero");
+
          return size;
       }
 
@@ -211,18 +216,22 @@ namespace Logic
 
          // Re-Fill input buffer if necessary
          if (ZStream.avail_in == 0)
-            ZStream.avail_in = StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());
+            ZStream.avail_in = StreamFacade::Read(Buffer.get(), StreamFacade::GetLength());
          
+         // Empty: Return zero
+         if (length == 0)
+            return 0;
+
          // Decompress
          switch (int res = inflate(&ZStream, Z_FINISH))
          {
          // Success/EOF: Return count decompressed
          case Z_STREAM_END:
-         case Z_BUF_ERROR:
          case Z_OK:
             return length - ZStream.avail_out;
 
          // Error: throw
+         //case Z_BUF_ERROR:
          default:
             throw GZipException(HERE, ZStream.msg);
          }
@@ -244,6 +253,10 @@ namespace Logic
          // Supply input buffer
          ZStream.next_in = const_cast<BYTE*>(input);
          ZStream.avail_in = length;
+
+         // Empty: Return zero
+         if (length == 0)
+            return 0;
 
          // Re-Fill output buffer if necessary
          /*if (ZStream.avail_out == 0)

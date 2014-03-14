@@ -43,13 +43,13 @@ namespace Logic
 
       //Test_DiffDocument();
 
-      Test_GZip_Compress();
+      //Test_GZip_Compress();
       
 
       //Test_LanguageFileReader();
       //Test_LanguageEditRegEx();
       //Test_CatalogReader();
-      //Test_GZip();
+      Test_GZip_Decompress();
       //Test_FileSystem();
       //Test_CommandSyntax();
       //Test_StringLibrary();
@@ -450,26 +450,39 @@ namespace Logic
       }
    }
    
-   void  DebugTests::Test_GZip()
+   void  DebugTests::Test_GZip_Decompress()
    {
-      const WCHAR* path = L"D:\\X3 Albion Prelude\\scripts\\!config.earth.torus.pck";
+      const WCHAR *zipped = L"D:\\Temp\\lib.piracy.progressbar.xml.zip",
+                  *plain = L"D:\\Temp\\revisions.xml";
    
       try
       {
+         // Get plainText
+         StreamPtr f1( new FileStream(plain, FileMode::OpenExisting, FileAccess::Read) );
+         //auto source = f1->ReadAllBytes();
+         //f1->Close();
+
          // Test GZipStream
-         StreamPtr file = StreamPtr( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-         StreamPtr zip = StreamPtr( new GZipStream(file, GZipStream::Operation::Decompression) );
+         StreamPtr f2( new FileStream(zipped, FileMode::OpenExisting, FileAccess::Read) );
+         StreamPtr gz( new GZipStream(f2, GZipStream::Operation::Decompression) );
+         //auto data = gz->ReadAllBytes();
+         
 
-         StringReader reader(zip);
-         wstring line;
+         StringReader r1(f1), r2(gz);
+         wstring ln1, ln2;
 
-         while (reader.ReadLine(line))
-            Console.WriteLnf(line);
+         // Compare files
+         while (r1.ReadLine(ln1) && r2.ReadLine(ln2))
+            if (ln1 != ln2)
+            {
+               Console << Cons::Error << "Difference: " << ENDL << ln1 << ENDL << ln2 << ENDL;
+               break;
+            }
       }
       catch (ExceptionBase&  e)
       {
          CString sz;
-         sz.Format(L"Unable to load '%s' : %s\n\n" L"Source: %s()", path, e.Message.c_str(), e.Source.c_str());
+         sz.Format(L"Unable to load '%s' or '%s' : %s\n\n" L"Source: %s()", plain, zipped, e.Message.c_str(), e.Source.c_str());
          AfxMessageBox(sz);
       }
    }

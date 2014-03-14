@@ -32,7 +32,7 @@ namespace Logic
       static void  Test_DescriptionRegEx();
       static void  Test_DiffDocument();
       static void  Test_FileSystem();
-      static void  Test_GZip();
+      static void  Test_GZip_Decompress();
       static void  Test_GZip_Compress();
       static void  Test_Lexer();
       static void  Test_Iterator();
