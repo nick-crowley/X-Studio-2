@@ -2,8 +2,6 @@
 #include "Common.h"
 #include "ProjectItem.h"
 
-FORWARD_DECLARATION2(Logic,IO,class ProjectFileWriter)
-
 namespace Logic
 {
    namespace Projects
@@ -12,8 +10,6 @@ namespace Logic
       /// <summary></summary>
       class ProjectFile
       {
-         friend class ProjectFileWriter;
-
          // ------------------------ TYPES --------------------------
       public:
 
@@ -33,8 +29,7 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         ProjectItemList::iterator begin()   { return Root.Children.begin(); }
-         ProjectItemList::iterator end()     { return Root.Children.end();   }
+         /// <summary>Iterate thru items</summary>
          ProjectItemList::const_iterator begin() const  { return Root.Children.begin(); }
          ProjectItemList::const_iterator end() const    { return Root.Children.end();   }
 
@@ -64,6 +59,10 @@ namespace Logic
          }
          // ----------------------- MUTATORS ------------------------
       public:
+         /// <summary>Iterate thru items</summary>
+         ProjectItemList::iterator begin()   { return Root.Children.begin(); }
+         ProjectItemList::iterator end()     { return Root.Children.end();   }
+
          /// <summary>Add base folder</summary>
          /// <param name="p">item</param>
          /// <exception cref="Logic::ArgumentException">Item is not fixed</exception>
@@ -100,7 +99,7 @@ namespace Logic
          }
 
          // -------------------- REPRESENTATION ---------------------
-      protected:
+      public:
          ProjectItem  Root;
          
       };

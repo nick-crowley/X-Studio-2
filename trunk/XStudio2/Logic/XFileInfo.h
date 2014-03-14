@@ -23,9 +23,9 @@ namespace Logic
          XFileInfo(const XFileSystem& vfs, const XCatalog& cat, Path subPath, DWORD size, DWORD position);
          virtual ~XFileInfo();
 
-         // Default copy/move semantics
-         DEFAULT_COPY(XFileInfo);
-         DEFAULT_MOVE(XFileInfo);
+         // Cannot assign/move 
+         NO_COPY_ASSIGN(XFileInfo);
+         //NO_MOVE(XFileInfo);
 
          // ----------------------- STATIC --------------------------
       private:
@@ -40,7 +40,7 @@ namespace Logic
          Path       GetDataFile() const; 
          bool       Matches(Path path, bool checkExtension) const;
          StreamPtr  OpenRead() const;
-         StreamPtr  OpenWrite() const;
+         StreamPtr  OpenWrite(const wstring& filename = L"") const;
 
 			// ----------------------- MUTATORS ------------------------
 

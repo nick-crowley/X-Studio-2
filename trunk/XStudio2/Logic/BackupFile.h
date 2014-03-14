@@ -39,7 +39,8 @@ namespace Logic
          /// <param name="content">Script content.</param>
          /// <param name="script">script properties.</param>
          ScriptRevision(const wstring& title, IO::Path path, const wstring& content, const ScriptFile& script)
-            : Title(title), 
+            : Date(_time64(nullptr)),
+              Title(title), 
               FullPath(path), 
               Content(content), 
               ScriptName(script.Name), 

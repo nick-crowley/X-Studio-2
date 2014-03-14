@@ -123,8 +123,9 @@ namespace Logic
       }
 
       /// <summary>Opens a stream for writing</summary>
+      /// <param name="filename">Optional: Name of file within GZip archive, if desired</param>
       /// <returns></returns>
-      StreamPtr  XFileInfo::OpenWrite() const
+      StreamPtr  XFileInfo::OpenWrite(const wstring& filename) const
       {
          // Ensure physical
          if (Source == FileSource::Catalog)
@@ -137,7 +138,9 @@ namespace Logic
          if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
          {
             shared_ptr<GZipStream> gzip(new GZipStream(s, GZipStream::Operation::Compression));
-            gzip->SetFileName(FullPath.RemoveExtension().FileName);
+
+            // Set filename within archive
+            gzip->SetFileName(!filename.empty() ? filename : FullPath.RemoveExtension().FileName);
             return gzip;
          }
 
