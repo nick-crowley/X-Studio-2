@@ -72,34 +72,40 @@ namespace Logic
       {
          if (!IsClosed())
          {
-            // Decompression
-            if (Mode == Operation::Decompression && inflateEnd(&ZStream) != Z_OK)
-               throw GZipException(HERE, ZStream.msg);
-            
-            // Compression: Write internal compression buffer to disc
-            else if (Mode == Operation::Compression)
+            try
             {
-               ZStream.avail_in = 0;      // No input
-               ZStream.next_in = Z_NULL;
-
-               // Flush remaining data into the output buffer
-               if (deflate(&ZStream, Z_FINISH) == Z_STREAM_END)
+               // Decompression
+               if (Mode == Operation::Decompression && inflateEnd(&ZStream) != Z_OK)
+                  throw GZipException(HERE, ZStream.msg);
+            
+               // Compression: Write internal compression buffer to disc
+               else if (Mode == Operation::Compression)
                {
-                  //DWORD compressed = COMPRESS_BUFFER - ZStream.avail_out;
+                  ZStream.avail_in = 0;      // No input
+                  ZStream.next_in = Z_NULL;
 
-                  // Success: Write GZIP to underlying stream 
-                  for (DWORD out = 0; out < ZStream.total_out; )
-                     out += StreamFacade::Write(&Buffer.get()[out], ZStream.total_out - out);
+                  // Flush remaining data into the output buffer
+                  if (deflate(&ZStream, Z_FINISH) != Z_STREAM_END)
+                     throw GZipException(HERE, ZStream.msg);
+                  else
+                  {
+                     // Success: Write GZIP to underlying stream 
+                     for (DWORD out = 0; out < ZStream.total_out; )
+                        out += StreamFacade::Write(&Buffer.get()[out], ZStream.total_out - out);
 
-                  // Close stream
-                  if (deflateEnd(&ZStream) == Z_OK)
-                     return;
+                     // Cleanup zstream
+                     if (deflateEnd(&ZStream) != Z_OK)
+                        throw GZipException(HERE, ZStream.msg);
+                  }
                }
-               
-               // Error: throw
-               throw GZipException(HERE, ZStream.msg);
             }
-
+            catch (ExceptionBase&) {
+               // Close before rethrowing
+               StreamFacade::Close();
+               throw;
+            }
+            
+            // Close stream
             StreamFacade::Close();
          }
       }

@@ -127,6 +127,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
             bAddToMRU = TRUE;
          }
 
+         // Set path before open - relied upon for resolving backup paths
+         pDocument->SetPathName(szFullPath, bAddToMRU);
+
          // OPEN DOCUMENT
 		   if (!pDocument->OnOpenDocument(szFullPath))
 		   {
@@ -150,8 +153,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 			   return nullptr;        // open failed
 		   }
 
-         //
-		   pDocument->SetPathName(szFullPath, bAddToMRU);
+         // Raise 'After Open Document'
 		   pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 	   }
 

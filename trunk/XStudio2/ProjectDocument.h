@@ -32,11 +32,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible) override;
    };
 
-   /// <summary>Project item added/changed/removed event</summary>
-   /// <typeparam name="item">Item added/changed/removed</typeparam>
-   /// <typeparam name="parent">Parent of item added (otherwise nullptr)</typeparam>
+   /// <summary>Project item added event</summary>
+   /// <typeparam name="item">Item added</typeparam>
+   /// <typeparam name="parent">Parent of item added</typeparam>
    typedef Event<ProjectItem*, ProjectItem*>   ProjectItemAddedEvent;
+   typedef ProjectItemAddedEvent::Handler      ProjectItemAddedHandler;
+
+   /// <summary>Project item changed/removed event</summary>
+   /// <typeparam name="item">Item changed/removed</typeparam>
    typedef Event<ProjectItem*>                 ProjectItemEvent;
+   typedef ProjectItemEvent::Handler           ProjectItemHandler;
+
+   /// <summary>Backup revisions added/removed event</summary>
+   /// <typeparam name="doc">Document</typeparam>
+   //typedef Event<DocumentBase&>                BackupEvent;
 
    /// <summary></summary>
    class ProjectDocument : public DocumentBase
@@ -57,8 +66,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       static SimpleEvent            Closed,
                                     Loaded;
+
       static ProjectItemAddedEvent  ItemAdded;
-      static ProjectItemEvent       ItemChanged,
+
+      static ProjectItemEvent       BackupChanged,
+                                    ItemChanged,
                                     ItemRemoved;
 
       static ProjectDocument*  GetActive();
@@ -76,6 +88,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool  AddFile(IO::Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
       void  Commit(ScriptDocument& doc, const wstring& title);
+      void  DeleteRevision(ScriptDocument& doc, const ScriptRevision& r);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
       void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }

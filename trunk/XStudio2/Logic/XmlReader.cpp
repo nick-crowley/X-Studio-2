@@ -90,7 +90,11 @@ namespace Logic
 
             // Load/Parse file : "%s (line %d, char %d)"
             if (Document->loadXML(Buffer.get()) == VARIANT_FALSE)
+            {
+               Console << "Dumping XML File: " << ENDL << Buffer.get() << ENDL;
+
                throw FileFormatException(HERE, GuiString(ERR_XML_PARSE_FAILED, (WCHAR*)Document->parseError->reason, Document->parseError->line, Document->parseError->linepos));
+            }
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
