@@ -130,6 +130,12 @@ namespace Logic
       /// <summary>Script editor background colour</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,BackgroundColour,RGB(0,0,0));
 
+      /// <summary>Diff viewer alteration highlight</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,DifferenceHighlight,RGB(80,80,80));
+
+      /// <summary>Refactor edit symbol highlight</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,RefactorHighlight,RGB(128,128,128));
+
 
       /// <summary>Syntax highlighting colour for arguments</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ArgumentColour,RGB(255,128,40));

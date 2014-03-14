@@ -155,7 +155,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Define grey background
       CharFormat cf(CFM_BACKCOLOR,0);
-      cf.crBackColor = RGB(80,80,80);
+      cf.crBackColor = PrefsLib.DifferenceHighlight;
 
       // Highlight phrases
       for (auto p : DiffDocument->Phrases)

@@ -24,6 +24,8 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         ShowLineNumbers(nullptr),
         ShowScriptTooltips(nullptr),
         ScriptTooltipDelay(nullptr),
+        DifferenceHighlight(nullptr),
+        RefactorHighlight(nullptr),
         
         ArgumentColour(nullptr),
         CommentColour(nullptr),
@@ -70,6 +72,8 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // Colour
       PrefsLib.BackgroundColour = BackgroundColour->GetColor();
       PrefsLib.LineNumberColour = LineNumberColour->GetColor();
+      PrefsLib.DifferenceHighlight = DifferenceHighlight->GetColor();
+      PrefsLib.RefactorHighlight = RefactorHighlight->GetColor();
       
       // Highlighting
       PrefsLib.ArgumentColour = ArgumentColour->GetColor();
