@@ -94,8 +94,7 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------			
          public:
-            iterator begin()              { return __super::begin(); }
-            iterator end()                { return __super::end();   }
+            /// <summary>Iterate thru revisions</summary>
             const_iterator begin() const  { return __super::begin(); }
             const_iterator end() const    { return __super::end();   }
 
@@ -108,6 +107,10 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
+            /// <summary>Iterate thru revisions</summary>
+            iterator begin()  { return __super::begin(); }
+            iterator end()    { return __super::end();   }
+
             /// <summary>Adds a revision</summary>
             /// <param name="r">revision</param>
             void  Add(const ScriptRevision& r)
@@ -163,6 +166,15 @@ namespace Logic
          
 
          // ----------------------- MUTATORS ------------------------
+      public:
+         /// <summary>Find a revision by index</summary>
+         /// <param name="index">The index</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+         ScriptRevision&  operator[](UINT index) 
+         {
+            return Revisions.FindByIndex(index);
+         }
 
          // -------------------- REPRESENTATION ---------------------
       public:

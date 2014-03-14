@@ -114,6 +114,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BOOL  OnSaveDocument(LPCTSTR szPathName) override;
 
    protected:
+      wstring ConvertLineBreaks(wstring str);
       void  GeneratePhrases(dtl::Ses<wchar>& ses);
       void  OnPerformCommand(UINT nID);
       void  OnQueryCommand(CCmdUI* pCmdUI);
