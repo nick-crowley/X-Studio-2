@@ -85,6 +85,9 @@ namespace Logic
 
       /// <summary>Opens a stream for reading</summary>
       /// <returns></returns>
+      /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
+      /// <exception cref="Logic::FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::IOException">Unable to open file</exception>
       StreamPtr  XFileInfo::OpenRead() const
       {
          StreamPtr s;
@@ -125,6 +128,8 @@ namespace Logic
       /// <summary>Opens a stream for writing</summary>
       /// <param name="filename">Optional: Name of file within GZip archive, if desired</param>
       /// <returns></returns>
+      /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
+      /// <exception cref="Logic::IOException">Unable to create file</exception>
       StreamPtr  XFileInfo::OpenWrite(const wstring& filename) const
       {
          // Ensure physical

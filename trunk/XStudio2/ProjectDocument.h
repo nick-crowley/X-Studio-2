@@ -81,26 +81,26 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ---------------------- ACCESSORS ------------------------			
    public:
       bool        Contains(IO::Path path) const;
-      BackupFile  GetBackupFile(ScriptDocument& doc) const;
+      BackupFile  LoadBackupFile(const ScriptDocument& doc) const;
+
+   protected:
+      IO::Path    GetBackupPath(const ScriptDocument& doc) const;
+      void        SaveBackupFile(const IO::Path& path, const BackupFile& f) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       bool  AddFile(IO::Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
-      void  Commit(ScriptDocument& doc, const wstring& title);
-      void  DeleteRevision(ScriptDocument& doc, UINT index);
+      void  Commit(const ScriptDocument& doc, const wstring& title);
+      void  DeleteRevision(const ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
-      void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
-      void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }
-      void  OnCommandSaveProjectAs()      { OnPerformCommand(ID_FILE_PROJECT_SAVE_AS); }
+      
       void  OnDocumentEvent(DocumentEvent deEvent) override;
       BOOL  OnImportDocument(IO::Path legacy, IO::Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
-      void  OnPerformCommand(UINT nID);
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
-
       void  RemoveItem(ProjectItem& item);
       void  Rename(const wstring& name) override;
       void  RenameItem(ProjectItem& item, const wstring& name);
@@ -108,7 +108,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    protected:
       void  InitialCommit(const IO::Path& folder, const ProjectItem& item);
 
-      afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
+      afx_msg void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
+      afx_msg void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }
+      afx_msg void  OnCommandSaveProjectAs()      { OnPerformCommand(ID_FILE_PROJECT_SAVE_AS); }
+      afx_msg void  OnPerformCommand(UINT nID);
+      afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 
       // -------------------- REPRESENTATION ---------------------
    public:
