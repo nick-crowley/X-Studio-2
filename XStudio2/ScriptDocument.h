@@ -331,6 +331,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  Replace(const wstring& txt);
       void  SetSelection(CHARRANGE rng) override;
 
+      BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       afx_msg void OnInsertArgument();
 	   handler BOOL OnNewDocument() override;

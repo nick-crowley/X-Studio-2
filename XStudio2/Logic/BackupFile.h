@@ -2,6 +2,9 @@
 #include "Common.h"
 #include "ScriptFile.h"
 
+/// <summary>Forward declaration</summary>
+FORWARD_DECLARATION2(Logic,IO,class BackupFileReader)
+
 namespace Logic
 {
    namespace Projects
@@ -83,6 +86,8 @@ namespace Logic
          /// <summary></summary>
          class RevisionCollection : protected list<ScriptRevision>
          {
+            friend class BackupFileReader;
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             RevisionCollection()
@@ -111,16 +116,16 @@ namespace Logic
             iterator begin()  { return __super::begin(); }
             iterator end()    { return __super::end();   }
 
-            /// <summary>Adds a revision</summary>
+            /// <summary>Adds a new revision</summary>
             /// <param name="r">revision</param>
-            void  Add(const ScriptRevision& r)
+            void  Commit(const ScriptRevision& r)
             {
                push_front(r);
             }
 
-            /// <summary>Adds a revision</summary>
+            /// <summary>Adds a new revision</summary>
             /// <param name="r">revision</param>
-            void  Add(ScriptRevision&& r)
+            void  Commit(ScriptRevision&& r)
             {
                push_front(r);
             }
@@ -148,6 +153,14 @@ namespace Logic
             {
                remove(r);
             }*/
+
+         protected:
+            /// <summary>Appends a historic revision</summary>
+            /// <param name="r">revision</param>
+            void  AppendHistoric(ScriptRevision&& r)
+            {
+               push_back(r);
+            }
          };
 
          // --------------------- CONSTRUCTION ----------------------

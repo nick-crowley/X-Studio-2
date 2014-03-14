@@ -141,7 +141,7 @@ namespace Logic
 
                // Read all elements
                if (n->nodeType == Xml::NODE_ELEMENT)
-                  file.Revisions.Add( ReadScriptRevision(n) );
+                  file.Revisions.AppendHistoric( ReadScriptRevision(n) );
             }
          }
          catch (_com_error& ex) {

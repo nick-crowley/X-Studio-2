@@ -9,6 +9,7 @@
 #include "Logic/ProjectFileWriter.h"
 #include "Logic/XFileInfo.h"
 #include "Logic/ScriptFileReader.h"
+#include "ScriptDocument.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>
@@ -102,6 +103,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return Project.Contains(path);
    }
 
+   /// <summary>Performs a commit on the specified document.</summary>
+   /// <param name="doc">The document.</param>
+   /// <param name="title">The title.</param>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   /// <exception cref="Logic::ComException">COM Error</exception>
+   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
+   void ProjectDocument::Commit(ScriptDocument& doc, const wstring& title)
+   {
+      // Verify member of project
+      if (!Contains(doc.FullPath))
+         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
+
+      // Convert RichEdit lineBreaks
+      wstring content = doc.GetAllText();
+      for (auto& ch : content)
+         if (ch == '\v')
+            ch = '\n';
+
+      // Load backup. Insert revision
+      auto backup = GetBackupFile(doc);
+      backup.Revisions.Commit( ScriptRevision(title, doc.FullPath, content, doc.Script) );
+
+      // Generate backup path
+      auto path = FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
+
+      // Overwrite backup file
+      BackupFileWriter w(XFileInfo(path).OpenWrite(L"revisions.xml"));
+      w.WriteFile(backup);
+      w.Close();
+   }
+
    /// <summary>Get backup file for a document.</summary>
    /// <param name="doc">The document.</param>
    /// <returns></returns>
@@ -111,16 +143,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
    /// <exception cref="Logic::InvalidValueException">Invalid file format</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   BackupFile  ProjectDocument::GetAllRevisions(DocumentBase* doc) const
+   BackupFile  ProjectDocument::GetBackupFile(ScriptDocument& doc) const
    {
       // Lookup project item
-      auto file = Project.Find(doc->FullPath);
+      auto file = Project.Find(doc.FullPath);
 
       // DEBUG:
       Console << "Opening backup file: " << file->BackupName << ENDL;
 
       // Open backup file
-      return BackupFileReader(XFileInfo(FullPath.Folder+file->BackupName).OpenRead()).ReadFile();
+      auto path = FullPath.Folder+file->BackupName;
+      return BackupFileReader(XFileInfo(path).OpenRead()).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>
@@ -328,7 +361,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          
          // Create script revision
          BackupFile backup(BackupType::MSCI);
-         backup.Revisions.Add( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
+         backup.Revisions.Commit( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
 
          // Save backup
          BackupFileWriter w(XFileInfo(folder+item.BackupName).OpenWrite(L"revisions.xml"));

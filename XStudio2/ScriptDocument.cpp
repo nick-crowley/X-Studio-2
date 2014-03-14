@@ -138,6 +138,42 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return dynamic_cast<ScriptView*>(GetNextView(pos));
    }
    
+   /// <summary>Commits the document</summary>
+   /// <param name="title">Revision title</param>
+   /// <returns></returns>
+   BOOL ScriptDocument::OnCommitDocument(const wstring& title)
+   {
+      WorkerData data(Operation::LoadSaveDocument);
+      
+      // Feedback
+      Console << Cons::UserAction << "Committing script: " << FullPath << ENDL;
+      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Committing script '%s'", FullPath.c_str()));
+
+      try
+      {
+         auto proj = ProjectDocument::GetActive();
+
+         // Verify document is part of project
+         if (!proj)
+            throw InvalidOperationException(HERE, L"No current project");
+         else if (!proj->Contains(FullPath))
+            throw InvalidOperationException(HERE, L"Document is not a member of current project");
+         
+         // Commit
+         proj->Commit(*this, title);
+
+         // Feedback
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script committed successfully");
+         return TRUE;
+      }
+      catch (ExceptionBase&  e) 
+      {
+         Console.Log(HERE, e, GuiString(L"Failed to commit script '%s'", FullPath.c_str()));
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to commit script");
+         return FALSE;
+      }
+   }
+
    /// <summary>Populates the properties window</summary>
    /// <param name="grid">The grid.</param>
    void  ScriptDocument::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
@@ -204,13 +240,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
 
          // Feedback
-         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script loaded successfully");
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load script");
+         data.SendFeedback(ProgressType::Error, 0, L"Failed to load script");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", szPathName));
          return FALSE;
       }
@@ -246,7 +282,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       WorkerData data(Operation::LoadSaveDocument);
       
       // Feedback
-      Console << Cons::Heading << "Saving script: " << lpszPathName << ENDL;
+      Console << Cons::UserAction << "Saving script: " << lpszPathName << ENDL;
       data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", lpszPathName));
 
       try
@@ -258,8 +294,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (parser.Successful)
             parser.Compile();
 
+         // Verified/Compiled OK:
          if (parser.Successful)
          {
+            // IncrementVersion:
+            if (PrefsLib.IncrementVersionOnSave)
+               Script.Version++;
+
             // Write to X-Studio program folder
             StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
@@ -270,7 +311,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
             SetModifiedFlag(FALSE);
 
             // Feedback
-            data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Script saved successfully");
+            data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script saved successfully");
+
+            // Auto-Commit: 
+            if (PrefsLib.CommitOnSave)
+               OnCommitDocument(L"Automatic commit");
             return TRUE;
          }
          else
