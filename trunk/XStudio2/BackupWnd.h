@@ -66,6 +66,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void AdjustLayout();
       void DrawItem(CDC& dc, CRect& rc, int index, UINT state, bool calculate);
       void Populate();
+      void Refresh();
 	   void UpdateFont();
 
       handler void OnBackupChanged(ProjectItem* item);
