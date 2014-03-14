@@ -299,7 +299,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    BOOL LanguageDocument::OnOpenDocument(LPCTSTR szPathName)
    {
-      
       WorkerData data(Operation::LoadSaveDocument);
 
       try
@@ -332,13 +331,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
             File = LanguageFileReader(stream.OpenRead()).ReadFile(szPathName);
          }
 
-         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Language file loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
       }
@@ -367,13 +366,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          w.Close();
 
          // Feedback
-         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file saved successfully");
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Language file saved successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to save language file");
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to save language file '%s'", szPathName));
          return FALSE;
       }

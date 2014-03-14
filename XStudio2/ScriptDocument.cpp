@@ -145,12 +145,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       WorkerData data(Operation::LoadSaveDocument);
       
-      // Feedback
-      Console << Cons::UserAction << "Committing script: " << FullPath << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Committing script '%s'", FullPath.c_str()));
-
       try
       {
+         // Feedback
+         Console << Cons::UserAction << "Committing script: " << FullPath << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Committing script '%s'", FullPath.c_str()));
+
+         // Get project
          auto proj = ProjectDocument::GetActive();
 
          // Verify document is part of project
@@ -246,7 +247,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Error, 0, L"Failed to load script");
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", szPathName));
          return FALSE;
       }
@@ -275,18 +276,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }   
 
    /// <summary>Saves the document</summary>
-   /// <param name="lpszPathName">path.</param>
+   /// <param name="szPath">The new/existing path.</param>
    /// <returns></returns>
-   BOOL ScriptDocument::OnSaveDocument(LPCTSTR lpszPathName)
+   BOOL ScriptDocument::OnSaveDocument(LPCTSTR szPath)
    {
       WorkerData data(Operation::LoadSaveDocument);
       
-      // Feedback
-      Console << Cons::UserAction << "Saving script: " << lpszPathName << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", lpszPathName));
-
       try
       {
+         REQUIRED(szPath);
+
+         // Feedback
+         Console << Cons::UserAction << "Saving script: " << szPath << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", szPath));
+
          // Parse script 
          ScriptParser parser(Script, Edit->GetAllLines(), Script.Game);
 
@@ -340,7 +343,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
       catch (ExceptionBase&  e) 
       {
-         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", lpszPathName));
+         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", szPath));
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
          return FALSE;
       }
