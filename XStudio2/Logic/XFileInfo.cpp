@@ -132,7 +132,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Catalog based files are read-only");
 
          // basic file stream
-         StreamPtr s(new FileStream(FullPath, FileMode::OpenAlways, FileAccess::Write));
+         StreamPtr s(new FileStream(FullPath, FileMode::CreateAlways, FileAccess::Write));
 
          // PCK: Wrap in GZip compression stream
          if (FullPath.HasExtension(L".pck") || FullPath.HasExtension(L".zip"))
