@@ -93,6 +93,21 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          }
       };
       
+      /// <summary>ScriptIndentation property</summary>
+      class ScriptIndentationProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'ScriptIndentation' property</summary>
+         /// <param name="page">Owner page.</param>
+         ScriptIndentationProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Indentation Size", _variant_t(PrefsLib.ScriptIndentation), L"Amount of space characters to use to indent code blocks")
+         {
+            // 1 <= indent <= 6
+            EnableSpinControl(TRUE, 1, 6);
+         }
+      };
+
       /// <summary>LineNumber colour property</summary>
       class LineNumberColourProperty : public ColourProperty
       {
@@ -312,6 +327,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       ShowScriptTooltipsProperty*   ShowScriptTooltips;
       ScriptViewFontProperty*       ScriptViewFont;
       ScriptTooltipDelayProperty*   ScriptTooltipDelay;
+      ScriptIndentationProperty*    ScriptIndentation;
 
       BackgroundColourProperty*     BackgroundColour;
       LineNumberColourProperty*     LineNumberColour;

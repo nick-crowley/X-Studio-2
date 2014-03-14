@@ -24,6 +24,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         ShowLineNumbers(nullptr),
         ShowScriptTooltips(nullptr),
         ScriptTooltipDelay(nullptr),
+        ScriptIndentation(nullptr),
         DifferenceHighlight(nullptr),
         RefactorHighlight(nullptr),
         
@@ -68,6 +69,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.ShowScriptTooltips = ShowScriptTooltips->GetBool();
       PrefsLib.ScriptViewFont = *ScriptViewFont->GetLogFont();
       PrefsLib.ScriptTooltipDelay = ScriptTooltipDelay->GetInt();
+      PrefsLib.ScriptIndentation = ScriptIndentation->GetInt();
 
       // Colour
       PrefsLib.BackgroundColour = BackgroundColour->GetColor();
@@ -94,17 +96,20 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    void EditorPage::Populate()
    {
       // General
-      auto group = new PropertyBase(*this, L"General");
+      auto group = new PropertyBase(*this, L"Editor");
       group->AddSubItem(ScriptViewFont = new ScriptViewFontProperty(*this));
       group->AddSubItem(ShowLineNumbers = new ShowLineNumbersProperty(*this));
       group->AddSubItem(ShowScriptTooltips = new ShowScriptTooltipsProperty(*this));
       group->AddSubItem(ScriptTooltipDelay = new ScriptTooltipDelayProperty(*this));
+      group->AddSubItem(ScriptIndentation = new ScriptIndentationProperty(*this));
       Grid.AddProperty(group);
 
       // Colours
       group = new PropertyBase(*this, L"Colours");
       group->AddSubItem(BackgroundColour = new BackgroundColourProperty(*this));
       group->AddSubItem(LineNumberColour = new LineNumberColourProperty(*this));
+      group->AddSubItem(DifferenceHighlight = new DifferenceHighlightProperty(*this));
+      group->AddSubItem(RefactorHighlight = new RefactorHighlightProperty(*this));
       Grid.AddProperty(group);
       
       // Highlighting
