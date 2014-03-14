@@ -66,6 +66,60 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          }
       };
 
+      /// <summary>CommitOnSave property</summary>
+      class CommitOnSaveProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'CommitOnSave' property</summary>
+         /// <param name="page">Owner page.</param>
+         CommitOnSaveProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Automatic Commit", L"", L"Automatically perform a quick commit when saving a script")
+         {
+            AddOption(L"Perform quick commit on save", FALSE);
+            AddOption(L"Don't quick commit on save", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.CommitOnSave ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+      };
+
+      /// <summary>IncrementOnSave property</summary>
+      class IncrementOnSaveProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'IncrementOnSave' property</summary>
+         /// <param name="page">Owner page.</param>
+         IncrementOnSaveProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Version Increment", L"", L"Automatically increment the version number when saving a script")
+         {
+            AddOption(L"Increment version number on save", FALSE);
+            AddOption(L"Don't increment version number on save", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.IncrementOnSave ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+      };
+
       /// <summary>ScriptViewFont property</summary>
       class ScriptViewFontProperty : public FontProperty
       {
@@ -86,7 +140,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <summary>Create 'ScriptTooltipDelay' property</summary>
          /// <param name="page">Owner page.</param>
          ScriptTooltipDelayProperty(PreferencesPage& page) 
-            : PropertyBase(page, L"Code Tooltips Delay", _variant_t(PrefsLib.ScriptTooltipDelay), L"Length of time (in seconds) before code tooltips are shown")
+            : PropertyBase(page, L"Tooltip Delay", _variant_t(PrefsLib.ScriptTooltipDelay), L"Length of time (in seconds) before code tooltips are shown")
          {
             // 1 <= delay <= 30
             EnableSpinControl(TRUE, 1, 30);
@@ -328,6 +382,10 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       ScriptViewFontProperty*       ScriptViewFont;
       ScriptTooltipDelayProperty*   ScriptTooltipDelay;
       ScriptIndentationProperty*    ScriptIndentation;
+
+      CommitOnSaveProperty*         CommitOnSave;
+      IncrementOnSaveProperty*      IncrementOnSave;
+
 
       BackgroundColourProperty*     BackgroundColour;
       LineNumberColourProperty*     LineNumberColour;

@@ -348,7 +348,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (parser.Successful)
          {
             // IncrementVersion:
-            if (PrefsLib.IncrementVersionOnSave)
+            if (PrefsLib.IncrementOnSave)
                Script.Version++;
 
             // Write to X-Studio program folder
