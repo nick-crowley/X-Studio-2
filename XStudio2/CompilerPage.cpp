@@ -53,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    void CompilerPage::Populate()
    {
       // General
-      auto group = new PropertyBase(*this, L"General");
+      auto group = new PropertyBase(*this, L"Compiler");
       group->AddSubItem(CheckArgumentNames = new CheckArgumentNamesProperty(*this));
       group->AddSubItem(CheckArgumentTypes = new CheckArgumentTypesProperty(*this));
       group->AddSubItem(BackgroundCompiler = new BackgroundCompilerProperty(*this));

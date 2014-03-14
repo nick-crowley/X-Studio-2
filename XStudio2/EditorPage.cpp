@@ -31,20 +31,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         BackgroundColour(nullptr),
         LineNumberColour(nullptr),
         DifferenceHighlight(nullptr),
-        RefactorHighlight(nullptr),
-        
-        ArgumentColour(nullptr),
-        CommentColour(nullptr),
-        GameObjectColour(nullptr),
-        KeywordColour(nullptr),
-        LabelColour(nullptr),
-        NumberColour(nullptr),
-        NullColour(nullptr),
-        OperatorColour(nullptr),
-        ScriptObjectColour(nullptr),
-        StringColour(nullptr),
-        TextColour(nullptr),
-        VariableColour(nullptr)
+        RefactorHighlight(nullptr)
    {
    }
 
@@ -86,19 +73,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.DifferenceHighlight = DifferenceHighlight->GetColor();
       PrefsLib.RefactorHighlight = RefactorHighlight->GetColor();
       
-      // Highlighting
-      PrefsLib.ArgumentColour = ArgumentColour->GetColor();
-      PrefsLib.CommentColour = CommentColour->GetColor();
-      PrefsLib.GameObjectColour = GameObjectColour->GetColor();
-      PrefsLib.KeywordColour = KeywordColour->GetColor();
-      PrefsLib.LabelColour = LabelColour->GetColor();
-      PrefsLib.NumberColour = NumberColour->GetColor();
-      PrefsLib.NullColour = NullColour->GetColor();
-      PrefsLib.OperatorColour = OperatorColour->GetColor();
-      PrefsLib.ScriptObjectColour = ScriptObjectColour->GetColor();
-      PrefsLib.StringColour = StringColour->GetColor();
-      PrefsLib.TextColour = TextColour->GetColor();
-      PrefsLib.VariableColour = VariableColour->GetColor();
    }
 
    /// <summary>Populates page.</summary>
@@ -127,21 +101,6 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group->AddSubItem(RefactorHighlight = new RefactorHighlightProperty(*this));
       Grid.AddProperty(group);
       
-      // Highlighting
-      group = new PropertyBase(*this, L"Syntax Highlighting");
-      group->AddSubItem(ArgumentColour = new ArgumentColourProperty(*this));
-      group->AddSubItem(CommentColour = new CommentColourProperty(*this));
-      group->AddSubItem(GameObjectColour = new GameObjectColourProperty(*this));
-      group->AddSubItem(KeywordColour = new KeywordColourProperty(*this));
-      group->AddSubItem(LabelColour = new LabelColourProperty(*this));
-      group->AddSubItem(NumberColour = new NumberColourProperty(*this));
-      group->AddSubItem(NullColour = new NullColourProperty(*this));
-      group->AddSubItem(OperatorColour = new OperatorColourProperty(*this));
-      group->AddSubItem(ScriptObjectColour = new ScriptObjectColourProperty(*this));
-      group->AddSubItem(StringColour = new StringColourProperty(*this));
-      group->AddSubItem(TextColour = new TextColourProperty(*this));
-      group->AddSubItem(VariableColour = new VariableColourProperty(*this));
-      Grid.AddProperty(group);
    }
    
    // ------------------------------- PRIVATE METHODS ------------------------------

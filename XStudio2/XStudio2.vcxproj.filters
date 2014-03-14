@@ -636,6 +636,9 @@
     <ClInclude Include="BackupList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="SyntaxPage.h">
+      <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -1048,6 +1051,9 @@
     </ClCompile>
     <ClCompile Include="BackupList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="SyntaxPage.cpp">
+      <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
