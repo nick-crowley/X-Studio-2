@@ -93,10 +93,15 @@ namespace Logic
       {
          REQUIRED(parent);
 
-         // <file type='..'>full_path</file>
-         auto node = WriteElement(parent, L"file", file.FullPath.c_str());
-         WriteAttribute(node, L"backup", file.BackupName);
+         // <file type='..'>
+         //  <path>..</path>
+         //  <backup>...</backup>
+         // </file>
+         auto node = WriteElement(parent, L"file");
          WriteAttribute(node, L"type", ::GetString(file.FileType));
+         WriteElement(node, L"path", file.FullPath.c_str());
+         WriteElement(node, L"backup", file.BackupName);
+         
       }
 
       /// <summary>Writes folder item.</summary>
@@ -108,10 +113,12 @@ namespace Logic
       {
          REQUIRED(parent);
 
-         // <folder name=.. fixed=..>  ... </folder>
+         // <folder name=.. type='fixed|user'> 
+         // ... 
+         // </folder>
          auto node = WriteElement(parent, L"folder");
          WriteAttribute(node, L"name", folder.Name);
-         WriteAttribute(node, L"fixed", folder.Fixed ? L"true" : L"false");
+         WriteAttribute(node, L"type", folder.Fixed ? L"fixed" : L"user");
          
          return node;
       }

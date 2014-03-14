@@ -147,13 +147,15 @@ namespace Logic
             {
                // Resolve type
                type = ParseFileType(ReadAttribute(node, L"type"));
-               
-               // Verify file-type
                if (type == FileType::Unknown)
                   throw FileFormatException(HERE, L"'Unknown' file-type is not supported");
 
+               // Read path/backup
+               wstring path = GetChild(node, 0, L"file path")->text,
+                       backup = GetChild(node, 1, L"file backup name")->text;
+
                // Create file
-               return ProjectItem(type, (LPCWSTR)node->text, ReadAttribute(node, L"backup"));
+               return ProjectItem(type, path, backup);
             }
             catch (ArgumentException& e) {
                throw FileFormatException(HERE, e.Message);
@@ -176,8 +178,13 @@ namespace Logic
          // Verify node
          ReadElement(node, L"folder");
 
+         // Read type
+         auto type = ReadAttribute(node, L"type");
+         if (type != L"fixed" && type != L"user")
+            throw FileFormatException(HERE, wstring(L"Unrecognised folder type: ") + type);
+
          // Read folder
-         auto folder = ProjectItem(ReadAttribute(node, L"name"), ReadAttribute(node, L"fixed") == L"true");
+         auto folder = ProjectItem(ReadAttribute(node, L"name"), type == L"fixed");
 
          // Read items
          for (int i = 0, count = node->childNodes->length; i < count; i++)
