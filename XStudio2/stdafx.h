@@ -12,51 +12,17 @@
 
 #include "targetver.h"
 
-// some CString constructors will be explicit
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      
+// Tweaks
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS        // some CString constructors will be explicit
+#define _AFX_ALL_WARNINGS     // turns off MFC's hiding of some common and often safely ignored warning messages
 
-// turns off MFC's hiding of some common and often safely ignored warning messages
-#define _AFX_ALL_WARNINGS
+ 
+// MFC
+#include <afxwin.h>              // MFC core and standard components
+#include <afxext.h>              // MFC extensions
+#include <afxcmn.h>             // MFC support for Windows Common Controls
+#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
- // MFC core and standard components
-#include <afxwin.h>        
-
-// Failed Attempt at redefining CHARFORMAT2 struct with all fields, but not present in richEdit.h :(
-#undef _RICHEDIT_VER
-#define _RICHEDIT_VER 0x0500
-
-// MFC extensions
-#include <afxext.h>         
-
-// MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdtctl.h>           
-#endif
-// MFC support for Windows Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>             
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
-// MFC support for ribbons and control bars
-#include <afxcontrolbars.h>     
-
-// MFC socket extensions
-#include <afxsock.h>    
-
-// MFC CtrlView
-#include <afxcview.h>
-
-
-// Import MS-XML library
-#include "msxml.h"
-
-
-// Import tom
-#include "tom.h"
-
-
-// Win32 
-#include <Windowsx.h>
 
 // Visual Leak Detector
 #include <vld.h>
@@ -69,12 +35,33 @@
 #include <list>
 #include <set>
 #include <map>
-#include <memory>
+#include <memory>    // shared/unique ptr
 
 using namespace std;
+//using std::string;
+//using std::wstring;
+//using std::vector;
+//using std::deque;
+//using std::list;
+//using std::set;
+//using std::map;
+//using std::shared_ptr;
+//using std::unique_ptr;
+//using std::exception;
+
+
+// COM
+#include <comdef.h>
 
 // Common Logic + Utils
 #include "Logic/Common.h"
+
+#include "Logic/StringResource.h"
+#include "Logic/Path.h"
+#include "Logic/Exceptions.h"
+#include "Logic/ConsoleWnd.h"
+
+
 #include "Utils.h"
 
 // Application 

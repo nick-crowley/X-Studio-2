@@ -118,6 +118,18 @@
     <Filter Include="Header Files\Logic\DTL">
       <UniqueIdentifier>{3bd91329-b83e-47a7-a4d3-0a1ab1803321}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Xml">
+      <UniqueIdentifier>{6c09326f-4b07-43b1-a1d5-2a8dbab84cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\TOM">
+      <UniqueIdentifier>{4cc7f61a-aee8-4712-8a2b-39f9b94d4c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TOM">
+      <UniqueIdentifier>{9339d70d-6165-4f4d-90dd-0516059b76f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Xml">
+      <UniqueIdentifier>{d667eb5d-69e7-4eb6-93aa-f5ae3fef386c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -621,12 +633,6 @@
     <ClInclude Include="Logic\ConsoleLog.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="msxml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\BackupFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -638,6 +644,12 @@
     </ClInclude>
     <ClInclude Include="SyntaxPage.h">
       <Filter>Header Files\GUI\Preferences</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\lib_msxml.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="lib_tom.h">
+      <Filter>Header Files\TOM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1037,12 +1049,6 @@
     <ClCompile Include="ProjectDocTemplate.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
-    <ClCompile Include="msftedit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="msxml6.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logic\BackupFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
@@ -1055,14 +1061,20 @@
     <ClCompile Include="SyntaxPage.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\msxml6.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="msftedit.cpp">
+      <Filter>Source Files\TOM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="msxml6.tlh">
-      <Filter>Header Files</Filter>
+    <None Include="Logic\msxml6.tlh">
+      <Filter>Header Files\Xml</Filter>
     </None>
     <None Include="msftedit.tlh">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\TOM</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

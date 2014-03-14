@@ -1,6 +1,10 @@
 #pragma once
+#include <afxglobals.h>
+#include <afxsettingsstore.h>
 
 // Do not include common.h, this file included via stdafx.h
+
+
 #define MACRO_REGION
 
 namespace Logic
