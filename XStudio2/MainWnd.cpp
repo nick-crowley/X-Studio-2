@@ -69,9 +69,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE, &MainWnd::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE_AS, &MainWnd::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_CLOSE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
@@ -142,6 +139,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   }
 
 	   return TRUE;
+   }
+
+   /// <summary>Extends MFC command routing to the project document, which has no attached view.</summary>
+   /// <param name="nID">The identifier.</param>
+   /// <param name="nCode">The code.</param>
+   /// <param name="pExtra">UI handler.</param>
+   /// <param name="pHandlerInfo">The handler information.</param>
+   /// <returns></returns>
+   BOOL MainWnd::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+   {
+      // Delegate to project
+      if (auto proj = ProjectDocument::GetActive())
+         if (proj->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+             return TRUE;
+
+      // Default
+      return __super::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
    }
    
    /// <summary>App-wizard generated</summary>

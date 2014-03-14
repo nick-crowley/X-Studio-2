@@ -37,7 +37,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded))
+   CProjectWnd::CProjectWnd() : fnProjectLoaded(ProjectDocument::Loaded.Register(this, &CProjectWnd::OnProjectLoaded)),
+                                fnProjectClosed(ProjectDocument::Closed.Register(this, &CProjectWnd::OnProjectClosed))
    {
    }
 
@@ -369,8 +370,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
 
+   /// <summary>Called when project unloaded.</summary>
+   void CProjectWnd::OnProjectClosed()
+   {
+      TreeView.DeleteAllItems();
+   }
 
-   /// <summary>Called when project loaded or unloaded.</summary>
+   /// <summary>Called when project loaded.</summary>
    void CProjectWnd::OnProjectLoaded()
    {
       TreeView.Populate();

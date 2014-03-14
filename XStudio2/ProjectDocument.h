@@ -55,7 +55,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       DECLARE_MESSAGE_MAP()
 
    public:
-      static SimpleEvent            Loaded;
+      static SimpleEvent            Closed,
+                                    Loaded;
       static ProjectItemAddedEvent  ItemAdded;
       static ProjectItemEvent       ItemChanged,
                                     ItemRemoved;
@@ -77,10 +78,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  Commit(ScriptDocument& doc, const wstring& title);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
+      void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
+      void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }
+      void  OnCommandSaveProjectAs()      { OnPerformCommand(ID_FILE_PROJECT_SAVE_AS); }
       void  OnDocumentEvent(DocumentEvent deEvent) override;
-      BOOL  OnNewDocument() override;
       BOOL  OnImportDocument(IO::Path legacy, IO::Path upgrade);
+      BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
+      void  OnPerformCommand(UINT nID);
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
 
       void  RemoveItem(ProjectItem& item);

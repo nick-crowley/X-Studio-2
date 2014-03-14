@@ -16,7 +16,8 @@
 NAMESPACE_BEGIN2(GUI,Documents)
    
    /// <summary>Project has been loaded/unloaded</summary>
-   SimpleEvent   ProjectDocument::Loaded;
+   SimpleEvent   ProjectDocument::Loaded,
+                 ProjectDocument::Closed;
 
    /// <summary>Project item has been added</summary>
    ProjectItemAddedEvent  ProjectDocument::ItemAdded;
@@ -30,6 +31,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(ProjectDocument, DocumentBase)
 
    BEGIN_MESSAGE_MAP(ProjectDocument, DocumentBase)
+      ON_COMMAND(ID_FILE_PROJECT_CLOSE, &ProjectDocument::OnCommandCloseProject)
+      ON_COMMAND(ID_FILE_PROJECT_SAVE, &ProjectDocument::OnCommandSaveProject)
+      ON_COMMAND(ID_FILE_PROJECT_SAVE_AS, &ProjectDocument::OnCommandSaveProjectAs)
+      /*ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_SAVE_AS, &MainWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_PROJECT_CLOSE, &MainWnd::OnQueryCommand)*/
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -233,11 +240,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ItemChanged.Raise(&item);
    }
 
-   void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent) 
+   /// <summary>Raises 'PROJECT CLOSED/LOADED' after loading/closing</summary>
+   /// <param name="deEvent">The event.</param>
+   void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent)
    {
       // Raise 'PROJECT LOADED'
       if (deEvent == CDocument::onAfterOpenDocument)
          Loaded.Raise();
+
+      // Raise 'PROJECT CLOSED'
+      else if (deEvent == CDocument::onAfterCloseDocument)
+         Closed.Raise();
    }
 
    /// <summary>Called on new X-Studio 2 project.</summary>
@@ -293,7 +306,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
-   
 
    /// <summary>Called on open an X-Studio 2 project.</summary>
    /// <param name="szPath">The path.</param>
@@ -328,6 +340,37 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
+   
+   /// <summary>Perform commands.</summary>
+   void ProjectDocument::OnPerformCommand(UINT nID)
+   {
+      try
+      {
+         switch (nID)
+         {
+         // Close Project
+         case ID_FILE_PROJECT_CLOSE:
+            if (!SaveModified())
+		         return;
+
+	         OnCloseDocument();
+            break;
+
+         // Save Project
+         case ID_FILE_PROJECT_SAVE:
+            DoFileSave();
+            break;
+
+         // Save Project As
+         case ID_FILE_PROJECT_SAVE_AS:
+            DoSave(NULL);
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
 
    /// <summary>Called to save document.</summary>
    /// <param name="szPath">The new/existing path.</param>
