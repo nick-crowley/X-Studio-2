@@ -149,7 +149,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto file = Project.Find(doc.FullPath);
 
       // DEBUG:
-      Console << "Opening backup file: " << file->BackupName << ENDL;
+      //Console << "Opening backup file: " << file->BackupName << ENDL;
 
       // Open backup file
       auto path = FullPath.Folder+file->BackupName;
@@ -312,24 +312,50 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Project = ProjectFileReader(fs).ReadFile(szPath);
          
          // Success: Feedback
-         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Project loaded successfully");
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Project loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase& e) 
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load project");
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load project");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load project '%s'", szPath));
          return FALSE;
       }
    }
 
 
-   BOOL ProjectDocument::OnSaveDocument(LPCTSTR lpszPathName)
+   /// <summary>Called to save document.</summary>
+   /// <param name="szPath">The new/existing path.</param>
+   /// <returns></returns>
+   BOOL ProjectDocument::OnSaveDocument(LPCTSTR szPath)
    {
-      // TODO: Add your specialized code here and/or call the base class
+      WorkerData data(Operation::LoadSaveDocument);
+      
+      try
+      {
+         REQUIRED(szPath);
 
-      return DocumentBase::OnSaveDocument(lpszPathName);
+         // Feedback
+         Console << Cons::UserAction << L"Saving project: " << FullPath << " as " << Path(szPath) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving project '%s'", szPath));
+      
+         // Write project
+         ProjectFileWriter w(XFileInfo(szPath).OpenWrite());
+         w.Write(Project);
+         w.Close();
+
+         // Feedback
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Project saved successfully");
+         return TRUE;
+      }
+      catch (ExceptionBase&  e)
+      {
+         // Feedback/Display error
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save project");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to save project '%s'", szPath));
+         return FALSE;
+      }
    }
 
    

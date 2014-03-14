@@ -179,8 +179,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       try
       {
          // Feedback
-         Console << Cons::UserAction << L"Loading diff: " << doc.FullPath << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading diff '%s'", (LPCWSTR)doc.GetTitle()));
+         Console << Cons::UserAction << L"Loading diff for: " << doc.FullPath << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading diff for '%s'", doc.FullPath.FileName.c_str()));
 
          // Store document
          Source = &doc;
@@ -193,14 +193,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
          GeneratePhrases(d.getSes());
 
          // Feedback
-         data.SendFeedback(Cons::Green, ProgressType::Succcess, 0, L"Language file loaded successfully");
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Diff document loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load diff");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load diff '%s'", (LPCWSTR)doc.GetTitle()));
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load diff document");
+         theApp.ShowError(HERE, e, GuiString(L"Failed to load diff for '%s'", doc.FullPath.FileName.c_str()));
          return FALSE;
       }
    }
@@ -213,7 +213,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       WorkerData data(Operation::LoadSaveDocument);
       
       // Feedback/Display error
-      data.SendFeedback(ProgressType::Failure, 0, L"Cannot to save difference document");
+      data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Cannot to save difference document");
       //theApp.ShowError(HERE, e, GuiString(L"Cannot to save difference document '%s'", szPathName));
       return FALSE;
    }
