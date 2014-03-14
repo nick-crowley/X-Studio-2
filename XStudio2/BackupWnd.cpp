@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_DIFF, &BackupWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_REVERT, &BackupWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_DELETE, &BackupWnd::OnQueryCommand)
+      ON_WM_CTLCOLOR()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -176,8 +177,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Toolbar
          ToolBar.Create(this, IDR_BACKUP, L"Backup");
 
-         // Create List
-         DWORD style = WS_VISIBLE|WS_CHILD|WS_VSCROLL|LBS_DISABLENOSCROLL|LBS_OWNERDRAWVARIABLE|LBS_NOTIFY;
+         // Create List  [Disable until population]
+         DWORD style = WS_DISABLED|WS_VISIBLE|WS_CHILD|WS_VSCROLL|LBS_OWNERDRAWVARIABLE|LBS_NOTIFY;   //LBS_DISABLENOSCROLL
 	      if (!List.Create(style, rectDummy, this, IDC_BACKUP_LIST))
 	         throw Win32Exception(HERE, L"Failed to create backup list");
 
@@ -214,6 +215,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
+   /// <summary>Set list background colour.</summary>
+   /// <param name="pDC">The p dc.</param>
+   /// <param name="pWnd">The p WND.</param>
+   /// <param name="nCtlColor">Color of the n control.</param>
+   /// <returns></returns>
+   HBRUSH BackupWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+   {
+      // ListBackground: Grey on disabled
+      if (nCtlColor == CTLCOLOR_LISTBOX)
+         return GetSysColorBrush(List.IsWindowEnabled() ? COLOR_WINDOW : COLOR_3DFACE);
+
+      // Default
+      return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+   }
+
    /// <summary>Loads backups for the active document</summary>
    void BackupWnd::OnDocumentSwitched()
    {
@@ -395,10 +411,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          // Check document (if any) belongs to current project (if any)
-         if (doc && proj && proj->Contains(doc->FullPath))
+         bool hasBackups = (doc && proj && proj->Contains(doc->FullPath));
+
+         // Load/Clear backup file
+         if (hasBackups)
             Backup = proj->LoadBackupFile(*doc);
          else
             Backup.Clear();
+         
+         // Disable window if appropriate
+         List.EnableWindow(hasBackups ? TRUE : FALSE);
          
          // Fill list with dummy items
          for (auto& rev : Backup.Revisions)
@@ -457,4 +479,5 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
 
 NAMESPACE_END2(GUI,Windows)
+
 

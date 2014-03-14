@@ -633,6 +633,9 @@
     <ClInclude Include="Logic\ScriptRevision.h">
       <Filter>Header Files\Logic\Projects</Filter>
     </ClInclude>
+    <ClInclude Include="BackupList.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -1042,6 +1045,9 @@
     </ClCompile>
     <ClCompile Include="Logic\ProjectItem.cpp">
       <Filter>Source Files\Logic\Projects</Filter>
+    </ClCompile>
+    <ClCompile Include="BackupList.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
