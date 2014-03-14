@@ -117,7 +117,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::Commit(ScriptDocument& doc, const wstring& title)
+   void ProjectDocument::Commit(const ScriptDocument& doc, const wstring& title)
    {
       // Verify member of project
       if (!Contains(doc.FullPath))
@@ -130,7 +130,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             ch = '\n';
 
       // Load backup. Insert revision
-      auto backup = GetBackupFile(doc);
+      auto backup = LoadBackupFile(doc);
       backup.Revisions.Commit( ScriptRevision(title, doc.FullPath, content, doc.Script) );
 
       // Generate backup path
@@ -151,14 +151,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::DeleteRevision(ScriptDocument& doc, UINT index)
+   void ProjectDocument::DeleteRevision(const ScriptDocument& doc, UINT index)
    {
       // Verify member of project
       if (!Contains(doc.FullPath))
          throw ArgumentException(HERE, L"doc", L"Document is not part of project");
 
       // Load backup. Delete revision
-      auto backup = GetBackupFile(doc);
+      auto backup = LoadBackupFile(doc);
       backup.Remove(index);
 
       // Generate backup path
@@ -176,23 +176,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Get backup file for a document.</summary>
    /// <param name="doc">The document.</param>
    /// <returns></returns>
-   /// <exception cref="Logic::ProjectItemNotFoundException">Document not part of project</exception>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ArgumentNullException">Invalid file format</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
    /// <exception cref="Logic::InvalidValueException">Invalid file format</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   BackupFile  ProjectDocument::GetBackupFile(ScriptDocument& doc) const
+   BackupFile  ProjectDocument::LoadBackupFile(const ScriptDocument& doc) const
    {
-      // Lookup project item
-      auto file = Project.Find(doc.FullPath);
-
-      // DEBUG:
-      //Console << "Opening backup file: " << file->BackupName << ENDL;
-
       // Open backup file
-      auto path = FullPath.Folder+file->BackupName;
-      return BackupFileReader(XFileInfo(path).OpenRead()).ReadFile();
+      auto s = XFileInfo(GetBackupPath(doc)).OpenRead();
+
+      // Read contents
+      return BackupFileReader(s).ReadFile();
    }
 
    /// <summary>Moves an item to a new folder</summary>
@@ -372,38 +368,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
-   
-   /// <summary>Perform commands.</summary>
-   void ProjectDocument::OnPerformCommand(UINT nID)
-   {
-      try
-      {
-         switch (nID)
-         {
-         // Close Project
-         case ID_FILE_PROJECT_CLOSE:
-            if (!SaveModified())
-		         return;
-
-	         OnCloseDocument();
-            break;
-
-         // Save Project
-         case ID_FILE_PROJECT_SAVE:
-            DoFileSave();
-            break;
-
-         // Save Project As
-         case ID_FILE_PROJECT_SAVE_AS:
-            DoSave(NULL);
-            break;
-         }
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-      }
-   }
-
    /// <summary>Called to save document.</summary>
    /// <param name="szPath">The new/existing path.</param>
    /// <returns></returns>
@@ -440,6 +404,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Get full path of backup file for a document.</summary>
+   /// <param name="doc">The document.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   IO::Path  ProjectDocument::GetBackupPath(const ScriptDocument& doc) const
+   {
+      // Verify member of project
+      if (!Contains(doc.FullPath))
+         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
+
+      // ProjectFolder + BackupName
+      return FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
+   }
+
    /// <summary>Creates a backup file for a file item and performs an initial commit.</summary>
    /// <param name="folder">Backup folder.</param>
    /// <param name="item">File item.</param>
@@ -469,15 +447,45 @@ NAMESPACE_BEGIN2(GUI,Documents)
          backup.Revisions.Commit( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
 
          // Save backup
-         BackupFileWriter w(XFileInfo(folder+item.BackupName).OpenWrite(L"revisions.xml"));
-         w.WriteFile(backup);
-         w.Close();
+         SaveBackupFile(folder+item.BackupName, backup);
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, GuiString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
       }
    }
    
+   
+   /// <summary>Perform commands.</summary>
+   void ProjectDocument::OnPerformCommand(UINT nID)
+   {
+      try
+      {
+         switch (nID)
+         {
+         // Close Project
+         case ID_FILE_PROJECT_CLOSE:
+            if (!SaveModified())
+		         return;
+
+	         OnCloseDocument();
+            break;
+
+         // Save Project
+         case ID_FILE_PROJECT_SAVE:
+            DoFileSave();
+            break;
+
+         // Save Project As
+         case ID_FILE_PROJECT_SAVE_AS:
+            DoSave(NULL);
+            break;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+
    /// <summary>Queries the state of a menu command.</summary>
    /// <param name="pCmdUI">The command UI.</param>
    void  ProjectDocument::OnQueryCommand(CCmdUI* pCmdUI)
@@ -499,6 +507,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
       pCmdUI->SetCheck(FALSE);
    }
    
+   
+   /// <summary>Saves the backup file.</summary>
+   /// <param name="path">The path.</param>
+   /// <param name="f">The f.</param>
+   /// <exception cref="Logic::ComException">COM Error</exception>
+   /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
+   /// <exception cref="Logic::IOException">Unable to create file</exception>
+   void ProjectDocument::SaveBackupFile(const IO::Path& path, const BackupFile& f) const
+   {
+      TempPath tmp;
+
+      // Write to a temp file to prevent destroying all revisions if case of failure
+      BackupFileWriter w(XFileInfo(tmp).OpenWrite(L"revisions.xml"));
+      w.WriteFile(f);
+      w.Close();
+
+      // Success: Copy file
+      if (!MoveFileEx(tmp.c_str(), path.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+         throw IOException(HERE, L"Unable to overwrite backup file: " + SysErrorString());
+   }
+
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    

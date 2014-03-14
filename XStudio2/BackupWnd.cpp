@@ -396,7 +396,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // Check document (if any) belongs to current project (if any)
          if (doc && proj && proj->Contains(doc->FullPath))
-            Backup = proj->GetBackupFile(*doc);
+            Backup = proj->LoadBackupFile(*doc);
          else
             Backup.Clear();
          
