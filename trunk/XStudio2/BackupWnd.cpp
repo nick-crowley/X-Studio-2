@@ -304,11 +304,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!script || List.GetCurSel() == LB_ERR)
          return;
 
+      // Lookup revision
+      auto rev = Backup[List.GetCurSel()];
       switch (nID)
       {
       // Display diff document with selected revision
       case ID_BACKUP_DIFF: 
-         theApp.OpenDiffDocument(*script, Backup[List.GetCurSel()].Content);  
+         theApp.OpenDiffDocument(*script, rev.Content);  
          break;
 
       // Delete selected revision
@@ -317,7 +319,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Replace document contents with revision
       case ID_BACKUP_REVERT:  
-         script->SetAllText(Backup[List.GetCurSel()].Content);
+         script->OnRevertDocument(rev);
          break;
       }
    }
