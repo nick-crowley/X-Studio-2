@@ -67,6 +67,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    public:
       void         ActivateOutputPane(Operation pane, bool show);
+      void         ActivateProjectPane();
       void         CreateToolBars();
       void         CreateToolWindows();
       ScriptView*  GetActiveScriptView();

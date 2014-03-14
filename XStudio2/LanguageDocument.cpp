@@ -304,7 +304,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       try
       {
          // Feedback
-         Console << Cons::UserAction << L"Loading language file: " << Path(szPathName) << ENDL;
+         Console << Cons::UserAction << L"Loading language file: " << Path(szPathName) << "...";
          data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading language file '%s'", szPathName));
 
          // Identify whether file or library
@@ -331,13 +331,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
             File = LanguageFileReader(stream.OpenRead()).ReadFile(szPathName);
          }
 
-         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Language file loaded successfully");
+         // Feedback
+         Console << Cons::Success << ENDL;
+         data.SendFeedback(ProgressType::Succcess, 0, L"Language file loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load language file");
+         Console << Cons::Failure << e.Message << ENDL;
+         data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
       }

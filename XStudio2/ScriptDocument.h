@@ -330,6 +330,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool  Replace(MatchData& m) override;
       void  Replace(const wstring& txt);
       void  SetSelection(CHARRANGE rng) override;
+      void  SetAllText(const wstring& txt);
 
       BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;

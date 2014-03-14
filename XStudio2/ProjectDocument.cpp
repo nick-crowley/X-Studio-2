@@ -285,6 +285,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          
          // Success: Feedback
          Console << Cons::UserAction << "Importing completed successfully" << ENDL;
+         theApp.ShowMessage(L"Project Imported Successfully", MB_OK);
          return TRUE;
       }
       catch (ExceptionBase& e) {
@@ -311,6 +312,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
          Project = ProjectFileReader(fs).ReadFile(szPath);
          
+         // Activate project window
+         theApp.GetMainWindow()->ActivateProjectPane();
+
          // Success: Feedback
          data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Project loaded successfully");
          return TRUE;
