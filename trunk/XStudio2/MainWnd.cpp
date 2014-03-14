@@ -105,6 +105,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (show)
          m_wndOutput.ShowPane(TRUE, FALSE, TRUE);
    }
+   
+   /// <summary>Activates the project window.</summary>
+   void  MainWnd::ActivateProjectPane()
+   {
+      m_wndProject.ShowPane(TRUE, FALSE, TRUE);
+   }
 
    /// <summary>Gets the active script view.</summary>
    /// <returns></returns>

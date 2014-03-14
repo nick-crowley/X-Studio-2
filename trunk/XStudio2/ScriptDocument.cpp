@@ -123,6 +123,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       GetView()->Replace(txt);
    }
 
+   /// <summary>Replaces all text in the document.</summary>
+   /// <param name="txt">The text.</param>
+   void  ScriptDocument::SetAllText(const wstring& txt)
+   {
+      Edit->SetPlainText(txt);
+   }
+
    /// <summary>Sets the text selection in the view</summary>
    /// <param name="rng">text range.</param>
    void  ScriptDocument::SetSelection(CHARRANGE rng)

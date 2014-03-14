@@ -37,7 +37,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BackupWnd::BackupWnd() 
       : fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &BackupWnd::OnDocumentSwitched)),
-        Content(BackupType::MSCI)
+        Backup(BackupType::MSCI)
    {
    }
 
@@ -99,7 +99,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       else
       {
          // Prepare
-         auto& item     = Content.Revisions.FindByIndex(index);
+         auto& item     = Backup.Revisions.FindByIndex(index);
          bool  Selected = (state & ODS_SELECTED) != 0, 
                Focused  = (state & ODS_FOCUS) != 0;   
          auto  font     = dc.SelectObject(List.GetFont());
@@ -207,16 +207,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
-   /// <summary>Display diff for selected revision</summary>
-   void  BackupWnd::OnCommandDiff()
-   {
-      auto script = ScriptDocument::GetActive();
-      
-      // Require document/selection
-      if (script && List.GetCurSel() != -1)
-         theApp.OpenDiffDocument(*script, Content.Revisions.FindByIndex(List.GetCurSel()).Content);
-   }
-
    /// <summary>Loads backups for the activate document</summary>
    void BackupWnd::OnDocumentSwitched()
    {
@@ -234,7 +224,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Check document (if any) belongs to current project (if any)
          if (doc && proj && proj->Contains(doc->FullPath))
          {
-            Content = proj->GetBackupFile(*doc);
+            Backup = proj->GetBackupFile(*doc);
             Populate();
          }
       }
@@ -308,12 +298,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="nID">ID</param>
    void BackupWnd::OnPerformCommand(UINT nID)
    {
+      auto script = ScriptDocument::GetActive();
+      
+      // Require document/selection
+      if (!script || List.GetCurSel() == LB_ERR)
+         return;
+
       switch (nID)
       {
-      case ID_BACKUP_DELETE:  
+      // Display diff document with selected revision
+      case ID_BACKUP_DIFF: 
+         theApp.OpenDiffDocument(*script, Backup[List.GetCurSel()].Content);  
          break;
 
+      // Delete selected revision
+      case ID_BACKUP_DELETE: 
+         break;
+
+      // Replace document contents with revision
       case ID_BACKUP_REVERT:  
+         script->SetAllText(Backup[List.GetCurSel()].Content);
          break;
       }
    }
@@ -385,7 +389,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       List.ResetContent();
          
       // Fill list with dummy items
-      for (auto& rev : Content.Revisions)
+      for (auto& rev : Backup.Revisions)
          List.InsertString(-1, L"-");
 
       // Redraw

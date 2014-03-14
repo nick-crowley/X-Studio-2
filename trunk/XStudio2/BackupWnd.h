@@ -69,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg void OnCommandDelete()     { OnPerformCommand(ID_BACKUP_DELETE); }
-      afx_msg void OnCommandDiff();
+      afx_msg void OnCommandDiff()       { OnPerformCommand(ID_BACKUP_DIFF);   }
       afx_msg void OnCommandRevert()     { OnPerformCommand(ID_BACKUP_REVERT); }
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       handler void OnDocumentSwitched();
@@ -89,7 +89,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       ImageListEx    Images;
       BackupToolBar  ToolBar;
-      BackupFile     Content;
+      BackupFile     Backup;
 	   CListBox       List;
       EventHandler   fnDocumentSwitched;
       CFont          BoldFont;
