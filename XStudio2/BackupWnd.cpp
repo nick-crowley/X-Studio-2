@@ -181,8 +181,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!List.Create(style, rectDummy, this, IDC_BACKUP_LIST))
 	         throw Win32Exception(HERE, L"Failed to create backup list");
 
-         // Setup list
-
          // ImageList
          Images.Create(IDB_BACKUP_ICONS, 24, 3, RGB(255,0,255));
          
@@ -240,8 +238,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
-
-      //__super::OnDrawItem(id, draw);
    }
 
    /// <summary>Called when measure item.</summary>
@@ -254,9 +250,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ClientRect rc(this);
          CClientDC  dc(this);
 
-         // DEBUG:
-         //Console << HERE << " item=" << measure->itemID << ENDL;
-
          // Measure item
          DrawItem(dc, rc, measure->itemID, NULL, true);
 
@@ -267,8 +260,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
       }
-
-      //__super::OnMeasureItem(id, measure);
    }
 
    /// <summary>Manually paints border around grid.</summary>
@@ -365,10 +356,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
 	   __super::OnSettingChange(uFlags, lpszSection);
 
-      // Update font, Adjust layout, re-populate
+      // Update font, Adjust layout
 	   UpdateFont();
       AdjustLayout();
-      Populate();
+
+      // Refresh contents
+      Refresh();
    }
 
    /// <summary>Adjusts the layout</summary>
@@ -382,12 +375,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Adjust layout
 	   AdjustLayout();
 
-      // Repopulate  [Forces WM_MEASUREITEM to be sent]
+      // Refresh contents [Forces WM_MEASUREITEM to be sent]
       if (List.GetSafeHwnd())    // Does not exist on first WM_SIZE
-         Populate();
+         Refresh();
    }
    
-   /// <summary>Populates items from current backup file.</summary>
+   /// <summary>Loads the appropriate backup file and populates items.</summary>
    void BackupWnd::Populate()
    {
       auto proj = ProjectDocument::GetActive();
@@ -416,6 +409,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (doc)
             theApp.ShowError(HERE, e, GuiString(L"Cannot open backup file for '%s'", (LPCWSTR)doc->GetTitle()));
       }
+
+      // Redraw
+      List.SetRedraw(TRUE);
+      List.UpdateWindow();
+   }
+   
+   /// <summary>Re-Populates items from current backup file.</summary>
+   void BackupWnd::Refresh()
+   {
+      auto proj = ProjectDocument::GetActive();
+      auto doc = ScriptDocument::GetActive();
+
+      // Clear
+      List.SetRedraw(FALSE);
+      List.ResetContent();
+
+      // Fill list with dummy items
+      for (auto& rev : Backup.Revisions)
+         List.InsertString(-1, L"-");
 
       // Redraw
       List.SetRedraw(TRUE);
