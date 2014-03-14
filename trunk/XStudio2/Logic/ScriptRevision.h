@@ -30,6 +30,7 @@ namespace Logic
               ScriptName(script.Name), 
               Description(script.Description), 
               Game(script.Game), 
+              CommandID(script.CommandID.Int),
               Version(script.Version)
          {}
          virtual ~ScriptRevision()
@@ -56,7 +57,8 @@ namespace Logic
          wstring      ScriptName,      // Script name
                       Description;     // Script description
          GameVersion  Game;            // Script engine version
-         UINT         Version;         // Script version
+         UINT         CommandID,       // Script command ID
+                      Version;         // Script version
       };
 
 
