@@ -4,6 +4,9 @@
 #include "Logic/ProjectFile.h"
 #include "Logic/Event.h"
 
+/// <summary>Forward declaration</summary>
+FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
+
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
    
@@ -64,13 +67,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      BackupFile  GetAllRevisions(DocumentBase* doc) const;
+      bool        Contains(IO::Path path) const;
+      BackupFile  GetBackupFile(ScriptDocument& doc) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       bool  AddFile(IO::Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
-      bool  Contains(IO::Path path) const;
+      void  Commit(ScriptDocument& doc, const wstring& title);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       
       void  OnDocumentEvent(DocumentEvent deEvent) override;

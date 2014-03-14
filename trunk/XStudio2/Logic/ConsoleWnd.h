@@ -204,7 +204,7 @@ namespace Logic
 
          // Error: Bold + Green
          case Cons::Success:  
-            return *this << Cons::Bold << Cons::Green << "Success";
+            return *this << Cons::Bold << Cons::Green << "Success! ";
 
          // Error: Bold + Red
          case Cons::Failure:  

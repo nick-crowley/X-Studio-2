@@ -111,6 +111,12 @@ namespace Logic
       /// <summary>Script editor tooltip display delay (seconds)</summary>
       PREFERENCE_PROPERTY(int,Int,ScriptTooltipDelay,3);
 
+      /// <summary>Auto-commit documents upon save</summary>
+      PREFERENCE_PROPERTY(bool,Bool,CommitOnSave,true);
+
+      /// <summary>Increment script version upon save</summary>
+      PREFERENCE_PROPERTY(bool,Bool,IncrementVersionOnSave,true);
+      
       /// <summary>Show line numbers in the script view</summary>
       PREFERENCE_PROPERTY(bool,Bool,ShowLineNumbers,true);
 

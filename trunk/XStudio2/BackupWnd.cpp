@@ -229,12 +229,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          auto proj = ProjectDocument::GetActive();
-         auto doc = DocumentBase::GetActive();
+         auto doc = ScriptDocument::GetActive();
 
          // Check document (if any) belongs to current project (if any)
          if (doc && proj && proj->Contains(doc->FullPath))
          {
-            Content = proj->GetAllRevisions(DocumentBase::GetActive());
+            Content = proj->GetBackupFile(*doc);
             Populate();
          }
       }
