@@ -147,11 +147,12 @@
 #define IDD_GENERAL_PAGE                703
 #define IDD_COMPILER_PAGE               704
 #define IDD_EDITOR_PAGE                 705
-#define IDD_NEW_DOCUMENT                706
-#define IDD_SPLASH                      707
-#define IDD_REFACTOR                    708
-#define IDD_SYMBOL                      709
-#define IDD_IMPORT_PROJECT              710
+#define IDD_SYNTAX_PAGE                 706
+#define IDD_NEW_DOCUMENT                707
+#define IDD_SPLASH                      708
+#define IDD_REFACTOR                    709
+#define IDD_SYMBOL                      710
+#define IDD_IMPORT_PROJECT              711
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 

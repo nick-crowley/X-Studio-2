@@ -2,6 +2,7 @@
 #include "GeneralPage.h"
 #include "CompilerPage.h"
 #include "EditorPage.h"
+#include "SyntaxPage.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Preferences)
@@ -51,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       CompilerPage  Compiler;
       EditorPage    Editor;
       GeneralPage   General;
+      SyntaxPage    Syntax;
       bool          IsModified;
    };
    

@@ -22,6 +22,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       //EnablePageHeader(30);
       AddPage(&General);
       AddPage(&Editor);
+      AddPage(&Syntax);
       AddPage(&Compiler);
       SetLook(CMFCPropertySheet::PropSheetLook_List);
    }
