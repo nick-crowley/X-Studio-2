@@ -96,13 +96,13 @@ namespace Logic
             if (!r.Date.ParseDateTime(ReadAttribute(n, L"date").c_str(), 0, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK)))
                throw FileFormatException(HERE, L"Unable to parse revision date");
 
-            // Read script properties
-            r.ScriptName  = GetChild(n, 0, L"script name")->text;
-            r.Version     = GuiString(GetChild(n, 1, L"script version")->text).ToInt();
-            r.Description = GetChild(n, 3, L"script description")->text;
-            r.Content     = GetChild(n, 4, L"script text")->text;
+            // ScriptName
+            r.ScriptName = GetChild(n, 0, L"script name")->text;
 
-            // Read game version
+            // Version
+            r.Version = GuiString(GetChild(n, 1, L"script version")->text).ToInt();
+
+            // game version
             wstring ver = GetChild(n, 2, L"script engine version")->text;
             if (ver == L"X2")
                r.Game = GameVersion::Threat;
@@ -114,6 +114,16 @@ namespace Logic
                r.Game = GameVersion::AlbionPrelude;
             else
                throw InvalidValueException(HERE, GuiString(L"Unrecognised engine version '%s'", ver.c_str()));
+
+            // Description
+            r.Description = GetChild(n, 3, L"script description")->text;
+            
+            // CommandID
+            r.CommandID = GuiString(GetChild(n, 4, L"script command ID")->text).ToInt();
+
+            // Text
+            r.Content = GetChild(n, 5, L"script text")->text;
+            
 
             // Done
             return r;  
