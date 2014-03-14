@@ -84,17 +84,17 @@ namespace Logic
             if (Buffer != nullptr)
                throw InvalidOperationException(HERE, L"Document has already been loaded");
 
-            // Extract stream
+            // Sanity check
+            if (!Input->GetLength())
+               throw FileFormatException(HERE, L"The file is empty");
+
+            // Convert ASCII/UTF8/UTF16 file into wchar array
             DWORD length = Input->GetLength();
             Buffer = FileStream::ConvertFileBuffer(Input, length);
 
             // Load/Parse file : "%s (line %d, char %d)"
             if (Document->loadXML(Buffer.get()) == VARIANT_FALSE)
-            {
-               Console << "Dumping XML File: " << ENDL << Buffer.get() << ENDL;
-
                throw FileFormatException(HERE, GuiString(ERR_XML_PARSE_FAILED, (WCHAR*)Document->parseError->reason, Document->parseError->line, Document->parseError->linepos));
-            }
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
