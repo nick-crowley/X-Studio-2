@@ -9,6 +9,7 @@
 #pragma pack(push, 8)
 
 #include <comdef.h>
+#undef FindText
 
 namespace TOM {
 

@@ -9,6 +9,8 @@
 #include "stdafx.h"
 #include "msftedit.tlh"
 
+#undef FindText
+
 namespace TOM {
 
    //

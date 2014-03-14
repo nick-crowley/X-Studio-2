@@ -19,6 +19,10 @@
 
 
 
+/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
+#define VALIDATION
+
+
 
 // Macro: Provides default move constructor and assignment (Not functional)
 #define DEFAULT_MOVE(type)       // MS BUG:800114:     type::type(type&&) = default;  type& operator=(type&&) = default;

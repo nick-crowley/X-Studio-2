@@ -1,8 +1,10 @@
 #pragma once
 #include <richole.h>
 #include <Richedit.h>
+#include "lib_tom.h"     // Import TextObjectModel
 #include "Helpers.h"
 #include "CustomTooltip.h"
+
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

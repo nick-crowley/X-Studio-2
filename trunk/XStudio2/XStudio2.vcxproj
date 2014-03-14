@@ -140,6 +140,7 @@
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="ImportProjectDialog.h" />
     <ClInclude Include="LanguageEdit.h" />
+    <ClInclude Include="lib_tom.h" />
     <ClInclude Include="Logic\BackupFile.h" />
     <ClInclude Include="Logic\BackupFileReader.h" />
     <ClInclude Include="Logic\BackupFileWriter.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Logic\FileBase.h" />
     <ClInclude Include="Logic\LanguageFileWriter.h" />
     <ClInclude Include="Logic\ConsoleLog.h" />
+    <ClInclude Include="Logic\lib_msxml.h" />
     <ClInclude Include="Logic\LogFileWriter.h" />
     <ClInclude Include="Logic\ProjectFileReader.h" />
     <ClInclude Include="Logic\ProjectFileWriter.h" />
@@ -161,7 +163,6 @@
     <ClInclude Include="Logic\ScriptRevision.h" />
     <ClInclude Include="Logic\StringStream.h" />
     <ClInclude Include="Logic\SyntaxHighlight.h" />
-    <ClInclude Include="msxml.h" />
     <ClInclude Include="NewDocumentDialog.h" />
     <ClInclude Include="PreferencesDialog.h" />
     <ClInclude Include="PreferencesPage.h" />
@@ -296,7 +297,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="Testing\ScriptValidator.h" />
-    <ClInclude Include="tom.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -320,11 +320,11 @@
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
     <ClCompile Include="Logic\ConsoleLog.cpp" />
     <ClCompile Include="Logic\LogFileWriter.cpp" />
+    <ClCompile Include="Logic\msxml6.cpp" />
     <ClCompile Include="Logic\ProjectFileReader.cpp" />
     <ClCompile Include="Logic\ProjectFileWriter.cpp" />
     <ClCompile Include="Logic\SyntaxHighlight.cpp" />
     <ClCompile Include="msftedit.cpp" />
-    <ClCompile Include="msxml6.cpp" />
     <ClCompile Include="NewDocumentDialog.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
@@ -445,8 +445,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Logic\msxml6.tlh" />
     <None Include="msftedit.tlh" />
-    <None Include="msxml6.tlh" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />

@@ -216,8 +216,8 @@ BOOL Application::InitInstance()
       AfxOleInit();
 
       // Sockets
-	   if (!AfxSocketInit())
-         throw Win32Exception(HERE, L"Windows sockets initialization failed.");
+	   /*if (!AfxSocketInit())
+         throw Win32Exception(HERE, L"Windows sockets initialization failed.");*/
 
       // ITaskBar
 	   EnableTaskbarInteraction();
