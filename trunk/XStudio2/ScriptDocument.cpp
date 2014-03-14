@@ -309,6 +309,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (FullPath != r.FullPath)
             FullPath = r.FullPath;
 
+         // Refresh properties
+         CPropertiesWnd::Connect(this, true);
+
          // Success: Feedback
          Console << Cons::UserAction << "Document reverted successfully" << ENDL;
          return TRUE;
