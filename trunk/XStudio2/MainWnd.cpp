@@ -447,6 +447,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(!m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
          case ID_VIEW_COMMANDS:        m_wndCommands.ShowPane(!m_wndCommands.IsVisible(), FALSE, TRUE);            break;
          case ID_VIEW_OUTPUT:          m_wndOutput.ShowPane(!m_wndOutput.IsVisible(), FALSE, TRUE);                break;
+         case ID_VIEW_BACKUP:          m_wndBackups.ShowPane(!m_wndBackups.IsVisible(), FALSE, TRUE);              break;
          case ID_VIEW_PROPERTIES:      m_wndProperties.ShowPane(!m_wndProperties.IsVisible(), FALSE, TRUE);        break;
          case ID_EDIT_FIND:            m_dlgFind.ShowWindow(m_dlgFind.IsWindowVisible() ? SW_HIDE : SW_SHOW);      break;
 
@@ -492,6 +493,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Query appropriate window
       case ID_VIEW_CONSOLE:         check = Console.Visible ? TRUE : FALSE;  break;
       case ID_VIEW_PROJECT:         check = m_wndProject.IsVisible();        break;
+      case ID_VIEW_BACKUP:          check = m_wndBackups.IsVisible();        break;
       case ID_VIEW_SCRIPT_OBJECTS:  check = m_wndScriptObjects.IsVisible();  break;
       case ID_VIEW_GAME_OBJECTS:    check = m_wndGameObjects.IsVisible();    break;
       case ID_VIEW_COMMANDS:        check = m_wndCommands.IsVisible();       break;

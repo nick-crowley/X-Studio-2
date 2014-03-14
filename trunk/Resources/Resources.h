@@ -55,9 +55,9 @@
 #define ID_FILE_BROWSE                  250
 #define ID_FILE_SAVE_ALL                251
 #define ID_FILE_EXPORT                  252
-#define ID_FILE_PROJECT_CLOSE                253
-#define ID_FILE_PROJECT_SAVE                 254
-#define ID_FILE_PROJECT_SAVE_AS              255
+#define ID_FILE_PROJECT_CLOSE           253
+#define ID_FILE_PROJECT_SAVE            254
+#define ID_FILE_PROJECT_SAVE_AS         255
 
 // Edit Menu
 #define ID_EDIT_INSERT                  256
@@ -73,17 +73,18 @@
 #define ID_VIEW_GAME_OBJECTS            262
 #define ID_VIEW_COMMANDS                263
 #define ID_VIEW_OUTPUT                  264
-#define ID_VIEW_PROPERTIES              265
-#define ID_VIEW_STRING_LIBRARY          266
-#define ID_VIEW_MEDIA_LIBRARY           267
-#define ID_VIEW_CUSTOMIZE               268
+#define ID_VIEW_BACKUP                  265
+#define ID_VIEW_PROPERTIES              266
+#define ID_VIEW_STRING_LIBRARY          267
+#define ID_VIEW_MEDIA_LIBRARY           268
+#define ID_VIEW_CUSTOMIZE               269
 
 // Window menu
-#define ID_WINDOW_MANAGER               269
+#define ID_WINDOW_MANAGER               270
 
 // Help
-#define ID_HELP_FORUMS                  270
-#define ID_VIEW_CONSOLE                 271
+#define ID_HELP_FORUMS                  271
+#define ID_VIEW_CONSOLE                 272
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
