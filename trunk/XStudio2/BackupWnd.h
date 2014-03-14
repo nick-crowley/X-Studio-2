@@ -4,6 +4,7 @@
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
 #include "ProjectDocument.h"
+#include "BackupList.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -75,6 +76,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnCommandDiff()       { OnPerformCommand(ID_BACKUP_DIFF);   }
       afx_msg void OnCommandRevert()     { OnPerformCommand(ID_BACKUP_REVERT); }
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
       handler void OnDocumentSwitched();
       afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
       afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
@@ -96,7 +98,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       BackupToolBar  ToolBar;
       BackupFile     Backup;
 	   CListBox       List;
-      
       CFont          BoldFont;
 
       ProjectItemHandler fnBackupChanged;
