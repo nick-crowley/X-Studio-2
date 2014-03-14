@@ -85,7 +85,7 @@ namespace Logic
             }
 
             /// <summary>Find a revision by index</summary>
-            /// <param name="index">The index</param>
+            /// <param name="index">Zero-based index</param>
             /// <returns></returns>
             /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
             ScriptRevision&  FindByIndex(UINT index) 
@@ -102,10 +102,22 @@ namespace Logic
             }
 
             /// <summary>Removes a revision.</summary>
-            /// <param name="r">revision.</param>
-            void  Remove(const ScriptRevision& r)
+            /// <param name="index">Zero-based index.</param>
+            /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+            void  Remove(UINT index)
             {
-               //__super::remove(r);
+               UINT i = 0;
+
+               // Linear search
+               for (iterator it = begin(); it != end(); ++it)
+                  if (index == i++)
+                  {
+                     erase(it);
+                     return;
+                  }
+
+               // Not found
+               throw IndexOutOfRangeException(HERE, index, size());
             }
 
          protected:
@@ -141,10 +153,11 @@ namespace Logic
          }
 
          /// <summary>Removes a revision.</summary>
-         /// <param name="r">revsion.</param>
-         void  Remove(const ScriptRevision& r)
+         /// <param name="index">Zero-based index.</param>
+         /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
+         void  Remove(UINT index)
          {
-            Revisions.Remove(r);
+            Revisions.Remove(index);
          }
 
          /// <summary>Find a revision by index</summary>

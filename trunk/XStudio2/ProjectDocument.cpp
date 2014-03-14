@@ -147,11 +147,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Removes a revision from a document's backup file.</summary>
    /// <param name="doc">The document.</param>
-   /// <param name="r">Revision.</param>
+   /// <param name="index">Zero-based index.</param>
    /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::DeleteRevision(ScriptDocument& doc, const ScriptRevision& r)
+   void ProjectDocument::DeleteRevision(ScriptDocument& doc, UINT index)
    {
       // Verify member of project
       if (!Contains(doc.FullPath))
@@ -159,7 +159,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Load backup. Delete revision
       auto backup = GetBackupFile(doc);
-      backup.Revisions.Remove(r);
+      backup.Remove(index);
 
       // Generate backup path
       auto path = FullPath.Folder + Project.Find(doc.FullPath)->BackupName;

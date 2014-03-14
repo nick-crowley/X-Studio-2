@@ -160,6 +160,13 @@ namespace Logic
    class GZipException : public ExceptionBase
    {
    public:
+      /// <summary>Create a GZipException from a custom message</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Custom message</param>
+      GZipException(wstring  src, const wstring&  msg) 
+         : ExceptionBase(src, L"Error in gzip handling: " + msg)
+      {}
+
       /// <summary>Create a GZipException from a zlib message</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="msg">ZLib message</param>
