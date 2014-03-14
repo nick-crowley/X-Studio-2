@@ -211,8 +211,7 @@ namespace Logic
       /// <returns>Copy of string with characters removed</returns>
       GuiString  Trim(const WCHAR* chars) const
       {
-         TrimLeft(chars);
-         TrimRight(chars);
+         return TrimLeft(chars).TrimRight(chars);
       }
 
       /// <summary>Trims leading characters</summary>

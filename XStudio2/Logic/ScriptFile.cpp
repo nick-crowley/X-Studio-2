@@ -108,7 +108,7 @@ namespace Logic
          return scope != coll.end() ? scope->Name : L"";
       }
 
-      /// <summary>Gets all text in the offline buffer</summary>
+      /// <summary>Gets all text in the offline buffer. Lines are separated by single '\n' chars</summary>
       /// <returns></returns>
       wstring  ScriptFile::GetAllText() const
       {

@@ -186,7 +186,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Source = &doc;
 
          // Perform DIFF
-         dtl::Diff<wchar, wstring> d(doc.GetAllText(), alternate);
+         dtl::Diff<wchar, wstring> d(doc.GetAllText(), ConvertLineBreaks(alternate));
          d.compose();
 
          // Generate phrases
@@ -220,6 +220,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Converts whatever line breaks the input uses into RichEdit compatible '\v' linebreaks.</summary>
+   /// <param name="str">The string.</param>
+   /// <returns>Lines delimited by single char vertical tabs '\v'</returns>
+   wstring DiffDocument::ConvertLineBreaks(wstring str)
+   {
+      // Harmonize line-breaks
+      for (auto ch = str.begin(), end = str.end(); ch != end; )
+      {
+         // Drop '\r'
+         if (*ch == '\r')
+         {
+            str.erase(ch++);
+            continue;
+         }
+         // Convert '\n' to '\v'
+         else if (*ch == '\n')
+            *ch = '\v';
+         
+         ++ch;
+      }
+
+      return str;
+   }
+
    /// <summary>Generates the phrases.</summary>
    /// <param name="sequence">The sequence.</param>
    void  DiffDocument::GeneratePhrases(dtl::Ses<wchar>& ses)
