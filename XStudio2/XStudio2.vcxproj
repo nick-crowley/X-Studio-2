@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
     <ClInclude Include="BackupWnd.h" />
     <ClInclude Include="Clipboard.h" />
@@ -303,6 +304,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
     <ClCompile Include="BackupWnd.cpp" />
     <ClCompile Include="Clipboard.cpp" />

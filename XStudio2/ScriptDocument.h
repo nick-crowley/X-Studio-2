@@ -325,6 +325,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       CHARRANGE                 GetSelection() const override;
       ::GUI::Views::ScriptView* GetView() const;
 
+   protected:
+      int                       GetSelectedArgument() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
       void  AttachEdit(::GUI::Controls::ScriptEdit& edit);
@@ -336,12 +339,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
-      afx_msg void OnCommandCommit()            { OnPerformCommand(ID_BACKUP_COMMIT);       }
-      afx_msg void OnCommandQuickCommit()       { OnPerformCommand(ID_BACKUP_QUICK_COMMIT); }
-      afx_msg void OnCommandInsertArgument()    { OnPerformCommand(ID_INSERT_ARGUMENT);      }
+      afx_msg void OnCommand_Commit();           // { OnPerformCommand(ID_BACKUP_COMMIT);       }
+      afx_msg void OnCommand_EditArgument();  
+      afx_msg void OnCommand_InsertArgument();   // { OnPerformCommand(ID_INSERT_ARGUMENT);      }
+      afx_msg void OnCommand_QuickCommit();      // { OnPerformCommand(ID_BACKUP_QUICK_COMMIT); }
+      afx_msg void OnCommand_RemoveArgument();  
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
-      afx_msg void OnPerformCommand(UINT nID);
+      //afx_msg void OnPerformCommand(UINT nID);
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       BOOL         OnRevertDocument(const ScriptRevision& r);
       virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);

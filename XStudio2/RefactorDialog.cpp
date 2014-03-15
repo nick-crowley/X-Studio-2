@@ -100,9 +100,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pDX">The p dx.</param>
    void RefactorDialog::DoDataExchange(CDataExchange* pDX)
    {
+      __super::DoDataExchange(pDX);
       DDX_Control(pDX, IDC_SYMBOL_LIST, List);
       DDX_Control(pDX, IDC_SYMBOL_EDIT, RichEdit);
-      __super::DoDataExchange(pDX);
    }
    
    /// <summary>Toggles highlighting the selected token</summary>

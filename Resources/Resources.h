@@ -157,6 +157,7 @@
 #define IDD_SYMBOL                      710
 #define IDD_IMPORT_PROJECT              711
 #define IDD_COMMIT                      712
+#define IDD_ARGUMENT                    713
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -212,6 +213,11 @@
 
 // Commit dialog
 #define IDC_COMMIT_EDIT                 800
+
+// Argument Dialog
+#define IDC_NAME_EDIT                   800
+#define IDC_TYPE_COMBO                  801
+//#define IDC_DESCRIPTION_EDIT            802
 
 // Refactor dialog
 #define IDC_SYMBOL_LIST                 800

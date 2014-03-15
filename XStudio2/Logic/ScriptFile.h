@@ -47,13 +47,18 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create an unnamed argument with an ID of zero</summary>
+         ScriptVariable()
+            : Type(VariableType::Argument), ValueType(ParameterType::UNRECOGNISED), ID(0)
+         {}
+
          /// <summary>Create a named variable</summary>
          /// <param name="name">name.</param>
          /// <param name="id">1-based ID.</param>
          ScriptVariable(const wstring& name, UINT id)
             : Type(VariableType::Variable), Name(name), ID(id), ValueType(ParameterType::UNRECOGNISED)
          {}
-
+         
          // -------------------- REPRESENTATION ---------------------
 
          wstring        Name,
@@ -74,10 +79,20 @@ namespace Logic
       public:
          // --------------------- PROPERTIES ------------------------
 
+         PROPERTY_GET(size_type,Count,GetCount);
          PROPERTY_GET(VariableArray,SortByID,GetSortByID);
 
          // ---------------------- ACCESSORS ------------------------	
       public:
+         /// <summary>Get number of elements</summary>
+         /// <returns></returns>
+         size_type  GetCount() const
+         {
+            return __super::size();
+         }
+
+         /// <summary>Get copy of array sorted by ID.</summary>
+         /// <returns></returns>
          VariableArray GetSortByID() const
          {
             VariableArray vars;
@@ -243,11 +258,10 @@ namespace Logic
             // ------------------------ TYPES --------------------------
          private:
             typedef pair<const wstring,ScriptVariable>  element;
-            typedef map<wstring, ScriptVariable, less<wstring>>  base;
 
          public:
-            typedef MapIterator<ScriptVariable, VariableCollection, VariableCollection::iterator> VarIterator;
-            typedef MapIterator<const ScriptVariable, VariableCollection, VariableCollection::const_iterator> ConstIterator;
+            typedef MapIterator<ScriptVariable, VariableCollection, VariableCollection::iterator>              VarIterator;
+            typedef MapIterator<const ScriptVariable, VariableCollection, VariableCollection::const_iterator>  ConstIterator;
 
             // --------------------- CONSTRUCTION ----------------------
 
@@ -269,18 +283,18 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
          public:
             /// <summary>Get start iterator</summary>
-            VarIterator begin()           { return VarIterator(*this, base::begin()); }
-            ConstIterator begin() const   { return ConstIterator(*this, base::cbegin()); }
+            VarIterator begin()           { return VarIterator(*this, __super::begin()); }
+            ConstIterator begin() const   { return ConstIterator(*this, __super::cbegin()); }
             
             /// <summary>Get end iterator</summary>
-            VarIterator end()             { return VarIterator(*this, base::end()); }
-            ConstIterator end() const     { return ConstIterator(*this, base::cend()); }
+            VarIterator end()             { return VarIterator(*this, __super::end()); }
+            ConstIterator end() const     { return ConstIterator(*this, __super::cend()); }
 
             /// <summary>Query presence of an argument or variable</summary>
             /// <param name="name">name without $ prefix</param>
             bool Contains(const wstring& name) const
             { 
-               return find(name) != base::end(); 
+               return find(name) != __super::end(); 
             }
             
             /// <summary>Get arguments only</summary>
@@ -296,7 +310,7 @@ namespace Logic
             /// <summary>Get number of variables and arguments</summary>
             size_type  GetCount() const 
             { 
-               return base::size(); 
+               return __super::size(); 
             }
             
             /// <summary>Get arguments and variables</summary>
@@ -313,26 +327,11 @@ namespace Logic
             /// <param name="id">id</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
-            ScriptVariable& operator[](UINT id)
-            {
-               // Lookup variable by ID
-               iterator v = find_if(base::begin(), base::end(), [id](element& pair) {return pair.second.ID == id;});
-               if (v != base::end())
-                  return v->second;
-
-               // Not found:
-               throw VariableNotFoundException(HERE, id);
-            }
-
-            /// <summary>Get argument/variable by ID</summary>
-            /// <param name="id">id</param>
-            /// <returns></returns>
-            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
             const ScriptVariable& operator[](UINT id) const
             {
                // Lookup variable by ID
-               const_iterator v = find_if(base::begin(), base::end(), [id](const element& pair) {return pair.second.ID == id;});
-               if (v != base::end())
+               const_iterator v = find_if(__super::begin(), __super::end(), [id](const element& pair) {return pair.second.ID == id;});
+               if (v != __super::end())
                   return v->second;
 
                // Not found:
@@ -348,7 +347,7 @@ namespace Logic
                const_iterator v;
 
                // Lookup variable by name
-               if ((v=find(name)) != base::end())
+               if ((v=find(name)) != __super::end())
                   return v->second;
 
                // Not found:
@@ -377,11 +376,80 @@ namespace Logic
             void  clear()
             {
                // Remove all variables
-               for (iterator it = base::begin(); it != base::end(); )
+               for (iterator it = __super::begin(); it != __super::end(); )
                   if (it->second.Type == VariableType::Variable)
                      erase(it++);
                   else
                      ++it;
+            }
+            
+            /// <summary>Insert an argument by display index</summary>
+            /// <param name="index">Zero-based index.</param>
+            /// <param name="arg">The argument.</param>
+            /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+            /// <exception cref="Logic::InvalidOperationException">Not an argument</exception>
+            void  Insert(UINT index, const ScriptVariable& arg)
+            {
+               // Require argument
+               if (arg.Type != VariableType::Argument)
+                  throw InvalidOperationException(HERE, L"Not an argument");
+               // Validate index
+               else if (index > Arguments.size())
+                  throw IndexOutOfRangeException(HERE, index, Arguments.size());
+               // Ensure unique
+               else if (Contains(arg.Name))
+                  throw InvalidOperationException(HERE, GuiString(L"Argument '%s' is already present", arg.Name.c_str()));
+               
+               // Sort all vars by ID, insert at appropriate place
+               auto content = GetAll().SortByID;
+               content.insert(content.begin()+index, arg);
+               __super::clear();
+
+               // Repopulate map and re-index vars
+               UINT id = 0;
+               for (auto& v : content)
+               {
+                  v.ID = id;
+                  insert(value_type(v.Name, v));   
+               }
+            }
+            
+            /// <summary>Removes the specified argument.</summary>
+            /// <param name="var">The argument.</param>
+            /// <exception cref="Logic::InvalidOperationException">Not an argument</exception>
+            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
+            void Remove(const ScriptVariable& var)
+            {
+               // Designed to be used with arguments by GUI
+               if (var.Type != VariableType::Argument)
+                  throw InvalidOperationException(HERE, L"Not an argument");
+               // Ensure present
+               if (!Contains(var.Name))
+                  throw VariableNotFoundException(HERE, var.Name);
+
+               // Remove argument. Sort remainder by ID. 
+               erase(find(var.Name));
+               auto remaining = GetAll().SortByID;
+               
+               // Re-populate
+               __super::clear();
+               for (auto& v : remaining)
+                  insert(value_type(v.Name, v));
+            }
+
+            /// <summary>Get argument/variable by ID</summary>
+            /// <param name="id">id</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
+            ScriptVariable& operator[](UINT id)
+            {
+               // Lookup variable by ID
+               iterator v = find_if(__super::begin(), __super::end(), [id](element& pair) {return pair.second.ID == id;});
+               if (v != __super::end())
+                  return v->second;
+
+               // Not found:
+               throw VariableNotFoundException(HERE, id);
             }
 
             // -------------------- REPRESENTATION ---------------------
