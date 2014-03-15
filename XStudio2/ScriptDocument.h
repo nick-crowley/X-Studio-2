@@ -336,9 +336,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
-      afx_msg void OnInsertArgument();
+      afx_msg void OnCommandCommit()            { OnPerformCommand(ID_PROJECT_COMMIT);       }
+      afx_msg void OnCommandQuickCommit()       { OnPerformCommand(ID_PROJECT_QUICK_COMMIT); }
+      afx_msg void OnCommandInsertArgument()    { OnPerformCommand(ID_INSERT_ARGUMENT);      }
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+      afx_msg void OnPerformCommand(UINT nID);
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       BOOL         OnRevertDocument(const ScriptRevision& r);
       virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);

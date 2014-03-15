@@ -6,6 +6,7 @@
 #include "ScriptView.h"
 #include "MainWnd.h"
 #include <propkey.h>
+#include "CommitDialog.h"
 #include "Logic/FileStream.h"
 #include "Logic/XFileInfo.h"
 #include "Logic/ScriptFileReader.h"
@@ -51,7 +52,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(ScriptDocument, DocumentBase)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
-      ON_COMMAND(ID_INSERT_ARGUMENT, OnInsertArgument)
+      ON_COMMAND(ID_INSERT_ARGUMENT, OnCommandInsertArgument)
+      ON_COMMAND(ID_PROJECT_COMMIT, OnCommandCommit)
+      ON_COMMAND(ID_PROJECT_QUICK_COMMIT, OnCommandQuickCommit)
       //ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
 
@@ -213,11 +216,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       grid.AddProperty(arguments);
    }
 
-   void ScriptDocument::OnInsertArgument()
-   {
-      AfxMessageBox(L"ScriptDocument::OnInsertArgument");
-   }
-
    /// <summary>Called when new document.</summary>
    /// <returns></returns>
    BOOL ScriptDocument::OnNewDocument()
@@ -257,6 +255,36 @@ NAMESPACE_BEGIN2(GUI,Documents)
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script");
          theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", szPathName));
          return FALSE;
+      }
+   }
+
+   /// <summary>Called when perform command.</summary>
+   /// <param name="nID">The cmd identifier.</param>
+   void  ScriptDocument::OnPerformCommand(UINT nID)
+   {
+      switch (nID)
+      {
+      // Insert Argument: TODO
+      case ID_INSERT_ARGUMENT:
+         AfxMessageBox(L"Insert Argument");
+         break;
+
+      // Quick Commit: Commit
+      case ID_PROJECT_QUICK_COMMIT:
+         if (auto proj = ProjectDocument::GetActive())
+            proj->Commit(*this, L"Quick Commit");
+         break;
+
+      // Commit: Query for title, then commit
+      case ID_PROJECT_COMMIT:
+         if (auto proj = ProjectDocument::GetActive())
+         {
+            CommitDialog dlg(theApp.GetMainWindow());
+            // Query for description
+            if (dlg.DoModal() == IDOK)
+               proj->Commit(*this, dlg.Description);
+         }
+         break;
       }
    }
 

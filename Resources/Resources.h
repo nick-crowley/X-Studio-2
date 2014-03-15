@@ -153,6 +153,7 @@
 #define IDD_REFACTOR                    709
 #define IDD_SYMBOL                      710
 #define IDD_IMPORT_PROJECT              711
+#define IDD_COMMIT                      712
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -205,6 +206,9 @@
 #define IDC_FOLDER_EDIT                 802
 #define IDC_DESCRIPTION_EDIT            803
 #define IDC_ADD_PROJECT_CHECK           804
+
+// Commit dialog
+#define IDC_COMMIT_EDIT                 800
 
 // Refactor dialog
 #define IDC_SYMBOL_LIST                 800
