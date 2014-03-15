@@ -41,7 +41,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	      LoadToolBar(nID, nID, nID, TRUE, nDisabledResID);
 	      CleanUpLockedImages();
 	      LoadBitmap(nID, nID, nID, TRUE, nDisabledResID);
-
+         
          // Set styles
          SetPaneStyle(GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	      SetPaneStyle(GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
