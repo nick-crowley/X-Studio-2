@@ -651,6 +651,9 @@
     <ClInclude Include="lib_tom.h">
       <Filter>Header Files\TOM</Filter>
     </ClInclude>
+    <ClInclude Include="CommitDialog.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -1066,6 +1069,9 @@
     </ClCompile>
     <ClCompile Include="msftedit.cpp">
       <Filter>Source Files\TOM</Filter>
+    </ClCompile>
+    <ClCompile Include="CommitDialog.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

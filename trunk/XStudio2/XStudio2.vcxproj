@@ -130,6 +130,7 @@
     <ClInclude Include="BackupList.h" />
     <ClInclude Include="BackupWnd.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="CommitDialog.h" />
     <ClInclude Include="CompilerPage.h" />
     <ClInclude Include="DiffDocument.h" />
     <ClInclude Include="DiffEdit.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="BackupList.cpp" />
     <ClCompile Include="BackupWnd.cpp" />
     <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="CommitDialog.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
     <ClCompile Include="DiffDocument.cpp" />
     <ClCompile Include="DiffEdit.cpp" />
