@@ -35,7 +35,8 @@
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
-#define IDB_EDITOR_GREY                 180
+#define IDB_EDITOR_GREY                 179
+#define IDR_PROPERTIES_GREY             180
 #define IDB_PROJECT_ICONS               181
 #define IDB_OUTPUT_ICONS                182
 #define IDB_GAMEDATA_ICONS              183

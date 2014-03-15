@@ -22,6 +22,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    BEGIN_MESSAGE_MAP(CPropertiesWnd, CDockablePane)
 	   ON_WM_CREATE()
+      ON_WM_CONTEXTMENU()
 	   ON_WM_SIZE()
       ON_WM_PAINT()
       ON_WM_SETFOCUS()
@@ -135,6 +136,39 @@ NAMESPACE_BEGIN2(GUI,Windows)
       Grid.UpdateWindow();*/
    }
    
+
+   /// <summary>Select item and display context menu.</summary>
+   /// <param name="pWnd">The WND.</param>
+   /// <param name="point">The point.</param>
+   void CPropertiesWnd::OnContextMenu(CWnd* pWnd, CPoint point)
+   {
+	   //CTreeCtrl* pWndTree = (CTreeCtrl*) &TreeView;
+	   //ASSERT_VALID(pWndTree);
+
+    //  // Display pane pop-up menu for toolbar
+	   //if (pWnd != pWndTree)
+	   //{
+		  // CDockablePane::OnContextMenu(pWnd, point);
+		  // return;
+	   //}
+
+	   //if (point != CPoint(-1, -1))
+	   //{
+		  // // Get position
+		  // CPoint ptTree = point;
+		  // pWndTree->ScreenToClient(&ptTree);
+
+    //     // Select item
+		  // UINT flags = TVHT_ONITEM;
+		  // if (auto item = pWndTree->HitTest(ptTree, &flags))
+    //        pWndTree->SelectItem(item);
+	   //}
+
+	   Grid.SetFocus();
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_PROJECT_POPUP, point.x, point.y, this, TRUE);
+   }
+
+   
    /// <summary>expands all properties.</summary>
    void CPropertiesWnd::OnCommandExpandAll()
    {
@@ -161,7 +195,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
          
          // Toolbar
-         ToolBar.Create(this, IDR_PROPERTIES, L"Properties");
+         ToolBar.Create(this, IDR_PROPERTIES, L"Properties", false, IDR_PROPERTIES_GREY);
 
          // Create property grid
 	      if (!Grid.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))

@@ -60,6 +60,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommandExpandAll();
       afx_msg void OnCommandSort();
       afx_msg void OnPaint();
