@@ -336,8 +336,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
-      afx_msg void OnCommandCommit()            { OnPerformCommand(ID_PROJECT_COMMIT);       }
-      afx_msg void OnCommandQuickCommit()       { OnPerformCommand(ID_PROJECT_QUICK_COMMIT); }
+      afx_msg void OnCommandCommit()            { OnPerformCommand(ID_BACKUP_COMMIT);       }
+      afx_msg void OnCommandQuickCommit()       { OnPerformCommand(ID_BACKUP_QUICK_COMMIT); }
       afx_msg void OnCommandInsertArgument()    { OnPerformCommand(ID_INSERT_ARGUMENT);      }
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
