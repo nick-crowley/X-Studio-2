@@ -108,10 +108,12 @@
 #define ID_PROJECT_DELETE               357
 #define ID_PROJECT_PROPERTIES           358
 
-// ProjectWnd ContextMenu
-#define ID_BACKUP_DIFF                  370
-#define ID_BACKUP_REVERT                371
-#define ID_BACKUP_DELETE                372
+// BackupWnd ContextMenu
+#define ID_BACKUP_COMMIT                370
+#define ID_BACKUP_QUICK_COMMIT          371
+#define ID_BACKUP_DIFF                  372
+#define ID_BACKUP_REVERT                373
+#define ID_BACKUP_DELETE                374
 
 // LanguageEditor Toolbar
 #define ID_EDIT_BOLD                    400
