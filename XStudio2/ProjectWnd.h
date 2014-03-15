@@ -62,8 +62,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommand_AddExisting();
       afx_msg void OnCommand_CreateFolder();
+      afx_msg void OnCommand_Commit();
       afx_msg void OnCommand_DeleteItem();
 	   afx_msg void OnCommand_OpenItem();
+      afx_msg void OnCommand_QuickCommit();
 	   afx_msg void OnCommand_RenameItem();
 	   afx_msg void OnCommand_RemoveItem();
 	   afx_msg void OnCommand_ViewProperties();
