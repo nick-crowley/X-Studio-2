@@ -7,6 +7,7 @@
 #include "MainWnd.h"
 #include <propkey.h>
 #include "CommitDialog.h"
+#include "ArgumentDialog.h"
 #include "Logic/FileStream.h"
 #include "Logic/XFileInfo.h"
 #include "Logic/ScriptFileReader.h"
@@ -52,9 +53,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(ScriptDocument, DocumentBase)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
-      ON_COMMAND(ID_INSERT_ARGUMENT, OnCommandInsertArgument)
-      ON_COMMAND(ID_BACKUP_COMMIT, OnCommandCommit)
-      ON_COMMAND(ID_BACKUP_QUICK_COMMIT, OnCommandQuickCommit)
+      ON_COMMAND(ID_BACKUP_COMMIT, OnCommand_Commit)
+      ON_COMMAND(ID_EDIT_ARGUMENT, OnCommand_EditArgument)
+      ON_COMMAND(ID_INSERT_ARGUMENT, OnCommand_InsertArgument)
+      ON_COMMAND(ID_BACKUP_QUICK_COMMIT, OnCommand_QuickCommit)
+      ON_COMMAND(ID_REMOVE_ARGUMENT, OnCommand_RemoveArgument)
       //ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
 
@@ -147,6 +150,73 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto pos = GetFirstViewPosition();
       return dynamic_cast<ScriptView*>(GetNextView(pos));
    }
+   
+   /// <summary>Perform full commit.</summary>
+   void  ScriptDocument::OnCommand_Commit()
+   {
+      // Require project
+      if (auto proj = ProjectDocument::GetActive())
+      {
+         // Query for description
+         CommitDialog dlg(theApp.GetMainWindow());
+         if (dlg.DoModal() != IDOK)
+            return;
+
+         // Commit
+         OnCommitDocument(dlg.Description);
+      }
+   }
+
+   /// <summary>Edit selected argument.</summary>
+   void  ScriptDocument::OnCommand_EditArgument()
+   {
+      // Require selection
+      if (GetSelectedArgument() == -1)
+         return;
+      
+      // Query User. 
+      ArgumentDialog dlg(Script, Script.Variables[GetSelectedArgument()], theApp.GetMainWindow());
+      if (dlg.DoModal() != IDOK)
+         return;
+      
+      // Update selected variable
+      Script.Variables[GetSelectedArgument()] = dlg.Argument;   
+      CPropertiesWnd::Connect(this, true);
+   }
+
+   /// <summary>Append new argument.</summary>
+   void  ScriptDocument::OnCommand_InsertArgument()
+   {
+      // Query User. Append argument to existing arguments
+      ArgumentDialog dlg(Script, theApp.GetMainWindow());
+      if (dlg.DoModal() != IDOK)
+         return;
+      
+      // Query User. Append argument to existing arguments
+      Script.Variables.Insert(Script.Variables.Arguments.Count, dlg.Argument);   
+      CPropertiesWnd::Connect(this, true);
+   }
+   
+   /// <summary>Perform quick commit.</summary>
+   void  ScriptDocument::OnCommand_QuickCommit()
+   {
+      // Quick Commit
+      if (auto proj = ProjectDocument::GetActive())
+         OnCommitDocument(L"Quick Commit");
+   }
+
+   /// <summary>Remove selected argument.</summary>
+   void  ScriptDocument::OnCommand_RemoveArgument()
+   {
+      // Require selection
+      if (GetSelectedArgument() == -1)
+         return;
+      
+      // Remove selected
+      Script.Variables.Remove(Script.Variables[GetSelectedArgument()]);   
+      CPropertiesWnd::Connect(this, true);
+   }
+
    
    /// <summary>Commits the document</summary>
    /// <param name="title">Revision title</param>
@@ -257,43 +327,41 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
-
+   
    /// <summary>Called when perform command.</summary>
    /// <param name="nID">The cmd identifier.</param>
-   void  ScriptDocument::OnPerformCommand(UINT nID)
-   {
-      switch (nID)
-      {
-      // Insert Argument: TODO
-      case ID_INSERT_ARGUMENT:
-         AfxMessageBox(L"Insert Argument");
-         break;
+   //void  ScriptDocument::OnPerformCommand(UINT nID)
+   //{
+   //   switch (nID)
+   //   {
+   //   // Insert Argument: 
+   //   case ID_INSERT_ARGUMENT:
+   //      break;
 
-      // Quick Commit: Commit
-      case ID_BACKUP_QUICK_COMMIT:
-         if (auto proj = ProjectDocument::GetActive())
-            OnCommitDocument(L"Quick Commit");
-         break;
+   //   // Edit Argument: 
+   //   case ID_EDIT_ARGUMENT:
+   //   
+   //      break;
 
-      // Commit: Query for title, then commit
-      case ID_BACKUP_COMMIT:
-         if (auto proj = ProjectDocument::GetActive())
-         {
-            CommitDialog dlg(theApp.GetMainWindow());
-            // Query for description
-            if (dlg.DoModal() == IDOK)
-               OnCommitDocument(dlg.Description);
-         }
-         break;
-      }
-   }
+   //   // Remove Argument: Remove selected
+   //   case ID_REMOVE_ARGUMENT:
+   //   
+   //      break;
+
+   //   // Quick Commit: Commit
+   //   case ID_BACKUP_QUICK_COMMIT:
+   //      break;
+
+   //   // Commit: Query for title, then commit
+   //   case ID_BACKUP_COMMIT:
+   //      break;
+   //   }
+   //}
 
    /// <summary>Queries the state of a properties toolbar command.</summary>
    /// <param name="pCmd">Command</param>
    void  ScriptDocument::OnQueryCustomCommand(CCmdUI* pCmd) 
    {
-      static function<bool (ArgumentProperty*)> IsSelected = [](ArgumentProperty* p) {return p->IsSelected() != FALSE;};
-
       // Set state
       switch (pCmd->m_nID)
       {
@@ -305,7 +373,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       case ID_REORDER_ARGUMENT_DOWN:
       case ID_EDIT_ARGUMENT:
       case ID_REMOVE_ARGUMENT:
-         pCmd->Enable(any_of(ArgumentProperties.begin(), ArgumentProperties.end(), IsSelected) ? TRUE : FALSE);
+         pCmd->Enable(GetSelectedArgument() != -1 ? TRUE : FALSE);
          break;
       }
    }   
@@ -425,6 +493,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Gets the index of the selected argument.</summary>
+   /// <returns></returns>
+   int  ScriptDocument::GetSelectedArgument() const
+   {
+      // lambda: Query selected 
+      static function<bool (ArgumentProperty*)> IsSelected = [](ArgumentProperty* p) {return p->IsSelected() != FALSE;};
+
+      // Lookup item, return distance
+      auto pos = find_if(ArgumentProperties.begin(), ArgumentProperties.end(), IsSelected);
+      return pos != ArgumentProperties.end() ? distance(ArgumentProperties.begin(), pos) : -1;
+   }
 
    // ------------------------------- PRIVATE METHODS ------------------------------
 
