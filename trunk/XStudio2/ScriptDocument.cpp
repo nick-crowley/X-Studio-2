@@ -53,8 +53,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
       ON_COMMAND(ID_INSERT_ARGUMENT, OnCommandInsertArgument)
-      ON_COMMAND(ID_PROJECT_COMMIT, OnCommandCommit)
-      ON_COMMAND(ID_PROJECT_QUICK_COMMIT, OnCommandQuickCommit)
+      /*ON_COMMAND(ID_PROJECT_COMMIT, OnCommandCommit)
+      ON_COMMAND(ID_PROJECT_QUICK_COMMIT, OnCommandQuickCommit)*/
       //ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
 

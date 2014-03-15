@@ -3,7 +3,7 @@
 #include "MainWnd.h"
 #include "ProjectWnd.h"
 #include "Application.h"
-//#include "ProjectDocument.h"
+#include "CommitDialog.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -27,6 +27,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_COMMAND(ID_PROJECT_RENAME, OnCommand_RenameItem)
 	   ON_COMMAND(ID_PROJECT_REMOVE, OnCommand_RemoveItem)
 	   ON_COMMAND(ID_PROJECT_DELETE, OnCommand_DeleteItem)
+      ON_COMMAND(ID_PROJECT_COMMIT, OnCommand_Commit)
+      ON_COMMAND(ID_PROJECT_QUICK_COMMIT, OnCommand_QuickCommit)
 	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnCommand_ViewProperties)
       ON_UPDATE_COMMAND_UI_RANGE(ID_PROJECT_OPEN, ID_PROJECT_PROPERTIES, OnQueryCommand)
       ON_NOTIFY(NM_DBLCLK, IDC_PROJECT_TREE, OnTreeView_DoubleClick)
@@ -251,6 +253,34 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
+   /// <summary>Commit document representing selected item</summary>
+   void CProjectWnd::OnCommand_Commit()
+   {
+      try
+      {
+         auto file = TreeView.SelectedItem;
+
+	      // Require item represent an open script
+         if (file && file->IsFile() && file->FileType == FileType::Script && theApp.IsDocumentOpen(file->FullPath))
+         {
+            CommitDialog dlg(this);
+            
+            // Query user for description
+            if (dlg.DoModal() == IDOK)
+            {
+               auto doc = dynamic_cast<ScriptDocument*>(theApp.GetOpenDocument(file->FullPath));
+               REQUIRED(doc);
+
+               // Commit
+               doc->OnCommitDocument(dlg.Description);
+            }
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+
    /// <summary>Insert new folder as child of selected item</summary>
    void CProjectWnd::OnCommand_CreateFolder()
    {
@@ -314,6 +344,28 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Open document
          theApp.OpenDocumentFile(TreeView.SelectedItem->FullPath.c_str(), TRUE);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+   }
+   
+   /// <summary>QuickCommit document representing selected item</summary>
+   void CProjectWnd::OnCommand_QuickCommit()
+   {
+      try
+      {
+         auto file = TreeView.SelectedItem;
+
+	      // Require item represent an open script
+         if (file && file->IsFile() && file->FileType == FileType::Script && theApp.IsDocumentOpen(file->FullPath))
+         {
+            auto doc = dynamic_cast<ScriptDocument*>(theApp.GetOpenDocument(file->FullPath));
+            REQUIRED(doc);
+
+            // Commit
+            doc->OnCommitDocument(L"Quick Commit");
+         }
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
@@ -386,7 +438,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Set command states</summary>
    void CProjectWnd::OnQueryCommand(CCmdUI* pCmd)
    {
-      bool State = true;
+      bool State = true,
+           check = false;
 
       // Require selection
       if (!TreeView.GetSelectedItem())
@@ -399,13 +452,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
          {
          // Open: Require file
          case ID_PROJECT_OPEN:   
-            State = item && item->Type == ProjectItemType::File; 
+            State = item && item->IsFile(); 
             break;
 
          // AddFile/Folder: Require folder
          case ID_PROJECT_ADD_FILE:    
          case ID_PROJECT_ADD_FOLDER:  
-            State = item && item->Type == ProjectItemType::Folder;  
+            State = item && item->IsFolder();  
             break;
 
          // Rename: Not fixed folder
@@ -420,18 +473,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Delete: Require file   
          case ID_PROJECT_DELETE:   
-            State = item && item->Type == ProjectItemType::File;    
+            State = item && item->IsFile();    
+            break;
+
+         // Commit: Require file be open as a document
+         case ID_PROJECT_COMMIT:
+         case ID_PROJECT_QUICK_COMMIT:
+            State = item && item->IsFile() && theApp.IsDocumentOpen(item->FullPath);
             break;
 
          // Properties: Not folder
          case ID_PROJECT_PROPERTIES:  
-            State = !item || item->Type != ProjectItemType::Folder;    
+            State = !item || !item->IsFolder();    
             break;
          }
       }
 
       // Enable
       pCmd->Enable(State ? TRUE : FALSE);
+      pCmd->SetCheck(check ? TRUE : FALSE);
    }
 
 
