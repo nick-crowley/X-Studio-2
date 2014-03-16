@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary>Writer for language files</summary>
-      class LanguageFileWriter : protected XmlWriter
+      class LogicExport LanguageFileWriter : protected XmlWriter
       {
          // ------------------------ TYPES --------------------------
       private:

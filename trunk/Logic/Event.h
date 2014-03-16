@@ -14,7 +14,7 @@ namespace Logic
    /// <summary>Abstract base for delegates, only constrained by the type of the method arguments and not its containing class</summary>
    /// <typeparam name="Args">Member function argument types</typeparam>
    template<typename ...Args>
-   class VargDelegate
+   class LogicExport VargDelegate
    {
       friend class Event<Args...>;
 
@@ -51,11 +51,11 @@ namespace Logic
    };
 
 
-   /// <summary>Delegate for invoking class instance methods</summary>
-   /// <typeparam name="Type">Type of class containing the member function to invoke</typeparam>
+   /// <summary>Delegate for invoking class LogicExport instance methods</summary>
+   /// <typeparam name="Type">Type of class LogicExport containing the member function to invoke</typeparam>
    /// <typeparam name="Args">Member function argument types</typeparam>
    template<typename Type, typename ...Args>
-   class MethodDelegate : public VargDelegate<Args...>
+   class LogicExport MethodDelegate : public VargDelegate<Args...>
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -112,15 +112,15 @@ namespace Logic
    };
 
 
-   /// <summary>An event able to invoke class member functions with any signature. 
+   /// <summary>An event able to invoke class LogicExport member functions with any signature. 
    /// Automatically handles disconnection if either party falls out of scope</summary>
    /// <typeparam name="Args">Event handler argument types</typeparam>
    template<typename ...Args>
-   class Event
+   class LogicExport Event
    {
       // ------------------------ TYPES --------------------------
    private:
-      /// <summary>Event delegate with matching signature (but no class type)</summary>
+      /// <summary>Event delegate with matching signature (but no class LogicExport type)</summary>
       typedef VargDelegate<Args...>  DelegateBase;
 
    public:
@@ -155,8 +155,8 @@ namespace Logic
 
       // ----------------------- MUTATORS ------------------------
    public:
-      /// <summary>Registers a class method to handle this event</summary>
-      /// <typeparam name="Type">Type of class that will handle the event</typeparam>
+      /// <summary>Registers a class LogicExport method to handle this event</summary>
+      /// <typeparam name="Type">Type of class LogicExport that will handle the event</typeparam>
       /// <typeparam name="Member">Type of member function that will handle the event</typeparam>
       /// <param name="instance">The instance that will handle the event</param>
       /// <param name="method">Pointer to the member function that will handle event</param>
@@ -204,7 +204,7 @@ using namespace Logic;
    // See: http://codereview.stackexchange.com/questions/36251/c-delegate-implementation-with-member-functions
    //
    //template <typename... Params>
-   //class Event
+   //class LogicExport Event
    //{
    //private:
    //   
@@ -243,6 +243,6 @@ using namespace Logic;
    //   vector<Delegate> Listeners;
    //};
 
-   //class ExampleEvent : public Event<int>
+   //class LogicExport ExampleEvent : public Event<int>
    //{
    //};

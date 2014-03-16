@@ -10,7 +10,7 @@ namespace Logic
    namespace Language
    {
       /// <summary>Occurs when a tooltip is not found</summary>
-      class DescriptionNotFoundException : public ExceptionBase
+      class LogicExport DescriptionNotFoundException : public ExceptionBase
       {
       public:
          /// <summary>Create a DescriptionNotFoundException for a command</summary>
@@ -29,7 +29,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class DescriptionLibrary
+      class LogicExport DescriptionLibrary
       {
          // ------------------------ TYPES --------------------------
       private:

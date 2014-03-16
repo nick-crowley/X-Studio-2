@@ -9,8 +9,8 @@ namespace Logic
    {
       
 
-      /// <summary>Base class for DOM based XML readers</summary>
-      class XmlReader
+      /// <summary>Base class LogicExport for DOM based XML readers</summary>
+      class LogicExport XmlReader
       {
          // --------------------- CONSTRUCTION ----------------------
 

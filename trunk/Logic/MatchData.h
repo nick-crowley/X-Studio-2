@@ -10,7 +10,7 @@ namespace Logic
    enum class SearchTarget { Selection, Document, OpenDocuments, ProjectFiles, ScriptFolder };
 
    /// <summary></summary>
-   class MatchData
+   class LogicExport MatchData
    {
       // ------------------------ TYPES --------------------------
    private:

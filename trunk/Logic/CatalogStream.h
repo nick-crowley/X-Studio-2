@@ -8,7 +8,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of catalogs</summary>
-      class CatalogStream : public StreamFacade
+      class LogicExport CatalogStream : public StreamFacade
       {
       const byte  CATALOGUE_DECRYPT_KEY = 0xDB;
 

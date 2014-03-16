@@ -8,7 +8,7 @@ namespace Logic
 {
    namespace IO
    {
-      class MemoryStream : public Stream
+      class LogicExport MemoryStream : public Stream
       {
          // --------------------- CONSTRUCTION ----------------------
 

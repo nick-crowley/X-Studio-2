@@ -9,7 +9,7 @@ namespace Logic
    {
 
       /// <summary></summary>
-      class LookupString
+      class LogicExport LookupString
       {
          // ------------------------ TYPES --------------------------
       private:

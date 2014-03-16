@@ -6,7 +6,7 @@
 namespace Logic
 {
    /// <summary></summary>
-   class ConsoleLog
+   class LogicExport ConsoleLog
    {
       // ------------------------ TYPES --------------------------
    protected:

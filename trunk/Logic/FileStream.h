@@ -8,7 +8,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Provides stream access to files on disc</summary>
-      class FileStream : public Stream
+      class LogicExport FileStream : public Stream
       {
       public:
          // --------------------- CONSTRUCTION ----------------------

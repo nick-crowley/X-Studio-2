@@ -7,7 +7,7 @@ namespace Logic
    namespace Projects
    {
       /// <summary></summary>
-      class ScriptRevision
+      class LogicExport ScriptRevision
       {
          // ------------------------ TYPES --------------------------
       protected:

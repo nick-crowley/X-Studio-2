@@ -8,7 +8,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Converts between game and engine versions</summary>
-      class EngineVersionConverter
+      class LogicExport EngineVersionConverter
       {
       public:
          /// <summary>Get game version from engine version</summary>
@@ -39,8 +39,8 @@ namespace Logic
          }
       };
 
-      /// <summary>Base class for MSCI script reader</summary>
-      class SourceValueReader : public XmlReader
+      /// <summary>Base class LogicExport for MSCI script reader</summary>
+      class LogicExport SourceValueReader : public XmlReader
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -64,18 +64,18 @@ namespace Logic
 
       
       /// <summary>Resolves the full path of a script-call</summary>
-      class ScriptCallPath : public Path
+      class LogicExport ScriptCallPath : public Path
       {
       public:
          ScriptCallPath(const Path& folder, const wstring& script);
       };
 
       /// <summary>Reader for MSCI scripts</summary>
-      class ScriptFileReader : protected SourceValueReader
+      class LogicExport ScriptFileReader : protected SourceValueReader
       {
       protected:
-         /// <summary>Base class for MSCI script command readers</summary>
-         class ScriptCommandReader
+         /// <summary>Base class LogicExport for MSCI script command readers</summary>
+         class LogicExport ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          protected:
@@ -104,7 +104,7 @@ namespace Logic
          };
 
          /// <summary>Reads typical auxiliary commands</summary>
-         class AuxiliaryCommandReader : public ScriptCommandReader
+         class LogicExport AuxiliaryCommandReader : public ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -116,7 +116,7 @@ namespace Logic
          };
 
          /// <summary>Reads command comments</summary>
-         class CommentedCommandReader : public ScriptCommandReader
+         class LogicExport CommentedCommandReader : public ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -128,7 +128,7 @@ namespace Logic
          };
 
          /// <summary>Reads variable argument script calls</summary>
-         class ScriptCallCommandReader : public ScriptCommandReader
+         class LogicExport ScriptCallCommandReader : public ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -140,7 +140,7 @@ namespace Logic
          };
 
          /// <summary>Reads expression commands</summary>
-         class ExpressionCommandReader : public ScriptCommandReader
+         class LogicExport ExpressionCommandReader : public ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -152,7 +152,7 @@ namespace Logic
          };
 
          /// <summary>Reads typical standard commands</summary>
-         class StandardCommandReader : public ScriptCommandReader
+         class LogicExport StandardCommandReader : public ScriptCommandReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:

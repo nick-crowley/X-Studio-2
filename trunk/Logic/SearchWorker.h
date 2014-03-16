@@ -20,7 +20,7 @@ namespace Logic
       
 
       /// <summary>Data for find and replace worker thread</summary>
-      class SearchWorkerData : public WorkerData
+      class LogicExport SearchWorkerData : public WorkerData
       {
          friend class SearchWorker;
          // ------------------------ TYPES --------------------------
@@ -92,7 +92,7 @@ namespace Logic
       };
 
       /// <summary>Find and replace worker thread</summary>
-      class SearchWorker : public BackgroundWorker
+      class LogicExport SearchWorker : public BackgroundWorker
       {
          // ------------------------ TYPES --------------------------
       private:

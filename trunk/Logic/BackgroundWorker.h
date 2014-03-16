@@ -9,7 +9,7 @@ namespace Logic
    {
 
       /// <summary>Background worker pattern</summary>
-      class BackgroundWorker
+      class LogicExport BackgroundWorker
       {
          // ------------------------ TYPES --------------------------
       private:

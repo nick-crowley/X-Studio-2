@@ -10,7 +10,7 @@ namespace Logic
    namespace Types
    {
       /// <summary>Any dock</summary>
-      class TDock : public TObject
+      class LogicExport TDock : public TObject
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -73,7 +73,7 @@ namespace Logic
       typedef TFile<TDock>  TDockFile;
 
       /// <summary>TDock file reader</summary>
-      class TDockReader : public TFileReader<TDock>
+      class LogicExport TDockReader : public TFileReader<TDock>
       {
          // ------------------------ TYPES --------------------------
       private:

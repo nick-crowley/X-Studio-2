@@ -13,7 +13,7 @@ namespace Logic
          
          /// <summary>Generates a parse tree from MSCI scripts</summary>
          /// <remarks>TODO: Handle the START keyword</remarks>
-         class ScriptParser
+         class LogicExport ScriptParser
          {
             // ------------------------ TYPES --------------------------
          private:

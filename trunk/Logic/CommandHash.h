@@ -13,7 +13,7 @@ namespace Logic
          typedef list<ScriptToken>  TokenList;
 
          /// <summary></summary>
-         class CommandHash 
+         class LogicExport CommandHash 
          {
             // --------------------- CONSTRUCTION ----------------------
          public:

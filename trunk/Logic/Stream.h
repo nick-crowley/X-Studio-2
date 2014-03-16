@@ -42,7 +42,7 @@ namespace Logic
       };
 
       /// <summary>Represents any stream</summary>
-      class Stream
+      class LogicExport Stream
       {
          // --------------------- CONSTRUCTION ----------------------
       protected:
@@ -110,7 +110,7 @@ namespace Logic
       typedef shared_ptr<Stream>  StreamPtr;
 
       /// <summary>Allows for subclassing a stream using the Facade pattern</summary>
-      class StreamFacade : public Stream
+      class LogicExport StreamFacade : public Stream
       {
          // --------------------- CONSTRUCTION ----------------------
       protected:

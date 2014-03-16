@@ -11,7 +11,7 @@ namespace Logic
       FORWARD_DECLARATION(Compiler,enum class TokenType)
 
       /// <summary>Provides a lookup table for determining appropriate script token colours</summary>
-      class SyntaxHighlight
+      class LogicExport SyntaxHighlight
       {
          // ------------------------ TYPES --------------------------
       protected:

@@ -6,7 +6,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Provides the ability to search for files</summary>
-      class FileSearch
+      class LogicExport FileSearch
       {
          // --------------------- CONSTRUCTION ----------------------
 

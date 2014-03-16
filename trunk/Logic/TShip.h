@@ -11,7 +11,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class TShip : public TObject
+      class LogicExport TShip : public TObject
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -21,7 +21,7 @@ namespace Logic
          enum class TurretPosition : UINT { cockpit = 0, front = 1, rear, left, right, top, bottom };
 
          /// <summary>Turret weapon</summary>
-	      class Weapon 
+	      class LogicExport Weapon 
 	      {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -38,7 +38,7 @@ namespace Logic
 	      };
 
          /// <summary>Ship turret</summary>
-	      class Turret 
+	      class LogicExport Turret 
 	      {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -147,12 +147,12 @@ namespace Logic
 	      int         particleEmitter;
 	      int         rotationAcceleration;
 
-	      wstring         shipClass;      // Ship class such as M1, M3
+	      wstring         shipClass;      // Ship class LogicExport such as M1, M3
          VariationLookup variation;
       };
 
       /// <summary></summary>
-      class TShipReader : public TFileReader<TShip>
+      class LogicExport TShipReader : public TFileReader<TShip>
       {
          // ------------------------ TYPES --------------------------
       private:

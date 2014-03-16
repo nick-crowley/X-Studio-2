@@ -10,7 +10,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class DescriptionFileReader : public XmlReader
+      class LogicExport DescriptionFileReader : public XmlReader
       {
          // ------------------------ TYPES --------------------------
       private:

@@ -9,7 +9,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Reads the file declarations from catalogs</summary>
-      class CatalogReader : protected IO::StringReader
+      class LogicExport CatalogReader : protected IO::StringReader
       {
       public:
          // --------------------- CONSTRUCTION ----------------------

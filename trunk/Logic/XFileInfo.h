@@ -15,7 +15,7 @@ namespace Logic
       enum class FileSource  { Catalog, Physical };
 
       /// <summary>Represents a file descriptor for any physical or catalog based file</summary>
-      class XFileInfo
+      class LogicExport XFileInfo
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

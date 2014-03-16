@@ -10,7 +10,7 @@ namespace Logic
    {
          
       /// <summary>Writes entire scripts in RTF</summary>
-      class RtfScriptWriter : protected RtfWriter
+      class LogicExport RtfScriptWriter : protected RtfWriter
       {
       private:
          // --------------------- CONSTRUCTION ----------------------

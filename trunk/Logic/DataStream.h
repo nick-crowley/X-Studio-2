@@ -9,7 +9,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of catalog data files</summary>
-      class DataStream : public StreamFacade
+      class LogicExport DataStream : public StreamFacade
       {
       const byte  DATAFILE_ENCRYPT_KEY = 0x33;
          
@@ -19,9 +19,9 @@ namespace Logic
          DataStream(const XFileInfo& f);
          ~DataStream();
 
-         // This class cannot be moved
+         // This class LogicExport cannot be moved
          NO_MOVE(DataStream);
-         // This class cannot be copied
+         // This class LogicExport cannot be copied
          NO_COPY(DataStream);
 
          // --------------------- PROPERTIES ------------------------

@@ -15,7 +15,7 @@ namespace Logic
       typedef list<ProjectItem>  ProjectItemList;
 
       /// <summary>Represents any file/folder/variable within a project</summary>
-      class ProjectItem
+      class LogicExport ProjectItem
       {
          // ------------------------ TYPES --------------------------
       public:

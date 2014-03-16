@@ -39,7 +39,7 @@ namespace Logic
 
 
    /// <summary>Provides a debugging console</summary>
-   class ConsoleWnd
+   class LogicExport ConsoleWnd
    {
 		// ------------------------ TYPES --------------------------
    private:

@@ -15,8 +15,8 @@ namespace Logic
          /// <summary>Get token type string</summary>
          GuiString  GetString(TokenType t);
 
-         /// <summary>Common base class for all token types</summary>
-         class TokenBase
+         /// <summary>Common base class LogicExport for all token types</summary>
+         class LogicExport TokenBase
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -46,7 +46,7 @@ namespace Logic
          };
 
          /// <summary>Token produced by MSCI script command lexer</summary>
-         class ScriptToken : public TokenBase
+         class LogicExport ScriptToken : public TokenBase
          {
             // ------------------------ TYPES --------------------------
          private:
@@ -135,7 +135,7 @@ namespace Logic
          ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptToken& tok);
 
          /// <summary>Vector of script tokens</summary>
-         class TokenArray : public vector<ScriptToken>
+         class LogicExport TokenArray : public vector<ScriptToken>
          {
          public:
             TokenArray() 

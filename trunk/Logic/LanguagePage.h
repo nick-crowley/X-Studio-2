@@ -7,8 +7,8 @@ namespace Logic
 {
    namespace Language
    {
-      class LanguageString;
-      class LanguagePage;
+      class  LanguageString;
+      class  LanguagePage;
 
       /// <summary>Read-only language string reference</summary>
       typedef const LanguageString&  LanguageStringRef;
@@ -86,7 +86,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str);
 
       /// <summary>Represents a collection of language strings</summary>
-      class LanguagePage
+      class LogicExport LanguagePage
       {
       public:
          /// <summary>Collection of language strings, sorted by ID</summary>

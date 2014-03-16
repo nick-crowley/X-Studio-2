@@ -9,7 +9,7 @@ namespace Logic
    {
       
       /// <summary>Occurs when a MSCI game object is unrecognised</summary>
-      class GameObjectNotFoundException : public ExceptionBase
+      class LogicExport GameObjectNotFoundException : public ExceptionBase
       {
       public:
          /// <summary>Create a GameObjectNotFoundException</summary>
@@ -42,7 +42,7 @@ namespace Logic
       typedef const GameObject&  GameObjectRef;
 
       /// <summary>Represents a ware, ship or station</summary>
-      class GameObject
+      class LogicExport GameObject
       {
          // ------------------------ TYPES --------------------------
       private:

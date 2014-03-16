@@ -14,7 +14,7 @@ namespace Logic
       
 
       /// <summary>Provides access to script objects</summary>
-      class ScriptObjectLibrary
+      class LogicExport ScriptObjectLibrary
       {
 		   // ------------------------ TYPES --------------------------
       private:

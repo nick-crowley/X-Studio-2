@@ -226,7 +226,7 @@ namespace Logic
 
          
          // {Script,Page,String} @ {1, 2, 3}
-         case CMD_REMOVE_CLASS_GRAPH:                 // "remove class graph: class=$0 script=$1 group pageid=$2 group textid=$3"
+         case CMD_REMOVE_CLASS_GRAPH:                 // "remove class LogicExport graph: class=$0 script=$1 group pageid=$2 group textid=$3"
          case CMD_REMOVE_OBJECT_GRAPH:                // "$0 remove object graph: script=$1 group pageid=$2 group textid=$3"
             return index == 1 ? ParameterUsage::ScriptName
                  : index == 2 ? ParameterUsage::PageID
@@ -264,7 +264,7 @@ namespace Logic
                  : index == 4               ? ParameterUsage::StringID  : ParameterUsage::None;
 
          // {Script,Page,String} @ {1,2+4,3+5}
-         case CMD_ADD_CLASS_GRAPH:                    // "add class graph: class=$0 script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
+         case CMD_ADD_CLASS_GRAPH:                    // "add class LogicExport graph: class=$0 script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
          case CMD_ADD_OBJECT_GRAPH:                   // "$0 add object graph: script=$1 pageid=$2 textid=$3 group pageid=$4 group textid=$5 subgroup=$6"
             switch (index) {
             case 1:           return ParameterUsage::ScriptName;

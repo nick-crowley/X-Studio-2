@@ -13,7 +13,7 @@ namespace Logic
       enum class ParameterUsage { None, PageID, StringID, ScriptName };
 
       /// <summary></summary>
-      class ParameterSyntax
+      class LogicExport ParameterSyntax
       {
       public:
          class Declaration
@@ -89,10 +89,13 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         static const ParameterSyntax  InfixParameter,     ExpressionParameter,
-                                       LabelNameParameter,  LabelNumberParameter,
-                                       StructuralCount,      ScriptCallArgument,
-                                       UnrecognisedCommand;
+         static const ParameterSyntax  InfixParameter;
+         static const ParameterSyntax  ExpressionParameter;
+         static const ParameterSyntax  LabelNameParameter; 
+         static const ParameterSyntax  LabelNumberParameter;
+         static const ParameterSyntax  StructuralCount; 
+         static const ParameterSyntax  ScriptCallArgument;
+         static const ParameterSyntax  UnrecognisedCommand;
 
       public:
          const ParameterType  Type;

@@ -27,12 +27,12 @@ namespace Logic
       }
 
       /// <summary></summary>
-      class BackupFile
+      class LogicExport BackupFile
       {
          // ------------------------ TYPES --------------------------
       public:
          /// <summary></summary>
-         class RevisionCollection : protected list<ScriptRevision>
+         class LogicExport RevisionCollection : protected list<ScriptRevision>
          {
             friend class BackupFileReader;
 

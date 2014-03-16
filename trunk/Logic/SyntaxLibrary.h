@@ -12,7 +12,7 @@ namespace Logic
    namespace Scripts
    {
       /// <summary></summary>
-      class SyntaxLibrary
+      class LogicExport SyntaxLibrary
       {
          // ------------------------ TYPES --------------------------
       public:
