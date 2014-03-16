@@ -176,7 +176,7 @@ namespace Logic
             // Search for catalogs
             for (int i = 1; i < 99; i++)
             {
-               Path path( StringResource::Format(format, Folder.c_str(), i) );
+               Path path( GuiString::Format(format, Folder.c_str(), i) );
 
                // Ensure exists
                if (!path.Exists() || !path.RenameExtension(L".dat").Exists())

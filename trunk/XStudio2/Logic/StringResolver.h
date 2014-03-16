@@ -19,7 +19,7 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="err">regex error</param>
          RegularExpressionException(wstring  src, const regex_error&  err) 
-            : ExceptionBase(src, L"Regular expression error: " + StringResource::Convert(err.what(), CP_ACP))
+            : ExceptionBase(src, L"Regular expression error: " + GuiString::Convert(err.what(), CP_ACP))
          {}
       };
 

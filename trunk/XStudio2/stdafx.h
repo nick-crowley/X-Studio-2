@@ -56,7 +56,7 @@ using namespace std;
 // Common Logic + Utils
 #include "Logic/Common.h"
 
-#include "Logic/StringResource.h"
+#include "Logic/GuiString.h"
 #include "Logic/Path.h"
 #include "Logic/Exceptions.h"
 #include "Logic/ConsoleWnd.h"

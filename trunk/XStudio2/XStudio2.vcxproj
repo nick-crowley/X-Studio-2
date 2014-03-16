@@ -257,7 +257,7 @@
     <ClInclude Include="Logic\Stream.h" />
     <ClInclude Include="Logic\StringLibrary.h" />
     <ClInclude Include="Logic\StringReader.h" />
-    <ClInclude Include="Logic\StringResource.h" />
+    <ClInclude Include="Logic\GuiString.h" />
     <ClInclude Include="Logic\SyntaxFile.h" />
     <ClInclude Include="Logic\SyntaxLibrary.h" />
     <ClInclude Include="Logic\SyntaxWriter.h" />
@@ -409,7 +409,7 @@
     <ClCompile Include="Logic\ScriptToken.cpp" />
     <ClCompile Include="Logic\StringLibrary.cpp" />
     <ClCompile Include="Logic\StringReader.cpp" />
-    <ClCompile Include="Logic\StringResource.cpp" />
+    <ClCompile Include="Logic\GuiString.cpp" />
     <ClCompile Include="Logic\SyntaxFile.cpp" />
     <ClCompile Include="Logic\SyntaxLibrary.cpp" />
     <ClCompile Include="Logic\SyntaxWriter.cpp" />

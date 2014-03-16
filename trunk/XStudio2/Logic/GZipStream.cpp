@@ -177,7 +177,7 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Cannot set filename after writing");
 
          // Convert to ANSI
-         FileName = StringResource::Convert(name, CP_ACP);
+         FileName = GuiString::Convert(name, CP_ACP);
          ZHeader.name = (Byte*)FileName.c_str();
 
          // Set header

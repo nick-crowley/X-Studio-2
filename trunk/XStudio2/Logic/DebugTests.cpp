@@ -313,7 +313,7 @@ namespace Logic
       // Create different version
       FileStream fs(L"D:\\My Projects\\XStudio2\\Files\\add.dynamic.logic.diff", FileMode::OpenExisting, FileAccess::Read);
       auto bytes = fs.ReadAllBytes();
-      auto alt = StringResource::Convert((char*)bytes.get(), CP_ACP);
+      auto alt = GuiString::Convert((char*)bytes.get(), CP_ACP);
 
       /*auto alt = doc->GetAllText();
       alt.erase(50, 15);

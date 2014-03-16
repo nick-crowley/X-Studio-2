@@ -255,7 +255,7 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& operator<<(const char* txt)
       {
-         return *this << StringResource::Convert(txt, CP_ACP);
+         return *this << GuiString::Convert(txt, CP_ACP);
       }
 
       /// <summary>Writes a character to the console</summary>
@@ -294,7 +294,7 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& operator<<(const string& txt)
       {
-         return *this << StringResource::Convert(txt, CP_ACP);
+         return *this << GuiString::Convert(txt, CP_ACP);
       }
 
       /// <summary>Writes pointer to the console</summary>
@@ -332,7 +332,7 @@ namespace Logic
       void  Writef(const WCHAR* format, ...)
       {
          va_list args;
-         WriteText( StringResource::FormatV(format, va_start(args, format)) );
+         WriteText( GuiString::FormatV(format, va_start(args, format)) );
       }
 
       /// <summary>Writes the formatted text to the console</summary>
@@ -341,7 +341,7 @@ namespace Logic
       void  Writef(const wstring& format, ...)
       {
          va_list args;
-         WriteText( StringResource::FormatV(format.c_str(), va_start(args, format)) );
+         WriteText( GuiString::FormatV(format.c_str(), va_start(args, format)) );
       }
 
       /// <summary>Writes text to the console</summary>
@@ -358,7 +358,7 @@ namespace Logic
       void  WriteLnf(const WCHAR* format = L"", ...)
       {
          va_list args;
-         WriteText( StringResource::FormatV(format, va_start(args, format)) );
+         WriteText( GuiString::FormatV(format, va_start(args, format)) );
          WriteText(L"\n");
       }
 
@@ -368,7 +368,7 @@ namespace Logic
       void  WriteLnf(const wstring& format, ...)
       {
          va_list args;
-         WriteText( StringResource::FormatV(format.c_str(), va_start(args, format)) );
+         WriteText( GuiString::FormatV(format.c_str(), va_start(args, format)) );
          WriteText(L"\n");
       }
 

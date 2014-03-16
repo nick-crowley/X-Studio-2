@@ -67,7 +67,7 @@ namespace Logic
       GuiString  GetString(DataType d)
       {
          const LanguageString* str;
-         return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : StringResource::Missing((UINT)d);
+         return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : GuiString::Missing((UINT)d);
       }
 
       /// <summary>Get value type string</summary>
@@ -320,11 +320,11 @@ namespace Logic
 
             // Commented: name
             if (Value.Type == ValueType::String)
-               Text = StringResource::Format(format, Value.String.c_str());
+               Text = GuiString::Format(format, Value.String.c_str());
 
             // Assignment: variable ID
             else if (ReturnValue(Value.Int).ReturnType == ReturnType::ASSIGNMENT)
-               Text = StringResource::Format(format, script.Variables[(BYTE)Value.Int].Name.c_str());
+               Text = GuiString::Format(format, script.Variables[(BYTE)Value.Int].Name.c_str());
 
             // Conditional/Discard:
             else switch (ReturnValue(Value.Int).Conditional)
@@ -350,12 +350,12 @@ namespace Logic
             if (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME)
                Text = Value.String;
             else
-               Text = StringResource::Format(L"'%s'", Value.String.c_str());
+               Text = GuiString::Format(L"'%s'", Value.String.c_str());
             break;
 
          // Integer
          case DataType::INTEGER:
-            Text = StringResource::Format(L"%d", Value.Int);
+            Text = GuiString::Format(L"%d", Value.Int);
             break;
 
          // Null
