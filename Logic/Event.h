@@ -14,7 +14,7 @@ namespace Logic
    /// <summary>Abstract base for delegates, only constrained by the type of the method arguments and not its containing class</summary>
    /// <typeparam name="Args">Member function argument types</typeparam>
    template<typename ...Args>
-   class LogicExport VargDelegate
+   class VargDelegate
    {
       friend class Event<Args...>;
 
@@ -55,7 +55,7 @@ namespace Logic
    /// <typeparam name="Type">Type of class LogicExport containing the member function to invoke</typeparam>
    /// <typeparam name="Args">Member function argument types</typeparam>
    template<typename Type, typename ...Args>
-   class LogicExport MethodDelegate : public VargDelegate<Args...>
+   class MethodDelegate : public VargDelegate<Args...>
    {
       // ------------------------ TYPES --------------------------
    private:
@@ -116,7 +116,7 @@ namespace Logic
    /// Automatically handles disconnection if either party falls out of scope</summary>
    /// <typeparam name="Args">Event handler argument types</typeparam>
    template<typename ...Args>
-   class LogicExport Event
+   class Event
    {
       // ------------------------ TYPES --------------------------
    private:

@@ -20,7 +20,12 @@ namespace Logic
          /// <summary>Script error</summary>
          class LogicExport ErrorToken : public TokenBase
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
+            ErrorToken() : Line(0) {
+               throw NotImplementedException(HERE, L"StaticLib compiler fix"); 
+            }
+
             /// <summary>Create error for token</summary>
             ErrorToken(const GuiString& msg, UINT line, const ScriptToken& tok) 
                : TokenBase(tok), Message(msg), Text(tok.Text), Line(line)
@@ -34,6 +39,17 @@ namespace Logic
                : TokenBase(start,end), Message(msg), Text(txt), Line(line)
             {}
 
+            // ---------------------- ACCESSORS ------------------------	
+
+            // ----------------------- MUTATORS ------------------------
+         public:
+            ErrorToken& operator=(const ErrorToken& r) const
+            {
+               throw NotImplementedException(HERE, L"StaticLib compiler fix");
+            }
+
+            // -------------------- REPRESENTATION ---------------------
+         public:
             const GuiString Message,   // Error message
                             Text;      // Erroneous token/line text
             const UINT      Line;      // 1-base line number
@@ -42,6 +58,7 @@ namespace Logic
          /// <summary>Vector of error tokens</summary>
          class LogicExport ErrorArray : public vector<ErrorToken> 
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             /// <summary>Create empty array</summary>
             ErrorArray()
@@ -51,22 +68,36 @@ namespace Logic
                push_back(e);
             }
 
+            // ---------------------- ACCESSORS ------------------------	
+
+            // ----------------------- MUTATORS ------------------------
+         public:
             /// <summary>Add an error to the array</summary>
             ErrorArray& operator+=(const ErrorToken& t)
             {
                push_back(t);
                return *this;
             }
+
+            // -------------------- REPRESENTATION ---------------------
+
          };
 
          /// <summary>Shared pointer to a parse tree node</summary>
          class LogicExport CommandNodePtr : public shared_ptr<CommandNode> 
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNodePtr() : shared_ptr<CommandNode>(nullptr)
             {}
             CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
             {}
+
+            // ---------------------- ACCESSORS ------------------------	
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
          };
 
          /// <summary>Vector of parse tree node pointers</summary>
@@ -78,6 +109,7 @@ namespace Logic
          /// <summary>Represents a symbol used during refactoring process</summary>
          class LogicExport Symbol
          {
+            // --------------------- CONSTRUCTION ----------------------
          public:
             /// <summary>Create symbol match.</summary>
             /// <param name="name">name without operators.</param>
@@ -89,6 +121,11 @@ namespace Logic
                : Token(tok), Type(t), LineNumber(line), LineText(txt), Commented(comment)
             {}
 
+            // ---------------------- ACCESSORS ------------------------	
+
+            // ----------------------- MUTATORS ------------------------
+
+            // -------------------- REPRESENTATION ---------------------
          public:
             const SymbolType  Type;          // Type
             const ScriptToken Token;         // Name
