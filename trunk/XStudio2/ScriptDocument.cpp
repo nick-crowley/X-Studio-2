@@ -54,9 +54,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
       ON_COMMAND(ID_BACKUP_COMMIT, OnCommand_Commit)
+      ON_COMMAND(ID_BACKUP_QUICK_COMMIT, OnCommand_QuickCommit)
       ON_COMMAND(ID_EDIT_ARGUMENT, OnCommand_EditArgument)
       ON_COMMAND(ID_INSERT_ARGUMENT, OnCommand_InsertArgument)
-      ON_COMMAND(ID_BACKUP_QUICK_COMMIT, OnCommand_QuickCommit)
       ON_COMMAND(ID_REMOVE_ARGUMENT, OnCommand_RemoveArgument)
       //ON_UPDATE_COMMAND_UI_RANGE(ID_INSERT_ARGUMENT, ID_REMOVE_ARGUMENT, OnQueryCustomCommand)
    END_MESSAGE_MAP()
@@ -170,31 +170,44 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Edit selected argument.</summary>
    void  ScriptDocument::OnCommand_EditArgument()
    {
-      // Require selection
-      if (GetSelectedArgument() == -1)
-         return;
+      try
+      {
+         // Require selection
+         if (GetSelectedArgument() == -1)
+            return;
       
-      // Query User. 
-      ArgumentDialog dlg(Script, Script.Variables[GetSelectedArgument()], theApp.GetMainWindow());
-      if (dlg.DoModal() != IDOK)
-         return;
+         // Query User. 
+         auto& arg = Script.Variables[GetSelectedArgument()];
+         ArgumentDialog dlg(Script, arg, theApp.GetMainWindow());
+         if (dlg.DoModal() != IDOK)
+            return;
       
-      // Update selected variable
-      Script.Variables[GetSelectedArgument()] = dlg.Argument;   
-      CPropertiesWnd::Connect(this, true);
+         // Update selected variable
+         arg = dlg.Argument;   
+         CPropertiesWnd::Connect(this, true);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unable to edit selected argument");
+      }
    }
 
    /// <summary>Append new argument.</summary>
    void  ScriptDocument::OnCommand_InsertArgument()
    {
-      // Query User. Append argument to existing arguments
-      ArgumentDialog dlg(Script, theApp.GetMainWindow());
-      if (dlg.DoModal() != IDOK)
-         return;
+      try
+      {
+         // Query User. Append argument to existing arguments
+         ArgumentDialog dlg(Script, theApp.GetMainWindow());
+         if (dlg.DoModal() != IDOK)
+            return;
       
-      // Query User. Append argument to existing arguments
-      Script.Variables.Insert(Script.Variables.Arguments.Count, dlg.Argument);   
-      CPropertiesWnd::Connect(this, true);
+         // Query User. Append argument to existing arguments
+         Script.Variables.Insert(Script.Variables.Arguments.Count, dlg.Argument);   
+         CPropertiesWnd::Connect(this, true);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unable to create new argument");
+      }
    }
    
    /// <summary>Perform quick commit.</summary>
@@ -208,13 +221,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Remove selected argument.</summary>
    void  ScriptDocument::OnCommand_RemoveArgument()
    {
-      // Require selection
-      if (GetSelectedArgument() == -1)
-         return;
+      try
+      {
+         // Require selection
+         if (GetSelectedArgument() == -1)
+            return;
       
-      // Remove selected
-      Script.Variables.Remove(Script.Variables[GetSelectedArgument()]);   
-      CPropertiesWnd::Connect(this, true);
+         // Remove selected
+         Script.Variables.Remove(Script.Variables[GetSelectedArgument()]);   
+         CPropertiesWnd::Connect(this, true);
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e, L"Unable to remove selected argument");
+      }
    }
 
    
