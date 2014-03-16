@@ -132,6 +132,8 @@
     <ClInclude Include="..\Testing\DebugTests.h" />
     <ClInclude Include="..\Testing\ScriptValidator.h" />
     <ClInclude Include="..\Testing\stdafx.h" />
+    <ClInclude Include="..\TOM\stdafx.h" />
+    <ClInclude Include="..\TOM\tom.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -148,7 +150,6 @@
     <ClInclude Include="GuiCommand.h" />
     <ClInclude Include="ImportProjectDialog.h" />
     <ClInclude Include="LanguageEdit.h" />
-    <ClInclude Include="lib_tom.h" />
     <ClInclude Include="..\Logic\BackupFile.h" />
     <ClInclude Include="..\Logic\BackupFileReader.h" />
     <ClInclude Include="..\Logic\BackupFileWriter.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptValidator.cpp" />
+    <ClCompile Include="..\TOM\msftedit.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
@@ -330,7 +332,6 @@
     <ClCompile Include="..\Logic\ProjectFileReader.cpp" />
     <ClCompile Include="..\Logic\ProjectFileWriter.cpp" />
     <ClCompile Include="..\Logic\SyntaxHighlight.cpp" />
-    <ClCompile Include="msftedit.cpp" />
     <ClCompile Include="NewDocumentDialog.cpp" />
     <ClCompile Include="PreferencesDialog.cpp" />
     <ClCompile Include="PreferencesPage.cpp" />
@@ -441,9 +442,9 @@
     <ClCompile Include="ToolBarEx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\TOM\msftedit.tlh" />
     <None Include="cpp.hint" />
     <None Include="..\Logic\msxml6.tlh" />
-    <None Include="msftedit.tlh" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />

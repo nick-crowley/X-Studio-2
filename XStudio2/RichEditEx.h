@@ -1,7 +1,7 @@
 #pragma once
 #include <richole.h>
 #include <Richedit.h>
-#include "lib_tom.h"     // Import TextObjectModel
+#include "../TOM/tom.h"     // Import TextObjectModel
 #include "Helpers.h"
 #include "CustomTooltip.h"
 
