@@ -19,7 +19,7 @@ namespace Testing
       {
          // Variables/Arguments count
          if (in.size() != out.size())
-            throw TextMismatch(HERE, L"command count", GuiString(L"%d", in.size()), GuiString(L"%d", out.size()));
+            throw TextMismatch(HERE, L"command count", VString(L"%d", in.size()), VString(L"%d", out.size()));
 
          else 
          {
@@ -31,7 +31,7 @@ namespace Testing
                   continue;*/
                // Compare command text
                if (*c1 != *c2)
-                  throw TextMismatch(HERE, GuiString(L"(line %d) command text", line), *c1, *c2);
+                  throw TextMismatch(HERE, VString(L"(line %d) command text", line), *c1, *c2);
             
                ++line;
             }
@@ -95,16 +95,16 @@ namespace Testing
          try
          {
             if (in.Name != out.Name)
-               throw TextMismatch(HERE, GuiString(L"Arg/Var Name (id=%d)", in.ID), in.Name, out.Name);
+               throw TextMismatch(HERE, VString(L"Arg/Var Name (id=%d)", in.ID), in.Name, out.Name);
             if (in.ID != out.ID)
-               throw TextMismatch(HERE, GuiString(L"Arg/Var ID '%s'", in.Name.c_str()), in.ID, out.ID);
+               throw TextMismatch(HERE, VString(L"Arg/Var ID '%s'", in.Name.c_str()), in.ID, out.ID);
             if (in.Type != out.Type)
-               throw TextMismatch(HERE, GuiString(L"Arg/Var type flag of '%s'", in.Name.c_str()), GetString(in.Type), GetString(out.Type));
+               throw TextMismatch(HERE, VString(L"Arg/Var type flag of '%s'", in.Name.c_str()), GetString(in.Type), GetString(out.Type));
 
             if (in.Description != out.Description)
-               throw TextMismatch(HERE, GuiString(L"Argument description '%s'", in.Name.c_str()), in.Description, out.Description);
+               throw TextMismatch(HERE, VString(L"Argument description '%s'", in.Name.c_str()), in.Description, out.Description);
             if (in.ValueType != out.ValueType)
-               throw TextMismatch(HERE, GuiString(L"Argument Type '%s'", in.Name.c_str()), GetString(in.ValueType), GetString(out.ValueType));
+               throw TextMismatch(HERE, VString(L"Argument Type '%s'", in.Name.c_str()), GetString(in.ValueType), GetString(out.ValueType));
          }
          catch (ExceptionBase&)
          {
@@ -124,13 +124,13 @@ namespace Testing
       {
          // Syntax + Text
          if (in.Syntax != out.Syntax)
-            throw TextMismatch(HERE, GuiString(L"(line %d) command syntax", line), in.Syntax.Text, out.Syntax.Text);
+            throw TextMismatch(HERE, VString(L"(line %d) command syntax", line), in.Syntax.Text, out.Syntax.Text);
          if (in.Text != out.Text)
-            throw TextMismatch(HERE, GuiString(L"(line %d) command text", line), in.Text, out.Text);
+            throw TextMismatch(HERE, VString(L"(line %d) command text", line), in.Text, out.Text);
 
          // Parameter count
          if (in.Parameters.size() != out.Parameters.size())
-            throw TextMismatch(HERE, GuiString(L"(line %d) parameter count", line), in.Parameters.size(), out.Parameters.size());
+            throw TextMismatch(HERE, VString(L"(line %d) parameter count", line), in.Parameters.size(), out.Parameters.size());
          else 
          {
             UINT param = 1;
@@ -157,21 +157,21 @@ namespace Testing
          {
             // Type
             if (in.Syntax.Type != out.Syntax.Type)
-               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) syntax", line, param), GetString(in.Syntax.Type), GetString(out.Syntax.Type));
+               throw TextMismatch(HERE, VString(L"(line %d, param %d) syntax", line, param), GetString(in.Syntax.Type), GetString(out.Syntax.Type));
 
             // Text
             if (in.Text != out.Text)
-               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) text", line, param), in.Text, out.Text);
+               throw TextMismatch(HERE, VString(L"(line %d, param %d) text", line, param), in.Text, out.Text);
 
             // Value
             if (in.Value.Type != out.Value.Type)
-               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value type", line, param), GetString(in.Value.Type), GetString(out.Value.Type));
+               throw TextMismatch(HERE, VString(L"(line %d, param %d) value type", line, param), GetString(in.Value.Type), GetString(out.Value.Type));
 
             else if (in.Value.Type == ValueType::Int && in.Value.Int != out.Value.Int)
-               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), in.Value.Int, out.Value.Int);
+               throw TextMismatch(HERE, VString(L"(line %d, param %d) value", line, param), in.Value.Int, out.Value.Int);
 
             else if (in.Value.Type == ValueType::String && in.Value.String != out.Value.String)
-               throw TextMismatch(HERE, GuiString(L"(line %d, param %d) value", line, param), in.Value.String, out.Value.String);
+               throw TextMismatch(HERE, VString(L"(line %d, param %d) value", line, param), in.Value.String, out.Value.String);
          }
          catch (ExceptionBase&)
          {
@@ -191,7 +191,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"text mismatch: %s", prop.c_str()), a, b);
+         return ValidationException(src, VString(L"text mismatch: %s", prop.c_str()), a, b);
       }
       
       /// <summary>Create text mismatch exception</summary>
@@ -202,7 +202,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptTextValidator::TextMismatch(const GuiString& src, const GuiString& prop, int a, int b)
       {
-         return ValidationException(src, GuiString(L"text mismatch: %s", prop.c_str()), GuiString(L"%d",a), GuiString(L"%d",b));
+         return ValidationException(src, VString(L"text mismatch: %s", prop.c_str()), VString(L"%d",a), VString(L"%d",b));
       }
    }
 }

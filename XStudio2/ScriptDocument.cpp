@@ -248,7 +248,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << "Committing script: " << FullPath << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Committing script '%s'", FullPath.c_str()));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Committing script '%s'", FullPath.c_str()));
 
          // Get project
          auto proj = ProjectDocument::GetActive();
@@ -268,7 +268,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
       catch (ExceptionBase&  e) 
       {
-         Console.Log(HERE, e, GuiString(L"Failed to commit script '%s'", FullPath.c_str()));
+         Console.Log(HERE, e, VString(L"Failed to commit script '%s'", FullPath.c_str()));
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to commit script");
          return FALSE;
       }
@@ -327,7 +327,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       // Feedback
       Console << Cons::UserAction << "Loading script: " << Path(szPathName) << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading script '%s'", szPathName));
+      data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading script '%s'", szPathName));
 
       try
       {
@@ -342,7 +342,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load script '%s'", szPathName));
+         theApp.ShowError(HERE, e, VString(L"Failed to load script '%s'", szPathName));
          return FALSE;
       }
    }
@@ -450,7 +450,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Feedback
          Console << Cons::UserAction << "Saving script: " << szPath << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving script '%s'", szPath));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Saving script '%s'", szPath));
 
          // Parse script 
          ScriptParser parser(Script, Edit->GetAllLines(), Script.Game);
@@ -467,7 +467,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
                Script.Version++;
 
             // Write to X-Studio program folder
-            StreamPtr fs(new FileStream(GuiString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
+            StreamPtr fs(new FileStream(VString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
             w.Write(Script);
             w.Close();
@@ -494,7 +494,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // Feedback messages in output window
             for (const auto& err : parser.Errors)
             {
-               GuiString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
+               VString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
                data.SendFeedback(ProgressType::Error, 1, msg);
             }
 
@@ -505,7 +505,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
       catch (ExceptionBase&  e) 
       {
-         Console.Log(HERE, e, GuiString(L"Failed to save script '%s'", szPath));
+         Console.Log(HERE, e, VString(L"Failed to save script '%s'", szPath));
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save script");
          return FALSE;
       }

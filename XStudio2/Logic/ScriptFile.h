@@ -114,7 +114,7 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="name">Label name</param>
          LabelNotFoundException(wstring  src, const wstring& name) 
-            : ExceptionBase(src, GuiString(L"Cannot find label '$%s'", name.c_str()))
+            : ExceptionBase(src, VString(L"Cannot find label '$%s'", name.c_str()))
          {}
       };
 
@@ -126,14 +126,14 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="name">Variable name</param>
          VariableNotFoundException(wstring  src, const wstring& name) 
-            : ExceptionBase(src, GuiString(L"Cannot find variable '$%s'", name.c_str()))
+            : ExceptionBase(src, VString(L"Cannot find variable '$%s'", name.c_str()))
          {}
 
          /// <summary>Create from a variable ID</summary>
          /// <param name="src">Location of throw</param>
          /// <param name="id">Variable id</param>
          VariableNotFoundException(wstring  src, UINT id) 
-            : ExceptionBase(src, GuiString(L"Cannot find variable with id=%d", id))
+            : ExceptionBase(src, VString(L"Cannot find variable with id=%d", id))
          {}
       };
 
@@ -398,7 +398,7 @@ namespace Logic
                   throw IndexOutOfRangeException(HERE, index, Arguments.size());
                // Ensure unique
                else if (Contains(arg.Name))
-                  throw InvalidOperationException(HERE, GuiString(L"Argument '%s' is already present", arg.Name.c_str()));
+                  throw InvalidOperationException(HERE, VString(L"Argument '%s' is already present", arg.Name.c_str()));
                
                // Sort all vars by ID, insert at appropriate place
                auto content = GetAll().SortByID;
@@ -498,7 +498,7 @@ namespace Logic
                   return pos->second;
 
                // Not found
-               throw InvalidOperationException(HERE, GuiString(L"No properties loaded for external script '%s'", name.c_str()));
+               throw InvalidOperationException(HERE, VString(L"No properties loaded for external script '%s'", name.c_str()));
             }
 
             /// <summary>Finds a name of script argument by index.</summary>
@@ -512,7 +512,7 @@ namespace Logic
                   return Find(script).Variables[index].Name;
                
                // Missing/Invalid: 
-               return GuiString(L"arg%d", index+1);
+               return VString(L"arg%d", index+1);
             }
 
             /// <summary>Finds a type of script argument by name</summary>

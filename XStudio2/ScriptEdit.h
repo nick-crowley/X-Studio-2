@@ -456,7 +456,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
                // Lookup description 
                DescriptionSource = DescriptionLib.Constants.Find(obj);
-               LabelSource = GuiString(L"[center][b]%s[/b][/center]", obj.Text.c_str());
+               LabelSource = VString(L"[center][b]%s[/b][/center]", obj.Text.c_str());
 
                // TODO: Supply icon
             }

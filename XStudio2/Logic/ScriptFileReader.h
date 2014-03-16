@@ -34,7 +34,7 @@ namespace Logic
             case GameVersion::TerranConflict:  return 44;
             case GameVersion::AlbionPrelude:   return 50;
             default:
-               throw ArgumentException(HERE, L"ver", GuiString(L"Unrecognised game version %d", ver));
+               throw ArgumentException(HERE, L"ver", VString(L"Unrecognised game version %d", ver));
             }
          }
       };

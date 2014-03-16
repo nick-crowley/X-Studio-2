@@ -116,7 +116,7 @@ namespace Logic
             case 9: return pos->Text == L"~" || pos->Text == L"!" || pos->Text == L"-"; 
             }
 
-            throw AlgorithmException(HERE, GuiString(L"Invalid precedence %d", precedence));
+            throw AlgorithmException(HERE, VString(L"Invalid precedence %d", precedence));
          }
 
          /// <summary>Reads the current token as a literal</summary>
@@ -142,7 +142,7 @@ namespace Logic
                }
           
             // Error:
-            throw AlgorithmException(HERE, GuiString(L"'%s' is not a literal", pos < InputEnd ? pos->Text : L"<eof>"));
+            throw AlgorithmException(HERE, VString(L"'%s' is not a literal", pos < InputEnd ? pos->Text : L"<eof>"));
          }
 
          /// <summary>Reads the current token as an operator</summary>
@@ -262,7 +262,7 @@ namespace Logic
                   throw ExpressionParserException(HERE, --pos, L"Missing operand");
 
                // Failed: Unexpected token
-               throw ExpressionParserException(HERE, pos, GuiString(L"Unexpected '%s'", pos->Text.c_str()));
+               throw ExpressionParserException(HERE, pos, VString(L"Unexpected '%s'", pos->Text.c_str()));
             }
             
             // Read: Expression  (may throw)

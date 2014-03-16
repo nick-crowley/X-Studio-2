@@ -355,7 +355,7 @@ namespace Logic
             UINT    i = 0;
             
             // Read values until not found
-            while (s.Read(GuiString(L"Item%d",i++).c_str(), str))
+            while (s.Read(VString(L"Item%d",i++).c_str(), str))
                values.push_back((const wchar*)str);
 
             // Cleanup
@@ -380,15 +380,15 @@ namespace Logic
 
          // Create/Open key
          if (!ss.CreateKey(key.c_str()))
-            throw Win32Exception(HERE, GuiString(L"Unable to create registry key '%s'", key.c_str()));
+            throw Win32Exception(HERE, VString(L"Unable to create registry key '%s'", key.c_str()));
 
          // Write list
          UINT val = 0;
          for (auto& str : values)
          {
-            auto entry = GuiString(L"Item%d",val++);
+            auto entry = VString(L"Item%d",val++);
             if (!ss.Write(entry.c_str(), str.c_str()))
-               throw Win32Exception(HERE, GuiString(L"Unable to write '%s' to registry key '%s\\%s'", str.c_str(), key.c_str(), entry.c_str()));
+               throw Win32Exception(HERE, VString(L"Unable to write '%s' to registry key '%s\\%s'", str.c_str(), key.c_str(), entry.c_str()));
          }
 
          // Cleanup

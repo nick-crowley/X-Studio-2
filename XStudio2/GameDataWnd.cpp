@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Create window
       if (!__super::Create(title.c_str(), parent, MainWnd::DefaultSize, TRUE, nID, style))
-	      throw Win32Exception(HERE, GuiString(L"Unable to create %s window", title.c_str()));
+	      throw Win32Exception(HERE, VString(L"Unable to create %s window", title.c_str()));
       SetIcon(theApp.LoadIconW(nIconID, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
       // Dock left/right

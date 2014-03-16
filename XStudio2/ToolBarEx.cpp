@@ -35,7 +35,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
          // Create
          if (!CMFCToolBar::Create(parent, AFX_DEFAULT_TOOLBAR_STYLE, nID))
-            throw Win32Exception(HERE, GuiString(L"Unable to create toolbar %d", nID));
+            throw Win32Exception(HERE, VString(L"Unable to create toolbar %d", nID));
 
          // Load toolbar + bitmaps
 	      LoadToolBar(nID, nID, nID, TRUE, nDisabledResID);

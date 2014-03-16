@@ -403,7 +403,7 @@ namespace Logic
             return pair->second;
 
          // Unrecognised group
-         throw InvalidValueException(HERE, GuiString(L"Unrecognised command group '%s' on line %d", name.c_str(), LineNumber));
+         throw InvalidValueException(HERE, VString(L"Unrecognised command group '%s' on line %d", name.c_str(), LineNumber));
       }
 
       /// <summary>Resolve a parameter type from the name</summary>
@@ -418,7 +418,7 @@ namespace Logic
             return pair->second;
 
          // Unrecognised group
-         throw InvalidValueException(HERE, GuiString(L"Unrecognised parameter type '%s' on line %d", name.c_str(), LineNumber) );
+         throw InvalidValueException(HERE, VString(L"Unrecognised parameter type '%s' on line %d", name.c_str(), LineNumber) );
       }
 
       /// <summary>Reads the next syntax block</summary>
@@ -492,7 +492,7 @@ namespace Logic
       {
          // Ensure line exists
          if (!ReadLine(line))
-            throw FileFormatException(HERE, GuiString(L"Missing %s on line %d", help, LineNumber));
+            throw FileFormatException(HERE, VString(L"Missing %s on line %d", help, LineNumber));
 
          return true;
       }

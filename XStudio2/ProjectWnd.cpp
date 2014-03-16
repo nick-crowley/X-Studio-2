@@ -323,7 +323,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // File: Ensure path exists, then delete
          if (item->IsFile())
             if (item->FullPath.Exists() && !DeleteFile(item->FullPath.c_str()))
-               throw Win32Exception(HERE, GuiString(L"Unable to delete '%s'", item->FullPath.c_str()));
+               throw Win32Exception(HERE, VString(L"Unable to delete '%s'", item->FullPath.c_str()));
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);

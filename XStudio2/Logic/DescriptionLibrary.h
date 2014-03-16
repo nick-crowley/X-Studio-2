@@ -17,14 +17,14 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="cmd">Command syntax</param>
          DescriptionNotFoundException(wstring  src, CommandSyntaxRef cmd) 
-            : ExceptionBase(src, GuiString(L"No tooltip for '%s'", cmd.Text.c_str()))
+            : ExceptionBase(src, VString(L"No tooltip for '%s'", cmd.Text.c_str()))
          {}
 
          /// <summary>Create a DescriptionNotFoundException for a script object</summary>
          /// <param name="src">Location of throw</param>
          /// <param name="obj">Object</param>
          DescriptionNotFoundException(wstring  src, const ScriptObject& obj) 
-            : ExceptionBase(src, GuiString(L"No tooltip for %s script object '%s'", GetString(obj.Group).c_str(), obj.Text.c_str()))
+            : ExceptionBase(src, VString(L"No tooltip for %s script object '%s'", GetString(obj.Group).c_str(), obj.Text.c_str()))
          {}
       };
 

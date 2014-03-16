@@ -98,7 +98,7 @@ namespace Logic
             {
                // Ensure tag is of correct class
                if (tag.Class != Class)
-                  throw ArgumentException(HERE, L"tag", GuiString(L"Cannot add %s tag to a %s stack", ::GetString(tag.Type).c_str(), GetString(tag.Class).c_str()) );
+                  throw ArgumentException(HERE, L"tag", VString(L"Cannot add %s tag to a %s stack", ::GetString(tag.Type).c_str(), GetString(tag.Class).c_str()) );
 
                // Open: Push stack
                if (tag.Opening)
@@ -110,7 +110,7 @@ namespace Logic
 
                else
                   // Mismatch: Error
-                  throw RichTextException(HERE, GuiString(L"Unexpected closing %s tag", ::GetString(tag.Type).c_str()) );
+                  throw RichTextException(HERE, VString(L"Unexpected closing %s tag", ::GetString(tag.Type).c_str()) );
             }
 
             // -------------------- REPRESENTATION ---------------------

@@ -148,7 +148,7 @@ namespace Logic
                   case Traversal::InOrder:   tokens += Open;   Expression->getTokenArray(t, tokens);   tokens += Close; break;
                   case Traversal::PostOrder: Expression->getTokenArray(t, tokens);  break;
                   default: 
-                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                     throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
                }
 
@@ -193,7 +193,7 @@ namespace Logic
                   case Traversal::InOrder:   return StringResource::Format(L"%s%s", Operator.Text.c_str(), Value->debugPrintTraversal(t).c_str());
                   case Traversal::PostOrder: return StringResource::Format(L"%s%s", Value->debugPrintTraversal(t).c_str(), Operator.Text.c_str());
                   default:
-                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                     throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
                }
 
@@ -211,7 +211,7 @@ namespace Logic
                   case Traversal::InOrder:   tokens += Operator;              Value->getTokenArray(t, tokens);  break;
                   case Traversal::PostOrder: Value->getTokenArray(t, tokens); tokens += Operator;               break;
                   default:  
-                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                     throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
                }
 
@@ -257,7 +257,7 @@ namespace Logic
                   case Traversal::InOrder:   return Left->debugPrintTraversal(t) + Operator.Text + Right->debugPrintTraversal(t);
                   case Traversal::PostOrder: return Left->debugPrintTraversal(t) + Right->debugPrintTraversal(t) + Operator.Text;
                   default:
-                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                     throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
                }
 
@@ -272,7 +272,7 @@ namespace Logic
                   case Traversal::InOrder:   Left->getTokenArray(t, tokens);  tokens += Operator;  Right->getTokenArray(t, tokens);   break;
                   case Traversal::PostOrder: Left->getTokenArray(t, tokens);  Right->getTokenArray(t, tokens); tokens += Operator;    break;
                   default:  
-                     throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised traversal type %d", t));
+                     throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
                }
 

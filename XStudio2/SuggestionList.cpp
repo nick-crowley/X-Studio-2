@@ -105,10 +105,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Get selection and format
       switch (SuggestionType)
       {
-      case Suggestion::GameObject:   return GuiString(L"{%s}", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
-      case Suggestion::ScriptObject: return GuiString(L"[%s]", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
-      case Suggestion::Variable:     return GuiString(L"$%s", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
-      case Suggestion::Label:        return GuiString(L"%s:", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::GameObject:   return VString(L"{%s}", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::ScriptObject: return VString(L"[%s]", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::Variable:     return VString(L"$%s", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
+      case Suggestion::Label:        return VString(L"%s:", Content[GetNextItem(-1, LVNI_SELECTED)].Text.c_str());
       case Suggestion::Command:      return Content[GetNextItem(-1, LVNI_SELECTED)].Text;
       default:  return L"Error";
       }
@@ -354,7 +354,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Query ScriptFile
       case Suggestion::Label:       
          for (auto& lab : Script->Labels)
-            Content.push_back( SuggestionItem(lab.Name, GuiString(L"Line %d", lab.LineNumber)) );
+            Content.push_back( SuggestionItem(lab.Name, VString(L"Line %d", lab.LineNumber)) );
          break;
 
       // Query SyntaxLibrary

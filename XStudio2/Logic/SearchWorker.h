@@ -65,7 +65,7 @@ namespace Logic
          /// <summary>Feedbacks the match.</summary>
          void  FeedbackMatch()
          {
-            SendFeedback(ProgressType::Info, 1, GuiString(L"%s (%d) : %s", Match.FullPath.FileName.c_str(), 
+            SendFeedback(ProgressType::Info, 1, VString(L"%s (%d) : %s", Match.FullPath.FileName.c_str(), 
                                                                            Match.LineNumber, 
                                                                            Match.LineText.c_str()));
          }
@@ -75,7 +75,7 @@ namespace Logic
          {
             // Feedback
             auto txt = (Match.UseRegEx ? L"Searching for '%s' in %s using regular expressions" : L"Searching for '%s' in %s");
-            SendFeedback(ProgressType::Operation, 0, GuiString(txt, Match.SearchTerm.c_str(), GetString(Target).c_str()) );
+            SendFeedback(ProgressType::Operation, 0, VString(txt, Match.SearchTerm.c_str(), GetString(Target).c_str()) );
          }
 
          // -------------------- REPRESENTATION ---------------------

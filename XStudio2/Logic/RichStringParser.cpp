@@ -66,7 +66,7 @@ namespace Logic
          }
          
          // Not paragraph tag
-         throw ArgumentException(HERE, L"t", GuiString(L"Cannot get alignment for %s tag", ::GetString(t).c_str()));
+         throw ArgumentException(HERE, L"t", VString(L"Cannot get alignment for %s tag", ::GetString(t).c_str()));
       }
 
       /// <summary>Gets the class of a tag</summary>
@@ -120,7 +120,7 @@ namespace Logic
 
          // Validate
          if ((UINT)c > (UINT)TagClass::Special)
-            throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised tag class %d", c));
+            throw ArgumentException(HERE, L"c", VString(L"Unrecognised tag class %d", c));
 
          return str[(UINT)c];
       }
@@ -138,7 +138,7 @@ namespace Logic
 
          // Validate
          if ((UINT)t >= (UINT)TagType::Unrecognised)
-            throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised tag type %d", t));
+            throw ArgumentException(HERE, L"t", VString(L"Unrecognised tag type %d", t));
 
          return str[(UINT)t];
       }
@@ -346,7 +346,7 @@ namespace Logic
       {
          // Ensure tag is 'select'
          if (tag.Type != TagType::Select)
-            throw InvalidOperationException(HERE, GuiString(L"Cannot create a button from a '%s' tag", ::GetString(tag.Type).c_str()) );
+            throw InvalidOperationException(HERE, VString(L"Cannot create a button from a '%s' tag", ::GetString(tag.Type).c_str()) );
 
          // Anonymous: Use text only
          if (tag.Properties.empty())
@@ -355,7 +355,7 @@ namespace Logic
          {
             // Ensure property is 'value'
             if (tag.Properties.front().Name != L"value")
-               throw RichTextException(HERE, GuiString(L"Unrecognised button property '%s'", tag.Properties.front().Name.c_str()) );
+               throw RichTextException(HERE, VString(L"Unrecognised button property '%s'", tag.Properties.front().Name.c_str()) );
 
             // Return text + ID
             return new RichButton(tag.Text, tag.Properties.front().Value);
@@ -445,7 +445,7 @@ namespace Logic
          case 'Y':   c = Colour::Yellow;  break;
          case 'Z':   c = Colour::Black;   break;
          default:
-            throw AlgorithmException(HERE, GuiString(L"Previously matched colour code '%c' is unrecognised", *pos));
+            throw AlgorithmException(HERE, VString(L"Previously matched colour code '%c' is unrecognised", *pos));
          }
 
          // Consume + return colour
@@ -481,7 +481,7 @@ namespace Logic
                if (!regex_search(pos, Input.cend(), matches, type == TagType::Title  ? IsTitleDefinition
                                                            : type == TagType::Author ? IsAuthorDefinition
                                                                                      : IsButtonDefinition)) 
-                  throw RichTextException(HERE, GuiString(L"Invalid [%s] tag", ::GetString(type).c_str()));
+                  throw RichTextException(HERE, VString(L"Invalid [%s] tag", ::GetString(type).c_str()));
 
                // Advance iterator.  Return title text
                pos += matches[0].length()-1;
@@ -534,7 +534,7 @@ namespace Logic
       {
          // Ensure tag is 'text'
          if (tag.Type != TagType::Text)
-            throw InvalidOperationException(HERE, GuiString(L"Cannot extract column info from a '%s' tag", ::GetString(tag.Type).c_str()) );
+            throw InvalidOperationException(HERE, VString(L"Cannot extract column info from a '%s' tag", ::GetString(tag.Type).c_str()) );
 
          // Extract properties direct into output
          for (const Property& p : tag.Properties)
@@ -545,7 +545,7 @@ namespace Logic
                // Verify
                auto cols = _ttoi(p.Value.c_str());
                if (cols < 0 || cols > 3)
-                  throw RichTextException(HERE, GuiString(L"Cannot arrange text in %d columns", cols));
+                  throw RichTextException(HERE, VString(L"Cannot arrange text in %d columns", cols));
                Output.Columns = static_cast<ColumnType>(cols);
             }
             // Column width
@@ -556,7 +556,7 @@ namespace Logic
                Output.Spacing = _ttoi(p.Value.c_str());
             else
                // Unrecognised
-               throw RichTextException(HERE, GuiString(L"Invalid 'text' tag property '%s'", p.Name.c_str()));
+               throw RichTextException(HERE, VString(L"Invalid 'text' tag property '%s'", p.Name.c_str()));
          }
       }
 

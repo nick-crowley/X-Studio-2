@@ -310,13 +310,13 @@ namespace Logic
             else
             {
                // Line#/Logic/Text
-               GuiString line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
-                         logic(::GetString(Logic)),
-                         txt(LineText);
+               VString   line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
+                         logic(::GetString(Logic));
+               GuiString txt(LineText);
                Cons      colour(Cons::White);
             
                // Index
-               line += GuiString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
+               line += VString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
             
                // Logic
                switch (Logic)
@@ -325,8 +325,8 @@ namespace Logic
                default: 
                   colour = Cons::Cyan;
                   if (JumpTarget)
-                     txt = (JumpTarget->Index ? GuiString(L"Jump-if-false: %d", JumpTarget->Index) 
-                                              : GuiString(L"<Invalid JumpTarget> : ") + JumpTarget->LineCode);
+                     txt = (JumpTarget->Index ? VString(L"Jump-if-false: %d", JumpTarget->Index) 
+                                              : VString(L"<Invalid JumpTarget> : ") + JumpTarget->LineCode);
                   break;
 
                // NOP:
@@ -345,7 +345,7 @@ namespace Logic
 
                      // Post-Compile: Display label number 
                      if (JumpTarget)
-                        txt += GuiString(L"%d", JumpTarget->Index);
+                        txt += VString(L"%d", JumpTarget->Index);
                      // Pre-Compile: Label name
                      else 
                         txt += (!Parameters.empty() ? Parameters[0].Token.Text : L"<missing>");
@@ -564,7 +564,7 @@ namespace Logic
          {
             // Not found: Error
             if (IsRoot())
-               throw AlgorithmException(HERE, GuiString(L"Cannot find %s", help));
+               throw AlgorithmException(HERE, VString(L"Cannot find %s", help));
 
             // Find next sibling node containing a standard command
             auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), d);
@@ -589,7 +589,7 @@ namespace Logic
 
                // Verify linkage
                if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-                  errors += MakeError( GuiString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->LineCode.c_str()) ); 
+                  errors += MakeError( VString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->LineCode.c_str()) ); 
             }
 
             // Recurse into children
@@ -689,7 +689,7 @@ namespace Logic
                   auto name = Parameters[0].Value.String;
                   // Ensure unique
                   if (!script.Labels.Add(name, LineNumber))
-                     errors += MakeError(GuiString(L"Label '%s' already defined on line %d", name.c_str(), script.Labels[name].LineNumber), Parameters[0].Token);
+                     errors += MakeError(VString(L"Label '%s' already defined on line %d", name.c_str(), script.Labels[name].LineNumber), Parameters[0].Token);
                }
 
    #ifdef VALIDATION
@@ -724,7 +724,7 @@ namespace Logic
                }
                catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
-                     //Console.Log(HERE, e, GuiString(L"Unable to resolve call to external script '%s'", call.c_str()));
+                     //Console.Log(HERE, e, VString(L"Unable to resolve call to external script '%s'", call.c_str()));
                }
             }
 
@@ -821,7 +821,7 @@ namespace Logic
                      JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
 
                      if (!JumpTarget)     // Previously identified, should always be found
-                        throw AlgorithmException(HERE, GuiString(L"Cannot find label %s", Parameters[0].Value.String.c_str()));
+                        throw AlgorithmException(HERE, VString(L"Cannot find label %s", Parameters[0].Value.String.c_str()));
                   }
                   break;
                }
@@ -888,7 +888,7 @@ namespace Logic
                   // Verify vArg argument count     [Genuine CallScript commands can have unlimited arguments]
                   if (!Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
                      if (Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
-                        errQueue += MakeError(GuiString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
+                        errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
 
                   // Error in CmdComment: Silently revert to ordinary comment
                   if (CmdComment && !errQueue.empty())
@@ -1042,18 +1042,18 @@ namespace Logic
 
                   // Verify argument name
                   if (!call.Variables.Contains(p.ArgName.Text))
-                     errors += MakeError(GuiString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
+                     errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
                   else 
                   {
                      auto arg = call.Variables[p.ArgName.Text];
                      
                      // Verify argument order
                      if (arg.ID != index-Syntax.Parameters.size())
-                        errors += MakeError(GuiString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
+                        errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
 
                      // Verify argument type 
                      if (!ParameterSyntax::Verify(arg.ValueType, p.Type))
-                        errors += MakeError(GuiString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ValueType).c_str()), p.Token);
+                        errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ValueType).c_str()), p.Token);
 
                   }
                }
@@ -1061,7 +1061,7 @@ namespace Logic
             }
             // Std parameter: Check value vs. type
             else if (!p.Syntax.Verify(p.Type))
-               errors += MakeError(GuiString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
+               errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
          }
 
          /// <summary>Verifies that all control paths lead to termination.</summary>
@@ -1120,7 +1120,7 @@ namespace Logic
                   break;
 
                default:
-                  throw AlgorithmException(HERE, GuiString(L"Unexpected branching logic '%s' for an executable child", ::GetString(last->Logic)));
+                  throw AlgorithmException(HERE, VString(L"Unexpected branching logic '%s' for an executable child", ::GetString(last->Logic)));
                }
             }
          }

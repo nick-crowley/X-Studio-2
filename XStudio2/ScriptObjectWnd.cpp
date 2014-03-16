@@ -116,7 +116,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Insert item
          if (ListView.InsertItem((LVITEM*)&item) == -1)
-            throw Win32Exception(HERE, GuiString(L"Unable to insert %s '%s' (item %d)", GetString(obj->Group).c_str(), item.pszText, i-1));
+            throw Win32Exception(HERE, VString(L"Unable to insert %s '%s' (item %d)", GetString(obj->Group).c_str(), item.pszText, i-1));
       }
    }
    // ------------------------------- PRIVATE METHODS ------------------------------

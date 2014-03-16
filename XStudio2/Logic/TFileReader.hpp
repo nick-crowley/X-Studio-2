@@ -110,7 +110,7 @@ namespace Logic
             // Ensure decimal
             for (WCHAR& ch : sz)
                if (!iswdigit(ch) && ch != L'.' && ch != L'+' && ch != L'-')
-                  throw FileFormatException(HERE, LineNumber, GuiString(L"%s is not a decimal : '%s'", field, sz.c_str()));
+                  throw FileFormatException(HERE, LineNumber, VString(L"%s is not a decimal : '%s'", field, sz.c_str()));
 
             // Conver to float
             return (float)_wtof(sz.c_str());
@@ -174,7 +174,7 @@ namespace Logic
             // Ensure numeric
             for (WCHAR& ch : sz)
                if (!iswdigit(ch) && ch != L'-')
-                  throw FileFormatException(HERE, LineNumber, GuiString(L"%s is not an integer : '%s'", field, sz.c_str()));
+                  throw FileFormatException(HERE, LineNumber, VString(L"%s is not an integer : '%s'", field, sz.c_str()));
 
             // Conver to int
             return _wtoi(sz.c_str());
@@ -193,7 +193,7 @@ namespace Logic
 
             // Ensure not EOF
             if (IsEOF())
-               throw FileFormatException(HERE, GuiString(L"Unexpected end-of-file while searching for %s", field));
+               throw FileFormatException(HERE, VString(L"Unexpected end-of-file while searching for %s", field));
 
             // Read each char
             while (ReadChar(ch))

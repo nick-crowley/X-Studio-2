@@ -557,7 +557,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pt">The caret position</param>
    void MainWnd::OnScriptCaretMoved(POINT pt)
    {
-      m_wndStatusBar.SetPaneText(1, GuiString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
+      m_wndStatusBar.SetPaneText(1, VString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
    }
    
    /// <summary>Called when shown.</summary>

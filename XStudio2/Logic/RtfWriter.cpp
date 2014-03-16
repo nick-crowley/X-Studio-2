@@ -128,7 +128,7 @@ namespace Logic
             }
 
          // Unknown colour
-         throw ArgumentException(HERE, L"c", GuiString(L"No such colour 0x%X in the colour table", c));
+         throw ArgumentException(HERE, L"c", VString(L"No such colour 0x%X in the colour table", c));
       }
 
       /// <summary>Sets or clears bold text</summary>
@@ -178,7 +178,7 @@ namespace Logic
             }
 
          // Unknown colour
-         throw ArgumentException(HERE, L"c", GuiString(L"No such colour 0x%X in the colour table", c));
+         throw ArgumentException(HERE, L"c", VString(L"No such colour 0x%X in the colour table", c));
       }
 
       /// <summary>Sets the font size</summary>

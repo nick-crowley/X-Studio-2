@@ -59,11 +59,11 @@ namespace Logic
          /// <exception cref="Logic::InvalidValueException">Invalid string ID</exception>
          static pair<int, int>  ToCoordinates(UINT stringID)
          {
-            GuiString id(L"%d", stringID);
+            VString id(L"%d", stringID);
 
             // Ensure valid
             if (id.length() != 7 || id.substr(0,3) != L"102")
-                throw InvalidValueException(HERE, GuiString(L"%d is not a valid sector string ID", stringID));
+                throw InvalidValueException(HERE, VString(L"%d is not a valid sector string ID", stringID));
 
             // Extract '102xxyy'
             int x = _ttoi(id.substr(3,2).c_str());
@@ -109,7 +109,7 @@ namespace Logic
             case 1102424:  return Relation::Neutral;
             case 1102422:  return Relation::Friend;
             default:
-               throw InvalidValueException(HERE, GuiString(L"%d is not a valid relation string ID", stringID));
+               throw InvalidValueException(HERE, VString(L"%d is not a valid relation string ID", stringID));
             }
          }
 
@@ -125,7 +125,7 @@ namespace Logic
             case Relation::Neutral:  return 1102424; 
             case Relation::Friend:   return 1102422; 
             default:
-               throw InvalidValueException(HERE, GuiString(L"%d is not a valid relation value", r));
+               throw InvalidValueException(HERE, VString(L"%d is not a valid relation value", r));
             }
          }
       };

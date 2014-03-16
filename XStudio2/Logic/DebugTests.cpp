@@ -528,7 +528,7 @@ namespace Logic
          Console << Cons::Heading << "Testing Language file iterator..." << ENDL;
          for (const LanguagePage& page : langFile)
             for (const LanguageString& str : page)
-               Console << GuiString(L"{%d:%d} %s", str.Page, str.ID, str.Text.c_str()) << ENDL;
+               Console << VString(L"{%d:%d} %s", str.Page, str.ID, str.Text.c_str()) << ENDL;
       }
       catch (ExceptionBase&  e)
       {

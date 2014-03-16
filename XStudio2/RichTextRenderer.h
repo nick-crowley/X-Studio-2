@@ -110,7 +110,7 @@ namespace GUI
                return (COLORREF)ForRichText(Colour);
             }
             
-            throw ArgumentException(HERE, L"flags", GuiString(L"Invalid render flag %d", flags));
+            throw ArgumentException(HERE, L"flags", VString(L"Invalid render flag %d", flags));
          }
 
          /// <summary>Creates a new font to represent this phrase</summary>

@@ -201,9 +201,9 @@ namespace Logic
             {
                // Validate line number
                if (cmd.GetJumpDestination() >= std.size())
-                  throw InvalidValueException(HERE, GuiString(L"Goto/gosub on line %d jumps to non-existent address %d", line, cmd.GetJumpDestination()));
+                  throw InvalidValueException(HERE, VString(L"Goto/gosub on line %d jumps to non-existent address %d", line, cmd.GetJumpDestination()));
                else if (!std[cmd.GetJumpDestination()].Is(CMD_DEFINE_LABEL))
-                  throw InvalidValueException(HERE, GuiString(L"Goto/gosub on line %d jumps to non-label : %s", line, std[cmd.GetJumpDestination()].Syntax.Text.c_str()));
+                  throw InvalidValueException(HERE, VString(L"Goto/gosub on line %d jumps to non-label : %s", line, std[cmd.GetJumpDestination()].Syntax.Text.c_str()));
                
                // Convert label number -> label name
                cmd.SetLabelName( std[cmd.GetJumpDestination()].GetLabelName() );
@@ -228,7 +228,7 @@ namespace Logic
                }
                catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
-                     //Console.Log(HERE, e, GuiString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
+                     //Console.Log(HERE, e, VString(L"Unable to resolve '%s' call to external script '%s'", script.Name.c_str(), name.c_str()));
                }
             }
 

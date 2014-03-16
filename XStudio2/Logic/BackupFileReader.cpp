@@ -113,7 +113,7 @@ namespace Logic
             else if (ver == L"X3AP")
                r.Game = GameVersion::AlbionPrelude;
             else
-               throw InvalidValueException(HERE, GuiString(L"Unrecognised engine version '%s'", ver.c_str()));
+               throw InvalidValueException(HERE, VString(L"Unrecognised engine version '%s'", ver.c_str()));
 
             // Description
             r.Description = GetChild(n, 3, L"script description")->text;

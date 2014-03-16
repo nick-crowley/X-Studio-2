@@ -202,7 +202,7 @@ namespace GUI
 
          // Check for words too long to fit on a line
          if (w == start)
-            throw AlgorithmException(HERE, GuiString(L"Unable to fit '%s' on a single line", start->Text.c_str()));
+            throw AlgorithmException(HERE, VString(L"Unable to fit '%s' on a single line", start->Text.c_str()));
 
          // Consume words + Return remaining line length
          start = w;
@@ -240,7 +240,7 @@ namespace GUI
             dc->SelectObject(oldFont);
 
             // DEBUG:
-            //Console << Cons::Yellow << GuiString(L"RenderLine: {'%s', %d}", w->Text.c_str(), w->Rect.Width()) << ENDL;
+            //Console << Cons::Yellow << VString(L"RenderLine: {'%s', %d}", w->Text.c_str(), w->Rect.Width()) << ENDL;
 
             // Draw word
             dc->SelectObject(w->Font.get());

@@ -129,7 +129,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          dc.SelectObject(&BoldFont);
          if (!calculate)
          { 
-            dc.DrawText(GuiString(L"Version: %d", item.Version).c_str(), rc, DT_LEFT|DT_TOP);      // Version xyz
+            dc.DrawText(VString(L"Version: %d", item.Version).c_str(), rc, DT_LEFT|DT_TOP);      // Version xyz
             dc.DrawText(item.Date.Format(L"%d %b '%y %I:%M%p"), rc, DT_RIGHT|DT_TOP);              // dd mmm yy hh:mm pm
          }
          rc.top += dc.GetTextExtent(L"ABC").cy;
@@ -435,7 +435,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          List.ResetContent();
 
          if (doc)
-            theApp.ShowError(HERE, e, GuiString(L"Cannot open backup file for '%s'", (LPCWSTR)doc->GetTitle()));
+            theApp.ShowError(HERE, e, VString(L"Cannot open backup file for '%s'", (LPCWSTR)doc->GetTitle()));
       }
 
       // Redraw

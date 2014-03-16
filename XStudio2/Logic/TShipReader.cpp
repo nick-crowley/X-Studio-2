@@ -106,7 +106,7 @@ namespace Logic
 			   }
 		   }
          catch(ExceptionBase& e) { 
-            throw FileFormatException(HERE, GuiString(L"Error loading weapon group %d : %s", i, e.Message.c_str())); 
+            throw FileFormatException(HERE, VString(L"Error loading weapon group %d : %s", i, e.Message.c_str())); 
          }
 	   }
 
@@ -128,7 +128,7 @@ namespace Logic
 			   }
 		   }
          catch(ExceptionBase& e) { 
-            throw FileFormatException(HERE, GuiString(L"Error loading turret %d : %s", i, e.Message.c_str())); 
+            throw FileFormatException(HERE, VString(L"Error loading turret %d : %s", i, e.Message.c_str())); 
          }
 	   }
 
@@ -155,7 +155,7 @@ namespace Logic
 			   }
 		   }
 		   catch(ExceptionBase& e) { 
-            throw FileFormatException(HERE, GuiString(L"Error loading Weapon %d : %s", i, e.Message.c_str())); 
+            throw FileFormatException(HERE, VString(L"Error loading Weapon %d : %s", i, e.Message.c_str())); 
          }
 	   }
    }

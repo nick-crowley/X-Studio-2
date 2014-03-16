@@ -199,7 +199,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <summary>Create language file ID property.</summary>
          /// <param name="doc">Language document.</param>
          IDProperty(LanguageDocument& doc)
-            : PropertyBase(doc, L"ID", GuiString(L"%d", doc.File.ID).c_str(),  L"File ID")
+            : PropertyBase(doc, L"ID", VString(L"%d", doc.File.ID).c_str(),  L"File ID")
          {}
 
          // ---------------------- ACCESSORS ------------------------	

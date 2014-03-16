@@ -652,7 +652,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       }
       catch (ExceptionBase& e) {
-         Console.Log(HERE, e, GuiString(L"Unable to process '%c' character", (wchar)nChar)); 
+         Console.Log(HERE, e, VString(L"Unable to process '%c' character", (wchar)nChar)); 
       }
    }
    
@@ -793,7 +793,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
       }
       catch (ExceptionBase& e) { 
-         Console.Log(HERE, e, GuiString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
+         Console.Log(HERE, e, VString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
       }
    }
 
@@ -845,7 +845,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
       } 
       catch (ExceptionBase& e) {
-         Console.Log(HERE, e, GuiString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
+         Console.Log(HERE, e, VString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
       }
    }
    
@@ -901,7 +901,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       while (dc.RectVisible(rect))
       {
          // Draw 1-based line number
-         auto s = GuiString(L"%d", 1+rect.LineNumber);
+         auto s = VString(L"%d", 1+rect.LineNumber);
          dc.DrawText(s.c_str(), s.length(), rect, DT_RIGHT|DT_BOTTOM|DT_SINGLELINE);
 
          // Move to next line

@@ -52,31 +52,18 @@ namespace Logic
       GuiString(wstring&& r) : wstring(move(r))
       {}
 
-      /// <summary>Loads and formats a resource string</summary>
+      /// <summary>Loads a resource string</summary>
       /// <param name="id">Resource ID</param>
-      /// <param name="">Arguments</param>
-      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
-      GuiString(UINT id, ...)
+      GuiString(UINT id)
       {
-         va_list args;
-         assign( StringResource::LoadV(id, va_start(args, id)) );
+         assign( StringResource::Load(id) );
       }
 
       /// <summary>Create from char array</summary>
       /// <param name="src">Source</param>
-      /*GuiString(const WCHAR* src)
+      GuiString(const WCHAR* src)
       {
          assign(src);
-      }*/
-
-      /// <summary>Loads and formats a string</summary>
-      /// <param name="format">Formatting string</param>
-      /// <param name="">Arguments</param>
-      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
-      GuiString(const WCHAR* format, ...)
-      {
-         va_list args;
-         assign( StringResource::FormatV(format, va_start(args, format)) );
       }
 
       /// <summary>Creates string from iterators</summary>
@@ -254,6 +241,34 @@ namespace Logic
 
          return s;
       }
+
+   };
+
+
+   class VString : public GuiString
+   {
+   public:
+      /// <summary>Loads and formats a string</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="">Arguments</param>
+      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
+      VString(const WCHAR* format, ...)
+      {
+         va_list args;
+         assign( StringResource::FormatV(format, va_start(args, format)) );
+      }
+
+      
+      /// <summary>Loads and formats a resource string</summary>
+      /// <param name="id">Resource ID</param>
+      /// <param name="">Arguments</param>
+      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
+      VString(UINT id, ...)
+      {
+         va_list args;
+         assign( StringResource::LoadV(id, va_start(args, id)) );
+      }
+
 
    };
 

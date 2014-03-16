@@ -57,7 +57,7 @@ namespace Logic
          /// <summary>Get string/int value as string</summary>
          GuiString ToString() const
          {
-            return Type == ValueType::String ? String : GuiString(L"%d", Int);
+            return Type == ValueType::String ? String : VString(L"%d", Int);
          }
 
          /// <summary>Compare two values</summary>

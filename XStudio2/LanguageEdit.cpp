@@ -450,11 +450,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Author:
       if (!Content.Author.empty())
-         source += GuiString(L"[author]%s[/author]", Content.Author.c_str());
+         source += VString(L"[author]%s[/author]", Content.Author.c_str());
       
       // Title:
       if (!Content.Title.empty())
-         source += GuiString(L"[title]%s[/title]", Content.Title.c_str());
+         source += VString(L"[title]%s[/title]", Content.Title.c_str());
 
       // Columns:
       if (Content.Columns != ColumnType::Default || Content.Width || Content.Spacing)
@@ -463,11 +463,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          
          // Properties:
          if (Content.Columns != ColumnType::Default)
-            source += GuiString(L" cols='%d'", Content.Columns);
+            source += VString(L" cols='%d'", Content.Columns);
          if (Content.Width)
-            source += GuiString(L" colwidth='%d'", Content.Width);
+            source += VString(L" colwidth='%d'", Content.Width);
          if (Content.Spacing)
-            source += GuiString(L" colspacing='%d'", Content.Spacing);
+            source += VString(L" colspacing='%d'", Content.Spacing);
 
          // Content
          source += L"]";

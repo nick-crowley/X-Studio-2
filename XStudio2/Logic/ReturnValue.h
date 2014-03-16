@@ -89,7 +89,7 @@ namespace Logic
                break;
 
             default:
-               throw ArgumentException(HERE, L"c", GuiString(L"Invalid conditional: %d", c));
+               throw ArgumentException(HERE, L"c", VString(L"Invalid conditional: %d", c));
             }
          }
 

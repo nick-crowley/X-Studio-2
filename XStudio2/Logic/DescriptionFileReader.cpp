@@ -104,7 +104,7 @@ namespace Logic
          else if (tmp == L"X3AP")
             ver = GameVersion::AlbionPrelude;
          else
-            throw InvalidValueException(HERE, GuiString(L"Unrecognised version '%s'", tmp.c_str()));
+            throw InvalidValueException(HERE, VString(L"Unrecognised version '%s'", tmp.c_str()));
 
          // Create command description
          return CommandDescription(id, ver, (wchar*)n->text);  

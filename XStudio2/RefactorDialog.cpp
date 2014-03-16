@@ -47,7 +47,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          for (auto& s : AllSymbols)
          {
             // Format: (line) text
-            GuiString line(L"(%d) %s%s", s.LineNumber, s.Commented ? L"* " : L"", s.LineText.TrimLeft(L" \t").c_str());
+            VString line(L"(%d) %s%s", s.LineNumber, s.Commented ? L"* " : L"", s.LineText.TrimLeft(L" \t").c_str());
 
             // Insert item
             List.InsertString(i, line.c_str());
