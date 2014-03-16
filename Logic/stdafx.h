@@ -44,7 +44,7 @@ using namespace std;
 // Utils
 #include "../Utils/Utils.h"
 
-// Import Resource IDs from resource project
+// Import Resource IDs 
 #include "../Resources/Resources.h"
 
 

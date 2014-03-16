@@ -62,22 +62,9 @@ using namespace std;
 // Preferences
 #include "../Logic/PreferencesLibrary.h"
 
-// Import Resource IDs from resource project
-#include "D:/My Projects/XStudio2/Resources/Resources.h"
+// Import Resource IDs 
+#include "../Resources/Resources.h"
 
 
-
-
-
-// Common controls
-#ifdef _UNICODE
-#if defined _M_IX86
+// Common controls v6.0
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#elif defined _M_X64
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#else
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#endif
-#endif
-
-
