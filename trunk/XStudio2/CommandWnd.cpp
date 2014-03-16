@@ -9,6 +9,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // --------------------------------- APP WIZARD ---------------------------------
   
    BEGIN_MESSAGE_MAP(CCommandWnd, CGameDataWnd)
+      ON_WM_CONTEXTMENU()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -45,6 +46,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Format item
       return cmd ? cmd->GetDisplayText() : L"";
+   }
+
+   /// <summary>Called when context menu.</summary>
+   /// <param name="wnd">window.</param>
+   /// <param name="pt">Point in screen co-ordinates.</param>
+   void  CCommandWnd::OnContextMenu(CWnd* wnd, CPoint pt)
+   {
+      __super::OnContextMenu(wnd, pt);
    }
 
    

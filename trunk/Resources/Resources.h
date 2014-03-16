@@ -32,6 +32,7 @@
 #define IDM_OUTPUT_POPUP                163
 #define IDM_STRINGVIEW_POPUP            164
 #define IDM_BACKUP_POPUP                165
+#define IDM_GAMEDATA_POPUP              166
 
 ///////////////////////////////// BITMAPS //////////////////////////////
 
@@ -72,20 +73,21 @@
 #define ID_VIEW_PROJECT                 260
 #define ID_VIEW_SCRIPT_OBJECTS          261
 #define ID_VIEW_GAME_OBJECTS            262
-#define ID_VIEW_COMMANDS                263
-#define ID_VIEW_OUTPUT                  264
-#define ID_VIEW_BACKUP                  265
-#define ID_VIEW_PROPERTIES              266
-#define ID_VIEW_STRING_LIBRARY          267
-#define ID_VIEW_MEDIA_LIBRARY           268
-#define ID_VIEW_CUSTOMIZE               269
+#define ID_VIEW_CONSOLE                 263
+#define ID_VIEW_COMMANDS                264
+#define ID_VIEW_OUTPUT                  265
+#define ID_VIEW_BACKUP                  266
+#define ID_VIEW_PROPERTIES              267
+#define ID_VIEW_STRING_LIBRARY          268
+#define ID_VIEW_MEDIA_LIBRARY           269
+#define ID_VIEW_CUSTOMIZE               270
 
 // Window menu
-#define ID_WINDOW_MANAGER               270
+#define ID_WINDOW_MANAGER               271
 
 // Help
-#define ID_HELP_FORUMS                  271
-#define ID_VIEW_CONSOLE                 272
+#define ID_HELP_FORUMS                  272
+
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 
@@ -141,6 +143,11 @@
 #define ID_EDIT_OUTDENT                 457
 #define ID_EDIT_FORMAT_SEL              458
 #define ID_EDIT_FORMAT_DOC              459
+
+// GameData ContextMenu
+#define ID_GAMEDATA_INSERT              500
+#define ID_GAMEDATA_LOOKUP              501
+
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 

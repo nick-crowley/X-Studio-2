@@ -57,6 +57,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void    PopulateGroupCombo() override;
       void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) override;
 
+      void    OnContextMenu(CWnd* wnd, CPoint pt);
       void    OnRequestTooltip(CustomTooltip::TooltipData* data) override;
 
       // -------------------- REPRESENTATION ---------------------
