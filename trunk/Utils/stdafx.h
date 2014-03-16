@@ -42,11 +42,11 @@ using namespace std;
 #include <comdef.h>
 
 // Utils
-#include "Macros.h"
-#include "GuiString.h"
-#include "Path.h"
-#include "Exceptions.h"
-#include "ConsoleWnd.h"
+#include "Common.h"
+//#include "GuiString.h"
+//#include "Path.h"
+//#include "Exceptions.h"
+//#include "ConsoleWnd.h"
 
 // Import Resource IDs from resource project
 #include "../Resources/Resources.h"

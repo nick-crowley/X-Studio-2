@@ -138,6 +138,7 @@
     <ClInclude Include="..\Utils\Macros.h" />
     <ClInclude Include="..\Utils\Path.h" />
     <ClInclude Include="..\Utils\stdafx.h" />
+    <ClInclude Include="..\Utils\Types.h" />
     <ClInclude Include="..\Utils\Utils.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
