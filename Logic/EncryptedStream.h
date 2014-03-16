@@ -8,7 +8,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of catalogs</summary>
-      class EncryptedStream : public StreamFacade
+      class LogicExport EncryptedStream : public StreamFacade
       {
       private:
          const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);

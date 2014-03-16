@@ -13,7 +13,7 @@ namespace Logic
       wstring GetString(FileType t);
 
       /// <summary></summary>
-      class FileIdentifier
+      class LogicExport FileIdentifier
       {
 		   // ------------------------ TYPES --------------------------
       private:

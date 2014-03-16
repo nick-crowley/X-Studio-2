@@ -29,7 +29,7 @@ namespace Logic
       
       
       /// <summary>Occurs when a MSCI script object is unrecognised</summary>
-      class ScriptObjectNotFoundException : public ExceptionBase
+      class LogicExport ScriptObjectNotFoundException : public ExceptionBase
       {
       public:
          /// <summary>Create a ScriptObjectNotFoundException</summary>
@@ -54,7 +54,7 @@ namespace Logic
       typedef const ScriptObject&  ScriptObjectRef;
 
       /// <summary>Represents a script object</summary>
-      class ScriptObject 
+      class LogicExport ScriptObject 
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

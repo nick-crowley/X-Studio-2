@@ -10,7 +10,7 @@ namespace Logic
    namespace Types
    {
       /// <summary></summary>
-      class TFilenameReader
+      class LogicExport TFilenameReader
       {
       public:
          TFilenameReader(Path p) : Valid(true), Type(MainType::Unknown)
@@ -52,7 +52,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class GameObjectLibrary
+      class LogicExport GameObjectLibrary
       {
 		   // ------------------------ TYPES --------------------------
       public:

@@ -8,7 +8,7 @@ namespace Logic
    namespace Language
    {
       /// <summary></summary>
-      class Description
+      class LogicExport Description
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -23,7 +23,7 @@ namespace Logic
 
 
       /// <summary></summary>
-      class CommandDescription : public Description
+      class LogicExport CommandDescription : public Description
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -39,7 +39,7 @@ namespace Logic
 
 
       /// <summary></summary>
-      class ConstantDescription : public Description
+      class LogicExport ConstantDescription : public Description
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -54,7 +54,7 @@ namespace Logic
 
 
       /// <summary></summary>
-      class DescriptionMacro
+      class LogicExport DescriptionMacro
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

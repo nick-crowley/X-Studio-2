@@ -12,7 +12,7 @@ namespace Logic
       enum class XFolder { Language, Scripts, Director, Types };
 
       /// <summary>Contains enumerated catalogs and catalog-based files. Provides access to physical/catalog files</summary>
-      class XFileSystem
+      class LogicExport XFileSystem
       {
       private:
          /// <summary>Collection of catalogs, sorted by precedence (highest->lowest)</summary>

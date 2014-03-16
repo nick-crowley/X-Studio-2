@@ -10,7 +10,7 @@ namespace Logic
    {
          
       /// <summary></summary>
-      class SyntaxWriter : XmlWriter
+      class LogicExport SyntaxWriter : XmlWriter
       {
          // --------------------- CONSTRUCTION ----------------------
 

@@ -50,7 +50,7 @@ namespace Logic
       enum class Serial : UINT { alpha, beta, gamma, delta, epsilon, zeta, eta, theta, iota, kappa, lambda, mu, nu, xi, omicron, pi, rho, sigma, tau, upsilon, phi, chi, psi, omega1, omega2 };
       
       /// <summary>Converts between sector IDs and co-ordinates</summary>
-      class SectorIDConverter
+      class LogicExport SectorIDConverter
       {
       public:
          /// <summary>Convert string ID to coordinates.</summary>
@@ -73,7 +73,7 @@ namespace Logic
       };
 
       /// <summary>Converts between station serials and string IDs</summary>
-      class StationSerialConverter
+      class LogicExport StationSerialConverter
       {
       public:
          /// <summary>Convert string ID to station serial.</summary>
@@ -94,7 +94,7 @@ namespace Logic
       };
       
       /// <summary>Converts between relation enum and string IDs</summary>
-      class RelationIDConverter
+      class LogicExport RelationIDConverter
       {
       public:
          /// <summary>Convert string ID to relation.</summary>

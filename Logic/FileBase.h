@@ -4,8 +4,8 @@
 
 namespace Logic
 {
-   /// <summary>Base class for all files: script/language/project etc.</summary>
-   class FileBase
+   /// <summary>Base class LogicExport for all files: script/language/project etc.</summary>
+   class LogicExport FileBase
    {
       // ------------------------ TYPES --------------------------
    private:

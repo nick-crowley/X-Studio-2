@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary>Represents an X3 language file, provides a collection of language pages</summary>
-      class LanguageFile : public FileBase
+      class LogicExport LanguageFile : public FileBase
       {
       public:
          /// <summary>Collection of language pages, sorted by ID</summary>

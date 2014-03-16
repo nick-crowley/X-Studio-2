@@ -68,7 +68,7 @@ namespace Logic
 #endif
 
    /// <summary></summary>
-   class PreferencesLibrary
+   class LogicExport PreferencesLibrary
    {
       // ------------------------ TYPES --------------------------
    private:

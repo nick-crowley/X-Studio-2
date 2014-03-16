@@ -29,7 +29,7 @@ namespace Logic
       typedef list<RichElementPtr>  ElementList;
 
       /// <summary>List of rich-text characters</summary>
-      class RichCharList : public list<const RichCharacter*>
+      class LogicExport RichCharList : public list<const RichCharacter*>
       {
       public:
          RichCharList()
@@ -53,7 +53,7 @@ namespace Logic
       // ------------------------ CLASSES ------------------------
 
       /// <summary>Occurs when an error is detected in a rich-text string</summary>
-      class RichTextException : public ExceptionBase
+      class LogicExport RichTextException : public ExceptionBase
       {
       public:
          /// <summary>Create a RichTextException</summary>
@@ -64,8 +64,8 @@ namespace Logic
          {}
       };
 
-      /// <summary>Base class for a Button/Character within a rich-text string</summary>
-      class RichElement
+      /// <summary>Base class LogicExport for a Button/Character within a rich-text string</summary>
+      class LogicExport RichElement
       {
          // --------------------- CONSTRUCTION ----------------------
       protected:
@@ -80,7 +80,7 @@ namespace Logic
       };
 
       /// <summary>Character within a rich-text paragraph</summary>
-      class RichCharacter : public RichElement
+      class LogicExport RichCharacter : public RichElement
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -124,7 +124,7 @@ namespace Logic
 
       
       /// <summary>Button within a rich-text paragraph</summary>
-      class RichButton : public RichElement
+      class LogicExport RichButton : public RichElement
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -140,7 +140,7 @@ namespace Logic
       };
 
       /// <summary>Paragraph of text within a rich-text string</summary>
-      class RichParagraph
+      class LogicExport RichParagraph
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -198,7 +198,7 @@ namespace Logic
       };
 
       /// <summary>Result of parsing a Language string with rich-text formatting</summary>
-      class RichString
+      class LogicExport RichString
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

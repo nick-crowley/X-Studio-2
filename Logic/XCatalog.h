@@ -13,7 +13,7 @@ namespace Logic
       
       /// <summary>Represents a catalog in the XFileSystem</summary>
       /// <remarks>The catalog file is locked for writing/deleting during the lifetime of this object</remarks>
-      class XCatalog
+      class LogicExport XCatalog
       {
          /// <summary>A shared pointer to a FileStream</summary>
          typedef shared_ptr<FileStream>  FileStreamPtr;
@@ -31,14 +31,18 @@ namespace Logic
 			// --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
-
+      public:
          CatalogReader  GetReader() const;
          Path           GetFullPath()  { return FullPath; }
+
+         XCatalog& operator==(const XCatalog& r) const {
+            throw NotImplementedException(HERE, L"Equality not implemented");
+         }
 
 			// ----------------------- MUTATORS ------------------------
 
 			// -------------------- REPRESENTATION ---------------------
-
+      public:
          Path           FullPath;
 
       private:

@@ -45,7 +45,7 @@ namespace Logic
       GuiString  GetString(Conditional c);
 
       /// <summary>Represents the encoded return value of a script command</summary>
-      class ReturnValue
+      class LogicExport ReturnValue
       {
          // --------------------- CONSTRUCTION ----------------------
 

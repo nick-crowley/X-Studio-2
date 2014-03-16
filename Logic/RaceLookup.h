@@ -8,7 +8,7 @@ namespace Logic
    namespace Types
    {
       /// <summary>Ship/station race lookup string</summary>
-      class RaceLookup : public LookupString
+      class LogicExport RaceLookup : public LookupString
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -37,7 +37,7 @@ namespace Logic
       };
 
       /// <summary>Station size lookup string</summary>
-      class StationSizeLookup : public LookupString
+      class LogicExport StationSizeLookup : public LookupString
       {
          enum StationSize { Small=2, Medium=5, Large=10, ExtraLarge=20 };
 
@@ -98,7 +98,7 @@ namespace Logic
       };
    
       /// <summary>Ship variation name lookup string</summary>
-      class VariationLookup : public LookupString
+      class LogicExport VariationLookup : public LookupString
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

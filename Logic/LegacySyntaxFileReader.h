@@ -14,7 +14,7 @@ namespace Logic
       #define  PARAMETER_SYNTAX_COUNT  72
 
       /// <summary>Reads the XStudio syntax file</summary>
-      class LegacySyntaxFileReader : protected StringReader
+      class LogicExport LegacySyntaxFileReader : protected StringReader
       {
          typedef list<ParameterType>  ParamList;
 

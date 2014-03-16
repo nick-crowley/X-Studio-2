@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary>Writer for X-Studio II Project files</summary>
-      class ProjectFileWriter : protected XmlWriter
+      class LogicExport ProjectFileWriter : protected XmlWriter
       {
          // ------------------------ TYPES --------------------------
       private:

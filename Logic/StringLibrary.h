@@ -11,7 +11,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class StringLibrary
+      class LogicExport StringLibrary
       {
       public:
          /// <summary>Collection of language files, sorted with highest priority first</summary>

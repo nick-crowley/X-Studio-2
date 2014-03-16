@@ -9,7 +9,7 @@ namespace Logic
    namespace Scripts
    {
       /// <summary>Calculates code indentation</summary>
-      class IndentationStack : protected deque<BranchLogic>
+      class LogicExport IndentationStack : protected deque<BranchLogic>
       {
          // ------------------------ TYPES --------------------------
       private:

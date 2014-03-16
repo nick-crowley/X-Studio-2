@@ -379,7 +379,7 @@ namespace Logic
             case L'(':
             case L')':  
             case L'~': 
-            // Used by commands, class as unary
+            // Used by commands, class LogicExport as unary
             case L',': 
             case L':':
             case L'[':

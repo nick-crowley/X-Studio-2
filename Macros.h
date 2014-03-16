@@ -79,3 +79,10 @@
 #define FORWARD_DECLARATION2(outer, inner,decl)  namespace outer { namespace inner { decl; } }
 
 
+/// <summary>Logic library export macro</summary>
+#ifdef _LOGIC_DLL
+#define LogicExport  __declspec(dllexport)
+#else
+#define LogicExport  __declspec(dllimport)
+#endif
+

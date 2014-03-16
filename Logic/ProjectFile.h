@@ -8,7 +8,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class ProjectFile
+      class LogicExport ProjectFile
       {
          // ------------------------ TYPES --------------------------
       public:

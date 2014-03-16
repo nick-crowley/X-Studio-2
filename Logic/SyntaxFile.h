@@ -11,7 +11,7 @@ namespace Logic
       
 
       /// <summary></summary>
-      class SyntaxFile
+      class LogicExport SyntaxFile
       {
       public:
          /// <summary>Command syntax collection organised by ID</summary>

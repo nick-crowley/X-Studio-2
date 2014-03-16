@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "ParameterSyntax.h"
 #include "ReturnValue.h"
 #include "ScriptToken.h"
@@ -10,7 +9,7 @@ namespace Logic
    namespace Scripts
    {
       class ScriptFile;
-
+         
       /// <summary>Sentinel value for unspecified jump destination</summary>
       const unsigned short EMPTY_JUMP = 0xffff;
       
@@ -21,7 +20,7 @@ namespace Logic
       GuiString  GetString(ValueType v);
 
       /// <summary>Holds a union value of String/integer</summary>
-      class ParameterValue
+      class LogicExport ParameterValue
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -101,7 +100,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val);
 
       /// <summary>Represents a script command parameter</summary>
-      class ScriptParameter
+      class LogicExport ScriptParameter
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -148,7 +147,7 @@ namespace Logic
       ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p);
 
       /// <summary>Vector of script parameters</summary>
-      class ParameterArray : public vector<ScriptParameter> 
+      class LogicExport ParameterArray : public vector<ScriptParameter> 
       {
       public:
          ParameterArray()

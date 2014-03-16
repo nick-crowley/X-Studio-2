@@ -14,7 +14,7 @@ namespace Logic
 
          
          /// <summary>Occurs when a syntax error in detected in a script</summary>
-         class ExpressionParserException : public ExceptionBase
+         class LogicExport ExpressionParserException : public ExceptionBase
          {
          public:
             /// <summary>Create an exception for an entire line</summary>
@@ -36,11 +36,11 @@ namespace Logic
          };
 
          /// <summary>Parses expression script commands</summary>
-         class ExpressionParser
+         class LogicExport ExpressionParser
          {
             // ------------------------ TYPES --------------------------
 
-            /// <summary>Base class for all expression tree nodes</summary>
+            /// <summary>Base class LogicExport for all expression tree nodes</summary>
             class Expression
             {
                // --------------------- CONSTRUCTION ----------------------

@@ -11,7 +11,7 @@ namespace Logic
    {
 
       /// <summary></summary>
-      class DescriptionParser
+      class LogicExport DescriptionParser
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -28,10 +28,10 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static const wregex  MatchKeyword,
-                              MatchMacro,
-                              MatchParameters,
-                              MartchParameterMarker;
+         static const wregex  MatchKeyword;
+         static const wregex  MatchMacro;
+         static const wregex  MatchParameters;
+         static const wregex  MartchParameterMarker;
 
       private:
          static wstring  Populate(wstring source, CommandSyntaxRef cmd);

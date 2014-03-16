@@ -18,7 +18,7 @@ namespace Logic
       const WCHAR* GetString(BranchLogic l);
 
       /// <summary>String ID referenced by a script command</summary>
-      class StringID
+      class LogicExport StringID
       {
       public:
          /// <summary>Create string reference</summary>
@@ -36,7 +36,7 @@ namespace Logic
       typedef function<bool (const ScriptParameter&)>  ParameterPredicate;
 
       /// <summary>An MSCI script command</summary>
-      class ScriptCommand
+      class LogicExport ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
       private:
@@ -52,9 +52,9 @@ namespace Logic
       public:
          static ScriptCommand  Unrecognised;
 
-         static const ParameterPredicate IsScriptNameParam,
-                                         IsStringIDParam,
-                                         IsPageIDParam;
+         static const ParameterPredicate IsScriptNameParam;
+         static const ParameterPredicate IsStringIDParam;
+         static const ParameterPredicate IsPageIDParam;
 
          // --------------------- PROPERTIES ------------------------
 			
@@ -71,6 +71,10 @@ namespace Logic
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
 
+         /*ScriptCommand& operator==(const ScriptCommand& r) const {
+            throw NotImplementedException(HERE, L"Equality not implemented");
+         }*/
+
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  SetLabelName(const wstring& name);
@@ -86,7 +90,7 @@ namespace Logic
       };
 
       /// <summary>List of script commands</summary>
-      class CommandList : public list<ScriptCommand>
+      class LogicExport CommandList : public list<ScriptCommand>
       {
       public:
          /// <summary>Find command by index.</summary>

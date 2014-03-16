@@ -7,7 +7,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Provides stream access to/from a string</summary>
-      class StringStream : public Stream
+      class LogicExport StringStream : public Stream
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

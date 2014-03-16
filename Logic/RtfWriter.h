@@ -9,7 +9,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class RtfWriter
+      class LogicExport RtfWriter
       {
       private:
          const COLORREF  COLOUR_NONE = 0xff000000;

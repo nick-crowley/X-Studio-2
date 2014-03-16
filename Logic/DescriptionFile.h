@@ -8,7 +8,7 @@ namespace Logic
    namespace Language
    {
       /// <summary></summary>
-      class DescriptionFile
+      class LogicExport DescriptionFile
       {
          // ------------------------ TYPES --------------------------
       public:

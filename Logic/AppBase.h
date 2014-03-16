@@ -4,7 +4,7 @@
 namespace Logic
 {
    /// <summary></summary>
-   class AppBase : public CWinAppEx
+   class LogicExport AppBase : public CWinAppEx
    {
       // ------------------------ TYPES --------------------------
    protected:

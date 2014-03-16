@@ -9,7 +9,7 @@ namespace Logic
    namespace IO
    {
       /// <summary>Parses the filenames of language files</summary>
-      class LanguageFilenameReader
+      class LogicExport LanguageFilenameReader
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -35,7 +35,7 @@ namespace Logic
       };
 
       /// <summary>Reads strings and pages of an X3 language xml file</summary>
-      class LanguageFileReader : XmlReader
+      class LogicExport LanguageFileReader : XmlReader
       {
          // --------------------- CONSTRUCTION ----------------------
 

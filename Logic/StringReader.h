@@ -11,7 +11,7 @@ namespace Logic
       enum class TextEncoding { UTF8, UTF16 };
 
       /// <summary>Reads strings from a stream in lines</summary>
-      class StringReader
+      class LogicExport StringReader
       {
          // --------------------- CONSTRUCTION ----------------------
 

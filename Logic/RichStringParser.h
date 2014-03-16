@@ -22,7 +22,7 @@ namespace Logic
       // ------------------------ CLASSES ------------------------
 
       /// <summary>Rich-text parser</summary>
-      class RichStringParser
+      class LogicExport RichStringParser
       {
          // ------------------------ TYPES --------------------------
       protected:
@@ -81,7 +81,7 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
          public:
             /// <summary>Create tag stack</summary>
-            /// <param name="cl">The class of tags to hold</param>
+            /// <param name="cl">The class LogicExport of tags to hold</param>
             TagStack(TagClass cl) : Class(cl)
             {}
 
@@ -205,14 +205,14 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       protected:
-         static const wregex IsOpeningTag,
-                             IsClosingTag,
-                             IsBasicTag,
-                             IsTagProperty,
-                             IsAuthorDefinition,
-                             IsTitleDefinition,
-                             IsButtonDefinition,
-                             IsButtonText;
+         static const wregex IsOpeningTag;
+         static const wregex IsClosingTag;
+         static const wregex IsBasicTag;
+         static const wregex IsTagProperty;
+         static const wregex IsAuthorDefinition;
+         static const wregex IsTitleDefinition;
+         static const wregex IsButtonDefinition;
+         static const wregex IsButtonText;
 
          static Alignment GetAlignment(TagType t);
          static TagClass  GetClass(TagType t);

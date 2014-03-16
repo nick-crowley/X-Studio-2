@@ -19,8 +19,8 @@ namespace Logic
       /// <summary>Defines the output window used by various operations</summary>
       enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, NoFeedback };
 
-      /// <summary>Base class for output window feedback items</summary>
-      class WorkerProgress
+      /// <summary>Base class LogicExport for output window feedback items</summary>
+      class LogicExport WorkerProgress
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -35,8 +35,8 @@ namespace Logic
          const UINT          Indent;
       };
 
-      /// <summary>Base class for background worker thread data</summary>
-      class WorkerData
+      /// <summary>Base class LogicExport for background worker thread data</summary>
+      class LogicExport WorkerData
       {
          // --------------------- CONSTRUCTION ----------------------
       public:

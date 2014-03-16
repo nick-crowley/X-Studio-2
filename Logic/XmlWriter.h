@@ -9,7 +9,7 @@ namespace Logic
    {
          
       /// <summary>Writes XML to a stream</summary>
-      class XmlWriter
+      class LogicExport XmlWriter
       {
          // --------------------- CONSTRUCTION ----------------------
 

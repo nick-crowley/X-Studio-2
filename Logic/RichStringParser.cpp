@@ -69,7 +69,7 @@ namespace Logic
          throw ArgumentException(HERE, L"t", VString(L"Cannot get alignment for %s tag", ::GetString(t).c_str()));
       }
 
-      /// <summary>Gets the class of a tag</summary>
+      /// <summary>Gets the class LogicExport of a tag</summary>
       /// <param name="t">tag type</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentException">Tag is unrecognised</exception>
@@ -111,7 +111,7 @@ namespace Logic
          throw ArgumentException(HERE, L"t", L"Default/Unrecognised tags have no class");
       }
 
-      /// <summary>Convert tag class to string</summary>
+      /// <summary>Convert tag class LogicExport to string</summary>
       /// <param name="c">tag class.</param>
       /// <returns></returns>
       wstring  RichStringParser::GetString(TagClass c)

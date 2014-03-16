@@ -10,7 +10,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class TLaser : public TObject
+      class LogicExport TLaser : public TObject
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -48,7 +48,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class TLaserReader : public TFileReader<TLaser>
+      class LogicExport TLaserReader : public TFileReader<TLaser>
       {
          // ------------------------ TYPES --------------------------
       private:

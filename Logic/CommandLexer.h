@@ -11,7 +11,7 @@ namespace Logic
       namespace Compiler
       {
          /// <summary></summary>
-         class CommandLexer
+         class LogicExport CommandLexer
          {
             // ------------------------ TYPES --------------------------
          private:

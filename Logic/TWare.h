@@ -10,7 +10,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class TWare : public TObject
+      class LogicExport TWare : public TObject
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -40,7 +40,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class TWareReader : public TFileReader<TWare>
+      class LogicExport TWareReader : public TFileReader<TWare>
       {
          // ------------------------ TYPES --------------------------
       private:

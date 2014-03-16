@@ -28,7 +28,7 @@ namespace Logic
       typedef function<bool (const ParameterSyntax&)>  ParamSyntaxPredicate;
 
       /// <summary>Defines the syntax of a script command</summary>
-      class CommandSyntax
+      class LogicExport CommandSyntax
       {
       public:
          /// <summary>Declares command syntax within an external file</summary>
@@ -63,8 +63,8 @@ namespace Logic
       public:
          static const CommandSyntax  Unrecognised;
 
-         static const ParamSyntaxPredicate  IsScriptNameParam,
-                                            IsStringRefParam;
+         static const ParamSyntaxPredicate  IsScriptNameParam;
+         static const ParamSyntaxPredicate  IsStringRefParam;
 
       private:
          wstring  GenerateHash(const wstring& syntax);

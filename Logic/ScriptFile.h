@@ -7,7 +7,7 @@
 #include "MapIterator.hpp"
 #include <algorithm>
 
-namespace Logic { namespace IO { class ScriptFileReader; } }
+FORWARD_DECLARATION2(Logic,IO,class ScriptFileReader)
 
 namespace Logic
 {
@@ -15,7 +15,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class ScriptLabel
+      class LogicExport ScriptLabel
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -43,7 +43,7 @@ namespace Logic
 
 
       /// <summary>An argument or variable used within a script</summary>
-      class ScriptVariable
+      class LogicExport ScriptVariable
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -73,7 +73,7 @@ namespace Logic
 
 
       /// <summary>Vector of script variables</summary>
-      class VariableArray : public vector<ScriptVariable>
+      class LogicExport VariableArray : public vector<ScriptVariable>
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -107,7 +107,7 @@ namespace Logic
 
 
       /// <summary>Occurs when a script label is missing</summary>
-      class LabelNotFoundException : public ExceptionBase
+      class LogicExport LabelNotFoundException : public ExceptionBase
       {
       public:
          /// <summary>Create from a label name</summary>
@@ -119,7 +119,7 @@ namespace Logic
       };
 
       /// <summary>Occurs when a script variable is missing</summary>
-      class VariableNotFoundException : public ExceptionBase
+      class LogicExport VariableNotFoundException : public ExceptionBase
       {
       public:
          /// <summary>Create from a variable name</summary>
@@ -139,7 +139,7 @@ namespace Logic
 
 
       /// <summary></summary>
-      class ScriptFile
+      class LogicExport ScriptFile
       {
          friend class ScriptFileReader;
 

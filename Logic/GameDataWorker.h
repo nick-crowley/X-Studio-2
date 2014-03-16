@@ -7,7 +7,7 @@ namespace Logic
    {
 
       /// <summary>Data for game data loading worker thread</summary>
-      class GameDataWorkerData : public WorkerData
+      class LogicExport GameDataWorkerData : public WorkerData
       {
       public:
          GameDataWorkerData(Path folder, GameVersion ver) : WorkerData(Operation::LoadGameData), GameFolder(folder), Version(ver)
@@ -18,7 +18,7 @@ namespace Logic
       };
 
       /// <summary>Worker thread for loading game data</summary>
-      class GameDataWorker : public BackgroundWorker
+      class LogicExport GameDataWorker : public BackgroundWorker
       {
          // ------------------------ TYPES --------------------------
       private:

@@ -9,7 +9,7 @@ namespace Logic
    {
       
       /// <summary></summary>
-      class TFactory : public TDock
+      class LogicExport TFactory : public TDock
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -47,7 +47,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class TFactoryReader : public TFileReader<TFactory>
+      class LogicExport TFactoryReader : public TFileReader<TFactory>
       {
          // ------------------------ TYPES --------------------------
       private:

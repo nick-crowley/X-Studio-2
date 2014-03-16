@@ -47,7 +47,7 @@ namespace Logic
       };
 
       /// <summary></summary>
-      class TObject
+      class LogicExport TObject
       {
          // ------------------------ TYPES --------------------------
       private:

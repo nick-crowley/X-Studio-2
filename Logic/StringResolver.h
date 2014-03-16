@@ -11,7 +11,7 @@ namespace Logic
 
       
       /// <summary>Occurs when an invalid regular expression is detected</summary>
-      class RegularExpressionException : public ExceptionBase
+      class LogicExport RegularExpressionException : public ExceptionBase
       {
       public:
          /// <summary>Create a RegularExpressionException from an stl regex exception</summary>
@@ -24,7 +24,7 @@ namespace Logic
 
 
       /// <summary></summary>
-      class StringResolver
+      class LogicExport StringResolver
       {
          // ------------------------ TYPES --------------------------
       private:
@@ -39,7 +39,9 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       private:
-         static const wregex DefaultMarker, FullMarker, RemoveComment;
+         static const wregex DefaultMarker;
+         static const wregex FullMarker;
+         static const wregex RemoveComment;
 
          // --------------------- PROPERTIES ------------------------
 

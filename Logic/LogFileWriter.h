@@ -9,7 +9,7 @@ namespace Logic
    {
 
       /// <summary></summary>
-      class LogFileWriter : private RtfWriter
+      class LogicExport LogFileWriter : private RtfWriter
       {
          // ------------------------ TYPES --------------------------
       protected:

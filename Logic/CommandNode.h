@@ -18,7 +18,7 @@ namespace Logic
          class CommandNode;
 
          /// <summary>Script error</summary>
-         class ErrorToken : public TokenBase
+         class LogicExport ErrorToken : public TokenBase
          {
          public:
             /// <summary>Create error for token</summary>
@@ -40,7 +40,7 @@ namespace Logic
          };
 
          /// <summary>Vector of error tokens</summary>
-         class ErrorArray : public vector<ErrorToken> 
+         class LogicExport ErrorArray : public vector<ErrorToken> 
          {
          public:
             /// <summary>Create empty array</summary>
@@ -60,7 +60,7 @@ namespace Logic
          };
 
          /// <summary>Shared pointer to a parse tree node</summary>
-         class CommandNodePtr : public shared_ptr<CommandNode> 
+         class LogicExport CommandNodePtr : public shared_ptr<CommandNode> 
          {
          public:
             CommandNodePtr() : shared_ptr<CommandNode>(nullptr)
@@ -76,7 +76,7 @@ namespace Logic
          enum class SymbolType { Variable, Label };
 
          /// <summary>Represents a symbol used during refactoring process</summary>
-         class Symbol
+         class LogicExport Symbol
          {
          public:
             /// <summary>Create symbol match.</summary>
@@ -101,7 +101,7 @@ namespace Logic
          typedef list<Symbol>  SymbolList;
             
          /// <summary>Represents a script command and its descendants, if any</summary>
-         class CommandNode 
+         class LogicExport CommandNode 
          {
             // ------------------------ TYPES --------------------------
          protected:
@@ -124,11 +124,11 @@ namespace Logic
 
             // ------------------------ STATIC -------------------------
          protected:
-            static NodeDelegate  isConditionalAlternate,
-                                 isConditionalEnd,
-                                 isExecutableCommand,
-                                 isStandardCommand,
-                                 isSkipIfCompatible;
+            static NodeDelegate  isConditionalAlternate;
+            static NodeDelegate  isConditionalEnd;
+            static NodeDelegate  isExecutableCommand;
+            static NodeDelegate  isStandardCommand;
+            static NodeDelegate  isSkipIfCompatible;
             
             static const wchar*  GetString(InputState s);
 
