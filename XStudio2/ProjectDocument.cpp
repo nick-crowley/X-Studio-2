@@ -71,7 +71,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="path">Full path.</param>
    /// <param name="folder">parent item.</param>
    /// <returns>True if added, False if already existed</returns>
-   bool ProjectDocument::AddFile(IO::Path path, ProjectItem& folder)
+   bool ProjectDocument::AddFile(Path path, ProjectItem& folder)
    {
       // Ensure not already present
       if (Contains(path))
@@ -106,7 +106,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Check whether document contains a file</summary>
    /// <param name="path">The path.</param>
    /// <returns></returns>
-   bool ProjectDocument::Contains(IO::Path path) const
+   bool ProjectDocument::Contains(Path path) const
    {
       return Project.Contains(path);
    }
@@ -250,7 +250,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          else
          {
             // New file path
-            IO::Path newPath = item.FullPath.RenameFileName(name);
+            Path newPath = item.FullPath.RenameFileName(name);
             
             // Closed: Rename file on disc
             if (newPath.Exists() || !MoveFile(item.FullPath.c_str(), newPath.c_str()))
@@ -298,7 +298,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="legacy">Legacy project path.</param>
    /// <param name="upgrade">New project path.</param>
    /// <returns>TRUE if successfully upgraded, otherwise FALSE</returns>
-   BOOL ProjectDocument::OnImportDocument(IO::Path legacy, IO::Path upgrade)
+   BOOL ProjectDocument::OnImportDocument(Path legacy, Path upgrade)
    {
       try
       {
@@ -408,7 +408,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="doc">The document.</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
-   IO::Path  ProjectDocument::GetBackupPath(const ScriptDocument& doc) const
+   Path  ProjectDocument::GetBackupPath(const ScriptDocument& doc) const
    {
       // Verify member of project
       if (!Contains(doc.FullPath))
@@ -428,7 +428,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
    /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::InitialCommit(const IO::Path& folder, const ProjectItem& item)
+   void ProjectDocument::InitialCommit(const Path& folder, const ProjectItem& item)
    {
       try
       {
@@ -514,7 +514,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
    /// <exception cref="Logic::IOException">Unable to create file</exception>
-   void ProjectDocument::SaveBackupFile(const IO::Path& path, const BackupFile& f) const
+   void ProjectDocument::SaveBackupFile(const Path& path, const BackupFile& f) const
    {
       auto tmp = TempPath().RenameExtension(L".zip");
 

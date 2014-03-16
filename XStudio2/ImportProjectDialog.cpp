@@ -21,7 +21,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>Initializes a new instance of the <see cref="ImportProjectDialog"/> class.</summary>
    /// <param name="legacyProject">Full path of legacy project.</param>
-   ImportProjectDialog::ImportProjectDialog(IO::Path legacyProject)
+   ImportProjectDialog::ImportProjectDialog(Path legacyProject)
       : CDialogEx(ImportProjectDialog::IDD),
         LegacyFile(legacyProject),
         Folder(legacyProject.Folder)

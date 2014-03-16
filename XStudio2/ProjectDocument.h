@@ -23,7 +23,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------	
    protected:
-      bool IsLegacyProject(IO::Path path) const;
+      bool IsLegacyProject(Path path) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -80,16 +80,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ---------------------- ACCESSORS ------------------------			
    public:
-      bool        Contains(IO::Path path) const;
+      bool        Contains(Path path) const;
       BackupFile  LoadBackupFile(const ScriptDocument& doc) const;
 
    protected:
-      IO::Path    GetBackupPath(const ScriptDocument& doc) const;
-      void        SaveBackupFile(const IO::Path& path, const BackupFile& f) const;
+      Path    GetBackupPath(const ScriptDocument& doc) const;
+      void        SaveBackupFile(const Path& path, const BackupFile& f) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
-      bool  AddFile(IO::Path path, ProjectItem& folder);
+      bool  AddFile(Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
       void  Commit(const ScriptDocument& doc, const wstring& title);
       void  DeleteRevision(const ScriptDocument& doc, UINT index);
@@ -97,7 +97,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       
       void  OnDocumentEvent(DocumentEvent deEvent) override;
-      BOOL  OnImportDocument(IO::Path legacy, IO::Path upgrade);
+      BOOL  OnImportDocument(Path legacy, Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
@@ -106,7 +106,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  RenameItem(ProjectItem& item, const wstring& name);
 
    protected:
-      void  InitialCommit(const IO::Path& folder, const ProjectItem& item);
+      void  InitialCommit(const Path& folder, const ProjectItem& item);
 
       afx_msg void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
       afx_msg void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }

@@ -117,7 +117,7 @@ int Application::ExitInstance()
 /// <summary>Gets an open document</summary>
 /// <param name="p">Full path.</param>
 /// <returns>Document if open, otherwise nullptr</returns>
-DocumentBase*  Application::GetOpenDocument(IO::Path p) const
+DocumentBase*  Application::GetOpenDocument(Path p) const
 {
    // Find by path
    for (auto& doc : *this)
@@ -276,7 +276,7 @@ BOOL Application::InitInstance()
 /// <summary>Query whether a document is open</summary>
 /// <param name="p">Full path</param>
 /// <returns></returns>
-bool Application::IsDocumentOpen(IO::Path p) const
+bool Application::IsDocumentOpen(Path p) const
 {
    // Find by path
    for (const auto& doc : *this)

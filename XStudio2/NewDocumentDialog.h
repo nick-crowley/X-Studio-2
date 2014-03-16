@@ -75,7 +75,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       CListCtrl      Templates;
       CEdit          Description;
-      IO::Path       //FileName,
+      Path       //FileName,
                      Folder;
       CButton        AddProject;
       ImageListEx    Images;

@@ -142,12 +142,12 @@ public:
    }
 
    GUI::Windows::MainWnd*  GetMainWindow() const;
-   DocumentBase* GetOpenDocument(IO::Path p) const;
+   DocumentBase* GetOpenDocument(Path p) const;
    DocumentList  GetOpenDocuments() const;
    GuiString     GetProfileSectionPath(const wstring& section) const;
    GuiString     GetProfileSectionPath(const wstring& section, const wstring& subsection) const;
    AppState      GetState() const;
-   bool          IsDocumentOpen(IO::Path p) const;
+   bool          IsDocumentOpen(Path p) const;
    bool          IsDocumentOpen(DocumentBase* d) const;
    bool          IsMimized() const;
 

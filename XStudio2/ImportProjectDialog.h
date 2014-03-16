@@ -16,7 +16,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      ImportProjectDialog(IO::Path legacyProj);
+      ImportProjectDialog(Path legacyProj);
       virtual ~ImportProjectDialog();
        
       // ------------------------ STATIC -------------------------
@@ -38,10 +38,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // -------------------- REPRESENTATION ---------------------
    public:
-      IO::Path  NewPath;
+      Path  NewPath;
 
    protected:
-      IO::Path  LegacyFile,
+      Path  LegacyFile,
                 Folder;
    };
    

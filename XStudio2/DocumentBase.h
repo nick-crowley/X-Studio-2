@@ -29,14 +29,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // --------------------- PROPERTIES ------------------------
    public:
-      PROPERTY_GET_SET(IO::Path,FullPath,GetFullPath,SetFullPath);
+      PROPERTY_GET_SET(Path,FullPath,GetFullPath,SetFullPath);
       PROPERTY_GET_SET(bool,Virtual,GetVirtual,SetVirtual);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       virtual bool      FindNext(UINT start, MatchData& m) const;
       virtual CHARRANGE GetSelection() const;
-      IO::Path          GetFullPath() const;
+      Path          GetFullPath() const;
       DocumentType      GetType() const;
       bool              GetVirtual() const;
 
@@ -45,7 +45,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void          Activate();
       virtual void  Rename(const wstring& name);
       virtual bool  Replace(MatchData& m);
-      void          SetFullPath(IO::Path path);
+      void          SetFullPath(Path path);
       void          SetModifiedFlag(BOOL bModified = TRUE) override;
       virtual void  SetSelection(CHARRANGE rng);
       void          SetTitle(LPCTSTR title) override;

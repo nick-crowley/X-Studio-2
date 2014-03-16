@@ -132,7 +132,7 @@ namespace Logic
 
       /// <summary>Writes a path to the console in yellow</summary>
       /// <param name="path">path</param>
-      ConsoleWnd& operator<<(const IO::Path& path);
+      ConsoleWnd& operator<<(const Path& path);
 
       /// <summary>Writes a game version string to the console in yellow</summary>
       /// <param name="str">game version string</param>
