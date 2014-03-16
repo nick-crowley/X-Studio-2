@@ -1,6 +1,6 @@
 #pragma once
-#include <afxwinappex.h>
 #include "../Logic/Event.h"
+#include "../Logic/AppBase.h"
 #include "DocumentBase.h"
 
 #ifndef __AFXWIN_H__
@@ -27,7 +27,7 @@ typedef AppStateChangedEvent::DelegatePtr  AppStateChangedHandler;
 // ------------------------ CLASSES ------------------------
 
 /// <summary>Main thread</summary>
-class Application : public CWinAppEx
+class Application : public AppBase
 {
    // ------------------------ TYPES --------------------------
 private:
@@ -113,10 +113,7 @@ public:
 	Application();
 
    // ------------------------ STATIC -------------------------
-protected:
    DECLARE_MESSAGE_MAP()
-
-   static void   OnCriticalError();
 
    // --------------------- PROPERTIES ------------------------
 public:
@@ -144,8 +141,8 @@ public:
    GUI::Windows::MainWnd*  GetMainWindow() const;
    DocumentBase* GetOpenDocument(Path p) const;
    DocumentList  GetOpenDocuments() const;
-   GuiString     GetProfileSectionPath(const wstring& section) const;
-   GuiString     GetProfileSectionPath(const wstring& section, const wstring& subsection) const;
+   /*GuiString     GetProfileSectionPath(const wstring& section) const;
+   GuiString     GetProfileSectionPath(const wstring& section, const wstring& subsection) const;*/
    AppState      GetState() const;
    bool          IsDocumentOpen(Path p) const;
    bool          IsDocumentOpen(DocumentBase* d) const;
@@ -153,10 +150,7 @@ public:
 
    HICON     LoadIconW(UINT nResID, UINT iSize) const;
    CBitmap*  LoadBitmapW(UINT nResID, int x, int y, UINT flags) const;
-   BOOL      ShowError(const GuiString& src, const exception& e, const GuiString& msg) const;
-   BOOL      ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
-   BOOL      ShowError(const GuiString& src, const ExceptionBase& e) const;
-   BOOL      ShowMessage(const wstring& msg, UINT flags = MB_OK) const;
+   
    
    // ----------------------- MUTATORS ------------------------
 public:

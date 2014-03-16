@@ -35,7 +35,9 @@
 #include <list>
 #include <set>
 #include <map>
-#include <memory>    // shared/unique ptr
+#include <memory>       // shared/unique ptr
+#include <functional>
+#include <algorithm>
 using namespace std;
 
 // COM
@@ -44,6 +46,9 @@ using namespace std;
 // Utils
 #include "../Utils/Utils.h"
 #include "ConsoleWnd.h"
+
+// Application (base)
+#include "AppBase.h"
 
 // Import Resource IDs 
 #include "../Resources/Resources.h"

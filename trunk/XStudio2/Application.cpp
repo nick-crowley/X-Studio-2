@@ -1,5 +1,5 @@
 
-// MFC Test 1.cpp : Defines the class behaviors for the application.
+// Application.cpp : Defines the class behaviors for the application.
 //
 
 #include "stdafx.h"
@@ -33,7 +33,7 @@ Application theApp;
 
 // --------------------------------- APP WIZARD ---------------------------------
   
-BEGIN_MESSAGE_MAP(Application, CWinAppEx)
+BEGIN_MESSAGE_MAP(Application, AppBase)
 	ON_COMMAND(ID_APP_ABOUT, &Application::OnCommandAbout)
 	ON_COMMAND(ID_FILE_NEW, &Application::OnCommandNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
@@ -46,21 +46,11 @@ END_MESSAGE_MAP()
 
 Application::Application() : GameDataState(AppState::NoGameData)
 {
-	SetAppID(_T("BearWare.X-Studio.2"));
+	
 }
 
 // ------------------------------- STATIC METHODS -------------------------------
 
-void  Application::OnCriticalError()
-{
-   try
-   {
-      // Ensure console is valid RTF by appending footer
-      LogFile.Close();
-   }
-   catch (ExceptionBase&) {
-   }
-}
 
 // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -97,20 +87,7 @@ Application::DocumentIterator  Application::end() const
 /// <returns></returns>
 int Application::ExitInstance()
 {
-   try
-   {
-      // Free resources
-      FreeLibrary(ResourceLibrary);
-      ResourceLibrary = NULL;
-
-      // Close LogFile
-      LogFile.Close();
-   }
-   catch (ExceptionBase& e) {
-      theApp.ShowError(HERE, e);
-   }
-	
-	return CWinAppEx::ExitInstance();
+   return __super::ExitInstance();
 }
 
 
@@ -155,19 +132,19 @@ GUI::Windows::MainWnd*  Application::GetMainWindow() const
 /// <summary>Gets the registry path of section</summary>
 /// <param name="section">section name</param>
 /// <returns></returns>
-GuiString  Application::GetProfileSectionPath(const wstring& section) const
-{
-   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
-}
+//GuiString  Application::GetProfileSectionPath(const wstring& section) const
+//{
+//   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
+//}
 
 /// <summary>Gets the registry path of section</summary>
 /// <param name="section">section name</param>
 /// <param name="subsection">sub-section name</param>
 /// <returns></returns>
-GuiString  Application::GetProfileSectionPath(const wstring& section, const wstring& subsection) const
-{
-   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
-}
+//GuiString  Application::GetProfileSectionPath(const wstring& section, const wstring& subsection) const
+//{
+//   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
+//}
 
 /// <summary>Get game data state.</summary>
 /// <returns></returns>
@@ -181,39 +158,10 @@ AppState  Application::GetState() const
 /// <returns></returns>
 BOOL Application::InitInstance()
 {
-	// Visual Leak Detector
-   VLDEnable();
-
    try
    {
-      // Set termination handler
-      set_terminate(OnCriticalError);
-
-      // Load resource library
-      if(ResourceLibrary = LoadLibrary(L"X-Studio II.Resources.dll"))
-         AfxSetResourceHandle(ResourceLibrary);
-      else
-         throw Win32Exception(HERE, L"Unable to load resource library");
-
-      // LogFile
-      try
-      {
-         LogFile.Open();
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e, L"Unable to open log file");
-      }
-
-	   // Init common controls
-	   INITCOMMONCONTROLSEX InitCtrls;
-	   InitCtrls.dwSize = sizeof(InitCtrls);
-	   InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	   if (!InitCommonControlsEx(&InitCtrls))
-         throw Win32Exception(HERE, L"Unable to initialize common controls library");
-
-      // Initialise OLE/COM
-	   CWinAppEx::InitInstance();
-      AfxOleInit();
+      // Initialise base
+	   __super::InitInstance();
 
       // Sockets
 	   /*if (!AfxSocketInit())
@@ -455,62 +403,6 @@ void  Application::SetState(AppState s)
    StateChanged.Raise(s);
 }
 
-
-/// <summary>Displays and logs an exception</summary>
-/// <param name="src">The handler location</param>
-/// <param name="e">The exception</param>
-/// <param name="msg">The display message</param>
-/// <returns></returns>
-BOOL Application::ShowError(const GuiString& src, const exception& e, const GuiString& msg) const
-{
-   Console.Log(src, e);
-   return AfxMessageBox(VString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
-                                                            GuiString::Convert(e.what(), CP_ACP).c_str(), 
-                                                            src.c_str()).c_str(), MB_ICONERROR|MB_OK);
-}
-
-/// <summary>Displays and logs an exception</summary>
-/// <param name="src">The handler location</param>
-/// <param name="e">The exception</param>
-/// <param name="msg">The display message</param>
-/// <returns></returns>
-BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const
-{
-   Console.Log(src, e, msg);
-
-   // Application exception: Display verbatim
-   if (auto app = dynamic_cast<const ApplicationException*>(&e))
-      return AfxMessageBox(app->Message.c_str());
-   
-   // Exception: Display source/sink data
-   return AfxMessageBox(VString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
-}
-
-
-/// <summary>Displays and logs an exception</summary>
-/// <param name="src">The handler location</param>
-/// <param name="e">The exception</param>
-/// <returns></returns>
-BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
-{
-   Console.Log(src, e);
-
-   // Application exception: Display verbatim
-   if (auto app = dynamic_cast<const ApplicationException*>(&e))
-      return AfxMessageBox(app->Message.c_str());
-
-   // Exception: Display source/sink data
-   return AfxMessageBox(VString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
-}
-
-/// <summary>Shows a message.</summary>
-/// <param name="msg">The MSG.</param>
-/// <param name="flags">button/icon flags.</param>
-/// <returns></returns>
-BOOL  Application::ShowMessage(const wstring& msg, UINT flags) const
-{
-   return AfxMessageBox(msg.c_str(), flags);
-}
 
 /// <summary>Re-creates the window fonts.</summary>
 void Application::UpdateFonts()
