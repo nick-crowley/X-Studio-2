@@ -138,6 +138,7 @@
     <ClInclude Include="..\Utils\Macros.h" />
     <ClInclude Include="..\Utils\Path.h" />
     <ClInclude Include="..\Utils\stdafx.h" />
+    <ClInclude Include="..\Utils\Utils.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -304,7 +305,6 @@
     <ClInclude Include="SyntaxPage.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
     <ClInclude Include="ToolBarEx.h" />
-    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Testing\DebugTests.cpp" />
@@ -316,6 +316,7 @@
     <ClCompile Include="..\Utils\Exceptions.cpp" />
     <ClCompile Include="..\Utils\GuiString.cpp" />
     <ClCompile Include="..\Utils\Path.cpp" />
+    <ClCompile Include="..\Utils\Utils.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
@@ -450,7 +451,6 @@
     <ClCompile Include="SymbolDialog.cpp" />
     <ClCompile Include="SyntaxPage.cpp" />
     <ClCompile Include="ToolBarEx.cpp" />
-    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

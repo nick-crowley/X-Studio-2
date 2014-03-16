@@ -182,5 +182,5 @@ using namespace Logic;
 #include "Exceptions.h"
 #include "GuiString.h"
 #include "ConsoleWnd.h"
-
+#include "Utils.h"
 
