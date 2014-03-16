@@ -630,26 +630,8 @@
     <ClInclude Include="ArgumentDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\ConsoleWnd.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Exceptions.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\GuiString.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Macros.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Path.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\Logic\ConsoleLog.h">
       <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\stdafx.h">
-      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\targetver.h">
       <Filter>Header Files</Filter>
@@ -668,12 +650,6 @@
     </ClInclude>
     <ClInclude Include="..\Testing\stdafx.h">
       <Filter>Header Files\Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Utils.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Types.h">
-      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1067,18 +1043,6 @@
     <ClCompile Include="ArgumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\ConsoleWnd.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\Exceptions.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\GuiString.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\Path.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\Logic\ConsoleLog.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
@@ -1093,9 +1057,6 @@
     </ClCompile>
     <ClCompile Include="..\Testing\ScriptValidator.cpp">
       <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\Utils.cpp">
-      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

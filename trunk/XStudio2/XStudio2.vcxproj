@@ -104,7 +104,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>msxml6.lib;Shlwapi.lib;zdll.lib</AdditionalDependencies>
+      <AdditionalDependencies>msxml6.lib;Shlwapi.lib;zdll.lib;$(SolutionDir)$(Configuration)\Utils.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -131,14 +131,6 @@
     <ClInclude Include="..\Testing\DebugTests.h" />
     <ClInclude Include="..\Testing\ScriptValidator.h" />
     <ClInclude Include="..\Testing\stdafx.h" />
-    <ClInclude Include="..\Utils\ConsoleWnd.h" />
-    <ClInclude Include="..\Utils\Exceptions.h" />
-    <ClInclude Include="..\Utils\GuiString.h" />
-    <ClInclude Include="..\Utils\Macros.h" />
-    <ClInclude Include="..\Utils\Path.h" />
-    <ClInclude Include="..\Utils\stdafx.h" />
-    <ClInclude Include="..\Utils\Types.h" />
-    <ClInclude Include="..\Utils\Utils.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -311,11 +303,6 @@
     <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptValidator.cpp" />
-    <ClCompile Include="..\Utils\ConsoleWnd.cpp" />
-    <ClCompile Include="..\Utils\Exceptions.cpp" />
-    <ClCompile Include="..\Utils\GuiString.cpp" />
-    <ClCompile Include="..\Utils\Path.cpp" />
-    <ClCompile Include="..\Utils\Utils.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
