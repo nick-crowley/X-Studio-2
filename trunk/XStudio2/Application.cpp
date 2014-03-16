@@ -176,7 +176,7 @@ BOOL Application::InitInstance()
 
 	
 	   // Set app registry key 
-	   SetRegistryKey(L"Bearware");
+	   //SetRegistryKey(L"Bearware");
 	   LoadStdProfileSettings(10);  // Load MRU
 
       // Menu manager

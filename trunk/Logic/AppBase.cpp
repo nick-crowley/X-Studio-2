@@ -8,7 +8,9 @@ namespace Logic
 
    AppBase::AppBase()
    {
-      SetAppID(_T("BearWare.X-Studio.2"));
+      m_pszAppName = _tcsdup(L"X-Studio II");      // Override name of subkey used by MFC registry functions
+      SetAppID(L"BearWare.X-Studio.2");            // ProgID [Not used at the moment]
+      SetRegistryKey(L"Bearware");                 // Define name of base key used by MFC registry functions
    }
 
 
@@ -22,6 +24,7 @@ namespace Logic
    END_MESSAGE_MAP()
 
    
+   /// <summary>Termination handler</summary>
    void  AppBase::OnCriticalError()
    {
       try
@@ -71,10 +74,10 @@ namespace Logic
          set_terminate(OnCriticalError);
 
          // Load resource library
-         if(ResourceLibrary = LoadLibrary(L"X-Studio II.Resources.dll"))
+         if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))
             AfxSetResourceHandle(ResourceLibrary);
          else
-            throw Win32Exception(HERE, L"Unable to load resource library");
+            throw Win32Exception(HERE, L"Unable to load resource library 'XStudio2.Resources.dll'");
 
          // LogFile
          try
