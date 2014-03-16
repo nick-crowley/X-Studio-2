@@ -651,9 +651,6 @@
     <ClInclude Include="..\Utils\Common.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Utils\stdafx.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -674,6 +671,9 @@
     </ClInclude>
     <ClInclude Include="..\Testing\stdafx.h">
       <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\Utils.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1085,9 +1085,6 @@
     <ClCompile Include="..\Utils\Common.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Testing\DebugTests.cpp">
       <Filter>Source Files\Testing</Filter>
     </ClCompile>
@@ -1099,6 +1096,9 @@
     </ClCompile>
     <ClCompile Include="..\Testing\ScriptValidator.cpp">
       <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

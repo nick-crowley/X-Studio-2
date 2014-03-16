@@ -53,11 +53,8 @@ using namespace std;
 // COM
 #include <comdef.h>
 
-// Logic Utils
+// Utilities
 #include "../Utils/Common.h"
-
-// GUI Utils
-#include "Utils.h"
 
 // Application 
 #include "Application.h"
