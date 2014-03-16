@@ -42,8 +42,8 @@ namespace Logic
 
          // Parse declaration
          wstring::size_type gap = line.find_last_of(' ');
-         if (gap == wstring::npos)
-            throw FileFormatException(HERE, L"Invalid file declaration");
+         /*if (gap == wstring::npos)
+            throw FileFormatException(HERE, L"Invalid file declaration");*/
          
          // Parse path: Convert '/'->'\'
          path.clear();

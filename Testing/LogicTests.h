@@ -3,13 +3,13 @@
 namespace Testing
 {
    /// <summary></summary>
-   class DebugTests
+   class LogicExport LogicTests
    {
       // --------------------- CONSTRUCTION ----------------------
 
    public:
-      DebugTests() {};
-      virtual ~DebugTests() {};
+      LogicTests() {};
+      virtual ~LogicTests() {};
 
       // ------------------------ STATIC -------------------------
 

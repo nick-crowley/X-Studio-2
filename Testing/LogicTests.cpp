@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "DebugTests.h"
+#include "LogicTests.h"
 #include "../Logic/ScriptFile.h"
 #include "../Logic/ScriptParser.h"
 #include "../Logic/FileStream.h"
@@ -22,8 +22,6 @@
 #include "../Logic/RichStringParser.h"
 #include "../Logic/DescriptionFileReader.h"
 #include "../DTL/dtl.hpp"
-#include "../XStudio2/ScriptDocument.h"
-#include "../XStudio2/DiffDocument.h"
 #include "ScriptValidator.h"
 
 namespace Testing
@@ -35,7 +33,7 @@ namespace Testing
    // ------------------------------- PUBLIC METHODS -------------------------------
 
 
-   void  DebugTests::RunAll()
+   void  LogicTests::RunAll()
    {
       //AfxGetMainWnd()->UpdateDialogControls(AfxGetMainWnd(), TRUE);
 
@@ -87,7 +85,7 @@ namespace Testing
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
-   void DebugTests::Test_ScriptCompiler()
+   void LogicTests::Test_ScriptCompiler()
    {
       // Located problem: egosoft inserts JMPs to end-of-conditional even after RETURNs, except when it's the final RETURN of the script.
 
@@ -98,7 +96,7 @@ namespace Testing
       sv2.Validate();
    }
 
-   void DebugTests::BatchTest_ScriptCompiler()
+   void LogicTests::BatchTest_ScriptCompiler()
    {
       XFileSystem     vfs;
       vector<wstring> SkipList = 
@@ -149,7 +147,7 @@ namespace Testing
    }
 
 
-   void DebugTests::Test_CommandSyntax()
+   void LogicTests::Test_CommandSyntax()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\plugin.piracy.enslavepassengers.xml"; 
 
@@ -173,7 +171,7 @@ namespace Testing
       }
    }
    
-   void  DebugTests::Test_CatalogReader()
+   void  LogicTests::Test_CatalogReader()
    {
       const WCHAR* path = L"D:\\X3 Albion Prelude\\11.cat";
    
@@ -196,7 +194,7 @@ namespace Testing
    }
 
 
-   void  DebugTests::Test_DescriptionReader()
+   void  LogicTests::Test_DescriptionReader()
    {
       const AppPath path = L"Descriptions.xml";
    
@@ -219,7 +217,7 @@ namespace Testing
       }
    }
 
-   void DebugTests::Test_DescriptionRegEx()
+   void LogicTests::Test_DescriptionRegEx()
    {
       try
       {
@@ -303,31 +301,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_DiffDocument()
-   {
-      if (!ScriptDocument::GetActive())
-         return;
-
-      // Get document/template
-      auto doc = ScriptDocument::GetActive();
-      auto templ = theApp.GetDocumentTemplate<DiffDocTemplate>();
-
-      // Create different version
-      FileStream fs(L"D:\\My Projects\\XStudio2\\Files\\add.dynamic.logic.diff", FileMode::OpenExisting, FileAccess::Read);
-      auto bytes = fs.ReadAllBytes();
-      auto alt = GuiString::Convert((char*)bytes.get(), CP_ACP);
-
-      /*auto alt = doc->GetAllText();
-      alt.erase(50, 15);
-      alt.insert(140, L"NEW NEW NEW NEW NEW");
-      alt.insert(70, L"NEW NEW NEW NEW NEW");
-      alt.insert(10, L"NEW NEW NEW NEW NEW");*/
-
-      // Open document
-      templ->OpenDocumentFile(*doc, alt);
-   }
-
-   void  DebugTests::Test_ExpressionParser()
+   void  LogicTests::Test_ExpressionParser()
    {
       try
       {
@@ -394,7 +368,7 @@ namespace Testing
 
    }
 
-   void  DebugTests::Test_FileSystem()
+   void  LogicTests::Test_FileSystem()
    {
       XFileSystem vfs;
       CString err;
@@ -424,7 +398,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_Lexer()
+   void  LogicTests::Test_Lexer()
    {
       try
       {
@@ -452,7 +426,7 @@ namespace Testing
       }
    }
    
-   void  DebugTests::Test_GZip_Decompress()
+   void  LogicTests::Test_GZip_Decompress()
    {
       const WCHAR *zipped = L"D:\\Temp\\lib.piracy.progressbar.xml.zip",
                   *plain = L"D:\\Temp\\revisions.xml";
@@ -489,7 +463,7 @@ namespace Testing
       }
    }
    
-   void  DebugTests::Test_GZip_Compress()
+   void  LogicTests::Test_GZip_Compress()
    {
       const WCHAR* path = L"D:\\My Projects\\XStudio2\\Files\\plugin.piracy.astronaut.cmd.repair.xml";
    
@@ -512,11 +486,11 @@ namespace Testing
          zip->Close();
       }
       catch (ExceptionBase&  e) {
-         theApp.ShowError(HERE, e, L"Unable to compress");
+         GetAppBase()->ShowError(HERE, e, L"Unable to compress");
       }
    }
 
-   void  DebugTests::Test_Iterator()
+   void  LogicTests::Test_Iterator()
    {
       const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"; 
    
@@ -540,7 +514,7 @@ namespace Testing
       }
    }
    
-   void  DebugTests::Test_LanguageFileReader()
+   void  LogicTests::Test_LanguageFileReader()
    {
       //const WCHAR* path = L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\testfile.xml"; 
       const WCHAR* path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\AP.0001-L044.xml";
@@ -559,7 +533,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_LanguageEditRegEx()
+   void  LogicTests::Test_LanguageEditRegEx()
    {
       try
       {
@@ -638,7 +612,7 @@ namespace Testing
       }
    }
    
-   void DebugTests::Text_RegEx()
+   void LogicTests::Text_RegEx()
    {
       wstring txt = L"the quick brown {17,245} jumped over the lazy {24,111}";
       Console << "Matching " << txt << " against \\{(\\d+),(\\d+)\\}" << ENDL;
@@ -717,7 +691,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_TFileReader()
+   void  LogicTests::Test_TFileReader()
    {
       const WCHAR* path = L"D:\\My Projects\\BearScript\\Data\\Relevant Files\\TWareT.txt";
    
@@ -761,7 +735,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_StringLibrary()
+   void  LogicTests::Test_StringLibrary()
    {
       XFileSystem vfs;
       CString err;
@@ -791,7 +765,7 @@ namespace Testing
       }
    }
 
-   void DebugTests::Test_StringParser()
+   void LogicTests::Test_StringParser()
    {
       // Expressions
       vector<wstring> strings = 
@@ -842,7 +816,7 @@ namespace Testing
       }
    }
 
-   void DebugTests::Test_StringParserRegEx()
+   void LogicTests::Test_StringParserRegEx()
    {
       wsmatch matches;
 
@@ -961,7 +935,7 @@ namespace Testing
       }
    }
    
-   void DebugTests::Test_SyntaxWriter()
+   void LogicTests::Test_SyntaxWriter()
    {
       const WCHAR* path = L"c:\\temp\\new Syntax.xml"; 
 
@@ -984,7 +958,7 @@ namespace Testing
       }
    }
 
-   void  DebugTests::Test_XmlWriter()
+   void  LogicTests::Test_XmlWriter()
    {
       const WCHAR* path = L"c:\\temp\\XML_TEST.xml"; 
    

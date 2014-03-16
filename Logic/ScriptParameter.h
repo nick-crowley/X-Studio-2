@@ -17,7 +17,7 @@ namespace Logic
       enum class ValueType { String, Int };
 
       /// <summary>Get value type string</summary>
-      GuiString  GetString(ValueType v);
+      LogicExport GuiString  GetString(ValueType v);
 
       /// <summary>Holds a union value of String/integer</summary>
       class LogicExport ParameterValue
@@ -97,7 +97,7 @@ namespace Logic
       };
 
       /// <summary>Write parameter value to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val);
 
       /// <summary>Represents a script command parameter</summary>
       class LogicExport ScriptParameter
@@ -151,7 +151,7 @@ namespace Logic
       };
 
       /// <summary>Write script parameter to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p);
 
       /// <summary>Vector of script parameters</summary>
       class LogicExport ParameterArray : public vector<ScriptParameter> 

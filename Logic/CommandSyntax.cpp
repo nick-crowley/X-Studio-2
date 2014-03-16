@@ -74,26 +74,26 @@ namespace Logic
       }
 
       /// <summary>Get command group name</summary>
-      GuiString  GetString(CommandGroup g)
+      LogicExport GuiString  GetString(CommandGroup g)
       {
          return GuiString(IDS_FIRST_COMMAND_GROUP + (UINT)g);
       }
 
       /// <summary>Post-Increment command group</summary>
-      CommandGroup operator++(CommandGroup& g, int)
+      LogicExport CommandGroup operator++(CommandGroup& g, int)
       {
          CommandGroup ret = g;
          return (++g, ret);
       }
 
       /// <summary>Pre-Increment command group</summary>
-      CommandGroup& operator++(CommandGroup& g)
+      LogicExport CommandGroup& operator++(CommandGroup& g)
       {
          return g = (CommandGroup)((UINT)g + 1);
       }
 
       /// <summary>Operate on command groups as integers</summary>
-      UINT operator-(const CommandGroup& a, const CommandGroup& b)
+      LogicExport UINT operator-(const CommandGroup& a, const CommandGroup& b)
       {
          return (UINT)a - (UINT)b;
       }

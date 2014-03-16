@@ -64,21 +64,21 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       /// <summary>Get datatype string</summary>
-      GuiString  GetString(DataType d)
+      LogicExport GuiString  GetString(DataType d)
       {
          const LanguageString* str;
          return StringLib.TryFind(KnownPage::DATA_TYPES, (UINT)d, str) ? str->Text : GuiString::Missing((UINT)d);
       }
 
       /// <summary>Get value type string</summary>
-      GuiString  GetString(ValueType v)
+      LogicExport GuiString  GetString(ValueType v)
       {
          return v == ValueType::Int ? L"Int" 
             : v == ValueType::String ? L"String" : L"Invalid";
       }
 
       /// <summary>Get return type string</summary>
-      GuiString  GetString(ReturnType t)
+      LogicExport GuiString  GetString(ReturnType t)
       {
          switch (t)
          {
@@ -91,7 +91,7 @@ namespace Logic
       }
 
       /// <summary>Get conditional string</summary>
-      GuiString  GetString(Conditional c)
+      LogicExport GuiString  GetString(Conditional c)
       {
          return StringLib.Find(KnownPage::CONDITIONALS, (UINT)c).Text;
       }
@@ -142,20 +142,20 @@ namespace Logic
       }
 
       /// <summary>Write parameter value to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val)
       {
          auto szValue = (val.Type == ValueType::String ? val.String : VString(L"%d", val.Int));
          return c << "{ParameterValue: Type=" << GetString(val.Type) << " Value=" << szValue << "}";
       }
 
       /// <summary>Write script parameter to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptParameter& p)
       {
          return c << "{ScriptParameter: Text=" << p.Text << " Value=" << p.Value << " Token=" << p.Token << " Syntax=" << p.Syntax << "}";
       }
 
       /// <summary>Write return value to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val)
       {
          return c << L"{ReturnValue: ReturnType=" << GetString(val.ReturnType) << " Conditional='" << GetString(val.Conditional) << "' Destination=" << val.Destination << "}";
       }

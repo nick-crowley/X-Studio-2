@@ -153,7 +153,7 @@ namespace Logic
       /// <summary>Gets BranchLogic string</summary>
       /// <param name="l">logic</param>
       /// <returns></returns>
-      const WCHAR* GetString(BranchLogic l)
+      LogicExport const WCHAR* GetString(BranchLogic l)
       {
          static const WCHAR* str[] = {L"None", L"NOP", L"If", L"While", L"SkipIf", L"Else", L"ElseIf", L"End", L"Break", L"Continue"};
          return str[l];

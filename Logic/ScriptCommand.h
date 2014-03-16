@@ -15,7 +15,7 @@ namespace Logic
       enum BranchLogic   { None, NOP, If, While, SkipIf, Else, ElseIf, End, Break, Continue };
 
       /// <summary>Get branch logic name</summary>
-      const WCHAR* GetString(BranchLogic l);
+      LogicExport const WCHAR* GetString(BranchLogic l);
 
       /// <summary>String ID referenced by a script command</summary>
       class LogicExport StringID

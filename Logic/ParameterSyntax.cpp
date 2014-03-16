@@ -57,14 +57,14 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       /// <summary>Get parameter type string</summary>
-      GuiString  GetString(ParameterType t)
+      LogicExport GuiString  GetString(ParameterType t)
       {
          const ScriptObject* str=nullptr;
          return ScriptObjectLib.TryFind(ScriptObjectGroup::ParameterType, (UINT)t, str) ? str->Text : GuiString::Missing((UINT)t);
       }
 
       /// <summary>Write parameter syntax to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps)
       {
          return c << "{ParameterSyntax: Type=" << GetString(ps.Type) << "}";
       }

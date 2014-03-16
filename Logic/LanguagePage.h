@@ -44,7 +44,7 @@ namespace Logic
       enum class ColourTag { Undetermined, Unix, Message };
 
       /// <summary>Represents a string in a language file</summary>
-      class LanguageString
+      class LogicExport LanguageString
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -83,7 +83,7 @@ namespace Logic
       };
 
       /// <summary>Write string to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const LanguageString& str);
 
       /// <summary>Represents a collection of language strings</summary>
       class LogicExport LanguagePage
@@ -352,7 +352,7 @@ namespace Logic
       };
 
       /// <summary>Write page to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page);
    }
 }
 

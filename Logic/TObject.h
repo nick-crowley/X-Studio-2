@@ -18,12 +18,12 @@ namespace Logic
       };
 
       /// <summary>Convenience main type global functions</summary>
-      MainType& operator++(MainType& m);
-      MainType operator++(MainType& m, int);
-      UINT operator-(const MainType& a, const MainType& b);
+      LogicExport MainType& operator++(MainType& m);
+      LogicExport MainType operator++(MainType& m, int);
+      LogicExport UINT operator-(const MainType& a, const MainType& b);
       
       /// <summary>Get main type string</summary>
-      GuiString  GetString(const MainType& m);
+      LogicExport GuiString  GetString(const MainType& m);
 
       /// <summary>Ware sizes</summary>
       enum class WareSize : UINT { Tiny, Small, Medium, Large, ExtraLarge, Station };

@@ -12,7 +12,7 @@ namespace Logic
    /// <param name="c">colour</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentException">Invalid colour</exception>
-   TooltipColour ForTooltip(Colour c)
+   UtilExport TooltipColour ForTooltip(Colour c)
    {
       switch (c)
       {
@@ -38,7 +38,7 @@ namespace Logic
    /// <param name="c">colour</param>
    /// <returns></returns>
    /// <exception cref="Logic::ArgumentException">Invalid colour</exception>
-   RichTextColour ForRichText(Colour c)
+   UtilExport RichTextColour ForRichText(Colour c)
    {
       switch (c)
       {
@@ -64,7 +64,7 @@ namespace Logic
    /// <summary>Convert paragraph alignment string</summary>
    /// <param name="a">alignment</param>
    /// <returns></returns>
-   wstring  GetString(Alignment a)
+   UtilExport wstring  GetString(Alignment a)
    {
       switch (a)
       {
@@ -79,7 +79,7 @@ namespace Logic
    /// <summary>Gets game language string</summary>
    /// <param name="l">language</param>
    /// <returns></returns>
-   wstring  GetString(GameLanguage l)
+   UtilExport wstring  GetString(GameLanguage l)
    {
       switch (l)
       {
@@ -96,19 +96,19 @@ namespace Logic
    }
 
    /// <summary>Compare character ranges</summary>
-   bool operator==(const CHARRANGE& a, const CHARRANGE& b)
+   UtilExport bool operator==(const CHARRANGE& a, const CHARRANGE& b)
    {
       return a.cpMax == b.cpMax && a.cpMin == b.cpMin;
    }
 
    /// <summary>Compare character ranges</summary>
-   bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
+   UtilExport bool operator!=(const CHARRANGE& a, const CHARRANGE& b)
    {
       return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
    }
 
    /// <summary>Dialog data exchange for std::wstring</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value)
+   UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value)
    {
 	   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
       CString str;
@@ -127,7 +127,7 @@ namespace Logic
    }
 
    /// <summary>Dialog data exchange for paths</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path)
+   UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path)
    {
 	   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
 

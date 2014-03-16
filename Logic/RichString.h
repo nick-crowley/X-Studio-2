@@ -16,7 +16,7 @@ namespace Logic
       enum class ColumnType { Default, Single, Double, Triple };
 
       /// <summary>Get column type string</summary>
-      const wchar*  GetString(ColumnType t);
+      LogicExport const wchar*  GetString(ColumnType t);
 
       /// <summary>Distinguishes characters from buttons in rich text</summary>
       enum class ElementType  { Character, Button };
@@ -270,11 +270,11 @@ namespace Logic
 
       
       /// <summary>Write rich-text objects to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e);
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e);
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e);
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p);
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s);
       
    }
 }

@@ -22,26 +22,26 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
       
       /// <summary>Get main type string</summary>
-      GuiString GetString(const MainType& m)
+      LogicExport GuiString GetString(const MainType& m)
       {
          return GuiString(IDS_FIRST_MAIN_TYPE + (UINT)m);
       }
 
       /// <summary>Increment main type</summary>
-      MainType operator++(MainType& m, int)
+      LogicExport MainType operator++(MainType& m, int)
       {
          MainType ret = m;
          return (++m, ret);
       }
 
       /// <summary>Increment main type</summary>
-      MainType& operator++(MainType& m)
+      LogicExport MainType& operator++(MainType& m)
       {
          return m = (MainType)((UINT)m + 1);
       }
 
       /// <summary>Operator on main type as int</summary>
-      UINT operator-(const MainType& a, const MainType& b)
+      LogicExport UINT operator-(const MainType& a, const MainType& b)
       {
          return (UINT)a - (UINT)b;
       }

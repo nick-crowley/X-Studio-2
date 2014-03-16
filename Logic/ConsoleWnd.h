@@ -32,10 +32,10 @@ namespace Logic
 
    
    /// <summary>Write rectangle to the console</summary>
-   ConsoleWnd& operator<<(ConsoleWnd& c, const CRect& rc);
+   LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const CRect& rc);
 
    /// <summary>Write size to the console</summary>
-   ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
+   LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
 
 
    /// <summary>Provides a debugging console</summary>

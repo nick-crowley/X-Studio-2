@@ -10,7 +10,7 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       /// <summary>Output rich-text element to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichElement& e)
       {
          if (e.Type == ElementType::Button)
             return c << (const RichButton&)e;
@@ -22,7 +22,7 @@ namespace Logic
       }
 
       /// <summary>Output rich-text character to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichCharacter& e)
       {
          c << e.Colour;
          if (e.Format & CFE_BOLD)
@@ -37,7 +37,7 @@ namespace Logic
       }
 
       /// <summary>Output rich-text button to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichButton& e)
       {
          c << "{" << Cons::Yellow << "RichButton" << Cons::White << " Id=" << e.ID << " Text=";
 
@@ -49,7 +49,7 @@ namespace Logic
       }
 
       /// <summary>Output rich-text paragraph to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichParagraph& p)
       {
          // Properties
          c << "{" << Cons::Yellow << "RichParagraph" << Cons::White << " Align=" << GetString(p.Align);
@@ -63,7 +63,7 @@ namespace Logic
       }
 
       /// <summary>Output rich-text string to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const RichString& s)
       {
          // Properties
          c << "{" << Cons::Yellow << "RichString" << Cons::White;
@@ -80,7 +80,7 @@ namespace Logic
       /// <summary>Gets column type string.</summary>
       /// <param name="t">The type.</param>
       /// <returns></returns>
-      const wchar*  GetString(ColumnType t)
+      LogicExport const wchar*  GetString(ColumnType t)
       {
          switch (t)
          {

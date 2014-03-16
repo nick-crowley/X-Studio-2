@@ -15,7 +15,7 @@ namespace Logic
       enum class SearchCommand { Find, Replace, FindAll, ReplaceAll };
 
       /// <summary>Get search target name</summary>
-      wstring  GetString(SearchTarget t);
+      LogicExport wstring  GetString(SearchTarget t);
 
       
 

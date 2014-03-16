@@ -16,14 +16,14 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -42,16 +42,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.lib</TargetExt>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+    <ExcludePath>$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetExt>.lib</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_LOGIC_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_LOGIC_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -61,7 +63,15 @@
     </Link>
     <Lib>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\Utils.lib</AdditionalDependencies>
+      <TargetMachine>MachineX86</TargetMachine>
+      <SubSystem>Windows</SubSystem>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <ModuleDefinitionFile>./Logic.def</ModuleDefinitionFile>
     </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -79,12 +89,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>$(OutputPath)\zdll.lib;$(OutputPath)\Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\Utils.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Testing\LogicTests.h" />
+    <ClInclude Include="..\Testing\ScriptValidator.h" />
+    <ClInclude Include="..\XML\xml.h" />
     <ClInclude Include="AppBase.h" />
     <ClInclude Include="BackgroundWorker.h" />
     <ClInclude Include="BackupFile.h" />
@@ -181,6 +196,11 @@
     <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Testing\LogicTests.cpp" />
+    <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
+    <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
+    <ClCompile Include="..\Testing\ScriptValidator.cpp" />
+    <ClCompile Include="..\XML\msxml6.cpp" />
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="BackupFileReader.cpp" />
     <ClCompile Include="BackupFileWriter.cpp" />
@@ -243,6 +263,7 @@
     <ClCompile Include="StringLibrary.cpp" />
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="StringResolver.cpp" />
+    <ClCompile Include="StringStream.cpp" />
     <ClCompile Include="SyntaxFile.cpp" />
     <ClCompile Include="SyntaxHighlight.cpp" />
     <ClCompile Include="SyntaxLibrary.cpp" />
@@ -255,6 +276,9 @@
     <ClCompile Include="XFileSystem.cpp" />
     <ClCompile Include="XmlReader.cpp" />
     <ClCompile Include="XmlWriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\XML\msxml6.tlh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

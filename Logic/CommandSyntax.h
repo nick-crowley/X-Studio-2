@@ -168,12 +168,12 @@ namespace Logic
       };
 
       /// <summary>Get command group name</summary>
-      GuiString  GetString(CommandGroup g);
+      LogicExport GuiString  GetString(CommandGroup g);
 
       /// <summary>Convenience command group global functions</summary>
-      CommandGroup operator++(CommandGroup& g, int);
-      CommandGroup& operator++(CommandGroup& g);
-      UINT operator-(const CommandGroup& a, const CommandGroup& b);
+      LogicExport CommandGroup operator++(CommandGroup& g, int);
+      LogicExport CommandGroup& operator++(CommandGroup& g);
+      LogicExport UINT operator-(const CommandGroup& a, const CommandGroup& b);
 
 
 

@@ -7,7 +7,7 @@ namespace Logic
    namespace Scripts
    {
       /// <summary>Get parameter type string</summary>
-      GuiString GetString(ParameterType t);
+      LogicExport GuiString GetString(ParameterType t);
 
       /// <summary>Defines the purpose of the parameter</summary>
       enum class ParameterUsage { None, PageID, StringID, ScriptName };
@@ -112,7 +112,7 @@ namespace Logic
       };
 
       /// <summary>Write parameter syntax to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterSyntax& ps);
 
       /// <summary>Vector of parameter syntax</summary>
       typedef vector<ParameterSyntax>  ParamSyntaxArray;

@@ -105,7 +105,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>msxml6.lib;Shlwapi.lib;zdll.lib;$(SolutionDir)$(Configuration)\Utils.lib;$(SolutionDir)$(Configuration)\Logic.lib</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;$(OutputPath)\Utils.lib;$(OutputPath)\Logic.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -135,13 +135,9 @@
     <ClInclude Include="..\DTL\Sequence.hpp" />
     <ClInclude Include="..\DTL\Ses.hpp" />
     <ClInclude Include="..\DTL\variables.hpp" />
-    <ClInclude Include="..\Testing\DebugTests.h" />
-    <ClInclude Include="..\Testing\ScriptValidator.h" />
-    <ClInclude Include="..\Testing\stdafx.h" />
+    <ClInclude Include="..\Testing\GuiTests.h" />
     <ClInclude Include="..\TOM\stdafx.h" />
     <ClInclude Include="..\TOM\tom.h" />
-    <ClInclude Include="..\XML\xml.h" />
-    <ClInclude Include="..\XML\stdafx.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -208,12 +204,8 @@
     <ClInclude Include="ToolBarEx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Testing\DebugTests.cpp" />
-    <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
-    <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
-    <ClCompile Include="..\Testing\ScriptValidator.cpp" />
+    <ClCompile Include="..\Testing\GuiTests.cpp" />
     <ClCompile Include="..\TOM\msftedit.cpp" />
-    <ClCompile Include="..\XML\msxml6.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
@@ -281,7 +273,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\TOM\msftedit.tlh" />
-    <None Include="..\XML\msxml6.tlh" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>

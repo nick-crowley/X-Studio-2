@@ -21,7 +21,7 @@ namespace Logic
 
       /// <summary>Get file-type name</summary>
       /// <exception cref="Logic::ArgumentException">Unrecognised file type</exception>
-      wstring GetString(FileType t)
+      LogicExport wstring GetString(FileType t)
       {
          switch (t)
          {
