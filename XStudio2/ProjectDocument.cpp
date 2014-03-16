@@ -516,7 +516,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::IOException">Unable to create file</exception>
    void ProjectDocument::SaveBackupFile(const IO::Path& path, const BackupFile& f) const
    {
-      TempPath tmp;
+      auto tmp = TempPath().RenameExtension(L".zip");
 
       // Write to a temp file to prevent destroying all revisions if case of failure
       BackupFileWriter w(XFileInfo(tmp).OpenWrite(L"revisions.xml"));
