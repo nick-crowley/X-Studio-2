@@ -6,7 +6,7 @@
 #include "DiffFrame.h"
 #include "DiffView.h"
 #include "PropertiesWnd.h"
-#include "Logic/WorkerFeedback.h"
+#include "../Logic/WorkerFeedback.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)

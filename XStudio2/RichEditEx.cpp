@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RichEditEx.h"
-#include "Logic/CommandLexer.h"
+#include "../Logic/CommandLexer.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

@@ -8,12 +8,12 @@
 #include <propkey.h>
 #include "CommitDialog.h"
 #include "ArgumentDialog.h"
-#include "Logic/FileStream.h"
-#include "Logic/XFileInfo.h"
-#include "Logic/ScriptFileReader.h"
-#include "Logic/ScriptFileWriter.h"
-#include "Logic/FileIdentifier.h"
-#include "Logic/WorkerFeedback.h"
+#include "../Logic/FileStream.h"
+#include "../Logic/XFileInfo.h"
+#include "../Logic/ScriptFileReader.h"
+#include "../Logic/ScriptFileWriter.h"
+#include "../Logic/FileIdentifier.h"
+#include "../Logic/WorkerFeedback.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

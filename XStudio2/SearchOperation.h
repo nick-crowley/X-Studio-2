@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..Utils/Utils.h"
-#include "Logic/SearchWorker.h"
+
+#include "../Logic/SearchWorker.h"
 
 namespace GUI
 {

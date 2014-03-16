@@ -1,7 +1,7 @@
 #pragma once
 #include "PreferencesPage.h"
 #include "PropertySource.h"
-#include "Logic/PreferencesLibrary.h"
+#include "../Logic/PreferencesLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Preferences)

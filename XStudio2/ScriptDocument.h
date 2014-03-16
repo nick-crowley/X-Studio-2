@@ -1,7 +1,7 @@
 #pragma once
-#include "Logic/ScriptFile.h"
-#include "Logic/ScriptRevision.h"
-#include "Logic/ScriptObjectLibrary.h"
+#include "../Logic/ScriptFile.h"
+#include "../Logic/ScriptRevision.h"
+#include "../Logic/ScriptObjectLibrary.h"
 #include "DocumentBase.h"
 #include "PropertySource.h"
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "DocumentBase.h"
-#include "Logic/BackupFile.h"
-#include "Logic/ProjectFile.h"
-#include "Logic/Event.h"
+#include "../Logic/BackupFile.h"
+#include "../Logic/ProjectFile.h"
+#include "../Logic/Event.h"
 
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)

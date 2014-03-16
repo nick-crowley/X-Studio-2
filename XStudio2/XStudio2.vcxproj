@@ -126,11 +126,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Logic\stdafx.h" />
+    <ClInclude Include="..\targetver.h" />
+    <ClInclude Include="..\Testing\DebugTests.h" />
+    <ClInclude Include="..\Testing\ScriptValidator.h" />
+    <ClInclude Include="..\Testing\stdafx.h" />
+    <ClInclude Include="..\Utils\Common.h" />
     <ClInclude Include="..\Utils\ConsoleWnd.h" />
     <ClInclude Include="..\Utils\Exceptions.h" />
     <ClInclude Include="..\Utils\GuiString.h" />
     <ClInclude Include="..\Utils\Macros.h" />
     <ClInclude Include="..\Utils\Path.h" />
+    <ClInclude Include="..\Utils\stdafx.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -230,9 +237,7 @@
     <ClInclude Include="..\Logic\CatalogStream.h" />
     <ClInclude Include="..\Logic\CommandHash.h" />
     <ClInclude Include="..\Logic\CommandSyntax.h" />
-    <ClInclude Include="..\Logic\Common.h" />
     <ClInclude Include="..\Logic\DataStream.h" />
-    <ClInclude Include="..\Logic\DebugTests.h" />
     <ClInclude Include="..\Logic\Event.h" />
     <ClInclude Include="..\Logic\FileSearch.h" />
     <ClInclude Include="..\Logic\FileStream.h" />
@@ -297,13 +302,16 @@
     <ClInclude Include="SuggestionList.h" />
     <ClInclude Include="SymbolDialog.h" />
     <ClInclude Include="SyntaxPage.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
-    <ClInclude Include="Testing\ScriptValidator.h" />
     <ClInclude Include="ToolBarEx.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Testing\DebugTests.cpp" />
+    <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
+    <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
+    <ClCompile Include="..\Testing\ScriptValidator.cpp" />
+    <ClCompile Include="..\Utils\Common.cpp" />
     <ClCompile Include="..\Utils\ConsoleWnd.cpp" />
     <ClCompile Include="..\Utils\Exceptions.cpp" />
     <ClCompile Include="..\Utils\GuiString.cpp" />
@@ -355,7 +363,6 @@
     <ClCompile Include="LanguageStringView.cpp" />
     <ClCompile Include="ListViewCustomDraw.cpp" />
     <ClCompile Include="..\Logic\CommandNode.cpp" />
-    <ClCompile Include="..\Logic\Common.cpp" />
     <ClCompile Include="..\Logic\DescriptionFileReader.cpp" />
     <ClCompile Include="..\Logic\DescriptionLibrary.cpp" />
     <ClCompile Include="..\Logic\DescriptionParser.cpp" />
@@ -387,7 +394,6 @@
     <ClCompile Include="..\Logic\CatalogStream.cpp" />
     <ClCompile Include="..\Logic\CommandSyntax.cpp" />
     <ClCompile Include="..\Logic\DataStream.cpp" />
-    <ClCompile Include="..\Logic\DebugTests.cpp" />
     <ClCompile Include="..\Logic\Event.cpp" />
     <ClCompile Include="..\Logic\FileSearch.cpp" />
     <ClCompile Include="..\Logic\FileStream.cpp" />
@@ -443,9 +449,6 @@
     <ClCompile Include="SuggestionList.cpp" />
     <ClCompile Include="SymbolDialog.cpp" />
     <ClCompile Include="SyntaxPage.cpp" />
-    <ClCompile Include="Testing\ScriptCodeValidator.cpp" />
-    <ClCompile Include="Testing\ScriptTextValidator.cpp" />
-    <ClCompile Include="Testing\ScriptValidator.cpp" />
     <ClCompile Include="ToolBarEx.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

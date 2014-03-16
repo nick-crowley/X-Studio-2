@@ -1,7 +1,7 @@
 #pragma once
-#include "..Utils/Utils.h"
-#include "Logic/LanguagePage.h"
-#include "Logic/RichStringParser.h"
+
+#include "../Logic/LanguagePage.h"
+#include "../Logic/RichStringParser.h"
 #include "LanguageEdit.h"
 
 namespace GUI

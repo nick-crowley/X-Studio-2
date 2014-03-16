@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ScriptObjectWnd.h"
 #include "MainWnd.h"
-#include "Logic/ScriptObjectLibrary.h"
+#include "../Logic/ScriptObjectLibrary.h"
 #include <strsafe.h>
 #include "Helpers.h"
 

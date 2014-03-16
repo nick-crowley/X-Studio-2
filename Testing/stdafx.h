@@ -23,10 +23,8 @@
 #include <afxcmn.h>             // MFC support for Windows Common Controls
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
-
 // Visual Leak Detector
 #include <vld.h>
-
 
 // STL
 #include <string>
@@ -38,37 +36,12 @@
 #include <memory>    // shared/unique ptr
 
 using namespace std;
-//using std::string;
-//using std::wstring;
-//using std::vector;
-//using std::deque;
-//using std::list;
-//using std::set;
-//using std::map;
-//using std::shared_ptr;
-//using std::unique_ptr;
-//using std::exception;
-
 
 // COM
 #include <comdef.h>
 
 // Logic Utils
 #include "../Utils/Common.h"
-
-// GUI Utils
-#include "Utils.h"
-
-// Application 
-#include "Application.h"
-
-// Preferences
-#include "../Logic/PreferencesLibrary.h"
-
-// Import Resource IDs from resource project
-#include "D:/My Projects/XStudio2/Resources/Resources.h"
-
-
 
 
 

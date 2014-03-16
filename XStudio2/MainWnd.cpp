@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "MainWnd.h"
-#include "Logic/DebugTests.h"
+#include "../Testing/DebugTests.h"
 #include "PreferencesDialog.h"
 
 #ifdef _DEBUG
@@ -480,7 +480,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Run Test
          case ID_TEST_RUN_ALL: 
-            DebugTests::RunAll();   
+            Testing::DebugTests::RunAll();   
             break;
          }
       }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Logic/LanguageFile.h"
+#include "../Logic/LanguageFile.h"
 #include "DocumentBase.h"
 #include "PropertySource.h"
 #include "GuiCommand.h"

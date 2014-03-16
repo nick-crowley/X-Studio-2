@@ -36,51 +36,25 @@
 #include <set>
 #include <map>
 #include <memory>    // shared/unique ptr
-
 using namespace std;
-//using std::string;
-//using std::wstring;
-//using std::vector;
-//using std::deque;
-//using std::list;
-//using std::set;
-//using std::map;
-//using std::shared_ptr;
-//using std::unique_ptr;
-//using std::exception;
-
 
 // COM
 #include <comdef.h>
 
-// Logic Utils
-#include "../Utils/Common.h"
-
-// GUI Utils
-#include "Utils.h"
-
-// Application 
-#include "Application.h"
-
-// Preferences
-#include "../Logic/PreferencesLibrary.h"
+// Utils
+#include "Macros.h"
+#include "GuiString.h"
+#include "Path.h"
+#include "Exceptions.h"
+#include "ConsoleWnd.h"
 
 // Import Resource IDs from resource project
-#include "D:/My Projects/XStudio2/Resources/Resources.h"
+#include "../Resources/Resources.h"
 
 
 
-
-
-// Common controls
-#ifdef _UNICODE
-#if defined _M_IX86
+// Common controls v6
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#elif defined _M_X64
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#else
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#endif
-#endif
+
 
 

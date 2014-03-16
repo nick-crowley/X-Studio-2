@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObjectWnd.h"
 #include <strsafe.h>
-#include "Logic/GameObjectLibrary.h"
+#include "../Logic/GameObjectLibrary.h"
 #include "Helpers.h"
 
 /// <summary>User interface</summary>

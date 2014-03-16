@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProjectDocument.h"
 #include "ImportProjectDialog.h"
-#include "Logic/FileIdentifier.h"
+#include "../Logic/FileIdentifier.h"
 #include "MainWnd.h"
 
 /// <summary>User interface documents</summary>

@@ -8,12 +8,12 @@
 #include "LanguageStringView.h"
 #include "LanguagePageView.h"
 #include "PropertiesWnd.h"
-#include "Logic/XFileInfo.h"
-#include "Logic/LanguageFileReader.h"
-#include "Logic/LanguageFileWriter.h"
-#include "Logic/FileIdentifier.h"
-#include "Logic/WorkerFeedback.h"
-#include "Logic/StringLibrary.h"
+#include "../Logic/XFileInfo.h"
+#include "../Logic/LanguageFileReader.h"
+#include "../Logic/LanguageFileWriter.h"
+#include "../Logic/FileIdentifier.h"
+#include "../Logic/WorkerFeedback.h"
+#include "../Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Documents)

@@ -1,6 +1,6 @@
 
 #pragma once
-#include "Logic/Event.h"
+#include "../Logic/Event.h"
 #include "ToolBarEx.h"
 #include "PropertySource.h"
 

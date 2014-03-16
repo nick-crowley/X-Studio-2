@@ -3,7 +3,7 @@
 #include "ProjectTreeCtrl.h"
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
-#include "Logic/Event.h"
+#include "../Logic/Event.h"
 #include "ProjectDocument.h"
 
 /// <summary>User interface</summary>
