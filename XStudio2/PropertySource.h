@@ -142,7 +142,7 @@ NAMESPACE_BEGIN2(GUI,Utils)
             return TRUE;
          }
          catch (ExceptionBase& e) {
-            theApp.ShowError(HERE, e, VString(L"Unable to update %s property with value '%s'", GetName(), (const wchar*)strText));
+            GetAppBase()->ShowError(HERE, e, VString(L"Unable to update %s property with value '%s'", GetName(), (const wchar*)strText));
             return FALSE;
          }
       }

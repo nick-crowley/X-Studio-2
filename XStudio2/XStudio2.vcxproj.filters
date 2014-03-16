@@ -22,56 +22,14 @@
     <Filter Include="Header Files\Logic">
       <UniqueIdentifier>{8897b3fb-cea9-4df9-8dab-b738da72b12f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Logic\IO">
-      <UniqueIdentifier>{213f0cc3-9270-4b1c-9a9b-07cce23c0c1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\FileSystem">
-      <UniqueIdentifier>{995c1ab8-08ed-4eb4-b0de-bd3461ffcbb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Language">
-      <UniqueIdentifier>{f02b0430-6b80-4fe1-a448-4065f503c276}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Scripts">
-      <UniqueIdentifier>{7fdace64-24dd-44b2-a55c-ba8125f20042}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Logic">
       <UniqueIdentifier>{9a39e521-0fad-4678-8c65-533dc9195ae9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\IO">
-      <UniqueIdentifier>{ab3399c2-5092-4e44-b09c-e085f1490d4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\FileSystem">
-      <UniqueIdentifier>{81e0b6a1-8f75-4769-8df5-01903726ffcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Language">
-      <UniqueIdentifier>{9df3ab4d-530c-41d3-b80c-b8dc305a5ed7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Scripts">
-      <UniqueIdentifier>{ae8b6995-840c-4380-bc18-a93e56038908}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Scripts\Compiler">
-      <UniqueIdentifier>{20923a62-b4f6-43d9-8c01-2bac0fbbd608}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Scripts\Compiler">
-      <UniqueIdentifier>{a1dd8a1f-5a45-4196-97f2-8470382b0056}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Types">
-      <UniqueIdentifier>{c26d04ad-0413-46d8-ab22-a5e4b9f66297}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Types">
-      <UniqueIdentifier>{00f4b317-8be4-489a-93a8-cb5abc1fa3b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{af9cdcef-7f32-4bb6-adcc-f2b84c4c6502}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\Controls">
       <UniqueIdentifier>{6f3f9ea7-cdcd-42fc-a25c-167d62390c5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Threads">
-      <UniqueIdentifier>{b5a7447d-e844-4458-a95c-a5b13cdef070}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Threads">
-      <UniqueIdentifier>{ab35f208-f803-46bf-ae84-864fc302be24}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Views">
       <UniqueIdentifier>{412f0bcd-51c8-4d67-88aa-3f994a98ed79}</UniqueIdentifier>
@@ -99,12 +57,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\Utils">
       <UniqueIdentifier>{b099d206-09b5-4acb-93c3-73269b31bc55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic\Projects">
-      <UniqueIdentifier>{a1f948c8-8edd-470d-ba65-3868aa10d04c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic\Projects">
-      <UniqueIdentifier>{f6b294a6-c4bc-483e-bb12-226753d932cf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Preferences">
       <UniqueIdentifier>{64a527fb-adc5-4e63-b84c-1f546a46fc98}</UniqueIdentifier>
@@ -138,158 +90,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Logic\LanguageFile.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LanguagePage.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\CommandSyntax.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ParameterSyntax.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\SyntaxFile.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\XCatalog.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\XFileInfo.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\XFileSystem.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\FileStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\GZipStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\MemoryStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\Stream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\StringReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\XmlReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\zconf.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\zlib.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\CatalogReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\CatalogStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\DataStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LanguageFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptFile.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptParameter.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\SyntaxLibrary.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptCommand.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\StringLibrary.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ReturnValue.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\RtfWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\XmlWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\SyntaxWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptToken.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\CommandHash.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptParser.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\CommandLexer.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ExpressionParser.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\FileSearch.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\Path.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TObject.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TFile.hpp">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TFileReader.hpp">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TWare.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TLaser.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TDock.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TFactory.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TShield.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LookupString.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\BackgroundWorker.h">
-      <Filter>Header Files\Logic\Threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\GameDataWorker.h">
-      <Filter>Header Files\Logic\Threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\WorkerFeedback.h">
-      <Filter>Header Files\Logic\Threads</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\Event.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>Header Files\GUI</Filter>
@@ -309,44 +111,14 @@
     <ClInclude Include="LanguageStringView.h">
       <Filter>Header Files\GUI\Views</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\FileIdentifier.h">
-      <Filter>Header Files\Logic\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptObjectLibrary.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="SuggestionList.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\GameObjectLibrary.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\RaceLookup.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers.h">
       <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptObject.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\MapIterator.hpp">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\GameObject.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ParameterTypes.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TMissile.h">
-      <Filter>Header Files\Logic\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\TShip.h">
-      <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
     <ClInclude Include="AboutDlg.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -381,32 +153,8 @@
     <ClInclude Include="LanguageDocument.h">
       <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\CommandNode.h">
-      <Filter>Header Files\Logic\Scripts\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptFileWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\IndentationStack.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\EncryptedStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\StringResolver.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\RtfScriptWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\RichString.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
     <ClInclude Include="ToolBarEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\PreferencesLibrary.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="ImageListEx.h">
       <Filter>Header Files\GUI\Utils</Filter>
@@ -420,21 +168,6 @@
     <ClInclude Include="ListViewCustomDraw.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\DescriptionFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\DescriptionLibrary.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\Descriptions.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\DescriptionFile.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\DescriptionParser.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
     <ClInclude Include="FindDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -443,12 +176,6 @@
     </ClInclude>
     <ClInclude Include="FindProgressDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\SearchWorker.h">
-      <Filter>Header Files\Logic\Threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\MatchData.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="SearchOperation.h">
       <Filter>Header Files\GUI\Utils</Filter>
@@ -468,9 +195,6 @@
     <ClInclude Include="ProjectDocument.h">
       <Filter>Header Files\GUI\Documents</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\ProjectFile.h">
-      <Filter>Header Files\Logic\Projects</Filter>
-    </ClInclude>
     <ClInclude Include="ProjectTreeCtrl.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -483,9 +207,6 @@
     <ClInclude Include="LanguageEdit.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\RichStringParser.h">
-      <Filter>Header Files\Logic\Language</Filter>
-    </ClInclude>
     <ClInclude Include="OleBitmap.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
@@ -495,14 +216,8 @@
     <ClInclude Include="Clipboard.h">
       <Filter>Header Files\GUI\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\FileBase.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="RichStringWriter.h">
       <Filter>Header Files\GUI\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LanguageFileWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="GeneralPage.h">
       <Filter>Header Files\GUI\Preferences</Filter>
@@ -519,23 +234,8 @@
     <ClInclude Include="PreferencesDialog.h">
       <Filter>Header Files\GUI\Preferences</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\LegacyProjectFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LegacySyntaxFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\SyntaxHighlight.h">
-      <Filter>Header Files\Logic\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="NewDocumentDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\StringStream.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\LogFileWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
     <ClInclude Include="RefactorDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -564,29 +264,8 @@
     <ClInclude Include="BackupWnd.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\BackupFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\BackupFile.h">
-      <Filter>Header Files\Logic\Projects</Filter>
-    </ClInclude>
     <ClInclude Include="ImportProjectDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ProjectFileWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ProjectFileReader.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ProjectItem.h">
-      <Filter>Header Files\Logic\Projects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\BackupFileWriter.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ScriptRevision.h">
-      <Filter>Header Files\Logic\Projects</Filter>
     </ClInclude>
     <ClInclude Include="BackupList.h">
       <Filter>Header Files\GUI\Controls</Filter>
@@ -600,14 +279,8 @@
     <ClInclude Include="ArgumentDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\ConsoleLog.h">
-      <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\stdafx.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\Testing\DebugTests.h">
       <Filter>Header Files\Testing</Filter>
@@ -617,9 +290,6 @@
     </ClInclude>
     <ClInclude Include="..\Testing\stdafx.h">
       <Filter>Header Files\Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\ConsoleWnd.h">
-      <Filter>Header Files\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\TOM\stdafx.h">
       <Filter>Header Files\TOM</Filter>
@@ -659,119 +329,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Logic\XCatalog.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\XFileInfo.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\XFileSystem.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\CommandSyntax.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ParameterSyntax.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SyntaxFile.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LanguagePage.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\FileStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\GZipStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\MemoryStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\StringReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\XmlReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\CatalogReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\CatalogStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\DataStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LanguageFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptFile.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SyntaxLibrary.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptParameter.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptCommand.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptCommandReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\StringLibrary.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\RtfWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ReturnValue.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\XmlWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SyntaxWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptToken.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptParser.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\CommandLexer.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ExpressionParser.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\FileSearch.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\TObject.cpp">
-      <Filter>Source Files\Logic\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LookupString.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SyntaxNode.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\GameDataWorker.cpp">
-      <Filter>Source Files\Logic\Threads</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\Event.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
@@ -791,35 +350,11 @@
     <ClCompile Include="LanguageStringView.cpp">
       <Filter>Source Files\GUI\Views</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\FileIdentifier.cpp">
-      <Filter>Source Files\Logic\FileSystem</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\ScriptObjectLibrary.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="SuggestionList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\GameObjectLibrary.cpp">
-      <Filter>Source Files\Logic\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ScriptObject.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LanguageString.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\GameObject.cpp">
-      <Filter>Source Files\Logic\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\CommandNode.cpp">
-      <Filter>Source Files\Logic\Scripts\Compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\TShipReader.cpp">
-      <Filter>Source Files\Logic\Types</Filter>
     </ClCompile>
     <ClCompile Include="AboutDlg.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
@@ -854,29 +389,8 @@
     <ClCompile Include="ScriptDocument.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\ScriptFileWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SourceValueReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\EncryptedStream.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\StringResolver.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\RtfScriptWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\RichString.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
     <ClCompile Include="ToolBarEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\PreferencesLibrary.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="ImageListEx.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
@@ -887,15 +401,6 @@
     <ClCompile Include="ListViewCustomDraw.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\DescriptionFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\DescriptionLibrary.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\DescriptionParser.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
     <ClCompile Include="FindDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
@@ -904,9 +409,6 @@
     </ClCompile>
     <ClCompile Include="FindProgressDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SearchWorker.cpp">
-      <Filter>Source Files\Logic\Threads</Filter>
     </ClCompile>
     <ClCompile Include="SearchOperation.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
@@ -935,9 +437,6 @@
     <ClCompile Include="LanguageEdit.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\RichStringParser.cpp">
-      <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
     <ClCompile Include="LanguageEditCallback.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -949,9 +448,6 @@
     </ClCompile>
     <ClCompile Include="RichStringWriter.cpp">
       <Filter>Source Files\GUI\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LanguageFileWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="GeneralPage.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
@@ -968,20 +464,8 @@
     <ClCompile Include="PreferencesDialog.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\LegacyProjectFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LegacySyntaxFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\SyntaxHighlight.cpp">
-      <Filter>Source Files\Logic\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="NewDocumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\LogFileWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
     <ClCompile Include="SplashWnd.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
@@ -1010,26 +494,11 @@
     <ClCompile Include="BackupWnd.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\BackupFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="ImportProjectDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\ProjectFileWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ProjectFileReader.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="ProjectDocTemplate.cpp">
       <Filter>Source Files\GUI\Documents</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\BackupFileWriter.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ProjectItem.cpp">
-      <Filter>Source Files\Logic\Projects</Filter>
     </ClCompile>
     <ClCompile Include="BackupList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
@@ -1043,9 +512,6 @@
     <ClCompile Include="ArgumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\ConsoleLog.cpp">
-      <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
     <ClCompile Include="..\Testing\DebugTests.cpp">
       <Filter>Source Files\Testing</Filter>
     </ClCompile>
@@ -1057,9 +523,6 @@
     </ClCompile>
     <ClCompile Include="..\Testing\ScriptValidator.cpp">
       <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\ConsoleWnd.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="..\TOM\msftedit.cpp">
       <Filter>Source Files\TOM</Filter>

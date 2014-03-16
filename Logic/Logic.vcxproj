@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1F28BFD0-9215-46F0-AFED-AB7C529E4CFD}</ProjectGuid>
+    <RootNamespace>Logic</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_LOGIC_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_LOGIC_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AppBase.h" />
+    <ClInclude Include="BackgroundWorker.h" />
+    <ClInclude Include="BackupFile.h" />
+    <ClInclude Include="BackupFileReader.h" />
+    <ClInclude Include="BackupFileWriter.h" />
+    <ClInclude Include="CatalogReader.h" />
+    <ClInclude Include="CatalogStream.h" />
+    <ClInclude Include="CommandHash.h" />
+    <ClInclude Include="CommandLexer.h" />
+    <ClInclude Include="CommandNode.h" />
+    <ClInclude Include="CommandSyntax.h" />
+    <ClInclude Include="ConsoleLog.h" />
+    <ClInclude Include="ConsoleWnd.h" />
+    <ClInclude Include="DataStream.h" />
+    <ClInclude Include="DescriptionFile.h" />
+    <ClInclude Include="DescriptionFileReader.h" />
+    <ClInclude Include="DescriptionLibrary.h" />
+    <ClInclude Include="DescriptionParser.h" />
+    <ClInclude Include="Descriptions.h" />
+    <ClInclude Include="EncryptedStream.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="ExpressionParser.h" />
+    <ClInclude Include="FileBase.h" />
+    <ClInclude Include="FileIdentifier.h" />
+    <ClInclude Include="FileSearch.h" />
+    <ClInclude Include="FileStream.h" />
+    <ClInclude Include="GameDataWorker.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectLibrary.h" />
+    <ClInclude Include="GZipStream.h" />
+    <ClInclude Include="IndentationStack.h" />
+    <ClInclude Include="LanguageFile.h" />
+    <ClInclude Include="LanguageFileReader.h" />
+    <ClInclude Include="LanguageFileWriter.h" />
+    <ClInclude Include="LanguagePage.h" />
+    <ClInclude Include="LegacyProjectFileReader.h" />
+    <ClInclude Include="LegacySyntaxFileReader.h" />
+    <ClInclude Include="LogFileWriter.h" />
+    <ClInclude Include="LookupString.h" />
+    <ClInclude Include="MapIterator.hpp" />
+    <ClInclude Include="MatchData.h" />
+    <ClInclude Include="MemoryStream.h" />
+    <ClInclude Include="ParameterSyntax.h" />
+    <ClInclude Include="ParameterTypes.h" />
+    <ClInclude Include="PreferencesLibrary.h" />
+    <ClInclude Include="ProjectFile.h" />
+    <ClInclude Include="ProjectFileReader.h" />
+    <ClInclude Include="ProjectFileWriter.h" />
+    <ClInclude Include="ProjectItem.h" />
+    <ClInclude Include="RaceLookup.h" />
+    <ClInclude Include="ReturnValue.h" />
+    <ClInclude Include="RichString.h" />
+    <ClInclude Include="RichStringParser.h" />
+    <ClInclude Include="RtfScriptWriter.h" />
+    <ClInclude Include="RtfWriter.h" />
+    <ClInclude Include="ScriptCommand.h" />
+    <ClInclude Include="ScriptFile.h" />
+    <ClInclude Include="ScriptFileReader.h" />
+    <ClInclude Include="ScriptFileWriter.h" />
+    <ClInclude Include="ScriptObject.h" />
+    <ClInclude Include="ScriptObjectLibrary.h" />
+    <ClInclude Include="ScriptParameter.h" />
+    <ClInclude Include="ScriptParser.h" />
+    <ClInclude Include="ScriptRevision.h" />
+    <ClInclude Include="ScriptToken.h" />
+    <ClInclude Include="SearchWorker.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Stream.h" />
+    <ClInclude Include="StringLibrary.h" />
+    <ClInclude Include="StringReader.h" />
+    <ClInclude Include="StringResolver.h" />
+    <ClInclude Include="StringStream.h" />
+    <ClInclude Include="SyntaxFile.h" />
+    <ClInclude Include="SyntaxHighlight.h" />
+    <ClInclude Include="SyntaxLibrary.h" />
+    <ClInclude Include="SyntaxWriter.h" />
+    <ClInclude Include="TDock.h" />
+    <ClInclude Include="TFactory.h" />
+    <ClInclude Include="TFile.hpp" />
+    <ClInclude Include="TFileReader.hpp" />
+    <ClInclude Include="TLaser.h" />
+    <ClInclude Include="TMissile.h" />
+    <ClInclude Include="TObject.h" />
+    <ClInclude Include="TShield.h" />
+    <ClInclude Include="TShip.h" />
+    <ClInclude Include="TWare.h" />
+    <ClInclude Include="WorkerFeedback.h" />
+    <ClInclude Include="XCatalog.h" />
+    <ClInclude Include="XFileInfo.h" />
+    <ClInclude Include="XFileSystem.h" />
+    <ClInclude Include="XmlReader.h" />
+    <ClInclude Include="XmlWriter.h" />
+    <ClInclude Include="zconf.h" />
+    <ClInclude Include="zlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AppBase.cpp" />
+    <ClCompile Include="BackupFileReader.cpp" />
+    <ClCompile Include="BackupFileWriter.cpp" />
+    <ClCompile Include="CatalogReader.cpp" />
+    <ClCompile Include="CatalogStream.cpp" />
+    <ClCompile Include="CommandLexer.cpp" />
+    <ClCompile Include="CommandNode.cpp" />
+    <ClCompile Include="CommandSyntax.cpp" />
+    <ClCompile Include="ConsoleLog.cpp" />
+    <ClCompile Include="ConsoleWnd.cpp" />
+    <ClCompile Include="DataStream.cpp" />
+    <ClCompile Include="DescriptionFileReader.cpp" />
+    <ClCompile Include="DescriptionLibrary.cpp" />
+    <ClCompile Include="DescriptionParser.cpp" />
+    <ClCompile Include="EncryptedStream.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="ExpressionParser.cpp" />
+    <ClCompile Include="FileIdentifier.cpp" />
+    <ClCompile Include="FileSearch.cpp" />
+    <ClCompile Include="FileStream.cpp" />
+    <ClCompile Include="GameDataWorker.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectLibrary.cpp" />
+    <ClCompile Include="GZipStream.cpp" />
+    <ClCompile Include="LanguageFileReader.cpp" />
+    <ClCompile Include="LanguageFileWriter.cpp" />
+    <ClCompile Include="LanguagePage.cpp" />
+    <ClCompile Include="LanguageString.cpp" />
+    <ClCompile Include="LegacyProjectFileReader.cpp" />
+    <ClCompile Include="LegacySyntaxFileReader.cpp" />
+    <ClCompile Include="LogFileWriter.cpp" />
+    <ClCompile Include="LookupString.cpp" />
+    <ClCompile Include="MemoryStream.cpp" />
+    <ClCompile Include="ParameterSyntax.cpp" />
+    <ClCompile Include="PreferencesLibrary.cpp" />
+    <ClCompile Include="ProjectFileReader.cpp" />
+    <ClCompile Include="ProjectFileWriter.cpp" />
+    <ClCompile Include="ProjectItem.cpp" />
+    <ClCompile Include="ReturnValue.cpp" />
+    <ClCompile Include="RichString.cpp" />
+    <ClCompile Include="RichStringParser.cpp" />
+    <ClCompile Include="RtfScriptWriter.cpp" />
+    <ClCompile Include="RtfWriter.cpp" />
+    <ClCompile Include="ScriptCommand.cpp" />
+    <ClCompile Include="ScriptCommandReader.cpp" />
+    <ClCompile Include="ScriptFile.cpp" />
+    <ClCompile Include="ScriptFileReader.cpp" />
+    <ClCompile Include="ScriptFileWriter.cpp" />
+    <ClCompile Include="ScriptObject.cpp" />
+    <ClCompile Include="ScriptObjectLibrary.cpp" />
+    <ClCompile Include="ScriptParameter.cpp" />
+    <ClCompile Include="ScriptParser.cpp" />
+    <ClCompile Include="ScriptToken.cpp" />
+    <ClCompile Include="SearchWorker.cpp" />
+    <ClCompile Include="SourceValueReader.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StringLibrary.cpp" />
+    <ClCompile Include="StringReader.cpp" />
+    <ClCompile Include="StringResolver.cpp" />
+    <ClCompile Include="SyntaxFile.cpp" />
+    <ClCompile Include="SyntaxHighlight.cpp" />
+    <ClCompile Include="SyntaxLibrary.cpp" />
+    <ClCompile Include="SyntaxNode.cpp" />
+    <ClCompile Include="SyntaxWriter.cpp" />
+    <ClCompile Include="TObject.cpp" />
+    <ClCompile Include="TShipReader.cpp" />
+    <ClCompile Include="XCatalog.cpp" />
+    <ClCompile Include="XFileInfo.cpp" />
+    <ClCompile Include="XFileSystem.cpp" />
+    <ClCompile Include="XmlReader.cpp" />
+    <ClCompile Include="XmlWriter.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
