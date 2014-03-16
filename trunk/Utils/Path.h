@@ -4,7 +4,7 @@
 namespace Logic
 {
    /// <summary>Represents a file or folder path</summary>
-   class EXPORTED Path 
+   class UtilExport Path 
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -87,7 +87,7 @@ namespace Logic
    };
 
    /// <summary>Represents the path of a file/folder in the application folder</summary>
-   class EXPORTED AppPath : public Path
+   class UtilExport AppPath : public Path
    {
    public:
       AppPath();
@@ -95,7 +95,7 @@ namespace Logic
    };
 
    /// <summary>Represents the path of a temporary file</summary>
-   class EXPORTED TempPath : public Path
+   class UtilExport TempPath : public Path
    {
    public:
       TempPath(const wchar* prefix = L"tmp");

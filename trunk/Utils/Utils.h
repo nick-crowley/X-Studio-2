@@ -1,4 +1,13 @@
 #pragma once
+
+/// <summary>Library export macro</summary>
+#ifdef _UTIL_LIB
+#define UtilExport  __declspec(dllexport)
+#else
+#define UtilExport  __declspec(dllimport)
+#endif
+
+
 #include "../Macros.h"
 #include "Types.h"
 #include "Path.h"
@@ -33,7 +42,7 @@ namespace Logic
 
 
    /// <summary>Client rectangle</summary>
-   class EXPORTED ClientRect : public CRect
+   class UtilExport ClientRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -49,7 +58,7 @@ namespace Logic
    };
 
    /// <summary>Control rectangle in parent client co-ordinates</summary>
-   class EXPORTED CtrlRect : public CRect
+   class UtilExport CtrlRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -68,7 +77,7 @@ namespace Logic
    };
 
    /// <summary>Window rectangle</summary>
-   class EXPORTED WindowRect : public CRect
+   class UtilExport WindowRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -85,7 +94,7 @@ namespace Logic
 
 
    /// <summary>Position of mouse cursor</summary>
-   class EXPORTED CursorPoint : public CPoint
+   class UtilExport CursorPoint : public CPoint
    {
    public:
       /// <summary>Create cursor position.</summary>
@@ -101,7 +110,7 @@ namespace Logic
 
    
    /// <summary>Map Game Language into zero-based index</summary>
-   class EXPORTED GameLanguageIndex
+   class UtilExport GameLanguageIndex
    {
    public:
       /// <summary>Convert Language to zero-based index</summary>
@@ -143,7 +152,7 @@ namespace Logic
    };
 
    /// <summary>Map Game version into zero-based index</summary>
-   class EXPORTED GameVersionIndex
+   class UtilExport GameVersionIndex
    {
    public:
       /// <summary>Convert version to zero-based index</summary>
