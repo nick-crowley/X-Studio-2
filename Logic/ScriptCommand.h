@@ -39,9 +39,11 @@ namespace Logic
       class LogicExport ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
+#ifdef LOGIC_COMPILER_FIX
       public:
          ScriptCommand() : Syntax(CommandSyntax::Unrecognised) 
-            { throw NotImplementedException(HERE, L"StaticLib compiler fix"); }
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
          
       private:
          ScriptCommand(void*);
@@ -75,13 +77,12 @@ namespace Logic
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
 
-         operator bool() const {
-            throw NotImplementedException(HERE, L"StaticLib compiler fix");
-         }
-         const ScriptCommand& operator==(const ScriptCommand& r) const {
-            throw NotImplementedException(HERE, L"StaticLib compiler fix");
-         }
-
+#ifdef LOGIC_COMPILER_FIX
+         operator bool() const 
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+         const ScriptCommand& operator==(const ScriptCommand& r) const 
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  SetLabelName(const wstring& name);

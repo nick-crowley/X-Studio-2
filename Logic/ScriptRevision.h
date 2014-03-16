@@ -45,13 +45,12 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         operator bool() const {
-            throw NotImplementedException(HERE, L"StaticLib compiler fix");
-         }
-         const ScriptRevision& operator==(const ScriptRevision& r) const {
-            throw NotImplementedException(HERE, L"StaticLib compiler fix");
-         }
-
+#ifdef LOGIC_COMPILER_FIX
+         operator bool() const 
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+         const ScriptRevision& operator==(const ScriptRevision& r) const 
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
          // ----------------------- MUTATORS ------------------------
 
          // -------------------- REPRESENTATION ---------------------
