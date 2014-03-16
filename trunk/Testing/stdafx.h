@@ -42,6 +42,7 @@ using namespace std;
 
 // Logic Utils
 #include "../Utils/Utils.h"
+#include "../Logic/ConsoleWnd.h"
 
 // Import Resource IDs 
 #include "../Resources/Resources.h"

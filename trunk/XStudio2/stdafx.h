@@ -55,6 +55,7 @@ using namespace std;
 
 // Utilities
 #include "../Utils/Utils.h"
+#include "../Logic/ConsoleWnd.h"
 
 // Application 
 #include "Application.h"

@@ -43,6 +43,7 @@ using namespace std;
 
 // Utils
 #include "../Utils/Utils.h"
+#include "ConsoleWnd.h"
 
 // Import Resource IDs 
 #include "../Resources/Resources.h"

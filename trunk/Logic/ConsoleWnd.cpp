@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ConsoleWnd.h"
-//#include "../Logic/ConsoleLog.h"
+#include "ConsoleLog.h"
 
 namespace Logic
 {
@@ -40,6 +40,18 @@ namespace Logic
    }
 
    // ------------------------------- STATIC METHODS -------------------------------
+   
+   /// <summary>Write rectangle to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const CRect& rc)
+   {
+      return c << "{CRect left=" << rc.left << " top=" << rc.top << " right=" << rc.right << " bottom=" << rc.bottom << "}";
+   }
+
+   /// <summary>Write size to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz)
+   {
+      return c << "{CSize width=" << sz.cx << " height=" << sz.cy << "}";
+   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -375,7 +387,7 @@ namespace Logic
       WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
          
       // Write to logfile
-      //LogFile.Write(txt, Attributes);
+      LogFile.Write(txt, Attributes);
 
 #ifdef _DEBUG
       // Write to output window

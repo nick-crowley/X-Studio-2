@@ -4,7 +4,6 @@
 #include "Path.h"
 #include "Exceptions.h"
 #include "GuiString.h"
-#include "ConsoleWnd.h"
 
 
 /// <summary>Logic</summary>
@@ -25,12 +24,6 @@ namespace Logic
    /// <summary>Compare character ranges</summary>
    bool operator==(const CHARRANGE& a, const CHARRANGE& b);
    bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
-
-   /// <summary>Write rectangle to the console</summary>
-   ConsoleWnd& operator<<(ConsoleWnd& c, const CRect& rc);
-
-   /// <summary>Write size to the console</summary>
-   ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
 
    /// <summary>Dialog data exchange for std::wstring</summary>
    void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value);
