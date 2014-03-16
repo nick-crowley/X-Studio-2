@@ -78,7 +78,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Verifies argument name.</summary>
    void ArgumentDialog::OnOK()
    { 
-      UpdateData(FALSE);
+      UpdateData(TRUE);
 
       // Require unique argument name
       if (Script.Variables.Contains(Name) || Types.GetCurSel() == CB_ERR)
