@@ -111,6 +111,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="point">The point.</param>
    void CGameDataWnd::OnContextMenu(CWnd* pWnd, CPoint point)
    {
+      // Display pane pop-up menu for toolbar
+	   if (pWnd->GetSafeHwnd() != ListView.m_hWnd)
+	   {
+		   CDockablePane::OnContextMenu(pWnd, point);
+		   return;
+	   }
+
+      // Select item
+	   if (point != CPoint(-1, -1))
+	   {
+         UINT flags = LVHT_ONITEM;
+		   // Select item
+		   if (auto item = ListView.HitTest(CursorPoint(&ListView), &flags))
+            ListView.SetItemState(item, LVIS_SELECTED, LVIS_SELECTED);
+	   }
+
+      // Popup
+	   ListView.SetFocus();
+	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_GAMEDATA_POPUP, point.x, point.y, this, TRUE);
    }
 
    
