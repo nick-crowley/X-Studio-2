@@ -618,9 +618,6 @@
     <ClInclude Include="SyntaxPage.h">
       <Filter>Header Files\GUI\Preferences</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\lib_msxml.h">
-      <Filter>Header Files\Xml</Filter>
-    </ClInclude>
     <ClInclude Include="CommitDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -653,6 +650,12 @@
     </ClInclude>
     <ClInclude Include="..\TOM\tom.h">
       <Filter>Header Files\TOM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XML\stdafx.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XML\xml.h">
+      <Filter>Header Files\Xml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1034,9 +1037,6 @@
     <ClCompile Include="SyntaxPage.cpp">
       <Filter>Source Files\GUI\Preferences</Filter>
     </ClCompile>
-    <ClCompile Include="..\Logic\msxml6.cpp">
-      <Filter>Source Files\Xml</Filter>
-    </ClCompile>
     <ClCompile Include="CommitDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
@@ -1064,14 +1064,17 @@
     <ClCompile Include="..\TOM\msftedit.cpp">
       <Filter>Source Files\TOM</Filter>
     </ClCompile>
+    <ClCompile Include="..\XML\msxml6.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="..\Logic\msxml6.tlh">
-      <Filter>Header Files\Xml</Filter>
-    </None>
     <None Include="..\TOM\msftedit.tlh">
       <Filter>Header Files\TOM</Filter>
+    </None>
+    <None Include="..\XML\msxml6.tlh">
+      <Filter>Source Files\Xml</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

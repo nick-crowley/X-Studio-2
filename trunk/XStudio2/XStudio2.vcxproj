@@ -133,6 +133,8 @@
     <ClInclude Include="..\Testing\stdafx.h" />
     <ClInclude Include="..\TOM\stdafx.h" />
     <ClInclude Include="..\TOM\tom.h" />
+    <ClInclude Include="..\XML\xml.h" />
+    <ClInclude Include="..\XML\stdafx.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="ArgumentDialog.h" />
     <ClInclude Include="BackupList.h" />
@@ -163,7 +165,6 @@
     <ClInclude Include="..\Logic\dtl\variables.hpp" />
     <ClInclude Include="..\Logic\FileBase.h" />
     <ClInclude Include="..\Logic\LanguageFileWriter.h" />
-    <ClInclude Include="..\Logic\lib_msxml.h" />
     <ClInclude Include="..\Logic\LogFileWriter.h" />
     <ClInclude Include="..\Logic\ProjectFileReader.h" />
     <ClInclude Include="..\Logic\ProjectFileWriter.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptValidator.cpp" />
     <ClCompile Include="..\TOM\msftedit.cpp" />
+    <ClCompile Include="..\XML\msxml6.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ArgumentDialog.cpp" />
     <ClCompile Include="BackupList.cpp" />
@@ -327,7 +329,6 @@
     <ClCompile Include="..\Logic\ConsoleLog.cpp" />
     <ClCompile Include="..\Logic\LanguageFileWriter.cpp" />
     <ClCompile Include="..\Logic\LogFileWriter.cpp" />
-    <ClCompile Include="..\Logic\msxml6.cpp" />
     <ClCompile Include="..\Logic\ProjectFileReader.cpp" />
     <ClCompile Include="..\Logic\ProjectFileWriter.cpp" />
     <ClCompile Include="..\Logic\SyntaxHighlight.cpp" />
@@ -442,8 +443,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\TOM\msftedit.tlh" />
+    <None Include="..\XML\msxml6.tlh" />
     <None Include="cpp.hint" />
-    <None Include="..\Logic\msxml6.tlh" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />
