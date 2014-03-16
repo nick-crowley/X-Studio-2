@@ -37,7 +37,7 @@ namespace Logic
          Clear();
 
          // Feedback
-         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, GuiString(L"Enumerating %s language files", GetString(lang).c_str()));
+         data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, VString(L"Enumerating %s language files", GetString(lang).c_str()));
 
          // Enumerate non-foreign language files
          for (XFileInfo& f : vfs.Browse(XFolder::Language))
@@ -55,7 +55,7 @@ namespace Logic
             try
             {
                // Feedback
-               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading language file '%s'...", f.FullPath.c_str()));
+               data->SendFeedback(ProgressType::Info, 2, VString(L"Reading language file '%s'...", f.FullPath.c_str()));
                Console << L"Reading language file: " << f.FullPath << L"...";
 
                // Parse language file
@@ -69,7 +69,7 @@ namespace Logic
                }
                else
                {  // Skip files that turn out to be foreign
-                  data->SendFeedback(ProgressType::Warning, 3, GuiString(L"Skipping %s language file...", GetString(file.Language).c_str()) );
+                  data->SendFeedback(ProgressType::Warning, 3, VString(L"Skipping %s language file...", GetString(file.Language).c_str()) );
                   Console << Cons::Yellow << L"Skipped" << ENDL;
                }
             }

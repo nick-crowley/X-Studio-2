@@ -210,7 +210,7 @@ namespace Logic
             {
                // Feedback
                Console << Cons::White << L"Reading catalog " << cat.FullPath << "...";
-               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading catalog '%s'", cat.FullPath.c_str()));
+               data->SendFeedback(ProgressType::Info, 2, VString(L"Reading catalog '%s'", cat.FullPath.c_str()));
 
                // Iterate thru declarations + insert. Calculate running offset.  (Duplicate files are automatically discarded)
                CatalogReader  reader(cat.GetReader());

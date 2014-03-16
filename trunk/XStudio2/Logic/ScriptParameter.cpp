@@ -137,14 +137,14 @@ namespace Logic
          case TokenType::Text:
          case TokenType::Keyword:
          case TokenType::Whitespace:
-            throw InvalidOperationException(HERE, GuiString(L"Cannot create parameters from '%s'", tok.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot create parameters from '%s'", tok.Text.c_str()));
          }
       }
 
       /// <summary>Write parameter value to the console</summary>
       ConsoleWnd& operator<<(ConsoleWnd& c, const ParameterValue& val)
       {
-         auto szValue = (val.Type == ValueType::String ? val.String : GuiString(L"%d", val.Int));
+         auto szValue = (val.Type == ValueType::String ? val.String : VString(L"%d", val.Int));
          return c << "{ParameterValue: Type=" << GetString(val.Type) << " Value=" << szValue << "}";
       }
 
@@ -341,7 +341,7 @@ namespace Logic
             case Conditional::SKIP_IF:   
             case Conditional::SKIP_IF_NOT:   Text = GetString(ReturnValue(Value.Int).Conditional); break;
             default:                   
-               throw InvalidValueException(HERE, GuiString(L"Unrecognised return value: 0x%x", Value.Int));
+               throw InvalidValueException(HERE, VString(L"Unrecognised return value: 0x%x", Value.Int));
             }
             break;
 
@@ -380,7 +380,7 @@ namespace Logic
             default:                      format = L" %s "; break;   // Binary 
             }
             // Lookup text
-            Text = GuiString(format, ScriptObjectLib.Find(ScriptObjectGroup::Operator, Value.LowWord).Text.c_str()); 
+            Text = VString(format, ScriptObjectLib.Find(ScriptObjectGroup::Operator, Value.LowWord).Text.c_str()); 
             break;
 
          // Various: Strip HIWORD, then lookup ID
@@ -421,9 +421,9 @@ namespace Logic
 
                // Unrecognised placeholder:  {MAIN_TYPE@SUBTYPE}
                if (ScriptObjectLib.TryFind(ScriptObjectGroup::Constant, 200+Value.HighWord, obj))
-                  Text = GuiString(L"{%s@%d}", obj->Text.c_str(), Value.LowWord);
+                  Text = VString(L"{%s@%d}", obj->Text.c_str(), Value.LowWord);
                else
-                  Text = GuiString(L"{%s@%d}", GetString((MainType)Value.HighWord).c_str(), Value.LowWord);
+                  Text = VString(L"{%s@%d}", GetString((MainType)Value.HighWord).c_str(), Value.LowWord);
             }
             break;
          }

@@ -77,7 +77,7 @@ namespace Logic
          {
             // Ensure not duplicate
             if (HasSyntax())
-               throw GenericException(HERE, GuiString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
+               throw GenericException(HERE, VString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
 
             // EndOfInput: Store syntax here
             Syntax = CommandSyntaxPtr(new CommandSyntax(s));

@@ -133,7 +133,7 @@ namespace Logic
    /// <returns></returns>
    wstring StringResource::Missing(UINT id)
    {
-      return GuiString(L"{Missing string: %d}", id);
+      return VString(L"{Missing string: %d}", id);
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------

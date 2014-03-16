@@ -68,7 +68,7 @@ namespace Logic
          }
 
          // Unknown: error
-         throw ArgumentException(HERE, L"tok", GuiString(L"Unknown token type: %d", t));
+         throw ArgumentException(HERE, L"tok", VString(L"Unknown token type: %d", t));
       }
 
       /// <summary>Get the appropriate colour for a script token.</summary>
@@ -108,7 +108,7 @@ namespace Logic
          }
 
          // Unknown: error
-         throw ArgumentException(HERE, L"tok", GuiString(L"Unknown token type: %s", tok.Text.c_str()));
+         throw ArgumentException(HERE, L"tok", VString(L"Unknown token type: %s", tok.Text.c_str()));
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

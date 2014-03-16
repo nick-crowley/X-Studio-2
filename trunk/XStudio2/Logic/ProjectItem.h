@@ -160,7 +160,7 @@ namespace Logic
             
             // [EXISTS] Append numbers until unique
             for (int i = 2; path.Exists(); ++i)
-               path = folder + GuiString(L"%s%d.zip", FullPath.FileName.c_str(), i);
+               path = folder + VString(L"%s%d.zip", FullPath.FileName.c_str(), i);
 
             // Set filename
             BackupName = path.FileName;

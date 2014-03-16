@@ -36,7 +36,7 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="txt">Desired object text</param>
          ScriptObjectNotFoundException(wstring  src, wstring txt) 
-            : ExceptionBase(src, GuiString(L"Cannot find script object '%s'", txt.c_str()))
+            : ExceptionBase(src, VString(L"Cannot find script object '%s'", txt.c_str()))
          {}
 
          /// <summary>Create a ScriptObjectNotFoundException</summary>
@@ -44,7 +44,7 @@ namespace Logic
          /// <param name="group">object group</param>
          /// <param name="id">object id</param>
          ScriptObjectNotFoundException(wstring  src, ScriptObjectGroup group, UINT id) 
-            : ExceptionBase(src, GuiString(L"Cannot find %s with id %d", GetString(group).c_str(), id))
+            : ExceptionBase(src, VString(L"Cannot find %s with id %d", GetString(group).c_str(), id))
          {}
       };
 

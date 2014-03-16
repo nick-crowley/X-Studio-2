@@ -97,7 +97,7 @@ namespace Logic
          case ParameterType::STRUCTURAL_COUNT:
          case ParameterType::EXPRESSION_INFIX:
          case ParameterType::CONDITION:  
-            throw InvalidOperationException(HERE, GuiString(L"Cannot verify '%s' parameter syntax", GetString(pt).c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot verify '%s' parameter syntax", GetString(pt).c_str()));
 
          // [USER CUSTOMIZED] Unable to determine, allow anything
          default:

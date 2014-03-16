@@ -168,7 +168,7 @@ namespace Logic
       {
          // Validate command ID
          if (!Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
-            throw InvalidOperationException(HERE, GuiString(L"Cannot get jump destination for a '%s' command", Syntax.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot get jump destination for a '%s' command", Syntax.Text.c_str()));
 
          // Validate label name parameter
          if (Parameters.size() == 0 || Parameters[0].Value.Type != ValueType::Int)
@@ -184,7 +184,7 @@ namespace Logic
       {
          // Validate command ID
          if (!Syntax.Is(CMD_DEFINE_LABEL) && !Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
-            throw InvalidOperationException(HERE, GuiString(L"Cannot get label name for a '%s' command", Syntax.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot get label name for a '%s' command", Syntax.Text.c_str()));
 
          // Validate label name parameter
          if (Parameters.size() == 0 || Parameters[0].Value.Type != ValueType::String)
@@ -254,7 +254,7 @@ namespace Logic
       {
          // Validate Command ID: 
          if (!Syntax.IsScriptCall())
-            throw InvalidOperationException(HERE, GuiString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot get script name for a '%s' command", Syntax.Text.c_str()));
 
          // Lookup script-call parameter
          auto param = find_if(Parameters.begin(), Parameters.end(), IsScriptNameParam);
@@ -274,7 +274,7 @@ namespace Logic
       {
          // Validate Command ID: 
          if (!Syntax.IsStringReference())
-            throw InvalidOperationException(HERE, GuiString(L"Cannot get string reference for a '%s' command", Syntax.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot get string reference for a '%s' command", Syntax.Text.c_str()));
 
          // Lookup stringID/pageID parameter
          auto id   = find_if(Parameters.begin(), Parameters.end(), IsStringIDParam),
@@ -311,7 +311,7 @@ namespace Logic
       {
          // Validate command ID
          if (!Syntax.Is(CMD_GOTO_LABEL) && !Syntax.Is(CMD_GOTO_SUB))
-            throw InvalidOperationException(HERE, GuiString(L"Cannot set label name for a '%s' command", Syntax.Text.c_str()));
+            throw InvalidOperationException(HERE, VString(L"Cannot set label name for a '%s' command", Syntax.Text.c_str()));
 
          // Replace parameters
          Parameters.clear();
@@ -370,11 +370,11 @@ namespace Logic
 #ifndef VALIDATION
                // Drop 'null' arguments iff remainder are 'null' 
                if (!all_of(it, vargs.end(), isNull))
-                  Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+                  Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #else
                // Drop 'null' arguments iff remainder are 'null' and command is not genuine 102 varg ScriptCall
                if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
-                  Text.append( GuiString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+                  Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #endif
          }
          

@@ -76,7 +76,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    void LanguagePageView::InsertPage(UINT index, LanguagePageRef page, bool display)
    {
       // Define item
-      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+      LVItem item(index, VString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
       item.iImage = page.Voiced ? 1 : 0;
 
       // Add item.  Set title
@@ -348,7 +348,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          throw IndexOutOfRangeException(HERE, index, GetListCtrl().GetItemCount());
 
       // Define 1st sub-item
-      LVItem item(index, GuiString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
+      LVItem item(index, VString(L"%d", page.ID), (UINT)page.GetGroup(), LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE);
       item.iImage = page.Voiced ? 1 : 0;
 
       // Set ID/Icon/Text

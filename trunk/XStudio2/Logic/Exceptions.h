@@ -71,7 +71,7 @@ namespace Logic
       /// <param name="arg">Name of argument</param>
       ArgumentNullException(wstring  src, const WCHAR* arg) 
          // "Missing '%s' argument"
-         : ExceptionBase(src, StringResource::Load(ERR_ARGUMENT_NULL, arg))
+         : ExceptionBase(src, VString(ERR_ARGUMENT_NULL, arg))
       {}
    };
 
@@ -85,7 +85,7 @@ namespace Logic
       /// <param name="msg">Message</param>
       ArgumentException(wstring  src, wstring  arg, wstring  msg) 
          // "The '%s' argument is invalid : %s"
-         : ExceptionBase(src, StringResource::Format(L"The '%s' argument is invalid : %s", arg.c_str(), msg.c_str()) )
+         : ExceptionBase(src, VString(L"The '%s' argument is invalid : %s", arg.c_str(), msg.c_str()) )
       {}
    };
    
@@ -119,7 +119,7 @@ namespace Logic
       /// <param name="file">Folder path</param>
       DirectoryNotFoundException(wstring  src, IO::Path  folder) 
          // "The folder '%s' does not exist"
-         : ExceptionBase(src, ERROR_PATH_NOT_FOUND, StringResource::Format(L"The folder '%s' does not exist", folder.c_str()) )
+         : ExceptionBase(src, ERROR_PATH_NOT_FOUND, VString(L"The folder '%s' does not exist", folder.c_str()) )
       {}
    };
 
@@ -140,7 +140,7 @@ namespace Logic
       /// <param name="line">One based line number</param>
       /// <param name="msg">Message</param>
       FileFormatException(wstring  src, UINT line, wstring  msg) 
-         : ExceptionBase(src, GuiString(L"The file format is invalid on line %u: ", line) + msg)
+         : ExceptionBase(src, VString(L"The file format is invalid on line %u: ", line) + msg)
       {}
    };
 
@@ -152,7 +152,7 @@ namespace Logic
       /// <param name="src">Location of throw</param>
       /// <param name="file">File path</param>
       FileNotFoundException(wstring  src, IO::Path  file) 
-         : ExceptionBase(src, ERROR_FILE_NOT_FOUND, StringResource::Format(L"The file '%s' does not exist", file.c_str()))
+         : ExceptionBase(src, ERROR_FILE_NOT_FOUND, VString(L"The file '%s' does not exist", file.c_str()))
       {}
    };
    
@@ -192,14 +192,14 @@ namespace Logic
       /// <param name="index">Desired index</param>
       /// <param name="count">Item count</param>
       IndexOutOfRangeException(wstring  src, UINT index, UINT count) 
-         : ExceptionBase(src, GuiString(L"The index %d is out of range, only %d objects in collection", index, count))
+         : ExceptionBase(src, VString(L"The index %d is out of range, only %d objects in collection", index, count))
       {}
 
       /// <summary>Create an IndexOutOfRangeException</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="index">Desired index</param>
       IndexOutOfRangeException(wstring  src, UINT index) 
-         : ExceptionBase(src, GuiString(L"The index %d is out of range", index))
+         : ExceptionBase(src, VString(L"The index %d is out of range", index))
       {}
    };
 
@@ -301,7 +301,7 @@ namespace Logic
       /// <param name="src">Location of throw</param>
       /// <param name="page">page id</param>
       PageNotFoundException(wstring  src, UINT page) 
-         : ExceptionBase(src, GuiString(L"Cannot find page %d", page))
+         : ExceptionBase(src, VString(L"Cannot find page %d", page))
       {}
    };
 
@@ -314,7 +314,7 @@ namespace Logic
       /// <param name="page">page id</param>
       /// <param name="id">string id</param>
       StringNotFoundException(wstring  src, UINT page, UINT id) 
-         : ExceptionBase(src, GuiString(L"Cannot find string %d in page %d", id, page))
+         : ExceptionBase(src, VString(L"Cannot find string %d in page %d", id, page))
       {}
    };
 
@@ -327,7 +327,7 @@ namespace Logic
       /// <param name="id">command id</param>
       /// <param name="ver">game version</param>
       SyntaxNotFoundException(wstring  src, UINT id, GameVersion v) 
-         : ExceptionBase(src, GuiString(L"Cannot find %s syntax for command with id %d", VersionString(v).c_str(), id))
+         : ExceptionBase(src, VString(L"Cannot find %s syntax for command with id %d", VersionString(v).c_str(), id))
       {}
    };
 

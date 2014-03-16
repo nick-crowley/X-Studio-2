@@ -254,7 +254,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             
             // Closed: Rename file on disc
             if (newPath.Exists() || !MoveFile(item.FullPath.c_str(), newPath.c_str()))
-               throw Win32Exception(HERE, GuiString(L"Unable to rename '%s' to '%s'", item.FullPath.FileName.c_str(), newPath.FileName.c_str()));
+               throw Win32Exception(HERE, VString(L"Unable to rename '%s' to '%s'", item.FullPath.FileName.c_str(), newPath.FileName.c_str()));
 
             // Set new path
             item.FullPath = newPath;
@@ -346,7 +346,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << "Loading project: " << Path(szPath) << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading project '%s'", szPath));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading project '%s'", szPath));
 
          // Read file
          auto fs = StreamPtr(new FileStream(szPath, FileMode::OpenExisting, FileAccess::Read));
@@ -363,7 +363,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load project");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load project '%s'", szPath));
+         theApp.ShowError(HERE, e, VString(L"Failed to load project '%s'", szPath));
          return FALSE;
       }
    }
@@ -381,7 +381,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Feedback
          Console << Cons::UserAction << L"Saving project: " << FullPath << " as " << Path(szPath) << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving project '%s'", szPath));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Saving project '%s'", szPath));
       
          // Write project
          ProjectFileWriter w(XFileInfo(szPath).OpenWrite());
@@ -396,7 +396,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save project");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to save project '%s'", szPath));
+         theApp.ShowError(HERE, e, VString(L"Failed to save project '%s'", szPath));
          return FALSE;
       }
    }
@@ -437,7 +437,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Ensure backup path has been set
          if (item.BackupName.empty())
-            throw ArgumentException(HERE, L"item", GuiString(L"Missing backup file path for '%s'", item.Name.c_str()) );
+            throw ArgumentException(HERE, L"item", VString(L"Missing backup file path for '%s'", item.Name.c_str()) );
 
          // Read script from disc
          auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
@@ -450,7 +450,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          SaveBackupFile(folder+item.BackupName, backup);
       }
       catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e, GuiString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
+         theApp.ShowError(HERE, e, VString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
       }
    }
    

@@ -533,7 +533,7 @@ namespace Logic
             else if (lex.Match(pos, TokenType::Keyword, L"start"))
                return Conditional::START;
                
-            throw AlgorithmException(HERE, GuiString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
+            throw AlgorithmException(HERE, VString(L"Cannot read previously matched conditional: '%s'", lex.Input.c_str()));
          }
          
          /// <summary>Reads the reference object and reference operator tokens</summary>
@@ -645,7 +645,7 @@ namespace Logic
                   }
                   else
                   {  // Error: Missing parameter
-                     errQueue += MakeError(GuiString(L"Missing %s parameter", GetString(ps.Type).c_str()), lex);
+                     errQueue += MakeError(VString(L"Missing %s parameter", GetString(ps.Type).c_str()), lex);
                      break;
                   }
                }

@@ -202,7 +202,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          case ID_EDIT_REDO:       RichEdit.Redo();                        break;
 
          // Button: Insert at caret
-         case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(GuiString(L"Button %d", LastButtonID++), L"id");  break;
+         case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(VString(L"Button %d", LastButtonID++), L"id");  break;
 
          // Colour: Set colour
          case ID_EDIT_COLOUR:  {

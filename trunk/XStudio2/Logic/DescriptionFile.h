@@ -80,7 +80,7 @@ namespace Logic
          /// <returns></returns>
          GuiString GetIdent() const
          {
-            return GuiString(L"%s (%s) %s", Title.c_str(), GetString(Language).c_str(), Version.c_str());
+            return VString(L"%s (%s) %s", Title.c_str(), GetString(Language).c_str(), Version.c_str());
          }
 
          // ----------------------- MUTATORS ------------------------

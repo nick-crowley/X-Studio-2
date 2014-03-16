@@ -52,7 +52,7 @@ namespace Testing
                Console << "ERROR: " << e.Line << " : " << e.Message << " : " << e.Text << ENDL;
 
             // Abort
-            throw ValidationException(HERE, GuiString(L"Unable to parse: %s", truePath.c_str()));
+            throw ValidationException(HERE, VString(L"Unable to parse: %s", truePath.c_str()));
          }
       }
       
@@ -87,13 +87,13 @@ namespace Testing
             Cons      colour(Cons::White);
             
             // Line#
-            Console << GuiString(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber);
+            Console << VString(!cmd.Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber);
 
             // Index/RefIndex
             if (cmd.Is(CommandType::Standard) && !cmd.Commented)
-               Console << GuiString(L"%03d: ", stdIndex);
+               Console << VString(L"%03d: ", stdIndex);
             else
-               Console << Cons::Yellow << GuiString(L"%03d: ", auxIndex) << Cons::White;
+               Console << Cons::Yellow << VString(L"%03d: ", auxIndex) << Cons::White;
             
             // Logic
             switch (cmd.Logic)
@@ -106,7 +106,7 @@ namespace Testing
                   {
                      UINT jumpTarget = ReturnValue(cmd.Parameters[ps.PhysicalIndex].Value.Int).Destination;
                      if (jumpTarget)
-                        txt = GuiString(L"Jump-if-false: %d", jumpTarget);
+                        txt = VString(L"Jump-if-false: %d", jumpTarget);
                      break;
                   }
                break;
@@ -123,7 +123,7 @@ namespace Testing
                {
                   colour = Cons::Green; 
                   logic = cmd.Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
-                  txt = GuiString(L"Unconditional: %s", cmd.Parameters[0].Value.ToString().c_str());
+                  txt = VString(L"Unconditional: %s", cmd.Parameters[0].Value.ToString().c_str());
                }
                else if (cmd.Is(CMD_DEFINE_LABEL))
                {
@@ -190,7 +190,7 @@ namespace Testing
          }
          catch (ExceptionBase& e)
          {
-            Console.Log(HERE, e, GuiString(L"Unable to print translation tree for '%s'", FullPath.c_str()));
+            Console.Log(HERE, e, VString(L"Unable to print translation tree for '%s'", FullPath.c_str()));
          }
       }
 

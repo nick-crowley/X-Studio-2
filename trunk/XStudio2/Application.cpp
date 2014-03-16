@@ -157,7 +157,7 @@ GUI::Windows::MainWnd*  Application::GetMainWindow() const
 /// <returns></returns>
 GuiString  Application::GetProfileSectionPath(const wstring& section) const
 {
-   return GuiString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
+   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
 }
 
 /// <summary>Gets the registry path of section</summary>
@@ -166,7 +166,7 @@ GuiString  Application::GetProfileSectionPath(const wstring& section) const
 /// <returns></returns>
 GuiString  Application::GetProfileSectionPath(const wstring& section, const wstring& subsection) const
 {
-   return GuiString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
+   return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
 }
 
 /// <summary>Get game data state.</summary>
@@ -320,7 +320,7 @@ HICON  Application::LoadIconW(UINT nResID, UINT iSize) const
    
    // Ensure loaded
    if (icon == nullptr)
-      throw Win32Exception(HERE, GuiString(L"Failed to load icon %d (%dx%d)", nResID, iSize, iSize));
+      throw Win32Exception(HERE, VString(L"Failed to load icon %d (%dx%d)", nResID, iSize, iSize));
 
    return icon;
 }
@@ -464,7 +464,7 @@ void  Application::SetState(AppState s)
 BOOL Application::ShowError(const GuiString& src, const exception& e, const GuiString& msg) const
 {
    Console.Log(src, e);
-   return AfxMessageBox(GuiString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
+   return AfxMessageBox(VString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
                                                             StringResource::Convert(e.what(), CP_ACP).c_str(), 
                                                             src.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
@@ -483,7 +483,7 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e, const 
       return AfxMessageBox(app->Message.c_str());
    
    // Exception: Display source/sink data
-   return AfxMessageBox(GuiString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+   return AfxMessageBox(VString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 
 
@@ -500,7 +500,7 @@ BOOL Application::ShowError(const GuiString& src, const ExceptionBase& e) const
       return AfxMessageBox(app->Message.c_str());
 
    // Exception: Display source/sink data
-   return AfxMessageBox(GuiString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+   return AfxMessageBox(VString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 
 /// <summary>Shows a message.</summary>

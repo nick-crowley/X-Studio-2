@@ -92,7 +92,7 @@ namespace Logic
          {
             // Cannot remove base folders
             if (p.Fixed)
-               throw ArgumentException(HERE, L"p", GuiString(L"Cannot remove fixed item '%s'", p.Name.c_str()));
+               throw ArgumentException(HERE, L"p", VString(L"Cannot remove fixed item '%s'", p.Name.c_str()));
 
             // Remove
             return Root.Remove(p);

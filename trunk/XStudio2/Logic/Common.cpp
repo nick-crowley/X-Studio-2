@@ -32,7 +32,7 @@ namespace Logic
          case Colour::Yellow:  return TooltipColour::Yellow;
          }
 
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour enumeration: %d", c));
+         throw ArgumentException(HERE, L"c", VString(L"Unrecognised colour enumeration: %d", c));
       }
 
       /// <summary>Convert colour enumeration to RGB</summary>
@@ -58,7 +58,7 @@ namespace Logic
          case Colour::Yellow:  return RichTextColour::Yellow;
          }
 
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised colour enumeration: %d", c));
+         throw ArgumentException(HERE, L"c", VString(L"Unrecognised colour enumeration: %d", c));
       }
 
 

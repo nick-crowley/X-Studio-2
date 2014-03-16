@@ -66,7 +66,7 @@ namespace Logic
          case KnownPage::TRANSPORT_CLASSES:  return ScriptObjectGroup::TransportClass;
          case KnownPage::WING_COMMANDS:      return ScriptObjectGroup::WingCommand;
          }
-         throw ArgumentException(HERE, L"page/id", GuiString(L"{%d:%d} is not a valid page/id combination", page, id));
+         throw ArgumentException(HERE, L"page/id", VString(L"{%d:%d} is not a valid page/id combination", page, id));
       }
 
       /// <summary>Converts datatype to a script object group</summary>
@@ -91,7 +91,7 @@ namespace Logic
          case DataType::TRANSPORTCLASS:   return ScriptObjectGroup::TransportClass;
          case DataType::WINGCOMMAND:      return ScriptObjectGroup::WingCommand;
          }
-         throw ArgumentException(HERE, L"type", GuiString(L"Cannot make script object from datatype '%s' (%d)", GetString(type).c_str(), type));
+         throw ArgumentException(HERE, L"type", VString(L"Cannot make script object from datatype '%s' (%d)", GetString(type).c_str(), type));
       }
 
       /// <summary>Get script object group string</summary>
@@ -140,7 +140,7 @@ namespace Logic
          case ScriptObjectGroup::TransportClass:   return DataType::TRANSPORTCLASS;
          case ScriptObjectGroup::WingCommand:      return DataType::WINGCOMMAND;
          }
-         throw ArgumentException(HERE, L"Group", GuiString(L"Unrecognised script object group %s", GetString(Group).c_str()));
+         throw ArgumentException(HERE, L"Group", VString(L"Unrecognised script object group %s", GetString(Group).c_str()));
       }
 
 
@@ -152,13 +152,13 @@ namespace Logic
          if (Group == ScriptObjectGroup::Operator)
             throw InvalidOperationException(HERE, L"Cannot get the display Text for operators");
          
-         return GuiString(L"[%s]", Text.c_str());
+         return VString(L"[%s]", Text.c_str());
       }
 
       /// <summary>Get {Group:ID} ident string</summary>
       GuiString  ScriptObject::GetIdent() const
       {
-         return GuiString(L"{%s:%d}", GetString(Group).c_str(), ID);
+         return VString(L"{%s:%d}", GetString(Group).c_str(), ID);
       }
 
       /// <summary>Get whether object should be hidden from GUI</summary>
@@ -214,7 +214,7 @@ namespace Logic
       /// <returns>script object with new text</returns>
       ScriptObject  ScriptObject::operator+(UINT id)
       {
-         return ScriptObject(*this, Text+GuiString(L" (%d)", id));
+         return ScriptObject(*this, Text+VString(L" (%d)", id));
       }
 
       /// <summary>Appends a game version acronym</summary>
@@ -222,7 +222,7 @@ namespace Logic
       /// <returns>script object with new text</returns>
       ScriptObject  ScriptObject::operator+(GameVersion v)
       {
-         return ScriptObject(*this, Text+GuiString(L" (%s)", VersionString(v,true).c_str()));
+         return ScriptObject(*this, Text+VString(L" (%s)", VersionString(v,true).c_str()));
       }
 
       /// <summary>Appends a group acronym</summary>
@@ -246,7 +246,7 @@ namespace Logic
          case ScriptObjectGroup::Sector:
          {
             auto pt = SectorIDConverter::ToCoordinates(ID);
-            return ScriptObject(*this, Text+GuiString(L" (%d,%d)", pt.first, pt.second));
+            return ScriptObject(*this, Text+VString(L" (%d,%d)", pt.first, pt.second));
          }
          default: 
             throw ArgumentException(HERE, L"operand", L"Incompatible language page ID");

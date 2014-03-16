@@ -83,7 +83,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		}
 
       // Set title
-		pDocument->SetPathName(GuiString(L"[Diff] %s", (LPCWSTR)doc.GetTitle()).c_str(), FALSE);
+		pDocument->SetPathName(VString(L"[Diff] %s", (LPCWSTR)doc.GetTitle()).c_str(), FALSE);
 		pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 
       // Update frame
@@ -180,7 +180,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << L"Loading diff for: " << doc.FullPath << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading diff for '%s'", doc.FullPath.FileName.c_str()));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading diff for '%s'", doc.FullPath.FileName.c_str()));
 
          // Store document
          Source = &doc;
@@ -200,7 +200,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load diff document");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load diff for '%s'", doc.FullPath.FileName.c_str()));
+         theApp.ShowError(HERE, e, VString(L"Failed to load diff for '%s'", doc.FullPath.FileName.c_str()));
          return FALSE;
       }
    }
@@ -214,7 +214,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       // Feedback/Display error
       data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Cannot to save difference document");
-      //theApp.ShowError(HERE, e, GuiString(L"Cannot to save difference document '%s'", szPathName));
+      //theApp.ShowError(HERE, e, VString(L"Cannot to save difference document '%s'", szPathName));
       return FALSE;
    }
 

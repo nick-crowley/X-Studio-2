@@ -50,8 +50,8 @@ namespace Logic
 
          // Properties
          WriteElement(root, L"name", sf.Name);
-         WriteElement(root, L"version", GuiString(L"%d", sf.Version));
-         WriteElement(root, L"engineversion", GuiString(L"%d", EngineVersionConverter::ToVersion(sf.Game)) );
+         WriteElement(root, L"version", VString(L"%d", sf.Version));
+         WriteElement(root, L"engineversion", VString(L"%d", EngineVersionConverter::ToVersion(sf.Game)) );
          WriteElement(root, L"description", sf.Description);
 
          // Arguments

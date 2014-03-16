@@ -73,10 +73,10 @@ namespace Logic
          //  <command>1019</command>
          //  <text>* Validate Parameters...</text>
          WriteElement(node, L"scriptname", r.ScriptName);
-         WriteElement(node, L"version", GuiString(L"%d", r.Version));
+         WriteElement(node, L"version", VString(L"%d", r.Version));
          WriteElement(node, L"game", VersionString(r.Game, true));
          WriteElement(node, L"description", r.Description);
-         WriteElement(node, L"command", GuiString(L"%d", r.CommandID));
+         WriteElement(node, L"command", VString(L"%d", r.CommandID));
          WriteElement(node, L"text", r.Content);
       }
 

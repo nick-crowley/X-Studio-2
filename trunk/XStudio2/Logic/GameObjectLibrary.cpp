@@ -109,7 +109,7 @@ namespace Logic
                   continue;
 
                // Feedback
-               data->SendFeedback(ProgressType::Info, 2, GuiString(L"Reading type file '%s'...", f.FullPath.c_str()));
+               data->SendFeedback(ProgressType::Info, 2, VString(L"Reading type file '%s'...", f.FullPath.c_str()));
                Console << L"Reading type file: " << f.FullPath << L"...";
 
                // Create appropriate reader
@@ -129,7 +129,7 @@ namespace Logic
                case MainType::MineralWare: reader.reset(new TWareReader(f.OpenRead()));    break;
                case MainType::TechWare:    reader.reset(new TWareReader(f.OpenRead()));    break;
                default:
-                  throw NotSupportedException(HERE, GuiString(L"%s files are not supported", GetString(fn.Type).c_str()));
+                  throw NotSupportedException(HERE, VString(L"%s files are not supported", GetString(fn.Type).c_str()));
                }
 
                // Read/store file directly 
@@ -148,7 +148,7 @@ namespace Logic
          PopulateObjects(data);
 
          // Feedback object count
-         data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded %d game objects", Objects.size()));
+         data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded %d game objects", Objects.size()));
          return Objects.size();
       }
 
@@ -162,7 +162,7 @@ namespace Logic
       //{
       //   // Ensure types loaded
       //   if (Files[(UINT)main] == nullptr)
-      //      throw ArgumentException(HERE, L"main", GuiString(L"Object types for maintype %d not loaded", main));
+      //      throw ArgumentException(HERE, L"main", VString(L"Object types for maintype %d not loaded", main));
 
       //   // Lookup object
       //   return Files[(UINT)main]->FindAt(subtype);
@@ -310,7 +310,7 @@ namespace Logic
                if (!Lookup.Add(obj + obj.ID))
                {  
                   // Feedback: Failed
-                  data->SendFeedback(ProgressType::Error, 2, GuiString(L"Unable to add game object '%s'", obj.Name.c_str()) );
+                  data->SendFeedback(ProgressType::Error, 2, VString(L"Unable to add game object '%s'", obj.Name.c_str()) );
                   Console << Cons::Error << L"Unable to add game object: " << Cons::White << obj.Name << ENDL;
                }
          }

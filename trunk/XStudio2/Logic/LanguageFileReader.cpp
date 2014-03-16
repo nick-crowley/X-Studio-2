@@ -80,7 +80,7 @@ namespace Logic
 
          default:
             // "'%s' is not a valid language ID"
-            throw InvalidValueException(HERE, GuiString(ERR_LANGUAGE_ID_INVALID, id.c_str()));
+            throw InvalidValueException(HERE, VString(ERR_LANGUAGE_ID_INVALID, id.c_str()));
          }
       }
 
@@ -105,7 +105,7 @@ namespace Logic
             return _wtoi(pageid.c_str());
          }
          else if (pageid.length() != 6)
-            throw InvalidValueException(HERE, GuiString(L"Invalid page ID '%s'", pageid.c_str()) );
+            throw InvalidValueException(HERE, VString(L"Invalid page ID '%s'", pageid.c_str()) );
 
          else if (pageid.compare(0, 2, L"30") == 0)
             v = GameVersion::Reunion;
@@ -117,7 +117,7 @@ namespace Logic
             v = GameVersion::AlbionPrelude;
 
          else
-            throw InvalidValueException(HERE, GuiString(L"Invalid page ID '%s'", pageid.c_str()) );
+            throw InvalidValueException(HERE, VString(L"Invalid page ID '%s'", pageid.c_str()) );
 
          // Convert last four digits of page ID
          return _wtoi(pageid.substr(2).c_str());
@@ -178,7 +178,7 @@ namespace Logic
       {
          // Ensure present: "Missing '%s' element"
          if (element == nullptr)
-            throw FileFormatException(HERE, GuiString(ERR_XML_MISSING_ELEMENT, L"language"));
+            throw FileFormatException(HERE, VString(ERR_XML_MISSING_ELEMENT, L"language"));
 
          // Verify tag
          ReadElement(element, L"language");

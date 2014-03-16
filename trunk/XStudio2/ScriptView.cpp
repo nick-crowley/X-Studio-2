@@ -266,7 +266,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          if (path.Exists())
             theApp.OpenDocumentFile(path.c_str(), TRUE);
          else
-            theApp.ShowMessage(GuiString(L"Cannot find the script '%s' in the document folder or game folder", script.c_str()));
+            theApp.ShowMessage(VString(L"Cannot find the script '%s' in the document folder or game folder", script.c_str()));
       }
       // Unable to parse command
       catch (ExceptionBase&) {

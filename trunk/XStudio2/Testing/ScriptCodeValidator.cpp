@@ -31,7 +31,7 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const GuiString& a, const GuiString& b)
       {
-         return ValidationException(src, GuiString(L"code mismatch: %s", prop.c_str()), a, b);
+         return ValidationException(src, VString(L"code mismatch: %s", prop.c_str()), a, b);
       }
 
       /// <summary>Create text mismatch exception</summary>
@@ -42,8 +42,8 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, const ParameterValue& a, const ParameterValue& b)
       {
-         GuiString v1 = (a.Type == ValueType::String ? a.String : GuiString(L"0x%08X  (%d)", a.Int, a.Int));
-         GuiString v2 = (b.Type == ValueType::String ? b.String : GuiString(L"0x%08X  (%d)", b.Int, b.Int));
+         GuiString v1 = (a.Type == ValueType::String ? a.String : VString(L"0x%08X  (%d)", a.Int, a.Int));
+         GuiString v2 = (b.Type == ValueType::String ? b.String : VString(L"0x%08X  (%d)", b.Int, b.Int));
 
          return CodeMismatch(src, prop, v1, v2);
       }
@@ -56,8 +56,8 @@ namespace Testing
       /// <returns></returns>
       ValidationException  ScriptCodeValidator::CodeMismatch(const GuiString& src, const GuiString& prop, int a, int b)
       {
-         auto v1 = GuiString(L"0x%08X  (%d)", a, a);
-         auto v2 = GuiString(L"0x%08X  (%d)", b, b);
+         auto v1 = VString(L"0x%08X  (%d)", a, a);
+         auto v2 = VString(L"0x%08X  (%d)", b, b);
 
          return CodeMismatch(src, prop, v1, v2);
       }
@@ -119,15 +119,15 @@ namespace Testing
          for (int i = 0; i < in_args->childNodes->length; i++)
          {
             // Property count
-            CompareSize(in_args, out_args, i, GuiString(L"argument %d sub-branch size", i+1));
+            CompareSize(in_args, out_args, i, VString(L"argument %d sub-branch size", i+1));
             
             // Get sub-branch
-            auto in_arg = In.GetChild(in_args, i, GuiString(L"argument %d sub-branch", i+1).c_str());
-            auto out_arg = Out.GetChild(out_args, i, GuiString(L"argument %d sub-branch", i+1).c_str());
+            auto in_arg = In.GetChild(in_args, i, VString(L"argument %d sub-branch", i+1).c_str());
+            auto out_arg = Out.GetChild(out_args, i, VString(L"argument %d sub-branch", i+1).c_str());
             
             // argument type/description
-            Compare(in_arg, out_arg, 0, GuiString(L"argument %d type", i+1));
-            Compare(in_arg, out_arg, 1, GuiString(L"argument %d description", i+1));
+            Compare(in_arg, out_arg, 0, VString(L"argument %d type", i+1));
+            Compare(in_arg, out_arg, 1, VString(L"argument %d description", i+1));
          }
       }
 
@@ -140,11 +140,11 @@ namespace Testing
          UINT initialIndex   = (cmdType == CommandType::Standard ? 0 : 1);
 
          // Verify branch size
-         CompareSize(In.CodeArray, Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch size", branch).c_str());
+         CompareSize(In.CodeArray, Out.CodeArray, codeArrayIndex, VString(L"%s commands branch size", branch).c_str());
 
          // Get branch
-         auto in_cmds = In.GetChild(In.CodeArray, codeArrayIndex, GuiString(L"%s commands branch", branch).c_str());
-         auto out_cmds = Out.GetChild(Out.CodeArray, codeArrayIndex, GuiString(L"%s commands branch", branch).c_str());
+         auto in_cmds = In.GetChild(In.CodeArray, codeArrayIndex, VString(L"%s commands branch", branch).c_str());
+         auto out_cmds = Out.GetChild(Out.CodeArray, codeArrayIndex, VString(L"%s commands branch", branch).c_str());
 
          // Verify each command
          for (int i = 0; i < in_cmds->childNodes->length; i++)
@@ -153,7 +153,7 @@ namespace Testing
             UINT nodeIndex = initialIndex;
 
             // Build location description
-            auto line = GuiString(L"(%s %d) : ", branch, i);
+            auto line = VString(L"(%s %d) : ", branch, i);
             bool errors = false;
 
             // Get command branch
@@ -183,7 +183,7 @@ namespace Testing
             }
 
             // Improve location description
-            line = GuiString(L"(%s %d) '%s' : ", branch, i, syntax->Text.c_str());
+            line = VString(L"(%s %d) '%s' : ", branch, i, syntax->Text.c_str());
 
             // Node count:  (Skip for commands with known 'hidden' parameters)
             if (!syntax->Is(CMD_START_DELAYED_COMMAND) && !syntax->Is(CMD_SET_WING_COMMAND) && !syntax->Is(CMD_GET_OBJECT_NAME_ARRAY))
@@ -193,7 +193,7 @@ namespace Testing
             UINT paramIndex = 1;
             for (ParameterSyntax p : syntax->Parameters)
             {
-               GuiString paramId(line + GuiString(L" param %d of %d : ", paramIndex++, syntax->Parameters.size()) + GetString(p.Type));
+               GuiString paramId(line + VString(L" param %d of %d : ", paramIndex++, syntax->Parameters.size()) + GetString(p.Type));
                DataType  dt = DataType::UNKNOWN;
 
                try
@@ -312,7 +312,7 @@ namespace Testing
          // Compare names/order
          for (int i = 0; i < in_vars->childNodes->length; i++)
          {
-            Compare(in_vars, out_vars, i, GuiString(L"variable %d of %d", i+1, in_vars->childNodes->length));
+            Compare(in_vars, out_vars, i, VString(L"variable %d of %d", i+1, in_vars->childNodes->length));
 
             // Store for name resolution
             InVars.push_back( ScriptVariable(In.ReadString(in_vars, i, L"variable name"), i) );

@@ -229,7 +229,7 @@ namespace Logic
          case Z_STREAM_END:
             // Ensure all input consumed
             if (ZStream.avail_in > 0)
-               throw GZipException(HERE, GuiString(L"Unable to decompress entire buffer: %d bytes remaining", ZStream.avail_in));
+               throw GZipException(HERE, VString(L"Unable to decompress entire buffer: %d bytes remaining", ZStream.avail_in));
 
          // Success: Return count decompressed
          case Z_OK:

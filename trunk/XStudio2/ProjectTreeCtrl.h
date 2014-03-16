@@ -55,7 +55,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
             // Generate name
             if (item->IsVariable())
-               SetText(GuiString(L"%s = %d", item->Name.c_str(), item->Value));
+               SetText(VString(L"%s = %d", item->Name.c_str(), item->Value));
             else
                SetText(item->Name);
 

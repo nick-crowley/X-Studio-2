@@ -73,7 +73,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          str.IdentifyColourTags();
 
       // Add item, resolve and set Text
-      GetListCtrl().InsertItem(index, GuiString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
+      GetListCtrl().InsertItem(index, VString(L"%d", str.ID).c_str(), 2+GameVersionIndex(str.Version).Index);
       GetListCtrl().SetItemText(index, 1, str.ResolvedText.c_str());
 
       // Ensure visible
@@ -390,7 +390,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          throw IndexOutOfRangeException(HERE, index, GetListCtrl().GetItemCount());
 
       // Define 1st sub-item
-      LVItem item(index, GuiString(L"%d", str.ID), NULL, LVIF_TEXT|LVIF_IMAGE);
+      LVItem item(index, VString(L"%d", str.ID), NULL, LVIF_TEXT|LVIF_IMAGE);
       item.iImage = GameVersionIndex(str.Version).Index + 2;
 
       // Set ID/Icon/Text

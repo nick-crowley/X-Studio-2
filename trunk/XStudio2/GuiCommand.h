@@ -101,7 +101,7 @@ namespace GUI
             if (!CanRedo())
                return L"Redo";
 
-            return GuiString(L"Redo '%s'", GetRedoName().c_str());
+            return VString(L"Redo '%s'", GetRedoName().c_str());
          }
 
          /// <summary>Get 'Undo' command name</summary>
@@ -121,7 +121,7 @@ namespace GUI
             if (!CanUndo())
                return L"Undo";
 
-            return GuiString(L"Undo '%s'", GetUndoName().c_str());
+            return VString(L"Undo '%s'", GetUndoName().c_str());
          }
 
          // ----------------------- MUTATORS ------------------------

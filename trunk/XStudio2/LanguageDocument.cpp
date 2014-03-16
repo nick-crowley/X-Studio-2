@@ -305,7 +305,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << L"Loading language file: " << Path(szPathName) << "...";
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Loading language file '%s'", szPathName));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading language file '%s'", szPathName));
 
          // Identify whether file or library
          Virtual = GuiString(L"String Library") == szPathName;
@@ -341,7 +341,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Feedback/Display error
          Console << Cons::Failure << e.Message << ENDL;
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to load language file '%s'", szPathName));
+         theApp.ShowError(HERE, e, VString(L"Failed to load language file '%s'", szPathName));
          return FALSE;
       }
    }
@@ -357,7 +357,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << L"Saving language file: " << FullPath << " as " << Path(szPathName) << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, GuiString(L"Saving language file '%s'", szPathName));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Saving language file '%s'", szPathName));
 
          // Verify not library
          if (GuiString(L"String Library") == szPathName)
@@ -376,7 +376,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to save language file");
-         theApp.ShowError(HERE, e, GuiString(L"Failed to save language file '%s'", szPathName));
+         theApp.ShowError(HERE, e, VString(L"Failed to save language file '%s'", szPathName));
          return FALSE;
       }
    }
@@ -387,7 +387,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::Rename(UINT id, GameLanguage lang)
    {
       // Change path + title
-      __super::Rename(GuiString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str()));
+      __super::Rename(VString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str()));
    }
    
    /// <summary>Changes the ID of a Page.</summary>

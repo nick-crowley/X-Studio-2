@@ -116,7 +116,7 @@ namespace Logic
             {
                // Lookup parameter name
                auto param = Parameters[tok->Text[1]-48];
-               GuiString name(L"<%s>", GetString(param.Type).c_str());
+               VString name(L"<%s>", GetString(param.Type).c_str());
 
                // Replace $n marker with parameter text
                output.replace(tok->Start, tok->Length, name.c_str());
@@ -142,7 +142,7 @@ namespace Logic
             {
                // Lookup parameter name
                auto param = Parameters[tok->Text[1]-48];
-               GuiString name(L"[b]«%s»[/b]", GetString(param.Type).c_str());
+               VString name(L"[b]«%s»[/b]", GetString(param.Type).c_str());
 
                // Replace $n marker with parameter text
                output.replace(tok->Start, tok->Length, name.c_str());
@@ -177,9 +177,9 @@ namespace Logic
                wstring debug;
                for_each(params.begin(), params.end(), [&debug](ParameterSyntax& ps)
                {
-                  debug += GuiString(L"physical %d : display %d : %s\n", ps.PhysicalIndex, ps.DisplayIndex, GetString(ps.Type).c_str());
+                  debug += VString(L"physical %d : display %d : %s\n", ps.PhysicalIndex, ps.DisplayIndex, GetString(ps.Type).c_str());
                });
-               throw AlgorithmException(HERE, GuiString(L"Parameter %d of %d has display index %d instead of %d : %s\n%s", 
+               throw AlgorithmException(HERE, VString(L"Parameter %d of %d has display index %d instead of %d : %s\n%s", 
                                                         i+1, params.size(), params[i].DisplayIndex, i, Text.c_str(), debug.c_str()));
             }
 #endif

@@ -48,7 +48,7 @@ namespace Logic
 	         return FileType::Script;
          
          // Unrecognised:
-         throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised fileType '%s'", type.c_str()));
+         throw ArgumentException(HERE, L"t", VString(L"Unrecognised fileType '%s'", type.c_str()));
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------

@@ -106,7 +106,7 @@ namespace Logic
             {  
                // Validate index
                if ((value = -value-1) >= (int)postfix.size())
-                  throw FileFormatException(HERE, GuiString(L"Invalid infix expression parameter index %d, only %d available", value, postfix.size()));
+                  throw FileFormatException(HERE, VString(L"Invalid infix expression parameter index %d, only %d available", value, postfix.size()));
                
                // Insert parameter
                params += postfix[value];

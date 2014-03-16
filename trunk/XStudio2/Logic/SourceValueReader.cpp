@@ -50,11 +50,11 @@ namespace Logic
             size = 0;
          
          else // Not an array
-            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
+            throw FileFormatException(HERE, VString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
          // Check size
          if (size != node->childNodes->length)
-            throw FileFormatException(HERE, GuiString(L"Array <sval> node has %d children instead of %d", node->childNodes->length, size));
+            throw FileFormatException(HERE, VString(L"Array <sval> node has %d children instead of %d", node->childNodes->length, size));
 
          return size;
       }
@@ -78,7 +78,7 @@ namespace Logic
 
          // Ensure type is int
          if (ReadAttribute(node, L"type") != L"int")
-            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
+            throw FileFormatException(HERE, VString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
          // Read value
          return _wtoi(ReadAttribute(node, L"val").c_str());
@@ -102,7 +102,7 @@ namespace Logic
 
          // Ensure type is string
          if (ReadAttribute(node, L"type") != L"string")
-            throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
+            throw FileFormatException(HERE, VString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
 
          // Read value
          return ReadAttribute(node, L"val");
@@ -134,7 +134,7 @@ namespace Logic
             return ParameterValue( _wtoi(ReadAttribute(node, L"val").c_str()) );
 
          // Unknown type
-         throw FileFormatException(HERE, GuiString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
+         throw FileFormatException(HERE, VString(L"Cannot read %s from %s <sval> node with value '%s'", help, ReadAttribute(node, L"type").c_str(), ReadAttribute(node, L"val").c_str()));
       }
 
 

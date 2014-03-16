@@ -16,7 +16,7 @@ namespace Logic
          /// <param name="src">Location of throw</param>
          /// <param name="name">object name</param>
          GameObjectNotFoundException(wstring  src, wstring name) 
-            : ExceptionBase(src, GuiString(L"Cannot find game object '%s'", name.c_str()))
+            : ExceptionBase(src, VString(L"Cannot find game object '%s'", name.c_str()))
          {}
 
          /// <summary>Create a GameObjectNotFoundException</summary>
@@ -24,7 +24,7 @@ namespace Logic
          /// <param name="maintype">maintype</param>
          /// <param name="subtype">subtype</param>
          GameObjectNotFoundException(wstring  src, MainType maintype, UINT subtype) 
-            : ExceptionBase(src, GuiString(L"Cannot find %s with id %d", GetString(maintype).c_str(), subtype))
+            : ExceptionBase(src, VString(L"Cannot find %s with id %d", GetString(maintype).c_str(), subtype))
          {}
 
          /// <summary>Create a GameObjectNotFoundException</summary>
@@ -32,7 +32,7 @@ namespace Logic
          /// <param name="maintype">maintype</param>
          /// <param name="subtype">subtype</param>
          GameObjectNotFoundException(wstring  src, MainType maintype) 
-            : ExceptionBase(src, GuiString(L"%s game objects have not been loaded", GetString(maintype).c_str()))
+            : ExceptionBase(src, VString(L"%s game objects have not been loaded", GetString(maintype).c_str()))
          {}
       };
 
@@ -78,7 +78,7 @@ namespace Logic
          /// <summary>Get name formatted for display</summary>
          GuiString  GetDisplayText() const
          {
-            return GuiString(L"{%s}", Name.c_str());
+            return VString(L"{%s}", Name.c_str());
          }
 
          /// <summary>Gets the encoded value.</summary>
@@ -93,7 +93,7 @@ namespace Logic
          /// <returns>New game object with id appended</returns>
          GameObject operator+(const GuiString& id)
          {
-            return GameObject(*this, Name+GuiString(L" (%s)", id.c_str()));
+            return GameObject(*this, Name+VString(L" (%s)", id.c_str()));
          }
          // ----------------------- MUTATORS ------------------------
 

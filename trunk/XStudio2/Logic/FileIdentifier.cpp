@@ -33,7 +33,7 @@ namespace Logic
          case FileType::Script:    return L"Script";
          }
 
-         throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised fileType '%d'", t));
+         throw ArgumentException(HERE, L"t", VString(L"Unrecognised fileType '%d'", t));
       }
 
       /// <summary>Identifies whether a file is supported by scanning it's header</summary>
@@ -67,7 +67,7 @@ namespace Logic
                return FileType::Universe;
          }
          catch (ExceptionBase& e) {
-            Console.Log(HERE, e, GuiString(L"Unable to identify file '%s'", path.c_str()));
+            Console.Log(HERE, e, VString(L"Unable to identify file '%s'", path.c_str()));
          }
 
          // Unknown

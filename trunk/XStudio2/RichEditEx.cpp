@@ -184,7 +184,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    wstring  RichEditEx::GetRedoMenuItem() const
    {
-      return GuiString(CanRedo() ? L"Redo '%s'" : L"Redo", GetString(GetRedoName()));
+      return VString(CanRedo() ? L"Redo '%s'" : L"Redo", GetString(GetRedoName()));
    }
 
    /// <summary>Gets the co-ordinates of the current selection</summary>
@@ -200,7 +200,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    wstring  RichEditEx::GetUndoMenuItem() const
    {
-      return GuiString(CanUndo() ? L"Undo '%s'" : L"Undo", GetString(GetUndoName()));
+      return VString(CanUndo() ? L"Undo '%s'" : L"Undo", GetString(GetUndoName()));
    }
 
    /// <summary>Determines whether text selection exists</summary>

@@ -181,7 +181,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return StrStrIA((char*)buf.get(), "<project version=\"1\"") != nullptr;
       }
       catch (ExceptionBase& e) {
-         Console.Log(HERE, e, GuiString(L"Unable to identify project file '%s'", path.c_str()));
+         Console.Log(HERE, e, VString(L"Unable to identify project file '%s'", path.c_str()));
          return false;
       }
    }

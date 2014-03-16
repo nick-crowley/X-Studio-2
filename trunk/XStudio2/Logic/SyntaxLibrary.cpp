@@ -61,7 +61,7 @@ namespace Logic
             Merge( LegacySyntaxFileReader(fs).ReadFile() );
 
             // Feedback
-            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded legacy syntax file '%s'", path.FileName.c_str()));
+            data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded legacy syntax file '%s'", path.FileName.c_str()));
             Console << Cons::Green << L"Success" << ENDL;
          }
          catch (ExceptionBase& e) {

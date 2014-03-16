@@ -49,7 +49,7 @@ namespace GUI
          case RichTextColour::Yellow:  return TagType::Yellow;
          }
 
-         throw ArgumentException(HERE, L"c", GuiString(L"Unrecognised RGB colour: 0x%x", c));
+         throw ArgumentException(HERE, L"c", VString(L"Unrecognised RGB colour: 0x%x", c));
       }
       
       /// <summary>Get tag name from enum</summary>
@@ -66,9 +66,9 @@ namespace GUI
 
          // Validate
          if ((UINT)t > (UINT)TagType::Unrecognised)
-            throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised Tag id=%d", t));
+            throw ArgumentException(HERE, L"t", VString(L"Unrecognised Tag id=%d", t));
          else if ((UINT)t >= (UINT)TagType::Default)
-            throw ArgumentException(HERE, L"t", GuiString(L"Tag type '%s' has no string representation", GetString(t).c_str()));
+            throw ArgumentException(HERE, L"t", VString(L"Tag type '%s' has no string representation", GetString(t).c_str()));
 
          return str[(UINT)t];
       }
@@ -94,7 +94,7 @@ namespace GUI
          case TagType::Black:    return L"\\033Z";   //Black
          }
 
-         throw ArgumentException(HERE, L"t", GuiString(L"'%s' has no associated colour code", GetString(t).c_str()));
+         throw ArgumentException(HERE, L"t", VString(L"'%s' has no associated colour code", GetString(t).c_str()));
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -259,9 +259,9 @@ namespace GUI
          
          // Write text [+id]
          if (btn.ID.empty())
-            Output += GuiString(L"[select]%s[/select]", btn.Text.c_str());
+            Output += VString(L"[select]%s[/select]", btn.Text.c_str());
          else
-            Output += GuiString(L"[select value='%s']%s[/select]", btn.ID.c_str(), btn.Text.c_str());
+            Output += VString(L"[select value='%s']%s[/select]", btn.ID.c_str(), btn.Text.c_str());
       }
 
       /// <summary>Writes the first character in a range</summary>
@@ -299,7 +299,7 @@ namespace GUI
          case TagType::White:
             // Named: Output normally
             if (ColourTags == ColourTag::Message)
-               Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
+               Output += VString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
             else  
                // UNIX: Use unix codes and /033X instead of a closing tag
                Output += GetUnixCode(open ? t : TagType::Default);
@@ -307,7 +307,7 @@ namespace GUI
 
          // Formatting/Paragraph: Output normally
          default:
-            Output += GuiString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
+            Output += VString(open ? L"[%s]" : L"[/%s]", GetTagString(t).c_str());
          }  
       }
 

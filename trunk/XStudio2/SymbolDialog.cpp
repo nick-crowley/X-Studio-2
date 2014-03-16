@@ -35,7 +35,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       __super::OnInitDialog();
 
       // Populate
-      SymbolText = GuiString(L"%s::%s", Type == SymbolType::Variable ? L"Variable" : L"Label", SymbolName.c_str());
+      SymbolText = VString(L"%s::%s", Type == SymbolType::Variable ? L"Variable" : L"Label", SymbolName.c_str());
       RenameText = SymbolName;
       UpdateData(FALSE);
 

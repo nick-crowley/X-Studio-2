@@ -64,7 +64,7 @@ namespace Logic
             Add(file);
 
             // Feedback
-            data->SendFeedback(ProgressType::Info, 2, GuiString(L"Loaded '%s'", file.Ident.c_str()));
+            data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded '%s'", file.Ident.c_str()));
             Console << Cons::Green << L"Success: " << Cons::White << file.Ident << ENDL;
          }
          catch (ExceptionBase& e) {

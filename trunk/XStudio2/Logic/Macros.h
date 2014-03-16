@@ -13,7 +13,7 @@
 #define __WFUNCTION__            WIDEN(__FUNCTION__)
 
 // Macro: Assembles wide character description of code location
-#define HERE                     GuiString(L"%s() on line %d", __WFUNCTION__, __LINE__)
+#define HERE                     VString(L"%s() on line %d", __WFUNCTION__, __LINE__)
 //#define HERE   __WFUNCTION__ L" on line " STRINGIZE(__LINE__)
 //#define HERE   WIDEN(__FUNCTION__ " on line " STRINGIZE(__LINE__))
 

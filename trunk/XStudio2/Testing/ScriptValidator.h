@@ -24,7 +24,7 @@ namespace Testing
          /// <param name="orig">Original value</param>
          /// <param name="copy">Validation copy value</param>
          ValidationException(wstring  src, GuiString msg, GuiString orig, GuiString copy) 
-            : ExceptionBase(src, GuiString(L"Validation failed: %s\n  Original: '%s'\n  Copy: '%s'", msg.c_str(), orig.c_str(), copy.c_str()) )
+            : ExceptionBase(src, VString(L"Validation failed: %s\n  Original: '%s'\n  Copy: '%s'", msg.c_str(), orig.c_str(), copy.c_str()) )
          {}
       };
 

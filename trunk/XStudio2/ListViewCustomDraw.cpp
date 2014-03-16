@@ -114,7 +114,7 @@ namespace GUI
             
             // Draw transparent
             if (!imgList->Draw(dc, data.iImage, icon.TopLeft(), ILD_TRANSPARENT))
-               throw Win32Exception(HERE, GuiString(L"Unable to draw icon for item %d", item.Index));
+               throw Win32Exception(HERE, VString(L"Unable to draw icon for item %d", item.Index));
 
             // Create gap betwen icon/label
             item.Rect.left += 3;

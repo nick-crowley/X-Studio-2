@@ -79,7 +79,7 @@ namespace Logic
          wstring type = StringLib.Find(KnownPage::PARAMETER_TYPES, (UINT)cmd.Parameters[index].Type).Text;
 
          // Format appropriately
-         return GuiString(L"{PARAMETER:%s}", type.c_str());
+         return VString(L"{PARAMETER:%s}", type.c_str());
       }
 
       
@@ -145,7 +145,7 @@ namespace Logic
 
                // Verify argument count
                if (macro->ParamCount != i)
-                  throw FileFormatException(HERE, GuiString(L"The macro '%s' requires %d parameters : '%s'", macro->Name.c_str(), macro->ParamCount, match[0].str().c_str()));
+                  throw FileFormatException(HERE, VString(L"The macro '%s' requires %d parameters : '%s'", macro->Name.c_str(), macro->ParamCount, match[0].str().c_str()));
 
                // Format macro with up to six parameters...
                StringCchPrintf(FormatBuffer.get(), BUFFER_LENGTH, 

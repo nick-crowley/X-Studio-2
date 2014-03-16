@@ -139,7 +139,7 @@ namespace Logic
                catch (ExceptionBase& e)
                {
                   // Error: Feedback
-                  GuiString msg(L"Cannot read '%s' : %s", CurrentFile.c_str(), e.Message.c_str());
+                  VString msg(L"Cannot read '%s' : %s", CurrentFile.c_str(), e.Message.c_str());
                   data->FeedbackError(msg);
                   Console.Log(HERE, e, msg);
                }
@@ -147,7 +147,7 @@ namespace Logic
          }
          catch (ExceptionBase& e) {
             // Feedback
-            GuiString msg(L"Unable to perform search: %s", e.Message.c_str());
+            VString msg(L"Unable to perform search: %s", e.Message.c_str());
             data->FeedbackError(msg);
             Console.Log(HERE, e, msg);
          }

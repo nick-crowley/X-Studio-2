@@ -23,7 +23,7 @@ namespace Logic
          case BackupType::MSCI:  return L"msci";
          case BackupType::MD:    return L"md";
          }
-         throw ArgumentException(HERE, L"t", GuiString(L"Unrecognised backup type %d", t));
+         throw ArgumentException(HERE, L"t", VString(L"Unrecognised backup type %d", t));
       }
 
       /// <summary></summary>
