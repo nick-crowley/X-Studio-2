@@ -40,7 +40,7 @@ namespace Logic
 
 
    /// <summary>Client rectangle</summary>
-   class ClientRect : public CRect
+   class EXPORTED ClientRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -56,7 +56,7 @@ namespace Logic
    };
 
    /// <summary>Control rectangle in parent client co-ordinates</summary>
-   class CtrlRect : public CRect
+   class EXPORTED CtrlRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -75,7 +75,7 @@ namespace Logic
    };
 
    /// <summary>Window rectangle</summary>
-   class WindowRect : public CRect
+   class EXPORTED WindowRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -92,7 +92,7 @@ namespace Logic
 
 
    /// <summary>Position of mouse cursor</summary>
-   class CursorPoint : public CPoint
+   class EXPORTED CursorPoint : public CPoint
    {
    public:
       /// <summary>Create cursor position.</summary>
@@ -108,7 +108,7 @@ namespace Logic
 
    
    /// <summary>Map Game Language into zero-based index</summary>
-   class GameLanguageIndex
+   class EXPORTED GameLanguageIndex
    {
    public:
       /// <summary>Convert Language to zero-based index</summary>
@@ -150,7 +150,7 @@ namespace Logic
    };
 
    /// <summary>Map Game version into zero-based index</summary>
-   class GameVersionIndex
+   class EXPORTED GameVersionIndex
    {
    public:
       /// <summary>Convert version to zero-based index</summary>

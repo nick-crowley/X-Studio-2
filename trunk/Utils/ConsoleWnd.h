@@ -30,7 +30,7 @@ namespace Logic
    const Cons ENDL = Cons::Endl;
 
    /// <summary>Provides a debugging console</summary>
-   class ConsoleWnd
+   class EXPORTED ConsoleWnd
    {
 		// ------------------------ TYPES --------------------------
    private:

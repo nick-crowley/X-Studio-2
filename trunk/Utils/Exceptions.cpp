@@ -1,8 +1,6 @@
 #pragma once
 #include "stdafx.h"
 #include "Exceptions.h"
-#include "../Resources/Resources.h"
-#include "Path.h"
 
 namespace Logic
 {
