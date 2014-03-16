@@ -465,7 +465,7 @@ BOOL Application::ShowError(const GuiString& src, const exception& e, const GuiS
 {
    Console.Log(src, e);
    return AfxMessageBox(VString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
-                                                            StringResource::Convert(e.what(), CP_ACP).c_str(), 
+                                                            GuiString::Convert(e.what(), CP_ACP).c_str(), 
                                                             src.c_str()).c_str(), MB_ICONERROR|MB_OK);
 }
 

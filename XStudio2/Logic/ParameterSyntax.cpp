@@ -60,7 +60,7 @@ namespace Logic
       GuiString  GetString(ParameterType t)
       {
          const ScriptObject* str=nullptr;
-         return ScriptObjectLib.TryFind(ScriptObjectGroup::ParameterType, (UINT)t, str) ? str->Text : StringResource::Missing((UINT)t);
+         return ScriptObjectLib.TryFind(ScriptObjectGroup::ParameterType, (UINT)t, str) ? str->Text : GuiString::Missing((UINT)t);
       }
 
       /// <summary>Write parameter syntax to the console</summary>

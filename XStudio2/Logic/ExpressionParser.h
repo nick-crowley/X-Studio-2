@@ -84,14 +84,14 @@ namespace Logic
                /// <summary>Prints contents to the console</summary>
                wstring  debugPrint() const
                {
-                  return StringResource::Format(L"{Literal: %s}", Token.Text.c_str());
+                  return GuiString::Format(L"{Literal: %s}", Token.Text.c_str());
                }
                
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
                wstring  debugPrintTraversal(Traversal t) const
                {
-                  return StringResource::Format(L" %s ", Token.Text.c_str());
+                  return GuiString::Format(L" %s ", Token.Text.c_str());
                }
 
                /// <summary>Populates a token array</summary>
@@ -128,14 +128,14 @@ namespace Logic
                /// <summary>Prints contents to the console</summary>
                wstring  debugPrint() const
                {
-                  return StringResource::Format(L"{Bracketed: %s}", Expression->debugPrint().c_str());
+                  return GuiString::Format(L"{Bracketed: %s}", Expression->debugPrint().c_str());
                }
                
                /// <summary>Prints contents to the console</summary>
                /// <param name="t">The traversal type</param>
                wstring  debugPrintTraversal(Traversal t) const
                {
-                  return StringResource::Format(L" (%s) ", Expression->debugPrintTraversal(t).c_str());
+                  return GuiString::Format(L" (%s) ", Expression->debugPrintTraversal(t).c_str());
                }
 
                /// <summary>Populates a token array</summary>
@@ -180,7 +180,7 @@ namespace Logic
                /// <summary>Prints contents to the console</summary>
                wstring  debugPrint() const
                {
-                  return StringResource::Format(L"{Unary: %s %s}", Operator.Text.c_str(), Value->debugPrint().c_str());
+                  return GuiString::Format(L"{Unary: %s %s}", Operator.Text.c_str(), Value->debugPrint().c_str());
                }
                
                /// <summary>Prints contents to the console</summary>
@@ -190,8 +190,8 @@ namespace Logic
                {
                   switch (t)
                   {
-                  case Traversal::InOrder:   return StringResource::Format(L"%s%s", Operator.Text.c_str(), Value->debugPrintTraversal(t).c_str());
-                  case Traversal::PostOrder: return StringResource::Format(L"%s%s", Value->debugPrintTraversal(t).c_str(), Operator.Text.c_str());
+                  case Traversal::InOrder:   return GuiString::Format(L"%s%s", Operator.Text.c_str(), Value->debugPrintTraversal(t).c_str());
+                  case Traversal::PostOrder: return GuiString::Format(L"%s%s", Value->debugPrintTraversal(t).c_str(), Operator.Text.c_str());
                   default:
                      throw ArgumentException(HERE, L"t", VString(L"Unrecognised traversal type %d", t));
                   }
@@ -242,7 +242,7 @@ namespace Logic
                /// <summary>Prints contents to the console</summary>
                wstring  debugPrint() const
                {
-                  return StringResource::Format(L"{Binary: %s %s %s}", Left->debugPrint().c_str(), 
+                  return GuiString::Format(L"{Binary: %s %s %s}", Left->debugPrint().c_str(), 
                                                                        Operator.Text.c_str(), 
                                                                        Right->debugPrint().c_str());
                }

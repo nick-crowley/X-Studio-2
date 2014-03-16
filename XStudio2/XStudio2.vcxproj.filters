@@ -255,9 +255,6 @@
     <ClInclude Include="Logic\ConsoleWnd.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\StringResource.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\FileSearch.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
@@ -657,6 +654,9 @@
     <ClInclude Include="ArgumentDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\GuiString.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logic\XCatalog.cpp">
@@ -935,9 +935,6 @@
     <ClCompile Include="OutputList.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\StringResource.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="FindComboBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -1078,6 +1075,9 @@
     </ClCompile>
     <ClCompile Include="ArgumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GuiString.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

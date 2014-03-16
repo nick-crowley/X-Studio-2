@@ -74,7 +74,7 @@ namespace Logic
             style->loadXML(szStyleSheet);
 
             // Perform transformation and convert to UTF8
-            string utf = StringResource::Convert( wstring(Document->transformNode(style)), CP_UTF8);
+            string utf = GuiString::Convert( wstring(Document->transformNode(style)), CP_UTF8);
 
             // HACK: Use of 'xml' property instead of 'save' method removes the encoding processing instruction. Replace it manually.
             if (utf.compare(0, headerLen, header) == 0)
