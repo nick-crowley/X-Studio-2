@@ -112,9 +112,6 @@
     <Filter Include="Header Files\GUI\Preferences">
       <UniqueIdentifier>{062daa7a-f7f9-4204-a264-7d8dc2c82202}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Logic\DTL">
-      <UniqueIdentifier>{3bd91329-b83e-47a7-a4d3-0a1ab1803321}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Xml">
       <UniqueIdentifier>{6c09326f-4b07-43b1-a1d5-2a8dbab84cb7}</UniqueIdentifier>
     </Filter>
@@ -135,6 +132,9 @@
     </Filter>
     <Filter Include="Header Files\Testing">
       <UniqueIdentifier>{18a1fcc1-ba26-4550-abb3-a8269d8a9ea1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DTL">
+      <UniqueIdentifier>{c0630aef-38cc-4e40-9a76-251ff11f94c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -543,30 +543,6 @@
     <ClInclude Include="SplashWnd.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\dtl\Diff.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\Diff3.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\dtl.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\functors.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\Lcs.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\Sequence.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\Ses.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\dtl\variables.hpp">
-      <Filter>Header Files\Logic\DTL</Filter>
-    </ClInclude>
     <ClInclude Include="SymbolDialog.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -656,6 +632,30 @@
     </ClInclude>
     <ClInclude Include="..\XML\xml.h">
       <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\Diff.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\Diff3.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\dtl.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\functors.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\Lcs.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\Sequence.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\Ses.hpp">
+      <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTL\variables.hpp">
+      <Filter>Header Files\DTL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
