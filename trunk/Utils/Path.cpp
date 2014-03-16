@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Common.h"        // Do not include path.h directly, referenced via common.h
+#include "..Utils/Utils.h"        // Do not include path.h directly, referenced via common.h
 #include <Strsafe.h>       // C String handling
 #include "Shlwapi.h"       // PathFileExists
 #include "XFileSystem.h"   // XFileSystem::GetPath(.)

@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "Common.h"       // Do not include ConsoleWnd.h directly, referenced via common.h
-#include "FileStream.h"
-#include "ConsoleLog.h"
+#include "ConsoleWnd.h"
 
 namespace Logic
 {

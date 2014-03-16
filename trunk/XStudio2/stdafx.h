@@ -54,12 +54,12 @@ using namespace std;
 #include <comdef.h>
 
 // Common Logic + Utils
-#include "Logic/Common.h"
+#include "..Utils/Utils.h"
 
-#include "Logic/GuiString.h"
-#include "Logic/Path.h"
-#include "Logic/Exceptions.h"
-#include "Logic/ConsoleWnd.h"
+#include "../Utils/GuiString.h"
+#include "../Utils/Path.h"
+#include "../Utils/Exceptions.h"
+#include "../Utils/ConsoleWnd.h"
 
 
 #include "Utils.h"
