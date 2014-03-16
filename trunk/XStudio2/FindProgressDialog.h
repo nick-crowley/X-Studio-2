@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
-//#include "Logic/MatchData.h"
-#include "Logic/SearchWorker.h"
+//#include "../Logic/MatchData.h"
+#include "../Logic/SearchWorker.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)

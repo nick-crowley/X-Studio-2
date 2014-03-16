@@ -1,7 +1,6 @@
 #pragma once
 #include <afxwinappex.h>
-#include "Logic/Event.h"
-#include "Logic/Path.h"
+#include "../Logic/Event.h"
 #include "DocumentBase.h"
 
 #ifndef __AFXWIN_H__

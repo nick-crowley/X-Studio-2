@@ -2,8 +2,8 @@
 #include "LanguageStringView.h"
 #include "LanguageEditView.h"
 #include "PropertiesWnd.h"
-#include "Logic/StringResolver.h"
-#include "Logic/RichStringParser.h"
+#include "../Logic/StringResolver.h"
+#include "../Logic/RichStringParser.h"
 #include "RichTextRenderer.h"
 
 /// <summary>User interface</summary>

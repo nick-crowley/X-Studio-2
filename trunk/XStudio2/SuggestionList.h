@@ -1,7 +1,7 @@
 #pragma once
 #include "afxcmn.h"
-#include "Logic/ScriptFile.h"
-#include "Logic/ScriptToken.h"
+#include "../Logic/ScriptFile.h"
+#include "../Logic/ScriptToken.h"
 #include "ListViewCustomDraw.h"
 
 /// <summary>Forward declaration</summary>

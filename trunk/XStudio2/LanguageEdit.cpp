@@ -3,7 +3,7 @@
 #include "OleBitmap.h"
 #include "PropertiesWnd.h"
 #include "RichStringWriter.h"
-#include "Logic/LanguagePage.h"
+#include "../Logic/LanguagePage.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

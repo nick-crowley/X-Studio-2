@@ -3,9 +3,9 @@
 #include "SuggestionList.h"
 #include "CustomTooltip.h"
 #include "ScriptDocument.h"
-#include "Logic/ScriptParser.h"
-#include "Logic/DescriptionLibrary.h"
-#include "Logic/SyntaxLibrary.h"
+#include "../Logic/ScriptParser.h"
+#include "../Logic/DescriptionLibrary.h"
+#include "../Logic/SyntaxLibrary.h"
 
 /// <summary>Forward declaration</summary>
 //FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)

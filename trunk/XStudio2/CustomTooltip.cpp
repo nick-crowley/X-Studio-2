@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CustomTooltip.h"
 #include "RichTextRenderer.h"
-#include "Logic/RichStringParser.h"
+#include "../Logic/RichStringParser.h"
 
 /// <summary>Print debugging stuff</summary>
 //#define PRINT_CONSOLE

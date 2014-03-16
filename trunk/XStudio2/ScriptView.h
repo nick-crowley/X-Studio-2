@@ -1,7 +1,7 @@
 #pragma once
 
 #include "afxcmn.h"
-#include "..Utils/Utils.h"
+
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
 

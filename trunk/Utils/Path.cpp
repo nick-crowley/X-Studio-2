@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "..Utils/Utils.h"        // Do not include path.h directly, referenced via common.h
+#include "Path.h"
 #include <Strsafe.h>       // C String handling
 #include "Shlwapi.h"       // PathFileExists
-#include "XFileSystem.h"   // XFileSystem::GetPath(.)
+#include "../Logic/XFileSystem.h"   // XFileSystem::GetPath(.)
 
 namespace Logic
 {

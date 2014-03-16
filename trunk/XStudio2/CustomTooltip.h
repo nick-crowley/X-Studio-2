@@ -1,6 +1,6 @@
 #pragma once
-#include "Logic/Event.h"
-#include "Logic/RichString.h"
+#include "../Logic/Event.h"
+#include "../Logic/RichString.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

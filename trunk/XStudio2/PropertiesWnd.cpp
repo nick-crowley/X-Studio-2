@@ -3,7 +3,7 @@
 #include "PropertiesWnd.h"
 #include "ScriptView.h"
 #include "MainWnd.h"
-#include "Logic/ScriptObjectLibrary.h"
+#include "../Logic/ScriptObjectLibrary.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

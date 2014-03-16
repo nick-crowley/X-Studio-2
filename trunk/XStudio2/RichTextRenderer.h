@@ -1,5 +1,5 @@
 #pragma once
-#include "Logic/RichString.h"
+#include "../Logic/RichString.h"
 #include <strsafe.h>
 
 namespace GUI

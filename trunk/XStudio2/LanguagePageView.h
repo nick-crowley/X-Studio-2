@@ -2,7 +2,7 @@
 
 #include "afxcview.h"
 #include "LanguageDocument.h"
-#include "Logic/Event.h"
+#include "../Logic/Event.h"
 #include "ImageListEx.h"
 #include "Clipboard.h"
 

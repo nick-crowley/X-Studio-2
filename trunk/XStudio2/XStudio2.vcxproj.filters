@@ -94,9 +94,6 @@
     <Filter Include="Source Files\Testing">
       <UniqueIdentifier>{d5733860-e872-4e1e-93b6-6a3a3ee998cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Testing">
-      <UniqueIdentifier>{1eb985a9-6293-421c-892e-8c09ed1a7041}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\Utils">
       <UniqueIdentifier>{74b91542-8ce8-4345-9d84-141f96388b14}</UniqueIdentifier>
     </Filter>
@@ -136,14 +133,11 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{04749c03-73b2-4835-80cc-146776a19ac7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Testing">
+      <UniqueIdentifier>{18a1fcc1-ba26-4550-abb3-a8269d8a9ea1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Logic\Common.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Logic\LanguageFile.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
@@ -216,9 +210,6 @@
     <ClInclude Include="..\Logic\ScriptCommand.h">
       <Filter>Header Files\Logic\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="..\Logic\DebugTests.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Logic\StringLibrary.h">
       <Filter>Header Files\Logic\Language</Filter>
     </ClInclude>
@@ -257,9 +248,6 @@
     </ClInclude>
     <ClInclude Include="..\Logic\Path.h">
       <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Logic\TObject.h">
       <Filter>Header Files\Logic\Types</Filter>
@@ -360,9 +348,6 @@
     <ClInclude Include="..\Logic\TShip.h">
       <Filter>Header Files\Logic\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="AboutDlg.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -401,9 +386,6 @@
     </ClInclude>
     <ClInclude Include="..\Logic\ScriptFileWriter.h">
       <Filter>Header Files\Logic\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Testing\ScriptValidator.h">
-      <Filter>Header Files\Testing</Filter>
     </ClInclude>
     <ClInclude Include="..\Logic\IndentationStack.h">
       <Filter>Header Files\Logic\Scripts</Filter>
@@ -666,6 +648,33 @@
     <ClInclude Include="..\Logic\ConsoleLog.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\Common.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\stdafx.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Logic\stdafx.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Testing\DebugTests.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Testing\ScriptValidator.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Testing\stdafx.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Logic\XCatalog.cpp">
@@ -730,9 +739,6 @@
     </ClCompile>
     <ClCompile Include="..\Logic\ScriptCommandReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\DebugTests.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="..\Logic\StringLibrary.cpp">
       <Filter>Source Files\Logic\Language</Filter>
@@ -872,15 +878,6 @@
     <ClCompile Include="..\Logic\SourceValueReader.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Testing\ScriptValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="Testing\ScriptTextValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="Testing\ScriptCodeValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
     <ClCompile Include="..\Logic\EncryptedStream.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
@@ -916,9 +913,6 @@
     </ClCompile>
     <ClCompile Include="..\Logic\DescriptionParser.cpp">
       <Filter>Source Files\Logic\Language</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Logic\Common.cpp">
-      <Filter>Source Files\Logic</Filter>
     </ClCompile>
     <ClCompile Include="FindDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
@@ -1004,9 +998,6 @@
     <ClCompile Include="NewDocumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Logic\LogFileWriter.cpp">
       <Filter>Source Files\Logic\IO</Filter>
     </ClCompile>
@@ -1090,6 +1081,24 @@
     </ClCompile>
     <ClCompile Include="..\Logic\ConsoleLog.cpp">
       <Filter>Source Files\Logic\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\Common.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Testing\DebugTests.cpp">
+      <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Testing\ScriptCodeValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Testing\ScriptTextValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Testing\ScriptValidator.cpp">
+      <Filter>Source Files\Testing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

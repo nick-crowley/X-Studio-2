@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ConsoleWnd.h"
+#include "../Logic/ConsoleLog.h"
 
 namespace Logic
 {

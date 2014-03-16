@@ -6,10 +6,9 @@
 #include "ScriptDocument.h"
 #include "ScriptView.h"
 #include "PropertiesWnd.h"
-#include "Logic/DebugTests.h"
-#include "Logic/RtfScriptWriter.h"
-#include "Logic/ScriptParser.h"
-#include "Logic/StringStream.h"
+#include "../Logic/RtfScriptWriter.h"
+#include "../Logic/ScriptParser.h"
+#include "../Logic/StringStream.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

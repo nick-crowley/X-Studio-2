@@ -16,7 +16,7 @@
 #include "ProjectDocument.h"
 #include "DiffDocument.h"
 
-#include "Logic/ConsoleLog.h"
+#include "../Logic/ConsoleLog.h"
 
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>

@@ -1,7 +1,7 @@
 #pragma once
 #include "GameDataWnd.h"
-#include "Logic/SyntaxLibrary.h"
-#include "Logic/DescriptionLibrary.h"
+#include "../Logic/SyntaxLibrary.h"
+#include "../Logic/DescriptionLibrary.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)

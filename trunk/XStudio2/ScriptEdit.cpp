@@ -2,9 +2,9 @@
 #include "ScriptEdit.h"
 #include "RefactorDialog.h"
 #include "SymbolDialog.h"
-#include "Logic/CommandLexer.h"
-#include "Logic/SyntaxHighlight.h"
-#include "Logic/IndentationStack.h"
+#include "../Logic/CommandLexer.h"
+#include "../Logic/SyntaxHighlight.h"
+#include "../Logic/IndentationStack.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

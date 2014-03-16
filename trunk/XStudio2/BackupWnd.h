@@ -1,6 +1,6 @@
 #pragma once
-#include "Logic/BackupFile.h"
-#include "Logic/Event.h"
+#include "../Logic/BackupFile.h"
+#include "../Logic/Event.h"
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
 #include "ProjectDocument.h"
