@@ -131,7 +131,6 @@
     <ClInclude Include="..\Testing\DebugTests.h" />
     <ClInclude Include="..\Testing\ScriptValidator.h" />
     <ClInclude Include="..\Testing\stdafx.h" />
-    <ClInclude Include="..\Utils\Common.h" />
     <ClInclude Include="..\Utils\ConsoleWnd.h" />
     <ClInclude Include="..\Utils\Exceptions.h" />
     <ClInclude Include="..\Utils\GuiString.h" />
@@ -312,7 +311,6 @@
     <ClCompile Include="..\Testing\ScriptCodeValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptTextValidator.cpp" />
     <ClCompile Include="..\Testing\ScriptValidator.cpp" />
-    <ClCompile Include="..\Utils\Common.cpp" />
     <ClCompile Include="..\Utils\ConsoleWnd.cpp" />
     <ClCompile Include="..\Utils\Exceptions.cpp" />
     <ClCompile Include="..\Utils\GuiString.cpp" />

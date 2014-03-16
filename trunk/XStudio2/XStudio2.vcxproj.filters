@@ -648,9 +648,6 @@
     <ClInclude Include="..\Logic\ConsoleLog.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\Common.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\Utils\stdafx.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -1084,9 +1081,6 @@
     </ClCompile>
     <ClCompile Include="..\Logic\ConsoleLog.cpp">
       <Filter>Source Files\Logic\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\Common.cpp">
-      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Testing\DebugTests.cpp">
       <Filter>Source Files\Testing</Filter>
