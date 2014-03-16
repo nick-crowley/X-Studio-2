@@ -40,7 +40,11 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptCommand();
+         ScriptCommand() : Syntax(CommandSyntax::Unrecognised) 
+            { throw NotImplementedException(HERE, L"StaticLib compiler fix"); }
+         
+      private:
+         ScriptCommand(void*);
       public:
          ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& params, bool cmdComment);
          ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, bool cmdComment);

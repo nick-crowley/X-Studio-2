@@ -10,7 +10,7 @@ namespace Logic
    namespace Scripts
    {
       /// <summary>Unrecognised script command sentinel value</summary>
-      ScriptCommand  ScriptCommand::Unrecognised;
+      ScriptCommand  ScriptCommand::Unrecognised(nullptr);
 
       /// <summary>Determines whether parameter usage is scriptName</summary>
       /// <param name="s">parameter</param>
@@ -36,7 +36,8 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates sentinel value (private ctor)</summary>
-      ScriptCommand::ScriptCommand()
+      /// <param name="unnamed">Required to make signature unique from default ctor</param>
+      ScriptCommand::ScriptCommand(void*)
          : Syntax(CommandSyntax::Unrecognised), RefIndex(0)
       {
       }
