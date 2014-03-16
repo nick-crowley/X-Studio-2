@@ -103,8 +103,10 @@ namespace Logic
       class LogicExport ScriptParameter
       {
          // --------------------- CONSTRUCTION ----------------------
+#ifdef LOGIC_COMPILER_FIX
       public:
-         ScriptParameter() { throw NotImplementedException(HERE, L"StaticLib compiler fix"); } 
+         ScriptParameter() { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
       public:
          ScriptParameter(const ScriptToken& name, const ScriptToken& val);
          ScriptParameter(const ParameterSyntax& s, const ScriptToken& t);
@@ -134,12 +136,10 @@ namespace Logic
          void  Generate(ScriptFile& script, UINT jumpDestination, bool commented);
          void  Translate(ScriptFile& script);
 
-      public:
+#ifdef LOGIC_COMPILER_FIX
          ScriptParameter& operator=(const ScriptParameter& r) const
-         {
-            throw NotImplementedException(HERE, L"StaticLib compiler fix");
-         }
-
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
 		   // -------------------- REPRESENTATION ---------------------
       public:
          DataType        Type;

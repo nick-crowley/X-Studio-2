@@ -35,10 +35,10 @@ namespace Logic
          CatalogReader  GetReader() const;
          Path           GetFullPath()  { return FullPath; }
 
-         XCatalog& operator==(const XCatalog& r) const {
-            throw NotImplementedException(HERE, L"Equality not implemented");
-         }
-
+#ifdef LOGIC_COMPILER_FIX
+         XCatalog& operator==(const XCatalog& r) const 
+            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
 			// ----------------------- MUTATORS ------------------------
 
 			// -------------------- REPRESENTATION ---------------------

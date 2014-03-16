@@ -22,10 +22,10 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ErrorToken() : Line(0) {
-               throw NotImplementedException(HERE, L"StaticLib compiler fix"); 
-            }
-
+#ifdef LOGIC_COMPILER_FIX
+            ErrorToken() : Line(0) 
+               { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
             /// <summary>Create error for token</summary>
             ErrorToken(const GuiString& msg, UINT line, const ScriptToken& tok) 
                : TokenBase(tok), Message(msg), Text(tok.Text), Line(line)
@@ -42,12 +42,11 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------	
 
             // ----------------------- MUTATORS ------------------------
+#ifdef LOGIC_COMPILER_FIX
          public:
             ErrorToken& operator=(const ErrorToken& r) const
-            {
-               throw NotImplementedException(HERE, L"StaticLib compiler fix");
-            }
-
+               { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#endif
             // -------------------- REPRESENTATION ---------------------
          public:
             const GuiString Message,   // Error message

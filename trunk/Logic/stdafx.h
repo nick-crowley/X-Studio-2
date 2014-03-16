@@ -46,11 +46,17 @@
 #include <algorithm>
 using namespace std;
 
+
 /// <summary>BugFix for Release version optimizing away [w]string::npos</summary>
 /// <remarks>See https://connect.microsoft.com/VisualStudio/feedback/details/586959/std  (Bug 586959) for details</remarks>
 #if _MSC_VER >= 1600
 const wstring::size_type wstring::npos = (wstring::size_type) -1;
 #endif
+
+/// <summary>BugFix for code that compiled previously as part of main module, but cause compiler errors in the STL
+/// when compiled as part of a library. Code added is never executed, just a compiler tweak.</summary>
+#define LOGIC_COMPILER_FIX
+
 
 // COM
 #include <comdef.h>
