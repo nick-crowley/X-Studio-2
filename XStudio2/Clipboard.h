@@ -1,5 +1,5 @@
 #pragma once
-#include "Logic/Common.h"
+#include "..Utils/Utils.h"
 #include "Logic/LanguagePage.h"
 
 namespace GUI

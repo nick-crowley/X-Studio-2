@@ -1,7 +1,7 @@
 #pragma once
 
 #include "afxcmn.h"
-#include "Logic/Common.h"
+#include "..Utils/Utils.h"
 #include "DiffDocument.h"
 #include "DiffEdit.h"
 

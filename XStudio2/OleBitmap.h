@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Logic/Common.h"
+#include "..Utils/Utils.h"
 
 namespace GUI
 {
