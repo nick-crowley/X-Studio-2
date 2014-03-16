@@ -54,7 +54,7 @@ using namespace std;
 #include <comdef.h>
 
 // Utilities
-#include "../Utils/Common.h"
+#include "../Utils/Utils.h"
 
 // Application 
 #include "Application.h"

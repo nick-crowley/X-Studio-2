@@ -1,5 +1,4 @@
 #pragma once
-#include "../Utils/Common.h"
 #include "../Logic/ScriptParser.h"
 #include "../Logic/ScriptFileReader.h"
 

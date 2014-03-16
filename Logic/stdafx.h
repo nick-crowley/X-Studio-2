@@ -42,7 +42,7 @@ using namespace std;
 #include <comdef.h>
 
 // Utils
-#include "../Utils/Common.h"
+#include "../Utils/Utils.h"
 
 // Import Resource IDs from resource project
 #include "../Resources/Resources.h"
