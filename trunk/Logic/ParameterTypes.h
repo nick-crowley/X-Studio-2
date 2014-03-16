@@ -37,7 +37,7 @@ namespace Logic
       };
       
       /// <summary>Get datatype string</summary>
-      GuiString GetString(DataType d);
+      LogicExport GuiString GetString(DataType d);
 
       
       /// <summary>Defines operator values</summary>

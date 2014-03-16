@@ -17,7 +17,7 @@ namespace Logic
                            Black, Blue, Cyan, Green, Grey, Magenta, Orange, Red, Silver, Yellow, White, 
                            Default, Unrecognised };
 
-      wstring   GetString(TagType t);
+      LogicExport wstring   GetString(TagType t);
 
       // ------------------------ CLASSES ------------------------
 

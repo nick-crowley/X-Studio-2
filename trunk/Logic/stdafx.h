@@ -12,6 +12,12 @@
 
 #include "../targetver.h"
 
+
+// Sanity check
+#ifndef _LOGIC_DLL
+#error Attempting to include LogicLib precompiled header
+#endif
+
 // Tweaks
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS        // some CString constructors will be explicit
 #define _AFX_ALL_WARNINGS     // turns off MFC's hiding of some common and often safely ignored warning messages
@@ -39,6 +45,12 @@
 #include <functional>
 #include <algorithm>
 using namespace std;
+
+/// <summary>BugFix for Release version optimizing away [w]string::npos</summary>
+/// <remarks>See https://connect.microsoft.com/VisualStudio/feedback/details/586959/std  (Bug 586959) for details</remarks>
+#if _MSC_VER >= 1600
+const wstring::size_type wstring::npos = (wstring::size_type) -1;
+#endif
 
 // COM
 #include <comdef.h>

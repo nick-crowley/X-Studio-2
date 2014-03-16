@@ -13,7 +13,7 @@ namespace Logic
          enum class TokenType { Text, Number, String, GameObject, ScriptObject, Keyword, Variable, Null, Label, BinaryOp, UnaryOp, Comment, Whitespace };
 
          /// <summary>Get token type string</summary>
-         GuiString  GetString(TokenType t);
+         LogicExport GuiString  GetString(TokenType t);
 
          /// <summary>Common base class LogicExport for all token types</summary>
          class LogicExport TokenBase
@@ -138,7 +138,7 @@ namespace Logic
          };
 
          /// <summary>Write script token to the console</summary>
-         ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptToken& tok);
+         LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptToken& tok);
 
          /// <summary>Vector of script tokens</summary>
          class LogicExport TokenArray : public vector<ScriptToken>

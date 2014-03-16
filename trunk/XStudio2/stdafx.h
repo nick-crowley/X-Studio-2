@@ -36,19 +36,13 @@
 #include <set>
 #include <map>
 #include <memory>    // shared/unique ptr
-
 using namespace std;
-//using std::string;
-//using std::wstring;
-//using std::vector;
-//using std::deque;
-//using std::list;
-//using std::set;
-//using std::map;
-//using std::shared_ptr;
-//using std::unique_ptr;
-//using std::exception;
 
+/// <summary>BugFix for Release version optimizing away [w]string::npos</summary>
+/// <remarks>See https://connect.microsoft.com/VisualStudio/feedback/details/586959/std  (Bug 586959) for details</remarks>
+#if _MSC_VER >= 1600
+const wstring::size_type wstring::npos = (wstring::size_type) -1;
+#endif
 
 // COM
 #include <comdef.h>

@@ -16,16 +16,16 @@ namespace Logic
       };
 
       /// <summary>Get script object group name</summary>
-      GuiString GetString(const ScriptObjectGroup& g);
+      LogicExport GuiString GetString(const ScriptObjectGroup& g);
 
       /// <summary>Post-Increment script object group</summary>
-      ScriptObjectGroup operator++(ScriptObjectGroup& g, int);
+      LogicExport ScriptObjectGroup operator++(ScriptObjectGroup& g, int);
 
       /// <summary>Pre-Increment script object group</summary>
-      ScriptObjectGroup& operator++(ScriptObjectGroup& g);
+      LogicExport ScriptObjectGroup& operator++(ScriptObjectGroup& g);
 
       /// <summary>Substract script object group as int</summary>
-      UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
+      LogicExport UINT operator-(const ScriptObjectGroup& a, const ScriptObjectGroup& b);
       
       
       /// <summary>Occurs when a MSCI script object is unrecognised</summary>

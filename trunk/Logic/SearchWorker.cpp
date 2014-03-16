@@ -3,8 +3,6 @@
 #include "XFileSystem.h"
 #include "XFileInfo.h"
 #include "ScriptFileReader.h"
-#include "../XStudio2/ScriptDocument.h"
-#include "../XStudio2/MainWnd.h"
 
 namespace Logic
 {
@@ -25,7 +23,7 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
       
       /// <summary>Get search target name</summary>
-      wstring  GetString(SearchTarget t)
+      LogicExport wstring  GetString(SearchTarget t)
       {
          switch (t)
          {

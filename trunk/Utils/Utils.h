@@ -19,26 +19,26 @@
 namespace Logic
 {
    /// <summary>Convert colour enumeration to RGB</summary>
-   RichTextColour ForRichText(Colour c);
+   UtilExport RichTextColour ForRichText(Colour c);
 
    /// <summary>Convert colour enumeration to RGB</summary>
-   TooltipColour ForTooltip(Colour c);
+   UtilExport TooltipColour ForTooltip(Colour c);
 
    /// <summary>Get paragraph alignment string</summary>
-   wstring  GetString(Alignment a);
+   UtilExport wstring  GetString(Alignment a);
 
    /// <summary>Get game language string</summary>
-   wstring  GetString(GameLanguage l);
+   UtilExport wstring  GetString(GameLanguage l);
 
    /// <summary>Compare character ranges</summary>
-   bool operator==(const CHARRANGE& a, const CHARRANGE& b);
-   bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
+   UtilExport bool operator==(const CHARRANGE& a, const CHARRANGE& b);
+   UtilExport bool operator!=(const CHARRANGE& a, const CHARRANGE& b);
 
    /// <summary>Dialog data exchange for std::wstring</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value);
+   UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value);
 
    /// <summary>Dialog data exchange for paths</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path);
+   UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path);
 
 
    /// <summary>Client rectangle</summary>

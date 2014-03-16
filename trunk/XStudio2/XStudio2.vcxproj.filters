@@ -282,26 +282,11 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Testing\DebugTests.h">
-      <Filter>Header Files\Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Testing\ScriptValidator.h">
-      <Filter>Header Files\Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Testing\stdafx.h">
-      <Filter>Header Files\Testing</Filter>
-    </ClInclude>
     <ClInclude Include="..\TOM\stdafx.h">
       <Filter>Header Files\TOM</Filter>
     </ClInclude>
     <ClInclude Include="..\TOM\tom.h">
       <Filter>Header Files\TOM</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XML\stdafx.h">
-      <Filter>Header Files\Xml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XML\xml.h">
-      <Filter>Header Files\Xml</Filter>
     </ClInclude>
     <ClInclude Include="..\DTL\Diff.hpp">
       <Filter>Header Files\DTL</Filter>
@@ -326,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="..\DTL\variables.hpp">
       <Filter>Header Files\DTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Testing\GuiTests.h">
+      <Filter>Header Files\Testing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -512,32 +500,17 @@
     <ClCompile Include="ArgumentDialog.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Testing\DebugTests.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Testing\ScriptCodeValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Testing\ScriptTextValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Testing\ScriptValidator.cpp">
-      <Filter>Source Files\Testing</Filter>
-    </ClCompile>
     <ClCompile Include="..\TOM\msftedit.cpp">
       <Filter>Source Files\TOM</Filter>
     </ClCompile>
-    <ClCompile Include="..\XML\msxml6.cpp">
-      <Filter>Source Files\Xml</Filter>
+    <ClCompile Include="..\Testing\GuiTests.cpp">
+      <Filter>Source Files\Testing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="..\TOM\msftedit.tlh">
       <Filter>Header Files\TOM</Filter>
-    </None>
-    <None Include="..\XML\msxml6.tlh">
-      <Filter>Source Files\Xml</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

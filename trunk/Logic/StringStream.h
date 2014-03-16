@@ -13,14 +13,10 @@ namespace Logic
       public:
          /// <summary>Creates the stream from string</summary>
          /// <param name="str">The source/destination string.</param>
-         StringStream(string& str) : String(str), Position(0)
-         { 
-         }
+         StringStream(string& str);
 
          /// <summary>Closes the stream without throwing</summary>
-         virtual ~StringStream() 
-         { 
-         }
+         virtual ~StringStream();
 
          // Prevent copying/moving
          NO_MOVE(StringStream);
@@ -68,88 +64,26 @@ namespace Logic
          /// <param name="offset">The offset in bytes</param>
          /// <param name="mode">The seek origin</param>
          /// <exception cref="Logic::IOException">Invalid offset</exception>
-         void  Seek(LONG  offset, SeekOrigin  mode) override
-         { 
-            // Calculate new position
-            DWORD newPosition;
-            switch (mode)
-            {
-            case SeekOrigin::Begin:     newPosition = offset;                 break;
-            case SeekOrigin::Current:   newPosition = Position += offset;     break;
-            case SeekOrigin::End:       newPosition = GetLength() - offset;   break;
-            }
-
-            // Validate
-            if (newPosition < 0 || newPosition >= GetLength())
-               throw IOException(HERE, L"Invalid seek offset");
-
-            // Update
-            Position = newPosition;
-         }
+         void  Seek(LONG  offset, SeekOrigin  mode) override;
 
          /// <summary>Sets the length of the stream</summary>
          /// <param name="length">The length in bytes</param>
          /// <exception cref="Logic::IOException">Length exceeds max string size</exception>
-         void  SetLength(DWORD  length) override
-         { 
-            // Validate
-            if (GetLength() + length >= String.max_size())
-               throw IOException(HERE, L"Invalid length");
-
-            // Resize
-            String.resize(length, '\0');
-         }
+         void  SetLength(DWORD  length) override;
 
          /// <summary>Reads from the stream into the specified buffer.</summary>
          /// <param name="buffer">The destination buffer</param>
          /// <param name="length">The length of the buffer</param>
          /// <returns>Number of bytes read</returns>
          /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
-         DWORD Read(BYTE* buffer, DWORD length) override
-         { 
-            REQUIRED(buffer);
-
-            // Ensure length doesn't exceed string
-            if (GetPosition() + length >= GetLength())
-               length = GetLength() - GetPosition();
-
-            // Copy data. Adv pointer
-            if (length > 0)
-            {
-               memcpy(buffer, String.substr(Position, length).data(), length);
-               Position += length;
-            }
-
-            // return length
-            return length;
-         }
+         DWORD Read(BYTE* buffer, DWORD length) override;
 
          /// <summary>Writes the specified buffer to the stream</summary>
          /// <param name="buffer">The buffer.</param>
          /// <param name="length">The length of the buffer.</param>
          /// <returns>Number of bytes written</returns>
          /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
-         DWORD Write(const BYTE* buffer, DWORD length) override
-         { 
-            REQUIRED(buffer);
-
-            // EOF: Append string
-            if (GetPosition() == GetLength())
-               String.append((char*)buffer);
-            
-            // Middle: Replace string
-            else if (GetPosition()+length < GetLength())
-               String.replace(String.begin()+Position, String.begin()+Position+length, (char*)buffer);
-            else
-            {  // Overlapping EOF:
-               String.resize(GetPosition()+length, '\0');
-               String.replace(String.begin()+Position, String.begin()+Position+length, (char*)buffer);
-            }
-            
-            // Advance + return count
-            Position += length;
-            return length;
-         }
+         DWORD Write(const BYTE* buffer, DWORD length) override;
 
          // -------------------- REPRESENTATION ---------------------
       private:

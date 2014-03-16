@@ -57,7 +57,7 @@ namespace Logic
       }
 
       /// <summary>Write string to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, LanguageStringRef str)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, LanguageStringRef str)
       {
          return c << Cons::White << "{" 
                   << Cons::Yellow << "LanguageString" 
@@ -66,7 +66,7 @@ namespace Logic
       }
 
       /// <summary>Write page to console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, LanguagePageRef page)
       {
          return c << Cons::White << "{" 
                   << Cons::Yellow << "LanguagePage" 

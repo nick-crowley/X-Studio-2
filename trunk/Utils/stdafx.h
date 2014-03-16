@@ -10,7 +10,13 @@
 #define VC_EXTRALEAN            
 #endif
 
+// Target 
 #include "../targetver.h"
+
+// Sanity check
+#ifndef _UTIL_LIB
+#error Attempting to include UtilLib precompiled header
+#endif
 
 // Tweaks
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS        // some CString constructors will be explicit

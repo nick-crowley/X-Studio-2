@@ -21,7 +21,7 @@ namespace Logic
       // ------------------------------- STATIC METHODS -------------------------------
 
       /// <summary>Get variable type string</summary>
-      GuiString  GetString(VariableType t)
+      LogicExport GuiString  GetString(VariableType t)
       {
          return t == VariableType::Variable ? L"Variable"
               : t == VariableType::Argument ? L"Argument" 
@@ -29,7 +29,7 @@ namespace Logic
       }
 
       /// <summary>Write script variable to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v)
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v)
       {
          return c << "{ScriptVariable: Name=" << v.Name << " ID=" << v.ID << " ValueType=" << GetString(v.ValueType) << " Type=" << GetString(v.Type) << "}";
       }

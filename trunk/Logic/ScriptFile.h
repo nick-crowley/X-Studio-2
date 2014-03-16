@@ -39,7 +39,7 @@ namespace Logic
       enum class VariableType : UINT { Argument, Variable };
 
       /// <summary>Get variable type string</summary>
-      GuiString  GetString(VariableType t);
+      LogicExport GuiString  GetString(VariableType t);
 
 
       /// <summary>An argument or variable used within a script</summary>
@@ -69,7 +69,7 @@ namespace Logic
       };
 
       /// <summary>Write script variable to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v);
 
 
       /// <summary>Vector of script variables</summary>

@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 #include "../Logic/RichString.h"
 #include <strsafe.h>
 #include <Richole.h>

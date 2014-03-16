@@ -27,7 +27,7 @@ namespace Logic
       };
 
       /// <summary>Get return type string</summary>
-      GuiString  GetString(ReturnType t);
+      LogicExport GuiString  GetString(ReturnType t);
           
       /// <summary>Identifies the branching statements used in the script language. The first 8 IDs are actually encoded in 
       /// ReturnObjects whereas the last four are defined by auxiliary commands and used for my coding clarity.</summary>
@@ -42,7 +42,7 @@ namespace Logic
       };
 
       /// <summary>Get conditional string</summary>
-      GuiString  GetString(Conditional c);
+      LogicExport GuiString  GetString(Conditional c);
 
       /// <summary>Represents the encoded return value of a script command</summary>
       class LogicExport ReturnValue
@@ -128,7 +128,7 @@ namespace Logic
       };
 
       /// <summary>Write return value to the console</summary>
-      ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val);
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ReturnValue& val);
 
    }
 }

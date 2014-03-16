@@ -10,7 +10,7 @@ namespace Logic
       enum class FileType : UINT { Unknown, Script, Language, Mission,  Project, Universe };
 
       /// <summary>Get file-type name</summary>
-      wstring GetString(FileType t);
+      LogicExport wstring GetString(FileType t);
 
       /// <summary></summary>
       class LogicExport FileIdentifier
