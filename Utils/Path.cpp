@@ -83,34 +83,6 @@ namespace Logic
          throw Win32Exception(HERE, L"Unable to generate temporary filename");
    }
 
-   /// <summary>Resolves the path of a script-call. If script cannot found the path is empty</summary>
-   /// <param name="folder">Initial folder</param>
-   /// <param name="script">Scriptname without extension</param>
-   /// <exception cref="Logic::IOException">API function failed</exception>
-   ScriptCallPath::ScriptCallPath(const Path& folder, const wstring& script)
-   {
-      // Generate .PCK path within input folder
-      Path path(folder + (script+L".pck"));
-
-      // Try PCK then XML
-      if (path.Exists() || (path = path.RenameExtension(L".xml")).Exists())
-         Assign(path.c_str());
-
-      // Failed: Try game folder
-      else
-      {
-         // Failed: Try 'scripts' subfolder of game folder
-         //path = XFileSystem::GetPath(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion, XFolder::Scripts) + (script+L".pck");
-
-         // Try PCK then XML
-         if (path.Exists() || (path = path.RenameExtension(L".xml")).Exists())
-            Assign(path.c_str());
-
-         // Failed: empty path
-      }
-         
-   }
-
    // ------------------------------- STATIC METHODS ------------------------------
 
    /// <summary>Creates a MAX_PATH char array buffer containing a path</summary>

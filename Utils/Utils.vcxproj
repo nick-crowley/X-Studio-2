@@ -89,7 +89,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleWnd.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="GuiString.h" />
     <ClInclude Include="Macros.h" />
@@ -99,7 +98,6 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleWnd.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="GuiString.cpp" />
     <ClCompile Include="Path.cpp" />

@@ -2,7 +2,8 @@
 
 namespace Logic
 {
-   
+   class ConsoleWnd;
+
    /// <summary>Console manipulators</summary>
    enum class Cons { UserAction,
                      Heading, 
@@ -29,8 +30,16 @@ namespace Logic
    /// <summary>Shorthand for console end-of-line manipulator</summary>
    const Cons ENDL = Cons::Endl;
 
+   
+   /// <summary>Write rectangle to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const CRect& rc);
+
+   /// <summary>Write size to the console</summary>
+   ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
+
+
    /// <summary>Provides a debugging console</summary>
-   class EXPORTED ConsoleWnd
+   class ConsoleWnd
    {
 		// ------------------------ TYPES --------------------------
    private:
@@ -182,6 +191,8 @@ namespace Logic
 
    // Provide singleton access
    #define Console      ConsoleWnd::Instance
+
+   
 }
 
 using namespace Logic;

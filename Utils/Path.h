@@ -101,10 +101,4 @@ namespace Logic
       TempPath(const wchar* prefix = L"tmp");
    };
 
-   /// <summary>Resolves the full path of a script-call</summary>
-   class EXPORTED ScriptCallPath : public Path
-   {
-   public:
-      ScriptCallPath(const Path& folder, const wstring& script);
-   };
 }

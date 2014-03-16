@@ -651,6 +651,9 @@
     <ClInclude Include="..\Testing\stdafx.h">
       <Filter>Header Files\Testing</Filter>
     </ClInclude>
+    <ClInclude Include="..\Logic\ConsoleWnd.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Logic\XCatalog.cpp">
@@ -1057,6 +1060,9 @@
     </ClCompile>
     <ClCompile Include="..\Testing\ScriptValidator.cpp">
       <Filter>Source Files\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Logic\ConsoleWnd.cpp">
+      <Filter>Source Files\Logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
