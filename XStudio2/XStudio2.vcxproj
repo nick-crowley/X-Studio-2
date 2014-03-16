@@ -321,6 +321,7 @@
     <ClCompile Include="LanguageEditCallback.cpp" />
     <ClCompile Include="Logic\BackupFileReader.cpp" />
     <ClCompile Include="Logic\BackupFileWriter.cpp" />
+    <ClCompile Include="Logic\Exceptions.cpp" />
     <ClCompile Include="Logic\LanguageFileWriter.cpp" />
     <ClCompile Include="Logic\ConsoleLog.cpp" />
     <ClCompile Include="Logic\LogFileWriter.cpp" />
