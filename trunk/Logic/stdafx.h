@@ -44,6 +44,7 @@ using namespace std;
 #include <comdef.h>
 
 // Utils
+#undef _UTIL_LIB
 #include "../Utils/Utils.h"
 #include "ConsoleWnd.h"
 

@@ -19,9 +19,9 @@ namespace Logic
                           L"[^" open_bracket close_bracket backslash L"]+" 
                           L"(?!" backslash close_bracket L")" close_bracket;
 
-      const wregex StringResolver::FullMarker(L"\\{(\\d+),(\\d+)\\}"), 
-                   StringResolver::DefaultMarker(L"\\{(\\d+)\\}"),
-                   StringResolver::RemoveComment(expr);
+      const wregex StringResolver::FullMarker(L"\\{(\\d+),(\\d+)\\}");
+      const wregex StringResolver::DefaultMarker(L"\\{(\\d+)\\}");
+      const wregex StringResolver::RemoveComment(expr);
 
       // -------------------------------- CONSTRUCTION --------------------------------
 

@@ -54,6 +54,8 @@ using namespace std;
 #include <comdef.h>
 
 // Utilities
+#undef _UTIL_LIB
+#undef _LOGIC_DLL
 #include "../Utils/Utils.h"
 #include "../Logic/ConsoleWnd.h"
 

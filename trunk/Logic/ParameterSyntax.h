@@ -36,6 +36,11 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
+      public:
+         ParameterSyntax() : Type((ParameterType)0), DisplayIndex(0), PhysicalIndex(0), Ordinal(0), Usage((ParameterUsage)0), Optional(false) { 
+            throw NotImplementedException(HERE, L"StaticLib compiler fix"); 
+         } 
+
       private:
          ParameterSyntax(ParameterType t, UINT physical, UINT display);
       public:

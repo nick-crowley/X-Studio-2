@@ -27,8 +27,8 @@ namespace Logic
             virtual ~TokenBase()
             {}
 
-            DEFAULT_COPY(TokenBase);	// Default copy semantics
-            DEFAULT_MOVE(TokenBase);	// Default move semantics
+            //DEFAULT_COPY(TokenBase);	// Default copy semantics
+            //DEFAULT_MOVE(TokenBase);	// Default move semantics
             
             // --------------------- PROPERTIES ------------------------
 
@@ -61,17 +61,17 @@ namespace Logic
             virtual ~ScriptToken()
             {}
 
-            DEFAULT_COPY(ScriptToken);	// Default copy semantics
-            DEFAULT_MOVE(ScriptToken);	// Default move semantics
+            //NO_COPY_ASSIGN(ScriptToken);	// Default copy semantics
+            //NO_MOVE(ScriptToken);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
 
             // --------------------- PROPERTIES ------------------------
-
+         public:
             PROPERTY_GET(wstring,ValueText,GetValueText);
 
             // ---------------------- ACCESSORS ------------------------			
-
+         public:
             /// <summary>Gets the text without any formatting operators, eg. (,{,',$ etc.</summary>
             /// <returns></returns>
             wstring GetValueText() const
@@ -122,6 +122,12 @@ namespace Logic
             {
                return Type==r.Type && Text==r.Text && Start==r.Start && End==r.End;
             }
+
+            ScriptToken& operator=(const ScriptToken& r) const
+            {
+               throw NotImplementedException(HERE, L"StaticLib compiler fix");
+            }
+
             // ----------------------- MUTATORS ------------------------
 
             // -------------------- REPRESENTATION ---------------------

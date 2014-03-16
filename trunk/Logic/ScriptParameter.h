@@ -104,6 +104,8 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         ScriptParameter() { throw NotImplementedException(HERE, L"StaticLib compiler fix"); } 
+      public:
          ScriptParameter(const ScriptToken& name, const ScriptToken& val);
          ScriptParameter(const ParameterSyntax& s, const ScriptToken& t);
          ScriptParameter(const ParameterSyntax& s, Conditional c);
@@ -128,10 +130,15 @@ namespace Logic
             return Type==r.Type && Value==r.Value; // && Syntax==r.Syntax && Text==r.Text && Token==r.Token;
          }
 		   // ----------------------- MUTATORS ------------------------
-
       public:
          void  Generate(ScriptFile& script, UINT jumpDestination, bool commented);
          void  Translate(ScriptFile& script);
+
+      public:
+         ScriptParameter& operator=(const ScriptParameter& r) const
+         {
+            throw NotImplementedException(HERE, L"StaticLib compiler fix");
+         }
 
 		   // -------------------- REPRESENTATION ---------------------
       public:

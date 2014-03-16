@@ -39,7 +39,7 @@ namespace Logic
       class LogicExport ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
-      private:
+      public:
          ScriptCommand();
       public:
          ScriptCommand(const wstring& text, CommandSyntaxRef syntax, ParameterArray& params, bool cmdComment);
@@ -71,9 +71,12 @@ namespace Logic
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
 
-         /*ScriptCommand& operator==(const ScriptCommand& r) const {
-            throw NotImplementedException(HERE, L"Equality not implemented");
-         }*/
+         operator bool() const {
+            throw NotImplementedException(HERE, L"StaticLib compiler fix");
+         }
+         const ScriptCommand& operator==(const ScriptCommand& r) const {
+            throw NotImplementedException(HERE, L"StaticLib compiler fix");
+         }
 
 		   // ----------------------- MUTATORS ------------------------
       public:
