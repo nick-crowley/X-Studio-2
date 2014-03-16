@@ -4,8 +4,8 @@
 
 namespace Logic
 {
-   /// <summary>Base class EXPORTED for all exceptions</summary>
-   class EXPORTED ExceptionBase : public std::exception
+   /// <summary>Base class UtilExport for all exceptions</summary>
+   class UtilExport ExceptionBase : public std::exception
    {
    protected:
       /// <summary>Create a exception without an error code but with a message</summary>
@@ -28,7 +28,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when an algorithm fails or an invariant is violated</summary>
-   class EXPORTED AlgorithmException : public ExceptionBase
+   class UtilExport AlgorithmException : public ExceptionBase
    {
    public:
       /// <summary>Create an AlgorithmException</summary>
@@ -38,7 +38,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when an error should be displayed to the user verbatim</summary>
-   class EXPORTED ApplicationException : public ExceptionBase
+   class UtilExport ApplicationException : public ExceptionBase
    {
    public:
       /// <summary>Create an ApplicationException</summary>
@@ -52,7 +52,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when a missing argument is detected</summary>
-   class EXPORTED ArgumentNullException : public ExceptionBase
+   class UtilExport ArgumentNullException : public ExceptionBase
    {
    public:
       /// <summary>Create an ArgumentNullException</summary>
@@ -62,7 +62,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an argument is invalid</summary>
-   class EXPORTED ArgumentException : public ExceptionBase
+   class UtilExport ArgumentException : public ExceptionBase
    {
    public:
       /// <summary>Create an ArgumentException</summary>
@@ -73,7 +73,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when a COM object is used incorrectly</summary>
-   class EXPORTED ComException : public ExceptionBase
+   class UtilExport ComException : public ExceptionBase
    {
    public:
       /// <summary>Create a ComException from a _com_error</summary>
@@ -88,7 +88,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when a file is not found</summary>
-   class EXPORTED DirectoryNotFoundException : public ExceptionBase
+   class UtilExport DirectoryNotFoundException : public ExceptionBase
    {
    public:
       /// <summary>Create a DirectoryNotFoundException from a folder path</summary>
@@ -99,7 +99,7 @@ namespace Logic
 
 
    /// <summary>Occurs when a game data file is not in the expected format</summary>
-   class EXPORTED FileFormatException : public ExceptionBase
+   class UtilExport FileFormatException : public ExceptionBase
    {
    public:
       /// <summary>Create an FileFormatException</summary>
@@ -115,7 +115,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when a file is not found</summary>
-   class EXPORTED FileNotFoundException : public ExceptionBase
+   class UtilExport FileNotFoundException : public ExceptionBase
    {
    public:
       /// <summary>Create a FileNotFoundException for a file path</summary>
@@ -125,7 +125,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when zlib encounters an error</summary>
-   class EXPORTED GZipException : public ExceptionBase
+   class UtilExport GZipException : public ExceptionBase
    {
    public:
       /// <summary>Create a GZipException from a custom message</summary>
@@ -140,7 +140,7 @@ namespace Logic
    };
    
    /// <summary>Occurs when an index is out of range</summary>
-   class EXPORTED IndexOutOfRangeException : public ExceptionBase
+   class UtilExport IndexOutOfRangeException : public ExceptionBase
    {
    public:
       /// <summary>Create an IndexOutOfRangeException</summary>
@@ -156,7 +156,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an invalid operation is attempted</summary>
-   class EXPORTED InvalidOperationException : public ExceptionBase
+   class UtilExport InvalidOperationException : public ExceptionBase
    {
    public:
       /// <summary>Create an InvalidOperationException</summary>
@@ -166,7 +166,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an invalid value is detected within game data</summary>
-   class EXPORTED InvalidValueException : public ExceptionBase
+   class UtilExport InvalidValueException : public ExceptionBase
    {
    public:
       /// <summary>Create an InvalidValueException</summary>
@@ -176,7 +176,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an I/O operator fails</summary>
-   class EXPORTED IOException : public ExceptionBase
+   class UtilExport IOException : public ExceptionBase
    {
    public:
       /// <summary>Create an IOException</summary>
@@ -186,7 +186,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an operation that has not been implemented is attempted</summary>
-   class EXPORTED NotImplementedException : public ExceptionBase
+   class UtilExport NotImplementedException : public ExceptionBase
    {
    public:
       /// <summary>Create a NotImplementedException</summary>
@@ -196,7 +196,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when an unsupported operation is attempted</summary>
-   class EXPORTED NotSupportedException : public ExceptionBase
+   class UtilExport NotSupportedException : public ExceptionBase
    {
    public:
       /// <summary>Create an NotSupportedException</summary>
@@ -207,7 +207,7 @@ namespace Logic
 
 
    /// <summary>Occurs when a win32 API call fails</summary>
-   class EXPORTED Win32Exception : public ExceptionBase
+   class UtilExport Win32Exception : public ExceptionBase
    {
    public:
       /// <summary>Create an Win32Exception from the last system error</summary>
@@ -221,7 +221,7 @@ namespace Logic
 
 
    /// <summary>General exception for any circumstance</summary>
-   class EXPORTED GenericException : public ExceptionBase
+   class UtilExport GenericException : public ExceptionBase
    {
    public:
       /// <summary>Create a GenericException</summary>
@@ -232,7 +232,7 @@ namespace Logic
 
 
    /// <summary>Occurs when a language string is missing</summary>
-   class EXPORTED PageNotFoundException : public ExceptionBase
+   class UtilExport PageNotFoundException : public ExceptionBase
    {
    public:
       /// <summary>Create a PageNotFoundException</summary>
@@ -242,7 +242,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when a language string is missing</summary>
-   class EXPORTED StringNotFoundException : public ExceptionBase
+   class UtilExport StringNotFoundException : public ExceptionBase
    {
    public:
       /// <summary>Create a StringNotFoundException</summary>
@@ -253,7 +253,7 @@ namespace Logic
    };
 
    /// <summary>Occurs when a command syntax is missing</summary>
-   class EXPORTED SyntaxNotFoundException : public ExceptionBase
+   class UtilExport SyntaxNotFoundException : public ExceptionBase
    {
    public:
       /// <summary>Create an SyntaxNotFoundException</summary>

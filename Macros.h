@@ -17,13 +17,6 @@
 //#define HERE   __WFUNCTION__ L" on line " STRINGIZE(__LINE__)
 //#define HERE   WIDEN(__FUNCTION__ " on line " STRINGIZE(__LINE__))
 
-/// <summary>Library export macro</summary>
-#ifdef _LIBRARY
-#define EXPORTED  __declspec(dllexport)
-#else
-#define EXPORTED  __declspec(dllimport)
-#endif
-
 /// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
 #define VALIDATION
 
