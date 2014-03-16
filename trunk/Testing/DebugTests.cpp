@@ -21,7 +21,7 @@
 #include "../Logic/StringResolver.h"
 #include "../Logic/RichStringParser.h"
 #include "../Logic/DescriptionFileReader.h"
-#include "../Logic/dtl/dtl.hpp"
+#include "../DTL/dtl.hpp"
 #include "../XStudio2/ScriptDocument.h"
 #include "../XStudio2/DiffDocument.h"
 #include "ScriptValidator.h"

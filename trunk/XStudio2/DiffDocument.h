@@ -2,7 +2,7 @@
 #include "DocumentBase.h"
 #include "PropertySource.h"
 #include "ScriptDocument.h"
-#include "../Logic/dtl/dtl.hpp"
+#include "../DTL/dtl.hpp"
 
 /// <summary>Forward declaration</summary>
 FORWARD_DECLARATION2(GUI,Views,class DiffView)

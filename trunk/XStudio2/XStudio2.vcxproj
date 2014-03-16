@@ -126,6 +126,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\DTL\Diff.hpp" />
+    <ClInclude Include="..\DTL\Diff3.hpp" />
+    <ClInclude Include="..\DTL\dtl.hpp" />
+    <ClInclude Include="..\DTL\functors.hpp" />
+    <ClInclude Include="..\DTL\Lcs.hpp" />
+    <ClInclude Include="..\DTL\Sequence.hpp" />
+    <ClInclude Include="..\DTL\Ses.hpp" />
+    <ClInclude Include="..\DTL\variables.hpp" />
     <ClInclude Include="..\Logic\ConsoleWnd.h" />
     <ClInclude Include="..\Logic\stdafx.h" />
     <ClInclude Include="..\Testing\DebugTests.h" />
@@ -155,14 +163,6 @@
     <ClInclude Include="..\Logic\BackupFileReader.h" />
     <ClInclude Include="..\Logic\BackupFileWriter.h" />
     <ClInclude Include="..\Logic\ConsoleLog.h" />
-    <ClInclude Include="..\Logic\dtl\Diff.hpp" />
-    <ClInclude Include="..\Logic\dtl\Diff3.hpp" />
-    <ClInclude Include="..\Logic\dtl\dtl.hpp" />
-    <ClInclude Include="..\Logic\dtl\functors.hpp" />
-    <ClInclude Include="..\Logic\dtl\Lcs.hpp" />
-    <ClInclude Include="..\Logic\dtl\Sequence.hpp" />
-    <ClInclude Include="..\Logic\dtl\Ses.hpp" />
-    <ClInclude Include="..\Logic\dtl\variables.hpp" />
     <ClInclude Include="..\Logic\FileBase.h" />
     <ClInclude Include="..\Logic\LanguageFileWriter.h" />
     <ClInclude Include="..\Logic\LogFileWriter.h" />
