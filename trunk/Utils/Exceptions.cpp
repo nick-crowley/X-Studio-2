@@ -81,7 +81,7 @@ namespace Logic
    /// <summary>Create a DirectoryNotFoundException from a folder path</summary>
    /// <param name="src">Location of throw</param>
    /// <param name="file">Folder path</param>
-   DirectoryNotFoundException::DirectoryNotFoundException(wstring  src, IO::Path  folder) 
+   DirectoryNotFoundException::DirectoryNotFoundException(wstring  src, Path  folder) 
       // "The folder '%s' does not exist"
       : ExceptionBase(src, ERROR_PATH_NOT_FOUND, VString(L"The folder '%s' does not exist", folder.c_str()) )
    {}
@@ -105,7 +105,7 @@ namespace Logic
    /// <summary>Create a FileNotFoundException for a file path</summary>
    /// <param name="src">Location of throw</param>
    /// <param name="file">File path</param>
-   FileNotFoundException::FileNotFoundException(wstring  src, IO::Path  file) 
+   FileNotFoundException::FileNotFoundException(wstring  src, Path  file) 
       : ExceptionBase(src, ERROR_FILE_NOT_FOUND, VString(L"The file '%s' does not exist", file.c_str()))
    {}
    

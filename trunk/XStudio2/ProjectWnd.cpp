@@ -236,7 +236,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST, filter, this, 0, TRUE);
          if (dlg.DoModal() == IDOK)
          {
-            IO::Path path = (LPCWSTR)dlg.GetPathName();
+            Path path = (LPCWSTR)dlg.GetPathName();
 
             // Feedback
             Console << Cons::UserAction << "Adding " << path << " to project item " << Cons::Yellow << folder->Name << "...";

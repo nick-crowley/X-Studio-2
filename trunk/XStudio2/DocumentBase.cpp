@@ -67,9 +67,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Get the full document path.</summary>
    /// <returns></returns>
-   IO::Path  DocumentBase::GetFullPath() const
+   Path  DocumentBase::GetFullPath() const
    {
-      return IO::Path((const wchar*)GetPathName());
+      return Path((const wchar*)GetPathName());
    }
    
    /// <summary>Gets the text selection.</summary>
@@ -109,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Changes the path of the document.</summary>
    /// <returns></returns>
-   void  DocumentBase::SetFullPath(IO::Path path) 
+   void  DocumentBase::SetFullPath(Path path) 
    {
       // Change path. (Don't add to MRU - will cause argument exception if file doesn't exist)
       SetPathName(path.c_str(), FALSE);

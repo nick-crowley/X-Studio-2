@@ -421,7 +421,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
             // Default: Restore previous workspace
             for (auto& doc : PrefsLib.WorkspaceDocuments)
-               if (IO::Path(doc).Exists())
+               if (Path(doc).Exists())
                   theApp.OpenDocumentFile(doc.c_str(), FALSE);
          }
       }

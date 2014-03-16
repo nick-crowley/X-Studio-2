@@ -94,7 +94,7 @@ namespace Logic
       /// <summary>Create a DirectoryNotFoundException from a folder path</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="file">Folder path</param>
-      DirectoryNotFoundException(wstring  src, IO::Path  folder);
+      DirectoryNotFoundException(wstring  src, Path  folder);
    };
 
 
@@ -121,7 +121,7 @@ namespace Logic
       /// <summary>Create a FileNotFoundException for a file path</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="file">File path</param>
-      FileNotFoundException(wstring  src, IO::Path  file);
+      FileNotFoundException(wstring  src, Path  file);
    };
    
    /// <summary>Occurs when zlib encounters an error</summary>

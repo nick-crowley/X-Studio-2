@@ -269,7 +269,7 @@ namespace Logic
 
    /// <summary>Writes a path to the console in yellow</summary>
    /// <param name="path">path</param>
-   ConsoleWnd& ConsoleWnd::operator<<(const IO::Path& path)
+   ConsoleWnd& ConsoleWnd::operator<<(const Path& path)
    {
       return *this << Cons::Push << Cons::Yellow << path.c_str() << Cons::Pop;
    }

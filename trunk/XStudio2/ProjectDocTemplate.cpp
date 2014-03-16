@@ -166,7 +166,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Determines whether file is a legacy project</summary>
    /// <param name="path">The path.</param>
    /// <returns></returns>
-   bool  ProjectDocTemplate::IsLegacyProject(IO::Path path) const
+   bool  ProjectDocTemplate::IsLegacyProject(Path path) const
    {
       try
       {

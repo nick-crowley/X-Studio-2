@@ -150,7 +150,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          /// <param name="name">property name.</param>
          /// <param name="folder">initial folder.</param>
          /// <param name="desc">property description.</param>
-         FolderProperty(PreferencesPage& page, const CString& name, IO::Path folder, const wchar* desc) 
+         FolderProperty(PreferencesPage& page, const CString& name, Path folder, const wchar* desc) 
             : Page(page), CMFCPropertyGridFileProperty(name, folder.c_str(), 0, desc)
          {}
 
@@ -158,7 +158,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          
          /// <summary>Gets folder as path.</summary>
          /// <returns></returns>
-         IO::Path GetFolder() const
+         Path GetFolder() const
          {
             return (const wchar*)CString(GetValue());
          }

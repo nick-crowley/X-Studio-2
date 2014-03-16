@@ -41,7 +41,7 @@ namespace GUI
    }
 
    /// <summary>Dialog data exchange for paths</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, IO::Path& path)
+   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path)
    {
 	   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
 

@@ -79,7 +79,7 @@ namespace GUI
    void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value);
 
    /// <summary>Dialog data exchange for paths</summary>
-   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, IO::Path& path);
+   void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path);
 }
 
 
