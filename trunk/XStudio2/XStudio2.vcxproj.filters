@@ -630,9 +630,6 @@
     <ClInclude Include="..\Logic\ConsoleLog.h">
       <Filter>Header Files\Logic\IO</Filter>
     </ClInclude>
-    <ClInclude Include="..\targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
