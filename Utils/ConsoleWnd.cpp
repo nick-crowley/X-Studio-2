@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ConsoleWnd.h"
-#include "../Logic/ConsoleLog.h"
+//#include "../Logic/ConsoleLog.h"
 
 namespace Logic
 {
@@ -375,7 +375,7 @@ namespace Logic
       WriteConsole(Handle, txt.c_str(), txt.length(), &written, NULL);
          
       // Write to logfile
-      LogFile.Write(txt, Attributes);
+      //LogFile.Write(txt, Attributes);
 
 #ifdef _DEBUG
       // Write to output window

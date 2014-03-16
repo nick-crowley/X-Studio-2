@@ -4,7 +4,7 @@ namespace Logic
 {
 
    /// <summary>Indentation string, used for debugging output</summary>
-   class Indent : public wstring
+   class EXPORTED Indent : public wstring
    {
    public:
       Indent(UINT depth) : wstring(depth, L' ')
@@ -12,7 +12,7 @@ namespace Logic
    };
 
    /// <summary>A formattable GUI string</summary>
-   class GuiString : public wstring
+   class EXPORTED GuiString : public wstring
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -65,7 +65,7 @@ namespace Logic
    };
 
 
-   class VString : public GuiString
+   class EXPORTED VString : public GuiString
    {
    public:
       /// <summary>Loads and formats a string</summary>
@@ -94,7 +94,7 @@ namespace Logic
 
 
    /// <summary>String containing a system error message</summary>
-   class SysErrorString : public wstring
+   class EXPORTED SysErrorString : public wstring
    {
    public:
       /// <summary>Creates a string containing the last system error</summary>
@@ -105,7 +105,7 @@ namespace Logic
    };
 
    /// <summary>String holding name of a game version</summary>
-   class VersionString : public wstring
+   class EXPORTED VersionString : public wstring
    {
    public:
       VersionString(GameVersion v, bool acronym = false);

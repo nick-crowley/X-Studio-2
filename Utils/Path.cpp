@@ -2,7 +2,7 @@
 #include "Path.h"
 #include <Strsafe.h>       // C String handling
 #include "Shlwapi.h"       // PathFileExists
-#include "../Logic/XFileSystem.h"   // XFileSystem::GetPath(.)
+//#include "../Logic/XFileSystem.h"   // XFileSystem::GetPath(.)
 
 namespace Logic
 {
@@ -100,7 +100,7 @@ namespace Logic
       else
       {
          // Failed: Try 'scripts' subfolder of game folder
-         path = XFileSystem::GetPath(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion, XFolder::Scripts) + (script+L".pck");
+         //path = XFileSystem::GetPath(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion, XFolder::Scripts) + (script+L".pck");
 
          // Try PCK then XML
          if (path.Exists() || (path = path.RenameExtension(L".xml")).Exists())
