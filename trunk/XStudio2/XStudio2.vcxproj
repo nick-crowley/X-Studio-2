@@ -127,14 +127,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\DTL\Diff.hpp" />
-    <ClInclude Include="..\DTL\Diff3.hpp" />
-    <ClInclude Include="..\DTL\dtl.hpp" />
-    <ClInclude Include="..\DTL\functors.hpp" />
-    <ClInclude Include="..\DTL\Lcs.hpp" />
-    <ClInclude Include="..\DTL\Sequence.hpp" />
-    <ClInclude Include="..\DTL\Ses.hpp" />
-    <ClInclude Include="..\DTL\variables.hpp" />
     <ClInclude Include="..\Testing\GuiTests.h" />
     <ClInclude Include="..\TOM\stdafx.h" />
     <ClInclude Include="..\TOM\tom.h" />
