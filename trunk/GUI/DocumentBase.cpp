@@ -77,7 +77,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
             // SaveAs: Rename document
             if (bReplace)
-               Rename((LPCWSTR)path, false);
+               Rename((LPCWSTR)path, true);
          }
 
          // Save document

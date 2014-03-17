@@ -93,7 +93,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		}
       
       // Set user-selected path (+ update title)
-      pDocument->FullPath = docPath;
+      //pDocument->FullPath = docPath;
+      pDocument->SetPathName(docPath.c_str(), TRUE);
 
 		// it worked, now bump untitled count
 		//m_nUntitledCount++;
