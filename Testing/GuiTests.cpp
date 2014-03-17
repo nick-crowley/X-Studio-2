@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GuiTests.h"
-#include "../XStudio2/ScriptDocument.h"
-#include "../XStudio2/DiffDocument.h"
+#include "../GUI/ScriptDocument.h"
+#include "../GUI/DiffDocument.h"
 
 namespace Testing
 {
