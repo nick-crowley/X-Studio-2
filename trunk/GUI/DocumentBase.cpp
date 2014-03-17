@@ -21,7 +21,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
    }
 
-   DocumentBase::DocumentBase(DocumentType type, bool virt) : Type(type), IsVirtual(virt)
+   DocumentBase::DocumentBase(DocumentType type, bool isVirtual) : Type(type), IsVirtual(isVirtual)
    {
    }
 
@@ -90,6 +90,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
    bool  DocumentBase::GetVirtual() const
    {
       return IsVirtual;
+   }
+
+   /// <summary>Called when opening a document from a template.</summary>
+   /// <param name="t">template.</param>
+   /// <returns></returns>
+   BOOL  DocumentBase::OnOpenTemplate(const FileTemplate& t)
+   {
+      // Default implementation uses open document
+      return OnOpenDocument(AppPath(t.SubPath).c_str());
    }
    
    /// <summary>Changes the document filename and updates the title.</summary>
