@@ -356,11 +356,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Script.Version = 1;
          Script.Description = L"no description";
 
-         // TODO: Populate template
-         /*for (auto& cmd : Script.Commands.Input)
+         // Populate template
+         LineArray lines;
+         for (auto& cmd : Script.Commands.Input)
          {
-            cmd.Text.Remove();
-         }*/
+            /*cmd.Text.replace(L"$NAME$", Script.Name);
+            cmd.Text.replace(L"$DATE$", time());*/
+            lines.push_back(cmd.Text);
+         }
+
+         // Compile changes into temporary script
+         ScriptFile tmp(Script);
+         ScriptParser parser(tmp, lines, Script.Game);
+         parser.Compile();
+         
+         // Write to disc
+         ScriptFileWriter w(XFileInfo(docPath).OpenWrite());
+         w.Write(tmp);
+         w.Close();
 
          // Feedback
          data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script created successfully");
