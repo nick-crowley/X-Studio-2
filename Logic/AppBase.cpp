@@ -115,9 +115,10 @@ namespace Logic
    BOOL AppBase::ShowError(const GuiString& src, const exception& e, const GuiString& msg) const
    {
       Console.Log(src, e);
-      return AfxMessageBox(VString(L"%s : %s\n\nCaught: %s", msg.c_str(), 
-                                                               GuiString::Convert(e.what(), CP_ACP).c_str(), 
-                                                               src.c_str()).c_str(), MB_ICONERROR|MB_OK);
+
+      // Show error
+      auto text = VString(L"%s : %s\n\nCaught: %s", msg.c_str(), GuiString::Convert(e.what(), CP_ACP).c_str(), src.c_str());
+      return ShowMessage(text, MB_ICONERROR|MB_OK);
    }
 
    /// <summary>Displays and logs an exception</summary>
@@ -131,10 +132,11 @@ namespace Logic
 
       // Application exception: Display verbatim
       if (auto app = dynamic_cast<const ApplicationException*>(&e))
-         return AfxMessageBox(app->Message.c_str());
+         return ShowMessage(msg + L": " + app->Message, MB_OK|MB_ICONERROR);
    
       // Exception: Display source/sink data
-      return AfxMessageBox(VString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+      auto text = VString(L"%s : %s\n\nSink: %s\nSource: %s", msg.c_str(), e.Message.c_str(), src.c_str(), e.Source.c_str());
+      return ShowMessage(text, MB_ICONERROR|MB_OK);
    }
 
 
@@ -148,10 +150,11 @@ namespace Logic
 
       // Application exception: Display verbatim
       if (auto app = dynamic_cast<const ApplicationException*>(&e))
-         return AfxMessageBox(app->Message.c_str());
+         return ShowMessage(app->Message, MB_OK|MB_ICONERROR);
 
       // Exception: Display source/sink data
-      return AfxMessageBox(VString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str()).c_str(), MB_ICONERROR|MB_OK);
+      auto text = VString(L"%s\n\nSink: %s\nSource: %s", e.Message.c_str(), src.c_str(), e.Source.c_str());
+      return ShowMessage(text, MB_ICONERROR|MB_OK);
    }
 
    /// <summary>Shows a message.</summary>
