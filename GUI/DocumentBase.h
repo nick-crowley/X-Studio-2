@@ -69,18 +69,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
+      BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
       virtual BOOL  OnOpenTemplate(Path docPath, const FileTemplate& t);
       virtual void  Rename(Path newPath, bool overwriteExists);
       virtual bool  Replace(MatchData& m);
+      BOOL          SaveModified() override;
       void          SetFullPath(Path path);
       void          SetModifiedFlag(BOOL bModified = TRUE) override;
+      void          SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU = TRUE) override;
       virtual void  SetSelection(CHARRANGE rng);
       void          SetTitle(LPCTSTR title) override;
       void          SetVirtual(bool v);
 
    protected:
-      afx_msg void  OnCommand_Save();
-      afx_msg void  OnCommand_SaveAs();
+      /*afx_msg void  OnCommand_Save();
+      afx_msg void  OnCommand_SaveAs();*/
       afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 	   
       // -------------------- REPRESENTATION ---------------------

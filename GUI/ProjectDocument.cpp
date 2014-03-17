@@ -515,7 +515,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Save Project As
          case ID_FILE_PROJECT_SAVE_AS:
-            DoSave(NULL);
+            DoSave(nullptr, TRUE);
             break;
          }
       }
