@@ -12,10 +12,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>New Document File Templates</summary>
    NewDocumentDialog::TemplateList  NewDocumentDialog::DocTemplates = 
    {
-      NewDocumentTemplate(L"Blank MSCI Script", DocumentType::Script, L".xml", 0, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
-      NewDocumentTemplate(L"Blank Language File", DocumentType::Language, L".xml", 1, L"Blank Language File", L"Templates\\Blank.Language.xml"),
-      NewDocumentTemplate(L"Blank MD Script", DocumentType::Mission, L".xml", 2, L"Blank MD Script", nullptr),
-      NewDocumentTemplate(L"Blank Project", DocumentType::Project, L".xprj", 3, L"Blank Project", nullptr)
+      FileTemplate(L"Blank MSCI Script", DocumentType::Script, L".xml", 0, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
+      FileTemplate(L"Blank Language File", DocumentType::Language, L".xml", 1, L"Blank Language File", L"Templates\\Blank.Language.xml"),
+      FileTemplate(L"Blank MD Script", DocumentType::Mission, L".xml", 2, L"Blank MD Script", nullptr),
+      FileTemplate(L"Blank Project", DocumentType::Project, L".xprj", 3, L"Blank Project", nullptr)
    };
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -102,7 +102,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
 
          // Open document using file template
-         auto doc = docTemplate->OpenDocumentTemplate(AppPath(fileTemplate->SubPath).c_str(), TRUE);
+         auto doc = docTemplate->OpenDocumentTemplate(*fileTemplate, TRUE);
 
          // Set 'new document' state
          docTemplate->SetDefaultTitle(doc);
@@ -149,14 +149,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Gets a template by index.</summary>
    /// <param name="index">Zero-based index, or -1 for the currently selected item.</param>
    /// <returns></returns>
-   const NewDocumentDialog::NewDocumentTemplate*  NewDocumentDialog::GetTemplate(UINT index) const
+   const FileTemplate*  NewDocumentDialog::GetTemplate(UINT index) const
    {
       // Get Selected
       if (index == -1)
          index = Templates.GetNextItem(-1, LVNI_SELECTED);
 
       // Lookup data
-      return reinterpret_cast<const NewDocumentTemplate*>(Templates.GetItemData(index));
+      return reinterpret_cast<const FileTemplate*>(Templates.GetItemData(index));
    }
    
 NAMESPACE_END2(GUI,Windows)

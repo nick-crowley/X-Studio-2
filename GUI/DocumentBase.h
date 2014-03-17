@@ -8,6 +8,32 @@ NAMESPACE_BEGIN2(GUI,Documents)
    enum class DocumentType { Script, Language, Mission, Project, Diff };
 
    /// <summary></summary>
+   class FileTemplate
+   {
+      // --------------------- CONSTRUCTION ----------------------
+   public:
+      FileTemplate(wstring name, DocumentType type, LPCWSTR defExt, UINT icon, LPCWSTR desc, LPCWSTR subpath) 
+         : Name(name), Type(type), Extension(defExt), Icon(icon), Description(desc), SubPath(subpath)
+      {}
+
+      // --------------------- PROPERTIES ------------------------
+	  
+      // ---------------------- ACCESSORS ------------------------			
+
+      // ----------------------- MUTATORS ------------------------
+
+      // -------------------- REPRESENTATION ---------------------
+   public:
+      const wstring      Name;            // Template name
+      const LPCWSTR      Extension,       // Default file extension
+                         Description,     // Template description
+                         SubPath;         // File SubPath: 'Templates\...'
+      const DocumentType Type;            // Document type
+      const UINT         Icon;            // ImageList index of document icon 
+   };
+
+
+   /// <summary></summary>
    class DocumentBase : public CDocument
    {
       // ------------------------ TYPES --------------------------
@@ -16,7 +42,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- CONSTRUCTION ----------------------
    protected:
       DocumentBase();
-      DocumentBase(DocumentType type, bool virt);
+      DocumentBase(DocumentType type, bool isVirtual);
    public:
       virtual ~DocumentBase();
        
@@ -36,13 +62,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       virtual bool      FindNext(UINT start, MatchData& m) const;
       virtual CHARRANGE GetSelection() const;
-      Path          GetFullPath() const;
+      Path              GetFullPath() const;
       DocumentType      GetType() const;
       bool              GetVirtual() const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
+      virtual BOOL  OnOpenTemplate(const FileTemplate& t);
       virtual void  Rename(const wstring& name);
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(Path path);

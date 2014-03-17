@@ -1,5 +1,6 @@
 #pragma once
 #include "../Logic/FileIdentifier.h"
+#include "DocumentBase.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -26,7 +27,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       Confidence     MatchDocType(LPCTSTR szPathName, CDocument*& rpDocMatch) override;
-      DocumentBase*  OpenDocumentTemplate(Path path, BOOL bMakeVisible);
+      DocumentBase*  OpenDocumentTemplate(const FileTemplate& t, BOOL bMakeVisible);
 
       // -------------------- REPRESENTATION ---------------------
    protected:

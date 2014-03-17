@@ -332,6 +332,39 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
    
+   /// <summary>Opens a document template.</summary>
+   /// <param name="t">template.</param>
+   /// <returns></returns>
+   BOOL ScriptDocument::OnOpenTemplate(const FileTemplate& t)
+   {
+      WorkerData data(Operation::LoadSaveDocument);
+      
+      // Feedback
+      Console << Cons::UserAction << "Opening script template: " << Cons::Yellow << t.SubPath << ENDL;
+      data.SendFeedback(ProgressType::Operation, 0, VString(L"Creating %s", t.Name));
+
+      try
+      {
+         AppPath path(t.SubPath);
+
+         // Read/Parse script
+         Script = ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, false);
+
+         // TODO: Populate template
+
+         // Feedback
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script created successfully");
+         return TRUE;
+      }
+      catch (ExceptionBase&  e)
+      {
+         // Feedback/Display error
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s", t.Name));
+         theApp.ShowError(HERE, e, VString(L"Failed to create %s", t.Name));
+         return FALSE;
+      }
+   }
+   
    /// <summary>Called when perform command.</summary>
    /// <param name="nID">The cmd identifier.</param>
    //void  ScriptDocument::OnPerformCommand(UINT nID)

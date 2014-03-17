@@ -48,14 +48,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    
    /// <summary>Opens a new document using a template file.</summary>
-   /// <param name="path">Full path of template.</param>
+   /// <param name="t">template.</param>
    /// <param name="bMakeVisible">make visible.</param>
    /// <returns></returns>
    /// <exception cref="Logic::ApplicationException">Unable to create document or view<exception>
    /// <exception cref="Logic::FileNotFoundException">Template file is missing<exception>
-   DocumentBase* DocTemplateBase::OpenDocumentTemplate(Path path, BOOL bMakeVisible)
+   DocumentBase* DocTemplateBase::OpenDocumentTemplate(const FileTemplate& t, BOOL bMakeVisible)
    {
-      // Verify template exists
+      AppPath path(t.SubPath);
+
+      // Verify template file exists
       if (!path.Exists())
          throw FileNotFoundException(HERE, path);
 
@@ -81,8 +83,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Use default title
 		SetDefaultTitle(pDocument);
 
-      // Open template
-		if (!pDocument->OnOpenDocument(path.c_str()))
+      // Open template file
+		if (!pDocument->OnOpenTemplate(t))
 		{
 			// Failed: Cleanup
 			pFrame->DestroyWindow();

@@ -14,32 +14,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected:
       /// <summary></summary>
-      class NewDocumentTemplate
-      {
-         // --------------------- CONSTRUCTION ----------------------
-      public:
-         NewDocumentTemplate(wstring name, DocumentType type, LPCWSTR defExt, UINT icon, LPCWSTR desc, LPCWSTR subpath) 
-            : Name(name), Type(type), Extension(defExt), Icon(icon), Description(desc), SubPath(subpath)
-         {}
-
-         // --------------------- PROPERTIES ------------------------
-	  
-         // ---------------------- ACCESSORS ------------------------			
-
-         // ----------------------- MUTATORS ------------------------
-
-         // -------------------- REPRESENTATION ---------------------
-      public:
-         const wstring      Name;
-         const LPCWSTR      Extension,
-                            Description,
-                            SubPath;
-         const DocumentType Type;
-         const UINT         Icon;
-      };
-
-      /// <summary></summary>
-      typedef list<NewDocumentTemplate>  TemplateList;
+      typedef list<FileTemplate>  TemplateList;
 
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -55,8 +30,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ---------------------- ACCESSORS ------------------------			
    public:
    
-   private:
-      const NewDocumentTemplate*  GetTemplate(UINT index) const;
+   protected:
+      const FileTemplate*  GetTemplate(UINT index) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -67,16 +42,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
       void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	  
-   
-
       // -------------------- REPRESENTATION ---------------------
    protected:
       static TemplateList  DocTemplates;
 
       CListCtrl      Templates;
       CEdit          Description;
-      Path       //FileName,
-                     Folder;
+      Path           Folder;
       CButton        AddProject;
       ImageListEx    Images;
    };
