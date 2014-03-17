@@ -71,7 +71,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
-   /// <summary>Called when [ok].</summary>
+   /// <summary>Create new document</summary>
    void NewDocumentDialog::OnOK()
    {
       try
@@ -116,6 +116,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Open document using file template
          auto doc = docTemplate->OpenDocumentTemplate(path, *fileTemplate, TRUE);
+
+         // Project: Add to active project
+         if (auto proj = ProjectDocument::GetActive())
+            if (AddProject.GetCheck())
+               proj->AddFile(path);
 
          // Close
          __super::OnOK();

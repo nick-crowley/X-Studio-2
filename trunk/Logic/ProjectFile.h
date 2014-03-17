@@ -49,6 +49,29 @@ namespace Logic
             return Root.Find(path);
          }
 
+         /// <summary>Finds item by name and type.</summary>
+         /// <param name="type">Type.</param>
+         /// <param name="name">Name.</param>
+         /// <returns>Item if found, otherwise nullptr</returns>
+         ProjectItem*  Find(ProjectItemType type, const wstring& name) const
+         {
+            return Root.Find(type, name);
+         }
+
+          /// <summary>Finds root folder for a filetype.</summary>
+         /// <param name="type">File Type.</param>
+         /// <returns>Item if found, otherwise nullptr</returns>
+         ProjectItem*  FindFolder(FileType type) const
+         {
+            switch (type)
+            {
+            case FileType::Script:    return Root.Find(ProjectItemType::Folder, L"MSCI Scripts");
+            case FileType::Language:  return Root.Find(ProjectItemType::Folder, L"Language Files");
+            case FileType::Mission:   return Root.Find(ProjectItemType::Folder, L"MD Scripts");
+            default:                  return Root.Find(ProjectItemType::Folder, L"Other Files");
+            }
+         }
+
          /// <summary>Get all items as a list.</summary>
          /// <returns></returns>
          list<ProjectItem*>  ToList() const
