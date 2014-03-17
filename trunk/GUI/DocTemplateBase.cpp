@@ -48,18 +48,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    
    /// <summary>Opens a new document using a template file.</summary>
+   /// <param name="docPath">Initial document path.</param>
    /// <param name="t">template.</param>
    /// <param name="bMakeVisible">make visible.</param>
    /// <returns></returns>
    /// <exception cref="Logic::ApplicationException">Unable to create document or view<exception>
    /// <exception cref="Logic::FileNotFoundException">Template file is missing<exception>
-   DocumentBase* DocTemplateBase::OpenDocumentTemplate(const FileTemplate& t, BOOL bMakeVisible)
+   DocumentBase* DocTemplateBase::OpenDocumentTemplate(Path docPath, const FileTemplate& t, BOOL bMakeVisible)
    {
-      AppPath path(t.SubPath);
+      AppPath templatePath(t.SubPath);
 
       // Verify template file exists
-      if (!path.Exists())
-         throw FileNotFoundException(HERE, path);
+      if (!templatePath.Exists())
+         throw FileNotFoundException(HERE, templatePath);
 
       // Create document
 	   DocumentBase* pDocument = dynamic_cast<DocumentBase*>(CreateNewDocument());
@@ -81,24 +82,30 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   ASSERT_VALID(pFrame);
 
       // Use default title
-		SetDefaultTitle(pDocument);
+		//SetDefaultTitle(pDocument);
 
       // Open template file
-		if (!pDocument->OnOpenTemplate(t))
+		if (!pDocument->OnOpenTemplate(docPath, t))
 		{
 			// Failed: Cleanup
 			pFrame->DestroyWindow();
 			return nullptr;
 		}
+      
+      // Set user-selected path (+ update title)
+      pDocument->FullPath = docPath;
 
 		// it worked, now bump untitled count
-		m_nUntitledCount++;
+		//m_nUntitledCount++;
 
       // Raise 'After New Document'
       pDocument->OnDocumentEvent(CDocument::onAfterNewDocument);
 
       // Initial Update
 	   InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
+
+      // Ensure unmodified
+      pDocument->SetModifiedFlag(FALSE);
 	   return pDocument;
    }
 

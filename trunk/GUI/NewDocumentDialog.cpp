@@ -81,12 +81,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
          auto fileTemplate = GetTemplate(-1);
 
          // Require selection + filename + folder
-         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || fileTemplate->Type == DocumentType::Mission)
+         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || FileName.Empty())
             return;
+
+         // MD: Not supported yet
+         if (fileTemplate->Type == DocumentType::Mission)
+            throw NotImplementedException(HERE, L"Mission director support");
 
          // Check folder exists
          if (!Folder.Exists() || !Folder.IsDirectory())
             throw ApplicationException(HERE, L"The folder does not exist");
+
+         // Append default path, if none
+         if (!FileName.HasExtension(L".pck") && !FileName.HasExtension(L".xml") && !FileName.HasExtension(L".xprj"))
+            FileName = FileName.operator std::wstring() + fileTemplate->Extension;      // Cannot use 'RenameExtension' because of likelyhood of dots in the file name
+
+         // Check path is valid
+         Path path(Folder + FileName);
+         if (path.Exists())
+            throw ApplicationException(HERE, L"A file with that name already exists");
 
          // Prefs: Save folder
          PrefsLib.NewDocumentFolder = Folder;
@@ -102,14 +115,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          }
 
          // Open document using file template
-         auto doc = docTemplate->OpenDocumentTemplate(*fileTemplate, TRUE);
+         auto doc = docTemplate->OpenDocumentTemplate(path, *fileTemplate, TRUE);
 
-         // Set 'new document' state
-         docTemplate->SetDefaultTitle(doc);
-         doc->SetModifiedFlag(FALSE);
-
-         // OK
-         CDialogEx::OnOK();
+         // Close
+         __super::OnOK();
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, ApplicationException(e), L"Unable to create document");
@@ -126,7 +135,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Control(pDX, IDC_TEMPLATE_LIST, Templates);
       DDX_Control(pDX, IDC_ADD_PROJECT_CHECK, AddProject);
       DDX_Control(pDX, IDC_DESCRIPTION_EDIT, Description);
-      //DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
+      DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
    }
    
