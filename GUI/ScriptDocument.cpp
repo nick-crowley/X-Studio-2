@@ -463,9 +463,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // Feedback
             data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script saved successfully");
 
-            // Auto-Commit: 
-            if (PrefsLib.CommitOnSave)
-               OnCommitDocument(L"Automatic commit");
+            // Auto-Commit: Commit if document part of project
+            if (auto proj = ProjectDocument::GetActive())
+               if (PrefsLib.CommitOnSave && proj->Contains(FullPath))
+                  OnCommitDocument(L"Automatic commit");
             return TRUE;
          }
          else
