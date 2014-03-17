@@ -485,7 +485,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
                Script.Version++;
 
             // Write to X-Studio program folder
-            StreamPtr fs(new FileStream(VString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str()), FileMode::CreateAlways, FileAccess::Write));
+            // auto debugPath = VString(L"D:\\My Projects\\XStudio2\\Files\\%s.xml", Script.Name.c_str());
+            StreamPtr fs(new FileStream(szPath, FileMode::CreateAlways, FileAccess::Write));
             ScriptFileWriter w(fs);
             w.Write(Script);
             w.Close();
