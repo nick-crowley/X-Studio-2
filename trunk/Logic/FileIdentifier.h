@@ -17,18 +17,18 @@ namespace Logic
       {
 		   // ------------------------ TYPES --------------------------
       private:
+         const static UINT PEEK_BUFFER = 4096;
 	  
          // --------------------- CONSTRUCTION ----------------------
-
-      public:
+      private:
          FileIdentifier();
          virtual ~FileIdentifier();
 		 
-		   DEFAULT_COPY(FileIdentifier);	// Default copy semantics
-		   DEFAULT_MOVE(FileIdentifier);	// Default move semantics
+		   NO_COPY(FileIdentifier);	// No copy semantics
+		   NO_MOVE(FileIdentifier);	// No move semantics
 
          // ------------------------ STATIC -------------------------
-
+      public:
          static FileType  Identify(Path  path);
 
          // --------------------- PROPERTIES ------------------------

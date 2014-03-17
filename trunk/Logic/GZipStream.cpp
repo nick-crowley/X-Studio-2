@@ -233,7 +233,7 @@ namespace Logic
 
          // Success: Return count decompressed
          case Z_OK:
-            return ZStream.avail_out;
+            return length - ZStream.avail_out;  // avail_out=='output buffer remaining' not 'output bytes available'
 
          // Error: throw
          default:

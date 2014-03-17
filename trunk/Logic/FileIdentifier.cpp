@@ -44,11 +44,11 @@ namespace Logic
          try
          {
             StreamPtr    s(XFileInfo(path).OpenRead());
-            ByteArrayPtr buf(new BYTE[1024]);
+            ByteArrayPtr buf(new BYTE[PEEK_BUFFER]);
 
             // Peek first 1024 bytes
-            DWORD count = s->Read(buf.get(), 1024);
-            buf.get()[min(count,1023)] = '\0';
+            DWORD count = s->Read(buf.get(), PEEK_BUFFER);
+            buf.get()[min(count,PEEK_BUFFER-1)] = '\0';
 
             // Check for unique XML document root elements
             if (StrStrIA((char*)buf.get(), "<script>") != nullptr)
