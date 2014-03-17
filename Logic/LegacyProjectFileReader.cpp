@@ -38,7 +38,7 @@ namespace Logic
       {
          try
          {
-            ProjectFile file(path.FileName);
+            ProjectFile file(path);
 
             // Read file
             LoadDocument();

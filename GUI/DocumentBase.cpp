@@ -205,7 +205,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   return TRUE;        // ok to continue
 
       // Query save
-      VString msg(L"The document '%s' has been modified, save changes?", (LPCWSTR)GetTitle());
+      VString msg(L"The document '%s' has been modified, save changes?", FullPath.FileName.c_str());
       switch (theApp.ShowMessage(msg, MB_ICONQUESTION|MB_YESNOCANCEL))
       {
       // Cancel: Abort closing

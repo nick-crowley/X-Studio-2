@@ -15,8 +15,11 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ProjectFile(const wstring& name) : Root(name)
-         {}
+         ProjectFile(const Path& path) : Root(path.FileName)
+         {
+            Root.FullPath = path;
+         }
+
          virtual ~ProjectFile()
          {}
 

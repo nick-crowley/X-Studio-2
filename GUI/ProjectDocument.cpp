@@ -230,78 +230,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ItemAdded.Raise(&folder.Add(copy), &folder);
    }
 
-   /// <summary>Removes an item from the project</summary>
-   /// <param name="item">item.</param>
-   void ProjectDocument::RemoveItem(ProjectItem& item)
-   {
-      // Remove item. Raise 'ITEM REMOVED'
-      Project.Remove(item);
-      ItemRemoved.Raise(&item);
-
-      // Modify project
-      SetModifiedFlag(TRUE);
-   }
-
-   /// <summary>Renames the file/document/title and raises 'ITEM CHANGED' on project root</summary>
-   /// <param name="newPath">New path.</param>
-   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
-   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
-   /// <exception cref="Logic::IOException">Unable to rename file</exception>
-   void  ProjectDocument::Rename(Path newPath, bool overwriteExists)
-   {
-      // Rename document/title
-      __super::Rename(newPath, overwriteExists);
-
-      // Raise 'ITEM CHANGED'
-      ItemChanged.Raise(nullptr);
-   }
-
-   /// <summary>Renames a project item.</summary>
-   /// <param name="item">The item.</param>
-   /// <param name="name">New name.</param>
-   /// <exception cref="Logic::ApplicationException">New file path already exists -or- project already contains new path</exception>
-   /// <exception cref="Logic::IOException">Unable to rename file</exception>
-   void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
-   {
-      // Update name
-      item.Name = name;
-
-      // File: Rename file/document
-      if (item.IsFile())
-      {
-         // Open: Rename file/document/title/item
-         if (auto doc = theApp.GetOpenDocument(item.FullPath))
-         {
-            doc->Rename(name, false);
-            return;
-         }
-         else
-         {
-            // New file path
-            Path newPath = item.FullPath.RenameFileName(name);
-            
-            // Ensure unique
-            if (newPath.Exists())
-               throw ApplicationException(HERE, L"A file with that name already exists");
-            else if (Contains(newPath))
-               throw ApplicationException(HERE, L"Project already contains a file with that path");
-
-            // Rename
-            if (!MoveFileEx(item.FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
-               throw IOException(HERE, SysErrorString());
-
-            // Set new path
-            item.FullPath = newPath;
-         }
-      }
-
-      // Modify project
-      SetModifiedFlag(TRUE);
-
-      // Raise 'ITEM CHANGED'
-      ItemChanged.Raise(&item);
-   }
-
    /// <summary>Raises 'PROJECT CLOSED/LOADED' after loading/closing</summary>
    /// <param name="deEvent">The event.</param>
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent)
@@ -315,7 +243,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Closed.Raise();
    }
    
-   /// <summary>Notifies the project a document has been renamed, and updates the project item to match</summary>
+   /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
    /// <param name="doc">The document.</param>
    /// <param name="oldPath">The old path.</param>
    /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
@@ -332,12 +260,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Update item
       auto item = Project.Find(oldPath);
       item->FullPath = doc.FullPath;
+      item->Name = doc.FullPath.FileName;
 
-      // Modify project
+      // DEBUG
+      //Console << HERE << ": Setting project name to " << item->Name << ENDL;
+
+      // Modify project  [Raises 'ITEM CHANGED']
       SetModifiedFlag(TRUE);
-
-      // Raise 'ITEM CHANGED'
-      ItemChanged.Raise(item);
    }
 
    /// <summary>Called on new X-Studio 2 project.</summary>
@@ -461,6 +390,103 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
    
+   /// <summary>Removes an item from the project</summary>
+   /// <param name="item">item.</param>
+   void ProjectDocument::RemoveItem(ProjectItem& item)
+   {
+      // Remove item. Raise 'ITEM REMOVED'
+      Project.Remove(item);
+      ItemRemoved.Raise(&item);
+
+      // Modify project
+      SetModifiedFlag(TRUE);
+   }
+
+   /// <summary>Renames the file/document/title and raises 'ITEM CHANGED' on project root</summary>
+   /// <param name="newPath">New path.</param>
+   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
+   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
+   /// <remarks>This is called by 'RenameItem' on the root, or 'SaveAs' on the project document</remarks>
+   void  ProjectDocument::Rename(Path newPath, bool overwriteExists)
+   {
+      // Rename document/title    [Raises OnDocumentRenamed]
+      __super::Rename(newPath, overwriteExists);
+
+      // Modify project
+      //SetModifiedFlag(TRUE);
+
+      //// Rename root item
+      //Project.Root.FullPath = newPath;
+      //Project.Root.Name = newPath.FileName;
+      //
+      //// Raise 'ROOT CHANGED'
+      //ItemChanged.Raise(&Project.Root);
+   }
+
+   /// <summary>Renames a project item.</summary>
+   /// <param name="item">The item.</param>
+   /// <param name="name">New name (or filename).</param>
+   /// <exception cref="Logic::ApplicationException">New file path already exists -or- project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
+   void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
+   {
+      // Project: Rename self
+      if (item.IsRoot())
+      {
+         Rename(FullPath.RenameFileName(name), false);
+         return;
+      }
+      // File: Rename file/document
+      else if (item.IsFile())
+      {
+         // Open: Rename file/document/title/item
+         if (auto doc = theApp.GetOpenDocument(item.FullPath))
+         {
+            doc->Rename(item.FullPath.RenameFileName(name), false);
+            return;
+         }
+         else
+         {
+            // New file path
+            Path newPath = item.FullPath.RenameFileName(name);
+            
+            // Ensure unique
+            if (newPath.Exists())
+               throw ApplicationException(HERE, L"A file with that name already exists");
+            else if (Contains(newPath))
+               throw ApplicationException(HERE, L"Project already contains a file with that path");
+
+            // Rename
+            if (!MoveFileEx(item.FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
+               throw IOException(HERE, SysErrorString());
+
+            // Set new name+path
+            item.Name = name;
+            item.FullPath = newPath;
+         }
+      }
+      // Variable: Update name 
+      else
+         item.Name = name;
+
+      // Modify project
+      SetModifiedFlag(TRUE);
+
+      // Raise 'ITEM CHANGED'
+      ItemChanged.Raise(&item);
+   }
+   
+   /// <summary>Refreshes the root in response to changing the modified flag.</summary>
+   /// <param name="bModified">modified.</param>
+   void  ProjectDocument::SetModifiedFlag(BOOL bModified)
+   {
+      __super::SetModifiedFlag(bModified);
+
+      // Raise 'ROOT CHANGED'
+      ItemChanged.Raise(&Project.Root);
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Get full path of backup file for a document.</summary>

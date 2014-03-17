@@ -106,6 +106,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  RemoveItem(ProjectItem& item);
       void  Rename(Path newPath, bool overwriteExists) override;
       void  RenameItem(ProjectItem& item, const wstring& name);
+      void  SetModifiedFlag(BOOL bModified = TRUE) override;
 
    protected:
       void  InitialCommit(const Path& folder, const ProjectItem& item);

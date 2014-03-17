@@ -220,9 +220,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Display common dialog and insert file as child of selected item.</summary>
    void CProjectWnd::OnCommand_AddExisting()
    {
-      auto filter = L"Uncompressed Files (*.xml)|*.xml|" 
-                    L"Compressed Files (*.pck)|*.pck|" 
-                    L"All files (*.*)|*.*||";
+      static const wchar* filter = L"Uncompressed Files (*.xml)|*.xml|" 
+                                   L"Compressed Files (*.pck)|*.pck|" 
+                                   L"All files (*.*)|*.*||";
 
       try
       {
@@ -233,7 +233,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             return;
 
          // Query for file
-	      CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST, filter, this, 0, TRUE);
+	      CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING|OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST, filter, this, 0, TRUE);
          if (dlg.DoModal() == IDOK)
          {
             Path path = (LPCWSTR)dlg.GetPathName();
@@ -375,9 +375,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Rename the selected item.</summary>
    void CProjectWnd::OnCommand_RenameItem()
    {
-	   // Rename selected item
-      if (auto item = TreeView.GetSelectedItem())
-         TreeView.EditLabel(item);
+	   auto item = TreeView.SelectedItem;
+      auto node = TreeView.GetSelectedItem();
+
+      // Ensure selected
+      if (!item || !node)
+         return;
+
+      // Ensure not fixed folder
+      if (item->IsFolder() && item->Fixed)
+         return;
+         
+      // Rename item
+      TreeView.EditLabel(node);
    }
 
    /// <summary>Removes the selected item.</summary>
@@ -387,7 +397,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // Get selected unfixed file/folder
          auto item = TreeView.SelectedItem;
-         if (!item || item->Fixed)
+         if (!item || item->Fixed || item->IsRoot())
             return;
 
          // Feedback
@@ -404,20 +414,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>TODO: Display properties</summary>
    void CProjectWnd::OnCommand_ViewProperties()
    {
-	   AfxMessageBox(_T("Properties...."));
-
+	   AfxMessageBox(_T("TODO: Project item properties"));
    }
 
 
    /// <summary>Manually paints border around tree.</summary>
    void CProjectWnd::OnPaint()
    {
-	   CPaintDC dc(this); // device context for painting
-
-	   CRect rectTree;
-	   TreeView.GetWindowRect(rectTree);
-	   ScreenToClient(rectTree);
-
+	   CPaintDC dc(this); 
+	   CtrlRect rectTree(this, &TreeView);
+	   
+      // Border
 	   rectTree.InflateRect(1, 1);
 	   dc.Draw3dRect(rectTree, ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DSHADOW));
    }
@@ -442,7 +449,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
            check = false;
 
       // Require selection
-      if (!TreeView.GetSelectedItem())
+      if (!TreeView.GetSelectedItem() || !TreeView.SelectedItem)
          State = false;
       
       else 
@@ -452,39 +459,39 @@ NAMESPACE_BEGIN2(GUI,Windows)
          {
          // Open: Require file
          case ID_PROJECT_OPEN:   
-            State = item && item->IsFile(); 
+            State = item->IsFile(); 
             break;
 
          // AddFile/Folder: Require folder
          case ID_PROJECT_ADD_FILE:    
          case ID_PROJECT_ADD_FOLDER:  
-            State = item && item->IsFolder();  
+            State = item->IsFolder();  
             break;
 
          // Rename: Not fixed folder
          case ID_PROJECT_RENAME:
-            State = !item || !item->Fixed;
+            State = (item->IsFolder() && item->Fixed) == false;
             break;
 
          // Remove: Not project + not fixed folder
          case ID_PROJECT_REMOVE:
-            State = item && !item->Fixed;  
+            State = !item->Fixed && !item->IsRoot();  
             break;
 
          // Delete: Require file   
          case ID_PROJECT_DELETE:   
-            State = item && item->IsFile();    
+            State = item->IsFile();    
             break;
 
          // Commit: Require file be open as a document
          case ID_PROJECT_COMMIT:
          case ID_PROJECT_QUICK_COMMIT:
-            State = item && item->IsFile() && theApp.IsDocumentOpen(item->FullPath);
+            State = item->IsFile() && theApp.IsDocumentOpen(item->FullPath);
             break;
 
          // Properties: Not folder
          case ID_PROJECT_PROPERTIES:  
-            State = !item || !item->IsFolder();    
+            State = !item->IsFolder();    
             break;
          }
       }

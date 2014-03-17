@@ -116,6 +116,13 @@ namespace Logic
          {
             return Type == ProjectItemType::Folder;
          }
+         
+         /// <summary>Determines whether this instance is the root.</summary>
+         /// <returns></returns>
+         bool  IsRoot() const
+         {
+            return Type == ProjectItemType::Root;
+         }
 
          /// <summary>Determines whether this instance is a variable.</summary>
          /// <returns></returns>
