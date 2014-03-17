@@ -3,6 +3,7 @@
 #include "../Logic/ScriptRevision.h"
 #include "../Logic/ScriptObjectLibrary.h"
 #include "DocumentBase.h"
+#include "DocTemplateBase.h"
 #include "PropertySource.h"
 
 
@@ -14,18 +15,16 @@ FORWARD_DECLARATION2(GUI,Views,class ScriptView)
 NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>MSCI Script document template</summary>
-   class ScriptDocTemplate : public CMultiDocTemplate
+   class ScriptDocTemplate : public DocTemplateBase
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptDocTemplate();
 
       // ------------------------ STATIC -------------------------
-
       DECLARE_DYNAMIC(ScriptDocTemplate)
 
       // ---------------------- ACCESSORS ------------------------	
-      virtual Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch);
    };
 
    /// <summary>MSCI Script document</summary>

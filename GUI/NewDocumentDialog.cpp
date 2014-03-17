@@ -9,10 +9,11 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
+   /// <summary>New Document File Templates</summary>
    NewDocumentDialog::TemplateList  NewDocumentDialog::DocTemplates = 
    {
-      NewDocumentTemplate(L"Blank MSCI Script", DocumentType::Script, L".xml", 0, L"Blank MSCI script", nullptr),
-      NewDocumentTemplate(L"Blank Language File", DocumentType::Language, L".xml", 1, L"Blank Language File", nullptr),
+      NewDocumentTemplate(L"Blank MSCI Script", DocumentType::Script, L".xml", 0, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
+      NewDocumentTemplate(L"Blank Language File", DocumentType::Language, L".xml", 1, L"Blank Language File", L"Templates\\Blank.Language.xml"),
       NewDocumentTemplate(L"Blank MD Script", DocumentType::Mission, L".xml", 2, L"Blank MD Script", nullptr),
       NewDocumentTemplate(L"Blank Project", DocumentType::Project, L".xprj", 3, L"Blank Project", nullptr)
    };
@@ -77,36 +78,35 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // Get data
          UpdateData(TRUE);
-         auto t = GetTemplate(-1);
+         auto fileTemplate = GetTemplate(-1);
 
          // Require selection + filename + folder
-         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || /*FileName.Empty() ||*/ t->Type == DocumentType::Mission)
+         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || fileTemplate->Type == DocumentType::Mission)
             return;
-
-         // Manually check for extension (scripts almost always have dots in their name)
-         /*if (!FileName.HasExtension(L".xml") && !FileName.HasExtension(L".pck") && !FileName.HasExtension(L".xprj"))
-         {
-            FileName = wstring(FileName.c_str()) + GetTemplate(-1)->Extension;
-            UpdateData(FALSE);
-         }*/
 
          // Check folder exists
          if (!Folder.Exists() || !Folder.IsDirectory())
             throw ApplicationException(HERE, L"The folder does not exist");
 
-         // Check file doesn't exist
-         /*if (FileName.Exists())
-            throw ApplicationException(HERE, L"The file already exists");*/
-
-         // Save folder
+         // Prefs: Save folder
          PrefsLib.NewDocumentFolder = Folder;
 
-         // Open document
-         switch (t->Type)
+         // Lookup document template
+         DocTemplateBase* docTemplate = nullptr;
+         switch (fileTemplate->Type)
          {
-         case DocumentType::Script:   theApp.GetDocumentTemplate<ScriptDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);    break;
-         case DocumentType::Language: theApp.GetDocumentTemplate<LanguageDocTemplate>()->OpenDocumentFile(nullptr, FALSE, TRUE);  break;
+         case DocumentType::Script:   docTemplate=theApp.GetDocumentTemplate<ScriptDocTemplate>();    break;
+         case DocumentType::Language: docTemplate=theApp.GetDocumentTemplate<LanguageDocTemplate>();  break;
+
+         default: throw AlgorithmException(HERE, L"Unexpected document template");
          }
+
+         // Open document using file template
+         auto doc = docTemplate->OpenDocumentTemplate(AppPath(fileTemplate->SubPath).c_str(), TRUE);
+
+         // Set 'new document' state
+         docTemplate->SetDefaultTitle(doc);
+         doc->SetModifiedFlag(FALSE);
 
          // OK
          CDialogEx::OnOK();

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Logic/LanguageFile.h"
 #include "DocumentBase.h"
+#include "DocTemplateBase.h"
 #include "PropertySource.h"
 #include "GuiCommand.h"
 
@@ -23,7 +24,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    // ------------------------ CLASSES ------------------------
 
    /// <summary>Language document template</summary>
-   class LanguageDocTemplate : public CMultiDocTemplate
+   class LanguageDocTemplate : public DocTemplateBase
    {
       // --------------------- CONSTRUCTION ----------------------
    public:

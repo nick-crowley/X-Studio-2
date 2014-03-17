@@ -20,11 +20,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ---------------------------------- TEMPLATE ----------------------------------
 
-   IMPLEMENT_DYNAMIC(LanguageDocTemplate, CMultiDocTemplate)
+   IMPLEMENT_DYNAMIC(LanguageDocTemplate, DocTemplateBase)
 
    /// <summary>Creates language document template</summary>
    LanguageDocTemplate::LanguageDocTemplate() 
-      : CMultiDocTemplate(IDR_LANGUAGEVIEW, RUNTIME_CLASS(LanguageDocument), RUNTIME_CLASS(LanguageFrame), nullptr)
+      : DocTemplateBase(IDR_LANGUAGEVIEW, FileType::Language, RUNTIME_CLASS(LanguageDocument), RUNTIME_CLASS(LanguageFrame), nullptr)
    {}
 
    /// <summary>Queries whether an external file should be opened as a language file</summary>
@@ -41,7 +41,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Identify language file from header
       rpDocMatch = nullptr;
-      return GuiString(L"String Library") == lpszPathName || FileIdentifier::Identify(lpszPathName) == FileType::Language ? yesAttemptNative : noAttempt;
+      return GuiString(L"String Library") == lpszPathName 
+          || FileIdentifier::Identify(lpszPathName) == FileType::Language ? yesAttemptNative : noAttempt;
    }
 
    // --------------------------------- APP WIZARD ---------------------------------
