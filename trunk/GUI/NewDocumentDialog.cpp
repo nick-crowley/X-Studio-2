@@ -112,7 +112,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CDialogEx::OnOK();
       }
       catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
+         theApp.ShowError(HERE, ApplicationException(e), L"Unable to create document");
       }
    }
 
