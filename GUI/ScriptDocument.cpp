@@ -310,12 +310,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       WorkerData data(Operation::LoadSaveDocument);
       
-      // Feedback
-      Console << Cons::UserAction << "Loading script: " << Path(szPathName) << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading script '%s'", szPathName));
-
       try
       {
+         // Feedback
+         Console << Cons::UserAction << "Loading script: " << Path(szPathName) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading script '%s'", szPathName));
+
          // Read/Parse script
          Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
 
@@ -333,24 +333,34 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
    
    /// <summary>Opens a document template.</summary>
+   /// <param name="docPath">document path.</param>
    /// <param name="t">template.</param>
    /// <returns></returns>
-   BOOL ScriptDocument::OnOpenTemplate(const FileTemplate& t)
+   BOOL ScriptDocument::OnOpenTemplate(Path docPath, const FileTemplate& t)
    {
       WorkerData data(Operation::LoadSaveDocument);
       
-      // Feedback
-      Console << Cons::UserAction << "Opening script template: " << Cons::Yellow << t.SubPath << ENDL;
-      data.SendFeedback(ProgressType::Operation, 0, VString(L"Creating %s", t.Name));
-
       try
       {
-         AppPath path(t.SubPath);
+         // Feedback
+         Console << Cons::UserAction << "Creating script: " << docPath << " from template: " << Path(t.SubPath) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Creating %s '%s'", t.Name, docPath.c_str()));
 
-         // Read/Parse script
+         // Read/Parse template script
+         AppPath path(t.SubPath);
          Script = ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, false);
 
+         // Set properties
+         Script.Name = docPath.FileName;
+         Script.Game = PrefsLib.GameDataVersion;
+         Script.Version = 1;
+         Script.Description = L"no description";
+
          // TODO: Populate template
+         /*for (auto& cmd : Script.Commands.Input)
+         {
+            cmd.Text.Remove();
+         }*/
 
          // Feedback
          data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script created successfully");
@@ -359,8 +369,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s", t.Name));
-         theApp.ShowError(HERE, e, VString(L"Failed to create %s", t.Name));
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s '%s'", t.Name, docPath.c_str()));
+         theApp.ShowError(HERE, e, VString(L"Failed to create %s '%s'", t.Name, docPath.c_str()));
          return FALSE;
       }
    }

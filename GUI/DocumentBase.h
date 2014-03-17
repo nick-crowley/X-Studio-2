@@ -69,7 +69,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
-      virtual BOOL  OnOpenTemplate(const FileTemplate& t);
+      virtual BOOL  OnOpenTemplate(Path docPath, const FileTemplate& t);
       virtual void  Rename(const wstring& name);
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(Path path);

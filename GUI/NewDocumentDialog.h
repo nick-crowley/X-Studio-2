@@ -48,7 +48,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       CListCtrl      Templates;
       CEdit          Description;
-      Path           Folder;
+      Path           FileName, Folder;
+      //wstring        FileName;
       CButton        AddProject;
       ImageListEx    Images;
    };

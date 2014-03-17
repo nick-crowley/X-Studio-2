@@ -27,7 +27,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       Confidence     MatchDocType(LPCTSTR szPathName, CDocument*& rpDocMatch) override;
-      DocumentBase*  OpenDocumentTemplate(const FileTemplate& t, BOOL bMakeVisible);
+      DocumentBase*  OpenDocumentTemplate(Path docPath, const FileTemplate& t, BOOL bMakeVisible);
 
       // -------------------- REPRESENTATION ---------------------
    protected:
