@@ -234,34 +234,32 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       static const LRESULT  ACCEPT = 1, 
                             REJECT = 0;
+      // Get new item text
+      const wchar* newText = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR)->item.pszText;
+      *pResult = REJECT;
+
+      // Ignore if cancelled
+      if (newText == nullptr)
+         return;
+
       try
       {
-         // Get new item text
-         const wchar* newText = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR)->item.pszText;
+         // Feedback
+         Console << Cons::UserAction << "Renaming project item " << Cons::Yellow << LabelItem.GetDebugName() 
+                 << Cons::White << " to " << Cons::Yellow << newText << ENDL;
 
-         // Cancelled: Ignore
-         if (newText == nullptr)
-            *pResult = REJECT;
+         // Item: Rename item
+         if (LabelItem.Data)
+            ProjectDocument::GetActive()->RenameItem(*LabelItem.Data, newText);
          else
-         {
-            // Feedback
-            Console << Cons::UserAction << "Renaming project item " << Cons::Yellow << LabelItem.GetDebugName() 
-                    << Cons::White << " to " << Cons::Yellow << newText << ENDL;
+            // Project: Rename project
+            ProjectDocument::GetActive()->Rename(newText, false);
 
-            // Item: Rename item
-            if (LabelItem.Data)
-               ProjectDocument::GetActive()->RenameItem(*LabelItem.Data, newText);
-            else
-               // Project: Rename project
-               ProjectDocument::GetActive()->Rename(newText);
-
-            // Accept
-            *pResult = ACCEPT;
-         }  
+         // Accept
+         *pResult = ACCEPT;
       }
       catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-         *pResult = REJECT;
+         theApp.ShowError(HERE, e, VString(L"Unable to rename '%s' to '%s'", LabelItem.Data->FullPath.c_str(), newText));
       }
    }
    

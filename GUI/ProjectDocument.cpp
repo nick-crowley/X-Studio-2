@@ -221,12 +221,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SetModifiedFlag(TRUE);
    }
 
-   /// <summary>Changes the project filename and title</summary>
-   /// <param name="name">New name.</param>
-   void  ProjectDocument::Rename(const wstring& name)
+   /// <summary>Renames the file/document/title and raises 'ITEM CHANGED' on project root</summary>
+   /// <param name="newPath">New path.</param>
+   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
+   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
+   void  ProjectDocument::Rename(Path newPath, bool overwriteExists)
    {
       // Rename document/title
-      DocumentBase::Rename(name);
+      __super::Rename(newPath, overwriteExists);
 
       // Raise 'ITEM CHANGED'
       ItemChanged.Raise(nullptr);
@@ -235,7 +238,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Renames a project item.</summary>
    /// <param name="item">The item.</param>
    /// <param name="name">New name.</param>
-   /// <exception cref="Logic::Win32Exception">Unable to rename file</exception>
+   /// <exception cref="Logic::ApplicationException">New file path already exists -or- project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
    void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
    {
       // Update name
@@ -244,17 +248,26 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // File: Rename file/document
       if (item.IsFile())
       {
-         // Open: Rename document
+         // Open: Rename file/document/title/item
          if (auto doc = theApp.GetOpenDocument(item.FullPath))
-            doc->Rename(name);
+         {
+            doc->Rename(name, false);
+            return;
+         }
          else
          {
             // New file path
             Path newPath = item.FullPath.RenameFileName(name);
             
-            // Closed: Rename file on disc
-            if (newPath.Exists() || !MoveFile(item.FullPath.c_str(), newPath.c_str()))
-               throw Win32Exception(HERE, VString(L"Unable to rename '%s' to '%s'", item.FullPath.FileName.c_str(), newPath.FileName.c_str()));
+            // Ensure unique
+            if (newPath.Exists())
+               throw ApplicationException(HERE, L"A file with that name already exists");
+            else if (Contains(newPath))
+               throw ApplicationException(HERE, L"Project already contains a file with that path");
+
+            // Rename
+            if (!MoveFileEx(item.FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
+               throw IOException(HERE, SysErrorString());
 
             // Set new path
             item.FullPath = newPath;
@@ -279,6 +292,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Raise 'PROJECT CLOSED'
       else if (deEvent == CDocument::onAfterCloseDocument)
          Closed.Raise();
+   }
+   
+   /// <summary>Notifies the project a document has been renamed, and updates the project item to match</summary>
+   /// <param name="doc">The document.</param>
+   /// <param name="oldPath">The old path.</param>
+   /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
+   void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath)
+   {
+      // Ensure document is member
+      if (!Contains(oldPath))
+         throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
+      
+      // Ensure path is unique
+      else if (Contains(doc.FullPath))
+         throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
+
+      // Update item
+      auto item = Project.Find(oldPath);
+      item->FullPath = doc.FullPath;
+
+      // Modify document
+      SetModifiedFlag(TRUE);
+
+      // Raise 'ITEM CHANGED'
+      ItemChanged.Raise(item);
    }
 
    /// <summary>Called on new X-Studio 2 project.</summary>
