@@ -27,26 +27,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNAMIC(ScriptDocTemplate, CMultiDocTemplate)
    
    /// <summary>Creates script document template</summary>
-   ScriptDocTemplate::ScriptDocTemplate()
-         : CMultiDocTemplate(IDR_SCRIPTVIEW, RUNTIME_CLASS(ScriptDocument), RUNTIME_CLASS(CMDIChildWndEx), RUNTIME_CLASS(ScriptView))
+   ScriptDocTemplate::ScriptDocTemplate() : DocTemplateBase(IDR_SCRIPTVIEW, FileType::Script,
+                                                            RUNTIME_CLASS(ScriptDocument), 
+                                                            RUNTIME_CLASS(CMDIChildWndEx), 
+                                                            RUNTIME_CLASS(ScriptView))
    {}
-
-   /// <summary>Queries whether an external file should be opened as a script</summary>
-   /// <param name="lpszPathName">Path of file.</param>
-   /// <param name="rpDocMatch">The already open document, if any.</param>
-   /// <returns>yesAlreadyOpen if already open, yesAttemptNative if script, noAttempt if unrecognised</returns>
-   CDocTemplate::Confidence ScriptDocTemplate::MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch)
-   {
-      Confidence conf;
-
-      // Ensure document not already open
-      if ((conf = CMultiDocTemplate::MatchDocType(lpszPathName, rpDocMatch)) == yesAlreadyOpen)
-         return yesAlreadyOpen;
-
-      // Identify language file from header
-      rpDocMatch = nullptr;
-      return FileIdentifier::Identify(lpszPathName) == FileType::Script ? yesAttemptNative : noAttempt;
-   }
 
    // --------------------------------- APP WIZARD ---------------------------------
   

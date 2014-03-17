@@ -47,6 +47,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logic", "Logic\Logic.vcxpro
 		{287F72EA-3176-4E48-85B3-A58C320EAAFC} = {287F72EA-3176-4E48-85B3-A58C320EAAFC}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{CE9A171E-C52B-42C8-A177-6B6788D02FF8}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Templates\Blank.Language.xml = Docs\Templates\Blank.Language.xml
+		Docs\Templates\Blank.MSCI.xml = Docs\Templates\Blank.MSCI.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -75,6 +81,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
+		{CE9A171E-C52B-42C8-A177-6B6788D02FF8} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
