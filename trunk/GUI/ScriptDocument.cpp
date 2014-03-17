@@ -351,7 +351,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Script = ScriptFileReader(XFileInfo(path).OpenRead()).ReadFile(path, false);
 
          // Set properties
-         Script.Name = docPath.FileName;
+         Script.Name = docPath.RemoveExtension().FileName;
          Script.Game = PrefsLib.GameDataVersion;
          Script.Version = 1;
          Script.Description = L"no description";
