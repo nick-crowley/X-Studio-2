@@ -385,10 +385,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Renames the document.</summary>
    /// <param name="id">File ID.</param>
    /// <param name="lang">language.</param>
+   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
    void  LanguageDocument::Rename(UINT id, GameLanguage lang)
    {
-      // Change path + title
-      __super::Rename(VString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str()));
+      // Generate languageFile filename
+      auto newName = VString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str());
+
+      // Rename file/document/projectItem/title
+      __super::Rename(FullPath.Folder+newName, false);
    }
    
    /// <summary>Changes the ID of a Page.</summary>

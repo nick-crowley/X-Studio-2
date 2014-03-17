@@ -234,15 +234,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       protected:
          /// <summary>Update name</summary>
          /// <param name="value">value text</param>
+         /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+         /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
             Script.Name = value;
 
             // Modify document
-            ScriptProperty::OnValueChanged(value);    
+            __super::OnValueChanged(value);    
             
-            // Change path [+title]
-            Document.Rename(value + Document.FullPath.Extension);
+            // Rename file/document [+ update title]
+            auto newPath = Document.FullPath.Folder + (value+Document.FullPath.Extension);
+            Document.Rename(newPath, false);
          }
          
          // -------------------- REPRESENTATION ---------------------
