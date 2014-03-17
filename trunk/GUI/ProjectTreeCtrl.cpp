@@ -59,16 +59,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
     
       try
       {
-         // Repopulate
+         // Populate recursively from root
          if (auto doc = ProjectDocument::GetActive())
-         {
-            // Root: Project Name
-            auto root = InsertItem(TreeItem(doc), nullptr);
+            InsertItem(TreeItem(&doc->Project.Root), nullptr);
+         //{
+         //   // Root: Project Name
+         //   auto root = InsertItem(TreeItem(&doc->Project.Root), nullptr);
 
-            // Folders: Populate recursively
-            for (auto& folder : doc->Project)
-               InsertItem(TreeItem(&folder), root);
-         }
+         //   // Folders: Populate recursively
+         //   for (auto& folder : doc->Project)
+         //      InsertItem(TreeItem(&folder), root);
+         //}
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -187,10 +188,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    /// <summary>Called when item or project renamed.</summary>
-   /// <param name="item">The item, or nullptr for project</param>
+   /// <param name="item">item data</param>
    void  ProjectTreeCtrl::OnItemChanged(ProjectItem* item)
    {
-      if (item)
+      // Called when document is initializing and tree has not been populated
+      if (!GetRootItem())
+         return;
+
+      // Update item
+      if (!item->IsRoot())
          SetItemText(FindItem(item), item->Name.c_str());
       else
          SetItemText(GetRootItem(), ProjectDocument::GetActive()->GetTitle());
@@ -221,9 +227,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /*auto name = (item.Data ? item.Data->Name : (LPCWSTR)ProjectDocument::GetActive()->GetTitle());
          Console << Cons::UserAction << "Renaming project item: " << Cons::Yellow << name << ENDL;*/
 
-         // TODO: Customize/Setup edit
+         // Customize/Setup edit
          if (auto edit = GetEditControl())
+         {
+            // Project: Strip '*' from name, if present
+            if (LabelItem.Data->IsRoot())
+               edit->SetWindowTextW(LabelItem.Data->Name.c_str());
+
             edit->SetLimitText(MAX_PATH);
+         }
       }
    }
    
@@ -248,15 +260,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console << Cons::UserAction << "Renaming project item " << Cons::Yellow << LabelItem.GetDebugName() 
                  << Cons::White << " to " << Cons::Yellow << newText << ENDL;
 
-         // Item: Rename item
-         if (LabelItem.Data)
-            ProjectDocument::GetActive()->RenameItem(*LabelItem.Data, newText);
-         else
-            // Project: Rename project
-            ProjectDocument::GetActive()->Rename(newText, false);
+         // Sanity check
+         REQUIRED(LabelItem.Data);
 
-         // Accept
-         *pResult = ACCEPT;
+         // Rename item/project
+         ProjectDocument::GetActive()->RenameItem(*LabelItem.Data, newText);
+
+         // BugFix: REJECT change because we update the item manually during this notification
+         *pResult = REJECT;
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, VString(L"Unable to rename '%s' to '%s'", LabelItem.Data->FullPath.c_str(), newText));

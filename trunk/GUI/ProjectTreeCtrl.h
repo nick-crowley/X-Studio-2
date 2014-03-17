@@ -32,19 +32,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Create from project document</summary>
          /// <param name="item">The item.</param>
          /// <exception cref="Logic::ArgumentNullException">Document is null</exception>
-         TreeItem(ProjectDocument* doc) : TVItem(nullptr, MAX_PATH)
-         {
-            REQUIRED(doc);
+         //TreeItem(ProjectDocument* doc) : TVItem(nullptr, MAX_PATH)
+         //{
+         //   REQUIRED(doc);
 
-            // Use document title
-            SetText((LPCWSTR)doc->GetTitle());
+         //   // Use document title
+         //   SetText((LPCWSTR)doc->GetTitle());
 
-            // Set icon
-            iImage = iSelectedImage = 1;
-            
-            // Bold + Expanded
-            state = stateMask = TVIS_BOLD | TVIS_EXPANDED;
-         }
+         //   // Set icon
+         //   iImage = iSelectedImage = 1;
+         //   
+         //   // Bold + Expanded
+         //   state = stateMask = TVIS_BOLD | TVIS_EXPANDED;
+
+         //   // Item data:
+         //   lParam = reinterpret_cast<LPARAM>(&doc->Project.Root);
+         //}
 
          /// <summary>Create from project item</summary>
          /// <param name="item">The item.</param>
@@ -53,15 +56,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             REQUIRED(item);
 
-            // Generate name
+            // Variable: Generate name
             if (item->IsVariable())
                SetText(VString(L"%s = %d", item->Name.c_str(), item->Value));
+            // Project: Use title
+            else if (item->IsRoot())
+               SetText((LPCWSTR)ProjectDocument::GetActive()->GetTitle()); 
             else
+               // Item: Use name
                SetText(item->Name);
 
             // Choose icon
             switch (item->Type)
             {
+            case ProjectItemType::Root:      iImage = 1;  break;
             case ProjectItemType::Folder:    iImage = 0;  break;
             case ProjectItemType::Variable:  iImage = 6;  break;
             case ProjectItemType::File:      
@@ -76,8 +84,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
             }
             iSelectedImage = iImage;
 
-            // Fixed: Bold + Expanded
-            if (item->Fixed)
+            // Root/Fixed: Bold + Expanded
+            if (item->IsRoot() || item->Fixed)
                state = stateMask = TVIS_BOLD | TVIS_EXPANDED;
 
             // Item data:
@@ -101,28 +109,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <returns></returns>
          wstring  GetDebugName() const
          {
-            return Data ? Data->Name : (LPCWSTR)ProjectDocument::GetActive()->GetTitle();
+            return Data ? Data->Name : L"<no data>";
          }
 
          /// <summary>Allow any unfixed file/folder/variable to be dragged</summary>
          /// <returns></returns>
          bool IsDragSource() const
          {
-            return Data && !Data->Fixed;
+            return Data && !Data->IsRoot() && !Data->Fixed;
          }
 
          /// <summary>Allow items to be dropped onto folders</summary>
          /// <returns></returns>
          bool IsDropTarget() const
          {
-            return Data && Data->Type == ProjectItemType::Folder;
+            return Data && Data->IsFolder();
          }
 
          /// <summary>Allow root and unfixed files/folder/variables to be renamed</summary>
          /// <returns></returns>
          bool IsEditable() const
          {
-            return !Data || !Data->Fixed;
+            return Data && (Data->IsRoot() || !Data->Fixed);
          }
 
          /// <summary>Compare item handles</summary>
