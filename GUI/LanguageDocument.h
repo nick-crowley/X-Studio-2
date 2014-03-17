@@ -178,14 +178,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       protected:
          /// <summary>Update language</summary>
          /// <param name="value">value text</param>
+         /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+         /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
-            // Change language + path + title
+            // Change language 
             File.Language = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
-            Document.Rename(File.ID, File.Language);
-            
-              // Modify document
+
+            // Modify document
             __super::OnValueChanged(value);  
+
+            // Rename file/document/projectItem/title
+            Document.Rename(File.ID, File.Language);
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -218,14 +222,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          /// <summary>Update file ID and title</summary>
          /// <param name="value">value text</param>
+         /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+         /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
-            // Change ID + Path + title
+            // Change ID 
             File.ID = value.ToInt();
-            Document.Rename(File.ID, File.Language);
-
+            
             // Modify document
-            __super::OnValueChanged(value);    
+            __super::OnValueChanged(value);  
+
+            // Rename file/document/projectItem/title
+            Document.Rename(File.ID, File.Language);
          }
 
          // -------------------- REPRESENTATION ---------------------

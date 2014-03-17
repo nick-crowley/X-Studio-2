@@ -70,7 +70,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void          Activate();
       virtual BOOL  OnOpenTemplate(Path docPath, const FileTemplate& t);
-      virtual void  Rename(const wstring& name);
+      virtual void  Rename(Path newPath, bool overwriteExists);
       virtual bool  Replace(MatchData& m);
       void          SetFullPath(Path path);
       void          SetModifiedFlag(BOOL bModified = TRUE) override;
@@ -79,7 +79,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void          SetVirtual(bool v);
 
    protected:
-      void  OnQueryCommand(CCmdUI* pCmdUI);
+      afx_msg void  OnCommand_Save();
+      afx_msg void  OnCommand_SaveAs();
+      afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 	   
       // -------------------- REPRESENTATION ---------------------
    protected:

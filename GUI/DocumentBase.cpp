@@ -10,6 +10,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(DocumentBase, CDocument)
 
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
+      ON_COMMAND(ID_FILE_SAVE)
+      ON_COMMAND(ID_FILE_SAVE_AS)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, &DocumentBase::OnQueryCommand)
@@ -102,11 +104,42 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return OnOpenDocument(AppPath(t.SubPath).c_str());
    }
    
-   /// <summary>Changes the document filename and updates the title.</summary>
-   /// <param name="name">New filename.</param>
-   void  DocumentBase::Rename(const wstring& name)
+   /// <summary>Renames the file on disc, updates the project item [if any] and updates the document path and title.</summary>
+   /// <param name="newPath">New path.</param>
+   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
+   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
+   void  DocumentBase::Rename(Path newPath, bool overwriteExists)
    {
-      FullPath = FullPath.RenameFileName(name);
+      auto proj = ProjectDocument::GetActive();
+
+      // Ensure path different
+      if (FullPath == newPath)
+         return;
+
+      // Ensure document exists
+      if (Virtual)
+         throw AlgorithmException(HERE, L"Cannot rename virtual documents");
+
+      // Project: Ensure new path unique within project
+      if (proj && proj->Contains(FullPath) && proj->Contains(newPath))
+         throw ApplicationException(HERE, L"Current project already contains a file with that name");
+
+      // Ensure new path does not exist
+      if (!overwriteExists && newPath.Exists())
+         throw ApplicationException(HERE, L"A file with that name already exists");
+
+      // Rename file
+      if (!MoveFileEx(FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
+         throw IOException(HERE, L"Unable to rename file: " + SysErrorString());
+
+      // Update document path [and title]
+      auto oldPath = FullPath;
+      FullPath = newPath;
+
+      // Project: Update project item
+      if (proj && proj->Contains(oldPath))
+         proj->OnRenameDocument(*this);
    }
    
    /// <summary>Replaces the current match</summary>
@@ -180,6 +213,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Called when [command_ save].</summary>
+   void  DocumentBase::OnCommand_Save()
+   {
+   }
+
+   /// <summary>Called when [command_ save as].</summary>
+   void  DocumentBase::OnCommand_SaveAs()
+   {
+   }
+
    /// <summary>Queries the state of a menu command.</summary>
    /// <param name="pCmdUI">The command UI.</param>
    void  DocumentBase::OnQueryCommand(CCmdUI* pCmdUI)
