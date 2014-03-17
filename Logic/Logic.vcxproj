@@ -63,6 +63,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>msxml6.lib;shlwapi.lib;$(OutputPath)\zdll.lib;$(OutputPath)\XStudio2.Utils.lib</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\Utils.lib</AdditionalDependencies>
