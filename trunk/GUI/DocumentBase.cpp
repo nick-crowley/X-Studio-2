@@ -10,8 +10,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(DocumentBase, CDocument)
 
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
-      ON_COMMAND(ID_FILE_SAVE)
-      ON_COMMAND(ID_FILE_SAVE_AS)
+      /*ON_COMMAND(ID_FILE_SAVE)
+      ON_COMMAND(ID_FILE_SAVE_AS)*/
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, &DocumentBase::OnQueryCommand)
@@ -56,6 +56,53 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (auto view = GetNextView(pos))
          if (auto parent = view->GetParentFrame())
             parent->ActivateFrame();
+   }
+   
+   /// <summary>Invoked by MFC to save the document.</summary>
+   /// <param name="szPathName">Existing full path, or nullptr for 'Save [Copy] As'</param>
+   /// <param name="bReplace">TRUE for 'SaveAs', FALSE for 'SaveCopyAs'</param>
+   /// <returns>TRUE if saved, FALSE if cancelled/error</returns>
+   BOOL DocumentBase::DoSave(LPCTSTR szPathName, BOOL bReplace)
+   {
+	   CString path = szPathName;
+
+      try
+      {
+         // SaveAs/SaveCopyAs: 
+         if (!szPathName)
+         {
+            // Query for new filename
+            if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
+               return FALSE;
+
+            // SaveAs: Rename document
+            if (bReplace)
+               Rename((LPCWSTR)path, false);
+         }
+
+         // Save document
+	      if (!OnSaveDocument(path))
+	      {
+            // SaveAs/SaveCopyAs: Delete partial file
+		      if (!szPathName)
+               DeleteFile(path);
+
+		      return FALSE;
+	      }
+
+	      // SaveAs: Raise 'After Save'
+	      if (bReplace)
+	         OnDocumentEvent(onAfterSaveDocument);
+
+         // success
+	      return TRUE;     
+      }
+      // Renaming failed
+      catch (ExceptionBase& e) 
+      {
+         theApp.ShowError(HERE, ApplicationException(e), VString(L"Unable to save document '%s'", (LPCWSTR)path));
+         return FALSE;
+      }
    }
 
    /// <summary>Finds and highlights the next match, if any</summary>
@@ -149,6 +196,32 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       return false;
    }
+   
+   /// <summary>Invoked by MFC to save the modified document before closing.</summary>
+   /// <returns>TRUE to continue closing, FALSE to abort</returns>
+   BOOL DocumentBase::SaveModified()
+   {
+	   if (!IsModified())
+		   return TRUE;        // ok to continue
+
+      // Query save
+      VString msg(L"The document '%s' has been modified, save changes?", (LPCWSTR)GetTitle());
+      switch (theApp.ShowMessage(msg, MB_ICONQUESTION|MB_YESNOCANCEL))
+      {
+      // Cancel: Abort closing
+      case IDCANCEL:
+		   return FALSE;
+
+      // Yes: Attempt saving
+      case IDYES:
+		   if (!OnSaveDocument(FullPath.c_str()))
+			   return FALSE;       // Failed: Abort closing
+		   break;
+      }
+
+      // Success: Close document
+	   return TRUE;    
+   }
 
    /// <summary>Changes the path of the document.</summary>
    /// <returns></returns>
@@ -184,6 +257,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       __super::SetTitle(title.c_str());
    }
 
+   /// <summary>Used by MFC to set document path: onCreate + onOpen + onSaveAs</summary>
+   /// <param name="szPathName">New path.</param>
+   /// <param name="bAddToMRU">Add to MRU [Path must exist].</param>
+   void  DocumentBase::SetPathName(LPCTSTR szPathName, BOOL bAddToMRU /*= TRUE*/)
+   {
+      __super::SetPathName(szPathName, bAddToMRU);
+   }
+
    /// <summary>Sets the selection.</summary>
    /// <param name="rng">char range.</param>
    void  DocumentBase::SetSelection(CHARRANGE rng)
@@ -213,15 +294,35 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Called when [command_ save].</summary>
-   void  DocumentBase::OnCommand_Save()
-   {
-   }
+   
+   /// <summary>Save under existing path</summary>
+   //void  DocumentBase::OnCommand_Save()
+   //{
+   //   // Save document
+   //   OnSaveDocument(FullPath.c_str());
+   //}
 
-   /// <summary>Called when [command_ save as].</summary>
-   void  DocumentBase::OnCommand_SaveAs()
-   {
-   }
+   /// <summary>Query for new path, rename document, and save.</summary>
+   //void  DocumentBase::OnCommand_SaveAs()
+   //{
+   //   CString path(FullPath.FileName.c_str());
+
+   //   try
+   //   {
+   //      // Query for new filename
+   //      if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
+			//   return;
+
+   //      // Attempt to Rename document
+   //      Rename((LPCWSTR)path, false);
+
+   //      // Save document
+   //      OnSaveDocument(FullPath.c_str());
+   //   }
+   //   catch (ExceptionBase& e) {
+   //      theApp.ShowError(HERE, e, VString(L"Unable to save document to '%s'", (LPCWSTR)path));
+   //   }
+   //}
 
    /// <summary>Queries the state of a menu command.</summary>
    /// <param name="pCmdUI">The command UI.</param>
