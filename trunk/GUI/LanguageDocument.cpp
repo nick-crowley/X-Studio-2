@@ -390,7 +390,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void  LanguageDocument::Rename(UINT id, GameLanguage lang)
    {
       // Generate languageFile filename
-      auto newName = VString(L"%04d-L0%02d%s", File.ID, (UINT)File.Language, FullPath.Extension.c_str());
+      auto newName = VString(L"%04d-L0%02d%s", id, (UINT)lang, FullPath.Extension.c_str());
 
       // Rename file/document/projectItem/title
       __super::Rename(FullPath.Folder+newName, false);
