@@ -238,14 +238,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
-            Script.Name = value;
-
-            // Modify document
-            __super::OnValueChanged(value);    
-            
-            // Rename file/document [+ update title]
+            // Attempt to Rename file/document [+ update title]
             auto newPath = Document.FullPath.Folder + (value+Document.FullPath.Extension);
             Document.Rename(newPath, false);
+
+            // [Success] Change script-name + Modify document
+            Script.Name = value;
+            __super::OnValueChanged(value);    
          }
          
          // -------------------- REPRESENTATION ---------------------

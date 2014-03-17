@@ -182,14 +182,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
-            // Change language 
-            File.Language = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
+            auto lang = GameLanguageIndex(Find(value.c_str())).Language;      // Convert zero-based index into GameLanguage
 
-            // Modify document
+            // Attempt to Rename file/document/projectItem/title
+            Document.Rename(File.ID, lang);
+
+            // [Success] Change language + Modify document
+            File.Language = lang;
             __super::OnValueChanged(value);  
-
-            // Rename file/document/projectItem/title
-            Document.Rename(File.ID, File.Language);
          }
 
          // -------------------- REPRESENTATION ---------------------
@@ -226,14 +226,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
-            // Change ID 
-            File.ID = value.ToInt();
-            
-            // Modify document
-            __super::OnValueChanged(value);  
+            // Attempt Rename file/document/projectItem/title
+            Document.Rename(value.ToInt(), File.Language);
 
-            // Rename file/document/projectItem/title
-            Document.Rename(File.ID, File.Language);
+            // [Success] Change ID + Modify document
+            File.ID = value.ToInt();
+            __super::OnValueChanged(value);  
          }
 
          // -------------------- REPRESENTATION ---------------------
