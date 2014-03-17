@@ -67,6 +67,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Adds a file item to the appropriate base folder, based on file type</summary>
+   /// <param name="path">Full path.</param>
+   /// <returns>True if added, False if already existed</returns>
+   bool ProjectDocument::AddFile(Path path)
+   {
+      // Add to appropriate root folder
+      if (auto folder = Project.FindFolder(FileIdentifier::Identify(path)))
+         return AddFile(path, *folder);
+
+      // Error: Unable to base folder
+      return false;
+   }
+
    /// <summary>Adds a file item.</summary>
    /// <param name="path">Full path.</param>
    /// <param name="folder">parent item.</param>
@@ -78,12 +91,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return false;
 
       // Create item
-      ProjectItem item(FileIdentifier::Identify(path), path, L"");
+      auto type = FileIdentifier::Identify(path);
+      ProjectItem item(type, path, L"");
+
+      // Script: Initial commit
+      if (type == FileType::Script)
+      {
+         item.SetBackupPath(FullPath.Folder);
+         InitialCommit(FullPath.Folder, item);
+      }
 
       // Raise 'ITEM ADDED'
       ItemAdded.Raise(&folder.Add(item), &folder);
 
-      // Modify document
+      // Modify project
       SetModifiedFlag(TRUE);
       return true;
    }
@@ -93,7 +114,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="parent">parent folder.</param>
    void ProjectDocument::AddFolder(const wstring& name, ProjectItem& folder)
    {
-      // Modify
+      // Modify project
       SetModifiedFlag(TRUE);
 
       // Add new folder
@@ -202,7 +223,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       Project.Remove(item);
       ItemRemoved.Raise(&item);
 
-      // Modify document
+      // Modify project
       SetModifiedFlag(TRUE);
 
       // Add to folder. Raise 'ITEM ADDED'
@@ -217,7 +238,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       Project.Remove(item);
       ItemRemoved.Raise(&item);
 
-      // Modify document
+      // Modify project
       SetModifiedFlag(TRUE);
    }
 
@@ -274,7 +295,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          }
       }
 
-      // Modify document
+      // Modify project
       SetModifiedFlag(TRUE);
 
       // Raise 'ITEM CHANGED'
@@ -312,7 +333,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto item = Project.Find(oldPath);
       item->FullPath = doc.FullPath;
 
-      // Modify document
+      // Modify project
       SetModifiedFlag(TRUE);
 
       // Raise 'ITEM CHANGED'

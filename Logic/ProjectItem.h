@@ -84,6 +84,25 @@ namespace Logic
             return nullptr;
          }
          
+         /// <summary>Finds item by name and type.</summary>
+         /// <param name="type">Type.</param>
+         /// <param name="name">Name.</param>
+         /// <returns>Item if found, otherwise nullptr</returns>
+         ProjectItem*  Find(ProjectItemType type, const wstring& name) const
+         {
+            // Check self
+            if (Type == type && Name == name)
+               return const_cast<ProjectItem*>(this);
+
+            // Search children
+            for (auto& c : Children)
+               if (auto it = c.Find(type, name))
+                  return it;
+
+            // Not found
+            return nullptr;
+         }
+         
          /// <summary>Determines whether this instance is a file.</summary>
          /// <returns></returns>
          bool  IsFile() const

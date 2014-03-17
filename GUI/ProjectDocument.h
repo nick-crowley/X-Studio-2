@@ -89,6 +89,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      bool  AddFile(Path path);
       bool  AddFile(Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
       void  Commit(const ScriptDocument& doc, const wstring& title);
