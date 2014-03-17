@@ -84,7 +84,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BackupFile  LoadBackupFile(const ScriptDocument& doc) const;
 
    protected:
-      Path    GetBackupPath(const ScriptDocument& doc) const;
+      Path        GetBackupPath(const ScriptDocument& doc) const;
       void        SaveBackupFile(const Path& path, const BackupFile& f) const;
 
       // ----------------------- MUTATORS ------------------------
@@ -97,12 +97,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       
       void  OnDocumentEvent(DocumentEvent deEvent) override;
+      void  OnDocumentRenamed(DocumentBase& doc, Path oldPath);
       BOOL  OnImportDocument(Path legacy, Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
       void  RemoveItem(ProjectItem& item);
-      void  Rename(const wstring& name) override;
+      void  Rename(Path newPath, bool overwriteExists) override;
       void  RenameItem(ProjectItem& item, const wstring& name);
 
    protected:

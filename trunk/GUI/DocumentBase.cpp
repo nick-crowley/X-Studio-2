@@ -139,7 +139,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Project: Update project item
       if (proj && proj->Contains(oldPath))
-         proj->OnRenameDocument(*this);
+         proj->OnDocumentRenamed(*this, oldPath);
    }
    
    /// <summary>Replaces the current match</summary>
