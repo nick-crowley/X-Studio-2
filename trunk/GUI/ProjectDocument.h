@@ -81,18 +81,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ---------------------- ACCESSORS ------------------------			
    public:
       bool        Contains(Path path) const;
-      BackupFile  LoadBackupFile(const ScriptDocument& doc) const;
-
-   protected:
+      bool        Contains(const DocumentBase& doc) const;
       Path        GetBackupPath(const ScriptDocument& doc) const;
-      //void        SaveBackupFile(const Path& path, const BackupFile& f) const;
+      bool        HasBackup(const ScriptDocument& doc) const;
+      BackupFile  LoadBackupFile(const ScriptDocument& doc) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
       bool  AddFile(Path path);
       bool  AddFile(Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
-      void  Commit(const ScriptDocument& doc, const wstring& title);
+      bool  Commit(const ScriptDocument& doc, const wstring& title);
       void  DeleteRevision(const ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       

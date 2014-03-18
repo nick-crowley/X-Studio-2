@@ -226,7 +226,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       // ListBackground: Grey on disabled
       if (nCtlColor == CTLCOLOR_LISTBOX)
-         return GetSysColorBrush(List.IsWindowEnabled() ? COLOR_WINDOW : COLOR_3DFACE);
+         return GetSysColorBrush(List.IsWindowEnabled() ? COLOR_WINDOW : COLOR_3DSHADOW);
 
       // Default
       return __super::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -235,8 +235,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Loads backups for the active document</summary>
    void BackupWnd::OnDocumentSwitched()
    {
-      if (List.GetSafeHwnd())    // Called excessively before documents exist
-         Populate();
+      // Ignore excessive calls before documents exist
+      if (!List.GetSafeHwnd())    
+         return;
+
+      auto p = ProjectDocument::GetActive();
+      auto doc = ScriptDocument::GetActive();
+
+      // Warn user if backup file is missing
+      if (p && doc && p->Contains(*doc) && !p->HasBackup(*doc))
+      {
+         auto msg = VString(L"The backup file '%s' is missing, revisions are not available.", p->GetBackupPath(*doc).c_str());
+         theApp.ShowMessage(msg, MB_OK|MB_ICONERROR);
+      }
+
+      // Populate for active document
+      Populate();
    }
    
 
