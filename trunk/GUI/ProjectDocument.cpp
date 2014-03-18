@@ -283,6 +283,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ImportProjectWorker w;
       ProgressDialog dlg(L"Import Project", L"Importing files...", false);
       BOOL result;
+      
+      // Display compiler output window
+      theApp.GetMainWindow()->ActivateOutputPane(Operation::ImportProject, true);
 
       // Import project
       w.Start(legacy, upgrade);
