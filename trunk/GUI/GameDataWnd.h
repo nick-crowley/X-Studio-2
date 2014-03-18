@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
       afx_msg void OnSetFocusCtrl(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void OnSearchGroupChanged();
       afx_msg void OnSearchTermChanged();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
       afx_msg void OnSize(UINT nType, int cx, int cy);

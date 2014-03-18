@@ -97,7 +97,7 @@ namespace Logic
          GroupCollection   GetGroups() const;
          CommandSyntaxRef  Find(UINT id, GameVersion ver) const;
          CommandSyntaxRef  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
-         CmdSyntaxArray    Query(const wstring& str, GameVersion ver) const;
+         CmdSyntaxArray    Query(const wstring& str, GameVersion ver, CommandGroup g = (CommandGroup)CB_ERR) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

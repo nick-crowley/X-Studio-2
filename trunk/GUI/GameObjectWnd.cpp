@@ -66,8 +66,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="selectedGroup">The selected group.</param>
    void CGameObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
+      // Convert group selection
+      auto grp = (MainType)(Groups.GetCurSel()-1) - MainType::Dock;
+
       // Lookup matches
-      auto Content = GameObjectLib.Query(searchTerm);
+      auto Content = GameObjectLib.Query(searchTerm, (MainType)grp);
       ListView.SetItemCount(Content.size());
       
       // Redefine groups

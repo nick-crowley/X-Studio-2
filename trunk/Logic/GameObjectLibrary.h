@@ -230,11 +230,10 @@ namespace Logic
       public:
          void            Clear();
          UINT            Enumerate(const XFileSystem& vfs, WorkerData* data);
-         //const TObject*  Find(MainType main, UINT subtype) const;
          GameObjectRef   Find(UINT value) const;
          GameObjectRef   Find(const GuiString& name) const;
          GameObjectRef   Find(MainType main, UINT subtype) const;
-         GameObjectArray Query(const GuiString& search) const;
+         GameObjectArray Query(const GuiString& search, MainType mt = (MainType)CB_ERR) const;
          bool            TryFind(const GuiString& name, const GameObject* &obj) const;
 
       protected:

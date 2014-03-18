@@ -91,8 +91,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="selectedGroup">The selected group.</param>
    void CScriptObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
+      // Convert group selection
+      auto grp = (ScriptObjectGroup)(Groups.GetCurSel()-1);
+
       // Lookup matches
-      auto Content = ScriptObjectLib.Query(searchTerm);
+      auto Content = ScriptObjectLib.Query(searchTerm, grp);
       ListView.SetItemCount(Content.size());
       
       // Redefine groups

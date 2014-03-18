@@ -81,7 +81,7 @@ GameDataWindows
 
 # GameDataWindows are displaying tooltips for the wrong item indicies
 
-# GameDataWindow group box doesn't filter results 
+# [DONE] GameDataWindow group box doesn't filter results 
 
 # GameDataWindows are not greyed/disabled when no game data is present
 

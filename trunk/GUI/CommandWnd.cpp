@@ -114,11 +114,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="selectedGroup">The selected group.</param>
    void CCommandWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
+      // Convert group selection
+      auto grp = (CommandGroup)(Groups.GetCurSel()-1);
+
       // Lookup matches
-      auto Content = SyntaxLib.Query(searchTerm, GameVersion::TerranConflict);
+      auto Content = SyntaxLib.Query(searchTerm, GameVersion::TerranConflict, grp);
       ListView.SetItemCount(Content.size());
             
-      // Define groups
+      // Define ListView groups
       for (CommandGroup g : SyntaxLib.GetGroups())
       {
          LVGroup grp((UINT)g, GetString(g));
