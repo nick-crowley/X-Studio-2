@@ -1,17 +1,11 @@
-1. ScriptEdit underlines verification errors and output window displays verification/compilation errors, meaning compiler
-   errors are never underlined.
 
-2. CommandNode relies on a hardcoded script folder to resolve script-calls
+ScriptEdit:
+-----------
 
-3. Cleanup new vArg flags in parameter/command syntax
-
-4. script-calls and argument name resolution are both case sensitive, make them case insensitive
-
-# Properly format script editor tooltips
+# edit underlines verification errors and output window displays verification/compilation errors, 
+  meaning compiler errors are never underlined.
 
 # [DONE] Fix matching of current suggestion in auto-complete
-
-# Connect saving of script documents to output file
 
 # [DONE] Highlighting not updated after Indent/Outdent 
 
@@ -19,13 +13,43 @@
 
 # [DONE] Typing in the script edit doesn't modify the document
 
-# Clear the compiler output window before displaying output during save
-
-# GameDataWindows are displaying tooltips for the wrong item indicies
-
 # return keyword is highlighted when found in command text
 
 
+
+Compiler:
+---------
+
+# CommandNode relies on a hardcoded script folder to resolve script-calls
+
+# Cleanup new vArg flags in parameter/command syntax
+
+# script-calls and argument name resolution are both case sensitive, make them case insensitive
+
+
+
+ScriptDocument:
+--------------
+
+# [DONE] Connect saving of script documents to output file
+
+
+
+GUI General:
+-----------
+
+# Clear the compiler output window before displaying output during save
+
+# Properly format script editor tooltips
+
+
+
+GameDataWindows
+---------------
+
+# GameDataWindows are displaying tooltips for the wrong item indicies
+
+# GameDataWindow group box doesn't filter results 
 
 
 
