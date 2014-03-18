@@ -103,7 +103,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Populate group names
       for (CommandGroup g : SyntaxLib.GetGroups())
-         Groups.AddString(GetString(g).c_str());
+         if (g != CommandGroup::HIDDEN)
+            Groups.AddString(GetString(g).c_str());
 
       // Select 'unfiltered'
       Groups.SetCurSel(0);
