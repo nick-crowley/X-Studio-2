@@ -76,7 +76,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       int index = GetHotItemIndex();
 
       // DEUBG:
-      Console << "Requesting tooltip for item index=" << index << ENDL;
+      //Console << "Requesting tooltip for item index=" << index << ENDL;
 
       // Verify index
       if (index != -1)

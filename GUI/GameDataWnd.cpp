@@ -103,7 +103,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <returns></returns>
    int  CGameDataWnd::GetHotItemIndex() const
    {
-      return ListView.HitTest(CursorPoint(this));
+      return ListView.HitTest(CursorPoint(&ListView));
    }
 
    /// <summary>Gets the search term.</summary>
@@ -209,7 +209,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Populate groups
          PopulateGroupCombo();
-
+         
          // Create tooltip
          Tooltip.Create(this, &ListView);
          Tooltip.Activate(TRUE);
