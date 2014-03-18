@@ -67,10 +67,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void CGameObjectWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
       // Convert group selection
-      auto grp = (MainType)(Groups.GetCurSel()-1) - MainType::Dock;
+      auto grp = (Groups.GetCurSel() == 0 ? (MainType)CB_ERR : (MainType)(Groups.GetCurSel() + (int)MainType::Dock - 1));
 
       // Lookup matches
-      auto Content = GameObjectLib.Query(searchTerm, (MainType)grp);
+      auto Content = GameObjectLib.Query(searchTerm, grp);
       ListView.SetItemCount(Content.size());
       
       // Redefine groups
