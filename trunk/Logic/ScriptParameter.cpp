@@ -306,6 +306,24 @@ namespace Logic
          }
       }
 
+      
+      /// <summary>Identifies variables as mutable or constant</summary>
+      /// <param name="script">Script used for variable name lookup</param>
+      void   ScriptParameter::Identify(ScriptFile& script)
+      {
+         if (IsVariable())
+         {
+            auto& var = script.Variables[(BYTE)Value.Int];
+
+            // Increment usage
+            var.Usage++;
+
+            // RetVar: Increment Assignment
+            if (Syntax.IsRetVar())
+               var.Assignment++;
+         }
+      }
+
       /// <summary>Populates text property from parameter value</summary>
       /// <param name="script">Script used for variable name lookup</param>
       void   ScriptParameter::Translate(ScriptFile& script)
