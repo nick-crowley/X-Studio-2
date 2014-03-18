@@ -123,6 +123,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       CaretMovedHandler fnCaretMoved;
    
    private:
+      DocumentBase*     ActiveDocument;
       bool              FirstShow;
    };
 

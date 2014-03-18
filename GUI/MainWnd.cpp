@@ -80,6 +80,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
                         fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::OnScriptCaretMoved)),
+                        ActiveDocument(nullptr),
                         FirstShow(true)
    {
    }
@@ -379,10 +380,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
       UINT Index = wParam;
       auto tab = reinterpret_cast<CMFCTabCtrl*>(lParam);
 
-      //Console << "MainWnd::OnDocumentSwitched" << ENDL;
+      // Get active
+      auto doc = DocumentBase::GetActive();
 
-      // Raise 'DOCUMENT SWITCHED'
-      DocumentSwitched.Raise();
+      // Raise 'DOCUMENT SWITCHED' 
+      if (doc != ActiveDocument)    // Filter the excessive AFX_WM_CHANGE_ACTIVE_TAB messages by recording the last active document 
+      {
+         ActiveDocument = doc;       
+         DocumentSwitched.Raise();
+      }
 
       /*GetMDITabs().SetActiveTabColor(RGB(255,0,0));
       GetMDITabs().SetTabBkColor(0, RGB(255,0,0));*/
