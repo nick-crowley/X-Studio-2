@@ -23,7 +23,7 @@ namespace Logic
       enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
 
       /// <summary>Defines the output window used by various operations</summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, NoFeedback };
+      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, ImportProject, NoFeedback };
 
       // ----------------- EVENTS AND DELEGATES ------------------
 

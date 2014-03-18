@@ -142,6 +142,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectLibrary.h" />
     <ClInclude Include="GZipStream.h" />
+    <ClInclude Include="ImportProjectWorker.h" />
     <ClInclude Include="IndentationStack.h" />
     <ClInclude Include="LanguageFile.h" />
     <ClInclude Include="LanguageFileReader.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\Testing\ScriptValidator.cpp" />
     <ClCompile Include="..\XML\msxml6.cpp" />
     <ClCompile Include="AppBase.cpp" />
+    <ClCompile Include="BackupFile.cpp" />
     <ClCompile Include="BackupFileReader.cpp" />
     <ClCompile Include="BackupFileWriter.cpp" />
     <ClCompile Include="CatalogReader.cpp" />
@@ -237,6 +239,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectLibrary.cpp" />
     <ClCompile Include="GZipStream.cpp" />
+    <ClCompile Include="ImportProjectWorker.cpp" />
     <ClCompile Include="LanguageFileReader.cpp" />
     <ClCompile Include="LanguageFileWriter.cpp" />
     <ClCompile Include="LanguagePage.cpp" />
@@ -248,6 +251,7 @@
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="ParameterSyntax.cpp" />
     <ClCompile Include="PreferencesLibrary.cpp" />
+    <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="ProjectFileReader.cpp" />
     <ClCompile Include="ProjectFileWriter.cpp" />
     <ClCompile Include="ProjectItem.cpp" />

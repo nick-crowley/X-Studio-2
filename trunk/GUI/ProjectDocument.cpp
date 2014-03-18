@@ -1,16 +1,14 @@
 #include "stdafx.h"
 #include "ProjectDocument.h"
-#include "ImportProjectDialog.h"
+#include "ProgressDialog.h"
+#include "ScriptDocument.h"
+#include "MainWnd.h"
 #include "../Logic/FileIdentifier.h"
 #include "../Logic/BackupFileReader.h"
-#include "../Logic/BackupFileWriter.h"
-#include "../Logic/LegacyProjectFileReader.h"
 #include "../Logic/ProjectFileReader.h"
 #include "../Logic/ProjectFileWriter.h"
 #include "../Logic/XFileInfo.h"
-#include "../Logic/ScriptFileReader.h"
-#include "ScriptDocument.h"
-#include "MainWnd.h"
+#include "../Logic/ImportProjectWorker.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -98,7 +96,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (type == FileType::Script)
       {
          item.SetBackupPath(FullPath.Folder);
-         InitialCommit(FullPath.Folder, item);
+         item.InitialCommit(FullPath.Folder);
       }
 
       // Raise 'ITEM ADDED'
@@ -154,13 +152,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto backup = LoadBackupFile(doc);
       backup.Revisions.Commit( ScriptRevision(title, doc.FullPath, content, doc.Script) );
 
-      // Generate backup path
-      auto path = FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
-
       // Overwrite backup file
-      BackupFileWriter w(XFileInfo(path).OpenWrite(L"revisions.xml"));
-      w.WriteFile(backup);
-      w.Close();
+      backup.Write(FullPath.Folder + Project.Find(doc.FullPath)->BackupName);
 
       // Raise 'BACKUP CHANGED'
       BackupChanged.Raise(Project.Find(doc.FullPath));
@@ -182,13 +175,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto backup = LoadBackupFile(doc);
       backup.Remove(index);
 
-      // Generate backup path
-      auto path = FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
-
       // Overwrite backup file
-      BackupFileWriter w(XFileInfo(path).OpenWrite(L"revisions.xml"));
-      w.WriteFile(backup);
-      w.Close();
+      backup.Write(FullPath.Folder + Project.Find(doc.FullPath)->BackupName);
 
       // Raise 'BACKUP CHANGED'
       BackupChanged.Raise(Project.Find(doc.FullPath));
@@ -292,39 +280,26 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns>TRUE if successfully upgraded, otherwise FALSE</returns>
    BOOL ProjectDocument::OnImportDocument(Path legacy, Path upgrade)
    {
-      try
-      {
-         // Feedback
-         Console << Cons::UserAction << "Importing legacy project " << legacy << " into " << upgrade << ENDL;
+      ImportProjectWorker w;
+      ProgressDialog dlg(L"Import Project", L"Importing files...", false);
+      BOOL result;
 
-         // Read legacy project
-         auto in = StreamPtr(new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read));
-         auto proj = LegacyProjectFileReader(in).ReadFile(legacy);
+      // Import project
+      w.Start(legacy, upgrade);
 
-         // Perform initial commits of file items
-         for (auto& item : proj.ToList())
-            if (item->IsFile() && item->FileType == FileType::Script)
-            {
-               // Generate unique filename + Commit
-               item->SetBackupPath(upgrade.Folder);
-               InitialCommit(upgrade.Folder, *item);
-            }
+      // Display progress dialog until complete
+      dlg.DoModal(&w);
+      result = w.GetExitCode();
+      w.Close();
 
-         // Write X-Studio2 project
-         auto out = StreamPtr(new FileStream(upgrade, FileMode::CreateNew, FileAccess::Write));
-         ProjectFileWriter w(out);
-         w.Write(proj);
-         w.Close();
-         
-         // Success: Feedback
-         Console << Cons::UserAction << "Importing completed successfully" << ENDL;
-         theApp.ShowMessage(L"Project Imported Successfully", MB_OK);
-         return TRUE;
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e);
-         return FALSE;
-      }
+      // Feedback
+      if (result)
+         theApp.ShowMessage(L"Project Imported Successfully", MB_OK|MB_ICONINFORMATION);
+      else
+         theApp.ShowMessage(L"Failed to import project", MB_OK|MB_ICONERROR);
+
+      // Return result
+      return result;
    }
 
    /// <summary>Called on open an X-Studio 2 project.</summary>
@@ -517,31 +492,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
    /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::InitialCommit(const Path& folder, const ProjectItem& item)
-   {
-      try
-      {
-         // Feedback
-         Console << Cons::Heading << "Performing Initial Commit: " << item.FullPath << ENDL;
+   //void ProjectDocument::InitialCommit(const Path& folder, const ProjectItem& item)
+   //{
+   //   try
+   //   {
+   //      // Feedback
+   //      Console << Cons::Heading << "Performing Initial Commit: " << item.FullPath << ENDL;
 
-         // Ensure backup path has been set
-         if (item.BackupName.empty())
-            throw ArgumentException(HERE, L"item", VString(L"Missing backup file path for '%s'", item.Name.c_str()) );
+   //      // Ensure backup path has been set
+   //      if (item.BackupName.empty())
+   //         throw ArgumentException(HERE, L"item", VString(L"Missing backup file path for '%s'", item.Name.c_str()) );
 
-         // Read script from disc
-         auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
-         
-         // Create script revision
-         BackupFile backup(BackupType::MSCI);
-         backup.Revisions.Commit( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
+   //      // Read script from disc
+   //      auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
+   //      
+   //      // Create script revision
+   //      BackupFile backup(BackupType::MSCI);
+   //      backup.Revisions.Commit( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
 
-         // Save backup
-         SaveBackupFile(folder+item.BackupName, backup);
-      }
-      catch (ExceptionBase& e) {
-         theApp.ShowError(HERE, e, VString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
-      }
-   }
+   //      // Save backup
+   //      SaveBackupFile(folder+item.BackupName, backup);
+   //   }
+   //   catch (ExceptionBase& e) {
+   //      theApp.ShowError(HERE, e, VString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
+   //   }
+   //}
    
    
    /// <summary>Perform commands.</summary>
@@ -603,19 +578,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
    /// <exception cref="Logic::IOException">Unable to create file</exception>
-   void ProjectDocument::SaveBackupFile(const Path& path, const BackupFile& f) const
-   {
-      auto tmp = TempPath().RenameExtension(L".zip");
+   //void ProjectDocument::SaveBackupFile(const Path& path, const BackupFile& f) const
+   //{
+   //   auto tmp = TempPath().RenameExtension(L".zip");
 
-      // Write to a temp file to prevent destroying all revisions if case of failure
-      BackupFileWriter w(XFileInfo(tmp).OpenWrite(L"revisions.xml"));
-      w.WriteFile(f);
-      w.Close();
+   //   // Write to a temp file to prevent destroying all revisions if case of failure
+   //   BackupFileWriter w(XFileInfo(tmp).OpenWrite(L"revisions.xml"));
+   //   w.WriteFile(f);
+   //   w.Close();
 
-      // Success: Copy file
-      if (!MoveFileEx(tmp.c_str(), path.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
-         throw IOException(HERE, L"Unable to overwrite backup file: " + SysErrorString());
-   }
+   //   // Success: Copy file
+   //   if (!MoveFileEx(tmp.c_str(), path.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+   //      throw IOException(HERE, L"Unable to overwrite backup file: " + SysErrorString());
+   //}
 
    
    // ------------------------------- PRIVATE METHODS ------------------------------

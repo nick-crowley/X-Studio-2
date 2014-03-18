@@ -32,7 +32,7 @@ namespace Logic
          // ------------------------ TYPES --------------------------
       public:
          /// <summary></summary>
-         class LogicExport RevisionCollection : protected list<ScriptRevision>
+         class RevisionCollection : protected list<ScriptRevision>
          {
             friend class BackupFileReader;
 
@@ -131,8 +131,8 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         BackupFile(BackupType t) : Type(t)
-         {}
+         BackupFile(BackupType t);
+         ~BackupFile();
 
          // ------------------------ STATIC -------------------------
 
@@ -142,32 +142,28 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         
+         /// <summary>Saves the backup file.</summary>
+         /// <param name="path">The path.</param>
+         /// <exception cref="Logic::ComException">COM Error</exception>
+         /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
+         /// <exception cref="Logic::IOException">Unable to create file</exception>
+         void  Write(const Path& path) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Clears this instance.</summary>
-         void  Clear()
-         {
-            Revisions.Clear();
-         }
+         void  Clear();
 
          /// <summary>Removes a revision.</summary>
          /// <param name="index">Zero-based index.</param>
          /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
-         void  Remove(UINT index)
-         {
-            Revisions.Remove(index);
-         }
+         void  Remove(UINT index);
 
          /// <summary>Find a revision by index</summary>
          /// <param name="index">The index</param>
          /// <returns></returns>
          /// <exception cref="Logic::IndexOutOfRangeException">Index does not exist</exception>
-         ScriptRevision&  operator[](UINT index) 
-         {
-            return Revisions.FindByIndex(index);
-         }
+         ScriptRevision&  operator[](UINT index);
 
          // -------------------- REPRESENTATION ---------------------
       public:

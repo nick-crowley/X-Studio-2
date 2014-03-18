@@ -27,7 +27,8 @@ namespace Logic
          virtual ~BackgroundWorker()
          {
             // Stop if running
-            Stop();
+            Data->Abort();
+            Close();
          }
       
          // ------------------------ STATIC -------------------------
@@ -36,8 +37,33 @@ namespace Logic
 	  
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Gets the thread exit code.</summary>
+         /// <returns></returns>
+         /// <exception cref="Logic::InvalidOperationException">Thread closed or still executing</exception>
+         /// <exception cref="Logic::Win32Exception">Unable to query Thread</exception>
+         DWORD  GetExitCode() const
+         {
+            DWORD code(0);
+
+            // Check if closed
+            if (Thread == nullptr)
+               throw InvalidOperationException(HERE, L"Thread handle has been closed");
+
+            // Query thread 
+            if (!GetExitCodeThread(Thread, &code))
+               throw Win32Exception(HERE, L"Unable to query thread state");
+
+            // Ensure exited
+            if (code == STILL_ACTIVE)
+               throw InvalidOperationException(HERE, L"Thread is still executing");
+
+            // Success
+            return code;
+         }
+
          /// <summary>Determines whether thread is running.</summary>
          /// <returns></returns>
+         /// <exception cref="Logic::Win32Exception">Unable to query Thread</exception>
          bool  IsRunning() const
          {
             DWORD code(0);
