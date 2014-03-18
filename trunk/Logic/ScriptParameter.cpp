@@ -94,7 +94,11 @@ namespace Logic
       /// <summary>Get conditional string</summary>
       LogicExport GuiString  GetString(Conditional c)
       {
-         return StringLib.Find(KnownPage::CONDITIONALS, (UINT)c).Text;
+         if (c != Conditional::SKIP_IF_NOT)
+            return StringLib.Find(KnownPage::CONDITIONALS, (UINT)c).Text;
+
+         // DoIf: Depends on preference
+         return PrefsLib.UseDoIfSyntax ? L"do if" : L"skip if not";
       }
 
       /// <summary>Identify data-type from a token type</summary>
