@@ -429,23 +429,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSelectionCharFormat(cf);
    }
    
-   /// <summary>Gets the height of each line.</summary>
-   /// <returns></returns>
-   int  ScriptEdit::GetLineHeight() const
-   {
-      // Get line height
-      if (GetLineCount() == 1)
-      {
-         // Calculate from character height (Isn't accurate for some reason)
-         CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
-         GetDefaultCharFormat(cf);
-         return (cf.yHeight/10);  //TwipsToPixels(cf.yHeight, LOGPIXELSY);  [Should be Twips->Pixels, but /10 seems to work better..)
-      }
-      
-      // Calculate from character positions
-      return PosFromChar(LineIndex(1)).y - PosFromChar(LineIndex(0)).y;
-   }
-
    /// <summary>Gets the suggestion rect.</summary>
    /// <param name="type">The type.</param>
    /// <returns></returns>

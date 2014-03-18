@@ -493,7 +493,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       bool       CanViewString() const;
 
    protected:
-      int        GetLineHeight() const;
       bool       HasDocument() const;
       Suggestion IdentifySuggestion(wchar ch) const;
       bool       IsKeyPressed(UINT vKey) const;
