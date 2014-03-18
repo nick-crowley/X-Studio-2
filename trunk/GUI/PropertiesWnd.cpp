@@ -74,7 +74,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       SetIcon(theApp.LoadIconW(IDR_PROPERTIES, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
       // Dock left/right
-      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      EnableDocking(CBRS_ORIENT_VERT|CBRS_FLOAT_MULTI);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

@@ -59,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
    void BackupWnd::Create(CWnd* parent)
    {
-      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_ALIGN_ANY | CBRS_FLOAT_MULTI;
+      DWORD style = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_RIGHT | CBRS_FLOAT_MULTI;
 
       // Create window
       if (!__super::Create(GuiString(IDR_BACKUP).c_str(), parent, MainWnd::DefaultSize, TRUE, IDR_BACKUP, style))
@@ -68,7 +68,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       SetIcon(theApp.LoadIconW(IDR_BACKUP, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
       // Dock left/right
-      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      EnableDocking(CBRS_ORIENT_VERT|CBRS_FLOAT_MULTI);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------

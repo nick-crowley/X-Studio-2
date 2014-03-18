@@ -59,7 +59,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       SetIcon(theApp.LoadIconW(nIconID, ::GetSystemMetrics(SM_CXSMICON)), FALSE);
 
       // Dock left/right
-      EnableDocking(CBRS_ALIGN_LEFT | CBRS_ALIGN_RIGHT);
+      EnableDocking(CBRS_ORIENT_VERT|CBRS_FLOAT_MULTI);
    }
    
    /// <summary>Relay mouse events to tooltip</summary>
