@@ -79,7 +79,7 @@ GUI General:
 GameDataWindows
 ---------------
 
-# GameDataWindows are displaying tooltips for the wrong item indicies
+# [DONE] GameDataWindows are displaying tooltips for the wrong item indicies
 
 # [DONE] GameDataWindow group box doesn't filter results 
 
