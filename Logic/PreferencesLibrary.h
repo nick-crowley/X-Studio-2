@@ -148,7 +148,7 @@ namespace Logic
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,CommentColour,RGB(128,128,128));
 
       /// <summary>Syntax highlighting colour for constants</summary>
-      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ConstantColour,RGB(240,240,17));
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ConstantColour,RGB(255,223,0));
       
       /// <summary>Syntax highlighting colour for game-objects</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,GameObjectColour,RGB(0,255,255));

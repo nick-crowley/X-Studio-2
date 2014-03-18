@@ -264,11 +264,17 @@ namespace Logic
 
             // Translate
             cmd.Translate(script);
-            ++line;
 
-            // Append to offline buffer
+            // Distinguish constants from variables
+            for (auto& p : cmd.Parameters)
+               p.Identify(script);
+
+            // Append command to offline buffer
             script.OfflineBuffer += cmd.Text;
             script.OfflineBuffer += L'\n';
+
+            // Advance
+            ++line;
          }
       }
 

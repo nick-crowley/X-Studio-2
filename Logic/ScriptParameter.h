@@ -125,8 +125,15 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------			
-      public:
-         /// <summary>Compare two parameters</summary>
+      public:         
+         /// <summary>Determines whether this an uncommented variable</summary>
+         /// <returns></returns>
+         bool  IsVariable() const
+         {
+            return Type == DataType::VARIABLE && Value.Type == ValueType::Int && ReturnValue(Value.Int).ReturnType == ReturnType::ASSIGNMENT;
+         }
+
+         /// <summary>Compare type and value only</summary>
          bool operator==(const ScriptParameter& r) const
          {
             return Type==r.Type && Value==r.Value; // && Syntax==r.Syntax && Text==r.Text && Token==r.Token;
@@ -134,7 +141,9 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  Generate(ScriptFile& script, UINT jumpDestination, bool commented);
+         void  Identify(ScriptFile& script);
          void  Translate(ScriptFile& script);
+
 
 #ifdef LOGIC_COMPILER_FIX
          ScriptParameter& operator=(const ScriptParameter& r) const
