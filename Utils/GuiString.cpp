@@ -188,7 +188,7 @@ namespace Logic
    /// <returns></returns>
    bool  GuiString::Contains(const wstring& str, bool matchCase) const
    {
-      return matchCase ? StrStrI(c_str(), str.c_str()) != nullptr : find(str) != npos;
+      return matchCase ? find(str) != npos : StrStrI(c_str(), str.c_str()) != nullptr;
    }
       
    /// <summary>Perform case insensitive comparison</summary>
