@@ -37,6 +37,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
       
+      /// <summary>Constant syntax highlighting colour property</summary>
+      class ConstantColourProperty : public ColourProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'ConstantColour' property</summary>
+         /// <param name="page">Owner page.</param>
+         ConstantColourProperty(PreferencesPage& page) 
+            : ColourProperty(page, L"Constants", PrefsLib.ConstantColour, L"Change the colour used to display Constants")
+         {}
+      };
+
       /// <summary>GameObject syntax highlighting colour property</summary>
       class GameObjectColourProperty : public ColourProperty
       {
@@ -181,6 +193,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
    protected:
       ArgumentColourProperty*       ArgumentColour;
       CommentColourProperty*        CommentColour;
+      ConstantColourProperty*       ConstantColour;
       GameObjectColourProperty*     GameObjectColour;
       KeywordColourProperty*        KeywordColour;
       LabelColourProperty*          LabelColour;

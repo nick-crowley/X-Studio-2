@@ -21,6 +21,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         
         ArgumentColour(nullptr),
         CommentColour(nullptr),
+        ConstantColour(nullptr),
         GameObjectColour(nullptr),
         KeywordColour(nullptr),
         LabelColour(nullptr),
@@ -58,6 +59,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // Highlighting
       PrefsLib.ArgumentColour = ArgumentColour->GetColor();
       PrefsLib.CommentColour = CommentColour->GetColor();
+      PrefsLib.ConstantColour = ConstantColour->GetColor();
       PrefsLib.GameObjectColour = GameObjectColour->GetColor();
       PrefsLib.KeywordColour = KeywordColour->GetColor();
       PrefsLib.LabelColour = LabelColour->GetColor();
@@ -77,6 +79,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       auto group = new PropertyBase(*this, L"Syntax Highlighting");
       group->AddSubItem(ArgumentColour = new ArgumentColourProperty(*this));
       group->AddSubItem(CommentColour = new CommentColourProperty(*this));
+      group->AddSubItem(ConstantColour = new ConstantColourProperty(*this));
       group->AddSubItem(GameObjectColour = new GameObjectColourProperty(*this));
       group->AddSubItem(KeywordColour = new KeywordColourProperty(*this));
       group->AddSubItem(LabelColour = new LabelColourProperty(*this));
