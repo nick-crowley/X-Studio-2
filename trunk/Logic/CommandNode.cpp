@@ -1052,8 +1052,8 @@ namespace Logic
                         errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
 
                      // Verify argument type 
-                     if (!ParameterSyntax::Verify(arg.ValueType, p.Type))
-                        errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ValueType).c_str()), p.Token);
+                     if (!ParameterSyntax::Verify(arg.ParamType, p.Type))
+                        errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ParamType).c_str()), p.Token);
 
                   }
                }

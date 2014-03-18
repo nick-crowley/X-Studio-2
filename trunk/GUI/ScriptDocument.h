@@ -61,7 +61,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <summary>Create argument property.</summary>
          /// <param name="arg">Argument.</param>
          ArgumentProperty(ScriptDocument& doc, ScriptVariable& arg)
-            : Argument(arg), ScriptProperty(doc, arg.Name, GetString(arg.ValueType).c_str(), arg.Description)
+            : Argument(arg), ScriptProperty(doc, arg.Name, GetString(arg.ParamType).c_str(), arg.Description)
          {
             // Populate parameter types 
             for (const ScriptObject& obj : ScriptObjectLib)
@@ -80,7 +80,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <param name="value">value text</param>
          void OnValueChanged(GuiString value) override
          {
-            Argument.ValueType = (ParameterType)ScriptObjectLib.Find(value).ID;
+            Argument.ParamType = (ParameterType)ScriptObjectLib.Find(value).ID;
             
             ScriptProperty::OnValueChanged(value);       // Modify document
          }

@@ -31,7 +31,7 @@ namespace Logic
       /// <summary>Write script variable to the console</summary>
       LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ScriptVariable& v)
       {
-         return c << "{ScriptVariable: Name=" << v.Name << " ID=" << v.ID << " ValueType=" << GetString(v.ValueType) << " Type=" << GetString(v.Type) << "}";
+         return c << "{ScriptVariable: Name=" << v.Name << " ID=" << v.ID << " ParamType=" << GetString(v.ParamType) << " Type=" << GetString(v.Type) << "}";
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
