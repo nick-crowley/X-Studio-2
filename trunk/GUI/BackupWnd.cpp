@@ -411,31 +411,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Clear
       List.SetRedraw(FALSE);
       List.ResetContent();
+      Backup.Clear();
 
       try
       {
          // Check document (if any) belongs to current project (if any)
-         bool hasBackups = (doc && proj && proj->Contains(doc->FullPath));
-
-         // Load/Clear backup file
-         if (hasBackups)
+         if (doc && proj && proj->Contains(doc->FullPath))
+         {
+            // Load backup
             Backup = proj->LoadBackupFile(*doc);
+            List.EnableWindow(TRUE);
+
+            // Fill list with dummy items
+            for (auto& rev : Backup.Revisions)
+               List.InsertString(-1, L"-");
+         }
          else
-            Backup.Clear();
-         
-         // Disable window if appropriate
-         List.EnableWindow(hasBackups ? TRUE : FALSE);
-         
-         // Fill list with dummy items
-         for (auto& rev : Backup.Revisions)
-            List.InsertString(-1, L"-");
+            List.EnableWindow(FALSE);
       }
       catch (ExceptionBase& e) 
       {
+         // Backup file missing/corrupt: Fail silently. Display nothing
+         Backup.Clear();
          List.ResetContent();
-
-         if (doc)
-            theApp.ShowError(HERE, e, VString(L"Cannot open backup file for '%s'", (LPCWSTR)doc->GetTitle()));
+         List.EnableWindow(FALSE);
+         Console.Log(HERE, e);
       }
 
       // Redraw
