@@ -112,20 +112,33 @@ namespace Logic
       /// <summary>Search for all syntax containing a given term</summary>
       /// <param name="str">Search term</param>
       /// <param name="ver">Game version</param>
+      /// <param name="g">Command group, or CB_ERR for all groups</param>
       /// <returns>Array of matching Syntax</returns>
-      CmdSyntaxArray  SyntaxLibrary::Query(const wstring& str, GameVersion ver) const
+      CmdSyntaxArray  SyntaxLibrary::Query(const wstring& str, GameVersion ver, CommandGroup g /*= CB_ERR*/) const
       {
          CmdSyntaxArray results;
+         bool  hasQuery = !str.empty(),
+               hasGroup = ((int)g != CB_ERR);
 
          // Search commands
          for (const auto& pair : Commands)
          {
             CommandSyntaxRef syntax = pair.second;
 
-            // Check compatibility. Check search term (if any)
-            if (syntax.Group != CommandGroup::HIDDEN && syntax.IsCompatible(ver) 
-                && (!str.length() || syntax.Text.find(str) != wstring::npos))
-               results.push_back(&syntax);
+            // Check compatibility
+            if (syntax.Group == CommandGroup::HIDDEN || !syntax.IsCompatible(ver))
+               continue;
+
+            // Check group (if any)
+            if (hasGroup && syntax.Group != g)
+               continue;
+
+            // Check text (if any)
+            if (hasQuery && !syntax.Text.Contains(str, false))
+               continue;
+
+            // Success
+            results.push_back(&syntax);
          }
 
          return results;

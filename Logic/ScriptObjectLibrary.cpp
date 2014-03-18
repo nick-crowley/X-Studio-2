@@ -144,16 +144,30 @@ namespace Logic
       
       /// <summary>Find all script objects containing a substring</summary>
       /// <param name="str">The substring.</param>
+      /// <param name="g">Group, or CB_ERR for all groups</param>
       /// <returns></returns>
-      ScriptObjectArray  ScriptObjectLibrary::Query(const GuiString& str) const
+      ScriptObjectArray  ScriptObjectLibrary::Query(const GuiString& str, ScriptObjectGroup g /*= CB_ERR*/) const
       {
          ScriptObjectArray Results;
-         bool FindAll = (str.length() == 0);
+         bool hasString = !str.empty(),
+              hasGroup  = ((int)g != CB_ERR);
 
          // Linear search for partial substring
          for (const auto& obj : *this)
-            if (!obj.IsHidden() && (FindAll || obj.Text.Contains(str, false)))
-               Results.push_back(&obj);
+         {
+            if (obj.IsHidden())
+               continue;
+
+            // Check group
+            if (hasGroup && obj.Group != g)
+               continue;
+
+            // Check text
+            if (hasString && !obj.Text.Contains(str, false))
+               continue;
+
+            Results.push_back(&obj);
+         }
 
          return Results;
       }

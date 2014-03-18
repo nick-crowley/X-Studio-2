@@ -212,7 +212,7 @@ namespace Logic
       public:
          void  Clear();
          UINT  Enumerate(WorkerData* data);
-         ScriptObjectArray Query(const GuiString& str) const;
+         ScriptObjectArray Query(const GuiString& str, ScriptObjectGroup g = (ScriptObjectGroup)CB_ERR) const;
          bool  TryFind(ScriptObjectGroup grp, UINT id, const ScriptObject* &obj) const;
          bool  TryFind(const GuiString& name, const ScriptObject* &obj) const;
       

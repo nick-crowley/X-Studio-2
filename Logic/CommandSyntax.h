@@ -122,7 +122,7 @@ namespace Logic
          const UINT              Versions,
                                  ID,
                                  VarArgCount;
-         const wstring           Hash,
+         const GuiString         Hash,
                                  Text,
                                  URL;
          const bool              VarArg;

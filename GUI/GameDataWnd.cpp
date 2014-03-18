@@ -20,6 +20,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
+      ON_CBN_SELCHANGE(IDC_COMBO, &CGameDataWnd::OnSearchGroupChanged)
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
       ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
@@ -257,6 +258,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       *pResult = 0;
    }
    
+   /// <summary>Refresh items when group/filter changes.</summary>
+   void CGameDataWnd::OnSearchGroupChanged()
+   {
+      UpdateContent();
+   }
+
    /// <summary>Refresh items when search text changes.</summary>
    void CGameDataWnd::OnSearchTermChanged()
    {

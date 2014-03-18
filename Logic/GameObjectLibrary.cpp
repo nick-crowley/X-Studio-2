@@ -235,17 +235,29 @@ namespace Logic
          return true;
       }
       /// <summary>Searches the library for objects containing a substring (Case insensitive)</summary>
-      /// <param name="search">substring</param>
+      /// <param name="str">substring</param>
+      /// <param name="MainType">MainType, or CB_ERR for all main types</param>
       /// <returns></returns>
-      GameObjectArray  GameObjectLibrary::Query(const GuiString& search) const
+      GameObjectArray  GameObjectLibrary::Query(const GuiString& str, MainType mt /*= CB_ERR*/) const
       {
          GameObjectArray Results;
-         bool  FindAll = search.length() == 0;
+         bool hasString = !str.empty(),
+              hasGroup  = ((int)mt != CB_ERR);
          
          // Linear search for partial substring
          for (auto& pair : Lookup)
-            if (FindAll || pair.first.Contains(search, false))
-               Results.push_back(&pair.second);
+         {
+            // Check group
+            if (hasGroup && pair.second.Type != mt)
+               continue;
+
+            // Check text
+            if (hasString && !pair.first.Contains(str, false))
+               continue;
+
+            // Success
+            Results.push_back(&pair.second);
+         }
 
          return Results;
       }
