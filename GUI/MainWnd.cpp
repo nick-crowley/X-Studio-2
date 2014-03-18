@@ -615,6 +615,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       switch (p->Operation)
       {
       case Operation::LoadGameData:       GameDataFeedback.Raise(*p);      break;
+      case Operation::ImportProject:
       case Operation::LoadSaveDocument:   LoadSaveFeedback.Raise(*p);      break;
       case Operation::FindAndReplace1:
       case Operation::FindAndReplace2:    FindReplaceFeedback.Raise(*p);   break;

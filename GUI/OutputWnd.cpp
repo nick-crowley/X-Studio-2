@@ -158,6 +158,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="wp">The wp.</param>
    void COutputWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
+      // New operation: clear previous content
+      if (wp.Type == ProgressType::Operation)
+         GameDataList.DeleteAllItems();
+
       // Insert item
       GameDataList.InsertItem(wp);
    }
