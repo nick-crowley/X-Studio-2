@@ -67,7 +67,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="op">The pane.</param>
    void COutputWnd::ActivatePane(Operation op)
    {
-      TabCtrl.SetActiveTab((int)op);
+      switch (op)
+      {
+      case Operation::LoadGameData:      TabCtrl.SetActiveTab(0);  break;
+      case Operation::ImportProject:     
+      case Operation::LoadSaveDocument:  TabCtrl.SetActiveTab(1);  break;
+      case Operation::FindAndReplace1:   TabCtrl.SetActiveTab(2);  break;
+      case Operation::FindAndReplace2:   TabCtrl.SetActiveTab(3);  break;
+      }
    }
 
 #ifdef RESCINDED
