@@ -585,8 +585,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
             parser.Print();*/
          Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
 
+         // Clear previous underlining
+         CharFormat cf(CFM_UNDERLINE|CFM_UNDERLINETYPE, NULL);
+         SetSel(0,-1);
+         SetSelectionCharFormat(cf);
+
          // Define error underline
-         CharFormat cf(CFM_COLOR | CFM_UNDERLINE | CFM_UNDERLINETYPE, CFE_UNDERLINE);
+         cf = CharFormat(CFM_COLOR|CFM_UNDERLINE|CFM_UNDERLINETYPE, CFE_UNDERLINE);
          cf.bUnderlineType = CFU_UNDERLINEWAVE;
          cf.bUnderlineColor = 0x02;     //Undocumented underline colour
          cf.crTextColor = RGB(255,0,0);
