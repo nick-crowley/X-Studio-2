@@ -41,7 +41,8 @@ namespace Logic
          // -------------------- REPRESENTATION ---------------------
       protected:
          ColourMap  Colours;
-         COLORREF   Argument;
+         COLORREF   Argument,
+                    Constant;
       };
 
    }

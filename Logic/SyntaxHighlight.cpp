@@ -16,6 +16,7 @@ namespace Logic
       {
          // Populate colours 
          Argument = PrefsLib.ArgumentColour;
+         Argument = RGB(0,0,255);
          Colours[TokenType::UnaryOp] = PrefsLib.OperatorColour;
          Colours[TokenType::BinaryOp] = PrefsLib.OperatorColour;
          Colours[TokenType::Comment] = PrefsLib.CommentColour;
@@ -83,8 +84,15 @@ namespace Logic
          {
          // Variable: Distinguish between arguments and variables
          case TokenType::Variable:   
-            if (script.Variables.Contains(tok.ValueText) && script.Variables[tok.ValueText].Type == VariableType::Argument)
-               return Argument;
+            if (script.Variables.Contains(tok.ValueText))
+            {
+               auto& var = script.Variables[tok.ValueText];
+
+               if (var.Type == VariableType::Argument)
+                  return Argument;
+               else if (var.Constant)
+                  return Constant;
+            }
             
             // Fall thru...
 

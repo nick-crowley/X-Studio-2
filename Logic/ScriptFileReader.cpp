@@ -287,23 +287,20 @@ namespace Logic
          // Read ScriptVariables from {name,id} pair
          for (int i = 0; i < varBranch->childNodes->length; i++)
          {
+            // Variable
             name = ReadString(varBranch, i, L"script variable name");
-            script.Variables.Add(name);
-         }
-         
-         // Upgrade first N variables into arguments 
-         for (int i = 0; i < argBranch->childNodes->length; i++)
-         {
-            // Lookup branch & variable
-            ScriptVariable& var = script.Variables[i];
-            XmlNodePtr arg = GetChild(argBranch, i, L"script argument branch");
+            ScriptVariable& var = script.Variables.Add(name);
 
-            // Read extra properties
-            var.Type = VariableType::Argument;
-            var.ParamType = (ParameterType)ReadInt(arg, 0, L"script argument type");
-            var.Description = ReadString(arg, 1, L"script argument description");
-         }
+            // Argument: Read extra properties
+            if (i < argBranch->childNodes->length)
+            {
+               XmlNodePtr arg = GetChild(argBranch, i, L"script argument branch");
 
+               var.Type = VariableType::Argument;
+               var.ParamType = (ParameterType)ReadInt(arg, 0, L"script argument type");
+               var.Description = ReadString(arg, 1, L"script argument description");
+            }
+         }
       }
 
    }
