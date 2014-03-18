@@ -265,7 +265,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // DEBUG
       //Console << HERE << ": Setting project name to " << item->Name << ENDL;
 
-      // Modify project  [Raises 'ITEM CHANGED']
+      // Raise 'ITEM CHANGED'
+      if (!item->IsRoot())
+         ItemChanged.Raise(item);
+
+      // Modify project  [Raises 'ITEM CHANGED' on Root]
       SetModifiedFlag(TRUE);
    }
 

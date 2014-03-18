@@ -2,7 +2,7 @@
 
 
 #include "ScriptObject.h"
-#include "WorkerFeedback.h"
+#include "WorkerData.h"
 #include "LanguageFile.h"
 #include "StringLibrary.h"
 #include "MapIterator.hpp"

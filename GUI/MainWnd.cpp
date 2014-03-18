@@ -395,15 +395,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="wp">The wp.</param>
    void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
+      // Exit 'splash screen' mode
       EnableWindow(TRUE);
 
-      // Success: Change app state
+      // Close worker
+      GameDataThread.Close();
+
+      // Success: 
       if (wp.Type == ProgressType::Succcess)
       {
-         // Change state + cleanup thread
+         // Change app state 
          theApp.State = AppState::GameDataPresent;
-         GameDataThread.Close(true);
-
+         
          // Hide splash screen
          m_dlgSplash.DestroyWindow();
          
@@ -411,18 +414,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CCommandLineInfo cmdInfo;
 	      theApp.ParseCommandLine(cmdInfo);
 
-	      // Open file:
+         // CommandLine: Open file
          if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
 	         theApp.ProcessShellCommand(cmdInfo);
          else
          {
-            // Feedback:
-            Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
-
             // Default: Restore previous workspace
-            for (auto& doc : PrefsLib.WorkspaceDocuments)
-               if (Path(doc).Exists())
-                  theApp.OpenDocumentFile(doc.c_str(), FALSE);
+            auto workspace = PrefsLib.WorkspaceDocuments;
+
+            if (!workspace.empty())
+            {
+               // Feedback:
+               Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
+
+               // Default: Restore previous workspace
+               for (auto& doc : PrefsLib.WorkspaceDocuments)
+                  if (Path(doc).Exists())
+                     theApp.OpenDocumentFile(doc.c_str(), FALSE);
+                  else
+                     Console << Cons::Error << "Cannot find previous document: " << Path(doc) << ENDL;
+
+               // Feedback:
+               Console << Cons::UserAction << "Successfully restored previous workspace documents" << ENDL;
+            }
          }
       }
    }
@@ -439,7 +453,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          EnableWindow(FALSE);
 
          // Load game data
-         GameDataThread.Start(new GameDataWorkerData(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion));
+         GameDataThread.Start();
 
          // Find & Replace dialog:
          m_dlgFind.Create(FindDialog::IDD, this);
