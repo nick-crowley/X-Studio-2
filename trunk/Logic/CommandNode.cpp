@@ -6,7 +6,7 @@
 #include "ExpressionParser.h"
 #include "SyntaxLibrary.h"
 #include "ScriptFile.h"
-
+#include "PreferencesLibrary.h"
 
 namespace Logic
 {
@@ -1063,19 +1063,21 @@ namespace Logic
             // varg Argument: Lookup script and verify argument name+type
             if (p.Syntax == ParameterSyntax::ScriptCallArgument)
             {
-#ifndef VALIDATION
+#ifndef STRICT_VALIDATION
                // Find scriptName parameter
                auto callName = GetScriptCallName();
                      
-               // Skip check if name or script is missing 
+               // Skip check if name/script are missing/variables
                if (!callName.empty() && script.ScriptCalls.Contains(callName))
                {
                   auto call = script.ScriptCalls.Find(callName);
 
                   // Verify argument name
-                  if (!call.Variables.Contains(p.ArgName.Text))
+                  if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
                      errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
-                  else 
+                  
+                  // Verify argument type
+                  else if (PrefsLib.CheckArgumentTypes)
                   {
                      auto arg = call.Variables[p.ArgName.Text];
                      

@@ -368,12 +368,12 @@ namespace Logic
 
             // Append argument pairs
             for (auto it = vargs.begin(); it != vargs.end(); ++it)
-#ifndef VALIDATION
+#ifndef STRICT_VALIDATION
                // Drop 'null' arguments iff remainder are 'null' 
                if (!all_of(it, vargs.end(), isNull))
                   Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #else
-               // Drop 'null' arguments iff remainder are 'null' and command is not genuine 102 varg ScriptCall
+               // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
                if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
                   Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #endif
