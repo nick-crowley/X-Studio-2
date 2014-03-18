@@ -29,6 +29,8 @@ namespace Logic
       /// <returns>TRUE if successful, FALSE if failed</returns>
       DWORD WINAPI ImportProjectWorker::ThreadMain(ImportProjectData* data)
       {
+         list<Path> created;
+
          try
          {
             HRESULT  hr;
@@ -55,6 +57,9 @@ namespace Logic
                   // Generate unique filename + Commit
                   item->SetBackupPath(data->UpgradePath.Folder);
                   item->InitialCommit(data->UpgradePath.Folder);
+
+                  // Remember created
+                  created.push_back(data->UpgradePath.Folder + item->BackupName);
                }
 
             // Write X-Studio2 project
@@ -73,6 +78,10 @@ namespace Logic
             // Feedback
             data->SendFeedback(Cons::Error, ProgressType::Failure, 0, GuiString(L"Failed to import project: ") + e.Message);
             Console.Log(HERE, e);
+
+            // Destroy partially imported files
+            for (auto& f : created)
+               DeleteFile(f.c_str());
 
             // Cleanup
             CoUninitialize();
