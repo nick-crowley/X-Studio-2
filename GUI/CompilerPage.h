@@ -58,6 +58,9 @@ NAMESPACE_BEGIN2(GUI,Preferences)
             AllowEdit(FALSE);
             // Set initial value
             SetValue(GetOption(PrefsLib.CaseSensitiveVariables ? 0 : 1));
+
+            // TODO: Case insensitive variables
+            Enable(FALSE);
          }
 
          // ---------------------- ACCESSORS ------------------------
