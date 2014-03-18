@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SearchOperation.h"
-#include "FindProgressDialog.h"
+#include "ProgressDialog.h"
 #include "MainWnd.h"
 
 namespace GUI
@@ -168,7 +168,7 @@ namespace GUI
             return false;
          }
 
-         FindProgressDialog ProgressDlg(L"Find and Replace", L"Finding next match...", true);
+         ProgressDialog ProgressDlg(L"Find and Replace", L"Finding next match...", true);
          SearchWorker worker;
 
          // Search files for next match

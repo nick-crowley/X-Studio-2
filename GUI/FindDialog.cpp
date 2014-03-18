@@ -5,7 +5,7 @@
 #include "FindDialog.h"
 #include "MainWnd.h"
 #include "afxdialogex.h"
-#include "FindProgressDialog.h"
+#include "ProgressDialog.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
