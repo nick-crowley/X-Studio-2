@@ -62,8 +62,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    bool  RichEditEx::EnsureVisible(int line)
    {
-      SetScrollCoordinates(CPoint(0, max(0,line)));
-      SendMessage(WM_HSCROLL, SB_LEFT, 0);
+      SetScrollCoordinates( CPoint(0, max(0,GetLineHeight()*line)) );
       return true;
    }
    
@@ -444,6 +443,23 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       return GetLineStart(line) + GetLineLength(line);
    }
+   
+   /// <summary>Gets the height of each line.</summary>
+   /// <returns></returns>
+   int  RichEditEx::GetLineHeight() const
+   {
+      // Get line height
+      if (GetLineCount() == 1)
+      {
+         // Calculate from character height (Isn't accurate for some reason)
+         CharFormat cf(CFM_OFFSET|CFM_SIZE, NULL);
+         GetDefaultCharFormat(cf);
+         return (cf.yHeight/10);  //TwipsToPixels(cf.yHeight, LOGPIXELSY);  [Should be Twips->Pixels, but /10 seems to work better..)
+      }
+      
+      // Calculate from character positions
+      return PosFromChar(LineIndex(1)).y - PosFromChar(LineIndex(0)).y;
+   }
 
    /// <summary>Gets the character index of the start of a line.</summary>
    /// <param name="line">The zero-based line index, or -1 for current line</param>
@@ -453,13 +469,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return LineIndex(line);
    }
 
-   /// <summary>Gets the coordinates of the first character</summary>
-   /// <returns>Character co-orindates</returns>
+   /// <summary>Gets the scroll position of the top left pixel</summary>
+   /// <returns>Scroll position in pixels</returns>
    CPoint RichEditEx::GetScrollCoordinates() const
    {
+      CPoint pt;
+      SendMessage(EM_GETSCROLLPOS, 0, (LPARAM)(POINT*)&pt);
+      return pt;
       // Preserve scroll position
-      int pos = CharFromPos(CPoint(0,0));
-      return CPoint(pos-LineIndex(pos), LineFromChar(pos));
+      /*int pos = CharFromPos(CPoint(0,0));
+      return CPoint(pos-LineIndex(pos), LineFromChar(pos));*/
    }
 
    /// <summary>Starts or complets an undo group.</summary>
@@ -645,13 +664,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Tooltip.Reset();
    }
 
-   /// <summary>Scrolls window to the position of a character</summary>
-   /// <param name="pt">Character co-orindates</param>
+   /// <summary>Scroll window to a specific position</summary>
+   /// <param name="pt">Scroll co-ordinates in pixels</param>
    void RichEditEx::SetScrollCoordinates(const CPoint& pt)
    {
-      CPoint now = GetScrollCoordinates();
+      /*CPoint now = GetScrollCoordinates();
       CPoint diff = pt-now;
-      LineScroll(diff.y, diff.x);
+      LineScroll(diff.y, diff.x);*/
+      SendMessage(EM_SETSCROLLPOS, 0, (LPARAM)(POINT*)&pt);
    }
    
    // ------------------------------- PRIVATE METHODS ------------------------------
