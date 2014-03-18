@@ -15,6 +15,10 @@ ScriptEdit:
 
 # return keyword is highlighted when found in command text
 
+# Error underlines is not completely cleared from whitespace
+
+# Preferences for disabling 'check code as I type' not connected
+
 
 
 Compiler:
@@ -26,12 +30,32 @@ Compiler:
 
 # script-calls and argument name resolution are both case sensitive, make them case insensitive
 
+# Preferences for argument name/type checking not connected
+
+
+
+
+
+LanguageDocument:
+-----------------
+
+# Text colour selection doesn't alter text colour
+
+# Implement: Overwriting files used in the StringLib rebuilds the library
+
 
 
 ScriptDocument:
 --------------
 
 # [DONE] Connect saving of script documents to output file
+
+
+
+ProjectDocument:
+---------------
+
+# Implement: Item properties 
 
 
 
@@ -42,6 +66,14 @@ GUI General:
 
 # Properly format script editor tooltips
 
+# Implement: reload game data
+
+# Custom dialogs are bleak
+
+# Implement: export all project files to an archive
+
+# Implement: Open file dialog that doesn't list hidden document templates
+
 
 
 GameDataWindows
@@ -51,6 +83,14 @@ GameDataWindows
 
 # GameDataWindow group box doesn't filter results 
 
+# GameDataWindows are not greyed/disabled when no game data is present
 
 
+
+Console
+-------
+
+# Load/Save details could be merged onto a single line
+
+# GameData thread should highlight 'Success' in bold
 
