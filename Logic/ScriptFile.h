@@ -49,23 +49,23 @@ namespace Logic
       public:
          /// <summary>Create an unnamed argument with an ID of zero</summary>
          ScriptVariable()
-            : Type(VariableType::Argument), ValueType(ParameterType::UNRECOGNISED), ID(0)
+            : Type(VariableType::Argument), ParamType(ParameterType::UNRECOGNISED), ID(0)
          {}
 
          /// <summary>Create a named variable</summary>
          /// <param name="name">name.</param>
          /// <param name="id">1-based ID.</param>
          ScriptVariable(const wstring& name, UINT id)
-            : Type(VariableType::Variable), Name(name), ID(id), ValueType(ParameterType::UNRECOGNISED)
+            : Type(VariableType::Variable), Name(name), ID(id), ParamType(ParameterType::UNRECOGNISED)
          {}
          
          // -------------------- REPRESENTATION ---------------------
 
-         wstring        Name,
-                        Description;
-         ParameterType  ValueType;
-         VariableType   Type;
-         UINT           ID;       // 1-based ID
+         wstring        Name,          // Argument/Variable name
+                        Description;   // Argument description
+         ParameterType  ParamType;     // Argument type
+         VariableType   Type;          // Whether an argument or a variable
+         UINT           ID;            // 1-based ID
       };
 
       /// <summary>Write script variable to the console</summary>
@@ -523,7 +523,7 @@ namespace Logic
             {
                // Lookup script + Validate index
                if (Contains(script))
-                  return Find(script).Variables[arg].ValueType;
+                  return Find(script).Variables[arg].ParamType;
                
                // Missing/Invalid: 
                return ParameterType::VALUE;

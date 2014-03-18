@@ -62,8 +62,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
             }
 
          // Select current type  [New Arg has no type]
-         if (Argument.ValueType != ParameterType::UNRECOGNISED)
-            Types.SelectString(-1, ScriptObjectLib.Find(ScriptObjectGroup::ParameterType, (UINT)Argument.ValueType).Text.c_str());
+         if (Argument.ParamType != ParameterType::UNRECOGNISED)
+            Types.SelectString(-1, ScriptObjectLib.Find(ScriptObjectGroup::ParameterType, (UINT)Argument.ParamType).Text.c_str());
          else
             Types.SetCurSel(0);
          
@@ -87,7 +87,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Update argument
       Argument.Name        = Name;
       Argument.Description = Description;
-      Argument.ValueType   = static_cast<ParameterType>(Types.GetItemData(Types.GetCurSel()));
+      Argument.ParamType   = static_cast<ParameterType>(Types.GetItemData(Types.GetCurSel()));
 
       // Close
       __super::OnOK();

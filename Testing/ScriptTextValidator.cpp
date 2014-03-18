@@ -103,8 +103,8 @@ namespace Testing
 
             if (in.Description != out.Description)
                throw TextMismatch(HERE, VString(L"Argument description '%s'", in.Name.c_str()), in.Description, out.Description);
-            if (in.ValueType != out.ValueType)
-               throw TextMismatch(HERE, VString(L"Argument Type '%s'", in.Name.c_str()), GetString(in.ValueType), GetString(out.ValueType));
+            if (in.ParamType != out.ParamType)
+               throw TextMismatch(HERE, VString(L"Argument Type '%s'", in.Name.c_str()), GetString(in.ParamType), GetString(out.ParamType));
          }
          catch (ExceptionBase&)
          {

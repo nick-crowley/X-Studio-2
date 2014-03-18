@@ -300,7 +300,7 @@ namespace Logic
 
             // Read extra properties
             var.Type = VariableType::Argument;
-            var.ValueType = (ParameterType)ReadInt(arg, 0, L"script argument type");
+            var.ParamType = (ParameterType)ReadInt(arg, 0, L"script argument type");
             var.Description = ReadString(arg, 1, L"script argument description");
          }
 
