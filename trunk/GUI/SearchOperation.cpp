@@ -173,6 +173,8 @@ namespace GUI
 
          // Search files for next match
          worker.Start(cmd, &Search);
+
+         // Display progress dialog until found
          ProgressDlg.DoModal(&worker);
          worker.Close();
             

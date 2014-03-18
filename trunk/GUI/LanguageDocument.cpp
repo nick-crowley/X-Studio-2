@@ -12,7 +12,7 @@
 #include "../Logic/LanguageFileReader.h"
 #include "../Logic/LanguageFileWriter.h"
 #include "../Logic/FileIdentifier.h"
-#include "../Logic/WorkerFeedback.h"
+#include "../Logic/WorkerData.h"
 #include "../Logic/StringLibrary.h"
 
 /// <summary>User interface</summary>

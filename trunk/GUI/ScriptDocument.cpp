@@ -13,7 +13,7 @@
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
 #include "../Logic/FileIdentifier.h"
-#include "../Logic/WorkerFeedback.h"
+#include "../Logic/WorkerData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

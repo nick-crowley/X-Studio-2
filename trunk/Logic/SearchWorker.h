@@ -80,14 +80,14 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         Path        Folder;
-         MatchData       Match;
-         SearchTarget    Target;
-         GameVersion     Version;
-         SearchCommand   Command;
+         Path           Folder;
+         MatchData      Match;
+         SearchTarget   Target;
+         GameVersion    Version;
+         SearchCommand  Command;
          
       private:
-         bool            Initialized;
+         bool        Initialized;
          list<Path>  Files;
       };
 

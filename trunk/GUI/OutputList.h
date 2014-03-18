@@ -1,6 +1,6 @@
 
 #pragma once
-#include "../Logic/WorkerFeedback.h"
+#include "../Logic/WorkerData.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)

@@ -198,7 +198,7 @@
     <ClInclude Include="TShield.h" />
     <ClInclude Include="TShip.h" />
     <ClInclude Include="TWare.h" />
-    <ClInclude Include="WorkerFeedback.h" />
+    <ClInclude Include="WorkerData.h" />
     <ClInclude Include="XCatalog.h" />
     <ClInclude Include="XFileInfo.h" />
     <ClInclude Include="XFileSystem.h" />
