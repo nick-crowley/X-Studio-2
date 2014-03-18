@@ -246,6 +246,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (p && doc && p->Contains(*doc) && !p->HasBackup(*doc))
       {
          auto msg = VString(L"The backup file '%s' is missing, revisions are not available.", p->GetBackupPath(*doc).c_str());
+         Console << Cons::Warning << msg << ENDL;
          theApp.ShowMessage(msg, MB_OK|MB_ICONERROR);
       }
 

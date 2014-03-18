@@ -12,6 +12,7 @@ namespace Logic
                      Exception,
                      Success,
                      Failure,
+                     Warning,
                      Bold, 
                      Endl,
                      Reset,

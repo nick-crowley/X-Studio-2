@@ -156,15 +156,15 @@ namespace Logic
       case Cons::Reset:
          return *this << Cons::Normal << Cons::White;
 
-      // Endl: Reset + Linebreak 
+      // Endl: Reset + CRLF 
       case Cons::Endl:   
          return *this << Cons::Reset << L"\n";
 
-      // Heading: Linebreak + Cyan
+      // Heading: CRLF + Cyan
       case Cons::Heading:  
          return *this << ENDL << Cons::Cyan;
 
-      // User Action: Linebreak + Bold + Cyan
+      // User Action: CRLF + Bold + Cyan
       case Cons::UserAction:  
          return *this << ENDL << Cons::Bold << Cons::Cyan;
 
@@ -176,13 +176,17 @@ namespace Logic
       case Cons::Error:  
          return *this << Cons::Bold << Cons::Red;
 
-      // Error: Bold + Green
+      // Success: Bold + Green
       case Cons::Success:  
          return *this << Cons::Bold << Cons::Green << "Success! ";
 
-      // Error: Bold + Red
+      // Failure: Bold + Red
       case Cons::Failure:  
          return *this << Cons::Bold << Cons::Red << "Failed: ";
+
+      // Warning: CRLF + Bold + Yellow
+      case Cons::Warning:
+         return *this << ENDL << Cons::Bold << Cons::Yellow << "WARNING: " << Cons::White;
 
       // Push attributes: Save current attributes
       case Cons::Push:

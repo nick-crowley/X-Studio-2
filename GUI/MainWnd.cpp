@@ -424,30 +424,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
 	         theApp.ProcessShellCommand(cmdInfo);
          else
-         {
-            // Default: Restore previous workspace
-            auto workspace = PrefsLib.WorkspaceDocuments;
-
-            if (!workspace.empty())
-            {
-               // Feedback:
-               Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
-
-               // Default: Restore previous workspace
-               for (auto& doc : PrefsLib.WorkspaceDocuments)
-                  if (Path(doc).Exists())
-                     theApp.OpenDocumentFile(doc.c_str(), FALSE);
-                  else
-                     Console << Cons::Error << "Cannot find previous document: " << Path(doc) << ENDL;
-
-               // Feedback:
-               Console << Cons::UserAction << "Successfully restored previous workspace documents" << ENDL;
-            }
-         }
+            OnOpenWorkspace();
       }
    }
 
-   
    /// <summary>Called on first display</summary>
    void MainWnd::OnInitialUpdate()
    {
@@ -466,6 +446,33 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
+      }
+   }
+   
+   /// <summary>Called when opening workspace.</summary>
+   void MainWnd::OnOpenWorkspace()
+   {
+      auto workspace = PrefsLib.WorkspaceDocuments;
+
+      if (!workspace.empty())
+      {
+         // Feedback:
+         Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
+
+         // Default: Restore previous workspace
+         for (auto& doc : workspace)
+         {
+            if (Path(doc).Exists())
+               theApp.OpenDocumentFile(doc.c_str(), FALSE);
+            else
+            {
+               Console << Cons::Warning << "Cannot find previously open document: " << Path(doc) << ENDL;
+               theApp.ShowMessage(L"Cannot find previously open document: "+doc, MB_OK|MB_ICONWARNING);
+            }
+         }
+
+         // Feedback:
+         Console << Cons::UserAction << "Successfully restored previous workspace documents" << ENDL;
       }
    }
    
