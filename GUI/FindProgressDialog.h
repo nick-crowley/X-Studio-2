@@ -1,7 +1,8 @@
 #pragma once
 #include "afxwin.h"
 //#include "../Logic/MatchData.h"
-#include "../Logic/SearchWorker.h"
+//#include "../Logic/SearchWorker.h"
+#include "../Logic/BackgroundWorker.h"
 
 /// <summary>User interface windows</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -11,13 +12,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // ------------------------ TYPES --------------------------
       public:
-         enum { IDD = IDD_FINDPROGRESS };
+         enum { IDD = IDD_PROGRESS };
 
-      private:
+      protected:
+         const UINT  TIMER_ID = 42;
          
          // --------------------- CONSTRUCTION ----------------------
       public:
-	      FindProgressDialog(CWnd* pParent = NULL);   // standard constructor
+	      FindProgressDialog(const wstring& caption, const wstring& desc, bool allowCancel, CWnd* parent = nullptr);
 	      virtual ~FindProgressDialog();
 
          // ------------------------ STATIC -------------------------
@@ -32,7 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // ----------------------- MUTATORS ------------------------
       public:
-         INT_PTR DoModal(SearchWorker* work);
+         INT_PTR DoModal(BackgroundWorker* w);
 
       protected:
 	      void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
@@ -43,10 +45,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          
          // -------------------- REPRESENTATION ---------------------
       protected:
-         const UINT  TIMER_ID = 42;
-
          CProgressCtrl  ProgressBar;
-         SearchWorker*  Worker;
+         CButton        Cancel;
+
+         BackgroundWorker*  Worker;
+
+         wstring        Caption,
+                        Description;
+         bool           AllowCancel;
       };
 
 /// <summary>User interface windows</summary>

@@ -168,7 +168,7 @@ namespace GUI
             return false;
          }
 
-         FindProgressDialog ProgressDlg;
+         FindProgressDialog ProgressDlg(L"Find and Replace", L"Finding next match...", true);
          SearchWorker worker;
 
          // Search files for next match

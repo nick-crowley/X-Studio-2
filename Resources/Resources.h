@@ -153,7 +153,7 @@
 
 #define IDD_ABOUTBOX                    700
 #define IDD_FINDREPLACE                 701
-#define IDD_FINDPROGRESS                702
+#define IDD_PROGRESS                    702
 #define IDD_GENERAL_PAGE                703
 #define IDD_COMPILER_PAGE               704
 #define IDD_EDITOR_PAGE                 705
@@ -200,7 +200,8 @@
 #define IDC_FIND_RESIZE                 814
 
 // Find Progress Dialog
-#define IDC_PROGRESS                    800
+#define IDC_PROGRESS_BAR                800
+#define IDC_PROGRESS_STATIC             801
 
 // Project Dialog
 #define IDC_PROJECT_TREE                800
