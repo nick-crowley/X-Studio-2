@@ -20,6 +20,8 @@
 /// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
 #define VALIDATION
 
+/// <summary>Disable some extra compiler features that produce byte-code that fails validation</summary>
+//#define STRICT_VALIDATION
 
 
 // Macro: Provides default move constructor and assignment (Not functional)
