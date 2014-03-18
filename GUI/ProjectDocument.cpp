@@ -122,29 +122,53 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ItemAdded.Raise(&folder.Add(item), &folder);
    }
 
-   /// <summary>Check whether document contains a file</summary>
+   /// <summary>Check whether project contains a file</summary>
    /// <param name="path">The path.</param>
    /// <returns></returns>
    bool ProjectDocument::Contains(Path path) const
    {
       return Project.Contains(path);
    }
+   
+   /// <summary>Check whether project contains a document</summary>
+   /// <param name="doc">Document.</param>
+   /// <returns></returns>
+   bool ProjectDocument::Contains(const DocumentBase& doc) const
+   {
+      return Project.Contains(doc.FullPath);
+   }
 
    /// <summary>Performs a commit on the specified document.</summary>
    /// <param name="doc">The document.</param>
    /// <param name="title">The title.</param>
+   /// <returns>True if commited, false if aborted</returns>
    /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   void ProjectDocument::Commit(const ScriptDocument& doc, const wstring& title)
+   bool ProjectDocument::Commit(const ScriptDocument& doc, const wstring& title)
    {
       // Verify member of project
-      if (!Contains(doc.FullPath))
+      if (!Contains(doc))
          throw ArgumentException(HERE, L"doc", L"Document is not part of project");
 
-      // Convert RichEdit '\v' lineBreaks to '\n'
+      // Backup File Missing: 
+      if (!HasBackup(doc))
+      {  
+         auto item = Project.Find(doc.FullPath);
+
+         // Query: Re-create backup?
+         VString msg(L"The backup file '%s' is missing, would you like to create a new one?", item->BackupName.c_str());
+         if (theApp.ShowMessage(msg, MB_YESNO|MB_ICONQUESTION) == IDNO)
+            return false;
+
+         // Perform initial commit
+         item->SetBackupPath(FullPath.Folder);
+         item->InitialCommit(FullPath.Folder);
+      }
+      
+      // Get script content 
       wstring content = doc.GetAllText();
-      for (auto& ch : content)
+      for (auto& ch : content)   // Convert RichEdit '\v' lineBreaks to '\n'
          if (ch == '\v')
             ch = '\n';
 
@@ -153,22 +177,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
       backup.Revisions.Commit( ScriptRevision(title, doc.FullPath, content, doc.Script) );
 
       // Overwrite backup file
-      backup.Write(FullPath.Folder + Project.Find(doc.FullPath)->BackupName);
+      backup.Write(GetBackupPath(doc));
 
       // Raise 'BACKUP CHANGED'
       BackupChanged.Raise(Project.Find(doc.FullPath));
+      return true;
    }
 
    /// <summary>Removes a revision from a document's backup file.</summary>
    /// <param name="doc">The document.</param>
    /// <param name="index">Zero-based index.</param>
-   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   /// <exception cref="Logic::ArgumentException">Document not member of project</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::IOException">An I/O error occurred</exception>
    void ProjectDocument::DeleteRevision(const ScriptDocument& doc, UINT index)
    {
       // Verify member of project
-      if (!Contains(doc.FullPath))
+      if (!Contains(doc))
          throw ArgumentException(HERE, L"doc", L"Document is not part of project");
 
       // Load backup. Delete revision
@@ -176,16 +201,44 @@ NAMESPACE_BEGIN2(GUI,Documents)
       backup.Remove(index);
 
       // Overwrite backup file
-      backup.Write(FullPath.Folder + Project.Find(doc.FullPath)->BackupName);
+      backup.Write(GetBackupPath(doc));
 
       // Raise 'BACKUP CHANGED'
       BackupChanged.Raise(Project.Find(doc.FullPath));
+   }
+   
+   /// <summary>Get full path of backup file for a document.</summary>
+   /// <param name="doc">The document.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   Path  ProjectDocument::GetBackupPath(const ScriptDocument& doc) const
+   {
+      // Verify member of project
+      if (!Contains(doc))
+         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
+
+      // ProjectFolder + BackupName
+      return FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
+   }
+
+   /// <summary>Query whether backup file for a document exists.</summary>
+   /// <param name="doc">The document.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ArgumentException">Document not member of project</exception>
+   bool ProjectDocument::HasBackup(const ScriptDocument& doc) const
+   {
+      // Verify member of project
+      if (!Contains(doc))
+         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
+
+      // Query existence
+      return GetBackupPath(doc).Exists();
    }
 
    /// <summary>Get backup file for a document.</summary>
    /// <param name="doc">The document.</param>
    /// <returns></returns>
-   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
+   /// <exception cref="Logic::ArgumentException">Document not member of project</exception>
    /// <exception cref="Logic::ArgumentNullException">Invalid file format</exception>
    /// <exception cref="Logic::ComException">COM Error</exception>
    /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
@@ -242,7 +295,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
       
       // Ensure path is unique
-      else if (Contains(doc.FullPath))
+      else if (Contains(doc))
          throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
 
       // Update item
@@ -394,16 +447,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // Rename document/title    [Raises OnDocumentRenamed]
       __super::Rename(newPath, overwriteExists);
-
-      // Modify project
-      //SetModifiedFlag(TRUE);
-
-      //// Rename root item
-      //Project.Root.FullPath = newPath;
-      //Project.Root.Name = newPath.FileName;
-      //
-      //// Raise 'ROOT CHANGED'
-      //ItemChanged.Raise(&Project.Root);
    }
 
    /// <summary>Renames a project item.</summary>
@@ -471,57 +514,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Get full path of backup file for a document.</summary>
-   /// <param name="doc">The document.</param>
-   /// <returns></returns>
-   /// <exception cref="Logic::ArgumentException">Document not part of project</exception>
-   Path  ProjectDocument::GetBackupPath(const ScriptDocument& doc) const
-   {
-      // Verify member of project
-      if (!Contains(doc.FullPath))
-         throw ArgumentException(HERE, L"doc", L"Document is not part of project");
-
-      // ProjectFolder + BackupName
-      return FullPath.Folder + Project.Find(doc.FullPath)->BackupName;
-   }
-
-   /// <summary>Creates a backup file for a file item and performs an initial commit.</summary>
-   /// <param name="folder">Backup folder.</param>
-   /// <param name="item">File item.</param>
-   /// <exception cref="Logic::ArgumentException">Backup path not set</exception>
-   /// <exception cref="Logic::ArgumentNullException">Script format invalid</exception>
-   /// <exception cref="Logic::ComException">COM Error</exception>
-   /// <exception cref="Logic::FileFormatException">Script format invalid</exception>
-   /// <exception cref="Logic::InvalidValueException">Script format invalid</exception>
-   /// <exception cref="Logic::InvalidOperationException">Script format invalid</exception>
-   /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-   //void ProjectDocument::InitialCommit(const Path& folder, const ProjectItem& item)
-   //{
-   //   try
-   //   {
-   //      // Feedback
-   //      Console << Cons::Heading << "Performing Initial Commit: " << item.FullPath << ENDL;
-
-   //      // Ensure backup path has been set
-   //      if (item.BackupName.empty())
-   //         throw ArgumentException(HERE, L"item", VString(L"Missing backup file path for '%s'", item.Name.c_str()) );
-
-   //      // Read script from disc
-   //      auto script = ScriptFileReader(XFileInfo(item.FullPath).OpenRead()).ReadFile(item.FullPath, false);
-   //      
-   //      // Create script revision
-   //      BackupFile backup(BackupType::MSCI);
-   //      backup.Revisions.Commit( ScriptRevision(L"Initial Commit", item.FullPath, script.GetAllText(), script) );
-
-   //      // Save backup
-   //      SaveBackupFile(folder+item.BackupName, backup);
-   //   }
-   //   catch (ExceptionBase& e) {
-   //      theApp.ShowError(HERE, e, VString(L"Unable to perform initial commit of '%s'", item.Name.c_str()));
-   //   }
-   //}
-   
-   
    /// <summary>Perform commands.</summary>
    void ProjectDocument::OnPerformCommand(UINT nID)
    {
@@ -574,27 +566,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       pCmdUI->SetCheck(FALSE);
    }
    
-   
-   /// <summary>Saves the backup file.</summary>
-   /// <param name="path">The path.</param>
-   /// <param name="f">The f.</param>
-   /// <exception cref="Logic::ComException">COM Error</exception>
-   /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
-   /// <exception cref="Logic::IOException">Unable to create file</exception>
-   //void ProjectDocument::SaveBackupFile(const Path& path, const BackupFile& f) const
-   //{
-   //   auto tmp = TempPath().RenameExtension(L".zip");
-
-   //   // Write to a temp file to prevent destroying all revisions if case of failure
-   //   BackupFileWriter w(XFileInfo(tmp).OpenWrite(L"revisions.xml"));
-   //   w.WriteFile(f);
-   //   w.Close();
-
-   //   // Success: Copy file
-   //   if (!MoveFileEx(tmp.c_str(), path.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
-   //      throw IOException(HERE, L"Unable to overwrite backup file: " + SysErrorString());
-   //}
-
    
    // ------------------------------- PRIVATE METHODS ------------------------------
    

@@ -245,10 +245,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
             throw InvalidOperationException(HERE, L"Document is not a member of current project");
          
          // Commit
-         proj->Commit(*this, title);
+         if (proj->Commit(*this, title))
+            data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script committed successfully");
+         else
+            data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Script commit aborted");
 
-         // Feedback
-         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script committed successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e) 
