@@ -14,24 +14,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // --------------------------------- APP WIZARD ---------------------------------
   
    BEGIN_MESSAGE_MAP(CGameDataWnd, CDockablePane)
+      //ON_WM_CTLCOLOR()
 	   ON_WM_CREATE()
 	   ON_WM_SIZE()
 	   ON_WM_CONTEXTMENU()
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
+      ON_WM_SHOWWINDOW()
       ON_CBN_SELCHANGE(IDC_COMBO, &CGameDataWnd::OnSearchGroupChanged)
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
       ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
-      ON_WM_SHOWWINDOW()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
    CGameDataWnd::CGameDataWnd() 
       : fnAppStateChanged(theApp.StateChanged.Register(this, &CGameDataWnd::OnAppStateChanged)),
-        fnShowTooltip(Tooltip.RequestData.Register(this, &CGameDataWnd::OnRequestTooltip))
+        fnShowTooltip(Tooltip.RequestData.Register(this, &CGameDataWnd::OnRequestTooltip)),
+        fnDocumentSwitched(MainWnd::DocumentSwitched.Register(this, &CGameDataWnd::OnDocumentSwitched))
    {
    }
 
@@ -84,6 +86,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ListView.DeleteAllItems();
    }
    
+   /// <summary>Enables/disables the list view.</summary>
+   /// <param name="enable">new state</param>
+   void CGameDataWnd::EnableList(bool enable)
+   {
+      /*ListView.SetBkColor(GetSysColor(enable ? COLOR_WINDOW : COLOR_BTNFACE));
+      ListView.RedrawItems(0, ListView.GetItemCount()-1);
+      ListView.UpdateWindow();*/
+
+      // Set states
+      Search.EnableWindow(enable ? TRUE : FALSE);
+      ListView.EnableWindow(enable ? TRUE : FALSE);
+   }
+   
    /// <summary>Gets the index of the item beneath the cursor.</summary>
    /// <returns></returns>
    int  CGameDataWnd::GetHotItemIndex() const
@@ -104,8 +119,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="s">The s.</param>
    void CGameDataWnd::OnAppStateChanged(AppState s)
    {
-      // Set listView background
-      ListView.SetBkColor(GetSysColor(s == AppState::GameDataPresent ? COLOR_WINDOW : COLOR_BTNFACE));
+      // Set listView state
+      EnableList(s == AppState::GameDataPresent);
 
       // Refresh items
       UpdateContent();
@@ -136,6 +151,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ListView.SetFocus();
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_GAMEDATA_POPUP, point.x, point.y, this, TRUE);
    }
+   
+   /// <summary>Abortive attempt to solve listView item background not matching listView background</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <param name="pWnd">The WND.</param>
+   /// <param name="nCtlColor">control type.</param>
+   /// <returns></returns>
+   /*HBRUSH CGameDataWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+   {
+      if (theApp.State == AppState::NoGameData || !ScriptDocument::GetActive())
+         return GetSysColorBrush(COLOR_BTNFACE);
+   
+      return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+   }*/
 
    /// <summary>Create child controls.</summary>
    /// <param name="lpCreateStruct">The lp create structure.</param>
@@ -162,7 +190,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ListView.EnableGroupView(TRUE);
 
          // Set listView background (disabled)
-         ListView.SetBkColor(GetSysColor(COLOR_BTNFACE));
+         EnableList(false);
          
          // Setup ImageList:
          Images.Create(IDB_GAMEDATA_ICONS, 16, 8, RGB(255,0,255));
@@ -198,7 +226,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return -1;
       }
    }
-   
+
+   /// <summary>Grey the listView for non-script documents</summary>
+   void CGameDataWnd::OnDocumentSwitched()
+   {
+      EnableList( ScriptDocument::GetActive() != nullptr );
+   }
    
    /// <summary>Insert item into current script</summary>
    /// <param name="pNMHDR">The p NMHDR.</param>
@@ -371,3 +404,4 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
 NAMESPACE_END2(GUI,Windows)
+

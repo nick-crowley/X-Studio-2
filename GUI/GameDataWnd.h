@@ -2,6 +2,7 @@
 #include "afxdockablepane.h"
 #include "ImageListEx.h"
 #include "CustomTooltip.h"
+#include "Application.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -36,13 +37,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected:
       virtual void    Clear();
+      void            EnableList(bool enable);
       virtual wstring GetItemText(UINT index) PURE;
       virtual void    PopulateGroupCombo() PURE;
       virtual void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
 
       virtual void OnAppStateChanged(AppState s);
+      //afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      handler void OnDocumentSwitched();
       afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
 	   afx_msg void OnPaint();
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
@@ -51,6 +55,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnSearchGroupChanged();
       afx_msg void OnSearchTermChanged();
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+      afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
       afx_msg void OnSize(UINT nType, int cx, int cy);
 
    private:
@@ -67,9 +72,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       CEdit          Search;
 
       AppStateChangedHandler  fnAppStateChanged;
+      EventHandler            fnDocumentSwitched;
       TooltipEvent::Handler   fnShowTooltip;
-   public:
-      afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+      
    };
    
 NAMESPACE_END2(GUI,Windows)

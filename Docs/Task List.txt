@@ -83,7 +83,7 @@ GameDataWindows
 
 # [DONE] GameDataWindow group box doesn't filter results 
 
-# GameDataWindows are not greyed/disabled when no game data is present
+# [DONE] GameDataWindows are not greyed/disabled when no game data is present
 
 
 
