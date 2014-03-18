@@ -104,6 +104,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="s">The s.</param>
    void CGameDataWnd::OnAppStateChanged(AppState s)
    {
+      // Set listView background
+      ListView.SetBkColor(GetSysColor(s == AppState::GameDataPresent ? COLOR_WINDOW : COLOR_BTNFACE));
+
+      // Refresh items
       UpdateContent();
    }
 
@@ -133,29 +137,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_GAMEDATA_POPUP, point.x, point.y, this, TRUE);
    }
 
-   
-   /// <summary>Insert item into current script</summary>
-   /// <param name="pNMHDR">The p NMHDR.</param>
-   /// <param name="pResult">The p result.</param>
-   void CGameDataWnd::OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult)
-   {
-      auto info = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
-
-      // Require script document
-      if (ScriptDocument::GetActive())
-      {
-         // Ignore item number provided by system, somtimes invalid.
-         auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
-
-         // Insert into current document
-         if (!txt.empty())
-            ScriptDocument::GetActive()->Replace(txt);
-      }
-
-      *pResult = 0;
-   }
-   
-
    /// <summary>Create child controls.</summary>
    /// <param name="lpCreateStruct">The lp create structure.</param>
    /// <returns></returns>
@@ -179,6 +160,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          ListView.SetFont(&theApp.ToolWindowFont);
          ListView.EnableGroupView(TRUE);
+
+         // Set listView background (disabled)
+         ListView.SetBkColor(GetSysColor(COLOR_BTNFACE));
          
          // Setup ImageList:
          Images.Create(IDB_GAMEDATA_ICONS, 16, 8, RGB(255,0,255));
@@ -214,6 +198,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return -1;
       }
    }
+   
+   
+   /// <summary>Insert item into current script</summary>
+   /// <param name="pNMHDR">The p NMHDR.</param>
+   /// <param name="pResult">The p result.</param>
+   void CGameDataWnd::OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      auto info = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+
+      // Require script document
+      if (ScriptDocument::GetActive())
+      {
+         // Ignore item number provided by system, somtimes invalid.
+         auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
+
+         // Insert into current document
+         if (!txt.empty())
+            ScriptDocument::GetActive()->Replace(txt);
+      }
+
+      *pResult = 0;
+   }
+   
 
    /// <summary>(App-Wizard Generated) Draw border.</summary>
    void CGameDataWnd::OnPaint()
