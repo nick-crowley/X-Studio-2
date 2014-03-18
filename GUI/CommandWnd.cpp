@@ -47,6 +47,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Format item
       return cmd ? cmd->GetDisplayText() : L"";
    }
+   
+   /// <summary>Populate when application state changes.</summary>
+   /// <param name="s">The s.</param>
+   void CCommandWnd::OnAppStateChanged(AppState s)
+   {
+      // Refresh groups
+      Groups.ResetContent();
+      PopulateGroupCombo();
+
+      // Update content
+      __super::OnAppStateChanged(s);
+   }
 
    /// <summary>Called when context menu.</summary>
    /// <param name="wnd">window.</param>

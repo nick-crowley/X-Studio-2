@@ -40,7 +40,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       virtual void    PopulateGroupCombo() PURE;
       virtual void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) PURE;
 
-      handler void OnAppStateChanged(AppState s);
+      virtual void OnAppStateChanged(AppState s);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
