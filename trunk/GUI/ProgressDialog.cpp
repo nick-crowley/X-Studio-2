@@ -1,8 +1,8 @@
-// FindProgressDialog.cpp : implementation file
+// ProgressDialog.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include "FindProgressDialog.h"
+#include "ProgressDialog.h"
 #include "MainWnd.h"
 #include "afxdialogex.h"
 
@@ -17,8 +17,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <param name="desc">description text.</param>
       /// <param name="allowCancel">Allow cancellation</param>
       /// <param name="parent">parent window.</param>
-      FindProgressDialog::FindProgressDialog(const wstring& caption, const wstring& desc, bool allowCancel, CWnd* parent/* = nullptr*/)
-	      : CDialogEx(FindProgressDialog::IDD, parent),
+      ProgressDialog::ProgressDialog(const wstring& caption, const wstring& desc, bool allowCancel, CWnd* parent/* = nullptr*/)
+	      : CDialogEx(ProgressDialog::IDD, parent),
            Caption(caption),
            Description(desc),
            AllowCancel(allowCancel),
@@ -26,16 +26,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
       }
 
-      FindProgressDialog::~FindProgressDialog()
+      ProgressDialog::~ProgressDialog()
       {
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
       
-      IMPLEMENT_DYNAMIC(FindProgressDialog, CDialogEx)
+      IMPLEMENT_DYNAMIC(ProgressDialog, CDialogEx)
       
-      BEGIN_MESSAGE_MAP(FindProgressDialog, CDialogEx)
-         ON_BN_CLICKED(IDCANCEL, &FindProgressDialog::OnCancel_Click)
+      BEGIN_MESSAGE_MAP(ProgressDialog, CDialogEx)
+         ON_BN_CLICKED(IDCANCEL, &ProgressDialog::OnCancel_Click)
          ON_WM_TIMER()
       END_MESSAGE_MAP()
 
@@ -45,7 +45,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <param name="w">Worker to monitor.</param>
       /// <returns></returns>
       /// <exception cref="Logic::ArgumentNullException">Worker is null</exception>
-      INT_PTR  FindProgressDialog::DoModal(BackgroundWorker* w)
+      INT_PTR  ProgressDialog::DoModal(BackgroundWorker* w)
       {
          REQUIRED(w);
 
@@ -57,7 +57,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       /// <summary>Does the data exchange.</summary>
       /// <param name="pDX">The p dx.</param>
-      void FindProgressDialog::DoDataExchange(CDataExchange* pDX)
+      void ProgressDialog::DoDataExchange(CDataExchange* pDX)
       {
          CDialogEx::DoDataExchange(pDX);
          DDX_Control(pDX, IDCANCEL, Cancel);
@@ -67,7 +67,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       /// <summary>Setup polling timer + marquee bar</summary>
       /// <returns></returns>
-      BOOL FindProgressDialog::OnInitDialog()
+      BOOL ProgressDialog::OnInitDialog()
       {
          CDialogEx::OnInitDialog();
 
@@ -84,7 +84,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       /// <summary>Aborts the worker thread</summary>
-      void FindProgressDialog::OnCancel_Click()
+      void ProgressDialog::OnCancel_Click()
       {
          if (!AllowCancel)
             return;
@@ -99,7 +99,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       /// <summary>Closes when the worker thread ends</summary>
       /// <param name="id">The identifier.</param>
-      void FindProgressDialog::OnTimer(UINT_PTR  id)
+      void ProgressDialog::OnTimer(UINT_PTR  id)
       {
          // Close dialog when thread ends
          if (!Worker->IsRunning())

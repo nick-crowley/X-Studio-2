@@ -8,7 +8,7 @@
 NAMESPACE_BEGIN2(GUI,Windows)
    
       /// <summary>Find text progress dialog</summary>
-      class FindProgressDialog : public CDialogEx
+      class ProgressDialog : public CDialogEx
       {
          // ------------------------ TYPES --------------------------
       public:
@@ -19,12 +19,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          
          // --------------------- CONSTRUCTION ----------------------
       public:
-	      FindProgressDialog(const wstring& caption, const wstring& desc, bool allowCancel, CWnd* parent = nullptr);
-	      virtual ~FindProgressDialog();
+	      ProgressDialog(const wstring& caption, const wstring& desc, bool allowCancel, CWnd* parent = nullptr);
+	      virtual ~ProgressDialog();
 
          // ------------------------ STATIC -------------------------
 
-         DECLARE_DYNAMIC(FindProgressDialog)
+         DECLARE_DYNAMIC(ProgressDialog)
          DECLARE_MESSAGE_MAP()
 
          // --------------------- PROPERTIES ------------------------
