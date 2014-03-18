@@ -4,6 +4,7 @@
 #include "StringLibrary.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
+#include "PreferencesLibrary.h"
 
 namespace Logic
 {
@@ -388,9 +389,9 @@ namespace Logic
             case Operator::Minus:         Text = L"-";      return;   // HACK: Not present in script object lib
             case Operator::Add:           Text = L" + ";    return;   // HACK: Substitute for octal entity
             case Operator::Subtract:      Text = L" - ";    return;   // HACK: Not present in script object lib
-            case Operator::Modulus:       Text = L" % ";    return;   // My addition
-            case Operator::LogicalAnd:    Text = L" && ";   return;   // My addition   TODO: Preferences flag to determine which syntax to use
-            case Operator::LogicalOr:     Text = L" || ";   return;   // My addition
+            case Operator::Modulus:       Text = PrefsLib.UseCppOperators ? L" % "  : L" MOD ";  return;   // C++/X3 style
+            case Operator::LogicalAnd:    Text = PrefsLib.UseCppOperators ? L" && " : L" AND ";  return;   // C++/X3 style
+            case Operator::LogicalOr:     Text = PrefsLib.UseCppOperators ? L" || " : L" OR ";   return;   // C++/X3 style
             case Operator::LogicalNot:
             case Operator::BitwiseNot:
             case Operator::OpenBracket:   
