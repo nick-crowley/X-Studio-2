@@ -433,14 +433,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
-         // Show splash screen
-         m_dlgSplash.Create(this, 0);
-         m_dlgSplash.ShowWindow(SW_SHOW);
-         EnableWindow(FALSE);
+         if (!PrefsLib.GameDataFolder.Empty())
+         {
+            // Show splash screen
+            m_dlgSplash.Create(this, 0);
+            m_dlgSplash.ShowWindow(SW_SHOW);
+            EnableWindow(FALSE);
 
-         // Load game data
-         GameDataThread.Start();
-
+            // Load game data
+            GameDataThread.Start();
+         }
+         
          // Find & Replace dialog:
          m_dlgFind.Create(FindDialog::IDD, this);
       }
