@@ -49,6 +49,9 @@ namespace Logic
             for (auto& item : proj.ToList())
                if (item->IsFile() && item->FileType == FileType::Script)
                {
+                  // Feedback
+                  data->SendFeedback(ProgressType::Info, 1, VString(L"Performing initial commit of '%s'", item->FullPath.c_str()) );
+
                   // Generate unique filename + Commit
                   item->SetBackupPath(data->UpgradePath.Folder);
                   item->InitialCommit(data->UpgradePath.Folder);
@@ -60,11 +63,8 @@ namespace Logic
             w.Write(proj);
             w.Close();
          
-            // Success: Feedback
-            Console << Cons::UserAction << "Imported legacy project successfully" << ENDL;
-            data->SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, VString(L"Imported legacy project '%s' successfully", data->UpgradePath.c_str()) );
-
-            // Cleanup
+            // Feedback
+            data->SendFeedback(Cons::UserAction, ProgressType::Succcess, 0, L"Imported legacy project successfully");
             CoUninitialize();
             return TRUE;
          }
