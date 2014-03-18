@@ -217,6 +217,7 @@ namespace Logic
          protected:
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
+            void  IdentifyConstants(ScriptFile& script, ErrorArray& errors);
             void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
             void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandNode* target);

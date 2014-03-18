@@ -403,6 +403,9 @@ namespace Logic
             // Identify labels/variables
             IdentifyVariables(script, errors);
 
+            // Identify constants
+            IdentifyConstants(script, errors);
+
             // parameters
             VerifyCommand(script, errors);
 
@@ -678,8 +681,31 @@ namespace Logic
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
          /// <param name="script">script.</param>
          /// <param name="errors">Errors collection</param>
+         void  CommandNode::IdentifyConstants(ScriptFile& script, ErrorArray& errors) 
+         {
+            // Skip command comments
+            if (!CmdComment)
+            {
+               // Enumerate assignments (RetVars)
+               for (auto& p : Parameters)
+               {
+                  if (p.Type == DataType::VARIABLE && p.Syntax.IsRetVar() && p.Value.Type == ValueType::String)
+                     script.Variables.Add(p.Value.String).Assignment++;
+               }
+            }
+
+            // Examine children
+            for (const auto& cmd : Children)
+               cmd->IdentifyConstants(script, errors);
+         }
+
+         /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
+         /// <param name="script">script.</param>
+         /// <param name="errors">Errors collection</param>
          void  CommandNode::IdentifyVariables(ScriptFile& script, ErrorArray& errors) 
          {
+            typedef reference_wrapper<ScriptParameter>  ParameterRef;
+
             // Do not enumerate the labels/variables of command comments  [But do include script-calls]
             if (!CmdComment)
             {
@@ -692,23 +718,29 @@ namespace Logic
                      errors += MakeError(VString(L"Label '%s' already defined on line %d", name.c_str(), script.Labels[name].LineNumber), Parameters[0].Token);
                }
 
+               list<ParameterRef> params;
+
    #ifdef VALIDATION
                // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
                // by enumerating variables in physical syntax order. (Requires all parameters be present)
                if (Parameters.size() == Syntax.Parameters.size())
                   for (const auto& ps : Syntax.Parameters)
-                  {
-                     ScriptParameter& p = Parameters[ps.DisplayIndex];
-
-                     if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                        script.Variables.Add(p.Value.String);
-                  }
+                     params.push_back( ref(Parameters[ps.DisplayIndex]) );
                else 
    #endif
                   // Missing/Discarded/vArgs: Enumerate in display order
-                  for (const auto& p : Parameters)
-                     if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                        script.Variables.Add(p.Value.String);
+                  for (auto& p : Parameters)
+                     params.push_back(ref(p));
+
+               // Enumerate variables
+               for (auto& ref : params)
+               {
+                  auto& p = ref.get();
+                  
+                  // Variable: Lookup/Store variable and increment usage
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
+                     script.Variables.Add(p.Value.String).Usage++;
+               }
             }
 
             // Load script-calls for argument type-checking

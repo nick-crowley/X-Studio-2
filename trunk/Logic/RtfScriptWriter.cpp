@@ -38,6 +38,7 @@ namespace Logic
          colours.insert(Highlights.GetColour(TokenType::UnaryOp));
          colours.insert(Highlights.GetColour(TokenType::Comment));
          colours.insert(PrefsLib.ArgumentColour);
+         colours.insert(PrefsLib.ConstantColour);
          colours.insert(PrefsLib.BackgroundColour);
 
          // Init writer
