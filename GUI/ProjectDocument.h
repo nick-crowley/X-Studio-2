@@ -85,7 +85,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    protected:
       Path        GetBackupPath(const ScriptDocument& doc) const;
-      void        SaveBackupFile(const Path& path, const BackupFile& f) const;
+      //void        SaveBackupFile(const Path& path, const BackupFile& f) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -109,7 +109,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  SetModifiedFlag(BOOL bModified = TRUE) override;
 
    protected:
-      void  InitialCommit(const Path& folder, const ProjectItem& item);
+      //void  InitialCommit(const Path& folder, const ProjectItem& item);
 
       afx_msg void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
       afx_msg void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }
