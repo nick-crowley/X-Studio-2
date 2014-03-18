@@ -75,6 +75,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          SetTimer(TIMER_ID, 250, nullptr);
          ProgressBar.SetMarquee(TRUE, 150);
 
+         // Set caption
+         SetWindowText(Caption.c_str());
+
          // Enable/Disable 'Cancel'
          Cancel.EnableWindow(AllowCancel ? TRUE : FALSE);
 
