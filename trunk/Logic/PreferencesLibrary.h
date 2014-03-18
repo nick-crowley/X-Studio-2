@@ -154,7 +154,7 @@ namespace Logic
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,GameObjectColour,RGB(0,255,255));
 
       /// <summary>Syntax highlighting colour for keywords</summary>
-      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,KeywordColour,RGB(0,104,230));
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,KeywordColour,RGB(0,71,247));
       
       /// <summary>Syntax highlighting colour for labels</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,LabelColour,RGB(255,0,255));
