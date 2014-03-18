@@ -49,23 +49,38 @@ namespace Logic
       public:
          /// <summary>Create an unnamed argument with an ID of zero</summary>
          ScriptVariable()
-            : Type(VariableType::Argument), ParamType(ParameterType::UNRECOGNISED), ID(0)
+            : Type(VariableType::Argument), ParamType(ParameterType::UNRECOGNISED), ID(0), Assignment(0), Usage(0)
          {}
 
          /// <summary>Create a named variable</summary>
          /// <param name="name">name.</param>
          /// <param name="id">1-based ID.</param>
          ScriptVariable(const wstring& name, UINT id)
-            : Type(VariableType::Variable), Name(name), ID(id), ParamType(ParameterType::UNRECOGNISED)
+            : Type(VariableType::Variable), Name(name), ID(id), ParamType(ParameterType::UNRECOGNISED), Assignment(0), Usage(0)
          {}
          
-         // -------------------- REPRESENTATION ---------------------
+         // --------------------- PROPERTIES ------------------------
+      public:
+         PROPERTY_GET(bool,Constant,IsConstant);
 
+         // ---------------------- ACCESSORS ------------------------	
+      public:
+         /// <summary>Determines whether variable is a constant.</summary>
+         /// <returns></returns>
+         bool IsConstant() const
+         {
+            return Assignment <= 1;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      public:
+         UINT           ID;            // 1-based ID
          wstring        Name,          // Argument/Variable name
                         Description;   // Argument description
          ParameterType  ParamType;     // Argument type
          VariableType   Type;          // Whether an argument or a variable
-         UINT           ID;            // 1-based ID
+         UINT           Assignment,    // Number of times assigned [Can be zero for arguments]
+                        Usage;         // Number of uses
       };
 
       /// <summary>Write script variable to the console</summary>
@@ -366,10 +381,11 @@ namespace Logic
          public:
             /// <summary>Adds a variable using the next available ID. If name already exists no changes are made</summary>
             /// <param name="name">variable name (case sensitive)</param>
-            void  Add(const wstring& name)
+            /// <returns>Existing or newly inserted variable</returns>
+            ScriptVariable& Add(const wstring& name)
             {
-               if (!Contains(name))
-                  insert( value_type(name, ScriptVariable(name, GetNextID())) );
+               auto res = insert( value_type(name, ScriptVariable(name, GetNextID())) );
+               return res.first->second;
             }
 
             /// <summary>Clears all variables, but leaves arguments</summary>
