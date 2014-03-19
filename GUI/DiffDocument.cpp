@@ -17,7 +17,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    /// <summary>Creates diff document template</summary>
    DiffDocTemplate::DiffDocTemplate() 
-      : CMultiDocTemplate(IDR_LANGUAGEVIEW, RUNTIME_CLASS(DiffDocument), RUNTIME_CLASS(DiffFrame), nullptr)
+      : CMultiDocTemplate(IDR_DIFFVIEW, RUNTIME_CLASS(DiffDocument), RUNTIME_CLASS(DiffFrame), nullptr)
    {}
 
    /// <summary>Matches open documents only</summary>
