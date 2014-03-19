@@ -224,6 +224,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnSize(UINT nType, int cx, int cy);
       handler void OnStringSelectionChanged();
       handler void OnStringContentChanged();
+      handler void OnTextChanged();
       afx_msg void OnTextSelectionChange(NMHDR* pNMHDR, LRESULT* result);
       
       // -------------------- REPRESENTATION ---------------------
@@ -232,6 +233,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       TextColourArray          TextColours;
       LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
+      EventHandler             fnTextChanged;
    };
 
 
