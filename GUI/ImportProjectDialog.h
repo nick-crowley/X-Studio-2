@@ -1,12 +1,13 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
+#include "DialogBase.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary></summary>
-   class ImportProjectDialog : public CDialogEx
+   class ImportProjectDialog : public DialogBase
    {
       // ------------------------ TYPES --------------------------
    public:
@@ -16,7 +17,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // --------------------- CONSTRUCTION ----------------------
    public:
-      ImportProjectDialog(Path legacyProj);
+      ImportProjectDialog(Path legacyProj, CWnd* parent = nullptr);
       virtual ~ImportProjectDialog();
        
       // ------------------------ STATIC -------------------------
@@ -36,13 +37,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
       
+   private:
+      void CreateFolder(const Path& f);
+
       // -------------------- REPRESENTATION ---------------------
    public:
       Path  NewPath;
 
    protected:
       Path  LegacyFile,
-                Folder;
+            Folder;
    };
    
 NAMESPACE_END2(GUI,Windows)
