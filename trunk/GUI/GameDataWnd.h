@@ -46,6 +46,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       //afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+      afx_msg void OnCommandCopy();
       handler void OnDocumentSwitched();
       afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
 	   afx_msg void OnPaint();

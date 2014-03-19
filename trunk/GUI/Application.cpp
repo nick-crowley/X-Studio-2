@@ -421,6 +421,7 @@ void Application::PreLoadState()
    GetContextMenuManager()->AddMenu(GuiString(IDM_BACKUP_POPUP).c_str(), IDM_BACKUP_POPUP);
 	GetContextMenuManager()->AddMenu(GuiString(IDM_SCRIPTEDIT_POPUP).c_str(), IDM_SCRIPTEDIT_POPUP);
    GetContextMenuManager()->AddMenu(GuiString(IDM_STRINGVIEW_POPUP).c_str(), IDM_STRINGVIEW_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_GAMEDATA_POPUP).c_str(), IDM_GAMEDATA_POPUP);
 }
 
 

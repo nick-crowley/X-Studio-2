@@ -3,6 +3,7 @@
 #include "MainWnd.h"
 #include "Helpers.h"
 #include <strsafe.h>
+#include "Clipboard.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -22,6 +23,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
       ON_WM_SHOWWINDOW()
+      ON_COMMAND(ID_EDIT_COPY, &CGameDataWnd::OnCommandCopy)
       ON_CBN_SELCHANGE(IDC_COMBO, &CGameDataWnd::OnSearchGroupChanged)
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
@@ -149,6 +151,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Popup
 	   ListView.SetFocus();
 	   theApp.GetContextMenuManager()->ShowPopupMenu(IDM_GAMEDATA_POPUP, point.x, point.y, this, TRUE);
+   }
+
+   /// <summary>Copies selected item to clipboard</summary>
+   void CGameDataWnd::OnCommandCopy()
+   {
+      if (ListView.GetNextItem(-1, LVNI_SELECTED) == -1)
+         return;
+
+      // Get selected item text
+      auto str = ListView.GetItemText(ListView.GetNextItem(-1, LVNI_SELECTED), 0);
+      
+      // Copy to clipboard
+      if (!str.IsEmpty())
+         theClipboard.SetString((LPCWSTR)str);
    }
    
    /// <summary>Abortive attempt to solve listView item background not matching listView background</summary>
