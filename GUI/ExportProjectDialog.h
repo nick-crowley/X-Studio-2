@@ -1,9 +1,7 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
-#include "HeadingStatic.h"
-#include "TitleStatic.h"
-#include "BitmapStatic.h"
+#include "DialogBase.h"
 #include "../Logic/ProjectFile.h"
 
 FORWARD_DECLARATION2(GUI,Documents,class ProjectDocument)
@@ -11,25 +9,30 @@ FORWARD_DECLARATION2(GUI,Documents,class ProjectDocument)
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
    
-   /// <summary></summary>
-   class ExportProjectDialog : public CDialogEx
+   /// <summary>Export project files dialog</summary>
+   class ExportProjectDialog : public DialogBase
    {
       // ------------------------ TYPES --------------------------
    public:
       enum { IDD = IDD_EXPORT_PROJECT };
 
    protected:
+      /// <summary>Links a project file source/destination path</summary>
       class ExportPath
       {
       public:
+         /// <summary>Initializes a new instance of the <see cref="ExportPath"/> class.</summary>
+         /// <param name="full">full file path.</param>
+         /// <param name="sub">output subpath.</param>
          ExportPath(const Path& full, const Path& sub) : FullPath(full), SubPath(sub)
          {}
 
       public:
-         Path FullPath,
-              SubPath;
+         Path FullPath,    // Original file path
+              SubPath;     // Subpath to be exported to
       };
 
+      /// <summary>List of export paths</summary>
       typedef list<ExportPath> ExportPaths;
 
       // --------------------- CONSTRUCTION ----------------------
@@ -67,10 +70,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       const static UINT OPTION_ZIP = 0,
                         OPTION_COPY = 1;
 
-      BitmapStatic   Image;
+      /*BitmapStatic   Image;
       TitleStatic    Title;
       HeadingStatic  Location,
-                     Method;
+                     Method;*/
 
       Path  FileName,
             Folder;
@@ -78,6 +81,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    };
 
    
-   void AFXAPI DDX_Static(CDataExchange* pDX, int nIDC, CStatic& rControl);
+   
    
 NAMESPACE_END2(GUI,Windows)
