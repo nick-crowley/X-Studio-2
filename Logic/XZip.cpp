@@ -91,21 +91,20 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#define _USE_32BIT_TIME_T	//+++1.2
+//#define STRICT
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <tchar.h>
+#include <time.h>
+#include "xzip.h"
 
 namespace Logic
 {
    namespace IO
    {
-
-      #define _USE_32BIT_TIME_T	//+++1.2
-
-
-      #define STRICT
-      #define WIN32_LEAN_AND_MEAN
-      #include <windows.h>
-      #include <tchar.h>
-      #include <time.h>
-      #include "xzip.h"
+      
+      
 
       #pragma warning(disable : 4996)	// disable bogus deprecation warning
 
@@ -3211,9 +3210,9 @@ namespace Logic
 	
 	      FindClose(hFind); // closing file handle
 	      return true;
-	
       }
 
+      
    }
 }
 
