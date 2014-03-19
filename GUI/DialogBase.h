@@ -3,8 +3,8 @@
 #include "TitleStatic.h"
 #include "BitmapStatic.h"
 
-/// <summary>User interface</summary>
-NAMESPACE_BEGIN(GUI)
+/// <summary>User interface windows</summary>
+NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary>Base class for all dialogs</summary>
    class DialogBase : public CDialogEx
@@ -48,4 +48,4 @@ NAMESPACE_BEGIN(GUI)
    };
    
 
-NAMESPACE_END(GUI)
+NAMESPACE_END2(GUI,Windows)

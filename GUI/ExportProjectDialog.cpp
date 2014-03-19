@@ -13,7 +13,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    IMPLEMENT_DYNAMIC(ExportProjectDialog, DialogBase)
 
    BEGIN_MESSAGE_MAP(ExportProjectDialog, DialogBase)
-      ON_BN_CLICKED(IDC_ARCHIVE_RADIO, OnOptionChanged)
+      ON_BN_CLICKED(IDC_ZIP_RADIO, OnOptionChanged)
+      ON_BN_CLICKED(IDC_SPK_RADIO, OnOptionChanged)
       ON_BN_CLICKED(IDC_FOLDER_RADIO, OnOptionChanged)
    END_MESSAGE_MAP()
    
@@ -50,9 +51,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Enable 'Filename' for archive mode
       GetDlgItem(IDC_FILENAME_EDIT)->EnableWindow(TRUE);
-
-      // Autosize image
-      //Image.ShinkToFit();
       return TRUE;
    }
 
@@ -110,12 +108,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   __super::DoDataExchange(pDX);
       DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
-      DDX_Radio(pDX, IDC_ARCHIVE_RADIO, Option);
-
-      /*DDX_Static(pDX, IDC_IMAGE_STATIC, Image);
-      DDX_Static(pDX, IDC_TITLE_STATIC, Title);
-      DDX_Static(pDX, IDC_HEADING1_STATIC, Location);
-      DDX_Static(pDX, IDC_HEADING2_STATIC, Method);*/
+      DDX_Radio(pDX, IDC_ZIP_RADIO, Option);
    }
 
    /// <summary>Generates the output paths for each file in the project</summary>
@@ -180,9 +173,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
             // Close
             zip.Close();
          }
-         else
+         // FILES: Copy all files to a folder
+         else if (Option == OPTION_FOLDER)
          {
-            // FILES: Copy all files to a folder
             for (auto& f : files)
             {
                Path newPath = Folder+f.SubPath;

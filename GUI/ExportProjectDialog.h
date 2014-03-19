@@ -68,12 +68,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // -------------------- REPRESENTATION ---------------------
    protected:
       const static UINT OPTION_ZIP = 0,
-                        OPTION_COPY = 1;
-
-      /*BitmapStatic   Image;
-      TitleStatic    Title;
-      HeadingStatic  Location,
-                     Method;*/
+                        OPTION_SPK = 1,
+                        OPTION_FOLDER = 2;
 
       Path  FileName,
             Folder;
