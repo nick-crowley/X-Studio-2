@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
         BackgroundColour(nullptr),
         LineNumberColour(nullptr),
+        ErrorHighlight(nullptr),
         DifferenceHighlight(nullptr),
         RefactorHighlight(nullptr)
    {
@@ -70,6 +71,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       // Colour
       PrefsLib.BackgroundColour = BackgroundColour->GetColor();
       PrefsLib.LineNumberColour = LineNumberColour->GetColor();
+      PrefsLib.ErrorHighlight = ErrorHighlight->GetColor();
       PrefsLib.DifferenceHighlight = DifferenceHighlight->GetColor();
       PrefsLib.RefactorHighlight = RefactorHighlight->GetColor();
       
@@ -97,6 +99,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group = new PropertyBase(*this, L"Colours");
       group->AddSubItem(BackgroundColour = new BackgroundColourProperty(*this));
       group->AddSubItem(LineNumberColour = new LineNumberColourProperty(*this));
+      group->AddSubItem(ErrorHighlight = new ErrorHighlightProperty(*this));
       group->AddSubItem(DifferenceHighlight = new DifferenceHighlightProperty(*this));
       group->AddSubItem(RefactorHighlight = new RefactorHighlightProperty(*this));
       Grid.AddProperty(group);

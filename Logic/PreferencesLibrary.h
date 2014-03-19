@@ -134,6 +134,9 @@ namespace Logic
       /// <summary>Script editor background colour</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,BackgroundColour,RGB(0,0,0));
 
+      /// <summary>Script editor error highlight</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,ErrorHighlight,RGB(255,0,0));
+
       /// <summary>Diff viewer alteration highlight</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,DifferenceHighlight,RGB(80,80,80));
 

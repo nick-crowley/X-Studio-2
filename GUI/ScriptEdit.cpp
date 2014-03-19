@@ -593,8 +593,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Define error underline
          cf = CharFormat(CFM_COLOR|CFM_UNDERLINE|CFM_UNDERLINETYPE, CFE_UNDERLINE);
          cf.bUnderlineType = CFU_UNDERLINEWAVE;
-         cf.bUnderlineColor = 0x02;     //Undocumented underline colour
-         cf.crTextColor = RGB(255,0,0);
+         //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
+         cf.crTextColor = PrefsLib.ErrorHighlight;
 
          // Underline all errors
          for (const auto& err : parser.Errors)
