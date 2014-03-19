@@ -314,6 +314,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          if (!item || item->Fixed)
             return;
 
+         // Confirm
+         if (theApp.ShowMessage(Cons::Warning, L"Are you sure you want to remove and delete this item?", MB_YESNO|MB_ICONQUESTION) == IDNO)
+            return;
+
          // Feedback
          Console << Cons::UserAction << "Deleting project item: " << Cons::Yellow << item->Name << ENDL;
 
@@ -398,6 +402,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Get selected unfixed file/folder
          auto item = TreeView.SelectedItem;
          if (!item || item->Fixed || item->IsRoot())
+            return;
+
+         // Confirm
+         if (theApp.ShowMessage(Cons::Warning, L"Are you sure you want to remove this item?", MB_YESNO|MB_ICONQUESTION) == IDNO)
             return;
 
          // Feedback
