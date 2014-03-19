@@ -40,7 +40,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project, false), Project(L"Untitled")
+   ProjectDocument::ProjectDocument() : DocumentBase(DocumentType::Project, false), Project(L"Untitled"), IsClosing(false)
    {
 
    }
@@ -58,7 +58,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Linear search: (Only one project can ever be open at a time)
       for (DocumentBase& doc : theApp)
          if (doc.GetType() == DocumentType::Project)
-            return dynamic_cast<ProjectDocument*>(&doc);
+            if (auto proj = dynamic_cast<ProjectDocument*>(&doc))
+               // Don't return project if closing down
+               return !proj->IsClosing ? proj : nullptr;
 
       return nullptr;
    }
@@ -281,7 +283,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Raise 'PROJECT CLOSED'
       else if (deEvent == CDocument::onAfterCloseDocument)
+      {
+         Console << HERE << ENDL;
          Closed.Raise();
+      }
    }
    
    /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
@@ -523,9 +528,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          {
          // Close Project
          case ID_FILE_PROJECT_CLOSE:
+            // Save Modified
             if (!SaveModified())
 		         return;
 
+            // Close 
+            IsClosing = true;
 	         OnCloseDocument();
             break;
 
