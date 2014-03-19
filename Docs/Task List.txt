@@ -30,7 +30,7 @@ Compiler:
 
 # script-calls and argument name resolution are both case sensitive, make them case insensitive
 
-# Preferences for argument name/type checking not connected
+# [DONE] Preferences for argument name/type checking not connected
 
 
 
