@@ -177,6 +177,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ---------------------- ACCESSORS ------------------------			
    public:
       ProjectItem*  GetSelectedItemData() const;
+      bool          IsEditingLabel() const;
 
    protected:
       HTREEITEM     FindItem(const ProjectItem* item) const;
@@ -208,6 +209,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       CImageList*  DragIcon;
       TreeItem     DragSource,
                    LabelItem;
+      bool         EditingLabel;
       
       ProjectItemAddedEvent::Handler  fnItemAdded;
       ProjectItemEvent::Handler       fnItemChanged,
