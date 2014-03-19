@@ -10,9 +10,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
-   IMPLEMENT_DYNAMIC(ExportProjectDialog, CDialogEx)
+   IMPLEMENT_DYNAMIC(ExportProjectDialog, DialogBase)
 
-   BEGIN_MESSAGE_MAP(ExportProjectDialog, CDialogEx)
+   BEGIN_MESSAGE_MAP(ExportProjectDialog, DialogBase)
       ON_BN_CLICKED(IDC_ARCHIVE_RADIO, OnOptionChanged)
       ON_BN_CLICKED(IDC_FOLDER_RADIO, OnOptionChanged)
    END_MESSAGE_MAP()
@@ -22,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Initializes a new export project dialog.</summary>
    /// <param name="parent">parent window.</param>
    ExportProjectDialog::ExportProjectDialog(CWnd* parent /*= nullptr*/)
-      : CDialogEx(ExportProjectDialog::IDD, parent), Image(IDB_EXPORT_PROJECT)
+      : DialogBase(ExportProjectDialog::IDD, parent, IDB_EXPORT_PROJECT, false)
    {
       // Sanity check
       if (!ProjectDocument::GetActive())
@@ -40,15 +40,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
-   void AFXAPI DDX_Static(CDataExchange* pDX, int id, CStatic& ctrl)
-   {
-      DDX_Control(pDX, id, ctrl);
-
-      // Ensure as OwnerDraw
-      if ((ctrl.GetStyle() & SS_OWNERDRAW) == 0)
-         ctrl.ModifyStyle(0, SS_OWNERDRAW, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-   }
-
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Called when initialize dialog.</summary>
@@ -61,7 +52,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       GetDlgItem(IDC_FILENAME_EDIT)->EnableWindow(TRUE);
 
       // Autosize image
-      Image.ShinkToFit();
+      //Image.ShinkToFit();
       return TRUE;
    }
 
@@ -121,10 +112,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
       DDX_Radio(pDX, IDC_ARCHIVE_RADIO, Option);
 
-      DDX_Static(pDX, IDC_IMAGE_STATIC, Image);
+      /*DDX_Static(pDX, IDC_IMAGE_STATIC, Image);
       DDX_Static(pDX, IDC_TITLE_STATIC, Title);
       DDX_Static(pDX, IDC_HEADING1_STATIC, Location);
-      DDX_Static(pDX, IDC_HEADING2_STATIC, Method);
+      DDX_Static(pDX, IDC_HEADING2_STATIC, Method);*/
    }
 
    /// <summary>Generates the output paths for each file in the project</summary>

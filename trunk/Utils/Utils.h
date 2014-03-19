@@ -40,14 +40,21 @@ namespace Logic
    /// <summary>Dialog data exchange for paths</summary>
    UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, Path& path);
 
+   /// <summary>Subclass an owner-drawn static</summary>
+   UtilExport void AFXAPI DDX_OwnerDrawStatic(CDataExchange* pDX, int nIDC, CStatic& rControl);
 
    /// <summary>Client rectangle</summary>
    class UtilExport ClientRect : public CRect
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-      ClientRect(CWnd* wnd) : CRect(0,0,0,0)
+      /// <summary>Get client rectangle for a window</summary>
+      /// <param name="wnd">The WND.</param>
+      /// <exception cref="Logic::ArgumentNullException">Window is null</exception>
+      ClientRect(CWnd* wnd) : CRect(0, 0, 0, 0)
       {
+         REQUIRED(wnd);
+
          wnd->GetClientRect(this);
       }
 
@@ -65,8 +72,12 @@ namespace Logic
       /// <summary>Create control rectangle in parent client co-ordinates</summary>
       /// <param name="parent">The parent.</param>
       /// <param name="ctrl">The control.</param>
+      /// <exception cref="Logic::ArgumentNullException">Either argument is null</exception>
       CtrlRect(CWnd* parent, CWnd* ctrl) : CRect(0, 0, 0, 0)
       {
+         REQUIRED(parent);
+         REQUIRED(ctrl);
+
          ctrl->GetWindowRect(this);
          parent->ScreenToClient(this);
       }
@@ -81,6 +92,9 @@ namespace Logic
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
+      /// <summary>Get window rectangle for a window</summary>
+      /// <param name="wnd">The WND.</param>
+      /// <exception cref="Logic::ArgumentNullException">Window is null</exception>
       WindowRect(CWnd* wnd) : CRect(0,0,0,0)
       {
          wnd->GetWindowRect(this);

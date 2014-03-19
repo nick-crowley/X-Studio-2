@@ -106,6 +106,16 @@ namespace Logic
    {
       return a.cpMax != b.cpMax || a.cpMin != b.cpMin;
    }
+   
+   /// <summary>Subclass an owner-drawn static</summary>
+   UtilExport void AFXAPI DDX_OwnerDrawStatic(CDataExchange* pDX, int id, CStatic& ctrl)
+   {
+      DDX_Control(pDX, id, ctrl);
+
+      // Ensure as OwnerDraw
+      if ((ctrl.GetStyle() & SS_OWNERDRAW) == 0)
+         ctrl.ModifyStyle(0, SS_OWNERDRAW, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+   }
 
    /// <summary>Dialog data exchange for std::wstring</summary>
    UtilExport void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, wstring& value)
