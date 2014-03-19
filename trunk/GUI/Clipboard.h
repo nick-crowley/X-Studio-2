@@ -22,8 +22,9 @@ namespace GUI
 
          // --------------------- CONSTRUCTION ----------------------
       private:
-         Clipboard() {}
-         ~Clipboard() {}
+         Clipboard();
+         ~Clipboard();
+
          NO_COPY(Clipboard);	// No copy semantics
          NO_MOVE(Clipboard);	// No move semantics
 
@@ -72,6 +73,9 @@ namespace GUI
          {
             StringData.reset();
             PageData.reset();
+            
+            // Clear
+            EmptyClipboard();
          }
          
          /// <summary>Copies a language Page to the clipboard.</summary>
@@ -88,93 +92,105 @@ namespace GUI
          {
             Clear();
             StringData.reset(new LanguageString(str));      //SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
+            SetString(str.ToXML());
          }
          
       protected:
-         /// <summary>Gets data from the clipboard.</summary>
-         /// <param name="format">format.</param>
-         /// <returns>Data</returns>
-         template<typename T>
-         T  GetData(UINT format) const
+         /// <summary>Frees global memory handle.</summary>
+         void  Free()
          {
-            HANDLE handle = nullptr;
-            void*  buffer = nullptr;
-
-            try
+            if (Content)
             {
-               // Open clipboard
-               if (!OpenClipboard(theApp.m_pMainWnd))
-                  throw Win32Exception(HERE, L"Unable to open clipboard");
-            
-               // Allocate+Open buffer
-               if ((handle = GetClipboardData(format)) == nullptr)
-                  throw Win32Exception(HERE, L"No clipboard data in the desired format");
-
-               // Extract data
-               if ((buffer = GlobalLock(handle)) == nullptr)
-                  throw Win32Exception(HERE, L"Unable to allocate global memory");
-
-               // Copy
-               BYTE object[sizeof(T)];
-               memcpy(object, buffer, sizeof(T));
-               GlobalUnlock(handle);
-
-               // Close
-               CloseClipboard();
-               return *reinterpret_cast<T*>(object);
-            }
-            catch (...) 
-            {
-               // Cleanup before exit
-               if (handle)
-                  GlobalUnlock(handle);
-               CloseClipboard();
-               throw;
+               GlobalFree(Content);
+               Content = nullptr;
             }
          }
+
+         /// <summary>Gets data from the clipboard.</summary>
+         /// <typeparam name="DATA">Data format</typeparam>
+         /// <param name="format">clipboard format.</param>
+         /// <returns>Data</returns>
+         //template<typename DATA>
+         //DATA  GetData(UINT format) const
+         //{
+         //   HANDLE handle = nullptr;
+         //   DATA*  buffer = nullptr;
+
+         //   try
+         //   {
+         //      // Open clipboard
+         //      if (!OpenClipboard(theApp.m_pMainWnd))
+         //         throw Win32Exception(HERE, L"Unable to open clipboard");
+         //   
+         //      // Allocate+Open buffer
+         //      if ((handle = GetClipboardData(format)) == nullptr)
+         //         throw Win32Exception(HERE, L"No clipboard data in the desired format");
+
+         //      // Copy data
+         //      if ((buffer = (DATA*)GlobalLock(handle)) == nullptr)
+         //         throw Win32Exception(HERE, L"Unable to allocate global memory");
+         //      DATA obj(*buffer);
+         //      
+         //      // Close
+         //      GlobalUnlock(handle);
+         //      CloseClipboard();
+         //      return obj;
+         //   }
+         //   catch (...) 
+         //   {
+         //      // Cleanup before exit
+         //      if (handle)
+         //         GlobalUnlock(handle);
+         //      CloseClipboard();
+         //      throw;
+         //   }
+         //}
 
          /// <summary>Sets clipboard data.</summary>
+         /// <typeparam name="DATA">Data format</typeparam>
          /// <param name="format">format.</param>
          /// <param name="obj">object.</param>
-         template<typename T>
-         void  SetData(UINT format, T obj)
-         {
-            HANDLE handle = nullptr;
-            void*  buffer = nullptr;
+         //template<typename DATA>
+         //void  SetData(UINT format, DATA obj)
+         //{
+         //   DATA*  buffer = nullptr;
 
-            try
-            {
-               // Open clipboard
-               if (!OpenClipboard(theApp.m_pMainWnd))
-                  throw Win32Exception(HERE, L"Unable to open clipboard");
+         //   try
+         //   {
+         //      // Clear previous data
+         //      if (Content)
+         //         Free();
 
-               // Clear
-               EmptyClipboard();
-            
-               // Allocate+Open buffer
-               if ( !(handle = GlobalAlloc(GMEM_MOVEABLE, sizeof(T))) || !(buffer = GlobalLock(handle)) )
-                  throw Win32Exception(HERE, L"Unable to allocate global memory");
+         //      // Open clipboard
+         //      if (!OpenClipboard(theApp.m_pMainWnd))
+         //         throw Win32Exception(HERE, L"Unable to open clipboard");
 
-               // Copy output to the clipboard buffer
-               memcpy(buffer, &obj, sizeof(T));
-               GlobalUnlock(handle);
-               
-               // Transfer to clipboard
-               if (!SetClipboardData(format, handle))
-                  throw Win32Exception(HERE, L"Unable to set clipboard data");
+         //      // Allocate+Open buffer
+         //      if ( !(Content = GlobalAlloc(GMEM_MOVEABLE, sizeof(DATA))) || !(buffer = GlobalLock(Content)) )
+         //         throw Win32Exception(HERE, L"Unable to allocate global memory");
 
-               // Close
-               CloseClipboard();
-            }
-            catch (...) 
-            {
-               // Cleanup before exit
-               if (handle)
-                  GlobalUnlock(handle);
-               CloseClipboard();
-               throw;
-            }
-         }
+         //      // Copy output to the clipboard buffer
+         //      *buffer = obj;
+         //      GlobalUnlock(Content);
+         //      
+         //      // Transfer to clipboard
+         //      if (!SetClipboardData(format, Content))
+         //         throw Win32Exception(HERE, L"Unable to set clipboard data");
+
+         //      // Close
+         //      CloseClipboard();
+         //   }
+         //   catch (...) 
+         //   {
+         //      // Cleanup before exit
+         //      Free();
+         //      CloseClipboard();
+         //      throw;
+         //   }
+         //}
+
+         /// <summary>Copies a string to the clipboard.</summary>
+         void  SetString(const wstring& txt);
 
          // -------------------- REPRESENTATION ---------------------
       public:
@@ -187,8 +203,9 @@ namespace GUI
 
       protected:
          /// <summary>Clipboard data</summary>
-         static LanguageStringPtr  StringData;
-         static LanguagePagePtr    PageData;
+         LanguageStringPtr  StringData;
+         LanguagePagePtr    PageData;
+         HANDLE             Content;
       };
 
    }

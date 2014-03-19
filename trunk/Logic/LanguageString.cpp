@@ -117,6 +117,13 @@ namespace Logic
          }
       }
 
+      /// <summary>Generate XML necessary to define this string  [Used for copying to clipboard]</summary>
+      /// <returns></returns>
+      GuiString  LanguageString::ToXML() const
+      {
+         return VString(L"<t id='%d'>%s</t>", ID, Text.c_str());
+      }
+
       // ------------------------------ PROTECTED METHODS -----------------------------
 
       // ------------------------------- PRIVATE METHODS ------------------------------

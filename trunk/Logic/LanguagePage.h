@@ -68,6 +68,7 @@ namespace Logic
          wstring    GetResolvedText() const;
          RichString GetRichText() const;
          bool       IsScriptObject() const;
+         GuiString  ToXML() const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:
