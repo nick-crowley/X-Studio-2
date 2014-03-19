@@ -121,7 +121,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ProjectFile  Project;
 
    protected:
-   
+      bool  IsClosing;
    };
 
    
