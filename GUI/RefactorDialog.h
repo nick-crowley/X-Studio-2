@@ -34,6 +34,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void AdjustLayout();
       void DoDataExchange(CDataExchange* pDX) override;
+      void HighlightSymbol(UINT index, bool display);
 	  
       afx_msg void OnCheckChanged();
       afx_msg void OnSelectionChanged();
@@ -50,6 +51,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       CCheckListBox  List;
       RefactorEdit   RichEdit;
+
+   private:
+      int   PrevSelection;
    };
    
 

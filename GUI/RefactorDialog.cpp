@@ -20,7 +20,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
        : CDialog(IDD_REFACTOR, parent), 
          AllSymbols(matches.begin(), matches.end()),
          Document(doc),
-         DocumentText(text)
+         DocumentText(text),
+         PrevSelection(LB_ERR)
    {
    }
 
@@ -105,6 +106,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Control(pDX, IDC_SYMBOL_EDIT, RichEdit);
    }
    
+   
+   /// <summary>Highlights and scrolls to a symbol.</summary>
+   /// <param name="index">Zero-based index.</param>
+   /// <param name="display">Whether to scroll symbol into view.</param>
+   void RefactorDialog::HighlightSymbol(UINT index, bool display)
+   {
+      if (index >= AllSymbols.size())
+         return;
+      
+      // Determine whether selected/highlighted/unchecked
+      auto ht = index == List.GetCurSel()           ? RefactorEdit::HighlightType::Active
+              : List.GetCheck(index) == BST_CHECKED ? RefactorEdit::HighlightType::Inactive
+                                                    : RefactorEdit::HighlightType::None;
+
+      // Lookup/Highlight 
+      auto& s = AllSymbols[index];
+      RichEdit.HighlightSymbol(s, ht);
+
+      // scroll to symbol
+      if (display)
+         RichEdit.ScrollTo(s);
+   }
+
    /// <summary>Toggles highlighting the selected token</summary>
    void RefactorDialog::OnCheckChanged()
    {
@@ -112,11 +136,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (List.GetCurSel() == LB_ERR)
          return;
 
-      Console << "RefactorDialog::OnCheckChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
+      // DEBUG:
+      //Console << "RefactorDialog::OnCheckChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
 
       // Highlight symbol
-      auto index = List.GetCurSel();
-      RichEdit.HighlightSymbol(AllSymbols[index], List.GetCheck(index) == BST_CHECKED);
+      HighlightSymbol(PrevSelection, false);
+      HighlightSymbol(PrevSelection = List.GetCurSel(), true);
    }
 
    /// <summary>Displays the selected line</summary>
@@ -126,11 +151,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (List.GetCurSel() == LB_ERR)
          return;
 
-      Console << "RefactorDialog::OnSelectionChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
+      // DEBUG:
+      //Console << "RefactorDialog::OnSelectionChanged()  List.GetCurSel=" << List.GetCurSel() << ENDL;
 
-      // Scroll to selected symbol
-      auto symbol = AllSymbols[List.GetCurSel()];
-      RichEdit.ScrollTo(symbol);
+      // Highlight symbol
+      HighlightSymbol(PrevSelection, false);
+      HighlightSymbol(PrevSelection = List.GetCurSel(), true);
    }
 
    /// <summary>Adjusts the layout on resize</summary>

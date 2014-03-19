@@ -8,9 +8,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Difference highlighting control</summary>
    class RefactorEdit : public ScriptEdit
    {
-
       // ------------------------ TYPES --------------------------
-   protected:
+   public:
+      /// <summary>Defines three highlighting types</summary>
+      enum class HighlightType { None, Active, Inactive };
 
       // --------------------- CONSTRUCTION ----------------------
    public:
@@ -29,7 +30,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    public:
       void  Initialize(ScriptDocument* doc);
-      void  HighlightSymbol(const Symbol& s, bool highlight);
+      void  HighlightSymbol(const Symbol& s, HighlightType ht);
       void  HighlightSymbols(const vector<Symbol> symbols);
       void  ScrollTo(const Symbol& s);
       

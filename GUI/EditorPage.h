@@ -185,7 +185,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
             : ColourProperty(page, L"Background Colour", PrefsLib.BackgroundColour, L"Change the background colour used in the script editor")
          {}
       };
-
+      
       /// <summary>Diff highlighting colour property</summary>
       class DifferenceHighlightProperty : public ColourProperty
       {
@@ -210,7 +210,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
 
-      /// <summary>Refactor highlighting colour property</summary>
+      /// <summary>Inactive Refactor highlighting colour property</summary>
       class RefactorHighlightProperty : public ColourProperty
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -221,8 +221,19 @@ NAMESPACE_BEGIN2(GUI,Preferences)
             : ColourProperty(page, L"Refactor Highlight", PrefsLib.RefactorHighlight, L"Change the colour used to highlight symbols when refactoring")
          {}
       };
-
-
+      
+      /// <summary>Active Refactor highlighting colour property</summary>
+      class RefactorSelectionProperty : public ColourProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'RefactorSelection' property</summary>
+         /// <param name="page">Owner page.</param>
+         RefactorSelectionProperty(PreferencesPage& page) 
+            : ColourProperty(page, L"Refactor Selection", PrefsLib.RefactorSelection, L"Change the colour used to highlight symbols when refactoring")
+         {}
+      };
+      
       // --------------------- CONSTRUCTION ----------------------
    public:
       EditorPage();    
@@ -259,6 +270,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       ErrorHighlightProperty*       ErrorHighlight;
       DifferenceHighlightProperty*  DifferenceHighlight;
       RefactorHighlightProperty*    RefactorHighlight;
+      RefactorSelectionProperty*    RefactorSelection;
 
       
    };
