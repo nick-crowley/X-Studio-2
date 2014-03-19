@@ -78,6 +78,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       afx_msg void    OnClose();
       afx_msg void    OnCommandConsole()            { OnPerformCommand(ID_VIEW_CONSOLE);         }
+      afx_msg void    OnCommandExportProject(); //             { OnPerformCommand(ID_FILE_EXPORT);          }
       afx_msg void    OnCommandFindText()           { OnPerformCommand(ID_EDIT_FIND);            }
       afx_msg void    OnCommandCustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);       }
       afx_msg void    OnCommandEditPreferences();

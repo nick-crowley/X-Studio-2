@@ -169,6 +169,13 @@ namespace Logic
       return buf.get();
    }
 
+   /// <summary>Gets the length of the path</summary>
+   /// <returns></returns>
+   UINT  Path::GetLength() const
+   {
+      return lstrlen(Buffer.get());
+   }
+
    /// <summary>Determines whether path has a given extension (case insensitive)</summary>
    /// <param name="ext">The extention preceeded by a dot</param>
    /// <returns></returns>

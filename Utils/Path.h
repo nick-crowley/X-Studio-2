@@ -26,6 +26,7 @@ namespace Logic
       PROPERTY_GET(wstring,Extension,GetExtension);
       PROPERTY_GET(wstring,FileName,GetFileName);
       PROPERTY_GET(Path,Folder,GetFolder);
+      PROPERTY_GET(UINT,Length,GetLength);
 
 		// ---------------------- ACCESSORS ------------------------
    public:
@@ -36,6 +37,7 @@ namespace Logic
       wstring  GetExtension() const;
       wstring  GetFileName() const;
       Path     GetFolder() const;
+      UINT     GetLength() const;
       bool     HasExtension(const WCHAR* ext) const;
       bool     HasExtension(wstring ext) const;
       bool     IsDirectory() const;
@@ -68,7 +70,7 @@ namespace Logic
       // Access
       const WCHAR* c_str() const                   { return Buffer.get(); }
       explicit operator WCHAR*()                   { return Buffer.get(); }
-      explicit operator wstring()                  { return Buffer.get(); }
+      explicit operator std::wstring() const       { return Buffer.get(); }
 
    private:
       CharArrayPtr  Copy() const;

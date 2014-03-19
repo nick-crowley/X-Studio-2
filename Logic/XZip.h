@@ -324,28 +324,5 @@ namespace Logic
       #endif
 
 
-      /// <summary>XZip exception</summary>
-      class XZipException : public ExceptionBase
-      {
-      public:
-         /// <summary>Create XZip exception from an XZip error code</summary>
-         /// <param name="src">The source.</param>
-         /// <param name="code">The code.</param>
-         XZipException(const wstring& src, ZRESULT code) : ExceptionBase(src, code, L"")
-         {
-            char buf[128];
-            FormatZipMessageZ(code, buf, 128);
-            Message = GuiString::Convert(buf, CP_ACP);
-         }
-
-         /// <summary>Create XZip exception from a custom message</summary>
-         /// <param name="src">The source.</param>
-         /// <param name="msg">message.</param>
-         XZipException(const wstring& src, const wstring& msg) : ExceptionBase(src, msg)
-         {
-         }
-      };
-
-      
    }
 }

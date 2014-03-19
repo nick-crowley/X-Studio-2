@@ -7,6 +7,7 @@
 #include "MainWnd.h"
 #include "../Testing/LogicTests.h"
 #include "PreferencesDialog.h"
+#include "ExportProjectDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,6 +62,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &MainWnd::OnDocumentSwitched)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
+      ON_COMMAND(ID_FILE_EXPORT, &MainWnd::OnCommandExportProject)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
       ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandEditPreferences)
 	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
@@ -69,6 +71,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_EXPORT, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PREFERENCES, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
@@ -80,8 +83,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
                         fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::OnScriptCaretMoved)),
-                        ActiveDocument(nullptr),
-                        FirstShow(true)
+                        ActiveDocument(nullptr), FirstShow(true)
    {
    }
 
@@ -269,6 +271,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Raise 'SETTINGS CHANGED'
       if (dlg.Modified)
          theApp.OnPreferencesChanged();
+   }
+   
+   /// <summary>Execute debugging tests.</summary>
+   void MainWnd::OnCommandExportProject()
+   {
+      // Require project
+      if (!ProjectDocument::GetActive())
+         return;
+
+      // Display dialog
+      ExportProjectDialog dlg(this);
+      dlg.DoModal();
    }
 
    /// <summary>Stores current workspace.</summary>
@@ -550,7 +564,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       case ID_VIEW_OUTPUT:          check = m_wndOutput.IsVisible();         break;
       case ID_VIEW_PROPERTIES:      check = m_wndProperties.IsVisible();     break;
 
-      // Project Close/Save/SaveAs: Require project
+      // Project Export/Close/Save/SaveAs: Require project
+      case ID_FILE_EXPORT:
       case ID_FILE_PROJECT_SAVE:
       case ID_FILE_PROJECT_CLOSE: 
       case ID_FILE_PROJECT_SAVE_AS: 

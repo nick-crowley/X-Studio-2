@@ -32,6 +32,7 @@ namespace Logic
       BOOL  ShowError(const GuiString& src, const ExceptionBase& e, const GuiString& msg) const;
       BOOL  ShowError(const GuiString& src, const ExceptionBase& e) const;
       BOOL  ShowMessage(const wstring& msg, UINT flags = MB_OK) const;
+      BOOL  ShowMessage(Cons c, const wstring& msg, UINT flags = MB_OK) const;
 
       // ----------------------- MUTATORS ------------------------
    public:

@@ -207,6 +207,7 @@
     <ClInclude Include="XmlWriter.h" />
     <ClInclude Include="XZip.h" />
     <ClInclude Include="zconf.h" />
+    <ClInclude Include="ZipFile.h" />
     <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +297,7 @@
     <ClCompile Include="XZip.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ZipFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\XML\msxml6.tlh" />
