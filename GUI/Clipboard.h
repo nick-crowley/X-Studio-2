@@ -100,6 +100,9 @@ namespace GUI
             SetString(str.ToXML());
          }
          
+         /// <summary>Copies a string to the clipboard.</summary>
+         void  SetString(const wstring& txt);
+
       protected:
          /// <summary>Frees global memory handle.</summary>
          void  Free()
@@ -193,9 +196,6 @@ namespace GUI
          //      throw;
          //   }
          //}
-
-         /// <summary>Copies a string to the clipboard.</summary>
-         void  SetString(const wstring& txt);
 
          // -------------------- REPRESENTATION ---------------------
       public:
