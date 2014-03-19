@@ -79,11 +79,14 @@ namespace GUI
          }
          
          /// <summary>Copies a language Page to the clipboard.</summary>
-         /// <param name="str">The Page.</param>
-         void  SetLanguagePage(LanguagePageRef str)
+         /// <param name="page">The Page.</param>
+         void  SetLanguagePage(LanguagePageRef page)
          {
             Clear();
-            PageData.reset(new LanguagePage(str));      //SetData<const LanguagePage*>(CF_LANGUAGE_Page, str);
+            PageData.reset(new LanguagePage(page));      //SetData<const LanguagePage*>(CF_LANGUAGE_Page, str);
+
+            // Copy XML as CF_UNICODETEXT
+            SetString(page.ToXML());
          }
 
          /// <summary>Copies a language string to the clipboard.</summary>
@@ -92,6 +95,8 @@ namespace GUI
          {
             Clear();
             StringData.reset(new LanguageString(str));      //SetData<const LanguageString*>(CF_LANGUAGE_STRING, str);
+
+            // Copy XML as CF_UNICODETEXT
             SetString(str.ToXML());
          }
          

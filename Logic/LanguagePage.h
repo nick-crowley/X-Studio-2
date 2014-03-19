@@ -274,28 +274,7 @@ namespace Logic
          /// <summary>Finds an available ID for a new string</summary>
          /// <param name="start">ID of insertion point, or -1 to append after last string.</param>
          /// <returns>ID preceeding input, if available, otherwise the first ID following the input.</returns>
-         int  GetAvailableID(int start) const
-         {
-            // Empty/Append: Return LastID+1
-            if (start == -1 || Strings.empty())
-               return !Strings.empty() ? (--Strings.end())->first+1 : 1;
-
-            // Prev Available: Use previous ID
-            if (Strings.find(start-1) == Strings.end())
-               return start-1;
-
-            // Find next ID
-            auto pos = Strings.find(start);
-            for (int id = start; pos != Strings.end(); id++)
-            {
-               // Gap Detected: Use first available ID
-               if ((UINT)id < (pos++)->first)
-                  return id;
-            }
-
-            // Contiguous: Use LastID+1
-            return (--Strings.end())->first+1;
-         }
+         int  GetAvailableID(int start) const;
 
          /// <summary>Determines whether a string ID is available.</summary>
          /// <param name="id">The identifier.</param>
@@ -304,6 +283,10 @@ namespace Logic
          {
             return !Contains(id);
          }
+
+         /// <summary>Convert to XML [Used for copying to clipboard]</summary>
+         /// <returns></returns>
+         GuiString ToXML() const;
 
          /// <summary>Read-only access to string by ID.</summary>
          /// <param name="id">The string id</param>
