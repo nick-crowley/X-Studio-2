@@ -165,6 +165,17 @@ namespace Logic
    {
       return AfxMessageBox(msg.c_str(), flags);
    }
+   
+   /// <summary>Shows a message and prints it to the console</summary>
+   /// <param name="c">Console manipulator.</param>
+   /// <param name="msg">The MSG.</param>
+   /// <param name="flags">button/icon flags.</param>
+   /// <returns></returns>
+   BOOL  AppBase::ShowMessage(Cons c, const wstring& msg, UINT flags) const
+   {
+      Console << c << msg << ENDL;
+      return AfxMessageBox(msg.c_str(), flags);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
 

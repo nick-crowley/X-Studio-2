@@ -161,7 +161,7 @@ namespace Logic
    wstring  GuiString::FromSystem(UINT  id)
    {
       WCHAR* szBuffer;
-      wstring msg;
+      GuiString msg;
 
       if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, id, NULL, (WCHAR*)&szBuffer, 512, NULL))
       {
@@ -169,7 +169,7 @@ namespace Logic
          LocalFree(szBuffer);
       }
 
-      return msg;
+      return msg.TrimRight(L"\r\n\t ");
    }
 
    /// <summary>Get Missing string placeholder</summary>

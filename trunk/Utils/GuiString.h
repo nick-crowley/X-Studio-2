@@ -98,10 +98,12 @@ namespace Logic
    {
    public:
       /// <summary>Creates a string containing the last system error</summary>
-      SysErrorString() { assign(GuiString::FromSystem(GetLastError())); }
+      SysErrorString() : wstring(GuiString::FromSystem(GetLastError()))
+      {}
 
       /// <summary>Creates a string containing the any system error</summary>
-      SysErrorString(UINT id) { assign(GuiString::FromSystem(id));             }
+      SysErrorString(UINT id) : wstring(GuiString::FromSystem(id))
+      {}
    };
 
    /// <summary>String holding name of a game version</summary>
