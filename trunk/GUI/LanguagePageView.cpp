@@ -7,6 +7,9 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
 
+   /// <summary>Called when all views have been initialized</summary>
+   #define UM_INIT_COMPLETE      (WM_USER+1)
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNCREATE(LanguagePageView, CListView)
@@ -14,6 +17,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    BEGIN_MESSAGE_MAP(LanguagePageView, CListView)
       ON_WM_CONTEXTMENU()
       ON_WM_SIZE()
+      ON_MESSAGE(UM_INIT_COMPLETE, &LanguagePageView::OnInitComplete)
       ON_NOTIFY_REFLECT(LVN_ITEMCHANGED, &LanguagePageView::OnItemStateChanged)
       ON_COMMAND(ID_EDIT_CUT, &LanguagePageView::OnCommandEditCut)
       ON_COMMAND(ID_EDIT_COPY, &LanguagePageView::OnCommandEditCopy)
@@ -148,6 +152,14 @@ NAMESPACE_BEGIN2(GUI,Views)
       theApp.GetContextMenuManager()->ShowPopupMenu(IDM_STRINGVIEW_POPUP, point.x, point.y, this, TRUE);
    }
 
+   /// <summary>Called when all views have been initialized</summary>
+   LRESULT LanguagePageView::OnInitComplete(WPARAM wParam, LPARAM lParam)
+   {
+      // Select first page
+      GetListCtrl().SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+      return 0;
+   }
+
    /// <summary>Initialise listView and populate pages</summary>
    void LanguagePageView::OnInitialUpdate()
    {
@@ -183,6 +195,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Populate pages
          Populate();
+
+         // Defer 'Init Complete' message
+         PostMessage(UM_INIT_COMPLETE);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
