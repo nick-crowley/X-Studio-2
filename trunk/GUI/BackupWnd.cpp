@@ -226,8 +226,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       // ListBackground: Grey on disabled
       if (nCtlColor == CTLCOLOR_LISTBOX)
-         return GetSysColorBrush(List.IsWindowEnabled() ? COLOR_WINDOW : COLOR_3DSHADOW);
-
+         return List.IsWindowEnabled() ? GetGlobalData()->brWindow : GetGlobalData()->brBtnFace;      //return GetSysColorBrush(List.IsWindowEnabled() ? COLOR_WINDOW : COLOR_3DSHADOW);
+         
       // Default
       return __super::OnCtlColor(pDC, pWnd, nCtlColor);
    }
