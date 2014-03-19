@@ -95,6 +95,9 @@ namespace Logic
       /// <summary>Show large toolbars throughout app</summary>
       PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false)
 
+      /// <summary>Last open document folder</summary>
+      PREFERENCE_PROPERTY_EX(Path,LPCWSTR,String,OpenDocumentFolder,L"");
+
       /// <summary>Tool window font</summary>
       PREFERENCE_PROPERTY(LOGFONT,LogFont,ToolWindowFont,L"Regular");
 

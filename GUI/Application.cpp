@@ -34,9 +34,9 @@ Application theApp;
 // --------------------------------- APP WIZARD ---------------------------------
   
 BEGIN_MESSAGE_MAP(Application, AppBase)
-	ON_COMMAND(ID_APP_ABOUT, &Application::OnCommandAbout)
-	ON_COMMAND(ID_FILE_NEW, &Application::OnCommandNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+	ON_COMMAND(ID_APP_ABOUT, &Application::OnCommand_About)
+	ON_COMMAND(ID_FILE_NEW, &Application::OnCommand_New)
+	ON_COMMAND(ID_FILE_OPEN, &Application::OnCommand_Open)
    ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &Application::OnQueryCommand)
    ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &Application::OnQueryCommand)
    ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, &Application::OnQueryCommand)
@@ -295,7 +295,7 @@ CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) cons
 
 
 /// <summary>Dispay about box</summary>
-void Application::OnCommandAbout()
+void Application::OnCommand_About()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
@@ -303,10 +303,39 @@ void Application::OnCommandAbout()
 
 
 /// <summary>Dispay new document dialog</summary>
-void Application::OnCommandNew()
+void Application::OnCommand_New()
 {
 	NewDocumentDialog dlg;
 	dlg.DoModal();
+}
+
+/// <summary>Display open file dialog</summary>
+void Application::OnCommand_Open()
+{
+   static const wchar* filter = L"All Supported Files (*.xml,*.pck,*.xprj)|*.xml;*.pck;*.xprj|" 
+                                L"Uncompressed Files (*.xml)|*.xml|" 
+                                L"Compressed Files (*.pck)|*.pck|" 
+                                L"Project Files (*.xprj)|*.xprj|" 
+                                L"All files (*.*)|*.*||";
+   try
+   {
+      auto folder = PrefsLib.OpenDocumentFolder;
+         
+      // Query for file
+	   CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING|OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST, filter, m_pMainWnd, 0, TRUE);
+      if (dlg.DoModal() == IDOK)
+      {
+         // Store last folder
+         Path path = (LPCWSTR)dlg.GetPathName();
+         PrefsLib.OpenDocumentFolder = path.Folder;
+
+         // Open document
+         OpenDocumentFile(path.c_str(), TRUE);
+      }
+   }
+   catch (ExceptionBase& e) {
+      theApp.ShowError(HERE, e);
+   }
 }
 
 /// <summary>Update all windows</summary>
