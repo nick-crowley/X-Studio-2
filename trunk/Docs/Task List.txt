@@ -17,7 +17,7 @@ ScriptEdit:
 
 # Error underlines is not completely cleared from whitespace
 
-# Preferences for disabling 'check code as I type' not connected
+# [DONE] Preferences for disabling 'check code as I type' not connected
 
 
 
@@ -68,9 +68,9 @@ GUI General:
 
 # Implement: reload game data
 
-# Custom dialogs are bleak
+# [DONE] Custom dialogs are bleak
 
-# Implement: export all project files to an archive
+# [DONE] Implement: export all project files to an archive
 
 # Implement: Open file dialog that doesn't list hidden document templates
 
