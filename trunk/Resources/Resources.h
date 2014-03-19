@@ -165,6 +165,7 @@
 #define IDD_IMPORT_PROJECT              711
 #define IDD_COMMIT                      712
 #define IDD_ARGUMENT                    713
+#define IDD_EXPORT_PROJECT              714
 
 ///////////////////////////////// CONTROLS //////////////////////////////
 
@@ -235,6 +236,12 @@
 #define IDC_SYMBOL_EDIT                 802
 #define IDC_RENAME_EDIT                 803
 #define IDC_PREVIEW_CHECK               804
+
+// Export porject dialog
+//#define IDC_FILENAME_EDIT               801
+//#define IDC_FOLDER_EDIT                 802
+#define IDC_ARCHIVE_RADIO               803
+#define IDC_FOLDER_RADIO                804
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 

@@ -222,6 +222,12 @@ namespace Logic
       /// <summary>Last new document folder</summary>
       PREFERENCE_PROPERTY_EX(Path,LPCWSTR,String,NewDocumentFolder,L"");
 
+      // ExportProject dialog
+      /// <summary>Last export project file name</summary>
+      PREFERENCE_PROPERTY_EX(Path,LPCWSTR,String,ExportProjectFileName,L"");
+
+      /// <summary>Last export project folder</summary>
+      PREFERENCE_PROPERTY_EX(Path,LPCWSTR,String,ExportProjectFolder,L"");
 
       // Game Data:
       /// <summary>Continue loading game data if a language file fails to load</summary>
