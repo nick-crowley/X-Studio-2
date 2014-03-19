@@ -3,6 +3,7 @@
 #include "StringResolver.h"
 #include "RichStringParser.h"
 #include "ParameterTypes.h"
+#include <strsafe.h>
 
 namespace Logic
 {
@@ -119,10 +120,15 @@ namespace Logic
 
       /// <summary>Generate XML necessary to define this string  [Used for copying to clipboard]</summary>
       /// <returns></returns>
-      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
       GuiString  LanguageString::ToXML() const
       {
-         return VString(L"<t id='%d'>%s</t>", ID, Text.c_str());
+         // Ensure enough buffer space  (VString limited to 512 chars)
+         auto length = Text.length() + 32;
+         CharArrayPtr buf(new wchar[length]);
+
+         // Format + return
+         StringCchPrintf(buf.get(), length, L"<t id='%d'>%s</t>", ID, Text.c_str());
+         return buf.get();
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
