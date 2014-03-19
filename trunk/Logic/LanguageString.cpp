@@ -119,6 +119,7 @@ namespace Logic
 
       /// <summary>Generate XML necessary to define this string  [Used for copying to clipboard]</summary>
       /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Insufficient buffer space</exception>
       GuiString  LanguageString::ToXML() const
       {
          return VString(L"<t id='%d'>%s</t>", ID, Text.c_str());
