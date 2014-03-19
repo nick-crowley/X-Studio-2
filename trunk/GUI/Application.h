@@ -164,8 +164,9 @@ public:
    void          UpdateFonts();
    
 protected:
-	afx_msg void OnCommandAbout();
-   afx_msg void OnCommandNew();
+	afx_msg void OnCommand_About();
+   afx_msg void OnCommand_New();
+   afx_msg void OnCommand_Open();
    afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 
    // -------------------- REPRESENTATION ---------------------

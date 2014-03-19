@@ -72,7 +72,7 @@ GUI General:
 
 # [DONE] Implement: export all project files to an archive
 
-# Implement: Open file dialog that doesn't list hidden document templates
+# [DONE] Implement: Open file dialog that doesn't list hidden document templates
 
 
 
