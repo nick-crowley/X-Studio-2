@@ -74,7 +74,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.ErrorHighlight = ErrorHighlight->GetColor();
       PrefsLib.DifferenceHighlight = DifferenceHighlight->GetColor();
       PrefsLib.RefactorHighlight = RefactorHighlight->GetColor();
-      
+      PrefsLib.RefactorSelection = RefactorSelection->GetColor();
    }
 
    /// <summary>Populates page.</summary>
@@ -102,6 +102,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group->AddSubItem(ErrorHighlight = new ErrorHighlightProperty(*this));
       group->AddSubItem(DifferenceHighlight = new DifferenceHighlightProperty(*this));
       group->AddSubItem(RefactorHighlight = new RefactorHighlightProperty(*this));
+      group->AddSubItem(RefactorSelection = new RefactorSelectionProperty(*this));
       Grid.AddProperty(group);
       
    }

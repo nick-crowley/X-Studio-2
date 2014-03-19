@@ -40,10 +40,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       __super::Initialize(doc);
    }
 
-   /// <summary>Highlights/Unhighlights a single symbol.</summary>
+   /// <summary>Sets highlighting for a single symbol.</summary>
    /// <param name="s">symbol.</param>
-   /// <param name="highlight">symbol.</param>
-   void RefactorEdit::HighlightSymbol(const Symbol& s, bool highlight)
+   /// <param name="ht">Highlight type.</param>
+   void RefactorEdit::HighlightSymbol(const Symbol& s, HighlightType ht)
    {
       // Freeze
       SuspendUndo(true);
@@ -51,7 +51,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Define normal/refactor highlight
       CharFormat cf(CFM_BACKCOLOR, 0);
-      cf.crBackColor = (highlight ? PrefsLib.RefactorHighlight : PrefsLib.BackgroundColour);
+      cf.crBackColor = (ht == HighlightType::Active   ? PrefsLib.RefactorSelection
+                      : ht == HighlightType::Inactive ? PrefsLib.RefactorHighlight 
+                                                      : PrefsLib.BackgroundColour);
 
       // Highlight
       UINT offset = LineIndex(s.LineNumber-1);
@@ -63,8 +65,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuspendUndo(false);
    }
 
-   /// <summary>Highlights all symbols.</summary>
-   /// <param name="symbols">The symbols.</param>
+   /// <summary>Highlights all symbols with 'inactive' highlighting</summary>
+   /// <param name="symbols">symbols collection.</param>
    void RefactorEdit::HighlightSymbols(const vector<Symbol> symbols)
    {
       // Freeze
@@ -73,7 +75,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Define refactor highlight
       CharFormat cf(CFM_BACKCOLOR, 0);
-      cf.crBackColor = RGB(128,128,128);
+      cf.crBackColor = PrefsLib.RefactorHighlight;
 
       // Highlight symbols
       for (auto& s : symbols)

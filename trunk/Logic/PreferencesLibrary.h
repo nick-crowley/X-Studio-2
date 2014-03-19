@@ -140,8 +140,11 @@ namespace Logic
       /// <summary>Diff viewer alteration highlight</summary>
       PREFERENCE_PROPERTY_EX(COLORREF,int,Int,DifferenceHighlight,RGB(80,80,80));
 
-      /// <summary>Refactor edit symbol highlight</summary>
-      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,RefactorHighlight,RGB(128,128,128));
+      /// <summary>RefactorEdit symbol highlight</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,RefactorHighlight,RGB(160,160,160));
+      
+      /// <summary>Selected RefactorEdit symbol highlight</summary>
+      PREFERENCE_PROPERTY_EX(COLORREF,int,Int,RefactorSelection,RGB(150,180,150));
 
 
       /// <summary>Syntax highlighting colour for arguments</summary>
