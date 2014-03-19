@@ -1,6 +1,9 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
+#include "HeadingStatic.h"
+#include "TitleStatic.h"
+#include "BitmapStatic.h"
 #include "../Logic/ProjectFile.h"
 
 FORWARD_DECLARATION2(GUI,Documents,class ProjectDocument)
@@ -64,9 +67,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       const static UINT OPTION_ZIP = 0,
                         OPTION_COPY = 1;
 
+      BitmapStatic   Image;
+      TitleStatic    Title;
+      HeadingStatic  Location,
+                     Method;
+
       Path  FileName,
             Folder;
       int   Option;
    };
+
+   
+   void AFXAPI DDX_Static(CDataExchange* pDX, int nIDC, CStatic& rControl);
    
 NAMESPACE_END2(GUI,Windows)

@@ -22,7 +22,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Initializes a new export project dialog.</summary>
    /// <param name="parent">parent window.</param>
    ExportProjectDialog::ExportProjectDialog(CWnd* parent /*= nullptr*/)
-      : CDialogEx(ExportProjectDialog::IDD, parent)
+      : CDialogEx(ExportProjectDialog::IDD, parent), Image(IDB_EXPORT_PROJECT)
    {
       // Sanity check
       if (!ProjectDocument::GetActive())
@@ -40,16 +40,29 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
+   void AFXAPI DDX_Static(CDataExchange* pDX, int id, CStatic& ctrl)
+   {
+      DDX_Control(pDX, id, ctrl);
+
+      // Ensure as OwnerDraw
+      if ((ctrl.GetStyle() & SS_OWNERDRAW) == 0)
+         ctrl.ModifyStyle(0, SS_OWNERDRAW, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
+   }
+
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Called when initialize dialog.</summary>
    /// <returns></returns>
    BOOL ExportProjectDialog::OnInitDialog()
    {
+      __super::OnInitDialog();
+
       // Enable 'Filename' for archive mode
       GetDlgItem(IDC_FILENAME_EDIT)->EnableWindow(TRUE);
 
-      return __super::OnInitDialog();
+      // Autosize image
+      Image.ShinkToFit();
+      return TRUE;
    }
 
 
@@ -107,6 +120,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
       DDX_Radio(pDX, IDC_ARCHIVE_RADIO, Option);
+
+      DDX_Static(pDX, IDC_IMAGE_STATIC, Image);
+      DDX_Static(pDX, IDC_TITLE_STATIC, Title);
+      DDX_Static(pDX, IDC_HEADING1_STATIC, Location);
+      DDX_Static(pDX, IDC_HEADING2_STATIC, Method);
    }
 
    /// <summary>Generates the output paths for each file in the project</summary>

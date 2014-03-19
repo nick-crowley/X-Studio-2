@@ -16,6 +16,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    TitleStatic::TitleStatic()
    {
+      /*LOGFONT lf;
+      GetGlobalData()->fontRegular.GetLogFont(&lf);*/
+      
+      // Create 14pt version of title font
+      TitleFont.CreatePointFont(10*TEXT_SIZE, GetGlobalData()->bIsWindows7 ? L"Segoe UI Light" : L"Tahoma");
    }
 
    TitleStatic::~TitleStatic()
@@ -35,16 +40,32 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
          
-      CRect wnd;
-      GetClientRect(wnd);
+      ClientRect rc(this);
 
       // TODO: Layout code
    }
    
-   /// <summary>Owner draw.</summary>
+   /// <summary>Draw title in large blue text.</summary>
    /// <param name="lpDrawItemStruct">The draw item structure.</param>
-   void TitleStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+   void TitleStatic::DrawItem(LPDRAWITEMSTRUCT draw)
    {
+      CString    str;
+      ClientRect rc(this);
+      SharedDC   dc(draw->hDC);
+
+      //Console << HERE << ENDL;
+
+      // Prepare
+      GetWindowText(str);
+
+      // Draw large text in blue
+      auto font = dc.SelectObject(&TitleFont);
+      auto col = dc.SetTextColor(TEXT_COLOUR);
+      dc.DrawText(str, rc, DT_CENTER|DT_SINGLELINE|DT_VCENTER);
+
+      // Cleanup
+      dc.SetTextColor(col);
+      dc.SelectObject(font);
    }
 
    /// <summary>Called when resized.</summary>

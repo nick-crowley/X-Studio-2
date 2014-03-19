@@ -37,16 +37,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
          
-      CRect wnd;
-      GetClientRect(wnd);
+      ClientRect rc(this);
 
       // TODO: Layout code
    }
 
-   /// <summary>Owner draw.</summary>
-   /// <param name="lpDrawItemStruct">The draw item structure.</param>
-   void HeadingStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+   /// <summary>Draw text in bold.</summary>
+   /// <param name="draw">The draw item structure.</param>
+   void HeadingStatic::DrawItem(LPDRAWITEMSTRUCT draw)
    {
+      CString    str;
+      ClientRect rc(this);
+      SharedDC   dc(draw->hDC);
+
+      //Console << HERE << ENDL;
+
+      // Prepare
+      GetWindowText(str);
+      
+      // Draw text in bold
+      auto font = dc.SelectObject(&GetGlobalData()->fontBold);
+      dc.DrawText(str, rc, DT_LEFT|DT_SINGLELINE|DT_VCENTER);
+      dc.SelectObject(font);
    }
 
    

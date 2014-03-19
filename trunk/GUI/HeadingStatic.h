@@ -10,9 +10,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
-   protected:
-      HeadingStatic();    // Protected constructor used by dynamic creation
    public:
+      HeadingStatic();
       virtual ~HeadingStatic();
        
       // ------------------------ STATIC -------------------------
@@ -26,7 +25,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ----------------------- MUTATORS ------------------------
    protected:
       void AdjustLayout();
-      void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
+      void DrawItem(LPDRAWITEMSTRUCT draw) override;
 
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	  

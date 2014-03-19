@@ -47,6 +47,7 @@
 #define IDB_NEWDOCUMENT_ICONS           187
 #define IDB_SPLASH                      188
 #define IDB_BACKUP_ICONS                189
+#define IDB_EXPORT_PROJECT              190
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
@@ -168,6 +169,13 @@
 #define IDD_EXPORT_PROJECT              714
 
 ///////////////////////////////// CONTROLS //////////////////////////////
+
+// Common
+#define IDC_IMAGE_STATIC                790
+#define IDC_TITLE_STATIC                791
+#define IDC_HEADING1_STATIC             792
+#define IDC_HEADING2_STATIC             793
+#define IDC_HEADING3_STATIC             794
 
 // Script View
 #define IDC_SCOPE_COMBO                 800
