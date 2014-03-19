@@ -48,6 +48,7 @@
 #define IDB_SPLASH                      188
 #define IDB_BACKUP_ICONS                189
 #define IDB_EXPORT_PROJECT              190
+#define IDB_IMPORT_PROJECT              191
 
 ////////////////////////////////// ICONS ///////////////////////////////
 
