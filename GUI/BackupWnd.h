@@ -38,13 +38,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       };
 
    protected:
-      /// <summary>Shared Device context that wraps DC handles</summary>
-      class SharedDC : public CDC
-      {
-      public:
-         SharedDC(HDC dc) { Attach(dc); }
-         ~SharedDC()      { Detach();   }
-      };
 
       // --------------------- CONSTRUCTION ----------------------
    public:

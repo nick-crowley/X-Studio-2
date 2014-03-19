@@ -14,17 +14,28 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   BitmapStatic::BitmapStatic()
+   BitmapStatic::BitmapStatic() : BitmapID(0)
+   {}
+
+   BitmapStatic::BitmapStatic(UINT id, bool alpha /*= false*/) : BitmapID(id), Alpha(alpha)
    {
+      // Load RGB[A] bitmap
+      Image.LoadFromResource(AfxGetResourceHandle(), BitmapID);
+      Image.SetHasAlphaChannel(Alpha ? TRUE : FALSE);
    }
 
    BitmapStatic::~BitmapStatic()
-   {
-   }
+   {}
 
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
+
+   /// <summary>Resize the static to fit the image.</summary>
+   void BitmapStatic::ShinkToFit()
+   {
+      SetWindowPos(nullptr, -1, -1, Image.GetWidth(), Image.GetHeight(), SWP_NOACTIVATE|SWP_NOZORDER|SWP_NOMOVE);
+   }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
@@ -35,16 +46,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	   if (!GetSafeHwnd() || theApp.IsMimized())
          return;
          
-      CRect wnd;
-      GetClientRect(wnd);
+      ClientRect rc(this);
 
       // TODO: Layout code
    }
    
    /// <summary>Owner draw.</summary>
    /// <param name="lpDrawItemStruct">The draw item structure.</param>
-   void BitmapStatic::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+   void BitmapStatic::DrawItem(LPDRAWITEMSTRUCT draw)
    {
+      ClientRect rc(this);
+      
+      //dc.FillSolidRect(wnd, GetSysColor(COLOR_APPWORKSPACE));
+
+      // Draw 
+      if (Alpha)
+         Image.AlphaBlend(SharedDC(draw->hDC), 0, 0, 0xff, AC_SRC_OVER); 
+      else
+         Image.Draw(draw->hDC, rc);
    }
 
    /// <summary>Called when resized.</summary>

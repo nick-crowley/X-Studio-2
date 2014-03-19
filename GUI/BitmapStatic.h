@@ -10,9 +10,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    private:
 	  
       // --------------------- CONSTRUCTION ----------------------
-   protected:
-      BitmapStatic();    // Protected constructor used by dynamic creation
    public:
+      BitmapStatic();
+      BitmapStatic(UINT id, bool alpha = false);
       virtual ~BitmapStatic();
        
       // ------------------------ STATIC -------------------------
@@ -24,15 +24,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ---------------------- ACCESSORS ------------------------			
    public:
       // ----------------------- MUTATORS ------------------------
+   public:
+      void ShinkToFit();
+
    protected:
       void AdjustLayout();
-      void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
+      void DrawItem(LPDRAWITEMSTRUCT draw) override;
 	  
 	  afx_msg void OnSize(UINT nType, int cx, int cy);
 	  
       // -------------------- REPRESENTATION ---------------------
-      
-   private:
+   protected:
+      UINT    BitmapID;
+      CImage  Image;
+      bool    Alpha;
    };
    
 

@@ -92,6 +92,14 @@ namespace Logic
       // -------------------- REPRESENTATION ---------------------
    };
 
+   
+   /// <summary>Shared Device context that wraps DC handles</summary>
+   class UtilExport SharedDC : public CDC
+   {
+   public:
+      SharedDC(HDC dc) { Attach(dc); }
+      ~SharedDC()      { Detach();   }
+   };
 
    /// <summary>Position of mouse cursor</summary>
    class UtilExport CursorPoint : public CPoint
