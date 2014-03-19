@@ -156,6 +156,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Copies selected item to clipboard</summary>
    void CGameDataWnd::OnCommandCopy()
    {
+      // Require selection
       if (ListView.GetNextItem(-1, LVNI_SELECTED) == -1)
          return;
 
@@ -163,8 +164,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       auto str = ListView.GetItemText(ListView.GetNextItem(-1, LVNI_SELECTED), 0);
       
       // Copy to clipboard
-      if (!str.IsEmpty())
-         theClipboard.SetString((LPCWSTR)str);
+      theClipboard.Clear();
+      theClipboard.SetString((LPCWSTR)str);
    }
    
    /// <summary>Abortive attempt to solve listView item background not matching listView background</summary>
