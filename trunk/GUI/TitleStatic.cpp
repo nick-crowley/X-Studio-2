@@ -61,7 +61,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Draw large text in blue
       auto font = dc.SelectObject(&TitleFont);
       auto col = dc.SetTextColor(TEXT_COLOUR);
-      dc.DrawText(str, rc, DT_CENTER|DT_SINGLELINE|DT_VCENTER);
+      dc.DrawText(str, rc, DT_CENTER|DT_SINGLELINE|DT_TOP);
 
       // Cleanup
       dc.SetTextColor(col);

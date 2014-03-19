@@ -248,8 +248,9 @@
 // Export porject dialog
 //#define IDC_FILENAME_EDIT               801
 //#define IDC_FOLDER_EDIT                 802
-#define IDC_ARCHIVE_RADIO               803
-#define IDC_FOLDER_RADIO                804
+#define IDC_ZIP_RADIO                   803
+#define IDC_SPK_RADIO                   804
+#define IDC_FOLDER_RADIO                805
 
 ///////////////////////////////// STRINGS ///////////////////////////////
 
