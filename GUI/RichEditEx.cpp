@@ -567,16 +567,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
       static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
 
       // Get message
-      ENPROTECTED *pProtected = reinterpret_cast<ENPROTECTED *>(pNMHDR);
+      ENPROTECTED *pProtected = reinterpret_cast<ENPROTECTED*>(pNMHDR);
       
       // Block RichEdit from invoking paste itself, then invoke manually so we can highlight text
       switch (pProtected->msg)
       {
       case WM_PASTE:
          // Manually invoke
-         if (ReadOnly)
-            PasteFormat(CF_UNICODETEXT);
+         /*if (!ReadOnly)
+            PasteFormat(CF_UNICODETEXT);*/
 
+         // Block. Allow view to initiate paste command
+         Console << HERE << ENDL;
          *pResult = BLOCK_INPUT;
          break;
 

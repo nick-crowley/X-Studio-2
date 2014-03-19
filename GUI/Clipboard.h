@@ -181,10 +181,11 @@ namespace GUI
          /// <summary>Singleton instance</summary>
          static Clipboard  Instance;
 
-      protected:
          /// <summary>Private clipboard formats</summary>
-         const UINT  CF_LANGUAGE_STRING = CF_GDIOBJFIRST;
+         const static UINT  CF_LANGUAGE_STRING = CF_GDIOBJFIRST,
+                            CF_LANGUAGE_PAGE   = (CF_GDIOBJFIRST+1);
 
+      protected:
          /// <summary>Clipboard data</summary>
          static LanguageStringPtr  StringData;
          static LanguagePagePtr    PageData;

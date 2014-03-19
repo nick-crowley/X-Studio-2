@@ -2,6 +2,7 @@
 #include "ScriptEdit.h"
 #include "RefactorDialog.h"
 #include "SymbolDialog.h"
+#include "Clipboard.h"
 #include "../Logic/CommandLexer.h"
 #include "../Logic/SyntaxHighlight.h"
 #include "../Logic/IndentationStack.h"
@@ -1034,8 +1035,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       auto prevLine = LineFromChar(-1);
 
-      // Paste
-      if (CanPaste(nClipFormat))
+      // LanguageString: Insert text  [Clipboard CF_UNICODETEXT contains the XML equivlent, we want plaintext]
+      if (theClipboard.HasLanguageString())     
+         ReplaceSel(theClipboard.GetLanguageString().Text.c_str(), TRUE);     //if (IsClipboardFormatAvailable(Clipboard::CF_LANGUAGE_STRING))
+
+      // UnicodeText: Paste normally
+      else if (CanPaste(nClipFormat))
          PasteSpecial(nClipFormat);
 
       // DEBUG:
