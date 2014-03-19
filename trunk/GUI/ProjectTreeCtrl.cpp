@@ -24,7 +24,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    // -------------------------------- CONSTRUCTION --------------------------------
 
    ProjectTreeCtrl::ProjectTreeCtrl() 
-      : DragIcon(nullptr), 
+      : DragIcon(nullptr), EditingLabel(false),
         fnItemAdded(ProjectDocument::ItemAdded.Register(this, &ProjectTreeCtrl::OnItemAdded)),
         fnItemChanged(ProjectDocument::ItemChanged.Register(this, &ProjectTreeCtrl::OnItemChanged)),
         fnItemRemoved(ProjectDocument::ItemRemoved.Register(this, &ProjectTreeCtrl::OnItemRemoved))
@@ -49,6 +49,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Get data
       return selected.Data;
+   }
+
+   /// <summary>Determines whether in-place label editing is in progress.</summary>
+   /// <returns></returns>
+   bool ProjectTreeCtrl::IsEditingLabel() const
+   {
+      return EditingLabel;
    }
 
    /// <summary>Populates the entire treeview from the active project.</summary>
@@ -236,6 +243,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
             edit->SetLimitText(MAX_PATH);
          }
+
+         // State
+         EditingLabel = true;
       }
    }
    
@@ -249,6 +259,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // Get new item text
       const wchar* newText = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR)->item.pszText;
       *pResult = REJECT;
+
+      // State
+      EditingLabel = false;
 
       // Ignore if cancelled
       if (newText == nullptr)

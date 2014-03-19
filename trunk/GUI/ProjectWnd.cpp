@@ -76,7 +76,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <returns></returns>
    BOOL CProjectWnd::PreTranslateMessage(MSG* pMsg)
    {
-      if (Accelerators != nullptr && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+      // Custom accelerators  (Except when editing labels)
+      if (Accelerators != nullptr && !TreeView.IsEditingLabel() && pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
 	      return ::TranslateAccelerator(m_hWnd, Accelerators, pMsg);
 
       return __super::PreTranslateMessage(pMsg);
