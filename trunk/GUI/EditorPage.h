@@ -198,6 +198,18 @@ NAMESPACE_BEGIN2(GUI,Preferences)
          {}
       };
       
+      /// <summary>Error highlighting colour property</summary>
+      class ErrorHighlightProperty : public ColourProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'ErrorHighlight' colour property</summary>
+         /// <param name="page">Owner page.</param>
+         ErrorHighlightProperty(PreferencesPage& page) 
+            : ColourProperty(page, L"Error Highlight", PrefsLib.ErrorHighlight, L"Change the colour used to highlight errors in the script editor")
+         {}
+      };
+
       /// <summary>Refactor highlighting colour property</summary>
       class RefactorHighlightProperty : public ColourProperty
       {
@@ -244,6 +256,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
       BackgroundColourProperty*     BackgroundColour;
       LineNumberColourProperty*     LineNumberColour;
+      ErrorHighlightProperty*       ErrorHighlight;
       DifferenceHighlightProperty*  DifferenceHighlight;
       RefactorHighlightProperty*    RefactorHighlight;
 
