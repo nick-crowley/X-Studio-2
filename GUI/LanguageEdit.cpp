@@ -378,8 +378,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Clear previous
          Clear();
 
-         // Display/highlight sourceText
+         // Display sourceText
+         FreezeWindow(true);
          SetWindowText(Document->SelectedString->Text.c_str());
+         FreezeWindow(false);
+
+         // Highlight
          UpdateHighlighting();
       }
    }

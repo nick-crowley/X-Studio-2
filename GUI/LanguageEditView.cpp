@@ -18,7 +18,8 @@ NAMESPACE_BEGIN2(GUI,Views)
   
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   LanguageEditView::LanguageEditView() : CFormView(LanguageEditView::IDD)
+   LanguageEditView::LanguageEditView() : CFormView(LanguageEditView::IDD),
+                                          fnTextChanged(RichEdit.TextChanged.Register(this, &LanguageEditView::OnTextChanged))
    {
    }
 
@@ -409,6 +410,12 @@ NAMESPACE_BEGIN2(GUI,Views)
          theApp.ShowError(HERE, e, L"Unable to display selected string");
       }
 #endif
+   }
+   
+   /// <summary>Modify document when text changes.</summary>
+   void LanguageEditView::OnTextChanged()
+   {
+      GetDocument()->SetModifiedFlag(TRUE);
    }
 
    /// <summary>Called when text selection changes (ie. caret has moved)</summary>
