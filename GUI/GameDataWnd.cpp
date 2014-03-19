@@ -94,8 +94,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ListView.RedrawItems(0, ListView.GetItemCount()-1);
       ListView.UpdateWindow();*/
 
-      // Set states
-      Search.EnableWindow(enable ? TRUE : FALSE);
+      // Set state
       ListView.EnableWindow(enable ? TRUE : FALSE);
    }
    
@@ -230,7 +229,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Grey the listView for non-script documents</summary>
    void CGameDataWnd::OnDocumentSwitched()
    {
-      EnableList( ScriptDocument::GetActive() != nullptr );
+      //EnableList( ScriptDocument::GetActive() != nullptr );
    }
    
    /// <summary>Insert item into current script</summary>
@@ -241,14 +240,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       auto info = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
 
       // Require script document
-      if (ScriptDocument::GetActive())
+      if (auto doc = ScriptDocument::GetActive())
       {
          // Ignore item number provided by system, somtimes invalid.
          auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
 
          // Insert into current document
          if (!txt.empty())
-            ScriptDocument::GetActive()->Replace(txt);
+            doc->Replace(txt);
       }
 
       *pResult = 0;
