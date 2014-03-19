@@ -585,22 +585,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
             parser.Print();*/
          Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
 
-         // Clear previous underlining
-         CharFormat cf(CFM_UNDERLINE|CFM_UNDERLINETYPE, NULL);
-         SetSel(0,-1);
-         SetSelectionCharFormat(cf);
-
-         // Define error underline
-         cf = CharFormat(CFM_COLOR|CFM_UNDERLINE|CFM_UNDERLINETYPE, CFE_UNDERLINE);
-         cf.bUnderlineType = CFU_UNDERLINEWAVE;
-         //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
-         cf.crTextColor = PrefsLib.ErrorHighlight;
-
-         // Underline all errors
-         for (const auto& err : parser.Errors)
+         // Underlining Errors?
+         if (PrefsLib.BackgroundCompiler)
          {
-            FormatToken(LineIndex(err.Line-1), err, cf);
-            Console << err.Line << L": " << Cons::Yellow << err.Message << Cons::White << L" : " << err.Text << ENDL;
+            // Clear previous underlining
+            CharFormat cf(CFM_UNDERLINE|CFM_UNDERLINETYPE, NULL);
+            SetSel(0,-1);
+            SetSelectionCharFormat(cf);
+
+            // Define error underline
+            cf = CharFormat(CFM_COLOR|CFM_UNDERLINE|CFM_UNDERLINETYPE, CFE_UNDERLINE);
+            cf.bUnderlineType = CFU_UNDERLINEWAVE;
+            //cf.bUnderlineColor = 0x02;     //Undocumented underline colour
+            cf.crTextColor = PrefsLib.ErrorHighlight;
+
+            // Underline all errors
+            for (const auto& err : parser.Errors)
+            {
+               FormatToken(LineIndex(err.Line-1), err, cf);
+               Console << err.Line << L": " << Cons::Yellow << err.Message << Cons::White << L" : " << err.Text << ENDL;
+            }
          }
 
          // Raise 'Compile Complete'
