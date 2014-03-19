@@ -96,6 +96,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(DiffDocument, DocumentBase)
    
    BEGIN_MESSAGE_MAP(DiffDocument, DocumentBase)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DiffDocument::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DiffDocument::OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------

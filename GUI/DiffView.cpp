@@ -33,6 +33,13 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SETTINGCHANGE()
       ON_COMMAND(ID_EDIT_COPY, &DiffView::OnClipboardCopy)
       ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DiffView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DiffView::OnQueryCommand)
       ON_EN_HSCROLL(IDC_DIFF_EDIT, &DiffView::OnEditHScroll)
       ON_EN_VSCROLL(IDC_DIFF_EDIT, &DiffView::OnEditVScroll)
    END_MESSAGE_MAP()
@@ -175,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <param name="pCmdUI">UI object</param>
    void DiffView::OnQueryCommand(CCmdUI *pCmdUI)
    {
-      BOOL state = TRUE, 
+      BOOL state = FALSE, 
            check = FALSE;
 
       //
@@ -183,6 +190,17 @@ NAMESPACE_BEGIN2(GUI,Views)
       {
       // Clipboard
       case ID_EDIT_COPY:     state = RichEdit.HasSelection();            break;
+
+      // Remainder: Unsupported
+      case ID_EDIT_CUT:
+      case ID_EDIT_CLEAR:
+      case ID_EDIT_PASTE:
+      case ID_EDIT_UNDO:
+      case ID_EDIT_REDO:
+      case ID_FILE_SAVE:
+      case ID_FILE_SAVE_AS:
+         state = FALSE;
+         break;
       }
 
       // Set state
