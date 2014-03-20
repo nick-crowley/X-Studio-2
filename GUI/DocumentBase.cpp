@@ -46,7 +46,27 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       return (DocumentBase*)pChild->GetActiveDocument();
    }
+   
+   /// <summary>Renames a file on disc.</summary>
+   /// <param name="oldPath">The old path.</param>
+   /// <param name="newPath">The new path.</param>
+   /// <exception cref="Logic::ApplicationException">New file path already exists -or- project already contains new path</exception>
+   /// <exception cref="Logic::IOException">Unable to rename file</exception>
+   void DocumentBase::RenameFile(Path oldPath, Path newPath)
+   {
+      auto proj = ProjectDocument::GetActive();
 
+      // Ensure unique
+      if (newPath.Exists())
+         throw ApplicationException(HERE, L"A file with that name already exists");
+      else if (proj && proj->Contains(newPath))
+         throw ApplicationException(HERE, L"Project already contains a file with that path");
+
+      // Rename file
+      if (!MoveFileEx(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
+         throw IOException(HERE, SysErrorString());
+   }
+   
    // ------------------------------- PUBLIC METHODS -------------------------------
 
    /// <summary>Activates this document</summary>
@@ -216,9 +236,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Unmodified:
       else
       {
-         // Rename file
-         if (!MoveFileEx(FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
-            throw IOException(HERE, L"Unable to rename file: " + SysErrorString());
+         // Attempt to Rename file
+         RenameFile(FullPath, newPath);
 
          // Update document path [and title]
          auto oldPath = FullPath;
@@ -228,10 +247,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (proj && proj->Contains(oldPath))
             proj->OnDocumentRenamed(*this, oldPath, TRUE);
       }
-
-      
    }
-   
+
    /// <summary>Replaces the current match</summary>
    /// <param name="m">Match data</param>
    /// <returns>True if replaced, false if match was no longer selected</returns>

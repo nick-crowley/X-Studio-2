@@ -518,15 +518,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // New file path
             Path newPath = item.FullPath.RenameFileName(name);
             
-            // Ensure unique
-            if (newPath.Exists())
-               throw ApplicationException(HERE, L"A file with that name already exists");
-            else if (Contains(newPath))
-               throw ApplicationException(HERE, L"Project already contains a file with that path");
-
-            // Rename
-            if (!MoveFileEx(item.FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
-               throw IOException(HERE, SysErrorString());
+            // Attempt to Rename
+            RenameFile(item.FullPath, newPath);
 
             // Set new name+path
             item.Name = name;
