@@ -26,7 +26,7 @@ namespace Logic
 
          // ------------------------ STATIC -------------------------
       public:
-         static FileType ParseFileType(const wstring& type);
+         
 
          // --------------------- PROPERTIES ------------------------
 

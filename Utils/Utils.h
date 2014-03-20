@@ -34,7 +34,8 @@ namespace Logic
    /// <summary>Get game language string</summary>
    UtilExport wstring  GetString(GameLanguage l);
 
-   
+   /// <summary>Parse a file type</summary>
+   UtilExport FileType ParseFileType(const wstring& type);
 
    /// <summary>Compare character ranges</summary>
    UtilExport bool operator==(const CHARRANGE& a, const CHARRANGE& b);

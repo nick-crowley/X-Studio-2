@@ -111,6 +111,33 @@ namespace Logic
       }
       return L"Invalid";
    }
+   
+   /// <summary>Get file-type from name</summary>
+   /// <exception cref="Logic::ArgumentException">Unrecognised file type</exception>
+   UtilExport FileType  ParseFileType(const wstring& type)
+   {
+      // Case insensitive comparison
+      if (StrCmpI(type.c_str(), L"Unknown") == 0)
+	      return FileType::Unknown;
+
+      else if (StrCmpI(type.c_str(), L"Universe") == 0)
+	      return FileType::Universe;
+
+      else if (StrCmpI(type.c_str(), L"Project") == 0)
+	      return FileType::Project;
+
+      else if (StrCmpI(type.c_str(), L"Mission") == 0)
+	      return FileType::Mission;
+
+      else if (StrCmpI(type.c_str(), L"Language") == 0)
+	      return FileType::Language;
+
+      else if (StrCmpI(type.c_str(), L"Script") == 0)
+	      return FileType::Script;
+         
+      // Unrecognised:
+      throw ArgumentException(HERE, L"t", VString(L"Unrecognised fileType '%s'", type.c_str()));
+   }
 
    /// <summary>Compare character ranges</summary>
    UtilExport bool operator==(const CHARRANGE& a, const CHARRANGE& b)

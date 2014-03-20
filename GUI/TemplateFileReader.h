@@ -16,7 +16,7 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TemplateFileReader();
+         TemplateFileReader(StreamPtr in);
          virtual ~TemplateFileReader();
 
          NO_COPY(TemplateFileReader);	// Default copy semantics
@@ -30,7 +30,10 @@ namespace GUI
 
          // ----------------------- MUTATORS ------------------------
       public:
-         list<TemplateFile> ReadFile();
+         TemplateList  ReadFile();
+
+      protected:
+         TemplateFile  ReadTemplate(XmlNodePtr node);
 
          // -------------------- REPRESENTATION ---------------------
 
