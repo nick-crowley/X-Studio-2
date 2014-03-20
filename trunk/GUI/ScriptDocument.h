@@ -340,10 +340,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       BOOL         OnCommitDocument(const wstring& title);
       handler void OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
-      afx_msg void OnCommand_Commit();           // { OnPerformCommand(ID_BACKUP_COMMIT);       }
+      afx_msg void OnCommand_Commit();           // { OnPerformCommand(ID_FILE_COMMIT);       }
       afx_msg void OnCommand_EditArgument();  
       afx_msg void OnCommand_InsertArgument();   // { OnPerformCommand(ID_INSERT_ARGUMENT);      }
-      afx_msg void OnCommand_QuickCommit();      // { OnPerformCommand(ID_BACKUP_QUICK_COMMIT); }
+      afx_msg void OnCommand_QuickCommit();      // { OnPerformCommand(ID_FILE_QUICK_COMMIT); }
       afx_msg void OnCommand_RemoveArgument();  
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenTemplate(Path docPath, const TemplateFile& t) override;

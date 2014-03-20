@@ -59,36 +59,38 @@
 #define ID_FILE_BROWSE                  250
 #define ID_FILE_SAVE_ALL                251
 #define ID_FILE_EXPORT                  252
-#define ID_FILE_PROJECT_CLOSE           253
-#define ID_FILE_PROJECT_SAVE            254
-#define ID_FILE_PROJECT_SAVE_AS         255
+#define ID_FILE_COMMIT                  253
+#define ID_FILE_QUICK_COMMIT            254
+#define ID_FILE_PROJECT_CLOSE           255
+#define ID_FILE_PROJECT_SAVE            256
+#define ID_FILE_PROJECT_SAVE_AS         257
 
 // Edit Menu
-#define ID_EDIT_INSERT                  256
-#define ID_EDIT_PREFERENCES             257
+#define ID_EDIT_INSERT                  258
+#define ID_EDIT_PREFERENCES             259
 
 // Test menu
-#define ID_TEST_RUN_ALL                 258
-#define ID_TEST_COMPILE                 259
+#define ID_TEST_RUN_ALL                 260
+#define ID_TEST_COMPILE                 261
 
 // View menu
-#define ID_VIEW_PROJECT                 260
-#define ID_VIEW_SCRIPT_OBJECTS          261
-#define ID_VIEW_GAME_OBJECTS            262
-#define ID_VIEW_CONSOLE                 263
-#define ID_VIEW_COMMANDS                264
-#define ID_VIEW_OUTPUT                  265
-#define ID_VIEW_BACKUP                  266
-#define ID_VIEW_PROPERTIES              267
-#define ID_VIEW_STRING_LIBRARY          268
-#define ID_VIEW_MEDIA_LIBRARY           269
-#define ID_VIEW_CUSTOMIZE               270
+#define ID_VIEW_PROJECT                 262
+#define ID_VIEW_SCRIPT_OBJECTS          263
+#define ID_VIEW_GAME_OBJECTS            264
+#define ID_VIEW_CONSOLE                 265
+#define ID_VIEW_COMMANDS                266
+#define ID_VIEW_OUTPUT                  267
+#define ID_VIEW_BACKUP                  268
+#define ID_VIEW_PROPERTIES              269
+#define ID_VIEW_STRING_LIBRARY          270
+#define ID_VIEW_MEDIA_LIBRARY           271
+#define ID_VIEW_CUSTOMIZE               272
 
 // Window menu
-#define ID_WINDOW_MANAGER               271
+#define ID_WINDOW_MANAGER               273
 
 // Help
-#define ID_HELP_FORUMS                  272
+#define ID_HELP_FORUMS                  274
 
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
@@ -114,8 +116,6 @@
 #define ID_PROJECT_PROPERTIES           358
 
 // BackupWnd ContextMenu
-#define ID_BACKUP_COMMIT                370
-#define ID_BACKUP_QUICK_COMMIT          371
 #define ID_BACKUP_DIFF                  372
 #define ID_BACKUP_REVERT                373
 #define ID_BACKUP_DELETE                374
