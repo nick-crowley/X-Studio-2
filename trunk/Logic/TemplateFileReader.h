@@ -7,14 +7,13 @@ namespace Logic
    namespace IO
    {
       
-      /// <summary></summary>
-      class TemplateFileReader : public XmlReader
+      /// <summary>Reader for the xml document templates file</summary>
+      class LogicExport TemplateFileReader : public XmlReader
       {
          // ------------------------ TYPES --------------------------
       protected:
 
          // --------------------- CONSTRUCTION ----------------------
-
       public:
          TemplateFileReader(StreamPtr in);
          virtual ~TemplateFileReader();
