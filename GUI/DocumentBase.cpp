@@ -118,9 +118,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto oldPath = FullPath;
 
          // Update path/title/modified
-         __super::m_strPathName = path;
-         __super::SetModifiedFlag(FALSE);
-         SetTitle(FullPath.FileName.c_str());
+         FullPath = (LPCWSTR)path;
+         SetModifiedFlag(FALSE);
 
 	      // Project: Update item name [Unless 'SaveAs']
          if (proj && proj->Contains(oldPath) && szPathName)
@@ -152,13 +151,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <remarks>If the file has been renamed the title represents the desired filename, whereas the fullpath contains the actual filename</remarks>
    wstring DocumentBase::GetFileName() const
    {
-      wstring title = GetTitle();
-
-      // Pop '*' if present
-      if (!title.empty() && title.back() == '*')
-         title.pop_back();
-
-      return title;
+      // Trim '*' from end, if any
+      return GuiString(GetTitle()).TrimRight(L"*");
    }
 
    /// <summary>Get the full document path.</summary>
@@ -302,15 +296,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
       __super::SetModifiedFlag(bModified);
 
       // Get title
-      wstring title = (LPCWSTR)GetTitle();
+      GuiString title = (LPCWSTR)GetTitle();
       if (title.empty())
          return;
 
-      // Add/Remove trailing '*'
+      // Modified: Append *
       if (bModified && title.back() != '*')
          title += L'*';
-      else if (!bModified && title.back() == '*')
-         title.pop_back();
+
+      // Unmodified: Trim *
+      else if (!bModified)
+         title = title.TrimRight(L"*");
 
       // Update title
       __super::SetTitle(title.c_str());
@@ -336,8 +332,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       wstring txt(title);
 
-      // Modified: Append *
-      if (IsModified())
+      // Modified: Append *  (if not already present)
+      if (IsModified() && !txt.empty() && txt.back() != '*')
          txt += L"*";
 
       // Set title
