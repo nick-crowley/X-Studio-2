@@ -272,7 +272,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Add to folder. Raise 'ITEM ADDED'
       ItemAdded.Raise(&folder.Add(copy), &folder);
    }
-
+   
    /// <summary>Raises 'PROJECT CLOSED/LOADED' after loading/closing</summary>
    /// <param name="deEvent">The event.</param>
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent)

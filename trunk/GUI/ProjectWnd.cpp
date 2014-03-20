@@ -32,6 +32,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   ON_COMMAND(ID_PROJECT_PROPERTIES, OnCommand_ViewProperties)
       ON_UPDATE_COMMAND_UI_RANGE(ID_PROJECT_OPEN, ID_PROJECT_PROPERTIES, OnQueryCommand)
       ON_NOTIFY(NM_DBLCLK, IDC_PROJECT_TREE, OnTreeView_DoubleClick)
+      ON_NOTIFY(NM_SETFOCUS, IDC_PROJECT_TREE, OnTreeView_SetFocus)
+      ON_NOTIFY(TVN_SELCHANGED, IDC_PROJECT_TREE, OnTreeView_SetFocus)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
@@ -70,6 +72,35 @@ NAMESPACE_BEGIN2(GUI,Windows)
       EnableDocking(CBRS_ORIENT_VERT|CBRS_FLOAT_MULTI);
    }
    
+   
+   /// <summary>Populates the properties window</summary>
+   /// <param name="grid">The grid.</param>
+   void  CProjectWnd::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
+   {
+      // Group: General
+      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
+
+      // Lookup selected item
+      auto item = TreeView.SelectedItem;
+      auto proj = ProjectDocument::GetActive();
+
+      if (item && proj)
+      {
+         // Item Name
+         general->AddSubItem(new ProjectDocument::NameProperty(*proj, *item));
+
+         // File: Path/Backup
+         if (item->IsFile())
+         {
+            general->AddSubItem(new ProjectDocument::PathProperty(*proj, *item));
+            general->AddSubItem(new ProjectDocument::BackupProperty(*proj, *item));
+         }
+      }
+      
+      // Group
+      grid.AddProperty(general);
+   }
+
 
    /// <summary>Translates custom accelerators for this window.</summary>
    /// <param name="pMsg">The MSG.</param>
@@ -95,13 +126,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
 	   CRect rectClient;
 	   GetClientRect(rectClient);
-
+      
 	   int cyTlb = Toolbar.CalcFixedLayout(FALSE, TRUE).cy;
 
 	   Toolbar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
 	   TreeView.SetWindowPos(NULL, rectClient.left+1, rectClient.top+cyTlb+1, rectClient.Width()-2, rectClient.Height()-cyTlb-2, SWP_NOACTIVATE | SWP_NOZORDER);
    }
-
+   
    /// <summary>Determines whether window/treeview has focus.</summary>
    /// <returns></returns>
    /// <remarks>this was an experiment, it's no longer used</remarks>
@@ -549,7 +580,30 @@ NAMESPACE_BEGIN2(GUI,Windows)
       *pResult = 0;
    }
    
+   
+   /// <summary>Display item properties when treeview selection changes</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CProjectWnd::OnTreeView_SelectionChanged(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      auto data = reinterpret_cast<NMTREEVIEW*>(pNMHDR);
 
+      // Show properties
+      CPropertiesWnd::Connect(this, true);
+
+      *pResult = 0;
+   }
+   
+   /// <summary>Display project properties when treeview gets focus</summary>
+   /// <param name="pNMHDR">The NMHDR.</param>
+   /// <param name="pResult">The result.</param>
+   void CProjectWnd::OnTreeView_SetFocus(NMHDR* pNMHDR, LRESULT* pResult)
+   {
+      CPropertiesWnd::Connect(this, true);
+
+      *pResult = 0;
+   }
+   
    // ------------------------------- PRIVATE METHODS ------------------------------
 
 NAMESPACE_END2(GUI,Windows)

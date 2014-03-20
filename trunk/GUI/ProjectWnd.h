@@ -1,8 +1,8 @@
 #pragma once
-
 #include "ProjectTreeCtrl.h"
 #include "ToolBarEx.h"
 #include "ImageListEx.h"
+#include "PropertySource.h"
 #include "../Logic/Event.h"
 #include "ProjectDocument.h"
 
@@ -15,7 +15,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
 
    /// <summary>Project explorer docking pane</summary>
-   class CProjectWnd : public CDockablePane
+   class CProjectWnd : public CDockablePane, public PropertySource
    {
       // ------------------------ TYPES --------------------------
    protected:
@@ -50,8 +50,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      //BOOL  CanBeClosed() const override { return FALSE; }
       void  Create(CWnd* parent);
+      void  OnDisplayProperties(CMFCPropertyGridCtrl& grid) override;
       BOOL  PreTranslateMessage(MSG* pMsg) override;
 
    protected:
@@ -77,6 +77,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	   afx_msg void OnSize(UINT nType, int cx, int cy);
 	   afx_msg void OnTreeView_DoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void OnTreeView_SetFocus(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void OnTreeView_SelectionChanged(NMHDR* pNMHDR, LRESULT* pResult);
 	   
       // -------------------- REPRESENTATION ---------------------
    protected:
