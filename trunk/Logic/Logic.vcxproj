@@ -190,6 +190,8 @@
     <ClInclude Include="SyntaxLibrary.h" />
     <ClInclude Include="SyntaxWriter.h" />
     <ClInclude Include="TDock.h" />
+    <ClInclude Include="TemplateFile.h" />
+    <ClInclude Include="TemplateFileReader.h" />
     <ClInclude Include="TFactory.h" />
     <ClInclude Include="TFile.hpp" />
     <ClInclude Include="TFileReader.hpp" />
@@ -287,6 +289,7 @@
     <ClCompile Include="SyntaxLibrary.cpp" />
     <ClCompile Include="SyntaxNode.cpp" />
     <ClCompile Include="SyntaxWriter.cpp" />
+    <ClCompile Include="TemplateFileReader.cpp" />
     <ClCompile Include="TObject.cpp" />
     <ClCompile Include="TShipReader.cpp" />
     <ClCompile Include="XCatalog.cpp" />

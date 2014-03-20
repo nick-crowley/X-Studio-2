@@ -1,7 +1,7 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
-#include "TemplateFile.h"
+#include "../Logic/TemplateFile.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)

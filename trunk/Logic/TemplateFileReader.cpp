@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "TemplateFileReader.h"
 
-namespace GUI
+namespace Logic
 {
-   namespace Utils
+   namespace IO
    {
    
       // -------------------------------- CONSTRUCTION --------------------------------
