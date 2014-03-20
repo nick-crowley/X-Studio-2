@@ -1,10 +1,10 @@
 #pragma once
-#include "../Logic/XmlReader.h"
+#include "XmlReader.h"
 #include "TemplateFile.h"
 
-namespace GUI
+namespace Logic
 {
-   namespace Utils
+   namespace IO
    {
       
       /// <summary></summary>
@@ -43,4 +43,4 @@ namespace GUI
    }
 }
 
-using namespace GUI::Utils;
+using namespace Logic::IO;
