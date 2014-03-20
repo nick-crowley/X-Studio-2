@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DocTemplateBase.h"
-//#include "MainWnd.h"
+#include "../Logic/FileIdentifier.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)

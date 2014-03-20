@@ -24,11 +24,17 @@ namespace Logic
    /// <summary>Convert colour enumeration to RGB</summary>
    UtilExport TooltipColour ForTooltip(Colour c);
 
+
    /// <summary>Get paragraph alignment string</summary>
    UtilExport wstring  GetString(Alignment a);
 
+   /// <summary>Get file-type name</summary>
+   UtilExport wstring GetString(FileType t);
+
    /// <summary>Get game language string</summary>
    UtilExport wstring  GetString(GameLanguage l);
+
+   
 
    /// <summary>Compare character ranges</summary>
    UtilExport bool operator==(const CHARRANGE& a, const CHARRANGE& b);

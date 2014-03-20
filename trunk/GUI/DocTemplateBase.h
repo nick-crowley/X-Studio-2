@@ -1,5 +1,4 @@
 #pragma once
-#include "../Logic/FileIdentifier.h"
 #include "DocumentBase.h"
 
 /// <summary>User interface documents</summary>
