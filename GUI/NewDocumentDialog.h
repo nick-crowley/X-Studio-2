@@ -40,6 +40,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+      void InsertTemplate(UINT index, const FileTemplate& t);
+
       void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	  
       // -------------------- REPRESENTATION ---------------------

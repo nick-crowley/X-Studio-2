@@ -12,24 +12,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-      FileTemplate(wstring name, DocumentType type, LPCWSTR defExt, UINT icon, LPCWSTR desc, LPCWSTR subpath) 
-         : Name(name), Type(type), Extension(defExt), Icon(icon), Description(desc), SubPath(subpath)
+      FileTemplate(wstring name, FileType type, LPCWSTR desc, LPCWSTR subpath) 
+         : Name(name), Type(type), Description(desc), SubPath(subpath)
       {}
 
       // --------------------- PROPERTIES ------------------------
-	  
+   public:
+      PROPERTY_GET(wstring,Extension,GetExtension);
+
       // ---------------------- ACCESSORS ------------------------			
+   public:
+      /// <summary>Get the default file extension.</summary>
+      /// <returns></returns>
+      wstring  GetExtension() const
+      {
+         return Type != FileType::Project ? L".xml" : L".xprj";
+      }
 
       // ----------------------- MUTATORS ------------------------
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      const wstring      Name;            // Template name
-      const LPCWSTR      Extension,       // Default file extension
-                         Description,     // Template description
-                         SubPath;         // File SubPath: 'Templates\...'
-      const DocumentType Type;            // Document type
-      const UINT         Icon;            // ImageList index of document icon 
+      const wstring   Name;            // Template name
+      const wstring   Description,     // Template description
+                      SubPath;         // File SubPath: 'Templates\...'
+      const FileType  Type;            // Document type
    };
 
 

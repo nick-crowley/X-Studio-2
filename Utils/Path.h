@@ -71,6 +71,7 @@ namespace Logic
       const WCHAR* c_str() const                   { return Buffer.get(); }
       explicit operator WCHAR*()                   { return Buffer.get(); }
       explicit operator std::wstring() const       { return Buffer.get(); }
+      wstring ToString() const                     { return Buffer.get(); }
 
    private:
       CharArrayPtr  Copy() const;
