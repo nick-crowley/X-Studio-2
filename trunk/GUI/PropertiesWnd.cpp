@@ -195,7 +195,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
          
          // Toolbar
-         ToolBar.Create(this, IDR_PROPERTIES, L"Properties", false, IDR_PROPERTIES_GREY);
+         ToolBar.Create(this, IDR_PROPERTIES, L"Properties", false); 
 
          // Create property grid
 	      if (!Grid.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
