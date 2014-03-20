@@ -5,18 +5,10 @@
 #include "LanguageDocument.h"
 #include "afxdialogex.h"
 #include "Helpers.h"
+#include "../Logic/TemplateFileReader.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
-
-   /// <summary>New Document File Templates</summary>
-   TemplateList  NewDocumentDialog::DocTemplates = 
-   {
-      TemplateFile(L"Blank MSCI Script", FileType::Script, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
-      TemplateFile(L"Blank Language File", FileType::Language, L"Blank Language File", L"Templates\\Blank.Language.xml"),
-      TemplateFile(L"Blank MD Script", FileType::Mission, L"Blank MD Script", nullptr),
-      TemplateFile(L"Blank Project", FileType::Project, L"Blank Project", nullptr)
-   };
 
    // --------------------------------- APP WIZARD ---------------------------------
   
@@ -44,17 +36,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <returns></returns>
    BOOL NewDocumentDialog::OnInitDialog()
    {
-      CDialogEx::OnInitDialog();
+      __super::OnInitDialog();
 
       // Images
       Images.Create(IDB_NEWDOCUMENT_ICONS, 32, 4, RGB(255,0,255));
-      Templates.SetImageList(&Images, LVSIL_NORMAL);
-
-      // Populate templates
-      int i = 0;
-      for (auto& doc : DocTemplates)
-         InsertTemplate(i++, doc);
-      Templates.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+      ListView.SetImageList(&Images, LVSIL_NORMAL);
 
       // Enable/disable 'add project' check
       AddProject.EnableWindow(ProjectDocument::GetActive() != nullptr);
@@ -64,8 +50,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
          Folder = PrefsLib.GameDataFolder+L"scripts";
       else
          Folder = PrefsLib.NewDocumentFolder;
-
+      
+      // Center + Display 
+      CenterWindow();
       UpdateData(FALSE);
+
+      try
+      {
+         // Read templates
+         StreamPtr file(new FileStream(AppPath(L"templates.xml"), FileMode::OpenExisting, FileAccess::Read));
+         AllTemplates = TemplateFileReader(file).ReadFile();
+
+         // Populate templates
+         int i = 0;
+         for (auto& doc : AllTemplates)
+            InsertTemplate(i++, doc);
+
+         // Select first template
+         ListView.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+      }
+      // Error: Failed to read templates file
+      catch (ExceptionBase& e) {
+         ListView.DeleteAllItems();
+         theApp.ShowError(HERE, e);
+      }
+      
       return TRUE;  
    }
 
@@ -75,19 +84,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
-         // Get data
          UpdateData(TRUE);
-         auto fileTemplate = GetTemplate(-1);
-
+         
          // Require selection + filename + folder
-         if (Templates.GetSelectedCount() == 0 || Folder.Empty() || FileName.Empty())
+         if (ListView.GetSelectedCount() == 0 || Folder.Empty() || FileName.Empty())
             return;
+
+         // Get selected template
+         auto fileTemplate = GetTemplate(-1);
+         if (!fileTemplate)
+            throw AlgorithmException(HERE, L"Selected template has no data");
 
          // MD: Not supported yet
          if (fileTemplate->Type == FileType::Mission)
             throw NotImplementedException(HERE, L"Mission director support");
 
-         // Check folder exists
+         // Check template exists
+         if (!AppPath(fileTemplate->SubPath).Exists())
+            throw ApplicationException(HERE, VString(L"Cannot find the template file '%s'", fileTemplate->SubPath.c_str()));
+
+         // Check target folder exists
          if (!Folder.Exists() || !Folder.IsDirectory())
             throw ApplicationException(HERE, L"The folder does not exist");
 
@@ -117,9 +133,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
          auto doc = docTemplate->OpenDocumentTemplate(path, *fileTemplate, TRUE);
 
          // Project: Add to active project
-         if (auto proj = ProjectDocument::GetActive())
-            if (AddProject.GetCheck())
-               proj->AddFile(path);
+         auto proj = ProjectDocument::GetActive();
+         if (proj && AddProject.GetCheck())
+            proj->AddFile(path);
 
          // Close
          __super::OnOK();
@@ -136,7 +152,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    void NewDocumentDialog::DoDataExchange(CDataExchange* pDX)
    {
 	   __super::DoDataExchange(pDX);
-      DDX_Control(pDX, IDC_TEMPLATE_LIST, Templates);
+      DDX_Control(pDX, IDC_TEMPLATE_LIST, ListView);
       DDX_Control(pDX, IDC_ADD_PROJECT_CHECK, AddProject);
       DDX_Control(pDX, IDC_DESCRIPTION_EDIT, Description);
       DDX_Text(pDX, IDC_FILENAME_EDIT, FileName);
@@ -150,18 +166,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       // Get Selected
       if (index == -1)
-         index = Templates.GetNextItem(-1, LVNI_SELECTED);
+         index = ListView.GetNextItem(-1, LVNI_SELECTED);
 
       // Lookup data
-      return reinterpret_cast<const TemplateFile*>(Templates.GetItemData(index));
+      return reinterpret_cast<const TemplateFile*>(ListView.GetItemData(index));
    }
    
-   /// <summary>Inserts a template.</summary>
+   /// <summary>Inserts an item and stores template as item data</summary>
    /// <param name="index">The index.</param>
    /// <param name="t">template.</param>
    void NewDocumentDialog::InsertTemplate(UINT index, const TemplateFile& t)
    {
       UINT icon = 0;
+
+      // Set icon
       switch (t.Type)
       {
       case FileType::Script:   icon = 0;  break;
@@ -170,7 +188,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       case FileType::Project:  icon = 3;  break;
       }
 
-      Templates.InsertItem(LVIF_TEXT|LVIF_IMAGE|LVIF_PARAM, index, t.Name.c_str(), 0, 0, icon, (LPARAM)&t);
+      // Insert + Store Data
+      ListView.InsertItem(LVIF_TEXT|LVIF_IMAGE|LVIF_PARAM, index, t.Name.c_str(), 0, 0, icon, reinterpret_cast<LPARAM>(&t));
    }
 
    /// <summary>Display appropriate description</summary>
@@ -182,7 +201,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       
       // Change description
       if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)     // Selection (not focus) has changed
-         Description.SetWindowTextW(GetTemplate(pItem->iItem)->Description.c_str());
+      {
+         if (auto t = GetTemplate(pItem->iItem))
+            Description.SetWindowTextW(t->Description.c_str());
+      }
 
       *pResult = 0;
    }

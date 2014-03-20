@@ -6,7 +6,7 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
    
-   /// <summary></summary>
+   /// <summary>New document dialog</summary>
    class NewDocumentDialog : public CDialogEx
    {
       // ------------------------ TYPES --------------------------
@@ -44,9 +44,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	  
       // -------------------- REPRESENTATION ---------------------
    protected:
-      static TemplateList  DocTemplates;
+      TemplateList   AllTemplates;
 
-      CListCtrl      Templates;
+      CListCtrl      ListView;
       CEdit          Description;
       Path           FileName, 
                      Folder;

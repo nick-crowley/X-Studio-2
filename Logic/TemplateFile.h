@@ -3,11 +3,16 @@
 namespace Logic
 {
    /// <summary>Defines the properties of a document template</summary>
-   class TemplateFile
+   class LogicExport TemplateFile
    {
       // --------------------- CONSTRUCTION ----------------------
    public:
-      TemplateFile(wstring name, FileType type, const wstring& desc, const wstring& subpath) 
+      /// <summary>Create template file.</summary>
+      /// <param name="name">Template name.</param>
+      /// <param name="type">File type.</param>
+      /// <param name="desc">Template description.</param>
+      /// <param name="subpath">subpath into application folder of actual template.</param>
+      TemplateFile(wstring name, FileType type, const wstring& desc, const wstring& subpath)
          : Name(name), Type(type), Description(desc), SubPath(subpath)
       {}
 
@@ -34,7 +39,7 @@ namespace Logic
       const FileType  Type;            // Document type
    };
 
-   /// <summary></summary>
+   /// <summary>List of file templates</summary>
    typedef list<TemplateFile>  TemplateList;
 }
 
