@@ -31,6 +31,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- PROPERTIES ------------------------
    public:
       PROPERTY_GET_SET(Path,FullPath,GetFullPath,SetFullPath);
+      //PROPERTY_GET(Path,FullPath,GetFullPath);
       PROPERTY_GET_SET(bool,Virtual,GetVirtual,SetVirtual);
       PROPERTY_GET(wstring,FileName,GetFileName);
 
