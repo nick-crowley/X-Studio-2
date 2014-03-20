@@ -98,10 +98,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
             path = FullPath.c_str();
             if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
                return FALSE;
-
-            // SaveAs: Rename document
-            /*if (bReplace)
-               Rename((LPCWSTR)path, true);*/
          }
 
          // Save document
@@ -122,8 +118,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          SetModifiedFlag(FALSE);
 
 	      // Project: Update item name [Unless 'SaveAs']
-         if (proj && proj->Contains(oldPath) && szPathName)
-            proj->OnDocumentRenamed(*this, oldPath, TRUE);
+         if (szPathName && proj && proj->Contains(oldPath))
+            proj->OnDocumentRenamed(*this, oldPath, oldPath != FullPath ? TRUE : FALSE);
 
          // Success: Raise 'After Save'
 	      OnDocumentEvent(onAfterSaveDocument);

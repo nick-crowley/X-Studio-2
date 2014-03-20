@@ -53,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       virtual void  Rename(Path newPath, bool overwriteExists);
       virtual bool  Replace(MatchData& m);
       BOOL          SaveModified() override;
-      void          SetFullPath(Path path);
+      virtual void  SetFullPath(Path path);
       void          SetModifiedFlag(BOOL bModified = TRUE) override;
       void          SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU = TRUE) override;
       virtual void  SetSelection(CHARRANGE rng);

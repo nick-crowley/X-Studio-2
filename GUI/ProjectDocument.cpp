@@ -290,39 +290,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
    
    /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
-   /// <param name="doc">The document.</param>
-   /// <param name="oldPath">The old path.</param>
-   /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
-   //void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath)
-   //{
-   //   // Ensure document is member
-   //   if (!Contains(oldPath))
-   //      throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
-   //   
-   //   // Ensure path is unique
-   //   else if (Contains(doc))
-   //      throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
-
-   //   // Update item name
-   //   auto item = Project.Find(oldPath);
-   //   item->Name = doc.GetTitle();
-
-   //   // Unmodified: Update item path to reflect new document path
-   //   if (!doc.IsModified())
-   //      item->FullPath = doc.FullPath;
-
-   //   // DEBUG
-   //   //Console << HERE << ": Setting project name to " << item->Name << ENDL;
-
-   //   // Item: Raise 'ITEM CHANGED'
-   //   if (!item->IsRoot())
-   //      ItemChanged.Raise(item);
-
-   //   // Modify project  [Raises 'ITEM CHANGED' on Root]
-   //   SetModifiedFlag(TRUE);
-   //}
-   
-   /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
    /// <param name="doc">document.</param>
    /// <param name="oldPath">old path if changed, otherwise existing path.</param>
    /// <param name="updatePath">TRUE to update item path, FALSE to preserve it</param>
@@ -475,18 +442,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SetModifiedFlag(TRUE);
    }
 
-   /// <summary>Renames the file/document/title and raises 'ITEM CHANGED' on project root</summary>
-   /// <param name="newPath">New path.</param>
-   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
-   /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
-   /// <exception cref="Logic::IOException">Unable to rename file</exception>
-   /// <remarks>This is called by 'RenameItem' on the root, or 'SaveAs' on the project document</remarks>
-   void  ProjectDocument::Rename(Path newPath, bool overwriteExists)
-   {
-      // Rename document/title    [Raises OnDocumentRenamed]
-      __super::Rename(newPath, overwriteExists);
-   }
-
    /// <summary>Renames a project item.</summary>
    /// <param name="item">The item.</param>
    /// <param name="name">New name (or filename).</param>
@@ -528,11 +483,28 @@ NAMESPACE_BEGIN2(GUI,Documents)
       ItemChanged.Raise(&item);
    }
    
+   /// <summary>Changes the path and updates the root item to reflect new path/title.</summary>
+   /// <param name="path">The path.</param>
+   void  ProjectDocument::SetFullPath(Path path)
+   {
+      __super::SetFullPath(path);
+
+      // Set new name+path
+      Project.Root.Name = GetTitle();
+      Project.Root.FullPath = path;
+
+      // Raise 'ROOT CHANGED'
+      ItemChanged.Raise(&Project.Root);
+   }
+
    /// <summary>Refreshes the root in response to changing the modified flag.</summary>
    /// <param name="bModified">modified.</param>
    void  ProjectDocument::SetModifiedFlag(BOOL bModified)
    {
       __super::SetModifiedFlag(bModified);
+
+      // Set new name
+      Project.Root.Name = GetTitle();
 
       // Raise 'ROOT CHANGED'
       ItemChanged.Raise(&Project.Root);

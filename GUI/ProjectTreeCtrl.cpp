@@ -203,10 +203,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          return;
 
       // Update item
-      if (!item->IsRoot())
-         SetItemText(FindItem(item), item->Name.c_str());
-      else
-         SetItemText(GetRootItem(), ProjectDocument::GetActive()->GetTitle());
+      SetItemText(item->IsRoot() ? GetRootItem() : FindItem(item), item->Name.c_str());
    }
 
    /// <summary>Called when item added.</summary>
