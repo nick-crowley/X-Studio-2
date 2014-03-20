@@ -47,8 +47,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	   afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       afx_msg void OnCommandCopy();
+      afx_msg void OnCommandInsert();
       handler void OnDocumentSwitched();
       afx_msg void OnDoubleClickItem(NMHDR* pNMHDR, LRESULT* pResult);
+      afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 	   afx_msg void OnPaint();
       virtual void OnRequestTooltip(CustomTooltip::TooltipData* data);
 	   afx_msg void OnSetFocus(CWnd* pOldWnd);
