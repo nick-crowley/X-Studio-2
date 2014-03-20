@@ -41,13 +41,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       virtual ~CCommandWnd();
        
       // ------------------------ STATIC -------------------------
-   protected:
       DECLARE_MESSAGE_MAP()
       
       // --------------------- PROPERTIES ------------------------
 	   
       // ---------------------- ACCESSORS ------------------------			
-      
+   protected:
+      CmdSyntaxArray GetContent() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
       void Create(CWnd* parent);
@@ -58,7 +59,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void    PopulateItems(const wstring& searchTerm, UINT selectedGroup) override;
 
       virtual void  OnAppStateChanged(AppState s) override;
-      afx_msg void  OnContextMenu(CWnd* wnd, CPoint pt);
+      afx_msg void  OnCommandLookup();
+      //afx_msg void  OnContextMenu(CWnd* wnd, CPoint pt);
+      handler void OnQueryCommand(CCmdUI* pCmdUI) override;
       afx_msg void  OnRequestTooltip(CustomTooltip::TooltipData* data) override;
 
       // -------------------- REPRESENTATION ---------------------
