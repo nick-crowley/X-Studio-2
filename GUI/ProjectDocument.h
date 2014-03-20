@@ -95,7 +95,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  DeleteRevision(const ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       void  OnDocumentEvent(DocumentEvent deEvent) override;
-      void  OnDocumentRenamed(DocumentBase& doc, Path oldPath, BOOL updatePath);
       BOOL  OnImportDocument(Path legacy, Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
@@ -105,10 +104,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void  RenameItem(ProjectItem& item, const wstring& name);
       void  SetFullPath(Path path) override;
       void  SetModifiedFlag(BOOL bModified = TRUE) override;
+      void  UpdateItem(const DocumentBase& doc);
 
    protected:
-      //void  InitialCommit(const Path& folder, const ProjectItem& item);
-
       afx_msg void  OnCommandCloseProject()       { OnPerformCommand(ID_FILE_PROJECT_CLOSE);   }
       afx_msg void  OnCommandSaveProject()        { OnPerformCommand(ID_FILE_PROJECT_SAVE);    }
       afx_msg void  OnCommandSaveProjectAs()      { OnPerformCommand(ID_FILE_PROJECT_SAVE_AS); }

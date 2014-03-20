@@ -113,13 +113,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Preserve path
          auto oldPath = FullPath;
 
-         // Update path/title/modified
+         // Update path/title/modified + project item
          FullPath = (LPCWSTR)path;
          SetModifiedFlag(FALSE);
-
-	      // Project: Update item name [Unless 'SaveAs']
-         if (szPathName && proj && proj->Contains(oldPath))
-            proj->OnDocumentRenamed(*this, oldPath, oldPath != FullPath ? TRUE : FALSE);
 
          // Success: Raise 'AFTER SAVE'
 	      OnDocumentEvent(onAfterSaveDocument);  // Refreshes backup window
@@ -203,12 +199,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return OnOpenDocument(AppPath(t.SubPath).c_str());
    }
    
-   /// <summary>Renames the file on disc, updates the project item [if any] and updates the document path and title.</summary>
+   /// <summary>Renames the document if modified, otherwise renames the file in disc. Updates path/title/project appropriately</summary>
    /// <param name="newPath">New path.</param>
-   /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
    /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
    /// <exception cref="Logic::IOException">Unable to rename file</exception>
-   void  DocumentBase::Rename(Path newPath, bool /*overwriteExists*/)
+   void  DocumentBase::Rename(Path newPath)
    {
       auto proj = ProjectDocument::GetActive();
 
@@ -224,33 +219,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (proj && proj->Contains(FullPath) && proj->Contains(newPath))
          throw ApplicationException(HERE, L"Current project already contains a file with that name");
 
-      // Ensure new path does not exist
-      /*if (!overwriteExists && newPath.Exists())
-         throw ApplicationException(HERE, L"A file with that name already exists");*/
-
-      // Modified:
+      // Modified: Update title only [and project item]
       if (IsModified())
-      {
-         // Update title only
          SetTitle(newPath.FileName.c_str());
-
-         // Project: Update item name only
-         if (proj && proj->Contains(FullPath))
-            proj->OnDocumentRenamed(*this, FullPath, FALSE);
-      }
-      // Unmodified:
       else
       {
-         // Attempt to Rename file
+         // Unmodified: Attempt to Rename file
          RenameFile(FullPath, newPath);
 
-         // Update document path [and title]
+         // Update document path [and title and project item]
          auto oldPath = FullPath;
          FullPath = newPath;
-
-         // Project: Update item name & path
-         if (proj && proj->Contains(oldPath))
-            proj->OnDocumentRenamed(*this, oldPath, TRUE);
       }
    }
 
@@ -299,7 +278,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       SetTitle(path.FileName.c_str());
    }
 
-   /// <summary>Sets the modified flag and updates the document title</summary>
+   /// <summary>Sets/Clears the modified flag, updates title (and project item, if any)</summary>
    /// <param name="bModified">modified flag.</param>
    void  DocumentBase::SetModifiedFlag(BOOL bModified)
    {
@@ -321,14 +300,23 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Update title
       __super::SetTitle(title.c_str());
+
+      // Project: Update item
+      if (auto proj = ProjectDocument::GetActive())
+         proj->UpdateItem(*this);
    }
 
-   /// <summary>Used by MFC to set document path: onCreate + onOpen + onSaveAs</summary>
+   /// <summary>Changes the document path (and relevant project item, if any)</summary>
    /// <param name="szPathName">New path.</param>
    /// <param name="bAddToMRU">Add to MRU [Path must exist].</param>
    void  DocumentBase::SetPathName(LPCTSTR szPathName, BOOL bAddToMRU /*= TRUE*/)
    {
+      // Update path
       __super::SetPathName(szPathName, bAddToMRU);
+
+      // Project: Update item
+      if (auto proj = ProjectDocument::GetActive())
+         proj->UpdateItem(*this);
    }
 
    /// <summary>Sets the selection.</summary>
@@ -337,7 +325,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
    }
 
-   /// <summary>Sets the title, and adds a trailing '*' if document is modified</summary>
+   /// <summary>Changes the document title and relevant project item, if any.  (Adds a trailing '*' if modified)</summary>
    /// <param name="title">title.</param>
    void  DocumentBase::SetTitle(LPCTSTR title) 
    {
@@ -349,6 +337,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Set title
       __super::SetTitle(txt.c_str());
+
+      // Project: Update item
+      if (auto proj = ProjectDocument::GetActive())
+         proj->UpdateItem(*this);
    }
    
    /// <summary>Sets whether virtual.</summary>
@@ -383,24 +375,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // Prompt for filename, save copy
       DoSave(nullptr, FALSE);
-
-      //CString path(FullPath.FileName.c_str());
-
-      //try
-      //{
-      //   // Query for new filename
-      //   if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
-			   //return;
-
-      //   // Attempt to Rename document
-      //   Rename((LPCWSTR)path, false);
-
-      //   // Save document
-      //   OnSaveDocument(FullPath.c_str());
-      //}
-      //catch (ExceptionBase& e) {
-      //   theApp.ShowError(HERE, e, VString(L"Unable to save document to '%s'", (LPCWSTR)path));
-      //}
    }
 
    /// <summary>Queries the state of a menu command.</summary>

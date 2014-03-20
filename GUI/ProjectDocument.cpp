@@ -285,42 +285,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Raise 'PROJECT CLOSED'
       else if (deEvent == CDocument::onAfterCloseDocument)
-      {
-         Console << HERE << ENDL;
          Closed.Raise();
-      }
    }
    
-   /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
-   /// <param name="doc">document.</param>
-   /// <param name="oldPath">old path if changed, otherwise existing path.</param>
-   /// <param name="updatePath">TRUE to update item path, FALSE to preserve it</param>
-   /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
-   void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath, BOOL updatePath)
-   {
-      // Ensure document is member
-      if (!Contains(oldPath))
-         throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
-      
-      // Update item name 
-      auto item = Project.Find(oldPath);
-      item->Name = doc.GetTitle();
-
-      // Replace: Update item path
-      if (updatePath)
-      {
-         // Ensure path is unique
-         if (Contains(doc))
-            throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
-
-         // Update path
-         item->FullPath = doc.FullPath;
-      }
-
-      // Item: Raise 'ITEM CHANGED'
-      ItemChanged.Raise(item);
-   }
-
    /// <summary>Called on new X-Studio 2 project.</summary>
    /// <returns></returns>
    BOOL ProjectDocument::OnNewDocument()
@@ -464,14 +431,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (item.IsRoot())
       {
          SetModifiedFlag(TRUE); // Mark modified before rename so file is not renamed
-         Rename(FullPath.RenameFileName(name), false);
+         Rename(FullPath.RenameFileName(name));
       }
       // File: Rename file/document
       else if (item.IsFile())
       {
          // Document: Rename document/item, but not file
          if (auto doc = theApp.GetOpenDocument(item.FullPath))
-            doc->Rename(item.FullPath.RenameFileName(name), false);
+            doc->Rename(item.FullPath.RenameFileName(name));
          else
          {
             // File: Attempt to Rename on disc
@@ -519,6 +486,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Raise 'ROOT CHANGED'
       ItemChanged.Raise(&Project.Root);
+   }
+   
+   /// <summary>Updates a document's project item to match current path/title</summary>
+   /// <param name="doc">document.</param>
+   void  ProjectDocument::UpdateItem(const DocumentBase& doc)
+   {
+      auto item = Project.Find(doc.FullPath);
+
+      // Ensure document is member
+      if (item == nullptr)
+         return;
+      
+      // Update name + path
+      item->Name = doc.GetTitle();
+      item->FullPath = doc.FullPath;
+
+      // Item: Raise 'ITEM CHANGED'
+      ItemChanged.Raise(item);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
