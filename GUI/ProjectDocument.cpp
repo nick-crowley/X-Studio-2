@@ -554,19 +554,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		         return;
 
             // Close 
-            IsClosing = true;
+            IsClosing = true;    // Closing flag prevents ProjectDoc::GetActive() returning document during events fired during closing
 	         OnCloseDocument();
             break;
 
          // Save Project
-         case ID_FILE_PROJECT_SAVE:
-            DoFileSave();
-            break;
-
-         // Save Project As
-         case ID_FILE_PROJECT_SAVE_AS:
-            DoSave(nullptr, TRUE);
-            break;
+         case ID_FILE_PROJECT_SAVE:       OnCommand_Save();       break;
+         case ID_FILE_PROJECT_SAVE_AS:    OnCommand_SaveAs();     break;
          }
       }
       catch (ExceptionBase& e) {
