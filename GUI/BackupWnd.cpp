@@ -27,9 +27,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_BACKUP_DIFF, &BackupWnd::OnCommandDiff)
       ON_COMMAND(ID_BACKUP_REVERT, &BackupWnd::OnCommandRevert)
       ON_COMMAND(ID_BACKUP_DELETE, &BackupWnd::OnCommandDelete)
-      ON_UPDATE_COMMAND_UI(ID_BACKUP_COMMIT, &BackupWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_COMMIT, &BackupWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_DIFF, &BackupWnd::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_BACKUP_QUICK_COMMIT, &BackupWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_QUICK_COMMIT, &BackupWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_REVERT, &BackupWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_BACKUP_DELETE, &BackupWnd::OnQueryCommand)
       ON_WM_CTLCOLOR()
@@ -362,11 +362,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       //
       switch (pCmdUI->m_nID)
       {
-      case ID_BACKUP_COMMIT:
+      case ID_FILE_COMMIT:
       case ID_BACKUP_DELETE:  
       case ID_BACKUP_DIFF:    
       case ID_BACKUP_REVERT:  
-      case ID_BACKUP_QUICK_COMMIT:
+      case ID_FILE_QUICK_COMMIT:
          state = (List.GetCurSel() != LB_ERR ? TRUE : FALSE);
          break;
       }

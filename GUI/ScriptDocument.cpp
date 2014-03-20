@@ -37,8 +37,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(ScriptDocument, DocumentBase)
 
    BEGIN_MESSAGE_MAP(ScriptDocument, DocumentBase)
-      ON_COMMAND(ID_BACKUP_COMMIT, OnCommand_Commit)
-      ON_COMMAND(ID_BACKUP_QUICK_COMMIT, OnCommand_QuickCommit)
+      ON_COMMAND(ID_FILE_COMMIT, OnCommand_Commit)
+      ON_COMMAND(ID_FILE_QUICK_COMMIT, OnCommand_QuickCommit)
       ON_COMMAND(ID_EDIT_ARGUMENT, OnCommand_EditArgument)
       ON_COMMAND(ID_INSERT_ARGUMENT, OnCommand_InsertArgument)
       ON_COMMAND(ID_REMOVE_ARGUMENT, OnCommand_RemoveArgument)
@@ -409,11 +409,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    //      break;
 
    //   // Quick Commit: Commit
-   //   case ID_BACKUP_QUICK_COMMIT:
+   //   case ID_FILE_QUICK_COMMIT:
    //      break;
 
    //   // Commit: Query for title, then commit
-   //   case ID_BACKUP_COMMIT:
+   //   case ID_FILE_COMMIT:
    //      break;
    //   }
    //}
