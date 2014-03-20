@@ -6,11 +6,11 @@ namespace GUI
    {
       
       /// <summary></summary>
-      class FileTemplate
+      class TemplateFile
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         FileTemplate(wstring name, FileType type, LPCWSTR desc, LPCWSTR subpath) 
+         TemplateFile(wstring name, FileType type, LPCWSTR desc, LPCWSTR subpath) 
             : Name(name), Type(type), Description(desc), SubPath(subpath)
          {}
 
@@ -38,7 +38,7 @@ namespace GUI
       };
 
       /// <summary></summary>
-      typedef list<FileTemplate>  TemplateList;
+      typedef list<TemplateFile>  TemplateList;
    }
 }
 

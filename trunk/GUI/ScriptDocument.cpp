@@ -336,7 +336,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="docPath">document path.</param>
    /// <param name="t">template.</param>
    /// <returns></returns>
-   BOOL ScriptDocument::OnOpenTemplate(Path docPath, const FileTemplate& t)
+   BOOL ScriptDocument::OnOpenTemplate(Path docPath, const TemplateFile& t)
    {
       WorkerData data(Operation::LoadSaveDocument);
       

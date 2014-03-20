@@ -33,11 +33,11 @@ namespace GUI
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid languageID or pageID</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      list<FileTemplate> FileTemplateReader::ReadFile()
+      list<TemplateFile> FileTemplateReader::ReadFile()
       {
          try
          {
-            list<FileTemplate> templates;
+            list<TemplateFile> templates;
 
             // Parse document
             LoadDocument();

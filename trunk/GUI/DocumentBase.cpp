@@ -145,7 +145,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="docPath">New document path</param>
    /// <param name="t">file template.</param>
    /// <returns></returns>
-   BOOL  DocumentBase::OnOpenTemplate(Path docPath, const FileTemplate& t)
+   BOOL  DocumentBase::OnOpenTemplate(Path docPath, const TemplateFile& t)
    {
       // Default implementation uses open document
       return OnOpenDocument(AppPath(t.SubPath).c_str());

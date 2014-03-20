@@ -54,7 +54,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns></returns>
    /// <exception cref="Logic::ApplicationException">Unable to create document or view<exception>
    /// <exception cref="Logic::FileNotFoundException">Template file is missing<exception>
-   DocumentBase* DocTemplateBase::OpenDocumentTemplate(Path docPath, const FileTemplate& t, BOOL bMakeVisible)
+   DocumentBase* DocTemplateBase::OpenDocumentTemplate(Path docPath, const TemplateFile& t, BOOL bMakeVisible)
    {
       AppPath templatePath(t.SubPath);
 
