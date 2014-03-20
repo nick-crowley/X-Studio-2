@@ -24,10 +24,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_WM_SETTINGCHANGE()
       ON_WM_SHOWWINDOW()
       ON_COMMAND(ID_EDIT_COPY, &CGameDataWnd::OnCommandCopy)
+      ON_COMMAND(ID_GAMEDATA_INSERT, &CGameDataWnd::OnCommandInsert)
       ON_CBN_SELCHANGE(IDC_COMBO, &CGameDataWnd::OnSearchGroupChanged)
       ON_EN_CHANGE(IDC_EDIT, &CGameDataWnd::OnSearchTermChanged)
       ON_NOTIFY(NM_SETFOCUS, IDC_LISTVIEW, &CGameDataWnd::OnSetFocusCtrl)
       ON_NOTIFY(NM_DBLCLK, IDC_LISTVIEW, &CGameDataWnd::OnDoubleClickItem)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &CGameDataWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_GAMEDATA_INSERT, &CGameDataWnd::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_GAMEDATA_LOOKUP, &CGameDataWnd::OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -161,13 +165,32 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return;
 
       // Get selected item text
-      auto str = ListView.GetItemText(ListView.GetNextItem(-1, LVNI_SELECTED), 0);
+      auto str = GetItemText(ListView.GetNextItem(-1, LVNI_SELECTED));
       
       // Copy to clipboard
       theClipboard.Clear();
-      theClipboard.SetString((LPCWSTR)str);
+      theClipboard.SetString(str);
    }
    
+   /// <summary>Inserts selected item into current script</summary>
+   void CGameDataWnd::OnCommandInsert()
+   {
+      // Require selection
+      if (ListView.GetNextItem(-1, LVNI_SELECTED) == -1)
+         return;
+
+      // Require script document
+      if (auto doc = ScriptDocument::GetActive())
+      {
+         // Ignore item number provided by system, somtimes invalid.
+         auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
+
+         // Insert into current document
+         if (!txt.empty())
+            doc->Replace(txt);
+      }
+   }
+      
    /// <summary>Abortive attempt to solve listView item background not matching listView background</summary>
    /// <param name="pDC">The dc.</param>
    /// <param name="pWnd">The WND.</param>
@@ -256,20 +279,31 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       auto info = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
 
-      // Require script document
-      if (auto doc = ScriptDocument::GetActive())
-      {
-         // Ignore item number provided by system, somtimes invalid.
-         auto txt = GetItemText( ListView.GetNextItem(-1, LVNI_SELECTED) ); 
-
-         // Insert into current document
-         if (!txt.empty())
-            doc->Replace(txt);
-      }
-
+      // Insert item
+      OnCommandInsert();
       *pResult = 0;
    }
    
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void CGameDataWnd::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+
+      // Query selection
+      switch (pCmdUI->m_nID)
+      {
+      case ID_EDIT_COPY:
+      case ID_GAMEDATA_INSERT:  
+      case ID_GAMEDATA_LOOKUP:  
+         state = ListView.GetNextItem(-1, LVNI_SELECTED) != -1;
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
+   }
 
    /// <summary>(App-Wizard Generated) Draw border.</summary>
    void CGameDataWnd::OnPaint()
