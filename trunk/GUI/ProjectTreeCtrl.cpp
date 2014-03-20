@@ -237,10 +237,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Customize/Setup edit
          if (auto edit = GetEditControl())
          {
-            // Project: Strip '*' from name, if present
-            if (LabelItem.Data->IsRoot())
-               edit->SetWindowTextW(LabelItem.Data->Name.c_str());
-
+            // Strip '*' from name, if present
+            auto txt = GuiString(LabelItem.Data->Name).TrimRight(L"*");
+            edit->SetWindowTextW(txt.c_str());
             edit->SetLimitText(MAX_PATH);
          }
 
