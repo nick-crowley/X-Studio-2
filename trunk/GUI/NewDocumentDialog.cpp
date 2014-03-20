@@ -12,10 +12,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>New Document File Templates</summary>
    NewDocumentDialog::TemplateList  NewDocumentDialog::DocTemplates = 
    {
-      FileTemplate(L"Blank MSCI Script", DocumentType::Script, L".xml", 0, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
-      FileTemplate(L"Blank Language File", DocumentType::Language, L".xml", 1, L"Blank Language File", L"Templates\\Blank.Language.xml"),
-      FileTemplate(L"Blank MD Script", DocumentType::Mission, L".xml", 2, L"Blank MD Script", nullptr),
-      FileTemplate(L"Blank Project", DocumentType::Project, L".xprj", 3, L"Blank Project", nullptr)
+      FileTemplate(L"Blank MSCI Script", FileType::Script, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
+      FileTemplate(L"Blank Language File", FileType::Language, L"Blank Language File", L"Templates\\Blank.Language.xml"),
+      FileTemplate(L"Blank MD Script", FileType::Mission, L"Blank MD Script", nullptr),
+      FileTemplate(L"Blank Project", FileType::Project, L"Blank Project", nullptr)
    };
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -39,7 +39,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // ------------------------------- STATIC METHODS -------------------------------
 
    // ------------------------------- PUBLIC METHODS -------------------------------
-
    
    /// <summary>Called when [initialize dialog].</summary>
    /// <returns></returns>
@@ -54,7 +53,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Populate templates
       int i = 0;
       for (auto& doc : DocTemplates)
-         Templates.InsertItem(LVIF_TEXT|LVIF_IMAGE|LVIF_PARAM, i++, doc.Name.c_str(), 0, 0, doc.Icon, (LPARAM)&doc);
+         InsertTemplate(i++, doc);
       Templates.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
 
       // Enable/disable 'add project' check
@@ -85,7 +84,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
             return;
 
          // MD: Not supported yet
-         if (fileTemplate->Type == DocumentType::Mission)
+         if (fileTemplate->Type == FileType::Mission)
             throw NotImplementedException(HERE, L"Mission director support");
 
          // Check folder exists
@@ -94,7 +93,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Append default path, if none
          if (!FileName.HasExtension(L".pck") && !FileName.HasExtension(L".xml") && !FileName.HasExtension(L".xprj"))
-            FileName = FileName.operator std::wstring() + fileTemplate->Extension;      // Cannot use 'RenameExtension' because of likelyhood of dots in the file name
+            FileName = FileName.ToString() + fileTemplate->Extension;      // Cannot use 'RenameExtension' because of likelyhood of dots in the file name
 
          // Check path is valid
          Path path(Folder + FileName);
@@ -108,8 +107,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
          DocTemplateBase* docTemplate = nullptr;
          switch (fileTemplate->Type)
          {
-         case DocumentType::Script:   docTemplate=theApp.GetDocumentTemplate<ScriptDocTemplate>();    break;
-         case DocumentType::Language: docTemplate=theApp.GetDocumentTemplate<LanguageDocTemplate>();  break;
+         case FileType::Script:   docTemplate=theApp.GetDocumentTemplate<ScriptDocTemplate>();    break;
+         case FileType::Language: docTemplate=theApp.GetDocumentTemplate<LanguageDocTemplate>();  break;
 
          default: throw AlgorithmException(HERE, L"Unexpected document template");
          }
@@ -144,22 +143,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       DDX_Text(pDX, IDC_FOLDER_EDIT, Folder);
    }
    
-   /// <summary>Enable OK button when user selects a template</summary>
-   /// <param name="pNMHDR">Item data</param>
-   /// <param name="pResult">Notify result.</param>
-   void NewDocumentDialog::OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult)
-   {
-      LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-      
-      // Change description
-      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)     // Selection (not focus) has changed
-         Description.SetWindowTextW(GetTemplate(pItem->iItem)->Description);
-
-      *pResult = 0;
-   }
-   
-   // ------------------------------- PRIVATE METHODS ------------------------------
-   
    /// <summary>Gets a template by index.</summary>
    /// <param name="index">Zero-based index, or -1 for the currently selected item.</param>
    /// <returns></returns>
@@ -172,6 +155,40 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Lookup data
       return reinterpret_cast<const FileTemplate*>(Templates.GetItemData(index));
    }
+   
+   /// <summary>Inserts a template.</summary>
+   /// <param name="index">The index.</param>
+   /// <param name="t">template.</param>
+   void NewDocumentDialog::InsertTemplate(UINT index, const FileTemplate& t)
+   {
+      UINT icon = 0;
+      switch (t.Type)
+      {
+      case FileType::Script:   icon = 0;  break;
+      case FileType::Language: icon = 1;  break;
+      case FileType::Mission:  icon = 2;  break;
+      case FileType::Project:  icon = 3;  break;
+      }
+
+      Templates.InsertItem(LVIF_TEXT|LVIF_IMAGE|LVIF_PARAM, index, t.Name.c_str(), 0, 0, icon, (LPARAM)&t);
+   }
+
+   /// <summary>Display appropriate description</summary>
+   /// <param name="pNMHDR">Item data</param>
+   /// <param name="pResult">Notify result.</param>
+   void NewDocumentDialog::OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult)
+   {
+      LPNMLISTVIEW pItem = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+      
+      // Change description
+      if ((pItem->uOldState | pItem->uNewState) & LVIS_SELECTED)     // Selection (not focus) has changed
+         Description.SetWindowTextW(GetTemplate(pItem->iItem)->Description.c_str());
+
+      *pResult = 0;
+   }
+   
+   // ------------------------------- PRIVATE METHODS ------------------------------
+   
    
 NAMESPACE_END2(GUI,Windows)
 
