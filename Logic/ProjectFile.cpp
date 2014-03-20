@@ -34,7 +34,8 @@ namespace Logic
       /// <returns></returns>
       bool  ProjectFile::Contains(Path path) const
       {
-         return Root.Contains(path);
+         //return Root.Contains(path);
+         return any_of(Root.Children.begin(), Root.Children.end(), [&path](const ProjectItem& item) {return item.Contains(path);} );
       }
 
       /// <summary>Finds item by path.</summary>
