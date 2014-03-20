@@ -182,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       backup.Write(GetBackupPath(doc));
 
       // Raise 'BACKUP CHANGED'
-      BackupChanged.Raise(Project.Find(doc.FullPath));
+      RefreshRevisions(doc);
       return true;
    }
 
@@ -206,7 +206,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       backup.Write(GetBackupPath(doc));
 
       // Raise 'BACKUP CHANGED'
-      BackupChanged.Raise(Project.Find(doc.FullPath));
+      RefreshRevisions(doc);
    }
    
    /// <summary>Get full path of backup file for a document.</summary>
@@ -277,6 +277,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="deEvent">The event.</param>
    void ProjectDocument::OnDocumentEvent(DocumentEvent deEvent)
    {
+      __super::OnDocumentEvent(deEvent);
+
       // Raise 'PROJECT LOADED'
       if (deEvent == CDocument::onAfterOpenDocument)
          Loaded.Raise();
@@ -429,6 +431,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
    }
 
+   /// <summary>Refreshes the backup window for the current document.</summary>
+   /// <param name="doc">The document.</param>
+   void  ProjectDocument::RefreshRevisions(const DocumentBase& doc)
+   {
+      /*if (Contains(doc))
+         BackupChanged.Raise(Project.Find(doc.FullPath));*/
+
+      BackupChanged.Raise(nullptr);
+   }
    
    /// <summary>Removes an item from the project</summary>
    /// <param name="item">item.</param>
