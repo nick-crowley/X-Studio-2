@@ -10,7 +10,7 @@ namespace GUI
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         TemplateFile(wstring name, FileType type, LPCWSTR desc, LPCWSTR subpath) 
+         TemplateFile(wstring name, FileType type, const wstring& desc, const wstring& subpath) 
             : Name(name), Type(type), Description(desc), SubPath(subpath)
          {}
 
@@ -31,8 +31,8 @@ namespace GUI
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         const wstring   Name;            // Template name
-         const wstring   Description,     // Template description
+         const wstring   Name,            // Template name
+                         Description,     // Template description
                          SubPath;         // File SubPath: 'Templates\...'
          const FileType  Type;            // Document type
       };

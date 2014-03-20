@@ -106,7 +106,7 @@ namespace Logic
                throw FileFormatException(HERE, L"Missing document path");
 
             // Read type
-            FileType type = ProjectFileReader::ParseFileType(ReadAttribute(node, L"type"));
+            FileType type = ParseFileType(ReadAttribute(node, L"type"));
 
             // Require Script/Language:
             if (type != FileType::Language && type != FileType::Script)

@@ -1,5 +1,6 @@
 #pragma once
 #include "../Logic/MatchData.h"
+#include "TemplateFile.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)

@@ -26,39 +26,34 @@ namespace GUI
 
       // ------------------------------- PUBLIC METHODS -------------------------------
       
-      /// <summary>Reads the entire language file</summary>
-      /// <param name="path">Full path</param>
-      /// <returns>New language file</returns>
+      /// <summary>Reads the entire template file</summary>
+      /// <returns>List of templates</returns>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
-      /// <exception cref="Logic::InvalidValueException">Invalid languageID or pageID</exception>
+      /// <exception cref="Logic::FileFormatException">Missing elements/attributes or invalid template file-type</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      list<TemplateFile> TemplateFileReader::ReadFile()
+      TemplateList TemplateFileReader::ReadFile()
       {
          try
          {
-            list<TemplateFile> templates;
+            TemplateList templates;
 
             // Parse document
             LoadDocument();
 
-            // Get root (as node)
-            XmlNodePtr languageNode(Document->documentElement);
-
-            // Read fileID + language tag
-            file.ID = LanguageFilenameReader(path.FileName).FileID;
-            file.Language = ReadLanguageTag(languageNode);
+            // Get root as node
+            XmlNodePtr root(Document->documentElement);
 
             // Read templates
-            for (int i = 0; i < languageNode->childNodes->length; i++)
+            for (int i = 0; i < root->childNodes->length; i++)
             {
-               XmlNodePtr n = languageNode->childNodes->item[i];
+               XmlNodePtr n = root->childNodes->item[i];
 
+               // Skip comments, read elements
                if (n->nodeType == Xml::NODE_ELEMENT)
                   templates.push_back( ReadTemplate(n) );
             }
 
-            return file;
+            return templates;
          }
          catch (_com_error& ex) {
             throw ComException(HERE, ex);
@@ -66,6 +61,36 @@ namespace GUI
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
+
+      /// <summary>Reads a template.</summary>
+      /// <param name="node">The node.</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::FileFormatException">Missing element/attribute -or- unrecognised file-type</exception>
+      TemplateFile  TemplateFileReader::ReadTemplate(XmlNodePtr node)
+      {
+         try
+         {
+            // Verify node
+            ReadElement(node, L"template");
+
+            // Attributes
+            auto name = ReadAttribute(node, L"name");
+            auto type = ParseFileType(ReadAttribute(node, L"type"));
+            wstring desc = GetChild(node, 0, L"description")->text,
+                    path = GetChild(node, 1, L"path")->text;
+
+            // Generate template
+            return TemplateFile(name, type, desc, path);
+         }
+         // Unrecognised file type
+         catch (ArgumentException& e) {
+            throw FileFormatException(HERE, e.Message);
+         }
+         catch (_com_error& ex) {
+            throw ComException(HERE, ex);
+         }
+      }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    

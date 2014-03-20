@@ -10,7 +10,7 @@
 NAMESPACE_BEGIN2(GUI,Windows)
 
    /// <summary>New Document File Templates</summary>
-   NewDocumentDialog::TemplateList  NewDocumentDialog::DocTemplates = 
+   TemplateList  NewDocumentDialog::DocTemplates = 
    {
       TemplateFile(L"Blank MSCI Script", FileType::Script, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
       TemplateFile(L"Blank Language File", FileType::Language, L"Blank Language File", L"Templates\\Blank.Language.xml"),
