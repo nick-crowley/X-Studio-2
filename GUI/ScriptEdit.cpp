@@ -66,6 +66,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return cmd.Is(CMD_GOTO_LABEL) || cmd.Is(CMD_GOTO_SUB);
    }
    
+   /// <summary>Determines whether current command has MSCI reference URL.</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanLookupOnline() const
+   {
+      // Require MSCI reference URL
+      auto cmd = ScriptParser::Identify(Document->Script, GetLineText(-1));
+      return !cmd.URL.empty();
+   }
+   
    /// <summary>Determines current line references a script</summary>
    /// <returns></returns>
    bool  ScriptEdit::CanOpenScript() const

@@ -43,6 +43,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_FORMAT_DOC, &ScriptView::OnEditFormatDoc)
       ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
       ON_COMMAND(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnEditOpenScript)
+      ON_COMMAND(ID_GAMEDATA_LOOKUP, &ScriptView::OnEditLookupOnline)
       ON_COMMAND(ID_EDIT_GOTO_LABEL, &ScriptView::OnEditGotoLabel)
       ON_COMMAND(ID_EDIT_VIEW_STRING, &ScriptView::OnEditViewString)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
@@ -61,6 +62,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REFACTOR, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_GOTO_LABEL, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_GAMEDATA_LOOKUP, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_VIEW_STRING, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryCommand)
@@ -241,6 +243,24 @@ NAMESPACE_BEGIN2(GUI,Views)
       catch (ExceptionBase&) {
       }
    }
+
+   /// <summary>lookup selected command in MSCI reference</summary>
+   void ScriptView::OnEditLookupOnline()
+   {
+      // Ensure command at caret has URL
+      if (!RichEdit.CanLookupOnline())
+         return;
+
+      try
+      {
+         // Identify command + launch URL
+         auto cmd = ScriptParser::Identify(GetDocument()->Script, RichEdit.GetLineText(-1));
+         ShellExecute(*theApp.m_pMainWnd, L"open", cmd.URL.c_str(), nullptr, nullptr, SW_SHOWMAXIMIZED);
+      }
+      // Unable to identify command
+      catch (ExceptionBase&) {
+      }
+   }
    
    /// <summary>Open script name at the caret</summary>
    void ScriptView::OnEditOpenScript()
@@ -392,6 +412,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_OPEN_SCRIPT: state = RichEdit.CanOpenScript();        break;
       case ID_EDIT_GOTO_LABEL:  state = RichEdit.CanGotoLabel();         break;
       case ID_EDIT_VIEW_STRING: state = RichEdit.CanViewString();        break;
+      case ID_GAMEDATA_LOOKUP:  state = RichEdit.CanLookupOnline();      break;
 
       // Indent/Outdent
       case ID_EDIT_INDENT:

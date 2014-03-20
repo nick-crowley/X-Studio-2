@@ -488,6 +488,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // ---------------------- ACCESSORS ------------------------			
    public:
       bool       CanGotoLabel() const;
+      bool       CanLookupOnline() const;
       bool       CanOpenScript() const;
       bool       CanRefactor() const;
       bool       CanViewString() const;
