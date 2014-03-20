@@ -21,7 +21,7 @@ namespace Logic
       /// <param name="file">file type.</param>
       /// <param name="path">Full path.</param>
       /// <param name="backup">backup name.</param>
-      ProjectItem::ProjectItem(Logic::FileSystem::FileType file, Path path, Path backup)
+      ProjectItem::ProjectItem(Logic::FileType file, Path path, Path backup)
          : Type(ProjectItemType::File), FileType(file), FullPath(path), BackupName(backup.c_str()), Name(path.FileName), Fixed(false), Value(-1)
       {}
 

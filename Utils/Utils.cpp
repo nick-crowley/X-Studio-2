@@ -75,7 +75,24 @@ namespace Logic
       }
       return L"Invalid";
    }
-      
+   
+   /// <summary>Get file-type name</summary>
+   /// <exception cref="Logic::ArgumentException">Unrecognised file type</exception>
+   UtilExport wstring GetString(FileType t)
+   {
+      switch (t)
+      {
+      case FileType::Unknown:   return L"Unknown";
+      case FileType::Universe:  return L"Universe";
+      case FileType::Project:   return L"Project";
+      case FileType::Mission:   return L"Mission";
+      case FileType::Language:  return L"Language";
+      case FileType::Script:    return L"Script";
+      }
+
+      throw ArgumentException(HERE, L"t", VString(L"Unrecognised fileType '%d'", t));
+   }
+
    /// <summary>Gets game language string</summary>
    /// <param name="l">language</param>
    /// <returns></returns>

@@ -12,7 +12,6 @@
 #include "../Logic/XFileInfo.h"
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/ScriptFileWriter.h"
-#include "../Logic/FileIdentifier.h"
 #include "../Logic/WorkerData.h"
 
 #ifdef _DEBUG

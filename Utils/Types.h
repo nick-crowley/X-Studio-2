@@ -57,6 +57,11 @@ namespace Logic
 
    /// <summary>Defines the available game versions</summary>
    enum class GameVersion : UINT { Threat=1, Reunion=2, TerranConflict=4, AlbionPrelude=8, Rebirth=16 };
+
+
+   /// <summary>Supported file types</summary>
+   enum class FileType : UINT { Unknown, Script, Language, Mission,  Project, Universe };
+   
 }
 
 using namespace Logic;
