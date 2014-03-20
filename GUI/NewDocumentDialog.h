@@ -1,6 +1,7 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
+#include "FileTemplate.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -12,9 +13,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    public:
       enum { IDD = IDD_NEW_DOCUMENT };
 
-   protected:
-      /// <summary></summary>
-      typedef list<FileTemplate>  TemplateList;
 
       // --------------------- CONSTRUCTION ----------------------
    public:

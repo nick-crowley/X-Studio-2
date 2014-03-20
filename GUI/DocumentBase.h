@@ -8,39 +8,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    enum class DocumentType { Script, Language, Mission, Project, Diff };
 
    /// <summary></summary>
-   class FileTemplate
-   {
-      // --------------------- CONSTRUCTION ----------------------
-   public:
-      FileTemplate(wstring name, FileType type, LPCWSTR desc, LPCWSTR subpath) 
-         : Name(name), Type(type), Description(desc), SubPath(subpath)
-      {}
-
-      // --------------------- PROPERTIES ------------------------
-   public:
-      PROPERTY_GET(wstring,Extension,GetExtension);
-
-      // ---------------------- ACCESSORS ------------------------			
-   public:
-      /// <summary>Get the default file extension.</summary>
-      /// <returns></returns>
-      wstring  GetExtension() const
-      {
-         return Type != FileType::Project ? L".xml" : L".xprj";
-      }
-
-      // ----------------------- MUTATORS ------------------------
-
-      // -------------------- REPRESENTATION ---------------------
-   public:
-      const wstring   Name;            // Template name
-      const wstring   Description,     // Template description
-                      SubPath;         // File SubPath: 'Templates\...'
-      const FileType  Type;            // Document type
-   };
-
-
-   /// <summary></summary>
    class DocumentBase : public CDocument
    {
       // ------------------------ TYPES --------------------------

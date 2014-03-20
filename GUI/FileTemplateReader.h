@@ -1,14 +1,14 @@
 #pragma once
-#include "DocumentBase.h"
 #include "../Logic/XmlReader.h"
+#include "FileTemplate.h"
 
 namespace GUI
 {
    namespace Utils
    {
-
+      
       /// <summary></summary>
-      class TemplateFileReader : public XmlReader
+      class FileTemplateReader : public XmlReader
       {
          // ------------------------ TYPES --------------------------
       protected:
@@ -16,11 +16,11 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         TemplateFileReader();
-         virtual ~TemplateFileReader();
+         FileTemplateReader();
+         virtual ~FileTemplateReader();
 
-         NO_COPY(TemplateFileReader);	// Default copy semantics
-         NO_MOVE(TemplateFileReader);	// Default move semantics
+         NO_COPY(FileTemplateReader);	// Default copy semantics
+         NO_MOVE(FileTemplateReader);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
 
