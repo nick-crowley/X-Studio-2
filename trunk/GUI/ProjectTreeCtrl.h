@@ -156,7 +156,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       private:
       };
 
-
       // --------------------- CONSTRUCTION ----------------------
 
    public:

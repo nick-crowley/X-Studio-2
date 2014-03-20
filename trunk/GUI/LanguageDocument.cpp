@@ -393,7 +393,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       auto newName = VString(L"%04d-L0%02d%s", id, (UINT)lang, FullPath.Extension.c_str());
 
       // Rename file/document/projectItem/title
-      __super::Rename(FullPath.Folder+newName, false);
+      __super::Rename(FullPath.Folder+newName);
    }
    
    /// <summary>Changes the ID of a Page.</summary>

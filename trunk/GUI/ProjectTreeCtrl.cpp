@@ -238,6 +238,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
             auto txt = GuiString(LabelItem.Data->Name).TrimRight(L"*");
             edit->SetWindowTextW(txt.c_str());
             edit->SetLimitText(MAX_PATH);
+            edit->SetModify(FALSE);
          }
 
          // State
@@ -259,8 +260,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       // State
       EditingLabel = false;
 
-      // Ignore if cancelled
-      if (newText == nullptr)
+      // Ignore if cancelled/unmodified
+      if (!newText || !GetEditControl()->GetModify())
          return;
 
       try

@@ -240,7 +240,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          {
             // Attempt to Rename file/document [+ update title]
             auto newPath = Document.FullPath.Folder + (value+Document.FullPath.Extension);
-            Document.Rename(newPath, false);
+            Document.Rename(newPath);
 
             // [Success] Change script-name + Modify document
             Script.Name = value;
