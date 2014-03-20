@@ -32,11 +32,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       PROPERTY_GET_SET(Path,FullPath,GetFullPath,SetFullPath);
       PROPERTY_GET_SET(bool,Virtual,GetVirtual,SetVirtual);
+      PROPERTY_GET(wstring,FileName,GetFileName);
 
       // ---------------------- ACCESSORS ------------------------			
    public:
       virtual bool      FindNext(UINT start, MatchData& m) const;
       virtual CHARRANGE GetSelection() const;
+      wstring           GetFileName() const;
       Path              GetFullPath() const;
       DocumentType      GetType() const;
       bool              GetVirtual() const;
@@ -57,8 +59,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void          SetVirtual(bool v);
 
    protected:
-      /*afx_msg void  OnCommand_Save();
-      afx_msg void  OnCommand_SaveAs();*/
+      afx_msg void  OnCommand_Close();
+      afx_msg void  OnCommand_Save();
+      afx_msg void  OnCommand_SaveAs();
       afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 	   
       // -------------------- REPRESENTATION ---------------------
