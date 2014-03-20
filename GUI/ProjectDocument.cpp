@@ -494,31 +494,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::IOException">Unable to rename file</exception>
    void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
    {
-      // Project: Rename self using uniform renaming mechanics
+      // Project: Rename document/root, but not file
       if (item.IsRoot())
+      {
+         SetModifiedFlag(TRUE); // Mark modified before rename so file is not renamed
          Rename(FullPath.RenameFileName(name), false);
-      /*{
-         Rename(FullPath.RenameFileName(name), false);
-         SetModifiedFlag(TRUE);
-         return;
-      }*/
+      }
       // File: Rename file/document
       else if (item.IsFile())
       {
-         // Open: Rename document using uniform renaming mechanics
+         // Document: Rename document/item, but not file
          if (auto doc = theApp.GetOpenDocument(item.FullPath))
             doc->Rename(item.FullPath.RenameFileName(name), false);
-         /*{
-            doc->Rename(item.FullPath.RenameFileName(name), false);
-            SetModifiedFlag(TRUE);
-            return;
-         }*/
          else
          {
-            // New file path
+            // File: Attempt to Rename on disc
             Path newPath = item.FullPath.RenameFileName(name);
-            
-            // Attempt to Rename
             RenameFile(item.FullPath, newPath);
 
             // Set new name+path
