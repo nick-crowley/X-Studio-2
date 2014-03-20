@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FileTemplateReader.h"
+#include "TemplateFileReader.h"
 
 namespace GUI
 {
@@ -13,12 +13,12 @@ namespace GUI
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      FileTemplateReader::FileTemplateReader(StreamPtr in) : XmlReader(in)
+      TemplateFileReader::TemplateFileReader(StreamPtr in) : XmlReader(in)
       {
       }
 
 
-      FileTemplateReader::~FileTemplateReader()
+      TemplateFileReader::~TemplateFileReader()
       {
       }
 
@@ -33,7 +33,7 @@ namespace GUI
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid languageID or pageID</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      list<TemplateFile> FileTemplateReader::ReadFile()
+      list<TemplateFile> TemplateFileReader::ReadFile()
       {
          try
          {
