@@ -1,6 +1,6 @@
 #pragma once
 #include "../Logic/XmlReader.h"
-#include "FileTemplate.h"
+#include "TemplateFile.h"
 
 namespace GUI
 {
@@ -30,7 +30,7 @@ namespace GUI
 
          // ----------------------- MUTATORS ------------------------
       public:
-         list<FileTemplate> ReadFile();
+         list<TemplateFile> ReadFile();
 
          // -------------------- REPRESENTATION ---------------------
 

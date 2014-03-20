@@ -12,10 +12,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>New Document File Templates</summary>
    NewDocumentDialog::TemplateList  NewDocumentDialog::DocTemplates = 
    {
-      FileTemplate(L"Blank MSCI Script", FileType::Script, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
-      FileTemplate(L"Blank Language File", FileType::Language, L"Blank Language File", L"Templates\\Blank.Language.xml"),
-      FileTemplate(L"Blank MD Script", FileType::Mission, L"Blank MD Script", nullptr),
-      FileTemplate(L"Blank Project", FileType::Project, L"Blank Project", nullptr)
+      TemplateFile(L"Blank MSCI Script", FileType::Script, L"Blank MSCI script", L"Templates\\Blank.MSCI.xml"),
+      TemplateFile(L"Blank Language File", FileType::Language, L"Blank Language File", L"Templates\\Blank.Language.xml"),
+      TemplateFile(L"Blank MD Script", FileType::Mission, L"Blank MD Script", nullptr),
+      TemplateFile(L"Blank Project", FileType::Project, L"Blank Project", nullptr)
    };
 
    // --------------------------------- APP WIZARD ---------------------------------
@@ -146,20 +146,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Gets a template by index.</summary>
    /// <param name="index">Zero-based index, or -1 for the currently selected item.</param>
    /// <returns></returns>
-   const FileTemplate*  NewDocumentDialog::GetTemplate(UINT index) const
+   const TemplateFile*  NewDocumentDialog::GetTemplate(UINT index) const
    {
       // Get Selected
       if (index == -1)
          index = Templates.GetNextItem(-1, LVNI_SELECTED);
 
       // Lookup data
-      return reinterpret_cast<const FileTemplate*>(Templates.GetItemData(index));
+      return reinterpret_cast<const TemplateFile*>(Templates.GetItemData(index));
    }
    
    /// <summary>Inserts a template.</summary>
    /// <param name="index">The index.</param>
    /// <param name="t">template.</param>
-   void NewDocumentDialog::InsertTemplate(UINT index, const FileTemplate& t)
+   void NewDocumentDialog::InsertTemplate(UINT index, const TemplateFile& t)
    {
       UINT icon = 0;
       switch (t.Type)

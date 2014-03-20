@@ -44,7 +44,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void          Activate();
       BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
-      virtual BOOL  OnOpenTemplate(Path docPath, const FileTemplate& t);
+      virtual BOOL  OnOpenTemplate(Path docPath, const TemplateFile& t);
       virtual void  Rename(Path newPath, bool overwriteExists);
       virtual bool  Replace(MatchData& m);
       BOOL          SaveModified() override;

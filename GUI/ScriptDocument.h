@@ -346,7 +346,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       afx_msg void OnCommand_QuickCommit();      // { OnPerformCommand(ID_BACKUP_QUICK_COMMIT); }
       afx_msg void OnCommand_RemoveArgument();  
 	   handler BOOL OnNewDocument() override;
-      handler BOOL OnOpenTemplate(Path docPath, const FileTemplate& t) override;
+      handler BOOL OnOpenTemplate(Path docPath, const TemplateFile& t) override;
       handler BOOL OnOpenDocument(LPCTSTR szPathName) override;
       //afx_msg void OnPerformCommand(UINT nID);
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;

@@ -1,7 +1,7 @@
 #pragma once
 #include "ImageListEx.h"
 #include "DocumentBase.h"
-#include "FileTemplate.h"
+#include "TemplateFile.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
@@ -29,7 +29,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    public:
    
    protected:
-      const FileTemplate*  GetTemplate(UINT index) const;
+      const TemplateFile*  GetTemplate(UINT index) const;
 
       // ----------------------- MUTATORS ------------------------
    public:
@@ -38,7 +38,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    protected:
       void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-      void InsertTemplate(UINT index, const FileTemplate& t);
+      void InsertTemplate(UINT index, const TemplateFile& t);
 
       void OnItemStateChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	  
