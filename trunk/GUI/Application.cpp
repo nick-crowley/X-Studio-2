@@ -305,6 +305,10 @@ void Application::OnCommand_About()
 /// <summary>Dispay new document dialog</summary>
 void Application::OnCommand_New()
 {
+   // Feedback
+   Console << Cons::UserAction << L"Displaying new Document dialog" << ENDL;
+
+   // Display new document dialog
 	NewDocumentDialog dlg;
 	dlg.DoModal();
 }
