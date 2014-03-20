@@ -138,17 +138,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       // Display pane pop-up menu for toolbar
 	   if (pWnd->GetSafeHwnd() != ListView.m_hWnd)
-	   {
-		   CDockablePane::OnContextMenu(pWnd, point);
-		   return;
-	   }
+	      return __super::OnContextMenu(pWnd, point);
 
       // Select item
 	   if (point != CPoint(-1, -1))
 	   {
          UINT flags = LVHT_ONITEM;
-		   // Select item
-		   if (auto item = ListView.HitTest(CursorPoint(&ListView), &flags))
+         auto item = ListView.HitTest(CursorPoint(&ListView), &flags);
+		   
+         // Select item
+		   if (item != -1)
             ListView.SetItemState(item, LVIS_SELECTED, LVIS_SELECTED);
 	   }
 
@@ -215,7 +214,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
          // Base 
-	      if (CDockablePane::OnCreate(lpCreateStruct) == -1)
+	      if (__super::OnCreate(lpCreateStruct) == -1)
 		      throw Win32Exception(HERE, L"Unable to create dockable pane");
 
 	      // ListView
@@ -330,7 +329,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pOldWnd">The p old WND.</param>
    void CGameDataWnd::OnSetFocus(CWnd* pOldWnd)
    {
-	   CDockablePane::OnSetFocus(pOldWnd);
+	   __super::OnSetFocus(pOldWnd);
 
       // Focus listview
 	   ListView.SetFocus();
@@ -366,7 +365,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="lpszSection">The section.</param>
    void CGameDataWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
-      CDockablePane::OnSettingChange(uFlags, lpszSection);
+      __super::OnSettingChange(uFlags, lpszSection);
 
       // Update window fonts
       Groups.SetFont(&theApp.ToolWindowFont);
@@ -382,7 +381,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="nStatus">The status.</param>
    void CGameDataWnd::OnShowWindow(BOOL bShow, UINT nStatus)
    {
-      CDockablePane::OnShowWindow(bShow, nStatus);
+      __super::OnShowWindow(bShow, nStatus);
 
       // Reset tooltip
       Tooltip.Reset();
@@ -395,7 +394,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="cy">The height.</param>
    void CGameDataWnd::OnSize(UINT nType, int cx, int cy)
    {
-	   CDockablePane::OnSize(nType, cx, cy);
+	   __super::OnSize(nType, cx, cy);
 	   AdjustLayout();
    }
 

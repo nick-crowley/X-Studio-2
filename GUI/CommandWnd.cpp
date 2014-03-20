@@ -9,7 +9,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    // --------------------------------- APP WIZARD ---------------------------------
   
    BEGIN_MESSAGE_MAP(CCommandWnd, CGameDataWnd)
-      ON_WM_CONTEXTMENU()
+      //ON_WM_CONTEXTMENU()
+      ON_COMMAND(ID_GAMEDATA_LOOKUP, &CCommandWnd::OnCommandLookup)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -36,9 +37,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Gets the current content.</summary>
+   /// <returns></returns>
+   CmdSyntaxArray  CCommandWnd::GetContent() const
+   {
+      // Convert group selection
+      auto grp = (CommandGroup)(Groups.GetCurSel()-1);
 
-   /// <summary>Gets the item text.</summary>
-   /// <param name="index">The index.</param>
+      // Lookup matches
+      return SyntaxLib.Query(GetSearchTerm(), GameVersion::TerranConflict, grp);
+   }
+
+   /// <summary>Gets the command text to be inserted for this item.</summary>
+   /// <param name="index">Zero-based item index.</param>
    /// <returns></returns>
    wstring  CCommandWnd::GetItemText(UINT index)
    {
@@ -63,12 +75,58 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Called when context menu.</summary>
    /// <param name="wnd">window.</param>
    /// <param name="pt">Point in screen co-ordinates.</param>
-   void  CCommandWnd::OnContextMenu(CWnd* wnd, CPoint pt)
+   /*void  CCommandWnd::OnContextMenu(CWnd* wnd, CPoint pt)
    {
       __super::OnContextMenu(wnd, pt);
+   }*/
+   
+   /// <summary>Launch MSCI reference URL for selected command</summary>
+   void CCommandWnd::OnCommandLookup()
+   {
+      // Require selection
+      if (ListView.GetNextItem(-1, LVNI_SELECTED) == -1)
+         return;
+
+      // Get content
+      auto content = GetContent();
+      UINT item = ListView.GetNextItem(-1, LVNI_SELECTED);
+
+      // Lookup item
+      if (item < content.size() && !content[item]->URL.empty())
+         ShellExecute(*theApp.m_pMainWnd, TEXT("open"), content[item]->URL.c_str(), NULL, NULL, SW_SHOWMAXIMIZED);
+   }
+      
+   /// <summary>Queries the state of a menu command.</summary>
+   /// <param name="pCmdUI">The command UI.</param>
+   void CCommandWnd::OnQueryCommand(CCmdUI* pCmdUI)
+   {
+      bool state = false;
+      UINT item = ListView.GetNextItem(-1, LVNI_SELECTED);
+
+      // State
+      switch (pCmdUI->m_nID)
+      {
+      // Query selection
+      case ID_EDIT_COPY:
+      case ID_GAMEDATA_INSERT:  
+         state = item != -1;
+         break;
+
+      // Query selection + MSCI URL
+      case ID_GAMEDATA_LOOKUP:  
+         if (item != -1)
+         {
+            auto content = GetContent();
+            state = (item < content.size() && !content[item]->URL.empty());
+         }
+         break;
+      }
+
+      // Set state
+      pCmdUI->Enable(state ? TRUE : FALSE);
+      pCmdUI->SetCheck(FALSE);
    }
 
-   
    /// <summary>Supply tooltip data.</summary>
    /// <param name="data">data.</param>
    void CCommandWnd::OnRequestTooltip(CustomTooltip::TooltipData* data)
@@ -82,7 +140,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (index != -1)
       {
          // Lookup current items
-         auto Content = SyntaxLib.Query(GetSearchTerm(), GameVersion::TerranConflict);
+         auto Content = GetContent();
 
          // Provide item
          if (index < (int)Content.size())
@@ -115,11 +173,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="selectedGroup">The selected group.</param>
    void CCommandWnd::PopulateItems(const wstring& searchTerm, UINT selectedGroup)
    {
-      // Convert group selection
-      auto grp = (CommandGroup)(Groups.GetCurSel()-1);
-
       // Lookup matches
-      auto Content = SyntaxLib.Query(searchTerm, GameVersion::TerranConflict, grp);
+      auto Content = GetContent();
       ListView.SetItemCount(Content.size());
             
       // Define ListView groups
