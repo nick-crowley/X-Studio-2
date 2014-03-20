@@ -121,8 +121,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (szPathName && proj && proj->Contains(oldPath))
             proj->OnDocumentRenamed(*this, oldPath, oldPath != FullPath ? TRUE : FALSE);
 
-         // Success: Raise 'After Save'
-	      OnDocumentEvent(onAfterSaveDocument);
+         // Success: Raise 'AFTER SAVE'
+	      OnDocumentEvent(onAfterSaveDocument);  // Refreshes backup window
 	      return TRUE;     
       }
       // Renaming failed
@@ -176,6 +176,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
    bool  DocumentBase::GetVirtual() const
    {
       return IsVirtual;
+   }
+   
+   /// <summary>Refresh revisions after opening/saving</summary>
+   /// <param name="deEvent">The event.</param>
+   void DocumentBase::OnDocumentEvent(DocumentEvent deEvent)
+   {
+      // Raise 'PROJECT LOADED'
+      switch (deEvent)
+      {
+      case CDocument::onAfterOpenDocument:
+      case CDocument::onAfterSaveDocument:
+         if (auto proj = ProjectDocument::GetActive())
+            proj->RefreshRevisions(*this);
+         break;
+      }
    }
 
    /// <summary>Called when opening a document from a template.</summary>

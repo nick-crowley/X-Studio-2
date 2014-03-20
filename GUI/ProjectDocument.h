@@ -94,15 +94,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool  Commit(const ScriptDocument& doc, const wstring& title);
       void  DeleteRevision(const ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
-      
-      
       void  OnDocumentEvent(DocumentEvent deEvent) override;
-      //void  OnDocumentRenamed(DocumentBase& doc, Path oldPath);
       void  OnDocumentRenamed(DocumentBase& doc, Path oldPath, BOOL updatePath);
       BOOL  OnImportDocument(Path legacy, Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
+      void  RefreshRevisions(const DocumentBase& doc);
       void  RemoveItem(ProjectItem& item);
       void  RenameItem(ProjectItem& item, const wstring& name);
       void  SetFullPath(Path path) override;
