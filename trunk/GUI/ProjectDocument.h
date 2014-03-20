@@ -104,8 +104,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;
       BOOL  OnSaveDocument(LPCTSTR lpszPathName) override;
       void  RemoveItem(ProjectItem& item);
-      void  Rename(Path newPath, bool overwriteExists) override;
       void  RenameItem(ProjectItem& item, const wstring& name);
+      void  SetFullPath(Path path) override;
       void  SetModifiedFlag(BOOL bModified = TRUE) override;
 
    protected:
