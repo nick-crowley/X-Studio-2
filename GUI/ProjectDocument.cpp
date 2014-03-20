@@ -303,20 +303,53 @@ NAMESPACE_BEGIN2(GUI,Documents)
       else if (Contains(doc))
          throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
 
-      // Update item
+      // Update item name
       auto item = Project.Find(oldPath);
-      item->FullPath = doc.FullPath;
-      item->Name = doc.FullPath.FileName;
+      item->Name = doc.GetTitle();
+
+      // Unmodified: Update item path to reflect new document path
+      if (!doc.IsModified())
+         item->FullPath = doc.FullPath;
 
       // DEBUG
       //Console << HERE << ": Setting project name to " << item->Name << ENDL;
 
-      // Raise 'ITEM CHANGED'
+      // Item: Raise 'ITEM CHANGED'
       if (!item->IsRoot())
          ItemChanged.Raise(item);
 
       // Modify project  [Raises 'ITEM CHANGED' on Root]
       SetModifiedFlag(TRUE);
+   }
+   
+   /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
+   /// <param name="doc">The document.</param>
+   /// <param name="oldPath">The old path.</param>
+   /// <param name="updatePath">TRUE to update item path, FALSE to preserve it</param>
+   /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
+   void  ProjectDocument::OnDocumentSaved(DocumentBase& doc, Path oldPath, BOOL updatePath)
+   {
+      // Ensure document is member
+      if (!Contains(oldPath))
+         throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
+      
+      // Update item name 
+      auto item = Project.Find(oldPath);
+      item->Name = doc.GetTitle();
+
+      // Replace: Update item path
+      if (updatePath)
+      {
+         // Ensure path is unique
+         if (Contains(doc))
+            throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
+
+         // Update path
+         item->FullPath = doc.FullPath;
+      }
+
+      // Item: Raise 'ITEM CHANGED'
+      ItemChanged.Raise(item);
    }
 
    /// <summary>Called on new X-Studio 2 project.</summary>

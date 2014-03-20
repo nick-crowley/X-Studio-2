@@ -98,6 +98,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       void  OnDocumentEvent(DocumentEvent deEvent) override;
       void  OnDocumentRenamed(DocumentBase& doc, Path oldPath);
+      void  OnDocumentSaved(DocumentBase& doc, Path oldPath, BOOL updatePath);
       BOOL  OnImportDocument(Path legacy, Path upgrade);
       BOOL  OnNewDocument() override;
       BOOL  OnOpenDocument(LPCTSTR lpszPathName) override;

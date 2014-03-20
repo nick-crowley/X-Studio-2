@@ -10,8 +10,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    IMPLEMENT_DYNCREATE(DocumentBase, CDocument)
 
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
-      /*ON_COMMAND(ID_FILE_SAVE)
-      ON_COMMAND(ID_FILE_SAVE_AS)*/
+      ON_COMMAND(ID_FILE_CLOSE, &DocumentBase::OnCommand_Close)
+      ON_COMMAND(ID_FILE_SAVE, &DocumentBase::OnCommand_Save)
+      ON_COMMAND(ID_FILE_SAVE_AS, &DocumentBase::OnCommand_SaveAs)
+      ON_UPDATE_COMMAND_UI(ID_FILE_CLOSE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, &DocumentBase::OnQueryCommand)
@@ -59,12 +61,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
    
    /// <summary>Invoked by MFC to save the document.</summary>
-   /// <param name="szPathName">Existing full path, or nullptr for 'Save [Copy] As'</param>
-   /// <param name="bReplace">TRUE for 'SaveAs', FALSE for 'SaveCopyAs'</param>
+   /// <param name="szPathName">Path to save under, or nullptr for 'Save As'</param>
+   /// <param name="bReplace">TRUE to update project item, FALSE to preserve it</param>
    /// <returns>TRUE if saved, FALSE if cancelled/error</returns>
    BOOL DocumentBase::DoSave(LPCTSTR szPathName, BOOL bReplace)
    {
 	   CString path = szPathName;
+      auto proj = ProjectDocument::GetActive();
 
       try
       {
@@ -76,8 +79,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
                return FALSE;
 
             // SaveAs: Rename document
-            if (bReplace)
-               Rename((LPCWSTR)path, true);
+            /*if (bReplace)
+               Rename((LPCWSTR)path, true);*/
          }
 
          // Save document
@@ -90,11 +93,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		      return FALSE;
 	      }
 
-	      // SaveAs: Raise 'After Save'
-	      if (bReplace)
-	         OnDocumentEvent(onAfterSaveDocument);
+         // Preserve path
+         auto oldPath = FullPath;
 
-         // success
+         // Update path/title/modified
+         __super::m_strPathName = path;
+         __super::SetModifiedFlag(FALSE);
+         SetTitle(FullPath.FileName.c_str());
+
+	      // Update project item name/path
+         if (proj && proj->Contains(oldPath))
+            proj->OnDocumentSaved(*this, oldPath, bReplace);
+
+         // Success: Raise 'After Save'
+	      OnDocumentEvent(onAfterSaveDocument);
 	      return TRUE;     
       }
       // Renaming failed
@@ -112,6 +124,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    bool  DocumentBase::FindNext(UINT start, MatchData& m) const
    {
       return false;
+   }
+
+   /// <summary>Gets the filename from the title, without the '*'</summary>
+   /// <returns></returns>
+   /// <remarks>If the file has been renamed the title represents the desired filename, whereas the fullpath contains the actual filename</remarks>
+   wstring DocumentBase::GetFileName() const
+   {
+      wstring title = GetTitle();
+
+      // Pop '*' if present
+      if (!title.empty() && title.back() == '*')
+         title.pop_back();
+
+      return title;
    }
 
    /// <summary>Get the full document path.</summary>
@@ -156,7 +182,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="overwriteExists">True to overwrite if file exists, false to fail if file exists.</param>
    /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
    /// <exception cref="Logic::IOException">Unable to rename file</exception>
-   void  DocumentBase::Rename(Path newPath, bool overwriteExists)
+   void  DocumentBase::Rename(Path newPath, bool /*overwriteExists*/)
    {
       auto proj = ProjectDocument::GetActive();
 
@@ -168,25 +194,35 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (Virtual)
          throw AlgorithmException(HERE, L"Cannot rename virtual documents");
 
-      // Project: Ensure new path unique within project
+      // Project Member: Ensure new path unique within project
       if (proj && proj->Contains(FullPath) && proj->Contains(newPath))
          throw ApplicationException(HERE, L"Current project already contains a file with that name");
 
       // Ensure new path does not exist
-      if (!overwriteExists && newPath.Exists())
-         throw ApplicationException(HERE, L"A file with that name already exists");
+      /*if (!overwriteExists && newPath.Exists())
+         throw ApplicationException(HERE, L"A file with that name already exists");*/
 
-      // Rename file
-      if (!MoveFileEx(FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
-         throw IOException(HERE, L"Unable to rename file: " + SysErrorString());
+      // Modified:
+      if (IsModified())
+      {
+         // Update title only
+         SetTitle(newPath.FileName.c_str());
+      }
+      // Unmodified:
+      else
+      {
+         // Rename file
+         if (!MoveFileEx(FullPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED|MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))
+            throw IOException(HERE, L"Unable to rename file: " + SysErrorString());
 
-      // Update document path [and title]
-      auto oldPath = FullPath;
-      FullPath = newPath;
+         // Update document path [and title]
+         auto oldPath = FullPath;
+         FullPath = newPath;
 
-      // Project: Update project item
-      if (proj && proj->Contains(oldPath))
-         proj->OnDocumentRenamed(*this, oldPath);
+         // Project: Update project item
+         if (proj && proj->Contains(oldPath))
+            proj->OnDocumentRenamed(*this, oldPath);
+      }
    }
    
    /// <summary>Replaces the current match</summary>
@@ -205,7 +241,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		   return TRUE;        // ok to continue
 
       // Query save
-      VString msg(L"The document '%s' has been modified, save changes?", FullPath.FileName.c_str());
+      VString msg(L"The document '%s' has been modified, save changes?", FileName.c_str());
       switch (theApp.ShowMessage(msg, MB_ICONQUESTION|MB_YESNOCANCEL))
       {
       // Cancel: Abort closing
@@ -214,7 +250,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Yes: Attempt saving
       case IDYES:
-		   if (!OnSaveDocument(FullPath.c_str()))
+		   if (!DoSave((FullPath.Folder+FileName).c_str(), TRUE))
 			   return FALSE;       // Failed: Abort closing
 		   break;
       }
@@ -294,35 +330,48 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   
+   /// <summary>Query to save if modified</summary>
+   void  DocumentBase::OnCommand_Close()
+   {
+      // Save Modified
+      if (!SaveModified())
+		   return;
+
+      // Close doc
+	   OnCloseDocument();
+   }
+
    /// <summary>Save under existing path</summary>
-   //void  DocumentBase::OnCommand_Save()
-   //{
-   //   // Save document
-   //   OnSaveDocument(FullPath.c_str());
-   //}
+   void  DocumentBase::OnCommand_Save()
+   {
+      // Save document under existing or modified path
+      DoSave((FullPath.Folder+FileName).c_str(), TRUE);
+   }
 
    /// <summary>Query for new path, rename document, and save.</summary>
-   //void  DocumentBase::OnCommand_SaveAs()
-   //{
-   //   CString path(FullPath.FileName.c_str());
+   void  DocumentBase::OnCommand_SaveAs()
+   {
+      // Prompt for filename, save copy
+      DoSave(nullptr, FALSE);
 
-   //   try
-   //   {
-   //      // Query for new filename
-   //      if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
-			//   return;
+      //CString path(FullPath.FileName.c_str());
 
-   //      // Attempt to Rename document
-   //      Rename((LPCWSTR)path, false);
+      //try
+      //{
+      //   // Query for new filename
+      //   if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
+			   //return;
 
-   //      // Save document
-   //      OnSaveDocument(FullPath.c_str());
-   //   }
-   //   catch (ExceptionBase& e) {
-   //      theApp.ShowError(HERE, e, VString(L"Unable to save document to '%s'", (LPCWSTR)path));
-   //   }
-   //}
+      //   // Attempt to Rename document
+      //   Rename((LPCWSTR)path, false);
+
+      //   // Save document
+      //   OnSaveDocument(FullPath.c_str());
+      //}
+      //catch (ExceptionBase& e) {
+      //   theApp.ShowError(HERE, e, VString(L"Unable to save document to '%s'", (LPCWSTR)path));
+      //}
+   }
 
    /// <summary>Queries the state of a menu command.</summary>
    /// <param name="pCmdUI">The command UI.</param>
@@ -332,9 +381,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       switch (pCmdUI->m_nID)
       {
+      // Close: Always enabled
+      case ID_FILE_CLOSE:    state = true;       break;
+
       // Save/SaveAs: Require file document
       case ID_FILE_SAVE:
       case ID_FILE_SAVE_AS:  state = !Virtual;   break;
+
       // SaveAll: Always enabled
       case ID_FILE_SAVE_ALL: state = true;       break;
       }
