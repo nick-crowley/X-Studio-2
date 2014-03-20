@@ -27,6 +27,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    public:
       static DocumentBase* GetActive();
+      static void RenameFile(Path oldPath, Path newPath);
 
       // --------------------- PROPERTIES ------------------------
    public:
