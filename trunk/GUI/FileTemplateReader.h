@@ -8,7 +8,7 @@ namespace GUI
    {
       
       /// <summary></summary>
-      class FileTemplateReader : public XmlReader
+      class TemplateFileReader : public XmlReader
       {
          // ------------------------ TYPES --------------------------
       protected:
@@ -16,11 +16,11 @@ namespace GUI
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         FileTemplateReader();
-         virtual ~FileTemplateReader();
+         TemplateFileReader();
+         virtual ~TemplateFileReader();
 
-         NO_COPY(FileTemplateReader);	// Default copy semantics
-         NO_MOVE(FileTemplateReader);	// Default move semantics
+         NO_COPY(TemplateFileReader);	// Default copy semantics
+         NO_MOVE(TemplateFileReader);	// Default move semantics
 
          // ------------------------ STATIC -------------------------
 
