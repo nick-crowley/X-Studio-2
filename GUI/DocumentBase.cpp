@@ -64,7 +64,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="szPathName">Path to save under, or nullptr for 'Save As'</param>
    /// <param name="bReplace">TRUE to update project item, FALSE to preserve it</param>
    /// <returns>TRUE if saved, FALSE if cancelled/error</returns>
-   BOOL DocumentBase::DoSave(LPCTSTR szPathName, BOOL bReplace)
+   BOOL DocumentBase::DoSave(LPCTSTR szPathName, BOOL /*bReplace*/)
    {
 	   CString path = szPathName;
       auto proj = ProjectDocument::GetActive();
@@ -75,6 +75,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (!szPathName)
          {
             // Query for new filename
+            path = FullPath.c_str();
             if (!AfxGetApp()->DoPromptFileName(path, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY|OFN_PATHMUSTEXIST, FALSE, GetDocTemplate()))
                return FALSE;
 
@@ -101,9 +102,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          __super::SetModifiedFlag(FALSE);
          SetTitle(FullPath.FileName.c_str());
 
-	      // Update project item name/path
-         if (proj && proj->Contains(oldPath))
-            proj->OnDocumentSaved(*this, oldPath, bReplace);
+	      // Project: Update item name [Unless 'SaveAs']
+         if (proj && proj->Contains(oldPath) && szPathName)
+            proj->OnDocumentRenamed(*this, oldPath, TRUE);
 
          // Success: Raise 'After Save'
 	      OnDocumentEvent(onAfterSaveDocument);
@@ -207,6 +208,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Update title only
          SetTitle(newPath.FileName.c_str());
+
+         // Project: Update item name only
+         if (proj && proj->Contains(FullPath))
+            proj->OnDocumentRenamed(*this, FullPath, FALSE);
       }
       // Unmodified:
       else
@@ -219,10 +224,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          auto oldPath = FullPath;
          FullPath = newPath;
 
-         // Project: Update project item
+         // Project: Update item name & path
          if (proj && proj->Contains(oldPath))
-            proj->OnDocumentRenamed(*this, oldPath);
+            proj->OnDocumentRenamed(*this, oldPath, TRUE);
       }
+
+      
    }
    
    /// <summary>Replaces the current match</summary>
@@ -265,7 +272,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       // Change path. (Don't add to MRU - will cause argument exception if file doesn't exist)
       SetPathName(path.c_str(), FALSE);
-      SetModifiedFlag(TRUE);
 
       // Update title
       SetTitle(path.FileName.c_str());

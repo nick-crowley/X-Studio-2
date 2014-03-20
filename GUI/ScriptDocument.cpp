@@ -461,9 +461,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Set text
          SetAllText(r.Content);
 
-         // Rename if appropriate
+         // Revert path
          if (FullPath != r.FullPath)
+         {
+            /*auto proj = ProjectDocument::GetActive();
+            if (proj && proj->Contains(*this))*/
+
             FullPath = r.FullPath;
+         }
 
          // Refresh properties
          CPropertiesWnd::Connect(this, true);

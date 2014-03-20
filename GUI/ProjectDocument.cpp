@@ -293,41 +293,41 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="doc">The document.</param>
    /// <param name="oldPath">The old path.</param>
    /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
-   void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath)
-   {
-      // Ensure document is member
-      if (!Contains(oldPath))
-         throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
-      
-      // Ensure path is unique
-      else if (Contains(doc))
-         throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
+   //void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath)
+   //{
+   //   // Ensure document is member
+   //   if (!Contains(oldPath))
+   //      throw AlgorithmException(HERE, VString(L"Project doesn't contain a document '%s'", oldPath.c_str()) );
+   //   
+   //   // Ensure path is unique
+   //   else if (Contains(doc))
+   //      throw AlgorithmException(HERE, VString(L"Project already contains a document '%s'", doc.FullPath.c_str()) );
 
-      // Update item name
-      auto item = Project.Find(oldPath);
-      item->Name = doc.GetTitle();
+   //   // Update item name
+   //   auto item = Project.Find(oldPath);
+   //   item->Name = doc.GetTitle();
 
-      // Unmodified: Update item path to reflect new document path
-      if (!doc.IsModified())
-         item->FullPath = doc.FullPath;
+   //   // Unmodified: Update item path to reflect new document path
+   //   if (!doc.IsModified())
+   //      item->FullPath = doc.FullPath;
 
-      // DEBUG
-      //Console << HERE << ": Setting project name to " << item->Name << ENDL;
+   //   // DEBUG
+   //   //Console << HERE << ": Setting project name to " << item->Name << ENDL;
 
-      // Item: Raise 'ITEM CHANGED'
-      if (!item->IsRoot())
-         ItemChanged.Raise(item);
+   //   // Item: Raise 'ITEM CHANGED'
+   //   if (!item->IsRoot())
+   //      ItemChanged.Raise(item);
 
-      // Modify project  [Raises 'ITEM CHANGED' on Root]
-      SetModifiedFlag(TRUE);
-   }
+   //   // Modify project  [Raises 'ITEM CHANGED' on Root]
+   //   SetModifiedFlag(TRUE);
+   //}
    
    /// <summary>Notifies the project a document item has been renamed, and updates the project item to match</summary>
-   /// <param name="doc">The document.</param>
-   /// <param name="oldPath">The old path.</param>
+   /// <param name="doc">document.</param>
+   /// <param name="oldPath">old path if changed, otherwise existing path.</param>
    /// <param name="updatePath">TRUE to update item path, FALSE to preserve it</param>
    /// <exception cref="Logic::AlgorithmException">Document not member of project -or- new path is not unique</exception>
-   void  ProjectDocument::OnDocumentSaved(DocumentBase& doc, Path oldPath, BOOL updatePath)
+   void  ProjectDocument::OnDocumentRenamed(DocumentBase& doc, Path oldPath, BOOL updatePath)
    {
       // Ensure document is member
       if (!Contains(oldPath))
@@ -494,21 +494,25 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::IOException">Unable to rename file</exception>
    void  ProjectDocument::RenameItem(ProjectItem& item, const wstring& name)
    {
-      // Project: Rename self
+      // Project: Rename self using uniform renaming mechanics
       if (item.IsRoot())
-      {
          Rename(FullPath.RenameFileName(name), false);
+      /*{
+         Rename(FullPath.RenameFileName(name), false);
+         SetModifiedFlag(TRUE);
          return;
-      }
+      }*/
       // File: Rename file/document
       else if (item.IsFile())
       {
-         // Open: Rename file/document/title/item
+         // Open: Rename document using uniform renaming mechanics
          if (auto doc = theApp.GetOpenDocument(item.FullPath))
-         {
             doc->Rename(item.FullPath.RenameFileName(name), false);
+         /*{
+            doc->Rename(item.FullPath.RenameFileName(name), false);
+            SetModifiedFlag(TRUE);
             return;
-         }
+         }*/
          else
          {
             // New file path
