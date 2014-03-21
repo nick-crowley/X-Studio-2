@@ -451,10 +451,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   /// <summary>TODO: Display properties</summary>
+   /// <summary>Display properties pane</summary>
    void CProjectWnd::OnCommand_ViewProperties()
    {
-	   AfxMessageBox(_T("TODO: Project item properties"));
+	   theApp.GetMainWindow()->ActivatePropertiesPane();
    }
 
 

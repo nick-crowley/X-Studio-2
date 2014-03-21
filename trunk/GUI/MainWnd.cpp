@@ -111,6 +111,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       m_wndProject.ShowPane(TRUE, FALSE, TRUE);
    }
+   
+   /// <summary>Activates the properties window.</summary>
+   void  MainWnd::ActivatePropertiesPane()
+   {
+      m_wndProperties.ShowPane(TRUE, FALSE, TRUE);
+   }
 
    /// <summary>Gets the active script view.</summary>
    /// <returns></returns>

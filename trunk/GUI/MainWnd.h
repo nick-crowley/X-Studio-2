@@ -68,6 +68,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    public:
       void         ActivateOutputPane(Operation pane, bool show);
       void         ActivateProjectPane();
+      void         ActivatePropertiesPane();
       void         CreateToolBars();
       void         CreateToolWindows();
       ScriptView*  GetActiveScriptView();
