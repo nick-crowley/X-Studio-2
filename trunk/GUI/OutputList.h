@@ -24,6 +24,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  Clear();
       void  Create(CWnd* parent, DWORD style, UINT nID, CImageList* images);
       void  InsertItem(const WorkerProgress& wp);
 

@@ -69,6 +69,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void         ActivateOutputPane(Operation pane, bool show);
       void         ActivateProjectPane();
       void         ActivatePropertiesPane();
+      void         ClearOutputPane(Operation pane, bool show);
       
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;

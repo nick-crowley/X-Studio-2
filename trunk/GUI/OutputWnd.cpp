@@ -45,6 +45,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
    
+   /// <summary>Activates a pane.</summary>
+   /// <param name="op">The pane.</param>
+   void COutputWnd::ActivatePane(Operation op)
+   {
+      switch (op)
+      {
+      case Operation::LoadGameData:      TabCtrl.SetActiveTab(0);  break;
+      case Operation::ImportProject:     
+      case Operation::LoadSaveDocument:  TabCtrl.SetActiveTab(1);  break;
+      case Operation::FindAndReplace1:   TabCtrl.SetActiveTab(2);  break;
+      case Operation::FindAndReplace2:   TabCtrl.SetActiveTab(3);  break;
+      }
+   }
+
    /// <summary>Creates the window.</summary>
    /// <param name="parent">The parent.</param>
    /// <exception cref="Logic::Win32Exception">Unable to create window</exception>
@@ -61,22 +75,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
       EnableDocking(CBRS_ALIGN_BOTTOM);
    }
 
-   // ------------------------------ PROTECTED METHODS -----------------------------
-   
-   /// <summary>Activates a pane.</summary>
-   /// <param name="op">The pane.</param>
-   void COutputWnd::ActivatePane(Operation op)
+   /// <summary>Clears a pane.</summary>
+   void COutputWnd::ClearPane(Operation op)
    {
       switch (op)
       {
-      case Operation::LoadGameData:      TabCtrl.SetActiveTab(0);  break;
+      case Operation::LoadGameData:      GameDataList.Clear();  break;
       case Operation::ImportProject:     
-      case Operation::LoadSaveDocument:  TabCtrl.SetActiveTab(1);  break;
-      case Operation::FindAndReplace1:   TabCtrl.SetActiveTab(2);  break;
-      case Operation::FindAndReplace2:   TabCtrl.SetActiveTab(3);  break;
+      case Operation::LoadSaveDocument:  OutputList.Clear();    break;
+      case Operation::FindAndReplace1:   FindList1.Clear();     break;
+      case Operation::FindAndReplace2:   FindList2.Clear();     break;
       }
    }
 
+   // ------------------------------ PROTECTED METHODS -----------------------------
+   
 #ifdef RESCINDED
    /// <summary>Adjusts the column headers to fit the length of item text. (AppWizard Generated)</summary>
    /// <param name="wndListBox">ListBox.</param>

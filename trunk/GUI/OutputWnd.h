@@ -30,6 +30,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ----------------------- MUTATORS ------------------------
    public:
       void ActivatePane(Operation op);
+      void ClearPane(Operation op);
       void Create(CWnd* parent);
 
    protected:
