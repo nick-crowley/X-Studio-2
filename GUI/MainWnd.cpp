@@ -198,6 +198,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndEditToolBar.SetPaneStyle(m_wndEditToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
       //m_wndEditToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
 	      
+      
+      // GameData ToolBar:
+	   if (!m_wndGameDataToolBar.Create(this, IDT_GAMEDATA, L"Game Data")) 
+         throw Win32Exception(HERE, L"Unable to create MainWnd GameData toolbar");
+      m_wndGameDataToolBar.SetPaneStyle(m_wndGameDataToolBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER);
+      //m_wndGameDataToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, IDS_TOOLBAR_CUSTOMIZE, FALSE);
+	      
 
       // View ToolBar:
 	   if (!m_wndViewToolBar.Create(this, IDT_VIEW, L"View")) 
@@ -219,7 +226,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
       // Dock toolbars *after* creation of StatusBar, otherwise StatusBar placed within docking area
-      for (auto bar : vector<CMFCBaseToolBar*>({&m_wndMenuBar, &m_wndFileToolBar, &m_wndEditToolBar, &m_wndViewToolBar}))
+      for (auto bar : vector<CMFCBaseToolBar*>({&m_wndMenuBar, &m_wndFileToolBar, &m_wndEditToolBar, &m_wndGameDataToolBar, &m_wndViewToolBar}))
       {
          bar->EnableDocking(CBRS_ALIGN_ANY);
          DockPane(bar);
@@ -322,6 +329,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Load menu item image (not placed on any standard toolbars):
          CMFCToolBar::AddToolBarForImageCollection(IDT_MENU_IMAGES, IDT_MENU_IMAGES);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_FILE, IDT_FILE);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_EDIT, IDT_EDIT);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_GAMEDATA, IDT_GAMEDATA);
+         CMFCToolBar::AddToolBarForImageCollection(IDT_VIEW, IDT_VIEW);
+         CMFCToolBar::AddToolBarForImageCollection(IDR_EDITOR, IDR_EDITOR);
+         CMFCToolBar::AddToolBarForImageCollection(IDR_PROJECTVIEW, IDR_PROJECTVIEW);
+         CMFCToolBar::AddToolBarForImageCollection(IDR_BACKUP, IDR_BACKUP);
          CMFCToolBar::m_dblLargeImageRatio = 1.2;
 
          // enable quick (Alt+drag) toolbar customization

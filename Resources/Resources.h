@@ -21,8 +21,9 @@
 
 #define IDT_FILE                        150
 #define IDT_EDIT                        151
-#define IDT_VIEW                        152
-#define IDT_MENU_IMAGES                 153
+#define IDT_GAMEDATA                    152
+#define IDT_VIEW                        153
+#define IDT_MENU_IMAGES                 154
 
 ////////////////////////////////// MENUS ///////////////////////////////
 
@@ -148,7 +149,7 @@
 // GameData ContextMenu
 #define ID_GAMEDATA_INSERT              500
 #define ID_GAMEDATA_LOOKUP              501
-
+#define ID_GAMEDATA_RELOAD              502
 
 ///////////////////////////////// DIALOGS //////////////////////////////
 
