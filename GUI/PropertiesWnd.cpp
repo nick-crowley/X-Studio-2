@@ -103,6 +103,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <exception cref="Logic::ArgumentNullException">Source is null</exception>
    void  CPropertiesWnd::ConnectSource(PropertySource* src, bool connect)
    {
+      static const COLORREF UseDefault = (COLORREF)-1;
+
       REQUIRED(src);
 
       // Ignore if already disconnected
@@ -125,6 +127,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Source = src;
             Source->OnDisplayProperties(Grid);
          }
+
+         // Grey window when empty
+         auto mainBk  = Source ? UseDefault : GetSysColor(COLOR_BTNFACE);
+         Grid.SetCustomColors(mainBk, UseDefault, UseDefault, UseDefault, UseDefault, UseDefault, UseDefault);
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
