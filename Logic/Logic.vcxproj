@@ -275,7 +275,7 @@
     <ClCompile Include="ScriptParser.cpp" />
     <ClCompile Include="ScriptToken.cpp" />
     <ClCompile Include="SearchWorker.cpp" />
-    <ClCompile Include="SourceValueReader.cpp" />
+    <ClCompile Include="ScriptValueReader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
