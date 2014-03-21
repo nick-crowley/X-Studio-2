@@ -65,7 +65,7 @@ namespace Logic
             Console << Cons::Green << L"Success" << ENDL;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Error << L"Failed: " << e.Message << ENDL;
+            Console << Cons::Failure << e.Message << ENDL;
             throw;
          }
 
@@ -165,38 +165,31 @@ namespace Logic
          {
             CommandSyntaxRef syntax = pair.second;
             
-            try
+            // Skip commands that are manually matched by parser
+            if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT || syntax.ID == CMD_EXPRESSION)
+               continue;
+
+            // Lex syntax string
+            CommandLexer lex(syntax.Text);
+            TokenArray   tokens;
+
+            // Duplicate token array WITHOUT RefObj & RetVar
+            for (const ScriptToken& t : lex.Tokens)
             {
-               // Skip commands that are manually matched by parser
-               if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT || syntax.ID == CMD_EXPRESSION)
-                  continue;
-
-               // Lex syntax string
-               CommandLexer lex(syntax.Text);
-               TokenArray   tokens;
-
-               // Duplicate token array WITHOUT RefObj & RetVar
-               for (const ScriptToken& t : lex.Tokens)
+               if (t.Type != TokenType::Variable)
+                  tokens.push_back(t);
+               else
                {
-                  if (t.Type != TokenType::Variable)
+                  // Lookup parameter by physical index marker
+                  auto param = syntax.Parameters[t.Text[1]-48];
+
+                  if (!param.IsRefObj() && !param.IsRetVar())
                      tokens.push_back(t);
-                  else
-                  {
-                     // Lookup parameter by physical index marker
-                     auto param = syntax.Parameters[t.Text[1]-48];
-
-                     if (!param.IsRefObj() && !param.IsRetVar())
-                        tokens.push_back(t);
-                  }
                }
+            }
 
-               // Insert command
-               NameTree.Insert(syntax, tokens.begin(), tokens.end()); 
-            }
-            catch (ExceptionBase& e)
-            {
-               Console << Cons::Error << L"Unable to insert syntax: " << syntax.Text << L" : " << Cons::Yellow << e.Message << ENDL;
-            }
+            // Attempt Insert command [throws if duplicate]
+            NameTree.Insert(syntax, tokens.begin(), tokens.end()); 
          }
       }
 

@@ -92,8 +92,9 @@ namespace Logic
          catch (ExceptionBase& e)
          {
             // Feedback
-            data->SendFeedback(Cons::Error, ProgressType::Failure, 0, GuiString(L"Failed to load game data : ") + e.Message);
             Console.Log(HERE, e);
+            Console << ENDL;
+            data->SendFeedback(Cons::Error, ProgressType::Failure, 0, GuiString(L"Failed to load game data : ") + e.Message);
 
             // Cleanup
             CoUninitialize();
