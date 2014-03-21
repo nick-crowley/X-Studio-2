@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "CommandNode.h"
+#include "CommandTree.h"
 #include <algorithm>
 
 namespace Logic
