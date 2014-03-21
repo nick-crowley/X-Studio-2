@@ -8,7 +8,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
   
    //IMPLEMENT_DYNCREATE(ArgumentDialog, CDialog)
 
-   BEGIN_MESSAGE_MAP(ArgumentDialog, CDialog)
+   BEGIN_MESSAGE_MAP(ArgumentDialog, DialogBase)
       ON_WM_SIZE()
    END_MESSAGE_MAP()
    
@@ -19,7 +19,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="arg">argument.</param>
    /// <param name="parent">parent wnd.</param>
    ArgumentDialog::ArgumentDialog(ScriptFile& script, const ScriptVariable& arg, CWnd* parent) 
-       : CDialog(IDD, parent), 
+       : DialogBase(IDD, parent, IDB_EDIT_ARGUMENT), 
          Script(script),
          Argument(arg),
          Name(arg.Name),
@@ -31,7 +31,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="script">script.</param>
    /// <param name="parent">parent wnd.</param>
    ArgumentDialog::ArgumentDialog(ScriptFile& script, CWnd* parent) 
-       : CDialog(IDD, parent), 
+       : DialogBase(IDD, parent, IDB_EDIT_ARGUMENT), 
          Script(script)
    {
    }
