@@ -10,11 +10,11 @@ namespace Logic
    {
       namespace Compiler
       {
-         /// <summary></summary>
+         /// <summary>Lexes MSCI Script command text into a stream of tokens</summary>
          class LogicExport CommandLexer
          {
             // ------------------------ TYPES --------------------------
-         private:
+         protected:
             typedef wstring::const_iterator CharIterator;
 
             // --------------------- CONSTRUCTION ----------------------
@@ -23,17 +23,17 @@ namespace Logic
             CommandLexer(const wstring& line, bool skipWhitespace = true);
             virtual ~CommandLexer();
 
-            DEFAULT_COPY(CommandLexer);	// Default copy semantics
-            DEFAULT_MOVE(CommandLexer);	// Default move semantics
+            NO_COPY_ASSIGN(CommandLexer);	// Immutable
+            NO_MOVE(CommandLexer);	      // Immutable
 
             // ------------------------ STATIC -------------------------
-         private:
-            TokenArray Parse();
+         protected:
+            void  Parse();
 
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(CHARRANGE,Extent,GetExtent);
-         private:
+         protected:
             PROPERTY_GET(bool,ValidPosition,IsValidPosition);
 
             // ---------------------- ACCESSORS ------------------------			
@@ -113,7 +113,7 @@ namespace Logic
                return pos < Tokens.end();
             }
 
-         private:
+         protected:
             bool  IsValidPosition() const  { return Position < LineEnd; }
             
             bool  MatchChar(WCHAR ch) const;
@@ -132,32 +132,31 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
 
-         private:
+         protected:
             bool         ReadChar();
 
-            ScriptToken  ReadAmbiguous(CharIterator start, const TokenArray& prev);
+            ScriptToken  ReadAmbiguous(CharIterator start);
             ScriptToken  ReadConstant(CharIterator start);
             ScriptToken  ReadComment(CharIterator start);
             ScriptToken  ReadGameObject(CharIterator start);
             ScriptToken  ReadNumber(CharIterator start);
             ScriptToken  ReadOperator(CharIterator start);
             ScriptToken  ReadString(CharIterator start);
-            ScriptToken  ReadText(CharIterator start, const TokenArray& prev);
+            ScriptToken  ReadText(CharIterator start);
             ScriptToken  ReadVariable(CharIterator start);
             ScriptToken  ReadWhitespace(CharIterator start);
 
             // -------------------- REPRESENTATION ---------------------
          public:
-            const wstring       Input;
+            const wstring       Input;             // Input text
+            const TokenArray&   Tokens;            // Output tokens
+            const bool          SkipWhitespace;    // Whether skip whitespace option enabled
 
-         private:
-            const CharIterator  LineStart,    // Do not re-order declarations, order is relied upon by ctor
-                                LineEnd;
-            CharIterator        Position;
-            const bool          SkipWhitespace;
-
-         public:
-            const TokenArray    Tokens;
+         protected:
+            const CharIterator  LineStart,         // Input start position
+                                LineEnd;           // Input end position
+            CharIterator        Position;          // Position
+            TokenArray          Output;            // Tokens parsed so far
          };
       }
    }
