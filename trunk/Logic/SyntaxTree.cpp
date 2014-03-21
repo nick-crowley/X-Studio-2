@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SyntaxLibrary.h"
+#include "SyntaxTree.h"
 #include "CommandLexer.h"
 
 namespace Logic
@@ -9,11 +9,14 @@ namespace Logic
 
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      SyntaxLibrary::SyntaxNode::SyntaxNode() : Syntax(nullptr)
+      /// <summary>Create root</summary>
+      SyntaxTree::SyntaxTree() : Syntax(nullptr)
       {
       }
 
-      SyntaxLibrary::SyntaxNode::SyntaxNode(const ScriptToken& t) : Token(t), Syntax(nullptr)
+      /// <summary>Create tree node</summary>
+      /// <param name="t">Token in the command syntax associated with this command</param>
+      SyntaxTree::SyntaxTree(const ScriptToken& t) : Token(t), Syntax(nullptr)
       {
       }
 
@@ -22,7 +25,7 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Clears syntax tree</summary>
-      void  SyntaxLibrary::SyntaxNode::Clear()
+      void  SyntaxTree::Clear()
       {
          Children.clear();
          Syntax = nullptr;
@@ -34,7 +37,7 @@ namespace Logic
       /// <param name="ver">Desired game version</param>
       /// <param name="params">Parameter tokens</param>
       /// <returns>Requested syntax if found/compatible, otherwise sentinel syntax</returns>
-      CommandSyntaxRef SyntaxLibrary::SyntaxNode::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
+      CommandSyntaxRef SyntaxTree::Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const
       {
          // EOF: Return syntax @ this node (if any)
          if (pos >= end)
@@ -64,15 +67,15 @@ namespace Logic
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
       /// <exception cref="Logic::AlgorithmException">Syntax conflicts with existing syntax</exception>
-      void  SyntaxLibrary::SyntaxNode::Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end)
+      void  SyntaxTree::Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end)
       {
          if (pos < end)
          {
             // (Insert/Lookup) next child
-            auto pair = Children.insert( NodeMap::value_type(GetKey(*pos), SyntaxNode(*pos)) );
+            auto elem = Children.insert( NodeMap::value_type(GetKey(*pos), SyntaxTree(*pos)) ).first;
 
             // Check child against next token
-            pair.first->second.Insert(s, ++pos, end);
+            elem->second.Insert(s, ++pos, end);
          }
          else
          {
@@ -87,7 +90,7 @@ namespace Logic
 
       /// <summary>Prints node and all children to the console</summary>
       /// <param name="depth">Current depth</param>
-      void SyntaxLibrary::SyntaxNode::Print(int depth) const
+      void SyntaxTree::Print(int depth) const
       {
          // DEBUG: Abort
          if (depth == 3)
@@ -108,21 +111,21 @@ namespace Logic
       /// <summary>Gets the node map lookup key for a token</summary>
       /// <param name="tok">The token</param>
       /// <returns></returns>
-      const wstring&  SyntaxLibrary::SyntaxNode::GetKey(const ScriptToken& tok) const
+      const wstring&  SyntaxTree::GetKey(const ScriptToken& tok) const
       {
          return tok.IsParameter() ? VARIABLE : tok.Text;
       }
 
       /// <summary>Get the syntax at this node, if any, otherwise sentinel syntax</summary>
       /// <returns></returns>
-      CommandSyntaxRef  SyntaxLibrary::SyntaxNode::GetSyntax() const
+      CommandSyntaxRef  SyntaxTree::GetSyntax() const
       {
          return HasSyntax() ? *Syntax : CommandSyntax::Unrecognised;
       }
 
       /// <summary>Determine whether node has syntax</summary>
       /// <returns></returns>
-      bool  SyntaxLibrary::SyntaxNode::HasSyntax() const
+      bool  SyntaxTree::HasSyntax() const
       {
          return Syntax != nullptr;
       }
