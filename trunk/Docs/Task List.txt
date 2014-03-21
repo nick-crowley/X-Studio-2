@@ -39,7 +39,7 @@ Compiler:
 LanguageDocument:
 -----------------
 
-# Text colour selection doesn't alter text colour
+# [DONE] Text colour selection doesn't alter text colour
 
 # Implement: Overwriting files used in the StringLib rebuilds the library
 
@@ -55,7 +55,7 @@ ScriptDocument:
 ProjectDocument:
 ---------------
 
-# Implement: Item properties 
+# [DONE] Implement: Item properties 
 
 
 
