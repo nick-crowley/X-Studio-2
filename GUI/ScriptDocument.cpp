@@ -47,7 +47,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptDocument::ScriptDocument() : DocumentBase(DocumentType::Script, false)
+   ScriptDocument::ScriptDocument() : DocumentBase(DocumentType::Script, false), Script(L"")
    {
    }
 
@@ -572,7 +572,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
          return FALSE;
       }
    }
+   
+   /// <summary>Sets the name of the path.</summary>
+   /// <param name="szPathName">Name of the sz path.</param>
+   /// <param name="bAddToMRU">The b add to MRU.</param>
+   void  ScriptDocument::SetPathName(LPCTSTR szPathName, BOOL bAddToMRU /*= TRUE*/)
+   {
+      __super::SetPathName(szPathName, bAddToMRU);
 
+      // Update ScriptFile path (Used for script-call resolution)
+      Script.FullPath = szPathName;
+   }
+   
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Gets the index of the selected argument.</summary>

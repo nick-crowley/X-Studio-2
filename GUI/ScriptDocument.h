@@ -352,6 +352,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       BOOL         OnRevertDocument(const ScriptRevision& r);
       handler BOOL OnSaveDocument(LPCTSTR szPathName) override;
+      handler void SetPathName(LPCTSTR szPathName, BOOL bAddToMRU = TRUE) override;
    
       // -------------------- REPRESENTATION ---------------------
    public:

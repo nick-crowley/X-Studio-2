@@ -24,7 +24,7 @@ ScriptEdit:
 Compiler:
 ---------
 
-# CommandNode relies on a hardcoded script folder to resolve script-calls
+# [DONE] CommandNode relies on a hardcoded script folder to resolve script-calls
 
 # Cleanup new vArg flags in parameter/command syntax
 
