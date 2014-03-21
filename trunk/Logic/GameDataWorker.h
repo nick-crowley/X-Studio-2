@@ -7,8 +7,6 @@ namespace Logic
    namespace Threads
    {
 
-      
-
       /// <summary>Worker thread for loading game data</summary>
       class LogicExport GameDataWorker : public BackgroundWorker
       {
@@ -18,15 +16,16 @@ namespace Logic
          class LogicExport GameDataWorkerData : public WorkerData
          {
          public:
-            GameDataWorkerData() : WorkerData(Operation::LoadGameData), Version(GameVersion::Threat)
+            GameDataWorkerData() : WorkerData(Operation::LoadGameData), Version(GameVersion::Threat), Language(GameLanguage::English)
             {}
 
             /// <summary>Resets data + update values from preferences.</summary>
             virtual void  Reset()
             {
-               // Update data
+               // Update values
                GameFolder = PrefsLib.GameDataFolder;
                Version = PrefsLib.GameDataVersion;
+               Language = PrefsLib.GameDataLanguage;
 
                // Reset 'aborted' flag
                __super::Reset();
@@ -35,6 +34,7 @@ namespace Logic
          public:
             Path         GameFolder;
             GameVersion  Version;
+            GameLanguage Language;
          };
 	  
          // --------------------- CONSTRUCTION ----------------------
@@ -44,6 +44,7 @@ namespace Logic
        
          // ------------------------ STATIC -------------------------
       protected:
+         static void         Clear();
          static DWORD WINAPI ThreadMain(GameDataWorkerData* data);
 
          // --------------------- PROPERTIES ------------------------
@@ -60,7 +61,10 @@ namespace Logic
             if (IsRunning())
                throw InvalidOperationException(HERE, L"Thread already running");
 
-            // Reset data
+            // Clear previous (if any)
+            Clear();
+
+            // Update Game folder/version
             Data.Reset();
 
             // Start thread

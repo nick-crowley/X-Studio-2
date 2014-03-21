@@ -62,14 +62,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &MainWnd::OnDocumentSwitched)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
-      ON_COMMAND(ID_FILE_EXPORT, &MainWnd::OnCommandExportProject)
-      ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommandFindText)
-      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommandEditPreferences)
-	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommandRunTests)
-      ON_COMMAND(ID_VIEW_CONSOLE, &MainWnd::OnCommandConsole)
-	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommandCustomizeToolbar)
-      ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommandStringLibrary)
-      ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommandWindowManager)
+      ON_COMMAND(ID_FILE_EXPORT, &MainWnd::OnCommand_ExportProject)
+      ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommand_FindText)
+      ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommand_Preferences)
+      ON_COMMAND(ID_GAMEDATA_RELOAD, &MainWnd::OnCommand_Reload)
+	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommand_RunTests)
+      ON_COMMAND(ID_VIEW_CONSOLE, &MainWnd::OnCommand_Console)
+	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommand_CustomizeToolbar)
+      ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommand_StringLibrary)
+      ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommand_WindowManager)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_EXPORT, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
@@ -274,8 +275,36 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   DockPane(&m_wndOutput, AFX_IDW_DOCKBAR_BOTTOM);
    }
    
+   /// <summary>Loads/Reloads the game data</summary>
+   void MainWnd::LoadGameData()
+   {
+      // Load game data
+      if (!PrefsLib.GameDataFolder.Empty())
+      {
+         // Show splash screen
+         m_dlgSplash.Create(this, 0);
+         m_dlgSplash.ShowWindow(SW_SHOW);
+         EnableWindow(FALSE);
+
+         // Load game data
+         GameDataThread.Start();
+      }
+   }
+
    /// <summary>Execute debugging tests.</summary>
-   void MainWnd::OnCommandEditPreferences()
+   void MainWnd::OnCommand_ExportProject()
+   {
+      // Require project
+      if (!ProjectDocument::GetActive())
+         return;
+
+      // Display dialog
+      ExportProjectDialog dlg(this);
+      dlg.DoModal();
+   }
+   
+   /// <summary>Execute debugging tests.</summary>
+   void MainWnd::OnCommand_Preferences()
    {
       // Display dialog
       PreferencesDialog dlg(this);
@@ -286,18 +315,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
          theApp.OnPreferencesChanged();
    }
    
-   /// <summary>Execute debugging tests.</summary>
-   void MainWnd::OnCommandExportProject()
+   /// <summary>Reload the game data.</summary>
+   void MainWnd::OnCommand_Reload()
    {
-      // Require project
-      if (!ProjectDocument::GetActive())
-         return;
+      // Require no modified documents
+      for (auto& doc : theApp)
+         if (doc.IsModified())
+         {
+            theApp.ShowMessage(L"You must save or close all open documents before reloading game data", MB_OK|MB_ICONERROR);
+            return;
+         }
 
-      // Display dialog
-      ExportProjectDialog dlg(this);
-      dlg.DoModal();
+      // Clear/Reload game data
+      LoadGameData();
    }
-
+   
    /// <summary>Stores current workspace.</summary>
    void MainWnd::OnClose()
    {
@@ -435,8 +467,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="wp">The wp.</param>
    void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
-      // Exit 'splash screen' mode
+      // Hide splash screen
       EnableWindow(TRUE);
+      m_dlgSplash.DestroyWindow();
 
       // Close worker
       GameDataThread.Close();
@@ -446,9 +479,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // Change app state 
          theApp.State = AppState::GameDataPresent;
-         
-         // Hide splash screen
-         m_dlgSplash.DestroyWindow();
          
          // Parse command line 
 	      CCommandLineInfo cmdInfo;
@@ -467,16 +497,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
-         if (!PrefsLib.GameDataFolder.Empty())
-         {
-            // Show splash screen
-            m_dlgSplash.Create(this, 0);
-            m_dlgSplash.ShowWindow(SW_SHOW);
-            EnableWindow(FALSE);
-
-            // Load game data
-            GameDataThread.Start();
-         }
+         // Load game data
+         LoadGameData();
          
          // Find & Replace dialog:
          m_dlgFind.Create(FindDialog::IDD, this);
