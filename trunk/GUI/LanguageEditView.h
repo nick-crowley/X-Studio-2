@@ -150,10 +150,12 @@ NAMESPACE_BEGIN2(GUI,Views)
          /// <param name="cols">Available colours.</param>
          TextColourMenu(LanguageEdit& ctrl, COLORREF txt, MFCColourArray& cols)
             : Edit(ctrl), CMFCColorPopupMenu(nullptr, cols, txt, L"Default", nullptr, nullptr, Dummy, 6, (COLORREF)RichTextColour::Default)
-         {}
+         {
+            m_wndColorBar.SetCommandID(ID_COLOUR_SELECT);
+         }
 
          // ------------------------ STATIC -------------------------
-      private:
+      public:
          static CList<COLORREF,COLORREF>  Dummy;
 
          // ----------------------- MUTATORS ------------------------
@@ -168,12 +170,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          }
 
       protected:
-         void  OnChooseItem(UINT nID) override
-         {
-            Console << "User chose item "<< nID << ENDL;
-            /*CharFormat cf(CFM_COLOR, 0, col);
-            Edit.SetSelectionCharFormat(cf);*/
-         }
 
          // -------------------- REPRESENTATION ---------------------
       protected:
@@ -211,9 +207,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnCommandEditCopy()       { OnPerformCommand(ID_EDIT_COPY);       }
       afx_msg void OnCommandEditClear()      { OnPerformCommand(ID_EDIT_CLEAR);      }
       afx_msg void OnCommandEditPaste()      { OnPerformCommand(ID_EDIT_PASTE);      }
-      afx_msg void OnCommandEditColour()     { OnPerformCommand(ID_EDIT_COLOUR);     }
+      afx_msg void OnCommandEditColour();
       afx_msg void OnCommandEditSelectAll()  { OnPerformCommand(ID_EDIT_SELECT_ALL); }
       afx_msg void OnCommandEditAddButton()  { OnPerformCommand(ID_EDIT_ADD_BUTTON); }
+      afx_msg void OnCommandSelectColour();
       afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
       handler void OnInitialUpdate() override;
       afx_msg void OnPerformCommand(UINT nID);
@@ -234,7 +231,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       LanguageEdit             RichEdit;
       ToolBarEx                ToolBar;
       EventHandler             fnTextChanged;
-   };
+      TextColourMenu*          ColourMenu;
+};
 
 
 NAMESPACE_END2(GUI,Views)
