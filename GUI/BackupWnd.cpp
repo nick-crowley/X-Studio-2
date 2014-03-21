@@ -177,7 +177,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
          
          // Toolbar
-         ToolBar.Create(this, IDR_BACKUP, L"Backup");
+         ToolBar.Create(this, IDR_BACKUP, L"Backup", false);
 
          // Create List  [Disable until population]
          DWORD style = WS_DISABLED|WS_VISIBLE|WS_CHILD|WS_VSCROLL|LBS_OWNERDRAWVARIABLE|LBS_NOTIFY;   //LBS_DISABLENOSCROLL
