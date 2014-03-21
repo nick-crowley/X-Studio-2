@@ -121,7 +121,7 @@
     <ClInclude Include="CatalogStream.h" />
     <ClInclude Include="CommandHash.h" />
     <ClInclude Include="CommandLexer.h" />
-    <ClInclude Include="CommandNode.h" />
+    <ClInclude Include="CommandTree.h" />
     <ClInclude Include="CommandSyntax.h" />
     <ClInclude Include="ConsoleLog.h" />
     <ClInclude Include="ConsoleWnd.h" />
@@ -226,7 +226,7 @@
     <ClCompile Include="CatalogReader.cpp" />
     <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="CommandLexer.cpp" />
-    <ClCompile Include="CommandNode.cpp" />
+    <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
     <ClCompile Include="ConsoleLog.cpp" />
     <ClCompile Include="ConsoleWnd.cpp" />
