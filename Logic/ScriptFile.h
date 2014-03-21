@@ -524,7 +524,7 @@ namespace Logic
             wstring  FindArgumentName(const wstring& script, UINT index) const
             {
                // Lookup script + Validate index
-               if (Contains(script) && index < Find(script).Variables.GetCount())
+               if (Contains(script) && index < Find(script).Variables.Arguments.Count)
                   return Find(script).Variables[index].Name;
                
                // Missing/Invalid: 
