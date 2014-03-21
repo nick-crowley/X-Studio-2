@@ -278,6 +278,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Loads/Reloads the game data</summary>
    void MainWnd::LoadGameData()
    {
+      // Clear relevant windows & menu items
+      theApp.State = AppState::NoGameData;
+
       // Load game data
       if (!PrefsLib.GameDataFolder.Empty())
       {
