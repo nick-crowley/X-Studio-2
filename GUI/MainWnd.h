@@ -69,23 +69,27 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void         ActivateOutputPane(Operation pane, bool show);
       void         ActivateProjectPane();
       void         ActivatePropertiesPane();
-      void         CreateToolBars();
-      void         CreateToolWindows();
+      
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
       BOOL         OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) override;
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
 
    protected:
+      void  CreateToolBars();
+      void  CreateToolWindows();
+      void  LoadGameData();
+
       afx_msg void    OnClose();
-      afx_msg void    OnCommandConsole()            { OnPerformCommand(ID_VIEW_CONSOLE);         }
-      afx_msg void    OnCommandExportProject(); //             { OnPerformCommand(ID_FILE_EXPORT);          }
-      afx_msg void    OnCommandFindText()           { OnPerformCommand(ID_EDIT_FIND);            }
-      afx_msg void    OnCommandCustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);       }
-      afx_msg void    OnCommandEditPreferences();
-      afx_msg void    OnCommandRunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);         }
-      afx_msg void    OnCommandStringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY);  }
-      afx_msg void    OnCommandWindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);       }
+      afx_msg void    OnCommand_Console()            { OnPerformCommand(ID_VIEW_CONSOLE);         }
+      afx_msg void    OnCommand_ExportProject(); //             { OnPerformCommand(ID_FILE_EXPORT);          }
+      afx_msg void    OnCommand_FindText()           { OnPerformCommand(ID_EDIT_FIND);            }
+      afx_msg void    OnCommand_CustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);       }
+      afx_msg void    OnCommand_Preferences();
+      afx_msg void    OnCommand_Reload();
+      afx_msg void    OnCommand_RunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);         }
+      afx_msg void    OnCommand_StringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY);  }
+      afx_msg void    OnCommand_WindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);       }
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
       afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);

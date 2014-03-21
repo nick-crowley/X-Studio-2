@@ -33,6 +33,23 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Clears all game data.</summary>
+      void  GameDataWorker::Clear()
+      {
+         // Strings
+         StringLib.Clear();
+
+         // script/game objects
+         ScriptObjectLib.Clear();
+         GameObjectLib.Clear();
+
+         // Descriptions
+         DescriptionLib.Clear();
+
+         // syntax file
+         SyntaxLib.Clear();
+      }
+
       /// <summary>Loads game data</summary>
       /// <param name="data">arguments.</param>
       /// <returns></returns>
@@ -55,7 +72,7 @@ namespace Logic
             vfs.Enumerate(data->GameFolder, data->Version, data);
 
             // language files
-            StringLib.Enumerate(vfs, PrefsLib.GameDataLanguage, data);
+            StringLib.Enumerate(vfs, data->Language, data);
 
             // script/game objects
             ScriptObjectLib.Enumerate(data);
