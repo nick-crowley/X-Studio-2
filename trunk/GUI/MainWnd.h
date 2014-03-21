@@ -108,6 +108,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	   CMFCMenuBar       m_wndMenuBar;
 	   ToolBarEx         m_wndFileToolBar,
                         m_wndEditToolBar,
+                        m_wndGameDataToolBar,
                         m_wndViewToolBar;
 	   CMFCStatusBar     m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
