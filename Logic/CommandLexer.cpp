@@ -15,13 +15,15 @@ namespace Logic
               LineEnd(Input.end()), 
               Position(LineStart), 
               SkipWhitespace(skipWhitespace), 
-              Tokens(Parse())
+              Tokens(Output)
          {
             // DEBUG:
             /*Console.WriteLnf(L"\nLexing command: %s", line.c_str());
             for (const ScriptToken& t : Tokens)
                Console.WriteLnf(L"Token: '%s'", t.Text.c_str());
             Console.WriteLnf();*/
+
+            Parse();
          }
 
 
@@ -32,11 +34,8 @@ namespace Logic
          // ------------------------------- STATIC METHODS -------------------------------
 
          /// <summary>Parses all the input text</summary>
-         /// <returns>Token array</returns>
-         TokenArray CommandLexer::Parse()
+         void CommandLexer::Parse()
          {
-            TokenArray tokens;
-
             // Read until EOL
             while (ValidPosition)
             {
@@ -46,30 +45,29 @@ namespace Logic
 
                // Whitespace: Read
                else if (!SkipWhitespace && MatchWhitespace())
-                  tokens.push_back( ReadWhitespace(Position) );
+                  Output.push_back( ReadWhitespace(Position) );
 
                // Comment: 
-               else if (tokens.count() == 1 && tokens[0].Text == L"*")
-                  tokens.push_back( ReadComment(Position) );
+               else if (Output.count() == 1 && Output[0].Text == L"*")
+                  Output.push_back( ReadComment(Position) );
 
                // Number:
                else if (MatchNumber())
-                  tokens.push_back( ReadNumber(Position) );      
+                  Output.push_back( ReadNumber(Position) );      
 
                // Remainder: 
                else switch (*Position)
                {
-               case L'$':   tokens.push_back( ReadVariable(Position) );    break;
-               case L'{':   tokens.push_back( ReadGameObject(Position) );  break;
-               case L'\'':  tokens.push_back( ReadString(Position) );      break;
+               case L'$':   Output.push_back( ReadVariable(Position) );    break;
+               case L'{':   Output.push_back( ReadGameObject(Position) );  break;
+               case L'\'':  Output.push_back( ReadString(Position) );      break;
 
                default: 
-                  tokens.push_back( ReadAmbiguous(Position, tokens) );   
+                  Output.push_back( ReadAmbiguous(Position) );   
                   break;
                }
             }
 
-            return tokens;
          }
 
          // ------------------------------- PUBLIC METHODS -------------------------------
@@ -261,9 +259,8 @@ namespace Logic
          
          /// <summary>Reads a ScriptObject, Operator or Text, some of which share first letters</summary>
          /// <param name="start">Current position (first character)</param>
-         /// <param name="prev">Tokens previously parsed</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadAmbiguous(CharIterator start, const TokenArray& prev)
+         ScriptToken  CommandLexer::ReadAmbiguous(CharIterator start)
          {
             // Constant: Avoid interpreting '[' as an operator
             if (MatchConstant())
@@ -274,7 +271,7 @@ namespace Logic
                return ReadOperator(start);
 
             // Text: anything else 
-            return ReadText(start, prev);
+            return ReadText(start);
          }
 
          /// <summary>Reads a script object</summary>
@@ -450,9 +447,8 @@ namespace Logic
          
          /// <summary>Reads a text/keyword/label/null token</summary>
          /// <param name="start">Starting position (first character)</param>
-         /// <param name="prev">Tokens previously parsed</param>
          /// <returns></returns>
-         ScriptToken  CommandLexer::ReadText(CharIterator start, const TokenArray& prev)
+         ScriptToken  CommandLexer::ReadText(CharIterator start)
          {
             bool Keyword = false;
 
@@ -461,11 +457,11 @@ namespace Logic
             {}
 
             // LABEL: first token, followed by ':'
-            if (MatchChar(L':') && prev.count() == 0)
+            if (MatchChar(L':') && Output.count() == 0)
                return MakeToken(start, TokenType::Label);
 
             // GOTO LABEL: second token, preceeded by goto/gosub
-            if (prev.count() == 1 && (prev[0].Text == L"goto" || prev[0].Text == L"gosub"))
+            if (Output.count() == 1 && (Output[0].Text == L"goto" || Output[0].Text == L"gosub"))
                return MakeToken(start, TokenType::Label);
 
             // NULL: 
