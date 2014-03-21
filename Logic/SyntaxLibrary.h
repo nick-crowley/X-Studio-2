@@ -54,7 +54,6 @@ namespace Logic
             // --------------------- PROPERTIES ------------------------
 			
             // ---------------------- ACCESSORS ------------------------			
-
          public:
             CommandSyntaxRef Find(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
             void             Print(int depth = 1) const;
@@ -65,7 +64,6 @@ namespace Logic
             bool             HasSyntax() const;
 
             // ----------------------- MUTATORS ------------------------
-
          public:
             void  Clear();
             void  Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end);

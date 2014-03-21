@@ -299,7 +299,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!PrefsLib.GameDataFolder.Empty())
       {
          // Show splash screen
-         m_dlgSplash.Create(this, 0);
+         m_dlgSplash.Create(this, 800);
          m_dlgSplash.ShowWindow(SW_SHOW);
          m_dlgSplash.SetForegroundWindow();
          EnableWindow(FALSE);
