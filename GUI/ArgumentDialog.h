@@ -1,13 +1,13 @@
 #pragma once
 #include "ScriptDocument.h"
-#include "RefactorEdit.h"
+#include "DialogBase.h"
 #include "../Logic/CommandNode.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
    
    /// <summary></summary>
-   class ArgumentDialog : public CDialog
+   class ArgumentDialog : public DialogBase
    {
       // ------------------------ TYPES --------------------------
    public:
