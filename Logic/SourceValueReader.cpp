@@ -7,16 +7,16 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Creates source value read from an input stream</summary>
+      /// <summary>Creates script value reader from an input stream</summary>
       /// <param name="src">The input stream</param>
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      SourceValueReader::SourceValueReader(StreamPtr in) : XmlReader(in)
+      ScriptValueReader::ScriptValueReader(StreamPtr in) : XmlReader(in)
       {}
 
       /// <summary>empty</summary>
-      SourceValueReader::~SourceValueReader()
+      ScriptValueReader::~ScriptValueReader()
       {}
 
       // ------------------------------- STATIC METHODS -------------------------------
@@ -31,7 +31,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not an array sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      int  SourceValueReader::ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      int  ScriptValueReader::ReadArray(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
          int size;
 
@@ -68,7 +68,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not an integer sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      int  SourceValueReader::ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      int  ScriptValueReader::ReadInt(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
          // Get/Verify child
          auto node = GetChild(parent, index, help);
@@ -92,7 +92,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not a string sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      wstring  SourceValueReader::ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      wstring  ScriptValueReader::ReadString(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
          // Get/Verify child
          auto node = GetChild(parent, index, help);
@@ -116,7 +116,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
       /// <exception cref="Logic::FileFormatException">Not a string/integer sval node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      ParameterValue  SourceValueReader::ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help)
+      ParameterValue  ScriptValueReader::ReadValue(XmlNodePtr& parent, UINT index, const WCHAR* help)
       {
          // Get/Verify child
          auto node = GetChild(parent, index, help);
@@ -145,7 +145,7 @@ namespace Logic
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">File format is corrupt</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      void  SourceValueReader::LoadDocument() 
+      void  ScriptValueReader::LoadDocument() 
       {
          // Parse document
          XmlReader::LoadDocument();
