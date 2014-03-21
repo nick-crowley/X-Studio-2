@@ -27,12 +27,22 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "..\\Resources\\res\\Icon - Window - Main.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -47,14 +57,14 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "MFC Test 1"
-            VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "MFC Test 1.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
-            VALUE "OriginalFilename", "MFC Test 1.exe"
-            VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "CompanyName", "mr.bear"
+            VALUE "FileDescription", "X³ Scripting IDE"
+            VALUE "FileVersion", "1.0"
+            VALUE "InternalName", "XStudio2.exe"
+            VALUE "LegalCopyright", "Freeware"
+            VALUE "OriginalFilename", "XStudio2.exe"
+            VALUE "ProductName", "X-Studio II"
+            VALUE "ProductVersion", "1.0"
         END
     END
     BLOCK "VarFileInfo"
