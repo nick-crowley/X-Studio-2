@@ -101,11 +101,11 @@ namespace Testing
       {
          // ------------------------ TYPES --------------------------
       private:
-         class ScriptReader : public SourceValueReader
+         class ScriptReader : public ScriptValueReader
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            ScriptReader(StreamPtr in) : SourceValueReader(in)
+            ScriptReader(StreamPtr in) : ScriptValueReader(in)
             {
                LoadDocument();   // Parse document on construction
             }
@@ -126,7 +126,7 @@ namespace Testing
             /// <exception cref="Logic::ComException">COM Error</exception>
             XmlNodePtr  GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help)
             {
-               return SourceValueReader::GetChild(parent, index, help);
+               return ScriptValueReader::GetChild(parent, index, help);
             }
          };
 

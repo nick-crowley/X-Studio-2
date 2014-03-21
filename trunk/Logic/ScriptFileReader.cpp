@@ -17,7 +17,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      ScriptFileReader::ScriptFileReader(StreamPtr in) : SourceValueReader(in)
+      ScriptFileReader::ScriptFileReader(StreamPtr in) : ScriptValueReader(in)
       {
       }
 

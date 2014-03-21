@@ -40,12 +40,12 @@ namespace Logic
       };
 
       /// <summary>Base class LogicExport for MSCI script reader</summary>
-      class LogicExport SourceValueReader : public XmlReader
+      class LogicExport ScriptValueReader : public XmlReader
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SourceValueReader(StreamPtr in);
-         virtual ~SourceValueReader();
+         ScriptValueReader(StreamPtr in);
+         virtual ~ScriptValueReader();
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -71,7 +71,7 @@ namespace Logic
       };
 
       /// <summary>Reader for MSCI scripts</summary>
-      class LogicExport ScriptFileReader : protected SourceValueReader
+      class LogicExport ScriptFileReader : protected ScriptValueReader
       {
       protected:
          /// <summary>Base class LogicExport for MSCI script command readers</summary>
