@@ -134,7 +134,6 @@
     <ClInclude Include="EncryptedStream.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="ExpressionParser.h" />
-    <ClInclude Include="FileBase.h" />
     <ClInclude Include="FileIdentifier.h" />
     <ClInclude Include="FileSearch.h" />
     <ClInclude Include="FileStream.h" />

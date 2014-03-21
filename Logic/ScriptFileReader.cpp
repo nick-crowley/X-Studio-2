@@ -107,10 +107,7 @@ namespace Logic
       {
          try
          {
-            ScriptFile file;
-
-            // Store folder
-            Folder = path.Folder;
+            ScriptFile file(path);
 
             // Read file
             LoadDocument();
@@ -254,7 +251,7 @@ namespace Logic
 
                   // Read unless previously read
                   if (!name.empty() && !script.ScriptCalls.Contains(name))
-                     script.ScriptCalls.Add(name, ReadExternalScript(Folder, name, false));
+                     script.ScriptCalls.Add(name, ReadExternalScript(script.FullPath.Folder, name, false));
                }
                catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)

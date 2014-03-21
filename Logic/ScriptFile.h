@@ -613,13 +613,13 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         ScriptFile();
+         ScriptFile(Path path);
          virtual ~ScriptFile();
 
          // ------------------------ STATIC -------------------------
 
          // --------------------- PROPERTIES ------------------------
-			
+      public:
          PROPERTY_GET(wstring,CommandName,GetCommandName);
 
 		   // ---------------------- ACCESSORS ------------------------
@@ -652,6 +652,9 @@ namespace Logic
          LabelCollection      Labels;
          VariableCollection   Variables;
          ScriptCallCollection ScriptCalls;
+
+         // Misc
+         Path     FullPath;      // Used for resolving script-calls
 
       private:
          GuiString   OfflineBuffer;    // Used for in-memory editing of script text
