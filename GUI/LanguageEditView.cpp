@@ -14,6 +14,8 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Empty list used by text colour menu</summary>
    CList<COLORREF,COLORREF> LanguageEditView::TextColourMenu::Dummy;
 
+//const UINT IDC_COLORBAR = 52;
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -42,6 +44,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_COLOUR, &LanguageEditView::OnCommandEditColour)
       ON_COMMAND(ID_EDIT_SELECT_ALL, &LanguageEditView::OnCommandEditSelectAll)
       ON_COMMAND(ID_EDIT_ADD_BUTTON, &LanguageEditView::OnCommandEditAddButton)
+      ON_COMMAND(ID_COLOUR_SELECT, &LanguageEditView::OnCommandSelectColour)
       ON_COMMAND_RANGE(ID_EDIT_UNDO, ID_EDIT_REDO, &LanguageEditView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_EDIT_BOLD, ID_EDIT_UNDERLINE, &LanguageEditView::OnPerformCommand)
       ON_COMMAND_RANGE(ID_EDIT_LEFT, ID_EDIT_JUSTIFY, &LanguageEditView::OnPerformCommand)
@@ -161,7 +164,44 @@ NAMESPACE_BEGIN2(GUI,Views)
          return -1;
       }
    }
+   
 
+   /// <summary>Displays colour popup menu</summary>
+   void LanguageEditView::OnCommandEditColour()
+   {
+      CharFormat cf(CFM_COLOR, 0);
+
+      // DEBUG:
+      //Console << HERE << ENDL;
+
+      // Get text colour
+      RichEdit.GetSelectionCharFormat(cf);
+
+      // Create colour dialog
+      ColourMenu = new TextColourMenu(RichEdit, cf.crTextColor, TextColours);
+      ColourMenu->Create(this);
+   }
+
+   /// <summary>Called when user selects a text colour.</summary>
+   void LanguageEditView::OnCommandSelectColour()
+   {
+      CharFormat cf(CFM_COLOR, 0);
+
+      // DEBUG:
+      //Console << HERE << ENDL;
+
+      // Get selected colour
+      if (ColourMenu)
+         if (auto dlg = (CMFCColorBar*)ColourMenu->GetMenuBar())
+            cf.crTextColor = (dlg->GetColor() != -1 ? dlg->GetColor() : (COLORREF)RichTextColour::Default);
+
+      // Highlight text
+      RichEdit.SetSelectionCharFormat(cf);
+      ColourMenu->CloseMenu();
+
+      // Modify document
+      GetDocument()->SetModifiedFlag(TRUE);
+   }
    
    /// <summary>Initialise control</summary>
    void LanguageEditView::OnInitialUpdate()
@@ -205,14 +245,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Button: Insert at caret
          case ID_EDIT_ADD_BUTTON: RichEdit.InsertButton(VString(L"Button %d", LastButtonID++), L"id");  break;
 
-         // Colour: Set colour
-         case ID_EDIT_COLOUR:  {
-            CharFormat cf(CFM_COLOR, 0);
-            RichEdit.GetSelectionCharFormat(cf);
-            auto menu = new TextColourMenu(RichEdit, cf.crTextColor, TextColours);
-            menu->Create(this);
-            break;
-         }
          // Format: Toggle formatting
          case ID_EDIT_BOLD:       RichEdit.ToggleFormatting(CFE_BOLD);       break;
          case ID_EDIT_ITALIC:     RichEdit.ToggleFormatting(CFE_ITALIC);     break;
@@ -450,5 +482,3 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    
 NAMESPACE_END2(GUI,Views)
-
-

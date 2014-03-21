@@ -134,6 +134,7 @@
 #define ID_VIEW_SOURCE                  409
 #define ID_VIEW_EDITOR                  410
 #define ID_VIEW_DISPLAY                 411
+#define ID_COLOUR_SELECT                412
 
 // ScriptView ContextMenu
 #define ID_EDIT_COMMENT                 450
