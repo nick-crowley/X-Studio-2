@@ -62,7 +62,7 @@ namespace Logic
       /// <param name="s">The syntax</param>
       /// <param name="pos">First token</param>
       /// <param name="end">End of tokens</param>
-      /// <exception cref="Logic::GenericException">Syntax conflicts with existing syntax</exception>
+      /// <exception cref="Logic::AlgorithmException">Syntax conflicts with existing syntax</exception>
       void  SyntaxLibrary::SyntaxNode::Insert(CommandSyntaxRef s, TokenIterator& pos, const TokenIterator& end)
       {
          if (pos < end)
@@ -77,7 +77,7 @@ namespace Logic
          {
             // Ensure not duplicate
             if (HasSyntax())
-               throw GenericException(HERE, VString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
+               throw AlgorithmException(HERE, VString(L"The command syntax '%s' (id:%d) is already present", Syntax->Text.c_str(), Syntax->ID));
 
             // EndOfInput: Store syntax here
             Syntax = CommandSyntaxPtr(new CommandSyntax(s));
