@@ -618,7 +618,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Update string properties
       CPropertiesWnd::Connect(this, true);
    }
-   
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Includes or excludes a file.</summary>

@@ -752,7 +752,7 @@ namespace Logic
                try {  
                   // Skip reading if previously read
                   if (!call.empty() && !script.ScriptCalls.Contains(call))
-                     script.ScriptCalls.Add(call, ScriptFileReader::ReadExternalScript(L"D:\\X3 Albion Prelude\\scripts", call));
+                     script.ScriptCalls.Add(call, ScriptFileReader::ReadExternalScript(script.FullPath.Folder, call));
                }
                catch (ExceptionBase&) {
                   //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
