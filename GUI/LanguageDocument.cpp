@@ -261,7 +261,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    void LanguageDocument::OnCloseDocument()
    {
       // Disconnect properties
-      CPropertiesWnd::Connect(this, false);
+      //CPropertiesWnd::Connect(this, false);
 
       __super::OnCloseDocument();
    }
@@ -270,9 +270,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="deEvent">The de event.</param>
    void LanguageDocument::OnDocumentEvent(DocumentEvent deEvent)
    {
+      switch (deEvent)
+      {
       // Manually set 'String Library' path
-      if (Virtual && deEvent == onAfterOpenDocument)
-         m_strPathName = L"String Library";
+      case onAfterOpenDocument:
+         if (Virtual)
+            m_strPathName = L"String Library";
+         break;
+
+      // Clear properties
+      case onAfterCloseDocument:
+         CPropertiesWnd::Connect(this, false);
+         break;
+      }
+      
+      // Refresh backups
+      __super::OnDocumentEvent(deEvent);
    }
 
    /// <summary>Initializes new document</summary>

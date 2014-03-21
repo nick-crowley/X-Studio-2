@@ -289,6 +289,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       grid.AddProperty(arguments);
    }
+   
+   /// <summary>Manually set the path of the string library document</summary>
+   /// <param name="deEvent">The de event.</param>
+   void ScriptDocument::OnDocumentEvent(DocumentEvent deEvent)
+   {
+      switch (deEvent)
+      {
+      // Close: Clear properties
+      case onAfterCloseDocument:
+         CPropertiesWnd::Connect(this, false);
+         break;
+      }
+      
+      // Refresh backups
+      __super::OnDocumentEvent(deEvent);
+   }
 
    /// <summary>Called when new document.</summary>
    /// <returns></returns>

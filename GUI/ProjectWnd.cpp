@@ -33,7 +33,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_UPDATE_COMMAND_UI_RANGE(ID_PROJECT_OPEN, ID_PROJECT_PROPERTIES, OnQueryCommand)
       ON_NOTIFY(NM_DBLCLK, IDC_PROJECT_TREE, OnTreeView_DoubleClick)
       ON_NOTIFY(NM_SETFOCUS, IDC_PROJECT_TREE, OnTreeView_SetFocus)
-      ON_NOTIFY(TVN_SELCHANGED, IDC_PROJECT_TREE, OnTreeView_SetFocus)
+      ON_NOTIFY(TVN_SELCHANGED, IDC_PROJECT_TREE, OnTreeView_SelectionChanged)
 	   ON_WM_PAINT()
 	   ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
@@ -608,7 +608,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       auto data = reinterpret_cast<NMTREEVIEW*>(pNMHDR);
 
       // Show properties
-      CPropertiesWnd::Connect(this, true);
+      CPropertiesWnd::Connect(this, TreeView.GetSelectedItem() != nullptr);
 
       *pResult = 0;
    }

@@ -178,9 +178,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <param name="deEvent">The event.</param>
    void DocumentBase::OnDocumentEvent(DocumentEvent deEvent)
    {
-      // Raise 'PROJECT LOADED'
       switch (deEvent)
       {
+      // Close/Open/Save: Refresh backups
+      case CDocument::onAfterCloseDocument:
       case CDocument::onAfterOpenDocument:
       case CDocument::onAfterSaveDocument:
          if (auto proj = ProjectDocument::GetActive())
