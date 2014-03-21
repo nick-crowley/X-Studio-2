@@ -15,7 +15,7 @@ namespace Logic
    {
       namespace Compiler
       {
-         class CommandNode;
+         class CommandTree;
 
          /// <summary>Script error</summary>
          class LogicExport ErrorToken : public TokenBase
@@ -83,13 +83,13 @@ namespace Logic
          };
 
          /// <summary>Shared pointer to a parse tree node</summary>
-         class LogicExport CommandNodePtr : public shared_ptr<CommandNode> 
+         class LogicExport CommandNodePtr : public shared_ptr<CommandTree> 
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            CommandNodePtr() : shared_ptr<CommandNode>(nullptr)
+            CommandNodePtr() : shared_ptr<CommandTree>(nullptr)
             {}
-            CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
+            CommandNodePtr(CommandTree* node) : shared_ptr<CommandTree>(node)
             {}
 
             // ---------------------- ACCESSORS ------------------------	
@@ -137,14 +137,14 @@ namespace Logic
          typedef list<Symbol>  SymbolList;
             
          /// <summary>Represents a script command and its descendants, if any</summary>
-         class LogicExport CommandNode 
+         class LogicExport CommandTree 
          {
             // ------------------------ TYPES --------------------------
          protected:
-            /// <summary>CommandNode array iterator</summary>
+            /// <summary>CommandTree array iterator</summary>
             typedef CommandNodeArray::const_iterator   NodeIterator;
 
-            /// <summary>CommandNode predicate</summary>
+            /// <summary>CommandTree predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
             /// <summary>Distinguishes tree state when printed to the console</summary>
@@ -152,11 +152,11 @@ namespace Logic
 
             // --------------------- CONSTRUCTION ----------------------
          public:
-            CommandNode();
-            CommandNode(CommandNode* parent, const CommandNode* target);
-            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
-            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
-            ~CommandNode();
+            CommandTree();
+            CommandTree(CommandTree* parent, const CommandTree* target);
+            CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
+            CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
+            ~CommandTree();
 
             // ------------------------ STATIC -------------------------
          protected:
@@ -170,7 +170,7 @@ namespace Logic
 
 #ifdef VALIDATION
             /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
-            static CommandNode  EndOfScript;
+            static CommandTree  EndOfScript;
 #endif
             // --------------------- PROPERTIES ------------------------
          public:
@@ -188,17 +188,17 @@ namespace Logic
             void          ToList(CommandNodeArray& l) const;
                
          protected:
-            CommandNode*  FindAncestor(BranchLogic l) const;
-            NodeIterator  FindChild(const CommandNode* child) const;
-            CommandNode*  FindConditionalAlternate() const;
-            CommandNode*  FindConditionalEnd() const;
-            CommandNode*  FindLabel(const wstring& name) const;
-            CommandNode*  FindNextCommand() const;
-            CommandNode*  FindNextSibling() const;
-            CommandNode*  FindPrevSibling() const;
-            CommandNode*  FindRoot() const;
-            CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
-            CommandNode*  GetLastExecutableChild() const;
+            CommandTree*  FindAncestor(BranchLogic l) const;
+            NodeIterator  FindChild(const CommandTree* child) const;
+            CommandTree*  FindConditionalAlternate() const;
+            CommandTree*  FindConditionalEnd() const;
+            CommandTree*  FindLabel(const wstring& name) const;
+            CommandTree*  FindNextCommand() const;
+            CommandTree*  FindNextSibling() const;
+            CommandTree*  FindPrevSibling() const;
+            CommandTree*  FindRoot() const;
+            CommandTree*  FindSibling(NodeDelegate d, const wchar* help) const;
+            CommandTree*  GetLastExecutableChild() const;
             wstring       GetScriptCallName() const;
             bool          HasExecutableChild() const;
             bool          IsRoot() const;
@@ -220,20 +220,20 @@ namespace Logic
             void  IdentifyConstants(ScriptFile& script, ErrorArray& errors);
             void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
             void  IndexCommands(UINT& next);
-            void  InsertJump(NodeIterator pos, const CommandNode* target);
+            void  InsertJump(NodeIterator pos, const CommandTree* target);
             void  LinkCommands(ErrorArray& errors);
             void  RevertCommandComment();
             void  VerifyCommand(const ScriptFile& script, ErrorArray& errors);
             
             // -------------------- REPRESENTATION ---------------------
          public:
-            CommandNode*       Parent;        // Parent node
+            CommandTree*       Parent;        // Parent node
             CommandNodeArray   Children;      // Child commands
 
             ParameterArray     Parameters,    // script parameters in display order
                                Postfix;       // expression parameters in postfix order
             CommandSyntaxRef   Syntax;        // command syntax
-            const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
+            const CommandTree* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
             bool               CmdComment;    // Whether a command comment  [false for ordinary comments]
 
