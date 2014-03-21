@@ -202,8 +202,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
       if (!GetRootItem())
          return;
 
+      // Find node
+      auto node = item->IsRoot() ? GetRootItem() : FindItem(item);
+
       // Update item
-      SetItemText(item->IsRoot() ? GetRootItem() : FindItem(item), item->Name.c_str());
+      if (!item->IsVariable())
+         SetItemText(node, item->Name.c_str());
+      else
+         SetItemText(node, VString(L"%s = %d", item->Name.c_str(), item->Value).c_str());
    }
 
    /// <summary>Called when item added.</summary>

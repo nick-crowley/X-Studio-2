@@ -220,7 +220,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          /// <exception cref="Logic::IOException">Unable to rename file</exception>
          void OnValueChanged(GuiString value) override
          {
+            // Change value, force refresh
             Item.Value = value.ToInt();
+            Document.RenameItem(Item, Item.Name);     // Modified document
          }
          
          /// <summary>Validates and optionally modifies the value being input</summary>
