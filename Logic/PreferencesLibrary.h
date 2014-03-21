@@ -90,10 +90,10 @@ namespace Logic
    public:
       // Application/GUI:
       /// <summary>Show large menus throughout app</summary>
-      PREFERENCE_PROPERTY(bool,Bool,LargeMenus,false)
+      PREFERENCE_PROPERTY(bool,Bool,LargeMenus,true)
 
       /// <summary>Show large toolbars throughout app</summary>
-      PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,false)
+      PREFERENCE_PROPERTY(bool,Bool,LargeToolbars,true)
 
       /// <summary>Last open document folder</summary>
       PREFERENCE_PROPERTY_EX(Path,LPCWSTR,String,OpenDocumentFolder,L"");
