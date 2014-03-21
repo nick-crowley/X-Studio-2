@@ -1071,9 +1071,17 @@ namespace Logic
                if (!callName.empty() && script.ScriptCalls.Contains(callName))
                {
                   auto call = script.ScriptCalls.Find(callName);
+                  auto argIndex = index-Syntax.Parameters.size();
 
+                  // Verify argument exists
+                  if (argIndex >= call.Variables.Arguments.Count)
+                  {
+                     // Create token representing argument name/value pair
+                     ScriptToken tok(TokenType::Text, p.ArgName.Start, p.Token.End, p.ArgName.Text + L"=" + p.Token.Text);
+                     errors += MakeError(VString(L"'%s' only has %d arguments", callName.c_str(), call.Variables.Arguments.Count), tok);
+                  }
                   // Verify argument name
-                  if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
+                  else if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
                      errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
                   
                   // Verify argument type
@@ -1082,7 +1090,7 @@ namespace Logic
                      auto arg = call.Variables[p.ArgName.Text];
                      
                      // Verify argument order
-                     if (arg.ID != index-Syntax.Parameters.size())
+                     if (arg.ID != argIndex)
                         errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
 
                      // Verify argument type 
