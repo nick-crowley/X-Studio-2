@@ -157,7 +157,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      rectDummy.SetRectEmpty();
 
 	      // Toolbar:
-         if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project"))
+         if (!Toolbar.Create(this, IDR_PROJECTVIEW, L"Project", false))
             throw Win32Exception(HERE, L"Unable to create project window toolbar");
 
          // Create TreeView:
