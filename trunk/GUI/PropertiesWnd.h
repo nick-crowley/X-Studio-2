@@ -57,6 +57,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    protected:
       void AdjustLayout();
       void ConnectSource(PropertySource* src, bool connect);
+      void UpdateState();
 	   void UpdateFont();
 
 	   afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);

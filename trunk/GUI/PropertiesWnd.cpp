@@ -103,8 +103,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <exception cref="Logic::ArgumentNullException">Source is null</exception>
    void  CPropertiesWnd::ConnectSource(PropertySource* src, bool connect)
    {
-      static const COLORREF UseDefault = (COLORREF)-1;
-
       REQUIRED(src);
 
       // Ignore if already disconnected
@@ -128,9 +126,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Source->OnDisplayProperties(Grid);
          }
 
-         // Grey window when empty
-         auto mainBk  = Source ? UseDefault : GetSysColor(COLOR_BTNFACE);
-         Grid.SetCustomColors(mainBk, UseDefault, UseDefault, UseDefault, UseDefault, UseDefault, UseDefault);
+         // Grey if empty
+         UpdateState();
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
@@ -138,11 +135,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // Redraw
       //SetRedraw(TRUE);
-      /*Grid.Invalidate();
-      Grid.UpdateWindow();*/
+      Grid.Invalidate();
+      Grid.UpdateWindow();
    }
    
-
    /// <summary>Select item and display context menu.</summary>
    /// <param name="pWnd">The WND.</param>
    /// <param name="point">The point.</param>
@@ -207,8 +203,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      if (!Grid.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, IDC_PROPERTY_GRID))
 	         throw Win32Exception(HERE, L"Failed to create Properties Grid");
 
-         // Set font
+         // Set font + colour
          UpdateFont();
+         UpdateState();
 
 	      // Grid
          Grid.EnableHeaderCtrl(FALSE);
@@ -284,7 +281,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pOldWnd">The p old WND.</param>
    void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
    {
-      CDockablePane::OnSetFocus(pOldWnd);
+      __super::OnSetFocus(pOldWnd);
+
 	   Grid.SetFocus();
    }
 
@@ -293,7 +291,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="lpszSection">The section.</param>
    void CPropertiesWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
    {
-	   CDockablePane::OnSettingChange(uFlags, lpszSection);
+	   __super::OnSettingChange(uFlags, lpszSection);
 
       // Update font
 	   UpdateFont();
@@ -306,7 +304,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="cy">The height.</param>
    void CPropertiesWnd::OnSize(UINT nType, int cx, int cy)
    {
-	   CDockablePane::OnSize(nType, cx, cy);
+	   __super::OnSize(nType, cx, cy);
+
 	   AdjustLayout();
    }
    
@@ -336,6 +335,22 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
    
+   /// <summary>Grey when disabled</summary>
+   void CPropertiesWnd::UpdateState()
+   {
+      static const COLORREF UseDefault = (COLORREF)-1;
+
+      // Grey window when empty
+      bool empty = Grid.GetPropertyCount()==0;
+      auto back = !empty ? UseDefault : GetSysColor(COLOR_BTNFACE),
+           line = !empty ? UseDefault : GetSysColor(COLOR_3DSHADOW);
+
+      // Update colours
+      Grid.SetCustomColors(back, UseDefault, UseDefault, UseDefault, UseDefault, UseDefault, line);
+      /*Grid.Invalidate();
+      Grid.UpdateWindow();*/
+   }
+
    // ------------------------------- PRIVATE METHODS ------------------------------
 
    

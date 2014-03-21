@@ -345,13 +345,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
       afx_msg void OnCommand_InsertArgument();   // { OnPerformCommand(ID_INSERT_ARGUMENT);      }
       afx_msg void OnCommand_QuickCommit();      // { OnPerformCommand(ID_FILE_QUICK_COMMIT); }
       afx_msg void OnCommand_RemoveArgument();  
+      handler void OnDocumentEvent(DocumentEvent deEvent) override;
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenTemplate(Path docPath, const TemplateFile& t) override;
       handler BOOL OnOpenDocument(LPCTSTR szPathName) override;
-      //afx_msg void OnPerformCommand(UINT nID);
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       BOOL         OnRevertDocument(const ScriptRevision& r);
-      virtual BOOL OnSaveDocument(LPCTSTR szPathName);
+      handler BOOL OnSaveDocument(LPCTSTR szPathName) override;
    
       // -------------------- REPRESENTATION ---------------------
    public:
