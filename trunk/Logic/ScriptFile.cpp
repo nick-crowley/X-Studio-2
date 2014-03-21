@@ -9,7 +9,9 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      ScriptFile::ScriptFile() : Version(0), Game(GameVersion::Threat), LiveData(false) 
+      /// <summary>Create empty script-file.</summary>
+      /// <param name="path">The path.</param>
+      ScriptFile::ScriptFile(Path path) : FullPath(path), Version(0), Game(GameVersion::Threat), LiveData(false)
       {
       }
 

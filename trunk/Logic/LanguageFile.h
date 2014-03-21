@@ -10,7 +10,7 @@ namespace Logic
    {
 
       /// <summary>Represents an X3 language file, provides a collection of language pages</summary>
-      class LogicExport LanguageFile : public FileBase
+      class LogicExport LanguageFile 
       {
       public:
          /// <summary>Collection of language pages, sorted by ID</summary>
@@ -167,9 +167,9 @@ namespace Logic
       public:
          LanguageFile() : ID(0), Language(GameLanguage::English)
          {}
-         LanguageFile(Path path) : FileBase(path), ID(0), Language(GameLanguage::English)
+         LanguageFile(Path path) : ID(0), Language(GameLanguage::English), FullPath(path)
          {}
-         LanguageFile(LanguageFile&& r) : FileBase(r), ID(r.ID), Language(r.Language), Pages(move(r.Pages))
+         LanguageFile(LanguageFile&& r) : ID(r.ID), Language(r.Language), Pages(move(r.Pages)), FullPath(move(r.FullPath))
          {}
          ~LanguageFile()
          {}
@@ -294,9 +294,10 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         UINT            ID;
-         PageCollection  Pages;
-         GameLanguage    Language;
+         UINT            ID;           // File ID
+         PageCollection  Pages;        // Pages
+         GameLanguage    Language;     // Language
+         Path            FullPath;     // FullPath for display purposes
       };
 
    }

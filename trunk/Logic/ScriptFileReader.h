@@ -168,7 +168,6 @@ namespace Logic
          typedef unique_ptr<ScriptCommandReader>  ReaderPtr;
 
          // --------------------- CONSTRUCTION ----------------------
-
       public:
          ScriptFileReader(StreamPtr in);
          virtual ~ScriptFileReader();
@@ -192,7 +191,7 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       protected:
-         Path  Folder;
+
       };
 
       
