@@ -25,6 +25,7 @@ namespace Logic
       void  SyntaxLibrary::SyntaxNode::Clear()
       {
          Children.clear();
+         Syntax = nullptr;
       }
 
       /// <summary>Finds syntax by text</summary>
