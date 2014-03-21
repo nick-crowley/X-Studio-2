@@ -62,7 +62,7 @@ ProjectDocument:
 GUI General:
 -----------
 
-# Clear the compiler output window before displaying output during save
+# [DONE] Clear the compiler output window before displaying output during save
 
 # Properly format script editor tooltips
 

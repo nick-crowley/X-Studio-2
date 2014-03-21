@@ -510,6 +510,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          REQUIRED(szPath);
 
+         // Clear output pane
+         theApp.GetMainWindow()->ClearOutputPane(Operation::LoadSaveDocument, true);
+
          // Feedback
          Console << Cons::UserAction << "Saving script: " << szPath << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, VString(L"Saving script '%s'", szPath));
