@@ -58,6 +58,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetFont(&theApp.ToolWindowFont);
    }
 
+   /// <summary>Clears all items.</summary>
+   void OutputList::Clear()
+   {
+      DeleteAllItems();
+   }
+
    /// <summary>Add progress item to bottom of list.</summary>
    /// <param name="wp">The wp.</param>
    void OutputList::InsertItem(const WorkerProgress& wp)
@@ -109,7 +115,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Clears all items</summary>
    void OutputList::OnEditClear()
    {
-	   DeleteAllItems();
+	   Clear();
    }
 
    

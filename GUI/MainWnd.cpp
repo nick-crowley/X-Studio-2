@@ -118,7 +118,18 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       m_wndProperties.ShowPane(TRUE, FALSE, TRUE);
    }
+   
+   /// <summary>Clears the items from an output window tab.</summary>
+   /// <param name="pane">Operation type.</param>
+   /// <param name="show">Whether to pop-up output window.</param>
+   void  MainWnd::ClearOutputPane(Operation pane, bool show)
+   {
+      m_wndOutput.ClearPane(pane);
 
+      if (show)
+         m_wndOutput.ShowPane(TRUE, FALSE, TRUE);
+   }
+   
    /// <summary>Gets the active script view.</summary>
    /// <returns></returns>
    ScriptView*  MainWnd::GetActiveScriptView()
@@ -281,12 +292,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Clear relevant windows & menu items
       theApp.State = AppState::NoGameData;
 
+      // Clear/Display output window
+      ClearOutputPane(Operation::LoadGameData, true);
+
       // Load game data
       if (!PrefsLib.GameDataFolder.Empty())
       {
          // Show splash screen
          m_dlgSplash.Create(this, 0);
          m_dlgSplash.ShowWindow(SW_SHOW);
+         m_dlgSplash.SetForegroundWindow();
          EnableWindow(FALSE);
 
          // Load game data
