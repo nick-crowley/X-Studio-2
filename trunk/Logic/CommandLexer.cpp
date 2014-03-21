@@ -9,7 +9,10 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         CommandLexer::CommandLexer(const wstring& line, bool  skipWhitespace) 
+         /// <summary>Create lexer and parse input immediately</summary>
+         /// <param name="line">line text.</param>
+         /// <param name="skipWhitespace">Whether to skip whitespace.</param>
+         CommandLexer::CommandLexer(const wstring& line, bool  skipWhitespace)
             : Input(line), 
               LineStart(Input.begin()), 
               LineEnd(Input.end()), 
@@ -456,34 +459,59 @@ namespace Logic
             while (MatchText() && ReadChar())
             {}
 
-            // LABEL: first token, followed by ':'
-            if (MatchChar(L':') && Output.count() == 0)
-               return MakeToken(start, TokenType::Label);
-
-            // GOTO LABEL: second token, preceeded by goto/gosub
-            if (Output.count() == 1 && (Output[0].Text == L"goto" || Output[0].Text == L"gosub"))
-               return MakeToken(start, TokenType::Label);
-
-            // NULL: 
+            // NULL: Can appear anywhere
             if (MatchChars(start, L"null"))
                return MakeToken(start, TokenType::Null);
 
             // Identify keywords
-            switch (Position - start)
+            switch (Output.count())
             {
-            case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");             break;
-            case 3: Keyword = MatchChars(start, L"end") || MatchChars(start, L"not");           break;
-            case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");   break;
-            case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
-            case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");     break;
-            case 8: Keyword = MatchChars(start, L"continue");                                   break;
+            case 0:
+               // LABEL: first text token followed by ':'
+               if (MatchChar(L':'))
+                  return MakeToken(start, TokenType::Label);
+
+               // Identify keywords
+               switch (Position - start)
+               {
+               case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");             break;
+               case 3: Keyword = MatchChars(start, L"end");                                        break;
+               case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");   break;
+               case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
+               case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");     break;
+               case 8: Keyword = MatchChars(start, L"continue");                                   break;
+               }
+               break;
+
+            case 1:
+               // LABEL: second text token preceeded by goto/gosub
+               if (Output[0].Text == L"goto" || Output[0].Text == L"gosub")
+                  return MakeToken(start, TokenType::Label);
+
+               // Identify keywords
+               switch (Position - start)
+               {
+               case 2: Keyword = MatchChars(start, L"if");            break;
+               case 3: Keyword = MatchChars(start, L"not");           break;
+               }
+               break;
+
+            case 2:
+               // Identify keywords
+               switch (Position - start)
+               {
+               case 3: Keyword = MatchChars(start, L"not");           break;
+               }
+               break;
             }
             
             // Return KEYWORD/TEXT
             return MakeToken(start, Keyword ? TokenType::Keyword : TokenType::Text);
          }
 
-
+         /// <summary>Reads a variable</summary>
+         /// <param name="start">Current position (dollar sign)</param>
+         /// <returns></returns>
          ScriptToken  CommandLexer::ReadVariable(CharIterator start)
          {
             // Dollar sign
@@ -497,7 +525,9 @@ namespace Logic
             return MakeToken(start, Position-start > 0 ? TokenType::Variable : TokenType::UnaryOp);
          }
 
-
+         /// <summary>Reads whitespace</summary>
+         /// <param name="start">Current position (first character)</param>
+         /// <returns></returns>
          ScriptToken  CommandLexer::ReadWhitespace(CharIterator start)
          {
             // Consume whitespace

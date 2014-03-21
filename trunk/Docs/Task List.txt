@@ -13,7 +13,7 @@ ScriptEdit:
 
 # [DONE] Typing in the script edit doesn't modify the document
 
-# return keyword is highlighted when found in command text
+# [DONE] return keyword is highlighted when found in command text
 
 # Error underlines is not completely cleared from whitespace
 
