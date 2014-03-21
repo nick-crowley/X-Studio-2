@@ -51,7 +51,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // --------------------- PROPERTIES ------------------------
 	  
       // ---------------------- ACCESSORS ------------------------			
-      
+   protected:
+      bool HasFocus() const;
+
       // ----------------------- MUTATORS ------------------------
    public:
       void  Create(CWnd* parent);
