@@ -507,10 +507,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       bool State = true,
            check = false;
 
-      // Require selection
-      if (!TreeView.GetSelectedItem() || !TreeView.SelectedItem)
+      // Require focus+selection
+      if (!HasFocus() || !TreeView.GetSelectedItem() || !TreeView.SelectedItem)
          State = false;
-      
       else 
       {
          auto item = TreeView.SelectedItem;

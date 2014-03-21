@@ -156,6 +156,15 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
+   /// <summary>Determines whether window/list has focus.</summary>
+   /// <returns></returns>
+   /// <remarks>this was an experiment, it's no longer used</remarks>
+   bool  BackupWnd::HasFocus() const
+   {
+      return GetFocus() && (*GetFocus() == *this || *GetFocus() == List);
+   }
+
+
    /// <summary>Re-Loads backups for the active document</summary>
    void BackupWnd::OnBackupChanged(ProjectItem* item)
    {
@@ -356,20 +365,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pCmdUI">UI object</param>
    void BackupWnd::OnQueryCommand(CCmdUI *pCmdUI)
    {
-      BOOL state = TRUE, 
+      BOOL state = FALSE, 
            check = FALSE;
 
-      //
-      switch (pCmdUI->m_nID)
-      {
-      case ID_FILE_COMMIT:
-      case ID_BACKUP_DELETE:  
-      case ID_BACKUP_DIFF:    
-      case ID_BACKUP_REVERT:  
-      case ID_FILE_QUICK_COMMIT:
-         state = (List.GetCurSel() != LB_ERR ? TRUE : FALSE);
-         break;
-      }
+      // Require focus
+      if (HasFocus())
+         switch (pCmdUI->m_nID)
+         {
+         case ID_FILE_COMMIT:
+         case ID_BACKUP_DELETE:  
+         case ID_BACKUP_DIFF:    
+         case ID_BACKUP_REVERT:  
+         case ID_FILE_QUICK_COMMIT:
+            state = (List.GetCurSel() != LB_ERR ? TRUE : FALSE);
+            break;
+         }
 
       // Set state
       pCmdUI->SetCheck(check);
