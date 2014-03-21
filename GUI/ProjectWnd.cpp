@@ -77,28 +77,47 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="grid">The grid.</param>
    void  CProjectWnd::OnDisplayProperties(CMFCPropertyGridCtrl& grid)
    {
-      // Group: General
-      CMFCPropertyGridProperty* general = new CMFCPropertyGridProperty(_T("General"));
-
       // Lookup selected item
       auto item = TreeView.SelectedItem;
       auto proj = ProjectDocument::GetActive();
 
       if (item && proj)
       {
-         // Item Name
-         general->AddSubItem(new ProjectDocument::NameProperty(*proj, *item));
-
-         // File: Path/Backup
-         if (item->IsFile())
+         // Examine item type
+         auto* group = new CMFCPropertyGridProperty(GetString(item->Type).c_str());
+         switch (item->Type)
          {
-            general->AddSubItem(new ProjectDocument::PathProperty(*proj, *item));
-            general->AddSubItem(new ProjectDocument::BackupProperty(*proj, *item));
+         // Project: Name
+         case ProjectItemType::Root: 
+            group->AddSubItem(new ProjectDocument::ItemNameProperty(*proj, *item, L"Name of project"));
+            group->AddSubItem(new ProjectDocument::FullPathProperty(*proj, *item, L"Full path of project"));
+            break;
+            
+         // File: Name/FileType/FullPath/BackupName
+         case ProjectItemType::File:    
+            group->AddSubItem(new ProjectDocument::ItemNameProperty(*proj, *item, L"Name of file"));
+            group->AddSubItem(new ProjectDocument::FileTypeProperty(*proj, *item));
+            group->AddSubItem(new ProjectDocument::FullPathProperty(*proj, *item, L"Full path of file"));
+            group->AddSubItem(new ProjectDocument::BackupNameProperty(*proj, *item));
+            break;
+
+         // Folder: Name
+         case ProjectItemType::Folder:  
+            group->AddSubItem(new ProjectDocument::ItemNameProperty(*proj, *item, L"Name of folder"));
+            break;
+
+         // Variable: Name/Value
+         case ProjectItemType::Variable:
+            group->AddSubItem(new ProjectDocument::ItemNameProperty(*proj, *item, L"Name of variable"));
+            group->AddSubItem(new ProjectDocument::ValueProperty(*proj, *item));
+            break;
          }
+         
+         // Add items
+         grid.AddProperty(group);
       }
       
-      // Group
-      grid.AddProperty(general);
+      
    }
 
 
@@ -529,9 +548,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
             State = item->IsFile() && theApp.IsDocumentOpen(item->FullPath);
             break;
 
-         // Properties: Not folder
+         // Properties: Enable all
          case ID_PROJECT_PROPERTIES:  
-            State = !item->IsFolder();    
+            State = true;  
             break;
          }
       }

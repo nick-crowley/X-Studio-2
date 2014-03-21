@@ -10,6 +10,9 @@ namespace Logic
       /// <summary>Defines item types within a project</summary>
       enum class ProjectItemType  { Root, File, Folder, Variable };
 
+      /// <summary>Get project item type string</summary>
+      LogicExport wstring GetString(ProjectItemType t);
+
       /// <summary>List of project items</summary>
       typedef list<ProjectItem>  ProjectItemList;
 

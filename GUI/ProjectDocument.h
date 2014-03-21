@@ -75,14 +75,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 	   
       /// <summary>Project item backup filename property grid item</summary>
-      class BackupProperty : public ProjectProperty
+      class BackupNameProperty : public ProjectProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create item backup filename property.</summary>
          /// <param name="doc">project.</param>
          /// <param name="item">item.</param>
-         BackupProperty(ProjectDocument& doc, ProjectItem& item)
+         BackupNameProperty(ProjectDocument& doc, ProjectItem& item)
             : ProjectProperty(doc, item, L"Revisions File", item.BackupName.c_str(), L"Name of file used to store revisions")
          {
             Enable(FALSE);
@@ -106,16 +106,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       };
 
       /// <summary>Project item name property grid item</summary>
-      class NameProperty : public ProjectProperty
+      class ItemNameProperty : public ProjectProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
          /// <summary>Create item name property.</summary>
          /// <param name="doc">project.</param>
          /// <param name="item">item.</param>
-         NameProperty(ProjectDocument& doc, ProjectItem& item)
-            : ProjectProperty(doc, item, L"Name", item.Name.c_str(), L"Name of file, project, or variable")
+         /// <param name="description">description.</param>
+         ItemNameProperty(ProjectDocument& doc, ProjectItem& item, const wchar* description)
+            : ProjectProperty(doc, item, L"Name", item.Name.c_str(), description)
          {
+            Enable(!item.Fixed);
          }
 
          // ---------------------- ACCESSORS ------------------------	
@@ -136,16 +138,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
       protected:
       };
       
-      /// <summary>Project item name property grid item</summary>
-      class PathProperty : public ProjectProperty
+      /// <summary>Project file-item 'file type' property grid item</summary>
+      class FileTypeProperty : public ProjectProperty
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create item path property.</summary>
+         /// <summary>Create 'file type' property.</summary>
          /// <param name="doc">project.</param>
          /// <param name="item">item.</param>
-         PathProperty(ProjectDocument& doc, ProjectItem& item)
-            : ProjectProperty(doc, item, L"Path", item.FullPath.c_str(), L"Full path of file or project")
+         FileTypeProperty(ProjectDocument& doc, ProjectItem& item)
+            : ProjectProperty(doc, item, L"Content", GetString(item.FileType).c_str(), L"Contents of file")
          {
             // Read-Only
             Enable(FALSE);
@@ -165,6 +167,75 @@ NAMESPACE_BEGIN2(GUI,Documents)
       protected:
       };
 
+      /// <summary>Project item name property grid item</summary>
+      class FullPathProperty : public ProjectProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create item path property.</summary>
+         /// <param name="doc">project.</param>
+         /// <param name="item">item.</param>
+         /// <param name="description">description.</param>
+         FullPathProperty(ProjectDocument& doc, ProjectItem& item, const wchar* description)
+            : ProjectProperty(doc, item, L"Path", item.FullPath.c_str(), description)
+         {
+            // Read-Only
+            Enable(FALSE);
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Stub</summary>
+         /// <param name="value">value text</param>
+         void OnValueChanged(GuiString value) override
+         {
+         }
+         
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+      
+      /// <summary>Project variable value property grid item</summary>
+      class ValueProperty : public ProjectProperty
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create item name property.</summary>
+         /// <param name="doc">project.</param>
+         /// <param name="item">item.</param>
+         ValueProperty(ProjectDocument& doc, ProjectItem& item)
+            : ProjectProperty(doc, item, L"Value", item.Value, L"Value of this variable")
+         {
+         }
+
+         // ---------------------- ACCESSORS ------------------------	
+
+         // ----------------------- MUTATORS ------------------------
+      protected:
+         /// <summary>Update name</summary>
+         /// <param name="value">value text</param>
+         /// <exception cref="Logic::ApplicationException">New path already exists, or project already contains new path</exception>
+         /// <exception cref="Logic::IOException">Unable to rename file</exception>
+         void OnValueChanged(GuiString value) override
+         {
+            Item.Value = value.ToInt();
+         }
+         
+         /// <summary>Validates and optionally modifies the value being input</summary>
+         /// <param name="value">The value.</param>
+         /// <returns>True to accept, false to reject</returns>
+         bool OnValidateValue(GuiString& value) override
+         {
+            // Require 0 < value <= 9999
+            return value.IsNumeric() && value.ToInt() > 0 && value.ToInt() <= 9999;
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+      };
+      
       // --------------------- CONSTRUCTION ----------------------
    protected:
       ProjectDocument();    // Protected constructor used by dynamic creation

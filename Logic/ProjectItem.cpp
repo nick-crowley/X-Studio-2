@@ -44,6 +44,22 @@ namespace Logic
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      /// <summary>Get project item type string</summary>
+      /// <param name="t">type</param>
+      /// <exception cref="Logic::ArgumentException">Unknown type</exception>
+      LogicExport wstring  GetString(ProjectItemType t)
+      {
+         switch (t)
+         {
+         case ProjectItemType::Root:      return L"Project";
+         case ProjectItemType::File:      return L"File";
+         case ProjectItemType::Folder:    return L"Folder";
+         case ProjectItemType::Variable:  return L"Variable";
+         }
+
+         throw ArgumentException(HERE, L"t", VString(L"Unknown project item type '%d'", t));
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Append copy of item as child</summary>
