@@ -41,6 +41,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Images
       Images.Create(IDB_NEWDOCUMENT_ICONS, 32, 4, RGB(255,0,255));
       ListView.SetImageList(&Images, LVSIL_NORMAL);
+      ListView.ModifyStyle(0, LVS_NOSCROLL);
+      ListView.SetExtendedStyle(LVS_EX_SNAPTOGRID);
+      //ListView.SendMessage(LVM_SETICONSPACING, 0, MAKELPARAM(32,32));
 
       // Enable/disable 'add project' check
       AddProject.EnableWindow(ProjectDocument::GetActive() != nullptr);
