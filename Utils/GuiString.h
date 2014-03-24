@@ -52,6 +52,7 @@ namespace Logic
       GuiString Left(UINT chars) const;
       GuiString Right(UINT chars) const;
       GuiString  Remove(const WCHAR* chars) const;
+      GuiString  ReplaceAll(const wstring& txt, const wstring& replace) const;
       int ToInt() const;
       GuiString  ToLower() const;
       GuiString  ToUpper() const;
