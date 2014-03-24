@@ -6,6 +6,11 @@ namespace Logic
    /// <summary>Represents a file or folder path</summary>
    class UtilExport Path 
    {
+   protected:
+      /// <summary>IShellLink/IPersistFile COM interface</summary>
+      _COM_SMARTPTR_TYPEDEF(IShellLink, IID_IShellLink);
+      _COM_SMARTPTR_TYPEDEF(IPersistFile, IID_IPersistFile);
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       Path();
@@ -16,17 +21,16 @@ namespace Logic
       virtual ~Path();
 
       // ------------------------ STATIC -------------------------
-
    private:
       static CharArrayPtr  Init(const WCHAR*  path);
 
       // --------------------- PROPERTIES ------------------------
-		
    public:
       PROPERTY_GET(wstring,Extension,GetExtension);
       PROPERTY_GET(wstring,FileName,GetFileName);
       PROPERTY_GET(Path,Folder,GetFolder);
       PROPERTY_GET(UINT,Length,GetLength);
+      PROPERTY_GET(Path,Resolve,GetResolved);
 
 		// ---------------------- ACCESSORS ------------------------
    public:
@@ -38,6 +42,7 @@ namespace Logic
       wstring  GetFileName() const;
       Path     GetFolder() const;
       UINT     GetLength() const;
+      Path     GetResolved() const;
       bool     HasExtension(const WCHAR* ext) const;
       bool     HasExtension(wstring ext) const;
       bool     IsDirectory() const;
@@ -84,7 +89,6 @@ namespace Logic
       Path&  Assign(const WCHAR*  text);
       
 		// -------------------- REPRESENTATION ---------------------
-
    protected:
       CharArrayPtr  Buffer;
    };

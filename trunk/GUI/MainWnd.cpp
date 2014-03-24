@@ -494,11 +494,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ActiveDocument = doc;       
          DocumentSwitched.Raise();
 
-         if (auto wnd = GetActiveFrame())
+         /*if (auto wnd = GetActiveFrame())
          {
             Console << HERE<< ENDL;
             wnd->DragAcceptFiles(TRUE);
-         }
+         }*/
       }
 
       /*GetMDITabs().SetActiveTabColor(RGB(255,0,0));

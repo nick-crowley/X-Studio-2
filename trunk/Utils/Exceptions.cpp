@@ -65,15 +65,23 @@ namespace Logic
    /// <param name="err">COM error</param>
    ComException::ComException(wstring  src, _com_error&  err) 
       // "COM object error: ...."
-      : ExceptionBase(src, err.Error(), wstring(L"COM object error: ") + err.ErrorMessage())
+      : ExceptionBase(src, err.Error(), wstring(L"COM operation failed: ") + err.ErrorMessage())
    {}
 
-   /// <summary>Create a ComException from a _com_error</summary>
+   /// <summary>Create a ComException from a result code</summary>
    /// <param name="src">Location of throw</param>
    /// <param name="err">COM error</param>
    ComException::ComException(wstring  src, HRESULT hr) 
       // "COM object error: ...."
-      : ExceptionBase(src, hr, wstring(L"COM object error: ") + SysErrorString(hr))
+      : ExceptionBase(src, hr, wstring(L"COM operation failed: ") + SysErrorString(hr))
+   {}
+
+   /// <summary>Create a ComException from a message and result code</summary>
+   /// <param name="src">Location of throw</param>
+   /// <param name="msg">Message</param>
+   /// <param name="err">COM error</param>
+   ComException::ComException(wstring  src, wstring msg, HRESULT hr)
+      : ExceptionBase(src, hr, msg + L"COM operation failed: " + SysErrorString(hr))
    {}
 
    /// <summary>Create a DirectoryNotFoundException from a folder path</summary>

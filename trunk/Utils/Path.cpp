@@ -176,6 +176,39 @@ namespace Logic
       return lstrlen(Buffer.get());
    }
 
+   /// <summary>Get fully resolved copy of the path</summary>
+   /// <returns></returns>
+   Path  Path::GetResolved() const
+   {
+      Path resolved;
+      
+      // Resolve path
+      if (!GetFullPathName(c_str(), MAX_PATH, (wchar*)resolved, nullptr))
+         throw IOException(HERE, L"Unable to resolve path: "+SysErrorString());
+
+      // Get info
+      SHFILEINFO info;
+      if (!SHGetFileInfo((wchar*)resolved, 0, &info, sizeof(info), SHGFI_ATTRIBUTES))
+         throw IOException(HERE, L"Unable to retrieve file info: "+SysErrorString());
+
+      // Ensure is link
+      if (info.dwAttributes & SFGAO_LINK)
+      {
+         IShellLinkPtr   shell(CLSID_ShellLink);
+         IPersistFilePtr file(shell);
+         HRESULT         hr;
+         
+         // Load file, resolve link, extract resolved path
+         if (FAILED(hr=file->Load(resolved.c_str(), STGM_READ))
+          || FAILED(hr=shell->Resolve(nullptr, SLR_NO_UI|SLR_ANY_MATCH))
+          || FAILED(hr=shell->GetPath((wchar*)resolved, MAX_PATH, nullptr, 0)))
+            throw ComException(HERE, L"Unable to resolve shell link: ", hr);
+      }
+
+      // Return resolved path
+      return resolved;
+   }
+
    /// <summary>Determines whether path has a given extension (case insensitive)</summary>
    /// <param name="ext">The extention preceeded by a dot</param>
    /// <returns></returns>
