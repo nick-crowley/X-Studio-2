@@ -7,10 +7,14 @@ namespace Logic
    /// <summary>Used for enabling drag n drop in windows vista</summary>
    const UINT WM_COPYGLOBALDATA = 0x0049;
 
-   /// <summary>Add/Remove msg from message filter</summary>
+   /// <summary>Allow/Deny msg from message filter</summary>
    const UINT MSGFLT_RESET = 0,
               MSGFLT_ALLOW = 1,
               MSGFLT_DISALLOW = 2;
+
+   /// <summary>Add/Remove msg from message filter</summary>
+   const UINT MSGFLT_ADD = 1,
+              MSGFLT_REMOVE = 2;
     
    /// <summary>Change window message filter</summary>
    struct CHANGEFILTERSTRUCT
@@ -40,7 +44,41 @@ namespace Logic
    END_MESSAGE_MAP()
 
    
-   /// <summary>Enables drag 'n' drop for a window under Windows Vista, from a program built against the WinXP API headers</summary>
+   /// <summary>Enables drag 'n' drop for an entire process under Windows Vista without needing to link app to v6.01 API libraries</summary>
+   /// <param name="hWnd">The WND.</param>
+   /// <returns></returns>
+   BOOL AppBase::EnableDragDrop()
+   {
+      // Define ChangeWindowMessageFilter() function pointer  [Requires WINVER 6.01, App built 5.01]
+      typedef BOOL (*ChangeMsgFilterFunc)(UINT, DWORD);
+      ChangeMsgFilterFunc  proc; 
+
+      try
+      {
+         // feedback
+         Console << "Adjusting process message filter...";
+         
+         // Manually extract the pointer to the ChangeWindowMessageFilter() function
+         proc = (ChangeMsgFilterFunc)GetProcAddress(GetModuleHandle(L"User32.dll"), "ChangeWindowMessageFilter");
+         if (!proc)
+            throw Win32Exception(L"Unable to find ChangeWindowMessageFilter() function", SysErrorString());
+
+         // Change the window's message filter to allow drag'n'drop in windows vista
+         if (!(*proc)(WM_DROPFILES, MSGFLT_ADD)
+          || !(*proc)(WM_COPYDATA, MSGFLT_ADD)
+          || !(*proc)(WM_COPYGLOBALDATA, MSGFLT_ADD))
+            throw Win32Exception(HERE, L"Unable to add desired messages");
+         
+         // Feedback
+         Console << Cons::Success << ENDL;
+         return TRUE;
+      }
+      catch (ExceptionBase& e) {
+         Console << Cons::Failure << e.Message << ENDL;
+         return FALSE;
+      }
+   }
+   /// <summary>Enables drag 'n' drop for a window under Windows Vista without needing to link app to v6.01 API libraries</summary>
    /// <param name="hWnd">The WND.</param>
    /// <returns></returns>
    BOOL AppBase::EnableDragDrop(HWND hWnd)
@@ -61,9 +99,9 @@ namespace Logic
             throw Win32Exception(L"Unable to find ChangeWindowMessageFilterEx() function", SysErrorString());
 
          // Change the window's message filter to allow drag'n'drop in windows vista
-         if (!(*proc)(hWnd, WM_DROPFILES, MSGFLT_ALLOW, NULL)
-          || !(*proc)(hWnd, WM_COPYDATA, MSGFLT_ALLOW, NULL)
-          || !(*proc)(hWnd, WM_COPYGLOBALDATA, MSGFLT_ALLOW, NULL))
+         if (!(*proc)(hWnd, WM_DROPFILES, MSGFLT_ALLOW, nullptr)
+          || !(*proc)(hWnd, WM_COPYDATA, MSGFLT_ALLOW, nullptr)
+          || !(*proc)(hWnd, WM_COPYGLOBALDATA, MSGFLT_ALLOW, nullptr))
             throw Win32Exception(HERE, L"Unable to allow desired messages");
          
          // Feedback
@@ -148,6 +186,9 @@ namespace Logic
 
          // Initialise OLE/COM
          AfxOleInit();
+
+         // Enable drag/drop
+         EnableDragDrop();
 
          // Init App
 	      return __super::InitInstance();
