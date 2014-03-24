@@ -1,5 +1,6 @@
 #pragma once
 #include "afxcmn.h"
+#include "FrameWndBase.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -35,7 +36,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    };
 
    /// <summary>Child frame</summary>
-   class LanguageFrame : public CMDIChildWndEx
+   class LanguageFrame : public FrameWndBase
    {
 	   // --------------------- CONSTRUCTION ----------------------
    protected:

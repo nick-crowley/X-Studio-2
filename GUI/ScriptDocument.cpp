@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ScriptDocument.h"
 #include "ScriptView.h"
+#include "FrameWndBase.h"
 #include "MainWnd.h"
 #include <propkey.h>
 #include "CommitDialog.h"
@@ -28,7 +29,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Creates script document template</summary>
    ScriptDocTemplate::ScriptDocTemplate() : DocTemplateBase(IDR_SCRIPTVIEW, FileType::Script,
                                                             RUNTIME_CLASS(ScriptDocument), 
-                                                            RUNTIME_CLASS(CMDIChildWndEx), 
+                                                            RUNTIME_CLASS(FrameWndBase), 
                                                             RUNTIME_CLASS(ScriptView))
    {}
 

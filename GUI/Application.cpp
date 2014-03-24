@@ -293,6 +293,114 @@ CBitmap*  Application::LoadBitmapW(UINT nResID, int cx, int cy, UINT flags) cons
    return bmp;
 }
 
+/// <summary>Open files dragged onto the window from windows explorer.</summary>
+/// <param name="hDropInfo">The drop information.</param>
+void Application::OnDropFiles(HDROP hDropInfo)
+{
+   const static UINT DROP_COUNT = 0xFFFFFFFF;
+
+   Path path;
+      
+   // Feedback
+   Console << Cons::UserAction << "Opening files dropped onto main window" << ENDL;
+
+   // Iterate thru file paths
+   for (UINT i = 0, count = DragQueryFile(hDropInfo, DROP_COUNT, NULL, 0); i < count; ++i)
+   {
+      DragQueryFile(hDropInfo, i, (wchar*)path, MAX_PATH);
+
+      // Attempt to open file
+      if (!theApp.OpenDocumentFile(path.c_str()))
+      {
+         Console << Cons::Warning << "Unable to open document: " << path << ENDL;
+         theApp.ShowMessage(wstring(L"Unable to open document: ")+path.c_str(), MB_OK|MB_ICONERROR);
+      }
+   }
+       
+   // Cleanup
+   Console << Cons::UserAction << "Finished opening drag'drop files" << ENDL;
+   DragFinish(hDropInfo);
+}
+
+/// <summary>Update all windows</summary>
+void Application::OnPreferencesChanged()
+{
+   // Update fonts
+   UpdateFonts();
+
+   // Raise 'PREFERENCES CHANGED'
+   GetMainWindow()->SendMessageToDescendants(WM_SETTINGCHANGE);
+}
+
+
+/// <summary>Opens a difference document.</summary>
+/// <param name="doc">The document.</param>
+/// <param name="diff">The difference.</param>
+/// <returns></returns>
+DiffDocument* Application::OpenDiffDocument(ScriptDocument& doc, const wstring& diff)
+{
+   // Ensure not already open
+   /*if (auto doc = GetOpenDocument(L"String Library"))
+      return doc;*/
+   
+   // Open manually
+   auto templ = GetDocumentTemplate<DiffDocTemplate>();
+   return templ->OpenDocumentFile(doc, diff);
+}
+
+/// <summary>Opens the string library.</summary>
+/// <returns></returns>
+DocumentBase* Application::OpenStringLibrary()
+{
+   // Ensure not already open
+   if (auto doc = GetOpenDocument(L"String Library"))
+      return doc;
+   
+   // Open manually
+   auto templ = GetDocumentTemplate<LanguageDocTemplate>();
+   return (DocumentBase*)templ->OpenDocumentFile(L"String Library", FALSE, TRUE);
+}
+
+/// <summary>Application customization load/save methods</summary>
+void Application::PreLoadState()
+{
+   // Load context menus
+	GetContextMenuManager()->AddMenu(GuiString(IDM_EDIT_POPUP).c_str(), IDM_EDIT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_OUTPUT_POPUP).c_str(), IDM_OUTPUT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_PROJECT_POPUP).c_str(), IDM_PROJECT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_BACKUP_POPUP).c_str(), IDM_BACKUP_POPUP);
+	GetContextMenuManager()->AddMenu(GuiString(IDM_SCRIPTEDIT_POPUP).c_str(), IDM_SCRIPTEDIT_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_STRINGVIEW_POPUP).c_str(), IDM_STRINGVIEW_POPUP);
+   GetContextMenuManager()->AddMenu(GuiString(IDM_GAMEDATA_POPUP).c_str(), IDM_GAMEDATA_POPUP);
+}
+
+
+/// <summary>Sets the game data state.</summary>
+/// <param name="s">state</param>
+void  Application::SetState(AppState s) 
+{
+   GameDataState = s;
+   StateChanged.Raise(s);
+}
+
+
+/// <summary>Re-creates the window fonts.</summary>
+void Application::UpdateFonts()
+{
+   // Cleanup previous
+   ToolWindowFont.DeleteObject();
+   TooltipFont.DeleteObject();
+
+   // Toolwindow
+   auto lf = PrefsLib.ToolWindowFont;
+   ToolWindowFont.CreateFontIndirectW(&lf);
+
+   // Tooltip
+   lf = PrefsLib.TooltipFont;
+   TooltipFont.CreateFontIndirectW(&lf);
+}
+
+// ------------------------------ PROTECTED METHODS -----------------------------
 
 /// <summary>Dispay about box</summary>
 void Application::OnCommand_About()
@@ -342,45 +450,6 @@ void Application::OnCommand_Open()
    }
 }
 
-/// <summary>Update all windows</summary>
-void Application::OnPreferencesChanged()
-{
-   // Update fonts
-   UpdateFonts();
-
-   // Raise 'PREFERENCES CHANGED'
-   GetMainWindow()->SendMessageToDescendants(WM_SETTINGCHANGE);
-}
-
-
-/// <summary>Opens a difference document.</summary>
-/// <param name="doc">The document.</param>
-/// <param name="diff">The difference.</param>
-/// <returns></returns>
-DiffDocument* Application::OpenDiffDocument(ScriptDocument& doc, const wstring& diff)
-{
-   // Ensure not already open
-   /*if (auto doc = GetOpenDocument(L"String Library"))
-      return doc;*/
-   
-   // Open manually
-   auto templ = GetDocumentTemplate<DiffDocTemplate>();
-   return templ->OpenDocumentFile(doc, diff);
-}
-
-/// <summary>Opens the string library.</summary>
-/// <returns></returns>
-DocumentBase* Application::OpenStringLibrary()
-{
-   // Ensure not already open
-   if (auto doc = GetOpenDocument(L"String Library"))
-      return doc;
-   
-   // Open manually
-   auto templ = GetDocumentTemplate<LanguageDocTemplate>();
-   return (DocumentBase*)templ->OpenDocumentFile(L"String Library", FALSE, TRUE);
-}
-
 /// <summary>Query file menu item state</summary>
 void Application::OnQueryCommand(CCmdUI* pCmdUI)
 {
@@ -414,47 +483,6 @@ void Application::OnQueryCommand(CCmdUI* pCmdUI)
    // Set state
    pCmdUI->Enable(state ? TRUE : FALSE);
 }
-
-/// <summary>Application customization load/save methods</summary>
-void Application::PreLoadState()
-{
-   // Load context menus
-	GetContextMenuManager()->AddMenu(GuiString(IDM_EDIT_POPUP).c_str(), IDM_EDIT_POPUP);
-   GetContextMenuManager()->AddMenu(GuiString(IDM_OUTPUT_POPUP).c_str(), IDM_OUTPUT_POPUP);
-   GetContextMenuManager()->AddMenu(GuiString(IDM_PROJECT_POPUP).c_str(), IDM_PROJECT_POPUP);
-   GetContextMenuManager()->AddMenu(GuiString(IDM_BACKUP_POPUP).c_str(), IDM_BACKUP_POPUP);
-	GetContextMenuManager()->AddMenu(GuiString(IDM_SCRIPTEDIT_POPUP).c_str(), IDM_SCRIPTEDIT_POPUP);
-   GetContextMenuManager()->AddMenu(GuiString(IDM_STRINGVIEW_POPUP).c_str(), IDM_STRINGVIEW_POPUP);
-   GetContextMenuManager()->AddMenu(GuiString(IDM_GAMEDATA_POPUP).c_str(), IDM_GAMEDATA_POPUP);
-}
-
-
-/// <summary>Sets the game data state.</summary>
-/// <param name="s">state</param>
-void  Application::SetState(AppState s) 
-{
-   GameDataState = s;
-   StateChanged.Raise(s);
-}
-
-
-/// <summary>Re-creates the window fonts.</summary>
-void Application::UpdateFonts()
-{
-   // Cleanup previous
-   ToolWindowFont.DeleteObject();
-   TooltipFont.DeleteObject();
-
-   // Toolwindow
-   auto lf = PrefsLib.ToolWindowFont;
-   ToolWindowFont.CreateFontIndirectW(&lf);
-
-   // Tooltip
-   lf = PrefsLib.TooltipFont;
-   TooltipFont.CreateFontIndirectW(&lf);
-}
-
-// ------------------------------ PROTECTED METHODS -----------------------------
 
 // ------------------------------- PRIVATE METHODS ------------------------------
 

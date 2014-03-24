@@ -226,7 +226,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ListView.SetExtendedStyle(LVS_EX_FULLROWSELECT);
          ListView.SetFont(&theApp.ToolWindowFont);
          ListView.EnableGroupView(TRUE);
-
+         
          // Set listView background (disabled)
          EnableList(false);
          
