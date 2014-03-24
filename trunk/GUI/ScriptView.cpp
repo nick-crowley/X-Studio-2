@@ -221,8 +221,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       CPropertiesWnd::Connect(GetDocument(), false);
 
       // Destroy
-      CFormView::OnDestroy();
+      __super::OnDestroy();
    }
+   
 
    /// <summary>Goto label at the caret</summary>
    void ScriptView::OnEditGotoLabel()
@@ -302,9 +303,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Displays script and populates variables/scope combos</summary>
    void ScriptView::OnInitialUpdate()
    {
-	   CFormView::OnInitialUpdate();
-	   ResizeParentToFit();
-
+      // Init
+	   __super::OnInitialUpdate();
+      ResizeParentToFit();
+      
       // Attach edit to document
       GetDocument()->AttachEdit(RichEdit);
 

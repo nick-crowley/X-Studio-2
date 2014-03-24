@@ -156,6 +156,7 @@ public:
 public:
    int           ExitInstance() override;
 	BOOL          InitInstance() override;
+   afx_msg void  OnDropFiles(HDROP hDropInfo);
    void          OnPreferencesChanged();
    DiffDocument* OpenDiffDocument(GUI::Documents::ScriptDocument& doc, const wstring& diff);
    DocumentBase* OpenStringLibrary();

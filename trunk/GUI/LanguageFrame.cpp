@@ -24,9 +24,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
-   IMPLEMENT_DYNCREATE(LanguageFrame, CMDIChildWndEx)
+   IMPLEMENT_DYNCREATE(LanguageFrame, FrameWndBase)
 
-   BEGIN_MESSAGE_MAP(LanguageFrame, CMDIChildWndEx)
+   BEGIN_MESSAGE_MAP(LanguageFrame, FrameWndBase)
    END_MESSAGE_MAP()
 
    BEGIN_MESSAGE_MAP(DualRowSplitter, CSplitterWnd)

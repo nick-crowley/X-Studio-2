@@ -22,9 +22,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    // ------------------------------- STATIC METHODS -------------------------------
 
-   IMPLEMENT_DYNCREATE(DiffFrame, CMDIChildWndEx)
+   IMPLEMENT_DYNCREATE(DiffFrame, FrameWndBase)
 
-   BEGIN_MESSAGE_MAP(DiffFrame, CMDIChildWndEx)
+   BEGIN_MESSAGE_MAP(DiffFrame, FrameWndBase)
    END_MESSAGE_MAP()
 
    BEGIN_MESSAGE_MAP(DiffSplitter, DualColumnSplitter)

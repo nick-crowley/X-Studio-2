@@ -496,7 +496,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          Console.Log(HERE, ComException(HERE, e));
       }
    }
-
+   
    /// <summary>Reset the tooltip</summary>
    void RichEditEx::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar)
    {
