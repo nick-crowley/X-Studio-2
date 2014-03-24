@@ -109,8 +109,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (!connect && Source != src)
          return;
 
-      // Freeze
-      //SetRedraw(FALSE);
+      // Ignore if windows not created yet
+      if (!Grid.GetSafeHwnd())
+         return;
 
       try
       {
@@ -134,7 +135,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
 
       // Redraw
-      //SetRedraw(TRUE);
       Grid.Invalidate();
       Grid.UpdateWindow();
    }
