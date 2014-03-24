@@ -337,6 +337,20 @@ NAMESPACE_BEGIN2(GUI,Windows)
             return; // abort if user cancels or saving fails
    }
 
+   /// <summary>Show/Hide the console.</summary>
+   void MainWnd::OnCommand_Console()
+   {
+      static const wchar* msg = L"Warning: Only use the 'View Console' menu item to hide the console."
+                                L" If you close it manually the program terminate without saving your work.";
+
+      // Show: Warn user not to close manually
+      if (!Console.Visible)
+         theApp.ShowMessage(msg, MB_OK|MB_ICONWARNING);
+      
+      // Toggle state
+      Console.Visible = !Console.Visible;
+   }
+
    /// <summary>Execute debugging tests.</summary>
    void MainWnd::OnCommand_ExportProject()
    {
@@ -573,10 +587,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          switch (nID)
          {
+         // Window Manager
+         case ID_WINDOW_MANAGER: ShowWindowsDialog(); break;
+
          // Show/Hide window
-         case ID_WINDOW_MANAGER:       ShowWindowsDialog();                                                        break;
-         case ID_VIEW_CONSOLE:         Console.Visible = !Console.Visible;                                         break;
          case ID_VIEW_STRING_LIBRARY:  theApp.OpenStringLibrary();                                                 break;
+         case ID_VIEW_CONSOLE:         OnCommand_Console();                                                        break;
          case ID_VIEW_PROJECT:         m_wndProject.ShowPane(!m_wndProject.IsVisible(), FALSE, TRUE);              break;
          case ID_VIEW_SCRIPT_OBJECTS:  m_wndScriptObjects.ShowPane(!m_wndScriptObjects.IsVisible(), FALSE, TRUE);  break;
          case ID_VIEW_GAME_OBJECTS:    m_wndGameObjects.ShowPane(!m_wndGameObjects.IsVisible(), FALSE, TRUE);      break;
