@@ -4,8 +4,24 @@
 
 namespace Logic
 {
+   /// <summary>Used for enabling drag n drop in windows vista</summary>
+   const UINT WM_COPYGLOBALDATA = 0x0049;
+
+   /// <summary>Add/Remove msg from message filter</summary>
+   const UINT MSGFLT_RESET = 0,
+              MSGFLT_ALLOW = 1,
+              MSGFLT_DISALLOW = 2;
+    
+   /// <summary>Change window message filter</summary>
+   struct CHANGEFILTERSTRUCT
+   {
+       DWORD cbSize;
+       DWORD ExtStatus;
+   };
+
    // -------------------------------- CONSTRUCTION --------------------------------
 
+   /// <summary>Init app name and registry key.</summary>
    AppBase::AppBase()
    {
       m_pszAppName = _tcsdup(L"X-Studio II");      // Override name of subkey used by MFC registry functions
@@ -24,6 +40,42 @@ namespace Logic
    END_MESSAGE_MAP()
 
    
+   /// <summary>Enables drag 'n' drop for a window under Windows Vista, from a program built against the WinXP API headers</summary>
+   /// <param name="hWnd">The WND.</param>
+   /// <returns></returns>
+   BOOL AppBase::EnableDragDrop(HWND hWnd)
+   {
+      // Define ChangeWindowMessageFilterEx() function pointer  [Requires WINVER 6.01, App built 5.01]
+      typedef BOOL (*ChangeMsgFilterFunc)(HWND, UINT, DWORD, CHANGEFILTERSTRUCT*);
+      ChangeMsgFilterFunc  proc; 
+
+      try
+      {
+         // feedback
+         Console << "Adjusting windows message filter...";
+         REQUIRED(hWnd);
+         
+         // Manually extract the pointer to the ChangeWindowMessageFilterEx() function
+         proc = (ChangeMsgFilterFunc)GetProcAddress(GetModuleHandle(L"User32.dll"), "ChangeWindowMessageFilterEx");
+         if (!proc)
+            throw Win32Exception(L"Unable to find ChangeWindowMessageFilterEx() function", SysErrorString());
+
+         // Change the window's message filter to allow drag'n'drop in windows vista
+         if (!(*proc)(hWnd, WM_DROPFILES, MSGFLT_ALLOW, NULL)
+          || !(*proc)(hWnd, WM_COPYDATA, MSGFLT_ALLOW, NULL)
+          || !(*proc)(hWnd, WM_COPYGLOBALDATA, MSGFLT_ALLOW, NULL))
+            throw Win32Exception(HERE, L"Unable to allow desired messages");
+         
+         // Feedback
+         Console << Cons::Success << ENDL;
+         return TRUE;
+      }
+      catch (ExceptionBase& e) {
+         Console << Cons::Failure << e.Message << ENDL;
+         return FALSE;
+      }
+   }
+
    /// <summary>Termination handler</summary>
    void  AppBase::OnCriticalError()
    {
@@ -38,7 +90,6 @@ namespace Logic
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   
    /// <summary>Exits the instance.</summary>
    /// <returns></returns>
    int AppBase::ExitInstance()
@@ -106,6 +157,7 @@ namespace Logic
          return FALSE;
       }
    }
+
 
    /// <summary>Displays and logs an exception</summary>
    /// <param name="src">The handler location</param>

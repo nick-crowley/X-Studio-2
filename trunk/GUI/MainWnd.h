@@ -137,7 +137,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    private:
       DocumentBase*     ActiveDocument;
       bool              FirstShow;
-   };
+   public:
+      afx_msg void OnDropFiles(HDROP hDropInfo);
+};
 
 
 

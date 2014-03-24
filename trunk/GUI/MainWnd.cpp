@@ -80,6 +80,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_UPDATE_COMMAND_UI(ID_VIEW_STRING_LIBRARY, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_VIEW_CONSOLE, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnQueryCommand)
+      ON_WM_DROPFILES()
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -496,6 +497,36 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
    
+   /// <summary>Open files dragged onto the window from windows explorer.</summary>
+   /// <param name="hDropInfo">The drop information.</param>
+   void MainWnd::OnDropFiles(HDROP hDropInfo)
+   {
+      const static UINT DROP_COUNT = 0xFFFFFFFF;
+
+      Path path;
+      
+      // Feedback
+      Console << Cons::UserAction << "Opening files dropped onto main window" << ENDL;
+
+      // Iterate thru file paths
+      for (UINT i = 0, count = DragQueryFile(hDropInfo, DROP_COUNT, NULL, 0); i < count; ++i)
+      {
+         DragQueryFile(hDropInfo, i, (wchar*)path, MAX_PATH);
+
+         // Attempt to open file
+         if (!theApp.OpenDocumentFile(path.c_str()))
+         {
+            Console << Cons::Warning << "Unable to open document: " << path << ENDL;
+            theApp.ShowMessage(wstring(L"Unable to open document: ")+path.c_str(), MB_OK|MB_ICONERROR);
+         }
+      }
+       
+      // Cleanup
+      Console << Cons::UserAction << "Finished opening drag'drop files" << ENDL;
+      DragFinish(hDropInfo);
+   }
+
+
    /// <summary>Changes app state once game data is loaded.</summary>
    /// <param name="wp">The wp.</param>
    void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
@@ -530,6 +561,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       try
       {
+         // Enable Drag/Drop from windows explorer
+         theApp.EnableDragDrop(m_hWnd);
+
          // Load game data
          LoadGameData();
          
