@@ -375,13 +375,13 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Populate template
          LineArray lines;
-         wstring date = COleDateTime(time(nullptr)).Format(L"%c");
+         wstring date = COleDateTime(time(nullptr)).Format(L"%d/%m/%Y");
          for (auto& cmd : Script.Commands.Input)
          {
             cmd.Text = cmd.Text.ReplaceAll(L"$NAME$", Script.Name);
             cmd.Text = cmd.Text.ReplaceAll(L"$DATE$", date);
+            cmd.Text = cmd.Text.ReplaceAll(L"$AUTHOR$", L"");
             lines.push_back(cmd.Text);
-            Console << cmd.Text << ENDL;
          }
 
          // Create temp scriptFile
