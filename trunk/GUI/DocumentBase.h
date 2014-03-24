@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
+      BOOL          CloseModified();
       BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
       void          OnDocumentEvent(DocumentEvent deEvent) override;
       virtual BOOL  OnOpenTemplate(Path docPath, const TemplateFile& t);

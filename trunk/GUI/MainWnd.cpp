@@ -70,6 +70,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_VIEW_CONSOLE, &MainWnd::OnCommand_Console)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommand_CustomizeToolbar)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommand_StringLibrary)
+      ON_COMMAND(ID_WINDOW_CLOSE_ALL, &MainWnd::OnCommand_CloseAll)
+      ON_COMMAND(ID_WINDOW_CLOSE_EXCEPT, &MainWnd::OnCommand_CloseExcept)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommand_WindowManager)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_EXPORT, &MainWnd::OnQueryCommand)
@@ -307,6 +309,26 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Load game data
          GameDataThread.Start();
       }
+   }
+
+   /// <summary>Close all windows.</summary>
+   void MainWnd::OnCommand_CloseAll()
+   {
+      // Close all documents, abort if user cancels or saving fails
+      for (auto& doc : theApp)
+         if (!doc.CloseModified())
+            return;
+   }
+
+   /// <summary>Close all except active.</summary>
+   void MainWnd::OnCommand_CloseExcept()
+   {
+      auto active = DocumentBase::GetActive();
+
+      // Close all documents except the active doc. 
+      for (auto& doc : theApp)
+         if (&doc != active && !doc.CloseModified())
+            return; // abort if user cancels or saving fails
    }
 
    /// <summary>Execute debugging tests.</summary>

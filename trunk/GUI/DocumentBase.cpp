@@ -80,6 +80,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
             parent->ActivateFrame();
    }
    
+   /// <summary>Close the document, query to save if modified</summary>
+   /// <returns>TRUE if successful, FALSE user cancelled or saving failed</returns>
+   BOOL  DocumentBase::CloseModified()
+   {
+      // [Modified] Query to save, return FALSE if cancelled/failed
+      if (!SaveModified())
+		   return FALSE;
+
+      // [Saved/Unmodified] Close doc
+	   OnCloseDocument();
+      return TRUE;
+   }
+
    /// <summary>Invoked by MFC to save the document.</summary>
    /// <param name="szPathName">Path to save under, or nullptr for 'Save As'</param>
    /// <param name="bReplace">TRUE to update project item, FALSE to preserve it</param>
@@ -356,12 +369,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Query to save if modified</summary>
    void  DocumentBase::OnCommand_Close()
    {
-      // Save Modified
-      if (!SaveModified())
-		   return;
-
-      // Close doc
-	   OnCloseDocument();
+      // Save/Closed Modified
+      CloseModified();
    }
 
    /// <summary>Save under existing path</summary>

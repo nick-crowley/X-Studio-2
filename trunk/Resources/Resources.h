@@ -88,10 +88,12 @@
 #define ID_VIEW_CUSTOMIZE               272
 
 // Window menu
-#define ID_WINDOW_MANAGER               273
+#define ID_WINDOW_CLOSE_ALL             273
+#define ID_WINDOW_CLOSE_EXCEPT          274
+#define ID_WINDOW_MANAGER               275
 
 // Help
-#define ID_HELP_FORUMS                  274
+#define ID_HELP_FORUMS                  276
 
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
