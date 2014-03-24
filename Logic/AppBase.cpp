@@ -50,7 +50,7 @@ namespace Logic
    BOOL AppBase::EnableDragDrop()
    {
       // Define ChangeWindowMessageFilter() function pointer  [Requires WINVER 6.01, App built 5.01]
-      typedef BOOL (*ChangeMsgFilterFunc)(UINT, DWORD);
+      typedef  BOOL  (__stdcall *ChangeMsgFilterFunc)(UINT, DWORD);
       ChangeMsgFilterFunc  proc; 
 
       try
@@ -84,7 +84,7 @@ namespace Logic
    BOOL AppBase::EnableDragDrop(HWND hWnd)
    {
       // Define ChangeWindowMessageFilterEx() function pointer  [Requires WINVER 6.01, App built 5.01]
-      typedef BOOL (*ChangeMsgFilterFunc)(HWND, UINT, DWORD, CHANGEFILTERSTRUCT*);
+      typedef BOOL (__stdcall *ChangeMsgFilterFunc)(HWND, UINT, DWORD, CHANGEFILTERSTRUCT*);
       ChangeMsgFilterFunc  proc; 
 
       try
