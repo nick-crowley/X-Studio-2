@@ -29,6 +29,9 @@ namespace Logic
 
          // Disable close button
          DeleteMenu(GetSystemMenu(GetConsoleWindow(), 0), SC_CLOSE, MF_BYCOMMAND);
+
+         // Hide initially
+         Visible = false;
       }
    }
 
