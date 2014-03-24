@@ -348,6 +348,64 @@ DiffDocument* Application::OpenDiffDocument(ScriptDocument& doc, const wstring& 
    return templ->OpenDocumentFile(doc, diff);
 }
 
+   
+/// <summary>Opens a document file.</summary>
+/// <param name="szFileName">Full path</param>
+/// <param name="bAddToMRU">add to MRU.</param>
+/// <returns></returns>
+CDocument* Application::OpenDocumentFile(const wchar* szFileName, BOOL bAddToMRU /*= TRUE*/)
+{
+   try
+   {
+      REQUIRED(szFileName);
+
+      // Strip inverted commas + resolve path
+      auto path = Path(GuiString(szFileName).Trim(L"\"")).Resolve;
+      
+      // Prepare
+      CDocTemplate::Confidence bestMatch = CDocTemplate::noAttempt;
+      CDocTemplate* bestTemplate = nullptr;
+      DocumentBase* doc = nullptr;
+
+      // Search templates
+      for (auto pos = theApp.GetFirstDocTemplatePosition(); pos; )
+      {
+         CDocTemplate::Confidence match;
+
+         // Match file vs template
+         auto t = theApp.GetNextDocTemplate(pos);
+		   match = t->MatchDocType(path.c_str(), (CDocument*&)doc);
+		  
+         // Open: Activate + return
+		   if (match == CDocTemplate::yesAlreadyOpen)
+         {
+            REQUIRED(doc);
+            doc->Activate();
+            return doc;
+         }
+         // Better match: Record
+         else if (match > bestMatch)
+		   {
+			   bestMatch = match;
+			   bestTemplate = t;
+		   }
+      }
+
+      // Found: Open file
+      if (bestTemplate)
+         return bestTemplate->OpenDocumentFile(path.c_str(), bAddToMRU, TRUE);
+
+      // Unrecognised: Return null
+      Console << "Unable to match " << path << " against any document template" << ENDL;
+      return nullptr;
+   }
+   catch (ExceptionBase& e)
+   {
+      Console.Log(HERE, e);
+      return nullptr;
+   }
+}
+
 /// <summary>Opens the string library.</summary>
 /// <returns></returns>
 DocumentBase* Application::OpenStringLibrary()
