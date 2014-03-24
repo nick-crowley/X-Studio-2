@@ -562,7 +562,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          // Enable Drag/Drop from windows explorer
-         //theApp.EnableDragDrop(m_hWnd);
+         DragAcceptFiles(TRUE);
 
          // Load game data
          LoadGameData();

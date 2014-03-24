@@ -96,6 +96,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommand_StringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY);  }
       afx_msg void    OnCommand_WindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);       }
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);
+      afx_msg void    OnDropFiles(HDROP hDropInfo);
       afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);
       handler void    OnInitialUpdate();
@@ -137,8 +138,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    private:
       DocumentBase*     ActiveDocument;
       bool              FirstShow;
-   public:
-      afx_msg void OnDropFiles(HDROP hDropInfo);
 };
 
 
