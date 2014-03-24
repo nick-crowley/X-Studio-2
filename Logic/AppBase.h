@@ -3,7 +3,7 @@
 
 namespace Logic
 {
-   /// <summary></summary>
+   /// <summary>Base class for application -- allows logic library to use the show error/message functions of the app</summary>
    class LogicExport AppBase : public CWinAppEx
    {
       // ------------------------ TYPES --------------------------
@@ -21,6 +21,9 @@ namespace Logic
       // ------------------------ STATIC -------------------------
       DECLARE_MESSAGE_MAP()
    
+   public:
+      static BOOL  EnableDragDrop(HWND hWnd);
+
    protected:
       static void   OnCriticalError();
 
@@ -36,6 +39,7 @@ namespace Logic
 
       // ----------------------- MUTATORS ------------------------
    public:
+      BOOL  EnableDragDrop();
       int   ExitInstance() override;
 	   BOOL  InitInstance() override;
 
@@ -44,6 +48,7 @@ namespace Logic
       HINSTANCE   ResourceLibrary;
    };
 
+   /// <summary>Logic library access to the derived app class</summary>
    inline AppBase* GetAppBase()
    {
       return (AppBase*)AfxGetApp();
