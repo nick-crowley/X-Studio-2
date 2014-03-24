@@ -50,8 +50,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logic", "Logic\Logic.vcxpro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{CE9A171E-C52B-42C8-A177-6B6788D02FF8}"
 	ProjectSection(SolutionItems) = preProject
-		Docs\Templates\Blank.Language.xml = Docs\Templates\Blank.Language.xml
-		Docs\Templates\Blank.MSCI.xml = Docs\Templates\Blank.MSCI.xml
+		Release\Templates\Language.Blank.xml = Release\Templates\Language.Blank.xml
+		Release\Templates\Language.Command.xml = Release\Templates\Language.Command.xml
+		Release\Templates\MSCI.Blank.xml = Release\Templates\MSCI.Blank.xml
+		Release\Templates\MSCI.Command.xml = Release\Templates\MSCI.Command.xml
+		Release\Templates\MSCI.Setup.xml = Release\Templates\MSCI.Setup.xml
 	EndProjectSection
 EndProject
 Global

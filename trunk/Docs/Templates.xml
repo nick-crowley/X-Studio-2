@@ -3,21 +3,36 @@
 <templates version='1'>
   <template type='script' name='Blank MSCI Script'>
     <description>Blank MSCI script</description>
-    <path>Templates\Blank.MSCI.xml</path>
+    <path>Templates\MSCI.Blank.xml</path>
+  </template>
+
+  <template type='script' name='MSCI Ship Command'>
+    <description>New MSCI script for a custom command for a ship or station</description>
+    <path>Templates\MSCI.Command.xml</path>
+  </template>
+
+  <template type='script' name='MSCI Setup Script'>
+    <description>New MSCI setup script for initializing a your other scripts</description>
+    <path>Templates\MSCI.Setup.xml</path>
+  </template>
+    
+  <template type='language' name='Blank Language File'>
+    <description>Blank Language file</description>
+    <path>Templates\Language.Blank.xml</path>
   </template>
   
-  <template type='language' name='Blank Language File'>
-    <description>Blank Language script</description>
-    <path>Templates\Blank.Language.xml</path>
+  <template type='language' name='Ship Command Strings'>
+    <description>New Language file for describing a ship/station custom command</description>
+    <path>Templates\Language.Command.xml</path>
   </template>
   
   <template type='mission' name='Blank MD Script'>
     <description>Blank Mission Director script</description>
-    <path>Templates\Blank.MD.xml</path>
+    <path>Templates\MD.Blank.xml</path>
   </template>
   
   <template type='project' name='Empty Project'>
     <description>Empty X-Studio 2 project</description>
-    <path>Templates\Empty.Project.xprj</path>
+    <path>Templates\Project.Blank.xprj</path>
   </template>
 </templates>
