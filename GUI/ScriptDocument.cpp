@@ -361,7 +361,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       {
          // Feedback
          Console << Cons::UserAction << "Creating script: " << docPath << " from template: " << Path(t.SubPath) << ENDL;
-         data.SendFeedback(ProgressType::Operation, 0, VString(L"Creating %s '%s'", t.Name, docPath.c_str()));
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Creating %s '%s'", t.Name.c_str(), docPath.c_str()));
 
          // Read/Parse template script
          AppPath path(t.SubPath);
@@ -375,15 +375,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
          // Populate template
          LineArray lines;
+         wstring date = COleDateTime(time(nullptr)).Format(L"%c");
          for (auto& cmd : Script.Commands.Input)
          {
-            /*cmd.Text.replace(L"$NAME$", Script.Name);
-            cmd.Text.replace(L"$DATE$", time());*/
+            cmd.Text = cmd.Text.ReplaceAll(L"$NAME$", Script.Name);
+            cmd.Text = cmd.Text.ReplaceAll(L"$DATE$", date);
             lines.push_back(cmd.Text);
+            Console << cmd.Text << ENDL;
          }
 
-         // Compile changes into temporary script
+         // Create temp scriptFile
          ScriptFile tmp(Script);
+         tmp.FullPath = docPath;
+
+         // Compile changes into temporary script
          ScriptParser parser(tmp, lines, Script.Game);
          parser.Compile();
          
@@ -399,8 +404,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s '%s'", t.Name, docPath.c_str()));
-         theApp.ShowError(HERE, e, VString(L"Failed to create %s '%s'", t.Name, docPath.c_str()));
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s '%s'", t.Name.c_str(), docPath.c_str()));
+         theApp.ShowError(HERE, e, VString(L"Failed to create %s '%s'", t.Name.c_str(), docPath.c_str()));
          return FALSE;
       }
    }
