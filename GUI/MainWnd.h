@@ -82,6 +82,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void  LoadGameData();
 
       afx_msg void    OnClose();
+      afx_msg void    OnCommand_CloseAll();
+      afx_msg void    OnCommand_CloseExcept();
       afx_msg void    OnCommand_Console()            { OnPerformCommand(ID_VIEW_CONSOLE);         }
       afx_msg void    OnCommand_ExportProject(); //             { OnPerformCommand(ID_FILE_EXPORT);          }
       afx_msg void    OnCommand_FindText()           { OnPerformCommand(ID_EDIT_FIND);            }
