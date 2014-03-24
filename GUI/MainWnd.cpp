@@ -358,30 +358,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Reload the game data.</summary>
    void MainWnd::OnCommand_Reload()
    {
-      // Require no modified documents
+      // Save workspace
+      SaveWorkspace();
+
+      // Close/save documents
       for (auto& doc : theApp)
-         if (doc.IsModified())
-         {
-            theApp.ShowMessage(L"You must save or close all open documents before reloading game data", MB_OK|MB_ICONERROR);
-            return;
-         }
+         if (!doc.CloseModified())
+            return;  // Cancelled/Failed: Abort
 
       // Clear/Reload game data
       LoadGameData();
    }
    
-   /// <summary>Stores current workspace.</summary>
+   /// <summary>Saves workspace before closing.</summary>
    void MainWnd::OnClose()
    {
-      list<wstring> docs;
-
-      // Get path of non-virtual files
-      for (auto& doc : theApp.GetOpenDocuments())
-         if (!doc->Virtual)
-            docs.push_back(doc->FullPath.c_str());
-
-      // Save current open docs to preferences
-      PrefsLib.WorkspaceDocuments = docs;
+      // Save workspace
+      SaveWorkspace();
 
       // Close 
       CMDIFrameWndEx::OnClose();
@@ -524,11 +517,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      CCommandLineInfo cmdInfo;
 	      theApp.ParseCommandLine(cmdInfo);
 
-         // CommandLine: Open file
-         if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew)
-	         theApp.ProcessShellCommand(cmdInfo);
+         // Restore workspace / open command line
+         if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)
+            RestoreWorkspace();
          else
-            OnOpenWorkspace();
+	         theApp.ProcessShellCommand(cmdInfo);
       }
    }
 
@@ -545,33 +538,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
-      }
-   }
-   
-   /// <summary>Called when opening workspace.</summary>
-   void MainWnd::OnOpenWorkspace()
-   {
-      auto workspace = PrefsLib.WorkspaceDocuments;
-
-      if (!workspace.empty())
-      {
-         // Feedback:
-         Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
-
-         // Default: Restore previous workspace
-         for (auto& doc : workspace)
-         {
-            if (Path(doc).Exists())
-               theApp.OpenDocumentFile(doc.c_str(), FALSE);
-            else
-            {
-               Console << Cons::Warning << "Cannot find previously open document: " << Path(doc) << ENDL;
-               theApp.ShowMessage(L"Cannot find previously open document: "+doc, MB_OK|MB_ICONWARNING);
-            }
-         }
-
-         // Feedback:
-         Console << Cons::UserAction << "Successfully restored previous workspace documents" << ENDL;
       }
    }
    
@@ -737,6 +703,47 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Delete data
       delete p;
       return 0;
+   }
+   
+   /// <summary>Opens documents previously saved to the registry.</summary>
+   void MainWnd::RestoreWorkspace()
+   {
+      auto workspace = PrefsLib.WorkspaceDocuments;
+
+      if (!workspace.empty())
+      {
+         // Feedback:
+         Console << Cons::UserAction << "Restoring previous workspace documents" << ENDL;
+
+         // Default: Restore previous workspace
+         for (auto& doc : workspace)
+         {
+            if (Path(doc).Exists())
+               theApp.OpenDocumentFile(doc.c_str(), FALSE);
+            else
+            {
+               Console << Cons::Warning << "Cannot find previously open document: " << Path(doc) << ENDL;
+               theApp.ShowMessage(L"Cannot find previously open document: "+doc, MB_OK|MB_ICONWARNING);
+            }
+         }
+
+         // Feedback:
+         Console << Cons::UserAction << "Successfully restored previous workspace documents" << ENDL;
+      }
+   }
+   
+   /// <summary>Saves the open documents to the registry.</summary>
+   void MainWnd::SaveWorkspace()
+   {
+      list<wstring> docs;
+
+      // Get path of non-virtual files
+      for (auto& doc : theApp)
+         if (!doc.Virtual)
+            docs.push_back(doc.FullPath.c_str());
+
+      // Save current open docs to preferences
+      PrefsLib.WorkspaceDocuments = docs;
    }
 
 
