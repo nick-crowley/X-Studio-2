@@ -134,6 +134,8 @@ namespace Logic
    {
       try
       {
+         Console << "Performing base cleanup..." << ENDL;
+
          // Free resources
          FreeLibrary(ResourceLibrary);
          ResourceLibrary = NULL;
@@ -162,20 +164,21 @@ namespace Logic
          // Set termination handler
          set_terminate(OnCriticalError);
 
-         // LogFile
          try
          {
+            // LogFile
             LogFile.Open();
          }
          catch (ExceptionBase& e) {
             ShowError(HERE, e, L"Unable to open log file");
          }
 
-         // Header
-         Console << Cons::Bold << "X-Studio II : v" << BUILD_VERSION << ENDL;
-         AFX_GLOBAL_DATA
+         // Write app Header
+         Console << Cons::Bold << "X-Studio II  v" << BUILD_VERSION << " : " << WindowsVersion().Name << ENDL << ENDL;
+         Console << "Performing base initialization..." << ENDL;
+         
          // Load resource library
-         if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))
+         if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))      // Console << "Loading resource library: " << Path(L"XStudio2.Resources.dll") << ENDL;
             AfxSetResourceHandle(ResourceLibrary);
          else
             throw Win32Exception(HERE, L"Unable to load resource library 'XStudio2.Resources.dll'");
