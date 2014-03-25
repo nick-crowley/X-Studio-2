@@ -39,10 +39,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
       __super::OnInitDialog();
 
       // Images
-      Images.Create(IDB_NEWDOCUMENT_ICONS, 32, 4, RGB(255,0,255));
-      ListView.SetImageList(&Images, LVSIL_NORMAL);
-      ListView.ModifyStyle(0, LVS_NOSCROLL);
+      Images.Create(IDB_NEWDOCUMENT_ICONS, 20, 4, RGB(255,0,255));
+      ListView.SetView(LV_VIEW_LIST);
+      ListView.SetImageList(&Images, LVSIL_SMALL);
       ListView.SetExtendedStyle(LVS_EX_SNAPTOGRID);
+      //ListView.ModifyStyle(0, LVS_NOSCROLL);
       //ListView.SendMessage(LVM_SETICONSPACING, 0, MAKELPARAM(32,32));
 
       // Enable/disable 'add project' check
