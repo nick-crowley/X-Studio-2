@@ -44,9 +44,16 @@ NAMESPACE_BEGIN2(GUI,Preferences)
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
-   /// <summary>Stub.</summary>
+   /// <summary>Commit values.</summary>
    void CompilerPage::Commit()
    {
+      // General
+      PrefsLib.CheckArgumentNames = CheckArgumentNames->GetBool();
+      PrefsLib.CheckArgumentTypes = CheckArgumentTypes->GetBool();
+      PrefsLib.BackgroundCompiler = BackgroundCompiler->GetBool();
+      PrefsLib.UseCppOperators = UseCppOperators->GetBool();
+      PrefsLib.UseDoIfSyntax = UseDoIfSyntax->GetBool();
+      PrefsLib.CaseSensitiveVariables = CaseSensitiveVariables->GetBool();
    }
 
    /// <summary>Populates this page.</summary>
