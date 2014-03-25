@@ -55,7 +55,7 @@ namespace Logic
             data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading commands and objects tooltips...");
 
             // Feedback
-            const AppPath path(L"Descriptions.xml");
+            const AppPath path(L"Data\\Descriptions.xml");
             Console << L"Reading descriptions file: " << path << "...";
 
             // Load descriptions file
