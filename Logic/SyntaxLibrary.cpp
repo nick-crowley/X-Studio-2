@@ -53,7 +53,7 @@ namespace Logic
             // TODO: Check for new format syntax file
 
             // Feedback
-            const AppPath path(L"Command Syntax.txt");
+            const AppPath path(L"Data\\Command Syntax.txt");
             Console << L"Reading legacy syntax file: " << path << "...";
          
             // Load/Merge legacy syntax file

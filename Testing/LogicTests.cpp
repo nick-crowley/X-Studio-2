@@ -196,7 +196,7 @@ namespace Testing
 
    void  LogicTests::Test_DescriptionReader()
    {
-      const AppPath path = L"Descriptions.xml";
+      const AppPath path = L"Data\\Descriptions.xml";
    
       try
       {

@@ -61,7 +61,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       try
       {
          // Read templates
-         StreamPtr file(new FileStream(AppPath(L"templates.xml"), FileMode::OpenExisting, FileAccess::Read));
+         StreamPtr file(new FileStream(AppPath(L"Data\\templates.xml"), FileMode::OpenExisting, FileAccess::Read));
          AllTemplates = TemplateFileReader(file).ReadFile();
 
          // Populate templates
