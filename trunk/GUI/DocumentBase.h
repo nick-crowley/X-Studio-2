@@ -50,6 +50,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void          Activate();
       BOOL          CloseModified();
       BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
+      void          OnCloseDocument() override;
       void          OnDocumentEvent(DocumentEvent deEvent) override;
       virtual BOOL  OnOpenTemplate(Path docPath, const TemplateFile& t);
       virtual void  Rename(Path newPath);

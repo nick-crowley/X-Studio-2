@@ -126,23 +126,39 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // Prefs: Save folder
          PrefsLib.NewDocumentFolder = Folder;
 
-         // Lookup document template
+         // Open document
          DocTemplateBase* docTemplate = nullptr;
          switch (fileTemplate->Type)
          {
-         case FileType::Script:   docTemplate=theApp.GetDocumentTemplate<ScriptDocTemplate>();    break;
-         case FileType::Language: docTemplate=theApp.GetDocumentTemplate<LanguageDocTemplate>();  break;
-
          default: throw AlgorithmException(HERE, L"Unexpected document template");
+
+         // Script/Language: Use template derived from DocTemplateBase/CMultiDocTemplate
+         case FileType::Script:   
+         case FileType::Language: 
+            // Set template
+            if (fileTemplate->Type == FileType::Script)
+               docTemplate=theApp.GetDocumentTemplate<ScriptDocTemplate>();  
+            else
+               docTemplate=theApp.GetDocumentTemplate<LanguageDocTemplate>();
+
+            // Open document via template
+            if (docTemplate)
+            {
+               auto doc = docTemplate->OpenDocumentTemplate(path, *fileTemplate, TRUE);
+
+               // Project: Add to active project
+               auto proj = ProjectDocument::GetActive();
+               if (proj && AddProject.GetCheck())
+                  proj->AddFile(path);
+            }
+            break;
+
+         // Project: Use template derived from CSingleDocTemplate
+         case FileType::Project:
+            if (auto t = theApp.GetDocumentTemplate<ProjectDocTemplate>())
+               t->OpenDocumentTemplate(path, *fileTemplate, TRUE);
+            break;
          }
-
-         // Open document using file template
-         auto doc = docTemplate->OpenDocumentTemplate(path, *fileTemplate, TRUE);
-
-         // Project: Add to active project
-         auto proj = ProjectDocument::GetActive();
-         if (proj && AddProject.GetCheck())
-            proj->AddFile(path);
 
          // Close
          __super::OnOK();

@@ -84,12 +84,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <returns>TRUE if successful, FALSE user cancelled or saving failed</returns>
    BOOL  DocumentBase::CloseModified()
    {
-      // [Modified] Query to save, return FALSE if cancelled/failed
-      if (!SaveModified())
-		   return FALSE;
-
       // Feedback
       Console << Cons::UserAction << "Closing document" << ENDL;
+
+      // [Modified] Query to save, return FALSE if cancelled/failed
+      if (!SaveModified())
+      {
+         Console << "Closing sequence aborted" << ENDL;
+		   return FALSE;
+      }
 
       // [Saved/Unmodified] Close doc
 	   OnCloseDocument();
@@ -190,6 +193,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
       return IsVirtual;
    }
    
+
+   /// <summary>closes document.</summary>
+   void  DocumentBase::OnCloseDocument() 
+   {
+      // Feedback
+      Console << "Closing and destroying document: title=" << Cons::Yellow << GetTitle() << Cons::White << " path=" << FullPath << ENDL;
+      
+      // Close/Destroy
+      __super::OnCloseDocument();
+   }
+
+
    /// <summary>Refresh revisions after opening/saving</summary>
    /// <param name="deEvent">The event.</param>
    void DocumentBase::OnDocumentEvent(DocumentEvent deEvent)

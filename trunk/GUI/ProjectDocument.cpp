@@ -279,13 +279,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       __super::OnDocumentEvent(deEvent);
 
-      // Raise 'PROJECT LOADED'
-      if (deEvent == CDocument::onAfterOpenDocument)
+      switch (deEvent)
+      {
+      // New/Open: Raise 'PROJECT LOADED'
+      case CDocument::onAfterNewDocument:
+      case CDocument::onAfterOpenDocument:
          Loaded.Raise();
+         break;
 
-      // Raise 'PROJECT CLOSED'
-      else if (deEvent == CDocument::onAfterCloseDocument)
+      // Close: Raise 'PROJECT CLOSED'
+      case CDocument::onAfterCloseDocument:
          Closed.Raise();
+         break;
+      }
    }
    
    /// <summary>Called on new X-Studio 2 project.</summary>
