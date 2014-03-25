@@ -30,6 +30,9 @@ namespace Logic
          // Disable close button
          DeleteMenu(GetSystemMenu(GetConsoleWindow(), 0), SC_CLOSE, MF_BYCOMMAND);
 
+         // Maximize
+         ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+
 #ifdef OFFICIAL_RELEASE
          // Initially hide
          Visible = false;
