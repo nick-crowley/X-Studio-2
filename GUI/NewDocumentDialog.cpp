@@ -99,7 +99,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
             throw AlgorithmException(HERE, L"Selected template has no data");
 
          // Feedback
-         Console << Cons::UserAction << L"Creating new document " << (Folder + FileName) << " from template " << fileTemplate->Name << ENDL;
+         Console << Cons::UserAction << "Creating new document " << (Folder + FileName) 
+                                     << " from template " << Cons::Yellow << fileTemplate->Name << ENDL;
 
          // MD: Not supported yet
          if (fileTemplate->Type == FileType::Mission)

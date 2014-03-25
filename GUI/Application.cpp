@@ -472,7 +472,7 @@ void Application::OnCommand_About()
 void Application::OnCommand_New()
 {
    // Feedback
-   Console << Cons::UserAction << L"Displaying new Document dialog" << ENDL;
+   Console << Cons::UserAction << L"User invoked new Document dialog" << ENDL;
 
    // Display new document dialog
 	NewDocumentDialog dlg;

@@ -340,13 +340,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Show/Hide the console.</summary>
    void MainWnd::OnCommand_Console()
    {
+#ifdef OFFICIAL_RELEASE
       static const wchar* msg = L"Warning: Only use the 'View Console' menu item to hide the console."
                                 L" If you close it manually the program terminate without saving your work.";
 
       // Show: Warn user not to close manually
       if (!Console.Visible)
          theApp.ShowMessage(msg, MB_OK|MB_ICONWARNING);
-      
+#endif
       // Toggle state
       Console.Visible = !Console.Visible;
    }
