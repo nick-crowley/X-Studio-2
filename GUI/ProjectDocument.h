@@ -278,6 +278,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       bool  AddFile(Path path, ProjectItem& folder);
       void  AddFolder(const wstring& name, ProjectItem& folder);
       bool  Commit(const ScriptDocument& doc, const wstring& title);
+      BOOL  CloseModified() override;
       void  DeleteRevision(const ScriptDocument& doc, UINT index);
       void  MoveItem(ProjectItem& item, ProjectItem& folder);
       void  OnDocumentEvent(DocumentEvent deEvent) override;

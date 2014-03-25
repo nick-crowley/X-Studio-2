@@ -48,7 +48,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // ----------------------- MUTATORS ------------------------
    public:
       void          Activate();
-      BOOL          CloseModified();
+      virtual BOOL  CloseModified();
       BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
       void          OnCloseDocument() override;
       void          OnDocumentEvent(DocumentEvent deEvent) override;
