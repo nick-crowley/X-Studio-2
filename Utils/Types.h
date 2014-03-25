@@ -61,6 +61,19 @@ namespace Logic
 
    /// <summary>Supported file types</summary>
    enum class FileType : UINT { Unknown, Script, Language, Mission,  Project, Universe };
+
+   /// <summary>Supported OS versions</summary>
+   enum class OS { Win2000, WinXP, Server2003, Vista, Win7, Future };
+
+   /// <summary>Helper class for identifying the windows version</summary>
+   class UtilExport WindowsVersion : public OSVERSIONINFO
+   {
+   public:
+      WindowsVersion();
+
+      OS       Version;
+      wstring  Name;
+   };
    
 }
 
