@@ -420,14 +420,8 @@ namespace Logic
                auto content = GetAll().SortByID;
                content.insert(content.begin()+index, arg);
                
-               // Repopulate map and re-index vars
-               UINT id = 0;
-               __super::clear();
-               for (auto& v : content)
-               {
-                  v.ID = id;
-                  insert(value_type(v.Name, v));   
-               }
+               // Re-sync entire collection
+               Repopulate(content);
             }
             
             /// <summary>Removes the specified argument.</summary>
@@ -445,12 +439,9 @@ namespace Logic
 
                // Remove argument. Sort remainder by ID. 
                erase(find(var.Name));
-               auto remaining = GetAll().SortByID;
                
-               // Re-populate
-               __super::clear();
-               for (auto& v : remaining)
-                  insert(value_type(v.Name, v));
+               // Re-sync entire collection
+               Repopulate(All.SortByID);
             }
 
             /// <summary>Get argument/variable by ID</summary>
@@ -466,6 +457,23 @@ namespace Logic
 
                // Not found:
                throw VariableNotFoundException(HERE, id);
+            }
+
+         private:
+            /// <summary>Repopulates the collection from an array</summary>
+            /// <param name="arr">Variables collection.</param>
+            void  Repopulate(VariableArray& arr)
+            {
+               // Clear existing
+               __super::clear();
+
+               // Re-populate
+               UINT id = 1;
+               for (auto& v : arr)
+               {
+                  v.ID = id;
+                  insert(value_type(v.Name, v));
+               }
             }
 
             // -------------------- REPRESENTATION ---------------------

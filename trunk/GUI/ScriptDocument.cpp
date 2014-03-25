@@ -161,14 +161,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (GetSelectedArgument() == -1)
             return;
       
+         // Lookup argument
+         auto index = GetSelectedArgument();
+         auto& arg = Script.Variables[index];
+
          // Query User. 
-         auto& arg = Script.Variables[GetSelectedArgument()];
          ArgumentDialog dlg(Script, arg, theApp.GetMainWindow());
          if (dlg.DoModal() != IDOK)
             return;
       
-         // Save argument
-         arg = dlg.Argument;   
+         // Remove/Insert argument     [Cannot edit because keyed by name]
+         Script.Variables.Remove(arg);
+         Script.Variables.Insert(index, dlg.Argument);   
 
          // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
@@ -190,7 +194,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
             return;
       
          // Append to existing arguments
-         Script.Variables.Insert(Script.Variables.Arguments.Count, dlg.Argument);   
+         auto nextIndex = Script.Variables.Arguments.Count;
+         Script.Variables.Insert(nextIndex, dlg.Argument);   
 
          // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
