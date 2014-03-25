@@ -43,6 +43,9 @@ namespace Logic
       int   ExitInstance() override;
 	   BOOL  InitInstance() override;
 
+   protected:
+      void  CreateLogFile();
+
       // -------------------- REPRESENTATION ---------------------
    protected:
       HINSTANCE   ResourceLibrary;

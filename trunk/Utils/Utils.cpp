@@ -50,6 +50,21 @@ namespace Logic
       case OS::Win7:       Name = L"Windows 7";            break;
       case OS::Future:     Name = L"Windows Future";       break;
       }
+
+      // Set Full name
+      FullName = VString(L"%s %s (v%d.%d)", Name.c_str(), szCSDVersion, dwMajorVersion, dwMinorVersion);
+
+      // Query architecture
+      SYSTEM_INFO si;
+      GetNativeSystemInfo(&si);
+      switch (si.wProcessorArchitecture)
+      {
+      case PROCESSOR_ARCHITECTURE_AMD64:   Architecture = L"x64";      break;
+      case PROCESSOR_ARCHITECTURE_IA64:    Architecture = L"Itanium";  break;
+      case PROCESSOR_ARCHITECTURE_INTEL:   Architecture = L"x86";      break;
+      default:
+      case PROCESSOR_ARCHITECTURE_UNKNOWN: Architecture = L"Unknown";  break;
+      }
    }
 
    // ------------------------------- STATIC METHODS -------------------------------
