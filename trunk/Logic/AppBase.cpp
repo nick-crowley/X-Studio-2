@@ -162,12 +162,6 @@ namespace Logic
          // Set termination handler
          set_terminate(OnCriticalError);
 
-         // Load resource library
-         if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))
-            AfxSetResourceHandle(ResourceLibrary);
-         else
-            throw Win32Exception(HERE, L"Unable to load resource library 'XStudio2.Resources.dll'");
-
          // LogFile
          try
          {
@@ -176,6 +170,15 @@ namespace Logic
          catch (ExceptionBase& e) {
             ShowError(HERE, e, L"Unable to open log file");
          }
+
+         // Header
+         Console << Cons::Bold << "X-Studio II : v" << BUILD_VERSION << ENDL;
+         AFX_GLOBAL_DATA
+         // Load resource library
+         if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))
+            AfxSetResourceHandle(ResourceLibrary);
+         else
+            throw Win32Exception(HERE, L"Unable to load resource library 'XStudio2.Resources.dll'");
 
 	      // Init common controls
 	      INITCOMMONCONTROLSEX InitCtrls;

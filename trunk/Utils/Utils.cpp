@@ -6,6 +6,52 @@ namespace Logic
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
+   /// <summary>Identify the windows version</summary>
+   WindowsVersion::WindowsVersion() : Version(OS::Future)
+   {
+      // Prepare
+      ZeroMemory((OSVERSIONINFO*)this, sizeof(OSVERSIONINFO));
+      dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+   
+      // Query windows version
+      if (GetVersionEx(this))
+      {
+         switch (dwMajorVersion)
+         {
+         // [WINDOWS NT 5] Windows 2000 or Windows XP
+         case 5:  
+            switch (dwMinorVersion)
+            {
+            case 0:  Version = OS::Win2000;     break;
+            case 1:  Version = OS::WinXP;       break;
+            case 2:  Version = OS::Server2003;  break;
+            }
+            break;
+
+         // [WINDOWS NT 6] Windows Vista, 7, or newer
+         case 6:
+            switch (dwMinorVersion)
+            {
+            case 0:  Version = OS::Vista;   break;
+            case 1:  Version = OS::Win7;    break;
+            default: Version = OS::Future;  break;
+            }
+            break;
+         }
+      }
+
+      // Set name
+      switch (Version)
+      {
+      case OS::Win2000:    Name = L"Windows 2000";         break;
+      case OS::WinXP:      Name = L"Windows XP";           break;
+      case OS::Server2003: Name = L"Windows Server 2003";  break;
+      case OS::Vista:      Name = L"Windows Vista";        break;
+      case OS::Win7:       Name = L"Windows 7";            break;
+      case OS::Future:     Name = L"Windows Future";       break;
+      }
+   }
+
    // ------------------------------- STATIC METHODS -------------------------------
 
    /// <summary>Convert colour enumeration to RGB tooltip colour</summary>
