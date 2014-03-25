@@ -76,7 +76,7 @@ namespace Logic
               State(InputState::Raw),
               CmdComment(commented)
          {}
-
+         
          /// <summary>Create node for an expression</summary>
          /// <param name="cnd">conditional.</param>
          /// <param name="syntax">command syntax.</param>
@@ -885,9 +885,47 @@ namespace Logic
          }
 
          /// <summary>Reverts a command comment with verification errors into an ordinary comment</summary>
-         void CommandTree::RevertCommandComment()
+         /// <param name="child">Child command to revert</param>
+         /// <exception cref="Logic::ArgumentNullException">child is null</exception>
+         /// <exception cref="Logic::InvalidOperationException">Not a child of current node</exception>
+         void CommandTree::RevertCommandComment(CommandTree* child)
          {
-            throw NotImplementedException(HERE, L"Cannot revert command comments");
+            REQUIRED(child);
+
+            // Ensure child exists
+            if (FindChild(child) == Children.end())
+               throw InvalidOperationException(HERE, L"Cannot find child");
+
+            // Re-lex line text as a comment
+            CommandLexer lex(L"*" + child->LineText);
+
+            // Extract as comment parameter
+            CommandSyntaxRef newSyntax = SyntaxLib.Find(CMD_COMMENT, GameVersion::Threat);
+            ParameterArray params(ScriptParameter(newSyntax.Parameters[0], lex.Tokens[1]));
+
+            // Generate new command + perform in-place replacement
+            ReplaceChild(child, new CommandTree(Conditional::NONE, newSyntax, params, lex, child->LineNumber, false));
+         }
+
+         /// <summary>Replaces one child node with another.</summary>
+         /// <param name="oldChild">existing child.</param>
+         /// <param name="newChild">new replacement child.</param>
+         /// <exception cref="Logic::InvalidOperationException">Not a child of current node</exception>
+         void CommandTree::ReplaceChild(CommandTree* oldChild, CommandTree* newChild)
+         {
+            REQUIRED(oldChild);
+            REQUIRED(newChild);
+
+            // Linear find/replace existing child
+            for (auto& c : Children)
+               if (c.get() == oldChild)
+               {
+                  newChild->Parent = this;
+                  return c.reset(newChild);
+               }
+
+            // Error: Not found
+            throw InvalidOperationException(HERE, L"Cannot find existing child");
          }
 
          /// <summary>Verifies the execution type and parameters</summary>
@@ -925,10 +963,9 @@ namespace Logic
                   // Error in CmdComment: Silently revert to ordinary comment
                   if (CmdComment && !errQueue.empty())
                   {
-                     // DEBUG:
-                     for (auto& err : errQueue)
-                        Console << err.Line << " " << err.Message << " " << err.Text << ENDL;
-                     RevertCommandComment();
+                     // Replace self with commented node + delete self.
+                     Parent->RevertCommandComment(this);    // NB: CmdComments can never have children, their branch logic is always
+                     return;                                //     NOP even if they have a conditional, so no need to check children.
                   }
                }
             }

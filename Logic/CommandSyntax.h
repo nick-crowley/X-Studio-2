@@ -15,17 +15,22 @@ namespace Logic
       enum class CommandType { Standard, Auxiliary, Macro };
       
       
-      /// <summary>Constant command syntax reference</summary>
+      /// <summary>Constant reference to a command syntax</summary>
       typedef const CommandSyntax&  CommandSyntaxRef;
 
+      /// <summary>Constant pointer to a command syntax</summary>
+      typedef const CommandSyntax*  CommandSyntaxPtr;
+
       /// <summary>Command syntax array</summary>
-      typedef vector<const CommandSyntax*>  CmdSyntaxArray;
+      typedef vector<CommandSyntaxPtr>  CmdSyntaxArray;
+
 
       /// <summary>Available execution types</summary>
       enum class ExecutionType  { Serial, Either, Concurrent };
 
       /// <summary>Parameter syntax lamda predicates</summary>
       typedef function<bool (const ParameterSyntax&)>  ParamSyntaxPredicate;
+
 
       /// <summary>Defines the syntax of a script command</summary>
       class LogicExport CommandSyntax
