@@ -88,6 +88,11 @@ namespace Logic
 
       // --------------------- PROPERTIES ------------------------
    public:
+      // App
+      /// <summary>App/Build version</summary>
+      PREFERENCE_PROPERTY(int,Int,AppVersion,BUILD_VERSION)
+
+      
       // Application/GUI:
       /// <summary>Show large menus throughout app</summary>
       PREFERENCE_PROPERTY(bool,Bool,LargeMenus,true)
