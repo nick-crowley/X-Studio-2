@@ -55,6 +55,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 		Release\Templates\MSCI.Blank.xml = Release\Templates\MSCI.Blank.xml
 		Release\Templates\MSCI.Command.xml = Release\Templates\MSCI.Command.xml
 		Release\Templates\MSCI.Setup.xml = Release\Templates\MSCI.Setup.xml
+		Docs\Templates\MSCI.Signal.ATTACKED.xml = Docs\Templates\MSCI.Signal.ATTACKED.xml
+		Docs\Templates\MSCI.Signal.BUYWARE.xml = Docs\Templates\MSCI.Signal.BUYWARE.xml
+		Docs\Templates\MSCI.Signal.DOCKED.xml = Docs\Templates\MSCI.Signal.DOCKED.xml
+		Docs\Templates\MSCI.Signal.KILLED.xml = Docs\Templates\MSCI.Signal.KILLED.xml
+		Docs\Templates\MSCI.Signal.LOADWARE.xml = Docs\Templates\MSCI.Signal.LOADWARE.xml
+		Docs\Templates\Project.Blank.xprj = Docs\Templates\Project.Blank.xprj
 	EndProjectSection
 EndProject
 Global
