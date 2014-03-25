@@ -1,5 +1,9 @@
 #pragma once
 
+// 
+// ------------------------- MACROS on MACROS -------------------------
+//
+
 // Macro: Creates a wide char equivilent of an input string (from MSDN)
 #define WIDEN2(x)                L ## x
 #define WIDEN(x)                 WIDEN2(x)
@@ -17,12 +21,11 @@
 //#define HERE   __WFUNCTION__ L" on line " STRINGIZE(__LINE__)
 //#define HERE   WIDEN(__FUNCTION__ " on line " STRINGIZE(__LINE__))
 
-/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
-#define VALIDATION
 
-/// <summary>Disable some extra compiler features that produce byte-code that fails validation</summary>
-//#define STRICT_VALIDATION
 
+// 
+// ----------------------- COPY/MOVE SEMANTICS -----------------------
+//
 
 // Macro: Provides default move constructor and assignment (Not functional)
 #define DEFAULT_MOVE(type)       // MS BUG:800114:     type::type(type&&) = default;  type& operator=(type&&) = default;
@@ -45,6 +48,9 @@
 
 
 
+// 
+// --------------------------- PROPERTIES ---------------------------
+//
 
 // Macro: Declares a read-only property 
 #define PROPERTY_GET(type,name,fget)            __declspec(property(get=fget)) type name
@@ -57,12 +63,9 @@
 
 
 
-
-// Macro: Throws ArgumentNullException if argument is null
-#define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
-
-
-
+// 
+// ----------------------- CLASSWIZARD FIXES ------------------------
+//
 
 // Macro: ClassWizard fix that enables classes in namespaces
 #define NAMESPACE_BEGIN(n)     namespace n {
@@ -73,13 +76,9 @@
 #define NAMESPACE_END2(n1,n2)       } }  using namespace n1::n2;
 
 
-
-
-
-// Macro: Forward declarations nested in namespaces
-#define FORWARD_DECLARATION(ns,decl)  namespace ns { decl; }
-#define FORWARD_DECLARATION2(outer, inner,decl)  namespace outer { namespace inner { decl; } }
-
+// 
+// ------------------------ LIBRARY EXPORT -------------------------
+//
 
 /// <summary>Logic library export macro</summary>
 #ifdef _LOGIC_DLL
@@ -87,4 +86,30 @@
 #else
 #define LogicExport  __declspec(dllimport)
 #endif
+
+
+
+// 
+// ---------------------------- GENERAL ---------------------------
+//
+
+// Macro: Throws ArgumentNullException if argument is null
+#define REQUIRED(arg)  { if ((arg) == nullptr) throw ArgumentNullException(HERE, WIDEN(#arg)); }
+
+// Macro: Forward declarations nested in namespaces
+#define FORWARD_DECLARATION(ns,decl)  namespace ns { decl; }
+#define FORWARD_DECLARATION2(outer, inner,decl)  namespace outer { namespace inner { decl; } }
+
+
+/// <summary>Enable/Disable certain features for public release builds</summary>
+//#define OFFICIAL_RELEASE
+
+/// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
+#define VALIDATION
+
+/// <summary>Disable some extra compiler features that produce byte-code that fails validation</summary>
+//#define STRICT_VALIDATION
+
+/// <summary>Define the version number</summary>
+#define BUILD_VERSION  1
 

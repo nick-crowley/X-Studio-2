@@ -93,6 +93,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Macros.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="GuiString.h" />
     <ClInclude Include="Path.h" />
