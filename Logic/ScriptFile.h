@@ -47,9 +47,9 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
-         /// <summary>Create an unnamed argument with an ID of zero</summary>
+         /// <summary>Create an unnamed argument with an ID of -1</summary>
          ScriptVariable()
-            : Type(VariableType::Argument), ParamType(ParameterType::UNRECOGNISED), ID(0), Assignment(0), Usage(0)
+            : Type(VariableType::Argument), ParamType(ParameterType::UNRECOGNISED), ID(-1), Assignment(0), Usage(0)
          {}
 
          /// <summary>Create a named variable</summary>
@@ -74,7 +74,7 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         UINT           ID;            // 1-based ID
+         UINT           ID;            // Zero-based ID
          wstring        Name,          // Argument/Variable name
                         Description;   // Argument description
          ParameterType  ParamType;     // Argument type
@@ -119,6 +119,9 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       };
+
+      /// <summary>Write variable array to the console</summary>
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const VariableArray& arr);
 
 
       /// <summary>Occurs when a script label is missing</summary>
@@ -338,7 +341,7 @@ namespace Logic
                return vars;
             }
 
-            /// <summary>Get argument/variable by ID</summary>
+            /// <summary>Get argument/variable by zero-based ID</summary>
             /// <param name="id">id</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
@@ -353,7 +356,7 @@ namespace Logic
                throw VariableNotFoundException(HERE, id);
             }
 
-            /// <summary>Get argument/variable by name</summary>
+            /// <summary>Get argument/variable by name  (Case sensitive)</summary>
             /// <param name="name">name without $ prefix</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
@@ -399,8 +402,8 @@ namespace Logic
                      ++it;
             }
             
-            /// <summary>Insert an argument by display index</summary>
-            /// <param name="index">Zero-based index.</param>
+            /// <summary>Insert an argument by id/index</summary>
+            /// <param name="index">Zero-based id/index.</param>
             /// <param name="arg">The argument.</param>
             /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
             /// <exception cref="Logic::InvalidOperationException">Not an argument</exception>
@@ -444,8 +447,8 @@ namespace Logic
                Repopulate(All.SortByID);
             }
 
-            /// <summary>Get argument/variable by ID</summary>
-            /// <param name="id">id</param>
+            /// <summary>Get argument/variable by zero-based ID</summary>
+            /// <param name="id">zero-based id</param>
             /// <returns></returns>
             /// <exception cref="Logic::VariableNotFoundException">Not found</exception>
             ScriptVariable& operator[](UINT id)
@@ -468,10 +471,10 @@ namespace Logic
                __super::clear();
 
                // Re-populate
-               UINT id = 1;
+               UINT id = 0;
                for (auto& v : arr)
                {
-                  v.ID = id;
+                  v.ID = id++;
                   insert(value_type(v.Name, v));
                }
             }

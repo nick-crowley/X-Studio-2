@@ -36,6 +36,14 @@ namespace Logic
          return c << "{ScriptVariable: Name=" << v.Name << " ID=" << v.ID << " ParamType=" << GetString(v.ParamType) << " Type=" << GetString(v.Type) << "}";
       }
 
+      /// <summary>Write array of script variables to the console</summary>
+      LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const VariableArray& arr)
+      {
+         for (auto& v : arr.SortByID)
+            Console << v << ENDL;
+         return c;
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Clears commands, labels and non-argument variables</summary>
