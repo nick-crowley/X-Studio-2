@@ -28,9 +28,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      Confidence MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch) override;
-      CFrameWnd* CreateNewFrame(CDocument* pDoc, CFrameWnd* pOther) override;
-      CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible) override;
+      Confidence    MatchDocType(LPCTSTR lpszPathName, CDocument*& rpDocMatch) override;
+      CFrameWnd*    CreateNewFrame(CDocument* pDoc, CFrameWnd* pOther) override;
+      CDocument*    OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible) override;
+      DocumentBase* OpenDocumentTemplate(Path docPath, const TemplateFile& t, BOOL bMakeVisible);
    };
 
    /// <summary>Project item added event</summary>

@@ -161,6 +161,69 @@ NAMESPACE_BEGIN2(GUI,Documents)
    }
 
    
+   /// <summary>Opens a new document using a template file.</summary>
+   /// <param name="docPath">Initial document path.</param>
+   /// <param name="t">template.</param>
+   /// <param name="bMakeVisible">make visible.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::ApplicationException">Unable to create document or view<exception>
+   /// <exception cref="Logic::FileNotFoundException">Template file is missing<exception>
+   DocumentBase* ProjectDocTemplate::OpenDocumentTemplate(Path docPath, const TemplateFile& t, BOOL bMakeVisible)
+   {
+      AppPath templatePath(t.SubPath);
+
+      // Verify template file exists
+      if (!templatePath.Exists())
+         throw FileNotFoundException(HERE, templatePath);
+
+      ProjectDocument* pDocument = nullptr;
+      bool Created = false;
+
+      // already have a document - reinit it
+	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
+	   {
+		   // Query to save 
+		   if (!pDocument->SaveModified())
+		      return nullptr; 
+	   }
+	   else 
+      {
+	      // create a new document
+		   pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());     // Sets m_pOnlyDoc
+         Created = true;
+      }
+
+      // Verify created
+	   if (!pDocument)
+         throw ApplicationException(HERE, L"Failed to create document class");
+
+      // Use default title
+		//SetDefaultTitle(pDocument);
+
+      // Open template file
+		if (!pDocument->OnOpenTemplate(docPath, t))
+		{
+			// Failed: Cleanup
+         if (Created)
+            delete pDocument;
+			return nullptr;
+		}
+      
+      // Set user-selected path (+ update title)
+      //pDocument->FullPath = docPath;
+      pDocument->SetPathName(docPath.c_str(), FALSE);
+
+		// it worked, now bump untitled count
+		//m_nUntitledCount++;
+
+      // Raise 'After New Document'
+      pDocument->OnDocumentEvent(CDocument::onAfterNewDocument);
+
+      // Ensure unmodified
+      pDocument->SetModifiedFlag(FALSE);
+	   return pDocument;
+   }
+
    // ------------------------------ PROTECTED METHODS -----------------------------
    
    /// <summary>Determines whether file is a legacy project</summary>
