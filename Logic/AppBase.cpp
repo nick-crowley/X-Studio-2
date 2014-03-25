@@ -174,9 +174,19 @@ namespace Logic
          }
 
          // Write app Header
-         Console << Cons::Bold << "X-Studio II  v" << BUILD_VERSION << " : " << WindowsVersion().Name << ENDL << ENDL;
-         Console << "Performing base initialization..." << ENDL;
+         Console << Cons::Cyan << "-------------------------------------------------------------" << ENDL
+                 << Cons::Cyan << "--                     X-Studio II                         --" << ENDL
+                 << Cons::Cyan << "-------------------------------------------------------------" << ENDL << ENDL;
          
+         // Query versions
+         Console << Cons::Bold << "App Version: " << Cons::Yellow << BUILD_NAME << ENDL;
+         Console << Cons::Bold << "Operating System: " << Cons::Yellow << WindowsVersion().Name << ENDL;
+         Console << Cons::Bold << "Module Path: " << AppPath() << ENDL;
+         Console << Cons::Bold << "Timestamp: " << Cons::Yellow << COleDateTime(time(nullptr)).Format(L"%c") << ENDL;
+
+         // Init
+         Console << Cons::UserAction << "Performing base initialization..." << ENDL;
+
          // Load resource library
          if(ResourceLibrary = LoadLibrary(L"XStudio2.Resources.dll"))      // Console << "Loading resource library: " << Path(L"XStudio2.Resources.dll") << ENDL;
             AfxSetResourceHandle(ResourceLibrary);

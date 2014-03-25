@@ -88,6 +88,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       if (!SaveModified())
 		   return FALSE;
 
+      // Feedback
+      Console << Cons::UserAction << "Closing document" << ENDL;
+
       // [Saved/Unmodified] Close doc
 	   OnCloseDocument();
       return TRUE;
@@ -264,7 +267,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
       // Query save
       VString msg(L"The document '%s' has been modified, save changes?", FileName.c_str());
-      switch (theApp.ShowMessage(msg, MB_ICONQUESTION|MB_YESNOCANCEL))
+      switch (theApp.ShowMessage(Cons::Warning, msg, MB_ICONQUESTION|MB_YESNOCANCEL))
       {
       // Cancel: Abort closing
       case IDCANCEL:
