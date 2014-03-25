@@ -87,7 +87,7 @@ Application::DocumentIterator  Application::end() const
 /// <returns></returns>
 int Application::ExitInstance()
 {
-   Console << "Performing main cleanup..." << ENDL;
+   Console << Cons::UserAction << "Performing main cleanup..." << ENDL;
 
    return __super::ExitInstance();
 }
@@ -164,7 +164,7 @@ BOOL Application::InitInstance()
    {
       // Initialise base
 	   __super::InitInstance();
-      Console << "Performing main initialization..." << ENDL;
+      Console << Cons::UserAction << "Performing main initialization..." << ENDL;
 
       // Sockets
 	   /*if (!AfxSocketInit())
@@ -204,7 +204,8 @@ BOOL Application::InitInstance()
       AddDocTemplate(new DiffDocTemplate());
 
       // Feedback
-      Console << "Initialization successful. Creating main window..." << ENDL << ENDL;
+      Console << Cons::Success << "Initialization complete" << ENDL
+              << Cons::UserAction << "Creating main window" << ENDL;
 
 	   // Frame window
 	   m_pMainWnd = new MainWnd;

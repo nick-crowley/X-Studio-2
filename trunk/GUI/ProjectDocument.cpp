@@ -521,6 +521,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
             if (!SaveModified())
 		         return;
 
+            // Feedback
+            Console << Cons::UserAction << "Closing project" << ENDL;
+
             // Close 
             IsClosing = true;    // Closing flag prevents ProjectDoc::GetActive() returning document during events fired during closing
 	         OnCloseDocument();

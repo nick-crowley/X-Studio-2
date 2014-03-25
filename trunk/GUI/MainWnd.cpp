@@ -394,11 +394,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Saves workspace before closing.</summary>
    void MainWnd::OnClose()
    {
+      Console << Cons::UserAction << "Closing main window" << ENDL;
+
       // Save workspace
       SaveWorkspace();
 
       // Close 
-      CMDIFrameWndEx::OnClose();
+      __super::OnClose();
    }
 
 
@@ -465,6 +467,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // Switch the order of document name and application name on the window title bar. This
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
+
+         // Feedback
+         Console << Cons::Success << "Initialized main window" << ENDL;
 	      return 0;
       }
       catch (ExceptionBase& e) {
@@ -504,16 +509,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
       auto doc = DocumentBase::GetActive();
 
       // Raise 'DOCUMENT SWITCHED' 
-      if (doc != ActiveDocument)    // Filter the excessive AFX_WM_CHANGE_ACTIVE_TAB messages by recording the last active document 
+      if (doc != ActiveDocument)    
       {
+         // Filter the excessive AFX_WM_CHANGE_ACTIVE_TAB messages by recording the last active document 
          ActiveDocument = doc;       
-         DocumentSwitched.Raise();
 
-         /*if (auto wnd = GetActiveFrame())
-         {
-            Console << HERE<< ENDL;
-            wnd->DragAcceptFiles(TRUE);
-         }*/
+         // Feedback
+         Console << Cons::UserAction << "Switching document: ";
+         if (doc)
+            Console << Cons::White << "title=" << Cons::Yellow << doc->GetTitle() << Cons::White << " path=" << doc->FullPath;
+         Console << ENDL;
+
+         // Raise 'DOC SWITCHED'
+         DocumentSwitched.Raise();
       }
 
       /*GetMDITabs().SetActiveTabColor(RGB(255,0,0));

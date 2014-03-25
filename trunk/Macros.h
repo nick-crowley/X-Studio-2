@@ -113,3 +113,5 @@
 /// <summary>Define the version number</summary>
 #define BUILD_VERSION  1
 
+/// <summary>Define the version name</summary>
+#define BUILD_NAME  L"Preview Release"
