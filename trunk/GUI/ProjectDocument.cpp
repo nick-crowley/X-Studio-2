@@ -123,6 +123,28 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Raise 'ITEM ADDED'
       ItemAdded.Raise(&folder.Add(item), &folder);
    }
+   
+   /// <summary>Close the document, query to save if modified</summary>
+   /// <returns>TRUE if successful, FALSE user cancelled or saving failed</returns>
+   BOOL  ProjectDocument::CloseModified()
+   {
+      // Feedback
+      Console << Cons::UserAction << "Closing project" << ENDL;
+
+      // [Modified] Query to save, return FALSE if cancelled/failed
+      if (!SaveModified())
+      {
+         Console << "Closing sequence aborted" << ENDL;
+		   return FALSE;
+      }
+
+      // Closing flag prevents ProjectDoc::GetActive() returning document during events fired during closing
+      IsClosing = true;    
+
+      // [Saved/Unmodified] Close doc
+	   OnCloseDocument();
+      return TRUE;
+   }
 
    /// <summary>Check whether project contains a file</summary>
    /// <param name="path">The path.</param>
@@ -522,18 +544,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          switch (nID)
          {
          // Close Project
-         case ID_FILE_PROJECT_CLOSE:
-            // Save Modified
-            if (!SaveModified())
-		         return;
-
-            // Feedback
-            Console << Cons::UserAction << "Closing project" << ENDL;
-
-            // Close 
-            IsClosing = true;    // Closing flag prevents ProjectDoc::GetActive() returning document during events fired during closing
-	         OnCloseDocument();
-            break;
+         case ID_FILE_PROJECT_CLOSE:      CloseModified();        break;
 
          // Save Project
          case ID_FILE_PROJECT_SAVE:       OnCommand_Save();       break;

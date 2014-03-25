@@ -61,23 +61,21 @@ NAMESPACE_BEGIN2(GUI,Documents)
    CDocument* ProjectDocTemplate::OpenDocumentFile(LPCTSTR szFullPath, BOOL bAddToMRU, BOOL bMakeVisible)
    {
 	   ProjectDocument* pDocument = nullptr;
-      bool Created = false;
 
-      // already have a document - reinit it
-	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
-	   {
-		   // Query to save 
-		   if (!pDocument->SaveModified())
-		      return nullptr; 
-	   }
-	   else 
+      // Check: Ensure not called by framework in unsupported manner
+	   if (!szFullPath)
       {
-	      // create a new document
-		   pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());     // Sets m_pOnlyDoc
-         Created = true;
+         AfxMessageBox(L"Invariant violated -- ProjectDocTemplate::OpenDocumentFile() attempting to create new project");
+         return nullptr;
       }
 
-      // Verify created
+      // Existing project: Save/Close
+	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
+         if (!pDocument->CloseModified())
+		      return nullptr; 
+	   
+      // create a new document    (Sets m_pOnlyDoc)
+		pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());     
 	   if (!pDocument)
 	   {
 		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
@@ -85,78 +83,40 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   }
 	   ASSERT(pDocument == m_pOnlyDoc);
 
-      // New Document:
-	   if (!szFullPath)
-	   {
-		   SetDefaultTitle(pDocument);
+      
+	   CWaitCursor wait;
+      ImportProjectDialog dlg(szFullPath);
 
-		   // avoid creating temporary compound file when starting up invisible
-		   if (!bMakeVisible)
-			   pDocument->m_bEmbedded = TRUE;
+		// Preserve 'Modified' flag
+		BOOL bWasModified = pDocument->IsModified();
+		pDocument->SetModifiedFlag(FALSE);  // not dirty for open
 
-         // NEW DOCUMENT:
-		   if (!pDocument->OnNewDocument())
-		   {
-			   // Cleanup
-            if (Created)
-            {
-               delete pDocument;
-               m_pOnlyDoc = nullptr;
-            }
-			   return nullptr;
-		   }
-	   }
-	   else
-	   {
-		   CWaitCursor wait;
-         ImportProjectDialog dlg(szFullPath);
+      // Legacy: Upgrade 
+      if (IsLegacyProject(szFullPath))
+      {
+         // IMPORT DOCUMENT
+         if (dlg.DoModal() == IDCANCEL || !pDocument->OnImportDocument(szFullPath, dlg.NewPath))
+            return nullptr;
 
-		   // Preserve 'Modified' flag
-		   BOOL bWasModified = pDocument->IsModified();
-		   pDocument->SetModifiedFlag(FALSE);  // not dirty for open
+         // Open upgraded project, not legacy
+         szFullPath = dlg.NewPath.c_str();
+         bAddToMRU = TRUE;
+      }
 
-         // Legacy: Upgrade 
-         if (IsLegacyProject(szFullPath))
-         {
-            // IMPORT DOCUMENT
-            if (dlg.DoModal() == IDCANCEL || !pDocument->OnImportDocument(szFullPath, dlg.NewPath))
-               return nullptr;
+      // Set path before open - relied upon for resolving backup paths
+      pDocument->SetPathName(szFullPath, bAddToMRU);
 
-            // Open upgraded project, not legacy
-            szFullPath = dlg.NewPath.c_str();
-            bAddToMRU = TRUE;
-         }
+      // OPEN DOCUMENT
+		if (!pDocument->OnOpenDocument(szFullPath))
+		{
+			// Failed: Destroy
+			delete pDocument;
+         m_pOnlyDoc = nullptr;
+			return nullptr;
+		}
 
-         // Set path before open - relied upon for resolving backup paths
-         pDocument->SetPathName(szFullPath, bAddToMRU);
-
-         // OPEN DOCUMENT
-		   if (!pDocument->OnOpenDocument(szFullPath))
-		   {
-			   // Failed: Destroy
-			   if (Created)
-			   {
-               delete pDocument;
-               m_pOnlyDoc = nullptr;
-			   }
-            // Failed (but Unmodified): Restore 'modified' flag
-			   else if (!pDocument->IsModified())
-			      pDocument->SetModifiedFlag(bWasModified);
-			   else
-			   {
-				   // Failed (and Modified): Document is now corrupt. Start new document.
-				   SetDefaultTitle(pDocument);
-
-               // NEW DOCUMENT:
-				   pDocument->OnNewDocument();
-			   }
-			   return nullptr;        // open failed
-		   }
-
-         // Raise 'After Open Document'
-		   pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
-	   }
-
+      // Success: Raise 'After Open Document'
+		pDocument->OnDocumentEvent(CDocument::onAfterOpenDocument);
 	   return pDocument;
    }
 
@@ -171,30 +131,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
    DocumentBase* ProjectDocTemplate::OpenDocumentTemplate(Path docPath, const TemplateFile& t, BOOL bMakeVisible)
    {
       AppPath templatePath(t.SubPath);
+      ProjectDocument* pDocument = nullptr;
 
       // Verify template file exists
       if (!templatePath.Exists())
          throw FileNotFoundException(HERE, templatePath);
 
-      ProjectDocument* pDocument = nullptr;
-      bool Created = false;
-
-      // already have a document - reinit it
+      // Existing document - close/save
 	   if (pDocument = dynamic_cast<ProjectDocument*>(m_pOnlyDoc))
-	   {
-		   // Query to save 
-		   if (!pDocument->SaveModified())
+         if (!pDocument->CloseModified())
 		      return nullptr; 
-	   }
-	   else 
-      {
-	      // create a new document
-		   pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());     // Sets m_pOnlyDoc
-         Created = true;
-      }
-
-      // Verify created
-	   if (!pDocument)
+	   
+      // create new doc
+		pDocument = dynamic_cast<ProjectDocument*>(CreateNewDocument());     // Sets m_pOnlyDoc
+      if (!pDocument)
          throw ApplicationException(HERE, L"Failed to create document class");
 
       // Use default title
@@ -204,23 +154,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
 		if (!pDocument->OnOpenTemplate(docPath, t))
 		{
 			// Failed: Cleanup
-         if (Created)
-            delete pDocument;
+         delete pDocument;
 			return nullptr;
 		}
       
       // Set user-selected path (+ update title)
-      //pDocument->FullPath = docPath;
       pDocument->SetPathName(docPath.c_str(), FALSE);
-
-		// it worked, now bump untitled count
-		//m_nUntitledCount++;
 
       // Raise 'After New Document'
       pDocument->OnDocumentEvent(CDocument::onAfterNewDocument);
 
-      // Ensure unmodified
-      pDocument->SetModifiedFlag(FALSE);
+      // Ensure *MODIFIED* because file doesn't exist on disc yet
+      pDocument->SetModifiedFlag(TRUE);
 	   return pDocument;
    }
 
