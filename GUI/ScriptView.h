@@ -62,6 +62,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       void UpdateScope();
       
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+      handler void OnArgumentChanged();
       afx_msg void OnDestroy();
       afx_msg void OnEditComment()       { OnPerformCommand(ID_EDIT_COMMENT);     }
       afx_msg void OnEditIndent()        { OnPerformCommand(ID_EDIT_INDENT);      }
@@ -98,7 +99,8 @@ NAMESPACE_BEGIN2(GUI,Views)
       CComboBox  VariablesCombo;
 
    protected:
-      EventHandler fnCompileComplete,
+      EventHandler fnArgumentChanged,
+                   fnCompileComplete,
                    fnTextChanged;
 
    };

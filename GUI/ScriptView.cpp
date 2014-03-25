@@ -213,6 +213,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
    
+   /// <summary>Nothing.</summary>
+   void ScriptView::OnArgumentChanged()
+   {
+   }
 
    /// <summary>Clear properties</summary>
    void ScriptView::OnDestroy()

@@ -331,6 +331,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Adjust gutter
       SetGutterWidth(GutterRect(this).Width());
+
+      // Listen: Argument changed
+      fnArgumentChanged = Document->ArgumentChanged.Register(this, &ScriptEdit::OnArgumentChanged);
    }
 
    /// <summary>Replace entire contents with plain text.</summary>
@@ -568,6 +571,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    bool ScriptEdit::IsKeyPressed(UINT vKey) const
    {
       return HIBYTE(GetKeyState(vKey)) != 0;
+   }
+
+   /// <summary>Refresh entire document.</summary>
+   void ScriptEdit::OnArgumentChanged()
+   {
+      UpdateHighlighting(0, GetLineCount()-1);
    }
 
    /// <summary>Compiles script to highlight errors</summary>

@@ -419,10 +419,10 @@ namespace Logic
                // Sort all vars by ID, insert at appropriate place
                auto content = GetAll().SortByID;
                content.insert(content.begin()+index, arg);
-               __super::clear();
-
+               
                // Repopulate map and re-index vars
                UINT id = 0;
+               __super::clear();
                for (auto& v : content)
                {
                   v.ID = id;
