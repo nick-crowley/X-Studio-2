@@ -237,7 +237,17 @@ namespace Logic
 
 
 
-   
+   /// <summary>Helper class for identifying the windows version</summary>
+   class UtilExport WindowsVersion : public OSVERSIONINFO
+   {
+   public:
+      WindowsVersion();
+
+      OS       Version;          // Version enumeration
+      wstring  Architecture,     // Processor type
+               FullName,         // Name, Service Pack, Version number
+               Name;             // Name only
+   };
 
    
 }

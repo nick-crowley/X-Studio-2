@@ -151,7 +151,6 @@ namespace Logic
    }
 
 
-
    /// <summary>Initializes the instance.</summary>
    /// <returns></returns>
    BOOL AppBase::InitInstance()
@@ -164,25 +163,8 @@ namespace Logic
          // Set termination handler
          set_terminate(OnCriticalError);
 
-         try
-         {
-            // LogFile
-            LogFile.Open();
-         }
-         catch (ExceptionBase& e) {
-            ShowError(HERE, e, L"Unable to open log file");
-         }
-
-         // Write app Header
-         Console << Cons::Cyan << "-------------------------------------------------------------" << ENDL
-                 << Cons::Cyan << "--                     X-Studio II                         --" << ENDL
-                 << Cons::Cyan << "-------------------------------------------------------------" << ENDL << ENDL;
-         
-         // Query versions
-         Console << Cons::Bold << "App Version: " << Cons::Yellow << BUILD_NAME << ENDL;
-         Console << Cons::Bold << "Operating System: " << Cons::Yellow << WindowsVersion().Name << ENDL;
-         Console << Cons::Bold << "Module Path: " << AppPath() << ENDL;
-         Console << Cons::Bold << "Timestamp: " << Cons::Yellow << COleDateTime(time(nullptr)).Format(L"%c") << ENDL;
+         // Create logFile
+         CreateLogFile();
 
          // Init
          Console << Cons::UserAction << "Performing base initialization..." << ENDL;
@@ -287,6 +269,38 @@ namespace Logic
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
+   
+   /// <summary>Creates the log file.</summary>
+   void AppBase::CreateLogFile()
+   {
+      try
+      {
+         // LogFile
+         LogFile.Open();
+      }
+      catch (ExceptionBase& e) {
+         ShowError(HERE, e, L"Unable to open log file");
+      }
+
+      // Header
+      Console << Cons::Cyan << "-------------------------------------------------------------" << ENDL;
+
+      Console << Cons::Bold << Cons::Cyan << "               X-Studio II  ";
+      Console << Cons::Yellow << COleDateTime(time(nullptr)).Format(L"%d/%m/%Y %I:%M%p") << ENDL;
+
+      Console << Cons::Cyan << "-------------------------------------------------------------" << ENDL << ENDL;
+         
+      // App version
+      Console << Cons::Bold << "App Version: " << Cons::Yellow << BUILD_NAME << ENDL;
+
+      // OS version
+      Console << Cons::Bold << "Operating System: " << Cons::Yellow << WindowsVersion().FullName;
+      Console << " (" << WindowsVersion().Architecture << ")" << ENDL;
+
+      // Module path
+      Console << Cons::Bold << "Module Path: " << AppPath() << ENDL;
+   }
+
 
    // ------------------------------- PRIVATE METHODS ------------------------------
 }
