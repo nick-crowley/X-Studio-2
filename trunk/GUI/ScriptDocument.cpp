@@ -160,6 +160,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Require selection
          if (GetSelectedArgument() == -1)
             return;
+
+         // DEBUG:
+         //Console << HERE << ENDL << Script.Variables.All << ENDL;
       
          // Lookup argument
          auto index = GetSelectedArgument();
@@ -173,6 +176,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Remove/Insert argument     [Cannot edit because keyed by name]
          Script.Variables.Remove(arg);
          Script.Variables.Insert(index, dlg.Argument);   
+
+         // DEBUG:
+         //Console << ENDL << Script.Variables.All << ENDL;
+
+         // Modify document
+         SetModifiedFlag(TRUE);
 
          // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
@@ -192,10 +201,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
          ArgumentDialog dlg(Script, theApp.GetMainWindow());
          if (dlg.DoModal() != IDOK)
             return;
+
+         // DEBUG:
+         //Console << HERE << ENDL << Script.Variables.All << ENDL;
       
          // Append to existing arguments
          auto nextIndex = Script.Variables.Arguments.Count;
          Script.Variables.Insert(nextIndex, dlg.Argument);   
+
+         // DEBUG:
+         //Console << ENDL << Script.Variables.All << ENDL;
+
+         // Modify document
+         SetModifiedFlag(TRUE);
 
          // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
@@ -222,9 +240,19 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Require selection
          if (GetSelectedArgument() == -1)
             return;
+
+         // DEBUG:
+         //Console << HERE << ENDL << Script.Variables.All << ENDL;
       
          // Remove selected
-         Script.Variables.Remove(Script.Variables[GetSelectedArgument()]);   
+         auto index = GetSelectedArgument();
+         Script.Variables.Remove(Script.Variables[index]);   
+
+         // DEBUG:
+         //Console << ENDL << Script.Variables.All << ENDL;
+         
+         // Modify document
+         SetModifiedFlag(TRUE);
 
          // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
@@ -465,13 +493,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
          pCmd->Enable(TRUE);
          break;
 
-      case ID_REORDER_ARGUMENT_UP:
-      case ID_REORDER_ARGUMENT_DOWN:
+      /*case ID_REORDER_ARGUMENT_UP:
+      case ID_REORDER_ARGUMENT_DOWN:*/
       case ID_EDIT_ARGUMENT:
       case ID_REMOVE_ARGUMENT:
          pCmd->Enable(GetSelectedArgument() != -1 ? TRUE : FALSE);
          break;
+
+      // MoveUp/MoveDown: Disabled in current release
+      case ID_REORDER_ARGUMENT_UP:
+      case ID_REORDER_ARGUMENT_DOWN:
+         pCmd->Enable(FALSE);
+         break;
       }
+
+      // Never checked
+      pCmd->SetCheck(FALSE);
    }   
    
    /// <summary>Called to revert document to a previous version.</summary>
