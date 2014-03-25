@@ -320,15 +320,15 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
       // Group: Arguments
       CMFCPropertyGridProperty* arguments = new CMFCPropertyGridProperty(_T("Arguments"));
+      
 
       // Arguments
       ArgumentProperties.clear();
-      for (ScriptVariable& v : Script.Variables)
-         if (v.Type == VariableType::Argument)
-         {
-            ArgumentProperties.push_back(new ArgumentProperty(*this, v));
-            arguments->AddSubItem(ArgumentProperties.back());
-         }
+      for (ScriptVariable& v : Script.Variables.Arguments.SortByID)
+      {
+         ArgumentProperties.push_back(new ArgumentProperty(*this, v));
+         arguments->AddSubItem(ArgumentProperties.back());
+      }
       
       grid.AddProperty(arguments);
    }

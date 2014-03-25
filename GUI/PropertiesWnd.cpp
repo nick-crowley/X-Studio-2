@@ -271,8 +271,16 @@ NAMESPACE_BEGIN2(GUI,Windows)
    {
       switch (pCmdUI->m_nID)
       {
-      case ID_EXPAND_ALL:     break;
-      case ID_SORTPROPERTIES: pCmdUI->SetCheck(Grid.IsAlphabeticMode());
+      case ID_EXPAND_ALL:
+         pCmdUI->SetCheck(FALSE);
+         pCmdUI->Enable(TRUE);
+         break;
+
+      // Sort: Disabled - fucks with script argument ordering
+      case ID_SORTPROPERTIES: 
+         pCmdUI->SetCheck(Grid.IsAlphabeticMode());
+         pCmdUI->Enable(FALSE);
+         break;
       }
    }
 
