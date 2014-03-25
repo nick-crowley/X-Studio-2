@@ -257,6 +257,10 @@
 #define IDC_SPK_RADIO                   804
 #define IDC_FOLDER_RADIO                805
 
+// About dialog
+#define IDC_NAME_STATIC                 800
+#define IDC_ICON_STATIC                 801
+
 ///////////////////////////////// STRINGS ///////////////////////////////
 
 // Status bar

@@ -21,6 +21,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // ---------------------- ACCESSORS ------------------------	
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      virtual BOOL OnInitDialog();
+
    protected:
 	   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
    };
