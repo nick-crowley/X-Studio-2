@@ -124,6 +124,9 @@ namespace Logic
       }
       catch (ExceptionBase&) {
       }
+
+      // Feedback
+      AfxMessageBox(L"X-Studio II has encountered a critical error and will now close.", MB_OK|MB_ICONERROR);
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
