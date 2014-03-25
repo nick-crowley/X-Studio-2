@@ -1,0 +1,125 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<!--Written by X-Studio II-->
+<script>
+<name>Untitled</name>
+<version>1</version>
+<engineversion>39</engineversion>
+<description></description>
+<arguments>
+<argument index="1" name="partner" type="Var/Ship/Station" desc="trading partner"></argument>
+<argument index="2" name="ware" type="Var/Ware" desc="bought ware"></argument>
+<argument index="3" name="amount" type="Var/Number" desc="quantity bought"></argument>
+</arguments>
+<codearray>
+<sval type="array" size="10">
+<sval type="string" val="Untitled"></sval>
+<sval type="int" val="39"></sval>
+<sval type="string" val=""></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="array" size="3">
+<sval type="string" val="partner"></sval>
+<sval type="string" val="ware"></sval>
+<sval type="string" val="amount"></sval>
+</sval>
+<sval type="array" size="1">
+<sval type="array" size="3">
+<sval type="int" val="103"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+</sval>
+<sval type="array" size="3">
+<sval type="array" size="2">
+<sval type="int" val="22"></sval>
+<sval type="string" val="trading partner"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="13"></sval>
+<sval type="string" val="bought ware"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="10"></sval>
+<sval type="string" val="quantity bought"></sval>
+</sval>
+</sval>
+<sval type="array" size="16">
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="************************************************"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="SCRIPT NAME: $NAME$"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="DESCRIPTION: This signal is emitted when an objects loads a ware. It only loads a ware, if no credits are"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="transacted, so the signal will no be emitted if the player buys a ware at a station. See SIGNAL_BUYWARE"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="for this case."></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val=""></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="See: http://forum.egosoft.com/viewtopic.php?t=287398"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val=""></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="AUTHOR: $AUTHOR$        DATE: $DATE$"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="************************************************"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+</sval>
+<sval type="int" val="0"></sval>
+</sval>
+</codearray>
+</script>

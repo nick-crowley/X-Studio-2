@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <templates version='1'>
-  <template type='script' name='Blank MSCI Script'>
+  <template type='script' name='Blank Script'>
     <description>Blank MSCI script</description>
     <path>Templates\MSCI.Blank.xml</path>
   </template>
 
-  <template type='script' name='MSCI Ship Command'>
+  <template type='script' name='Ship Command'>
     <description>New MSCI script for a custom command for a ship or station</description>
     <path>Templates\MSCI.Command.xml</path>
   </template>
 
-  <template type='script' name='MSCI Setup Script'>
+  <template type='script' name='Setup Script'>
     <description>New MSCI setup script for initializing a your other scripts</description>
     <path>Templates\MSCI.Setup.xml</path>
   </template>
     
-  <template type='language' name='Blank Language File'>
+  <template type='script' name='ATTACKED Handler'>
+    <description>MSCI script for handling the SIGNAL_ATTACKED signal</description>
+    <path>Templates\MSCI.Signal.ATTACKED.xml</path>
+  </template>
+    
+  <template type='script' name='BUYWARE Handler'>
+    <description>MSCI script for handling the SIGNAL_BUYWARE signal</description>
+    <path>Templates\MSCI.Signal.BUYWARE.xml</path>
+  </template>
+    
+  <template type='script' name='DOCKED Handler'>
+    <description>MSCI script for handling the SIGNAL_DOCKED signal</description>
+    <path>Templates\MSCI.Signal.DOCKED.xml</path>
+  </template>
+  
+  <template type='script' name='KILLED Handler'>
+    <description>MSCI script for handling the SIGNAL_KILLED signal</description>
+    <path>Templates\MSCI.Signal.KILLED.xml</path>
+  </template>
+   
+  <template type='script' name='LOADWARE Handler'>
+    <description>MSCI script for handling the SIGNAL_LOADWARE signal</description>
+    <path>Templates\MSCI.Signal.LOADWARE.xml</path>
+  </template>
+                   
+  <template type='language' name='Blank Strings'>
     <description>Blank Language file</description>
     <path>Templates\Language.Blank.xml</path>
   </template>
   
-  <template type='language' name='Ship Command Strings'>
+  <template type='language' name='Command Strings'>
     <description>New Language file for describing a ship/station custom command</description>
     <path>Templates\Language.Command.xml</path>
   </template>
   
-  <template type='mission' name='Blank MD Script'>
+  <template type='mission' name='Blank Script'>
     <description>Blank Mission Director script</description>
     <path>Templates\MD.Blank.xml</path>
   </template>
