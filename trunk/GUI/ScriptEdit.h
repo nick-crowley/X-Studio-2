@@ -530,6 +530,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       afx_msg void HScroll(UINT nSBCode, UINT nPos) override;
       afx_msg void VScroll(UINT nSBCode, UINT nPos) override;
+      handler void OnArgumentChanged();
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
       handler void OnCharNewLine();
@@ -555,6 +556,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestion      SuggestionType;
       SuggestionList  SuggestionsList;
       ScriptDocument* Document;
+
+      EventHandler fnArgumentChanged;
 };
    
 

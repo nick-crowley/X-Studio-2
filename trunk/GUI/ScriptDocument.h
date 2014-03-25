@@ -358,6 +358,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       ScriptFile  Script;
 
+      SimpleEvent ArgumentChanged;     // Raise when argument edited/inserted/removed
+
    protected:
       ::GUI::Controls::ScriptEdit* Edit;
       list<ArgumentProperty*>      ArgumentProperties;

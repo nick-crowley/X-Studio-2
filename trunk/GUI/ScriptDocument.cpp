@@ -167,9 +167,12 @@ NAMESPACE_BEGIN2(GUI,Documents)
          if (dlg.DoModal() != IDOK)
             return;
       
-         // Update selected variable
+         // Save argument
          arg = dlg.Argument;   
+
+         // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
+         ArgumentChanged.Raise();
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, L"Unable to edit selected argument");
@@ -181,14 +184,17 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       try
       {
-         // Query User. Append argument to existing arguments
+         // Query new argument
          ArgumentDialog dlg(Script, theApp.GetMainWindow());
          if (dlg.DoModal() != IDOK)
             return;
       
-         // Query User. Append argument to existing arguments
+         // Append to existing arguments
          Script.Variables.Insert(Script.Variables.Arguments.Count, dlg.Argument);   
+
+         // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
+         ArgumentChanged.Raise();
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, L"Unable to create new argument");
@@ -214,7 +220,10 @@ NAMESPACE_BEGIN2(GUI,Documents)
       
          // Remove selected
          Script.Variables.Remove(Script.Variables[GetSelectedArgument()]);   
+
+         // Refresh properties. Raise 'ARGUMENT CHANGED'
          CPropertiesWnd::Connect(this, true);
+         ArgumentChanged.Raise();
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e, L"Unable to remove selected argument");
