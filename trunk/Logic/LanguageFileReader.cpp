@@ -99,23 +99,27 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Invalid pageID</exception>
       UINT  LanguageFileReader::ParsePageID(const wstring&  pageid, GameVersion&  v)
       {
+         // X2: nnnn 
          if (pageid.length() <= 4)
          {
             v = GameVersion::Threat;
             return _wtoi(pageid.c_str());
          }
+         // X3: NNnnnn
          else if (pageid.length() != 6)
             throw InvalidValueException(HERE, VString(L"Invalid page ID '%s'", pageid.c_str()) );
 
+         // X3R: 30nnnn
          else if (pageid.compare(0, 2, L"30") == 0)
             v = GameVersion::Reunion;
          
+         // X3TC: 35nnnn
          else if (pageid.compare(0, 2, L"35") == 0)
             v = GameVersion::TerranConflict;
 
+         // X3AP: 38nnnn
          else if (pageid.compare(0, 2, L"38") == 0)
             v = GameVersion::AlbionPrelude;
-
          else
             throw InvalidValueException(HERE, VString(L"Invalid page ID '%s'", pageid.c_str()) );
 
