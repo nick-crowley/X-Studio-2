@@ -40,6 +40,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          void Expand(bool expand);
 
 	      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+         afx_msg void OnDestroy();
          virtual BOOL OnInitDialog();
          
          afx_msg void OnFind_Click();
@@ -76,9 +77,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          CComboBox TargetCombo;
          
          OperationPtr  Search;
-      public:
-         afx_msg void OnClose();
-         afx_msg void OnDestroy();
       };
 
 /// <summary>User interface windows</summary>

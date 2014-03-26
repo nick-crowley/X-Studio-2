@@ -48,9 +48,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ------------------------------ PROTECTED METHODS -----------------------------
       
+      /// <summary>Does the data exchange.</summary>
+      /// <param name="pDX">The p dx.</param>
       void FindDialog::DoDataExchange(CDataExchange* pDX)
       {
-         CDialogEx::DoDataExchange(pDX);
+         __super::DoDataExchange(pDX);
          DDX_Check(pDX, IDC_REGEX_CHECK, UseRegEx);
          DDX_Check(pDX, IDC_CASE_CHECK, MatchCase);
          DDX_Check(pDX, IDC_WORD_CHECK, MatchWholeWord);
@@ -134,16 +136,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          return (const wchar*)str;
       }
       
-
-      void FindDialog::OnClose()
-      {
-         
-
-         // Close
-         CDialogEx::OnClose();
-      }
-      
-
+      /// <summary>Save search terms</summary>
       void FindDialog::OnDestroy()
       {
          try
@@ -157,16 +150,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
             Console.Log(HERE, e);
          }
 
-         CDialogEx::OnDestroy();
-
-         // TODO: Add your message handler code here
+         __super::OnDestroy();
       }
 
       /// <summary>One-time initialization</summary>
       /// <returns></returns>
       BOOL FindDialog::OnInitDialog()
       {
-         CDialogEx::OnInitDialog();
+         __super::OnInitDialog();
 
          // Populate targets
          TargetCombo.AddString(L"Selection");
@@ -313,7 +304,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void FindDialog::OnShowWindow(BOOL bShow, UINT nStatus)
       {
          // Show/Hide window
-         CDialogEx::OnShowWindow(bShow, nStatus);
+         __super::OnShowWindow(bShow, nStatus);
 
          // Start anew
          Reset();
