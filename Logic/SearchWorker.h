@@ -1,8 +1,8 @@
 #pragma once
 
-
 #include "BackgroundWorker.h"
 #include "MatchData.h"
+#include "ProjectFile.h"
 
 namespace Logic
 {
@@ -28,15 +28,34 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchWorkerData(Threads::Operation op, SearchTarget targ, const MatchData& search, Path folder, GameVersion ver) 
+         /// <summary>Initializes a new instance of the <see cref="SearchWorkerData"/> class.</summary>
+         /// <param name="op">operation.</param>
+         /// <param name="targ">search target.</param>
+         /// <param name="proj">project file  (only required for project searches).</param>
+         /// <param name="search">search term.</param>
+         /// <exception cref="Logic::ArgumentNullException">Missing project file when target is project files</exception>
+         /// <exception cref="Logic::InvalidOperationException">Target not project or script folder</exception>
+         SearchWorkerData(Threads::Operation op, SearchTarget targ, ProjectFile* proj, const MatchData& search)
             : WorkerData(op), 
-              Folder(folder), 
-              Version(ver), 
+              Project(proj),
               Target(targ), 
               Match(search), 
               Initialized(false),
               Command(SearchCommand::Find)
-         {}
+         {
+            switch (Target)
+            {
+            // Document Based: Invalid
+            case SearchTarget::Selection:
+            case SearchTarget::Document:
+            case SearchTarget::OpenDocuments:
+               throw InvalidOperationException(HERE, L"Unsupported target type");
+
+            case SearchTarget::ProjectFiles:
+               REQUIRED(proj);
+            }
+         }
+
          virtual ~SearchWorkerData()
          {}
 
@@ -80,18 +99,17 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         Path           Folder;
          MatchData      Match;
          SearchTarget   Target;
-         GameVersion    Version;
          SearchCommand  Command;
          
       private:
-         bool        Initialized;
-         list<Path>  Files;
+         bool         Initialized;
+         ProjectFile* Project;
+         list<Path>   Files;
       };
 
-      /// <summary>Find and replace worker thread</summary>
+      /// <summary>Worker thread for performing Find&Replace on script files that are not currently open as documents</summary>
       class LogicExport SearchWorker : public BackgroundWorker
       {
          // ------------------------ TYPES --------------------------

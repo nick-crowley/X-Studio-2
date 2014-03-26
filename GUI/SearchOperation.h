@@ -1,15 +1,12 @@
 #pragma once
-
-
 #include "../Logic/SearchWorker.h"
+#include "ProjectDocument.h"
 
 namespace GUI
 {
    namespace Utils
    {
-      
-
-      /// <summary></summary>
+      /// <summary>Performs Find&Replace on scripts currently open as documents</summary>
       class SearchOperation
       {
          // ------------------------ TYPES --------------------------
@@ -17,7 +14,7 @@ namespace GUI
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         SearchOperation(Operation output, SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
+         SearchOperation(Operation output, SearchTarget target, ProjectDocument* proj, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx);
          virtual ~SearchOperation();
 
          NO_COPY(SearchOperation);	// No copy semantics

@@ -3,6 +3,7 @@
 #include "XFileSystem.h"
 #include "XFileInfo.h"
 #include "ScriptFileReader.h"
+#include "PreferencesLibrary.h"
 
 namespace Logic
 {
@@ -37,6 +38,7 @@ namespace Logic
       }
 
       /// <summary>Builds the list of files to search</summary>
+      /// <exception cref="Logic::InvalidOperationException">Target not project or script folder</exception>
       void  SearchWorker::BuildFileList(SearchWorkerData* data)
       {
          XFileSystem vfs;
@@ -47,16 +49,24 @@ namespace Logic
          case SearchTarget::Selection:
          case SearchTarget::Document:
          case SearchTarget::OpenDocuments:
-            throw InvalidOperationException(HERE, L"");
+            throw InvalidOperationException(HERE, L"Unsupported target type");
 
          // ScriptFolder: Enumerate scripts
          case SearchTarget::ScriptFolder:
-            vfs.Enumerate(data->Folder, data->Version);
+            vfs.Enumerate(PrefsLib.GameDataFolder, PrefsLib.GameDataVersion);
 
             // Use any XML/PCK file
             for (auto& f : vfs.Browse(XFolder::Scripts))
                if (f.FullPath.HasExtension(L".pck") || f.FullPath.HasExtension(L".xml"))
                   data->Files.push_back( f.FullPath );
+            break;
+
+         // Project Files: Enumerate project
+         case SearchTarget::ProjectFiles:
+            for (auto& item : data->Project->ToList())
+               // Include only MSCI scripts
+               if (item->IsFile() && item->FileType == FileType::Script)
+                  data->Files.push_back( item->FullPath );
             break;
          }
          
