@@ -572,7 +572,35 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       return HIBYTE(GetKeyState(vKey)) != 0;
    }
-
+   
+   /// <summary>Query whether to allow a keyboard accelerator.</summary>
+   /// <param name="ch">character.</param>
+   /// <returns>True to allow, False to block</returns>
+   bool ScriptEdit::OnAccelerator(wchar ch)
+   {
+      switch (ch)
+      {
+      // ALIGNMENT
+      case L'L':
+      case L'R':   
+      case L'J':
+      case L'E':
+      // SUPERSCRIPT
+      case 0xBB:  // Received instead of '+/=' key for some reason
+      case L'=':
+      case L'+':
+      // LINESPACING
+      case L'1':
+      case L'2':
+      case L'5':
+         //Console << "Received shortcut key " << ch << " action=block" << ENDL;
+         return false;
+      }
+      
+      //Console << "Received shortcut key " << ch << " (" << (void*)ch << ") action=allow" << ENDL;
+      return true;
+   }
+   
    /// <summary>Refresh entire document.</summary>
    void ScriptEdit::OnArgumentChanged()
    {
@@ -1069,6 +1097,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Highlight pasted text
       UpdateHighlighting(prevLine, LineFromChar(-1));
+   }
+
+   /// <summary>Relay mouse events to tooltip</summary>
+   /// <param name="pMsg">MSG.</param>
+   /// <returns></returns>
+   BOOL ScriptEdit::PreTranslateMessage(MSG* pMsg)
+   {
+      static UINT BLOCK_MSG = 1, ALLOW_MSG = 0;
+
+      // Block undesireable shortcut keys
+      if(pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+         if (IsKeyPressed(VK_CONTROL) && !OnAccelerator((wchar)pMsg->wParam))
+            return BLOCK_MSG;
+
+      // Default
+      return __super::PreTranslateMessage(pMsg);
    }
 
    

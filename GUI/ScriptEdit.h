@@ -507,6 +507,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void   IndentSelection(bool indent);
       void   Initialize(ScriptDocument* doc);
       void   PasteFormat(UINT nClipFormat) override;
+      BOOL   PreTranslateMessage(MSG* pMsg) override;
       void   Refactor();
       void   SetPlainText(const wstring& txt);
       void   SetRtf(const string& rtf) override;
@@ -530,6 +531,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       afx_msg void HScroll(UINT nSBCode, UINT nPos) override;
       afx_msg void VScroll(UINT nSBCode, UINT nPos) override;
+      handler bool OnAccelerator(wchar ch);
       handler void OnArgumentChanged();
       handler void OnBackgroundCompile();
       afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);

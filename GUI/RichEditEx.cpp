@@ -53,6 +53,26 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return L"Invalid";
    }
 
+   /// <summary>Prints the Richedit mask to the console.</summary>
+   /// <param name="m">The mask.</param>
+   void  PrintEditMask(UINT m)
+   {
+      Console << "{EditMask=";
+      //ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_KEYEVENTS | ENM_MOUSEEVENTS | ENM_PROTECTED
+      if (m & ENM_CHANGE)
+         Console << "ENM_CHANGE";
+      if (m & ENM_SELCHANGE)
+         Console << "|ENM_SELCHANGE";
+      if (m & ENM_SCROLL)
+         Console << "|ENM_SCROLL";
+      if (m & ENM_KEYEVENTS)
+         Console << "|ENM_KEYEVENTS";
+      if (m & ENM_MOUSEEVENTS)
+         Console << "|ENM_MOUSEEVENTS";
+      if (m & ENM_PROTECTED)
+         Console << "|ENM_PROTECTED";
+      Console << "}" << ENDL;
+   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -349,15 +369,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
          SETTEXTEX opt = {ST_DEFAULT, CP_ACP};
          if (!SendMessage(EM_SETTEXTEX, (WPARAM)&opt, (LPARAM)rtf.c_str()))
             throw Win32Exception(HERE, L"Unable to set script text");
+
+         // Protect text
+         CharFormat cf(CFM_PROTECTED, CFE_PROTECTED);
+         if (!SendMessage(EM_SETCHARFORMAT, SCF_ALL, (LPARAM)(CHARFORMAT*)&cf))
+            throw Win32Exception(HERE, L"Unable to protect script text");
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e);
          SetWindowText(L" ");
       }
-
-      // Protect text
-      CharFormat cf(CFM_PROTECTED, CFE_PROTECTED);
-      SendMessage(EM_SETCHARFORMAT, SCF_ALL, (LPARAM)(CHARFORMAT*)&cf);
 
       // Clear 'Undo' buffer
       EmptyUndoBuffer();
@@ -586,6 +607,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          *pResult = ALLOW_INPUT;
          break;
       }
+
+      // DEBUG:
+      //if (pProtected->msg >= WM_KEYFIRST && pProtected->msg <= WM_KEYLAST)
+         Console << HERE << " character: " << (wchar)pProtected->wParam << ENDL;
    }
 
    /// <summary>Supply tooltip data</summary>

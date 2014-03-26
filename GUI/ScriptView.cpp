@@ -211,6 +211,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Re-Populate variables/scope
       PopulateVariables();
       PopulateScope();
+
+      // DEBUG: Verify edit mask is working
+      //PrintEditMask(RichEdit.GetEventMask());
    }
    
    /// <summary>Re-populate variables comboBox.</summary>
@@ -347,6 +350,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Ensure init hasn't modified document
          GetDocument()->SetModifiedFlag(FALSE);
+
+         // DEBUG: Verify edit mask
+         //PrintEditMask(RichEdit.GetEventMask());
       }
       catch (ExceptionBase& e)
       {
