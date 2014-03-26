@@ -12,6 +12,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Get undo operation name</summary>
    const wchar* GetString(UNDONAMEID id);
 
+/// <summary>Print RichEdit mask</summary>
+   void  PrintEditMask(UINT m);
+
    /// <summary>RichEdit extension class</summary>
    class RichEditEx : public CRichEditCtrl
    {
