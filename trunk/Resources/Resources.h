@@ -264,8 +264,8 @@
 ///////////////////////////////// STRINGS ///////////////////////////////
 
 // Status bar
-#define IDS_CARET_STATUS                1015
-#define IDS_STATUS_PANE2                1016
+#define IDS_STATUS_CARET                1015
+#define IDS_STATUS_GAMEDATA             1016
 
 // Toolbar
 #define IDS_TOOLBAR_CUSTOMIZE           1018

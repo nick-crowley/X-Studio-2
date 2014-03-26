@@ -42,6 +42,52 @@ NAMESPACE_BEGIN2(GUI,Windows)
             m_bTabCustomTooltips = TRUE;         // Tooltips
          }
       };
+
+      /// <summary>Main window status bar</summary>
+      class StatusBar : public CMFCStatusBar
+      {
+         // --------------------- CONSTRUCTION ----------------------
+
+         // ----------------------- MUTATORS ------------------------	
+      public:
+         /// <summary>Creates the window.</summary>
+         /// <param name="parent">The parent.</param>
+         /// <returns></returns>
+         BOOL Create(CWnd* parent)
+         {
+            // Initialize base
+            if (!__super::Create(parent))
+               return FALSE;
+
+            // Init indicators
+            SetIndicators(Indicators, 7);
+            SetGameData(AppState::NoGameData);
+            SetCaret(POINT {0,0});
+
+            // Success
+            return TRUE;
+         }
+
+         /// <summary>Sets the caret indicator</summary>
+         /// <param name="pt">Caret position.</param>
+         void  SetCaret(POINT pt)
+         {
+            SetPaneText(2, VString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
+         }
+
+         /// <summary>Sets the game data indicator.</summary>
+         /// <param name="e">app state.</param>
+         void  SetGameData(AppState e)
+         {
+            wstring msg(e == AppState::GameDataPresent ? VersionString(PrefsLib.GameDataVersion) : wstring(L"No Game Data"));
+            SetPaneText(1, msg.c_str());
+         }
+
+         // -------------------- REPRESENTATION ---------------------
+      private:
+         const static UINT Indicators[7];
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    public:
 	   MainWnd();
@@ -83,6 +129,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       void  RestoreWorkspace();
       void  SaveWorkspace();
 
+      handler void    OnAppStateChanged(AppState e);
       afx_msg void    OnClose();
       afx_msg void    OnCommand_CloseAll();
       afx_msg void    OnCommand_CloseExcept();
@@ -120,7 +167,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                         m_wndEditToolBar,
                         m_wndGameDataToolBar,
                         m_wndViewToolBar;
-	   CMFCStatusBar     m_wndStatusBar;
+	   StatusBar         m_wndStatusBar;
 	   CMFCToolBarImages m_UserImages;
 	   CProjectWnd       m_wndProject;
 	   COutputWnd        m_wndOutput;
@@ -132,8 +179,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       GameDataWorker    GameDataThread;
 
-      FeedbackHandler   fnGameDataFeedback;
-      CaretMovedHandler fnCaretMoved;
+      FeedbackHandler        fnGameDataFeedback;
+      CaretMovedHandler      fnCaretMoved;
+      AppStateChangedHandler fnAppStateChanged;
    
    private:
       DocumentBase*     ActiveDocument;
