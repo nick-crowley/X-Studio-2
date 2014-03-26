@@ -13,19 +13,24 @@ namespace GUI
       /// <summary>Create a new search operation</summary>
       /// <param name="output">Output window to use.</param>
       /// <param name="target">Search target.</param>
+      /// <param name="proj">Project document (only required for searching projects)</param>
       /// <param name="search">search text.</param>
       /// <param name="replace">replacement text.</param>
       /// <param name="matchCase">match case.</param>
       /// <param name="matchWord">match whole word.</param>
       /// <param name="regEx">Use regular expressions.</param>
-      SearchOperation::SearchOperation(Operation output, SearchTarget target, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
+      /// <exception cref="Logic::ArgumentNullException">Missing project document when target is project files</exception>
+      SearchOperation::SearchOperation(Operation output, SearchTarget target, ProjectDocument* proj, const wstring& search, const wstring& replace, bool matchCase, bool matchWord, bool regEx)
          : Target(target), 
            Search(output, 
                   target, 
-                  MatchData(target, search, replace, matchCase, matchWord, regEx), 
-                  PrefsLib.GameDataFolder, 
-                  PrefsLib.GameDataVersion)
+                  proj ? &proj->Project : nullptr,
+                  MatchData(target, search, replace, matchCase, matchWord, regEx))
       {
+         // Require project for projectFiles search
+         if (target == SearchTarget::ProjectFiles)
+            REQUIRED(proj);
+
          // Feedback
          Search.FeedbackStart();
 
@@ -49,11 +54,8 @@ namespace GUI
          case SearchTarget::OpenDocuments:
             if (!DocumentBase::GetActive())
                throw InvalidOperationException(HERE, L"Search requires an active document");
-            // Fall thru..
 
-         // Project/ScriptFiles: Also examine open documents
-         case SearchTarget::ProjectFiles:
-         case SearchTarget::ScriptFolder:
+            // Enumerate
             for (auto& doc : theApp)
                Documents.push_back(&doc);
             break;

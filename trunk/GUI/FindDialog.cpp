@@ -330,16 +330,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Creates a new search.</summary>
       void  FindDialog::NewSearch(SearchCommand cmd)
       {
-         // NotImpl: Projects
-         if (GetSearchTarget() == SearchTarget::ProjectFiles)
-            throw NotImplementedException(HERE, L"Find operations on project files has not been implemented");
-
          // Set dialog state to active
          SetState(true);
 
          // Create new search
          Search.reset(new SearchOperation(GetOutputPane(),
                                           GetSearchTarget(), 
+                                          ProjectDocument::GetActive(),
                                           GetSearchTerm(), 
                                           GetReplaceTerm(), 
                                           MatchCase != FALSE, 

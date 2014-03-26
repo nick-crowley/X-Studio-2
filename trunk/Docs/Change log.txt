@@ -4,6 +4,7 @@
 
 Status bar indicator of loaded game data version 
 Subroutine indentation 
+Implemented find & replace on scripts in project
 Fixed: 006: HOME key in the script editor doesn't scroll far enough left to display line numbers 
 Fixed: 011: Script editor variables drop-down isn't updated after modifying arguments 
 Fixed: 007: RichEdit shortcut keys can be used to right/centre align script editor text 
