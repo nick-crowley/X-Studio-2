@@ -74,11 +74,14 @@ namespace Logic
          // Examine commands
          for (auto cmd = f.Commands.Input.begin(), end = f.Commands.Input.end(); cmd != end; ++cmd)
          {
+            // Calc indent
             bool isSub = f.Commands.Input.IsSubRoutine(cmd);
+            stack.PreDisplay(*cmd);
 
             // Write command
-            stack.PreDisplay(*cmd);
             WriteCommand(f, *cmd, stack.Indentation);
+
+            // Calc indent
             stack.PostDisplay(*cmd, isSub);
          }
       }

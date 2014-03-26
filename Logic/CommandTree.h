@@ -15,6 +15,7 @@ namespace Logic
       namespace Compiler
       {
          class CommandTree;
+         class CommandNodeList;
 
          
          /// <summary>Shared pointer to a parse tree node</summary>
@@ -37,39 +38,6 @@ namespace Logic
          /// <summary>Vector of parse tree node pointers</summary>
          typedef vector<CommandNodePtr>   CommandNodeArray;
 
-         /// <summary>Types of symbol available</summary>
-         enum class SymbolType { Variable, Label };
-
-         /// <summary>Represents a symbol used during refactoring process</summary>
-         class LogicExport Symbol
-         {
-            // --------------------- CONSTRUCTION ----------------------
-         public:
-            /// <summary>Create symbol match.</summary>
-            /// <param name="name">name without operators.</param>
-            /// <param name="t">type.</param>
-            /// <param name="line">1-based line number</param>
-            /// <param name="txt">line text</param>
-            /// <param name="comment">Whether line is commented</param>
-            Symbol(const ScriptToken& tok, SymbolType t, UINT line, const wstring& txt, bool comment) 
-               : Token(tok), Type(t), LineNumber(line), LineText(txt), Commented(comment)
-            {}
-
-            // ---------------------- ACCESSORS ------------------------	
-
-            // ----------------------- MUTATORS ------------------------
-
-            // -------------------- REPRESENTATION ---------------------
-         public:
-            const SymbolType  Type;          // Type
-            const ScriptToken Token;         // Name
-            const UINT        LineNumber;    // 1-based line number
-            const GuiString   LineText;      // Line text
-            const bool        Commented;     // Whether commented
-         };
-
-         /// <summary></summary>
-         typedef list<Symbol>  SymbolList;
             
          /// <summary>Represents a script command and its descendants, if any</summary>
          class LogicExport CommandTree 
@@ -120,7 +88,7 @@ namespace Logic
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;
             void          Print(int depth = 0) const;
-            void          ToList(CommandNodeArray& l) const;
+            void          ToList(CommandNodeList& l) const;
                
          protected:
             CommandTree*  FindAncestor(BranchLogic l) const;

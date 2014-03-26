@@ -188,7 +188,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             stack.PreDisplay(*cmd);
             newText += (stack.Indentation + (*cmd)->LineCode + L"\r\n");
-            stack.PostDisplay(*cmd);
+            stack.PostDisplay(*cmd, commands.IsSubRoutine(cmd));
          }
 
          // Strip last CRLF
@@ -232,13 +232,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
          auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
 
          // Generate selection text
-         for (int i = first->Line; i <= last->Line; ++i)
+         int index = 0;
+         for (auto cmd = commands.begin(), end = commands.end(); cmd != end; ++cmd)
          {
-            auto& cmd = commands[i];
+            stack.PreDisplay(*cmd);
 
-            stack.PreDisplay(cmd);
-            newText += (stack.Indentation + cmd->LineCode + L"\r\n");
-            stack.PostDisplay(cmd);
+            // Calculate indentation for all lines, but only output relevant lines
+            if (index >= first->Line && index <= last->Line)
+               newText += (stack.Indentation + (*cmd)->LineCode + L"\r\n");
+
+            // Abort after last line
+            else if (index > last->Line)
+               break;
+
+            // Calc indent
+            stack.PostDisplay(*cmd, commands.IsSubRoutine(cmd));
+            ++index;
          }
          // Strip last CRLF
          if (!newText.empty())
