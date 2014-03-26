@@ -4,6 +4,7 @@
 #include "ScriptParameter.h"
 #include "ScriptToken.h"
 #include "RtfWriter.h"
+#include "CommandList.h"
 
 namespace Logic
 {
@@ -95,28 +96,6 @@ namespace Logic
          ParameterArray   Parameters;     // Parameters in physical syntax order
          GuiString        Text;           // Translated/Generated command Text
          UINT             RefIndex;       // [Auxiliary] Index of associated standard command
-      };
-
-      /// <summary>List of script commands</summary>
-      class LogicExport CommandList : public list<ScriptCommand>
-      {
-      public:
-         /// <summary>Find command by index.</summary>
-         /// <param name="index">The index.</param>
-         /// <returns></returns>
-         /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
-         ScriptCommand& operator[](UINT index)
-         {
-            UINT i = 0;
-
-            // Linear search
-            for (auto pos = begin(); pos != end(); ++pos)
-               if (index == i++)
-                  return *pos;
-
-            // Invalid index
-            throw IndexOutOfRangeException(HERE, index, size());
-         }
       };
 
       /// <summary>Vector of script commands</summary>
