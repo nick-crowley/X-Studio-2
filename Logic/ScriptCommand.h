@@ -4,7 +4,6 @@
 #include "ScriptParameter.h"
 #include "ScriptToken.h"
 #include "RtfWriter.h"
-#include "CommandList.h"
 
 namespace Logic
 {

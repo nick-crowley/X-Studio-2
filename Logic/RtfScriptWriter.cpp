@@ -72,16 +72,14 @@ namespace Logic
          IndentationStack stack;
 
          // Examine commands
-         for (ScriptCommand& cmd : f.Commands.Input)
+         for (auto cmd = f.Commands.Input.begin(), end = f.Commands.Input.end(); cmd != end; ++cmd)
          {
-            // Identation
-            stack.PreDisplay(cmd);
+            bool isSub = f.Commands.Input.IsSubRoutine(cmd);
 
             // Write command
-            WriteCommand(f, cmd, stack.Indentation);
-
-            // Identation
-            stack.PostDisplay(cmd);
+            stack.PreDisplay(*cmd);
+            WriteCommand(f, *cmd, stack.Indentation);
+            stack.PostDisplay(*cmd, isSub);
          }
       }
 
