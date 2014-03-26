@@ -133,6 +133,7 @@
     <ClInclude Include="DescriptionParser.h" />
     <ClInclude Include="Descriptions.h" />
     <ClInclude Include="EncryptedStream.h" />
+    <ClInclude Include="ErrorToken.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="ExpressionParser.h" />
     <ClInclude Include="FileIdentifier.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="StringReader.h" />
     <ClInclude Include="StringResolver.h" />
     <ClInclude Include="StringStream.h" />
+    <ClInclude Include="Symbol.h" />
     <ClInclude Include="SyntaxFile.h" />
     <ClInclude Include="SyntaxHighlight.h" />
     <ClInclude Include="SyntaxLibrary.h" />
