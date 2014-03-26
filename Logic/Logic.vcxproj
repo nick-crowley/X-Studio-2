@@ -154,8 +154,10 @@
     <ClInclude Include="MapIterator.hpp" />
     <ClInclude Include="MatchData.h" />
     <ClInclude Include="MemoryStream.h" />
+    <ClInclude Include="ParameterArray.h" />
     <ClInclude Include="ParameterSyntax.h" />
     <ClInclude Include="ParameterTypes.h" />
+    <ClInclude Include="ParameterValue.h" />
     <ClInclude Include="PreferencesLibrary.h" />
     <ClInclude Include="ProjectFile.h" />
     <ClInclude Include="ProjectFileReader.h" />
