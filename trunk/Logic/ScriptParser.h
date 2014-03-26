@@ -1,7 +1,7 @@
 #pragma once
 
-
 #include "CommandTree.h"
+#include "CommandNodeList.h"
 #include <algorithm>
 
 namespace Logic
@@ -55,7 +55,7 @@ namespace Logic
          public:
             void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             bool        IsSuccessful() const;
-            CommandNodeArray ToList() const;
+            CommandNodeList ToList() const;
 
          private:
             UINT        GetLineNumber() const;

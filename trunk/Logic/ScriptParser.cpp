@@ -155,9 +155,9 @@ namespace Logic
          
          /// <summary>Flattens the parse tree into a list of command nodes.</summary>
          /// <returns>List of command nodes.</returns>
-         CommandNodeArray  ScriptParser::ToList() const
+         CommandNodeList  ScriptParser::ToList() const
          {
-            CommandNodeArray l;
+            CommandNodeList l;
 
             // Flatten all commands, excluding the root
             Root->ToList(l);

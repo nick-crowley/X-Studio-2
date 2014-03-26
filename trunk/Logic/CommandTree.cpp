@@ -7,6 +7,7 @@
 #include "SyntaxLibrary.h"
 #include "ScriptFile.h"
 #include "PreferencesLibrary.h"
+#include "CommandNodeList.h"
 
 namespace Logic
 {
@@ -385,7 +386,7 @@ namespace Logic
 
          /// <summary>Flattens the tree into a list.</summary>
          /// <param name="l">output.</param>
-         void  CommandTree::ToList(CommandNodeArray& l) const
+         void  CommandTree::ToList(CommandNodeList& l) const
          {
             // Flatten children (if any) into list
             for (auto& c : Children)

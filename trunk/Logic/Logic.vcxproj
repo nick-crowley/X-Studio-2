@@ -122,6 +122,7 @@
     <ClInclude Include="CommandHash.h" />
     <ClInclude Include="CommandLexer.h" />
     <ClInclude Include="CommandList.h" />
+    <ClInclude Include="CommandNodeList.h" />
     <ClInclude Include="CommandTree.h" />
     <ClInclude Include="CommandSyntax.h" />
     <ClInclude Include="ConsoleLog.h" />

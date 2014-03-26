@@ -16,15 +16,13 @@ namespace Logic
 			
 		   // ---------------------- ACCESSORS ------------------------	
       public:
-         /// <summary>Determines 'define label' command is a label definition or subroutine</summary>
+         /// <summary>Determines if 'define label' command is a label definition or subroutine</summary>
          /// <param name="cmd">The command.</param>
          /// <returns></returns>
-         // <exception cref="Logic::InvalidOperationException">Not a label defintiion</exception>
          bool IsSubRoutine(iterator cmd) const
          {
             if (!cmd->Is(CMD_DEFINE_LABEL))
                return false;
-               //throw InvalidOperationException(HERE, L"Not a label defintiion");
 
             // Linear search following commands
             for (auto p = ++cmd; p != end(); ++p)

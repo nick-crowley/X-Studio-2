@@ -64,6 +64,7 @@ namespace Logic
          
          /// <summary>Call after displaying command</summary>
          /// <param name="cmd">command.</param>
+         /// <param name="subroutine">whether command defines a subroutine.</param>
          void PostDisplay(const ScriptCommand& cmd, bool subroutine)
          {
             PostDisplay(cmd.Syntax.ID, cmd.Logic, cmd.Syntax.Type, cmd.Commented, subroutine);
@@ -71,9 +72,10 @@ namespace Logic
 
          /// <summary>Call after displaying command</summary>
          /// <param name="cmd">command.</param>
-         void PostDisplay(const CommandNodePtr& cmd)
+         /// <param name="subroutine">whether command defines a subroutine.</param>
+         void PostDisplay(const CommandNodePtr& cmd, bool subroutine)
          {
-            PostDisplay(cmd->Syntax.ID, cmd->Logic, cmd->Syntax.Type, cmd->CmdComment, false);
+            PostDisplay(cmd->Syntax.ID, cmd->Logic, cmd->Syntax.Type, cmd->CmdComment, subroutine);
          }
 
       protected:
