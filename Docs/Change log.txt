@@ -1,0 +1,5 @@
+
+26th March 2014
+---------------
+
+Fixed: BUG:006: HOME key in the script editor doesn't scroll far enough left to display line numbers 
