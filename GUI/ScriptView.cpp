@@ -213,9 +213,10 @@ NAMESPACE_BEGIN2(GUI,Views)
       PopulateScope();
    }
    
-   /// <summary>Nothing.</summary>
+   /// <summary>Re-populate variables comboBox.</summary>
    void ScriptView::OnArgumentChanged()
    {
+      PopulateVariables();
    }
 
    /// <summary>Clear properties</summary>
