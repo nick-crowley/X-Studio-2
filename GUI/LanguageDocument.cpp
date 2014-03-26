@@ -402,10 +402,16 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <exception cref="Logic::IOException">Unable to rename file</exception>
    void  LanguageDocument::Rename(UINT id, GameLanguage lang)
    {
-      // Generate languageFile filename
-      auto newName = VString(L"%04d-L0%02d%s", id, (UINT)lang, FullPath.Extension.c_str());
+      wstring newName;
 
+      // Generate filename
+      if (PrefsLib.GameDataVersion != GameVersion::Reunion)
+         newName = VString(L"%04d-L0%02d%s", id, (UINT)lang);     // X3TC/X3AP: nnnn-L0nn
+      else
+         newName = VString(L"%02d%04d", (UINT)lang, id);          // X3R: aabbbb
+      
       // Rename file/document/projectItem/title
+      newName += FullPath.Extension;
       __super::Rename(FullPath.Folder+newName);
    }
    
