@@ -838,6 +838,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
             break;
          }
 
+         // HOME: Scroll to edge of window, not edge of gutter paragraph
+         if (nChar == VK_HOME)
+            SendMessage(WM_HSCROLL, SB_LEFT, 0);
 
          // Suggestions: Update in response to caret movement
          if (State == InputState::Suggestions)

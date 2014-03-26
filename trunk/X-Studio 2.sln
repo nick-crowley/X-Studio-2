@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C18D-400A-AEE7-55C4FD08B326}"
 	ProjectSection(SolutionItems) = preProject
 		Docs\BackupFile (Example).xml = Docs\BackupFile (Example).xml
+		Docs\Change log.txt = Docs\Change log.txt
 		Docs\Command Syntax.txt = Docs\Command Syntax.txt
 		Docs\Command Syntax.xml = Docs\Command Syntax.xml
 		Docs\Descriptions.xml = Docs\Descriptions.xml
