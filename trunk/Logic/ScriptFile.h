@@ -5,6 +5,7 @@
 #include "ScriptCommand.h"
 #include "MatchData.h"
 #include "MapIterator.hpp"
+#include "CommandList.h"
 #include <algorithm>
 
 FORWARD_DECLARATION2(Logic,IO,class ScriptFileReader)

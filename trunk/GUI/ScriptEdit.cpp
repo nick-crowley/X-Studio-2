@@ -184,11 +184,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          auto commands = ScriptParser(Document->Script, GetAllLines(), Document->Script.Game).ToList();
          
          // Generate new document text
-         for (auto& cmd : commands)
+         for (auto cmd = commands.begin(), end = commands.end(); cmd != end; ++cmd)
          {
-            stack.PreDisplay(cmd);
-            newText += (stack.Indentation + cmd->LineCode + L"\r\n");
-            stack.PostDisplay(cmd);
+            stack.PreDisplay(*cmd);
+            newText += (stack.Indentation + (*cmd)->LineCode + L"\r\n");
+            stack.PostDisplay(*cmd);
          }
 
          // Strip last CRLF

@@ -148,7 +148,7 @@ namespace Testing
             // Print
             indent.PreDisplay(cmd);
             Console << indent.Indentation << colour << logic << Cons::White << L" : " << colour << txt << ENDL;
-            indent.PostDisplay(cmd);
+            indent.PostDisplay(cmd, false);
 
             // Advance line/index
             if (cmd.Is(CommandType::Standard) && !cmd.Commented)

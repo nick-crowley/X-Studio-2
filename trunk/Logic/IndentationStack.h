@@ -64,16 +64,16 @@ namespace Logic
          
          /// <summary>Call after displaying command</summary>
          /// <param name="cmd">command.</param>
-         void PostDisplay(const ScriptCommand& cmd)
+         void PostDisplay(const ScriptCommand& cmd, bool subroutine)
          {
-            PostDisplay(cmd.Syntax.ID, cmd.Logic, cmd.Syntax.Type, cmd.Commented);
+            PostDisplay(cmd.Syntax.ID, cmd.Logic, cmd.Syntax.Type, cmd.Commented, subroutine);
          }
 
          /// <summary>Call after displaying command</summary>
          /// <param name="cmd">command.</param>
          void PostDisplay(const CommandNodePtr& cmd)
          {
-            PostDisplay(cmd->Syntax.ID, cmd->Logic, cmd->Syntax.Type, cmd->CmdComment);
+            PostDisplay(cmd->Syntax.ID, cmd->Logic, cmd->Syntax.Type, cmd->CmdComment, false);
          }
 
       protected:
@@ -92,9 +92,10 @@ namespace Logic
                   pop_back();       
                break;
             }
-
-            // FAILED: Subroutine can't be distinguished from a label at this point
-
+            
+            // EndSub: 
+            if (empty() && id == CMD_END_SUB)
+               WithinSub = false;
          }
 
          /// <summary>Called after displaying command.</summary>
@@ -102,7 +103,8 @@ namespace Logic
          /// <param name="logic">branching logic.</param>
          /// <param name="type">command type.</param>
          /// <param name="commented">whether a commented command [false for comments]</param>
-         void PostDisplay(UINT id, BranchLogic logic, CommandType type, bool commented)
+         /// <param name="subroutine">Whether label defintiion is a subroutine defintiion.</param>
+         void PostDisplay(UINT id, BranchLogic logic, CommandType type, bool commented, bool subroutine)
          {
             // Indentation calculations
             switch (logic)
@@ -119,10 +121,14 @@ namespace Logic
                return;
             }
 
+            // Subroutine
+            if (subroutine)
+               WithinSub = true;
+
             // Pop 'SkipIf' after next uncommented standard command (or break/continue)
-            if (!empty() && !commented && back() == BranchLogic::SkipIf 
-            && (type == CommandType::Standard || id == CMD_BREAK || id == CMD_CONTINUE))
-               pop_back();
+            if (!empty() && back() == BranchLogic::SkipIf)
+               if (!commented && (type == CommandType::Standard || id == CMD_BREAK || id == CMD_CONTINUE))
+                  pop_back();
          }
 
          // -------------------- REPRESENTATION ---------------------
