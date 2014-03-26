@@ -27,17 +27,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <summary>Default Toolwindow size  (300 wide, 500 high)</summary>
    const CRect MainWnd::DefaultSize = CRect(0, 0, 300, 500); 
 
-   // --------------------------------- GLOBAL DATA --------------------------------
-
-   static UINT indicators[] =
+   /// <summary>Status bar indicator IDs</summary>
+   const UINT MainWnd::StatusBar::Indicators[7] =
    {
-	   ID_SEPARATOR,           // status line indicator
-      IDS_CARET_STATUS,
+	   ID_SEPARATOR,           // Gap
+      IDS_STATUS_GAMEDATA,
+      IDS_STATUS_CARET,
       ID_INDICATOR_OVR,
 	   ID_INDICATOR_CAPS,
 	   ID_INDICATOR_NUM,
 	   ID_INDICATOR_SCRL,
    };
+
+   // --------------------------------- GLOBAL DATA --------------------------------
 
    // ----------------------------------- EVENTS -----------------------------------
 
@@ -87,6 +89,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
                         fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::OnScriptCaretMoved)),
+                        fnAppStateChanged(theApp.StateChanged.Register(this, &MainWnd::OnAppStateChanged)),
                         ActiveDocument(nullptr), FirstShow(true)
    {
    }
@@ -237,11 +240,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // StatusBar:
 	   if (!m_wndStatusBar.Create(this))
          throw Win32Exception(HERE, L"Unable to create MainWnd statusBar");
-	   m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-      // Init indicators
-      OnScriptCaretMoved(POINT {0,0});
 
-
+	   
       // Enable docking
       EnableDocking(CBRS_ALIGN_ANY);
       EnableAutoHidePanes(CBRS_ALIGN_ANY);
@@ -253,7 +253,14 @@ NAMESPACE_BEGIN2(GUI,Windows)
          DockPane(bar);
       }
    }
-
+   
+   /// <summary>Updates game data status bar indicator.</summary>
+   /// <param name="e">new state.</param>
+   void MainWnd::OnAppStateChanged(AppState e)
+   {
+      m_wndStatusBar.SetGameData(e);
+   }
+   
 
    /// <summary>Creates the tool windows.</summary>
    void MainWnd::CreateToolWindows()
@@ -390,7 +397,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Clear/Reload game data
       LoadGameData();
    }
-   
+
    /// <summary>Saves workspace before closing.</summary>
    void MainWnd::OnClose()
    {
@@ -698,7 +705,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="pt">The caret position</param>
    void MainWnd::OnScriptCaretMoved(POINT pt)
    {
-      m_wndStatusBar.SetPaneText(1, VString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
+      m_wndStatusBar.SetCaret(pt);
    }
    
    /// <summary>Called when shown.</summary>
