@@ -58,21 +58,18 @@ namespace Logic
          if (Syntax.Is(CMD_CALL_SCRIPT))
          {
             // Count
-            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.Parameters.size());
+            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.ParameterCount);
 
             // Arguments
-            for (UINT i = Syntax.Parameters.size(); i < params.size(); ++i)   // NB: Syntax is 'ScriptCallArgument'
+            for (UINT i = Syntax.ParameterCount; i < params.size(); ++i)   // NB: Syntax is 'ScriptCallArgument'
                Parameters += params[i]; 
          }
 
          // VARGS: Append arguments + trailing NULLs
          else if (Syntax.IsVariableArgument())
          {
-            // Calculate true number of parameters required
-            UINT total = Syntax.Parameters.size() + Syntax.VarArgCount;
-
             // Append supplied parameters followed by DT_NULL parameters
-            for (UINT i = Syntax.Parameters.size(); i < total; ++i)
+            for (UINT i = Syntax.ParameterCount; i < Syntax.MaxParameters; ++i)
                Parameters += (i < params.size() ? params[i] : ScriptParameter(ParameterSyntax::ScriptCallArgument, DataType::Null, 0));      
          }
       }
@@ -363,7 +360,7 @@ namespace Logic
             wstring script = GetScriptCallName();
             
             // Populate argument name/value pairs
-            for (UINT p = Syntax.Parameters.size(), a = 0; p < Parameters.size(); ++p, ++a)
+            for (UINT p = Syntax.ParameterCount, a = 0; p < Parameters.size(); ++p, ++a)
                vargs.push_back( Argument(f.ScriptCalls.FindArgumentName(script, a), Parameters[p]) );
 
             // Append argument pairs

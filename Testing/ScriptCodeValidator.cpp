@@ -193,7 +193,7 @@ namespace Testing
             UINT paramIndex = 1;
             for (ParameterSyntax p : syntax->Parameters)
             {
-               GuiString paramId(line + VString(L" param %d of %d : ", paramIndex++, syntax->Parameters.size()) + GetString(p.Type));
+               GuiString paramId(line + VString(L" param %d of %d : ", paramIndex++, syntax->ParameterCount) + GetString(p.Type));
                DataType  dt = DataType::UNKNOWN;
 
                try
