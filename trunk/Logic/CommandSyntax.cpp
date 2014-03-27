@@ -36,8 +36,8 @@ namespace Logic
            Type(CommandType::Standard),
            Group(CommandGroup::HIDDEN),
            Execution(ExecutionType::Serial),
-           VarArgCount(0),
-           VarArg(false)
+           VArgCount(0),
+           VArgument(VArgSyntax::None)
       {
       }
 
@@ -49,11 +49,11 @@ namespace Logic
            Type(d.Type),
            Text(d.Syntax), 
            Group(d.Group),  
-           VarArg(d.VarArg),
            Versions(d.Versions), 
            Parameters(d.Params), 
            Execution(d.Execution),
-           VarArgCount(d.VarArgCount),
+           VArgCount(d.VArgCount),
+           VArgument(d.VArgument),
            Hash(GenerateHash(d.Syntax))
       {
       }
@@ -244,7 +244,7 @@ namespace Logic
       /// <summary>Query whether command has variable arguments</summary>
       bool  CommandSyntax::IsVariableArgument() const
       {
-         return VarArg;
+         return VArgument != VArgSyntax::None;
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------

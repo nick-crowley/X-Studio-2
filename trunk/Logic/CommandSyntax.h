@@ -14,7 +14,13 @@ namespace Logic
       /// <summary>Defines how script commands are stored</summary>
       enum class CommandType { Standard, Auxiliary, Macro };
       
-      
+      /// <summary>Available execution types</summary>
+      enum class ExecutionType  { Serial, Either, Concurrent };
+
+      /// <summary>Available syntax for varg parameters</summary>
+      enum class VArgSyntax { None, NamedPairs, CommaDelimited };
+
+
       /// <summary>Constant reference to a command syntax</summary>
       typedef const CommandSyntax&  CommandSyntaxRef;
 
@@ -23,10 +29,6 @@ namespace Logic
 
       /// <summary>Command syntax array</summary>
       typedef vector<CommandSyntaxPtr>  CmdSyntaxArray;
-
-
-      /// <summary>Available execution types</summary>
-      enum class ExecutionType  { Serial, Either, Concurrent };
 
       /// <summary>Parameter syntax lamda predicates</summary>
       typedef function<bool (const ParameterSyntax&)>  ParamSyntaxPredicate;
@@ -49,12 +51,12 @@ namespace Logic
             CommandType      Type;
             UINT             Versions, 
                              ID,
-                             VarArgCount;
+                             VArgCount;
             wstring          URL,
                              Syntax;
             ParamSyntaxArray Params;
             ExecutionType    Execution;
-            bool             VarArg;
+            VArgSyntax       VArgument;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -80,6 +82,8 @@ namespace Logic
          PROPERTY_GET(bool,Keyword,IsKeyword);
          PROPERTY_GET(wstring,DisplayText,GetDisplayText);
          PROPERTY_GET(ParamSyntaxArray,ParametersByDisplay,GetParametersByDisplay);
+         PROPERTY_GET(UINT,ParameterCount,GetParameterCount);
+         PROPERTY_GET(UINT,MaxParameters,GetParameterCount);
 
          bool  operator==(CommandSyntaxRef r) const   { return ID == r.ID && Versions == r.Versions; }
          bool  operator!=(CommandSyntaxRef r) const   { return ID != r.ID || Versions != r.Versions; }
@@ -89,11 +93,23 @@ namespace Logic
          /// <summary>Get populated display text</summary>
          wstring GetDisplayText() const;
 
+         /// <summary>Get number of physical + varg parameters</summary>
+         UINT GetMaxParameters() const
+         {
+            return Parameters.size() + VArgCount;
+         }
+
          /// <summary>Get populated display richtext</summary>
          wstring GetRichText(bool boldParams) const;
 
          /// <summary>Get parameter syntax in display order</summary>
          ParamSyntaxArray  GetParametersByDisplay() const;
+
+         /// <summary>Get number of physical parameters</summary>
+         UINT GetParameterCount() const
+         {
+            return Parameters.size();
+         }
 
          /// <summary>Query command ID</summary>
          bool  Is(UINT ID) const;
@@ -126,11 +142,11 @@ namespace Logic
          const ExecutionType     Execution;
          const UINT              Versions,
                                  ID,
-                                 VarArgCount;
+                                 VArgCount;
          const GuiString         Hash,
                                  Text,
                                  URL;
-         const bool              VarArg;
+         const VArgSyntax        VArgument;
       };
 
       /// <summary>Defines the display group of a script command</summary>

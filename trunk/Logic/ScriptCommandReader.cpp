@@ -154,7 +154,7 @@ namespace Logic
             params += ReadParameter(p, L"standard parameter");
 
          // varg Arguments
-         for (UINT i = 0; i < syntax.VarArgCount; i++)
+         for (UINT i = 0; i < syntax.VArgCount; i++)
             params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"standard varg argument");
 
          // Return command

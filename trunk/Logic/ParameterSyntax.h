@@ -23,8 +23,8 @@ namespace Logic
             //Declaration() : PhysicalIndex(0), DisplayIndex(0), Ordinal(0), PageID(false), StringID(false), Optional(false) {}
 
             /// <summary>Creates a declaration from legacy syntax components</summary>
-            Declaration(ParameterType t, UINT physical, UINT display, UINT ord, ParameterUsage use, bool varg) 
-               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), Usage(use), Optional(varg)
+            Declaration(ParameterType t, UINT physical, UINT display, UINT ord, ParameterUsage use) 
+               : Type(t), PhysicalIndex(physical), DisplayIndex(display), Ordinal(ord), Usage(use)
             {}
 
             ParameterType   Type;
@@ -32,13 +32,12 @@ namespace Logic
                             DisplayIndex,
                             Ordinal;
             ParameterUsage  Usage;
-            bool            Optional;
          };
 
          // --------------------- CONSTRUCTION ----------------------
 #ifdef LOGIC_COMPILER_FIX
       public:
-         ParameterSyntax() : Type((ParameterType)0), DisplayIndex(0), PhysicalIndex(0), Ordinal(0), Usage((ParameterUsage)0), Optional(false) 
+         ParameterSyntax() : Type((ParameterType)0), DisplayIndex(0), PhysicalIndex(0), Ordinal(0), Usage((ParameterUsage)0)
             { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
 #endif
       private:
@@ -108,7 +107,6 @@ namespace Logic
                               PhysicalIndex,
                               Ordinal;
          const ParameterUsage Usage;
-         const bool           Optional;
       };
 
       /// <summary>Write parameter syntax to the console</summary>

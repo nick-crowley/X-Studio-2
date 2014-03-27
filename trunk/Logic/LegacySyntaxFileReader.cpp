@@ -68,9 +68,7 @@ namespace Logic
          index = 0;
          for (auto type : params)
          {
-            // identify varg parameters
-            bool varg = IsVariableArgument(id) && type == ParameterType::VALUE;
-            ParameterSyntax::Declaration d(type, index, displayIndicies[index], ordinals[index], IdentifyUsage(id, index), varg);
+            ParameterSyntax::Declaration d(type, index, displayIndicies[index], ordinals[index], IdentifyUsage(id, index));
 
             // Store new syntax
             output.push_back( ParameterSyntax(d) );
@@ -312,24 +310,24 @@ namespace Logic
       /// <summary>Identifies variable argument commands</summary>
       /// <param name="id">Command ID</param>
       /// <returns></returns>
-      bool   LegacySyntaxFileReader::IsVariableArgument(UINT id)
+      VArgSyntax   LegacySyntaxFileReader::IsVariableArgument(UINT id)
       {
          switch (id)
          {
          case CMD_CALL_SCRIPT:               // "$1 $2 call script $0 :"
-         case CMD_CALL_NAMED_SCRIPT:                   // "$1 $0 call named script: script=$2, $3, $4, $5, $6, $7"
-         case CMD_LAUNCH_SCRIPT_ARGS:                 // "$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8"
-         case CMD_BEGIN_TASK_ARGS:                    // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
-         case CMD_INTERRUPT_SCRIPT_ARGS:              // "$0 interrupt with script $1 and prio $2: arg1=$3 arg2=$4 arg3=$5 arg4=$6"
-         case CMD_INTERRUPT_TASK_ARGS:                // "$0 interrupt task $2 with script $1 and prio $3: arg1=$4 arg2=$5 arg3=$6 arg4=$7"
+         case CMD_CALL_NAMED_SCRIPT:         // "$1 $0 call named script: script=$2, $3, $4, $5, $6, $7"
+         case CMD_LAUNCH_SCRIPT_ARGS:        // "$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8"
+         case CMD_BEGIN_TASK_ARGS:           // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
+         case CMD_INTERRUPT_SCRIPT_ARGS:     // "$0 interrupt with script $1 and prio $2: arg1=$3 arg2=$4 arg3=$5 arg4=$6"
+         case CMD_INTERRUPT_TASK_ARGS:       // "$0 interrupt task $2 with script $1 and prio $3: arg1=$4 arg2=$5 arg3=$6 arg4=$7"
 
          /*case CMD_START_COMMAND:
          case CMD_START_DELAYED_COMMAND:
          case CMD_START_WING_COMMAND:*/
-            return true;
+            return VArgSyntax::NamedPairs;
 
          default:
-            return false;
+            return VArgSyntax::None;
          }
       }
 
@@ -477,8 +475,8 @@ namespace Logic
          dec.Execution = IdentifyExecution(dec.ID);
 
          // VarArgs
-         dec.VarArg = IsVariableArgument(dec.ID);
-         dec.VarArgCount = GetVariableArgumentCount(dec.ID);
+         dec.VArgument = IsVariableArgument(dec.ID);
+         dec.VArgCount = GetVariableArgumentCount(dec.ID);
          return true;
       }
 

@@ -724,7 +724,7 @@ namespace Logic
    #ifdef VALIDATION
                // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
                // by enumerating variables in physical syntax order. (Requires all parameters be present)
-               if (Parameters.size() == Syntax.Parameters.size())
+               if (Parameters.size() == Syntax.ParameterCount)
                   for (const auto& ps : Syntax.Parameters)
                      params.push_back( ref(Parameters[ps.DisplayIndex]) );
                else 
@@ -958,8 +958,8 @@ namespace Logic
 
                   // Verify vArg argument count     [Genuine CallScript commands can have unlimited arguments]
                   if (!Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
-                     if (Syntax.IsVariableArgument() && Parameters.size() > Syntax.Parameters.size()+Syntax.VarArgCount)
-                        errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VarArgCount));
+                     if (Syntax.IsVariableArgument() && Parameters.size() > Syntax.MaxParameters)
+                        errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VArgCount));
 
                   // Error in CmdComment: Silently revert to ordinary comment
                   if (CmdComment && !errQueue.empty())
@@ -1109,7 +1109,7 @@ namespace Logic
                if (!callName.empty() && script.ScriptCalls.Contains(callName))
                {
                   auto call = script.ScriptCalls.Find(callName);
-                  auto argIndex = index-Syntax.Parameters.size();
+                  auto argIndex = index-Syntax.ParameterCount;
 
                   // Verify argument exists
                   if (argIndex >= call.Variables.Arguments.Count)
