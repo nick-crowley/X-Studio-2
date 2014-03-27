@@ -63,7 +63,7 @@ namespace Logic
 
             // Read parameters
             for (int i = 0, count = ReadIntNode(L"commented scriptcall argument count"); i < count; i++)
-               params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"commented scriptcall argument");
+               params += ReadParameter(ParameterSyntax::VArgParameter, L"commented scriptcall argument");
             break;
          
          default:
@@ -134,7 +134,7 @@ namespace Logic
          // Read arguments
          int count = ReadIntNode(L"script call argument count");
          for (int i = 0; i < count; i++)
-            params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"script call argument");
+            params += ReadParameter(ParameterSyntax::VArgParameter, L"script call argument");
 
          // Return command
          return ScriptCommand(syntax, params, false);
@@ -155,7 +155,7 @@ namespace Logic
 
          // varg Arguments
          for (UINT i = 0; i < syntax.VArgCount; i++)
-            params += ReadParameter(ParameterSyntax::ScriptCallArgument, L"standard varg argument");
+            params += ReadParameter(ParameterSyntax::VArgParameter, L"standard varg argument");
 
          // Return command
          return ScriptCommand(syntax, params, false);

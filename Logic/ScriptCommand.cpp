@@ -61,7 +61,7 @@ namespace Logic
             Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.ParameterCount);
 
             // Arguments
-            for (UINT i = Syntax.ParameterCount; i < params.size(); ++i)   // NB: Syntax is 'ScriptCallArgument'
+            for (UINT i = Syntax.ParameterCount; i < params.size(); ++i)   // NB: Syntax is 'VArgParameter'
                Parameters += params[i]; 
          }
 
@@ -70,7 +70,7 @@ namespace Logic
          {
             // Append supplied parameters followed by DT_NULL parameters
             for (UINT i = Syntax.ParameterCount; i < Syntax.MaxParameters; ++i)
-               Parameters += (i < params.size() ? params[i] : ScriptParameter(ParameterSyntax::ScriptCallArgument, DataType::Null, 0));      
+               Parameters += (i < params.size() ? params[i] : ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0));      
          }
       }
 

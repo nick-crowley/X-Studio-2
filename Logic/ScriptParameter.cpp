@@ -23,7 +23,7 @@ namespace Logic
       /// <param name="name">Argument name token</param>
       /// <param name="val">Value token</param>
       ScriptParameter::ScriptParameter(const ScriptToken& name, const ScriptToken& val) 
-         : Syntax(ParameterSyntax::ScriptCallArgument), 
+         : Syntax(ParameterSyntax::VArgParameter), 
            Type(IdentifyDataType(val)), 
            Token(val), 
            Value(val.ValueText), 

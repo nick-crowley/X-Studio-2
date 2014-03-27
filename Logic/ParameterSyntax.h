@@ -98,7 +98,7 @@ namespace Logic
          static const ParameterSyntax  LabelNameParameter; 
          static const ParameterSyntax  LabelNumberParameter;
          static const ParameterSyntax  StructuralCount; 
-         static const ParameterSyntax  ScriptCallArgument;
+         static const ParameterSyntax  VArgParameter;
          static const ParameterSyntax  UnrecognisedCommand;
 
       public:

@@ -24,7 +24,7 @@ namespace Logic
       const ParameterSyntax  ParameterSyntax::StructuralCount(ParameterType::STRUCTURAL_COUNT, 0, 0);
       
       /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
-      const ParameterSyntax  ParameterSyntax::ScriptCallArgument(ParameterType::PARAMETER, 3, 3);
+      const ParameterSyntax  ParameterSyntax::VArgParameter(ParameterType::PARAMETER, 3, 3);
 
       /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
       //const ParameterSyntax  ParameterSyntax::ScriptCallVArgument(ParameterType::VALUE, 3, 3);
