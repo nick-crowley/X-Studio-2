@@ -348,7 +348,7 @@ namespace Logic
             return 4;
 
          case CMD_CALL_SCRIPT:               // "$1 $2 call script $0 :"
-            return 8;
+            return 10;
 
          /*case CMD_START_COMMAND:
          case CMD_START_DELAYED_COMMAND:

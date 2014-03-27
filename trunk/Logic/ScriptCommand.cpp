@@ -54,23 +54,26 @@ namespace Logic
          for (auto& ps : Syntax.Parameters)
             Parameters += params[ps.DisplayIndex];
 
-         // SCRIPT-CALL: Append arguments
-         if (Syntax.Is(CMD_CALL_SCRIPT))
+         // VARGS: Append arguments [+trailing NULL if appropriate]
+         if (Syntax.IsVArgument())
          {
-            // Count
-            Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.ParameterCount);
+            // SCRIPT-CALL: Count
+            if (Syntax.Is(CMD_CALL_SCRIPT))
+               Parameters += ScriptParameter(ParameterSyntax::StructuralCount, DataType::INTEGER, params.size()-Syntax.ParameterCount);
 
-            // Arguments
-            for (UINT i = Syntax.ParameterCount; i < params.size(); ++i)   // NB: Syntax is 'VArgParameter'
-               Parameters += params[i]; 
-         }
-
-         // VARGS: Append arguments + trailing NULLs
-         else if (Syntax.IsVArgument())
-         {
             // Append supplied parameters followed by DT_NULL parameters
             for (UINT i = Syntax.ParameterCount; i < Syntax.MaxParameters; ++i)
-               Parameters += (i < params.size() ? params[i] : ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0));      
+            {
+               // Supply parameter
+               if (i < params.size())
+                  Parameters += params[i]; 
+
+               // Varg: Append remaining DT_NULL parameters  (Except for genuine varg scriptCalls)
+               else if (!Syntax.Is(CMD_CALL_SCRIPT))
+                  ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
+               else
+                  break;   
+            }
          }
       }
 
