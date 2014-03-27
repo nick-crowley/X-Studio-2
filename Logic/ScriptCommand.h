@@ -88,13 +88,23 @@ namespace Logic
 
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
-
+         
 #ifdef LOGIC_COMPILER_FIX
          operator bool() const 
             { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
          const ScriptCommand& operator==(const ScriptCommand& r) const 
             { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
 #endif
+
+      public:
+         bool  FindInteger(UINT index, int& val) const;
+         bool  FindRetVar(wstring& varName) const;
+         bool  FindString(UINT index, wstring& str) const;
+         bool  FindVariable(UINT index, wstring& var) const;
+
+         bool  MatchAllocArray(wstring& varName, int& size) const;
+         bool  MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const;
+
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  SetLabelName(const wstring& name);
