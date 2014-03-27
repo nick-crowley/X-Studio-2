@@ -397,7 +397,7 @@ namespace Logic
                      Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #else
                   // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
-                  if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
+                  if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), IsArgumentNull) )
                      Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #endif
                break;

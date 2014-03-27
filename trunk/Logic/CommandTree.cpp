@@ -1101,9 +1101,11 @@ namespace Logic
             // Varg: Check param vs. target script arguments
             if (p.Syntax == ParameterSyntax::VArgParameter)
             {
+#ifndef STRICT_VALIDATION   // Skip these checks when validating, some Egosoft scripts have missing script-call arguments
                // ScriptCall: 
                if (Syntax.IsScriptCall())
                {  
+
                   // Find scriptName parameter
                   auto callName = GetScriptCallName();
                      
@@ -1124,7 +1126,7 @@ namespace Logic
                      else if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
                         errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
 
-#ifndef STRICT_VALIDATION     
+
                      // Verify argument type
                      else if (PrefsLib.CheckArgumentTypes)
                      {
@@ -1138,9 +1140,10 @@ namespace Logic
                         if (!ParameterSyntax::Verify(arg.ParamType, p.Type))
                            errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ParamType).c_str()), p.Token);
                      }
-#endif
+
                   }
                }
+#endif
             }
             // Std parameter: Check value vs. type
             else if (!p.Syntax.Verify(p.Type))
