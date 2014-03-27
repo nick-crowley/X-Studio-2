@@ -1099,7 +1099,7 @@ namespace Logic
             }
 
             // varg Argument: Lookup script and verify argument name+type
-            if (p.Syntax == ParameterSyntax::ScriptCallArgument)
+            if (p.Syntax == ParameterSyntax::VArgParameter)
             {
 #ifndef STRICT_VALIDATION
                // Find scriptName parameter
