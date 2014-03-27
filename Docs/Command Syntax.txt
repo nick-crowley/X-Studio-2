@@ -582,9 +582,8 @@ MACRO
 X2,X3R,X3TC,X3AP
 250
 NONE
-dim $0 = $1
-RetVar
-Value
+dim $0 =
+Var
 -------------- END DEFINITION ---------------
 MACRO
 X2,X3R,X3TC,X3AP
