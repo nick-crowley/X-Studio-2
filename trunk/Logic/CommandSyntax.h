@@ -83,7 +83,7 @@ namespace Logic
          PROPERTY_GET(wstring,DisplayText,GetDisplayText);
          PROPERTY_GET(ParamSyntaxArray,ParametersByDisplay,GetParametersByDisplay);
          PROPERTY_GET(UINT,ParameterCount,GetParameterCount);
-         PROPERTY_GET(UINT,MaxParameters,GetParameterCount);
+         PROPERTY_GET(UINT,MaxParameters,GetMaxParameters);
 
          bool  operator==(CommandSyntaxRef r) const   { return ID == r.ID && Versions == r.Versions; }
          bool  operator!=(CommandSyntaxRef r) const   { return ID != r.ID || Versions != r.Versions; }
