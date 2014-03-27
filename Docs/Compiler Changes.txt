@@ -1,0 +1,12 @@
+# start keyword lower case
+# mod keyword upper case
+
+# start required for certain commands
+
+# RNG/array commands no longer tweak the offset/upper-bound. Work on half-open range.
+
+# illegal to start with discard '='
+
+# goto label -> goto
+
+# Use of cpp operators allowed
