@@ -66,7 +66,7 @@ namespace Logic
          }
 
          // VARGS: Append arguments + trailing NULLs
-         else if (Syntax.IsVariableArgument())
+         else if (Syntax.IsVArgument())
          {
             // Append supplied parameters followed by DT_NULL parameters
             for (UINT i = Syntax.ParameterCount; i < Syntax.MaxParameters; ++i)
@@ -348,7 +348,7 @@ namespace Logic
                Text.append(Parameters[i].Text);
 
          // ScriptCalls: Print argument name/value pairs
-         else if (Syntax.IsVariableArgument())
+         else if (Syntax.IsVArgument())
          {
             typedef pair<wstring,ScriptParameter> Argument;
             vector<Argument> vargs;

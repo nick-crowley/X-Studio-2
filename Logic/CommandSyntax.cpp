@@ -242,7 +242,7 @@ namespace Logic
       }      
 
       /// <summary>Query whether command has variable arguments</summary>
-      bool  CommandSyntax::IsVariableArgument() const
+      bool  CommandSyntax::IsVArgument() const
       {
          return VArgument != VArgSyntax::None;
       }
