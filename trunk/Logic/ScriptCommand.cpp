@@ -376,8 +376,8 @@ namespace Logic
                // Iterate thru varg parameters
                for (UINT p = Syntax.ParameterCount; p < Parameters.size(); ++p)
                   // Drop 'null' arguments iff remainder are 'null' 
-                  if (!all_of(Parameters.begin()+Syntax.ParameterCount, Parameters.end(), IsParameterNull))
-                     Text.append( VString(p==Syntax.ParameterCount ? L"%s" : L", %s", Parameters[p].Text) );
+                  if (!all_of(Parameters.begin()+p, Parameters.end(), IsParameterNull))
+                     Text.append( VString(p==Syntax.ParameterCount ? L" %s" : L", %s", Parameters[p].Text.c_str()) );
                break;
 
             // ScriptCalls: Print argument name/value pairs
