@@ -319,7 +319,7 @@ namespace Logic
          int size = 0;
 
          // DIM command
-         auto& syntax = SyntaxLib.Find(CMD_DEFINE_ARRAY, GameVersion::Threat);
+         auto& syntax = SyntaxLib.Find(MACRO_DIM_ARRAY, GameVersion::Threat);
          
          // Match 'alloc array'. Generate RetVar.
          (cmd++)->MatchAllocArray(array, size);  
@@ -402,7 +402,7 @@ namespace Logic
 
             //         /// Replace 'size of array', 'while', 'dec' and 'array assignment' with a 'for each' macro
             //         destroyCommandsInTranslatorOutputByIndex(pScriptFile->pTranslator, iIndex, 4);
-            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(CMD_FOR_EACH, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
+            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(MACRO_FOR_EACH, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
             //      }
             //   }
             //   break;
@@ -437,7 +437,7 @@ namespace Logic
 
             //         /// Replace '$iterator = initial ± step', 'while $iterator < count' and 'inc/dec $iterator' with a 'for loop' macro
             //         destroyCommandsInTranslatorOutputByIndex(pScriptFile->pTranslator, iIndex, 3);
-            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(CMD_FOR_LOOP, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
+            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(MACRO_FOR_LOOP, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
             //      }
             //   }
             //   break;

@@ -239,10 +239,10 @@ namespace Logic
       #define    CMD_INTERRUPT_SCRIPT_ARGS        159
       #define    CMD_SEND_INCOMING_QUESTION       212
       #define    CMD_SEND_INCOMING_QUESTION_EX    213
-      #define    CMD_DEFINE_ARRAY                 250
-      #define    CMD_FOR_EACH                     251
-      #define    CMD_FOR_EACH_COUNTER             252
-      #define    CMD_FOR_LOOP                     253
+      #define    MACRO_DIM_ARRAY                  250
+      #define    MACRO_FOR_EACH                   251
+      #define    MACRO_FOR_EACH_COUNTER           252
+      #define    MACRO_FOR_LOOP                   253
       #define    CMD_ADD_MENU_ITEM_BYREF          254
       #define    CMD_ADD_MENU_INFO_BYREF          255
       #define    CMD_ADD_MENU_HEADING_BYREF       256
