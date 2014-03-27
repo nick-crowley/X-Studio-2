@@ -17,6 +17,16 @@ namespace Logic
       /// <summary>Get branch logic name</summary>
       LogicExport const WCHAR* GetString(BranchLogic l);
 
+
+      /// <summary>Varg script-call parameter {name,value} pair</summary>
+      typedef pair<wstring,ScriptParameter> ArgumentPair;
+
+      /// <summary>Script Parameter lamda predicates</summary>
+      typedef function<bool (const ScriptParameter&)>  ParameterPredicate;
+      typedef function<bool (const ArgumentPair& a)>   ArgumentPairPredicate;
+
+
+      
       /// <summary>String ID referenced by a script command</summary>
       class LogicExport StringID
       {
@@ -32,8 +42,6 @@ namespace Logic
                          String;
       };
 
-      /// <summary>Script Parameter lamda predicates</summary>
-      typedef function<bool (const ScriptParameter&)>  ParameterPredicate;
 
       /// <summary>An MSCI script command</summary>
       class LogicExport ScriptCommand
@@ -61,6 +69,10 @@ namespace Logic
          static const ParameterPredicate IsScriptNameParam;
          static const ParameterPredicate IsStringIDParam;
          static const ParameterPredicate IsPageIDParam;
+
+      private:
+         static const ArgumentPairPredicate IsArgumentNull;
+         static const ParameterPredicate    IsParameterNull;
 
          // --------------------- PROPERTIES ------------------------
 			
