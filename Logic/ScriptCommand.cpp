@@ -33,6 +33,19 @@ namespace Logic
          return s.Syntax.Usage == ParameterUsage::PageID;
       };
 
+      /// <summary>Determines whether value of argument name-value pair is DT_NULL</summary>
+      const ArgumentPairPredicate  ScriptCommand::IsArgumentNull = [](const ArgumentPair& a) 
+      { 
+         return a.second.Type == DataType::Null; 
+      };
+
+      /// <summary>Determines whether script parameter is DT_NULL</summary>
+      /// <param name="s">parameter</param>
+      const ParameterPredicate  ScriptCommand::IsParameterNull = [](const ScriptParameter& s) 
+      {
+         return s.Type == DataType::Null;
+      };
+
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates sentinel value (private ctor)</summary>
@@ -350,33 +363,45 @@ namespace Logic
             for (UINT i = 2; i < Parameters.size(); ++i)
                Text.append(Parameters[i].Text);
 
-         // ScriptCalls: Print argument name/value pairs
+         // Varg: Print pairs/delimited arguments
          else if (Syntax.IsVArgument())
          {
-            typedef pair<wstring,ScriptParameter> Argument;
-            vector<Argument> vargs;
-            
-            // Test whether argument is DT_NULL
-            function<bool (Argument& a)> isNull = [](Argument& a) { return a.second.Type == DataType::Null; };
+            vector<ArgumentPair> vargs;
+            wstring script;
 
-            // Get script name
-            wstring script = GetScriptCallName();
-            
-            // Populate argument name/value pairs
-            for (UINT p = Syntax.ParameterCount, a = 0; p < Parameters.size(); ++p, ++a)
-               vargs.push_back( Argument(f.ScriptCalls.FindArgumentName(script, a), Parameters[p]) );
+            switch (Syntax.VArgument)
+            {
+            // CommaDelimited: Print delimited list
+            case VArgSyntax::CommaDelimited:
+               // Iterate thru varg parameters
+               for (UINT p = Syntax.ParameterCount; p < Parameters.size(); ++p)
+                  // Drop 'null' arguments iff remainder are 'null' 
+                  if (!all_of(Parameters.begin()+Syntax.ParameterCount, Parameters.end(), IsParameterNull))
+                     Text.append( VString(p==Syntax.ParameterCount ? L"%s" : L", %s", Parameters[p].Text) );
+               break;
 
-            // Append argument pairs
-            for (auto it = vargs.begin(); it != vargs.end(); ++it)
+            // ScriptCalls: Print argument name/value pairs
+            case VArgSyntax::NamedPairs:
+               // Get script name
+               script = GetScriptCallName();
+            
+               // Populate argument name/value pairs   [start at first varg parameter]
+               for (UINT p = Syntax.ParameterCount, arg = 0; p < Parameters.size(); ++p, ++arg)
+                  vargs.push_back( ArgumentPair(f.ScriptCalls.FindArgumentName(script, arg), Parameters[p]) );
+
+               // Append text
+               for (auto it = vargs.begin(); it != vargs.end(); ++it)
 #ifndef STRICT_VALIDATION
-               // Drop 'null' arguments iff remainder are 'null' 
-               if (!all_of(it, vargs.end(), isNull))
-                  Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+                  // Drop 'null' arguments iff remainder are 'null' 
+                  if (!all_of(it, vargs.end(), IsArgumentNull))
+                     Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #else
-               // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
-               if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
-                  Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+                  // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
+                  if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), isNull) )
+                     Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
 #endif
+               break;
+            }
          }
          
          // Concurrent: Insert 'start' keyword
