@@ -956,9 +956,9 @@ namespace Logic
                   for (const ScriptParameter& p : Parameters)
                      VerifyParameter(p, index++, script, errQueue);
 
-                  // Verify vArg argument count     [Genuine CallScript commands can have unlimited arguments]
-                  if (!Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
-                     if (Syntax.IsVArgument() && Parameters.size() > Syntax.MaxParameters)
+                  // VARG: Verify argument count     [Genuine CallScript commands can have unlimited arguments]
+                  if (Syntax.IsVArgument() && !Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
+                     if (Parameters.size() > Syntax.MaxParameters)
                         errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VArgCount));
 
                   // Error in CmdComment: Silently revert to ordinary comment
@@ -1098,46 +1098,49 @@ namespace Logic
                break;
             }
 
-            // varg Argument: Lookup script and verify argument name+type
+            // Varg: Check param vs. target script arguments
             if (p.Syntax == ParameterSyntax::VArgParameter)
             {
-#ifndef STRICT_VALIDATION
-               // Find scriptName parameter
-               auto callName = GetScriptCallName();
+               // ScriptCall: 
+               if (Syntax.IsScriptCall())
+               {  
+                  // Find scriptName parameter
+                  auto callName = GetScriptCallName();
                      
-               // Skip check if name/script are missing/variables
-               if (!callName.empty() && script.ScriptCalls.Contains(callName))
-               {
-                  auto call = script.ScriptCalls.Find(callName);
-                  auto argIndex = index-Syntax.ParameterCount;
+                  // Skip check if script-name present + script loaded
+                  if (!callName.empty() && script.ScriptCalls.Contains(callName))
+                  {
+                     auto call = script.ScriptCalls.Find(callName);
+                     auto argIndex = index-Syntax.ParameterCount;
 
-                  // Verify argument exists
-                  if (argIndex >= call.Variables.Arguments.Count)
-                  {
-                     // Create token representing argument name/value pair
-                     ScriptToken tok(TokenType::Text, p.ArgName.Start, p.Token.End, p.ArgName.Text + L"=" + p.Token.Text);
-                     errors += MakeError(VString(L"'%s' only has %d arguments", callName.c_str(), call.Variables.Arguments.Count), tok);
-                  }
-                  // Verify argument name
-                  else if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
-                     errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
-                  
-                  // Verify argument type
-                  else if (PrefsLib.CheckArgumentTypes)
-                  {
-                     auto arg = call.Variables[p.ArgName.Text];
+                     // Verify argument exists
+                     if (argIndex >= call.Variables.Arguments.Count)
+                     {
+                        // Create token representing argument name/value pair
+                        ScriptToken tok(TokenType::Text, p.ArgName.Start, p.Token.End, p.ArgName.Text + L"=" + p.Token.Text);
+                        errors += MakeError(VString(L"'%s' only has %d arguments", callName.c_str(), call.Variables.Arguments.Count), tok);
+                     }
+                     // Verify argument name
+                     else if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
+                        errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
+
+#ifndef STRICT_VALIDATION     
+                     // Verify argument type
+                     else if (PrefsLib.CheckArgumentTypes)
+                     {
+                        auto arg = call.Variables[p.ArgName.Text];
                      
-                     // Verify argument order
-                     if (arg.ID != argIndex)
-                        errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
+                        // Verify argument order
+                        if (arg.ID != argIndex)
+                           errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
 
-                     // Verify argument type 
-                     if (!ParameterSyntax::Verify(arg.ParamType, p.Type))
-                        errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ParamType).c_str()), p.Token);
-
+                        // Verify argument type 
+                        if (!ParameterSyntax::Verify(arg.ParamType, p.Type))
+                           errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ParamType).c_str()), p.Token);
+                     }
+#endif
                   }
                }
-#endif
             }
             // Std parameter: Check value vs. type
             else if (!p.Syntax.Verify(p.Type))
