@@ -398,19 +398,39 @@ namespace Logic
 
             // (text '=' constant/variable/null/string/number)?
             return (lex.Match(pos, TokenType::Text) 
-                    || lex.Match(pos, TokenType::Null)      // Argument names may be reserved words
-                    || lex.Match(pos, TokenType::Keyword))  // Argument names may be reserved words
+                 || lex.Match(pos, TokenType::Null)      // Argument names may be reserved words
+                 || lex.Match(pos, TokenType::Keyword))  // Argument names may be reserved words
 
-                   && lex.Match(pos, TokenType::BinaryOp, L"=") 
+                 && lex.Match(pos, TokenType::BinaryOp, L"=") 
 
-                   && (lex.Match(pos, TokenType::ScriptObject) 
-                       || lex.Match(pos, TokenType::GameObject) 
-                       || lex.Match(pos, TokenType::Variable)
-                       || lex.Match(pos, TokenType::Number)
-                       || lex.Match(pos, TokenType::String)
-                       || lex.Match(pos, TokenType::Null))
+                 && (lex.Match(pos, TokenType::ScriptObject) 
+                  || lex.Match(pos, TokenType::GameObject) 
+                  || lex.Match(pos, TokenType::Variable)
+                  || lex.Match(pos, TokenType::Number)
+                  || lex.Match(pos, TokenType::String)
+                  || lex.Match(pos, TokenType::Null))
 
-                   ? true : (pos=start, false);
+                 ? true : (pos=start, false);
+         }
+
+         /// <summary>Matches a varg value</summary>
+         /// <param name="lex">The lexer</param>
+         /// <param name="pos">The start position.</param>
+         /// <returns></returns>
+         /// <remarks>The iterator is advanced beyond last matched token if successful, otherwise it is not moved</remarks>
+         bool ScriptParser::MatchVArgument(const CommandLexer& lex, TokenIterator& pos) const
+         {
+            TokenIterator start = pos;
+
+            // constant/variable/null/string/number
+            return (lex.Match(pos, TokenType::ScriptObject) 
+                 || lex.Match(pos, TokenType::GameObject) 
+                 || lex.Match(pos, TokenType::Variable)
+                 || lex.Match(pos, TokenType::Number)
+                 || lex.Match(pos, TokenType::String)
+                 || lex.Match(pos, TokenType::Null))
+
+                 ? true : (pos=start, false);
          }
 
          /// <summary>Matches a NOP or comment command</summary>
@@ -650,19 +670,46 @@ namespace Logic
                   }
                }
 
-               // VARG SCRIPT-CALL: read argument/value pairs  
+               // VARG 
                if (syntax.IsVArgument())
                {
-                  // Iterate thru triplets
-                  for (TokenIterator arg = pos; arg < lex.end(); arg += 3)
-                     // Match {name, '=', value} triplet
-                     if (MatchScriptArgument(lex, TokenIterator(arg)))
-                        params.push_back(ScriptParameter(arg[0], arg[2]));
-                     else 
-                     {  // Error: Abort
-                        errQueue += MakeError(L"Expected script-call argument", arg);
-                        break;
+                  switch (syntax.VArgument)
+                  {
+                  // EXTENSION: 
+                  case VArgSyntax::CommaDelimited:
+                     // Match {[val] [, val] [, val] ...} 
+                     for (TokenIterator arg = pos; arg < lex.end(); ++arg)
+                     {
+                        // Match delimiter  (Except first argument)
+                        if (arg != pos && !lex.Match(arg, TokenType::UnaryOp, L",")) 
+                        {  // Error: Abort
+                           errQueue += MakeError(L"Expected comma operator", arg);
+                           break;
+                        }
+                        // Match value
+                        else if (MatchVArgument(lex, TokenIterator(arg))) 
+                           params.push_back(ScriptParameter(ParameterSyntax::VArgParameter, *arg));
+                        else
+                        {  // Error: Abort
+                           errQueue += MakeError(L"Expected varg parameter", arg);
+                           break;
+                        }  
                      }
+                     break;
+                  
+                  // SCRIPT-CALL: 
+                  case VArgSyntax::NamedPairs:
+                     // Match {name, '=', value} triplets
+                     for (TokenIterator arg = pos; arg < lex.end(); arg += 3)
+                        if (MatchScriptArgument(lex, TokenIterator(arg)))
+                           params.push_back(ScriptParameter(arg[0], arg[2]));
+                        else 
+                        {  // Error: Abort
+                           errQueue += MakeError(L"Expected script-call argument", arg);
+                           break;
+                        }
+                     break;
+                  }
                }
             }
 

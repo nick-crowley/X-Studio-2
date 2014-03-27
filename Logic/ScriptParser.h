@@ -67,6 +67,7 @@ namespace Logic
             bool  MatchConditional(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchReferenceObject(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchScriptArgument(const CommandLexer& lex, TokenIterator& pos) const;
+            bool  MatchVArgument(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchComment(const CommandLexer& lex) const;
             bool  MatchCommand(const CommandLexer& lex) const;
             bool  MatchExpression(const CommandLexer& lex) const;
