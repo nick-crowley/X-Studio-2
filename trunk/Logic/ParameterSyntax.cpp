@@ -23,11 +23,8 @@ namespace Logic
       /// <summary>Expression parameter count or script-call argument count. [OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::StructuralCount(ParameterType::STRUCTURAL_COUNT, 0, 0);
       
-      /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
+      /// <summary>Used for every varg parameter (script-call or extension). [INPUT/OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::VArgParameter(ParameterType::PARAMETER, 3, 3);
-
-      /// <summary>Variable argument script call argument syntax. [INPUT/OUTPUT]</summary>
-      //const ParameterSyntax  ParameterSyntax::ScriptCallVArgument(ParameterType::VALUE, 3, 3);
 
       /// <summary>Syntax for parameters of an unrecognised command. [UNUSED]</summary>
       const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNRECOGNISED, 0, 0);
