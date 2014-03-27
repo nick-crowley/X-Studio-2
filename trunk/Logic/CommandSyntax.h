@@ -130,7 +130,7 @@ namespace Logic
          bool  IsStringReference() const;
 
          /// <summary>Query whether command has variable arguments</summary>
-         bool  IsVariableArgument() const;
+         bool  IsVArgument() const;
 
 		   // ----------------------- MUTATORS ------------------------
 

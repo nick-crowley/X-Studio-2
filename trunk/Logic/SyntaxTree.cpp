@@ -44,7 +44,7 @@ namespace Logic
             return HasSyntax() && Syntax->IsCompatible(ver) ? *Syntax : CommandSyntax::Unrecognised;
 
          // Variable Arguments: Terminate early to prevent analysing arguments
-         else if (HasSyntax() && Syntax->IsVariableArgument())
+         else if (HasSyntax() && Syntax->IsVArgument())
             return *Syntax;
 
          // PARAM: Store token

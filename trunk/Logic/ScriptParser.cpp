@@ -651,7 +651,7 @@ namespace Logic
                }
 
                // VARG SCRIPT-CALL: read argument/value pairs  
-               if (syntax.IsVariableArgument())
+               if (syntax.IsVArgument())
                {
                   // Iterate thru triplets
                   for (TokenIterator arg = pos; arg < lex.end(); arg += 3)

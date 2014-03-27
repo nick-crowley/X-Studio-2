@@ -240,7 +240,7 @@ namespace Logic
                script.Labels.Add(cmd.GetLabelName(), line);
 
             // VARG SCRIPT-CALL: Load script properties
-            else if (cmd.Syntax.IsVariableArgument())
+            else if (cmd.Syntax.IsVArgument())
             {
                wstring name;
 

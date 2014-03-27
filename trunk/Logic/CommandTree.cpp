@@ -958,7 +958,7 @@ namespace Logic
 
                   // Verify vArg argument count     [Genuine CallScript commands can have unlimited arguments]
                   if (!Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
-                     if (Syntax.IsVariableArgument() && Parameters.size() > Syntax.MaxParameters)
+                     if (Syntax.IsVArgument() && Parameters.size() > Syntax.MaxParameters)
                         errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VArgCount));
 
                   // Error in CmdComment: Silently revert to ordinary comment
