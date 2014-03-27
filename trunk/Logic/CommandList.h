@@ -5,6 +5,7 @@ namespace Logic
 {
    namespace Scripts
    {
+
       /// <summary>List of script commands</summary>
       class LogicExport CommandList : public list<ScriptCommand>
       {
@@ -58,6 +59,10 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       };
+
+      
+      /// <summary>Script Command list iterator</summary>
+      typedef CommandList::iterator  CommandIterator;
 
    }
 }

@@ -318,6 +318,112 @@ namespace Logic
          return Syntax.Type == t;
       }
 
+      /// <summary>Finds an integer parameter, if any, at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="val">On return this contains the integer.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::FindInteger(UINT index, int& val) const
+      {
+         // Linear search. Require DT_INTEGER
+         for (auto& p : Parameters)
+            if (p.Type == DataType::INTEGER)
+            {
+               val = p.Value.Int;
+               return true;
+            }
+
+         return false;
+      }
+      
+      /// <summary>Finds a string parameter, if any, at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="str">On return this contains the string text.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::FindString(UINT index, wstring& str) const
+      {
+         // Linear search. Require DT_STRING
+         for (auto& p : Parameters)
+            if (p.Type == DataType::STRING)
+            {
+               str = p.Value.String;
+               return true;
+            }
+
+         return false;
+      }
+
+      /// <summary>Finds the return variable, if any</summary>
+      /// <param name="varName">On return this contains the name of the variable.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::FindRetVar(wstring& varName) const
+      {
+         // Linear search. Require RetVar syntax + Variable value
+         for (auto& p : Parameters)
+            if (p.Syntax.IsRetVar() && p.IsVariable())
+            {
+               varName = p.Text;
+               return true;
+            }
+
+         return false;
+      }
+      
+      /// <summary>Finds a variable parameter, if any, at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="var">On return this contains the variable name.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::FindVariable(UINT index, wstring& var) const
+      {
+         // Linear search. Require variable
+         for (auto& p : Parameters)
+            if (p.IsVariable())
+            {
+               var = p.Value.String;
+               return true;
+            }
+
+         return false;
+      }
+
+      /// <summary>Matches an 'alloc array' command and returns the array variable and array size</summary>
+      /// <param name="varName">On return this contains the array variable.</param>
+      /// <param name="size">On return this contains the allocation size.</param>
+      /// <returns></returns>
+      bool  ScriptCommand::MatchAllocArray(wstring& varName, int& size) const
+      {
+         size = 0;
+         varName.clear();
+
+         // Extract array variable and element count
+         return Is(CMD_ARRAY_ALLOC) && FindRetVar(varName) && FindInteger(1, size);
+      }
+
+
+      /// <summary>Matches an array assignment command.</summary>
+      /// <param name="array">Name of array variable.</param>
+      /// <param name="element">Required array index.</param>
+      /// <param name="param">On return this contains the parameter assigned (if successful)</param>
+      /// <returns></returns>
+      bool  ScriptCommand::MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const
+      {
+         wstring _array;
+         int     _element;
+
+         param = nullptr;
+
+         // Ensure command has correct array variable and element index
+         if (Is(CMD_ARRAY_ASSIGNMENT) 
+          && FindVariable(0, _array) && array == _array 
+          && FindInteger(1, _element) && element == _element)
+         {
+            // Extract assignment parameter
+            param = &Parameters[2];
+            return true;
+         }
+
+         return false;
+      }
+
       /// <summary>Replaces a label number parameter with a label name parameter.</summary>
       /// <param name="name">The name of the label</param>
       /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub</exception>

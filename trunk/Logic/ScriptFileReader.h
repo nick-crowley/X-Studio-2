@@ -179,7 +179,9 @@ namespace Logic
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
-			
+      protected:
+         bool  MatchDim(CommandIterator& cmd) const;
+
 		   // ----------------------- MUTATORS ------------------------
       public:
          ScriptFile  ReadFile(Path path, bool justProperties, bool dropJMPs = true);
@@ -188,6 +190,9 @@ namespace Logic
          ReaderPtr   GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
          void        ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs);
          void        ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
+
+         ScriptCommand ReadDim(CommandIterator& cmd) const;
+         void          TranslateMacros(ScriptFile& script);
 
 		   // -------------------- REPRESENTATION ---------------------
       protected:
