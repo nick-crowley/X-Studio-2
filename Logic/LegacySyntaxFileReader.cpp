@@ -373,6 +373,38 @@ namespace Logic
             return 0;
          }
       }
+
+      /// <summary>Identifies how missing varg parameters are handled</summary>
+      /// <param name="id">Command ID</param>
+      /// <returns></returns>
+      VArgMethod  LegacySyntaxFileReader::GetVariableArgumentMethod(UINT id)
+      {
+         switch (id)
+         {
+         case CMD_BEGIN_TASK_ARGS:          // "$0 begin task $2 with script $1 and priority $3: arg1=$4o arg2=$5x arg3=$6y arg4=$7z arg5=$8a"
+         case CMD_CALL_NAMED_SCRIPT:        // "$1 $0 call named script: script=$2, $3, $4, $5, $6, $7"
+         case CMD_LAUNCH_SCRIPT_ARGS:       // "$0 launch named script: task=$1 scriptname=$2 prio=$3, $4, $5, $6, $7, $8"
+         
+         case CMD_SPRINTF:                  // "$0 sprintf: fmt=$1, $2o, $3x, $4y, $5z, $6a"
+         case CMD_SPRINTF_BYREF:            // "$0 sprintf: pageid=$1x textid=$2y, $3o, $4x, $5y, $6z, $7a"
+         case CMD_CREATE_NEW_ARRAY:         // "$0 create new array, arguments=$1o, $2x, $3y, $4z, $5a"
+
+         /*case CMD_START_COMMAND:
+         case CMD_START_DELAYED_COMMAND:
+         case CMD_START_WING_COMMAND:*/
+
+         case CMD_INTERRUPT_SCRIPT_ARGS:    // "$0 interrupt with script $1 and prio $2: arg1=$3 arg2=$4 arg3=$5 arg4=$6"
+         case CMD_INTERRUPT_TASK_ARGS:      // "$0 interrupt task $2 with script $1 and prio $3: arg1=$4 arg2=$5 arg3=$6 arg4=$7"
+            return VArgMethod::PadNull;
+
+         case CMD_CALL_SCRIPT:              // "$1 $2 call script $0 :"
+         case MACRO_DIM_ARRAY:              // "dim $0 :"
+            return VArgMethod::Drop;
+
+         default:
+            return VArgMethod::None;
+         }
+      }
       
       // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -489,8 +521,9 @@ namespace Logic
          dec.Execution = IdentifyExecution(dec.ID);
 
          // VarArgs
-         dec.VArgument = IsVariableArgument(dec.ID);
-         dec.VArgCount = GetVariableArgumentCount(dec.ID);
+         dec.VArgument  = IsVariableArgument(dec.ID);
+         dec.VArgCount  = GetVariableArgumentCount(dec.ID);
+         dec.VArgParams = GetVariableArgumentMethod(dec.ID);
          return true;
       }
 

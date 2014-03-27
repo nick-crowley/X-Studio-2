@@ -37,7 +37,8 @@ namespace Logic
            Group(CommandGroup::HIDDEN),
            Execution(ExecutionType::Serial),
            VArgCount(0),
-           VArgument(VArgSyntax::None)
+           VArgument(VArgSyntax::None),
+           VArgParams(VArgMethod::None)
       {
       }
 
@@ -54,6 +55,7 @@ namespace Logic
            Execution(d.Execution),
            VArgCount(d.VArgCount),
            VArgument(d.VArgument),
+           VArgParams(d.VArgParams),
            Hash(GenerateHash(d.Syntax))
       {
       }

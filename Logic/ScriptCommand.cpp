@@ -82,7 +82,7 @@ namespace Logic
                   Parameters += params[i]; 
 
                // Varg: Append remaining DT_NULL parameters  (Except for genuine varg scriptCalls)
-               else if (!Syntax.Is(CMD_CALL_SCRIPT) && !Syntax.Is(MACRO_DIM_ARRAY))
+               else if (Syntax.VArgParams == VArgMethod::PadNull)
                   Parameters += ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
                else
                   break;   
