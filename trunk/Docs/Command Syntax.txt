@@ -6123,13 +6123,8 @@ ARRAY
 X3TC,X3AP
 1415
 http://forum.egosoft.com/viewtopic.php?t=286948
-$0 create new array, arguments=$1o, $2x, $3y, $4z, $5a
+$0 create new array:
 RetVar
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 USER_INTERFACE
 X3TC,X3AP
