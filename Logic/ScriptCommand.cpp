@@ -82,7 +82,7 @@ namespace Logic
                   Parameters += params[i]; 
 
                // Varg: Append remaining DT_NULL parameters  (Except for genuine varg scriptCalls)
-               else if (!Syntax.Is(CMD_CALL_SCRIPT))
+               else if (!Syntax.Is(CMD_CALL_SCRIPT) && !Syntax.Is(MACRO_DIM_ARRAY))
                   Parameters += ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
                else
                   break;   
@@ -353,7 +353,7 @@ namespace Logic
       }
 
       /// <summary>Finds the return variable, if any</summary>
-      /// <param name="varName">On return this contains the name of the variable.</param>
+      /// <param name="varName">On return this contains the name of the variable [Without $ prefix]</param>
       /// <returns>True if found, otherwise False</returns>
       bool ScriptCommand::FindRetVar(wstring& varName) const
       {
@@ -361,7 +361,7 @@ namespace Logic
          for (auto& p : Parameters)
             if (p.Syntax.IsRetVar() && p.IsVariable())
             {
-               varName = p.Text;
+               varName = GuiString(p.Text).Trim(L"$= ");
                return true;
             }
 
@@ -370,7 +370,7 @@ namespace Logic
       
       /// <summary>Finds a variable parameter, if any, at a given index</summary>
       /// <param name="index">Zero-based physical index.</param>
-      /// <param name="var">On return this contains the variable name.</param>
+      /// <param name="var">On return this contains the variable name [Without $ prefix]</param>
       /// <returns>True if found, otherwise False</returns>
       bool ScriptCommand::FindVariable(UINT index, wstring& var) const
       {
@@ -378,7 +378,7 @@ namespace Logic
          for (auto& p : Parameters)
             if (p.IsVariable())
             {
-               var = p.Value.String;
+               var = GuiString(p.Text).TrimLeft(L"$= ");
                return true;
             }
 

@@ -329,6 +329,7 @@ namespace Logic
          case CMD_SPRINTF:                   // "$0 sprintf: fmt=$1, $2o, $3x, $4y, $5z, $6a"
          case CMD_SPRINTF_BYREF:             // "$0 sprintf: pageid=$1x textid=$2y, $3o, $4x, $5y, $6z, $7a"
          case CMD_CREATE_NEW_ARRAY:          // "$0 create new array, arguments=$1o, $2x, $3y, $4z, $5a"
+         case MACRO_DIM_ARRAY:               // "dim $0 = $1"
             return VArgSyntax::CommaDelimited;
 
          default:
@@ -354,6 +355,9 @@ namespace Logic
 
          case CMD_CALL_SCRIPT:              // "$1 $2 call script $0 :"
             return 10;
+
+         case MACRO_DIM_ARRAY:               // "dim $0 :"
+            return 50;
 
          /*case CMD_START_COMMAND:
          case CMD_START_DELAYED_COMMAND:
