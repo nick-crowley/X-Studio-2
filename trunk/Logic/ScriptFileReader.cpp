@@ -239,15 +239,13 @@ namespace Logic
             else if (cmd.Is(CMD_DEFINE_LABEL))
                script.Labels.Add(cmd.GetLabelName(), line);
 
-            // VARG SCRIPT-CALL: Load script properties
-            else if (cmd.Syntax.IsVArgument())
+            // SCRIPT-CALL: Load script properties
+            else if (cmd.Syntax.IsScriptCall())
             {
-               wstring name;
-
                try 
                {  
                   // Find name of target script (may be a variable)
-                  name = cmd.GetScriptCallName();
+                  wstring name = cmd.GetScriptCallName();
 
                   // Read unless previously read
                   if (!name.empty() && !script.ScriptCalls.Contains(name))
