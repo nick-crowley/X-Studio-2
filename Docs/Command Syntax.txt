@@ -444,14 +444,9 @@ STRING
 X2,X3R,X3TC,X3AP
 149
 http://forum.egosoft.com/viewtopic.php?t=286549
-$0 sprintf: fmt=$1, $2o, $3x, $4y, $5z, $6a
+$0 sprintf: fmt=$1 :
 RetVar
 Var/String
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 STRING
 X2,X3R,X3TC,X3AP
