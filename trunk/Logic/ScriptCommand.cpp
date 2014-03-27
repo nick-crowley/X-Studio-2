@@ -83,7 +83,7 @@ namespace Logic
 
                // Varg: Append remaining DT_NULL parameters  (Except for genuine varg scriptCalls)
                else if (!Syntax.Is(CMD_CALL_SCRIPT))
-                  ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
+                  Parameters += ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
                else
                   break;   
             }

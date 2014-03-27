@@ -49,7 +49,7 @@ namespace Testing
       //Test_LanguageFileReader();
       //Test_LanguageEditRegEx();
       //Test_CatalogReader();
-      Test_GZip_Decompress();
+      //Test_GZip_Decompress();
       //Test_FileSystem();
       //Test_CommandSyntax();
       //Test_StringLibrary();
@@ -59,7 +59,7 @@ namespace Testing
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      //BatchTest_ScriptCompiler();
+      BatchTest_ScriptCompiler();
       //Test_Lexer();
 
       //theApp.WriteString(L"example", L"writeString");
