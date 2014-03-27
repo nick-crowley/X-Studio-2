@@ -452,15 +452,10 @@ STRING
 X2,X3R,X3TC,X3AP
 150
 http://forum.egosoft.com/viewtopic.php?t=286553
-$0 sprintf: pageid=$1x textid=$2y, $3o, $4x, $5y, $6z, $7a
+$0 sprintf: pageid=$1x textid=$2y :
 RetVar
 Var/Number
 Var/Number
-Value
-Value
-Value
-Value
-Value
 -------------- END DEFINITION ---------------
 STRING
 X2,X3R,X3TC,X3AP
