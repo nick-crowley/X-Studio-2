@@ -108,7 +108,7 @@
 #define VALIDATION
 
 /// <summary>Disable some extra compiler features that produce byte-code that fails validation</summary>
-//#define STRICT_VALIDATION
+#define STRICT_VALIDATION
 
 /// <summary>Define the version number</summary>
 #define BUILD_VERSION  1
