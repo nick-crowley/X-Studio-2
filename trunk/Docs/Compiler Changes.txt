@@ -10,3 +10,9 @@
 # goto label -> goto
 
 # Use of cpp operators allowed
+
+# named script-call arguments
+
+# varg commands
+
+# case sensitive variables
