@@ -229,7 +229,8 @@ namespace Logic
       #define    CMD_SET_NEWS_ARTICLE_STATE       139
       #define    CMD_INCREMENT                    142
       #define    CMD_DECREMENT                    143
-      #define    CMD_STRING_PRINTF                150
+      #define    CMD_SPRINTF                      149
+      #define    CMD_SPRINTF_BYREF                150
       #define    CMD_SET_SHIP_UPGRADE_SCRIPT      154
       #define    CMD_SET_LOCAL_VARIABLE           155
       #define    CMD_GET_LOCAL_VARIABLE           156
@@ -277,6 +278,7 @@ namespace Logic
       #define    CMD_START_WING_COMMAND           1404
       #define    CMD_SET_GLOBAL_SECONDARY_MAP     1407
       #define    CMD_GET_LOCAL_VARIABLE_KEYS      1414
+      #define    CMD_CREATE_NEW_ARRAY             1415
       #define    CMD_CALL_NAMED_SCRIPT            1425
       #define    CMD_LAUNCH_SCRIPT_ARGS           1426
       #define    CMD_GET_GLOBAL_VARIABLE_KEYS     1436
