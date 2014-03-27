@@ -77,11 +77,11 @@ namespace Logic
             // Append supplied parameters followed by DT_NULL parameters
             for (UINT i = Syntax.ParameterCount; i < Syntax.MaxParameters; ++i)
             {
-               // Supply parameter
+               // Present: Supply parameter
                if (i < params.size())
                   Parameters += params[i]; 
 
-               // Varg: Append remaining DT_NULL parameters  (Except for genuine varg scriptCalls)
+               // Missing: Append remaining DT_NULL parameters or stop
                else if (Syntax.VArgParams == VArgMethod::PadNull)
                   Parameters += ScriptParameter(ParameterSyntax::VArgParameter, DataType::Null, 0);
                else
