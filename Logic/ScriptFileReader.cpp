@@ -345,33 +345,22 @@ namespace Logic
          CommandList& input = script.Commands.Input;
          CommandList output;
 
-         // Generate offline buffer
+         // Iterate thru all input commands
          for (auto cmd=input.begin(), end=input.end(); cmd != end; )
-            // Examine command
-            switch (cmd->Syntax.ID)
-            {
-            default:
-               ++cmd;
-               break;
-
-            /// [CUSTOM MENU ITEM]
+            // [CUSTOM MENU ITEM]
             //case CMD_READ_TEXT:
                //translateReadCustomMenuItemMacro(pScriptFile, pCommand, iIndex, pErrorQueue);
-               break;
 
             // [DIM] Convert 'alloc array' + element assignments into 'DIM' macro
-            case CMD_ARRAY_ALLOC: 
-               if (MatchDim(CommandIterator(cmd)))
-               {
-                  output.push_back(ReadDim(cmd));
-                  output.back().Translate(script);
-               }
-               else
-               {
-                  output.push_back(*cmd);
-                  ++cmd;
-               }
-               break;
+            if (MatchDim(CommandIterator(cmd)))
+            {
+               output.push_back(ReadDim(cmd));
+               output.back().Translate(script);
+            }
+            else
+            {
+               output.push_back(*cmd);
+               ++cmd;
             }
 
          // Replace input
