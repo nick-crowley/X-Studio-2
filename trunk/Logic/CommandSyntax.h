@@ -20,6 +20,8 @@ namespace Logic
       /// <summary>Available syntax for varg parameters</summary>
       enum class VArgSyntax { None, NamedPairs, CommaDelimited };
 
+      /// <summary>Defines how missing varg parameters are encoded</summary>
+      enum class VArgMethod { None, Drop, PadNull };
 
       /// <summary>Constant reference to a command syntax</summary>
       typedef const CommandSyntax&  CommandSyntaxRef;
@@ -57,6 +59,7 @@ namespace Logic
             ParamSyntaxArray Params;
             ExecutionType    Execution;
             VArgSyntax       VArgument;
+            VArgMethod       VArgParams;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -147,6 +150,7 @@ namespace Logic
                                  Text,
                                  URL;
          const VArgSyntax        VArgument;
+         const VArgMethod        VArgParams;
       };
 
       /// <summary>Defines the display group of a script command</summary>
