@@ -412,7 +412,7 @@ namespace Logic
       /// <returns></returns>
       SyntaxFile   LegacySyntaxFileReader::ReadFile()
       {
-         SyntaxFile   file;
+         SyntaxFile  file(L"X-Studio 1 Legacy Syntax File", L"v1.0");
          
          // Populate types (hard-coded)
          for (int i = 0; i < PARAMETER_SYNTAX_COUNT; ++i)

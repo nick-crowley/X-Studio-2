@@ -18,7 +18,7 @@ namespace Logic
          class CommandCollection : public multimap<UINT, CommandSyntax>
          {
          public:
-            void  Add(CommandSyntax& s)
+            void  Add(CommandSyntaxRef s)
             { 
                insert(value_type(s.ID, s)); 
             }
@@ -28,7 +28,7 @@ namespace Logic
          class TypeCollection : public map<wstring,ParameterType>
          {
          public:
-            bool  Add(wstring& name, ParameterType type) 
+            bool  Add(const wstring& name, ParameterType type) 
             { 
                return insert(value_type(name, type)).second; 
             }
@@ -38,16 +38,15 @@ namespace Logic
          class GroupCollection : public map<wstring,CommandGroup>
          {
          public:
-            bool  Add(wstring& name, CommandGroup group) 
+            bool  Add(const wstring& name, CommandGroup group) 
             { 
                return insert(value_type(name, group)).second; 
             }
          }; 
 
          // --------------------- CONSTRUCTION ----------------------
-
       public:
-         SyntaxFile();
+         SyntaxFile(const wstring& title, const wstring& version);
          virtual ~SyntaxFile();
 
          // --------------------- PROPERTIES ------------------------
@@ -59,11 +58,13 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
 		   // -------------------- REPRESENTATION ---------------------
-
+      public:
          CommandCollection  Commands;
          GroupCollection    Groups;
          TypeCollection     Types;
 
+         wstring            Title, 
+                            Version;
       private:
       };
 

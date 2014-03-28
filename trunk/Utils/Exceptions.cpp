@@ -67,6 +67,15 @@ namespace Logic
       // "COM object error: ...."
       : ExceptionBase(src, err.Error(), wstring(L"COM operation failed: ") + err.ErrorMessage())
    {}
+   
+   /// <summary>Create a ComException from a _com_error</summary>
+   /// <param name="src">Location of throw</param>
+   /// <param name="msg">Message</param>
+   /// <param name="err">COM error</param>
+   ComException::ComException(wstring  src, wstring msg, _com_error&  err) 
+      // "COM object error: ...."
+      : ExceptionBase(src, err.Error(), msg + wstring(L"COM operation failed: ") + err.ErrorMessage())
+   {}
 
    /// <summary>Create a ComException from a result code</summary>
    /// <param name="src">Location of throw</param>

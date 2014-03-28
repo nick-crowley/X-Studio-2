@@ -37,6 +37,7 @@ namespace Logic
          virtual void  LoadDocument();
 
          XmlNodePtr  GetChild(XmlNodePtr& parent, UINT index, const WCHAR* help);
+         UINT        GetChildCount(XmlNodePtr& parent, const WCHAR* help);
          wstring     ReadAttribute(XmlNodePtr&  node, const WCHAR*  name);
          void        ReadElement(XmlNodePtr&  node, const WCHAR*  name);
          bool        TryReadAttribute(XmlNodePtr&  node, const WCHAR*  name, wstring& val);

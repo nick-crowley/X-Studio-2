@@ -81,6 +81,12 @@ namespace Logic
       /// <param name="err">COM error</param>
       ComException(wstring  src, _com_error&  err);
 
+      /// <summary>Create a ComException from a _com_error</summary>
+      /// <param name="src">Location of throw</param>
+      /// <param name="msg">Message</param>
+      /// <param name="err">COM error</param>
+      ComException(wstring  src, wstring msg, _com_error&  err);
+
       /// <summary>Create a ComException from a result code</summary>
       /// <param name="src">Location of throw</param>
       /// <param name="err">COM error</param>

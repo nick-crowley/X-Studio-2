@@ -69,6 +69,27 @@ namespace Logic
          // Retrieve child
          return parent->childNodes->item[index];
       }
+      
+      /// <summary>Retrieves the number of child nodes</summary>
+      /// <param name="parent">The node</param>
+      /// <param name="help">Meaning of node</param>
+      /// <returns>Number of Child nodes</returns>
+      /// <exception cref="Logic::FileFormatException">Node is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      UINT  XmlReader::GetChildCount(XmlNodePtr& parent, const WCHAR* help)
+      {
+         try
+         {
+            if (!parent)
+               throw FileFormatException(HERE, VString(L"Missing %s node", help));
+
+            // Return length
+            return (UINT)parent->childNodes->length;
+         }
+         catch (_com_error& ex) {
+            throw ComException(HERE, VString(L"Cannot read length of %s: ", help), ex);
+         }
+      }
 
 
       /// <summary>Parses the entire contents of the input stream</summary>
