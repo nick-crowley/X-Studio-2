@@ -27,7 +27,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
 
          void  Close();
-         void  Write(const SyntaxFile& f);
+         void  Write(const SyntaxFile& f, const wstring& title, const wstring& version);
 
 		   // -------------------- REPRESENTATION ---------------------
 

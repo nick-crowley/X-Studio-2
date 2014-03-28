@@ -209,6 +209,20 @@ namespace Logic
          WriteText(e, txt);
          return e;
       }
+      
+      /// <summary>Writes an element with numeric text</summary>
+      /// <param name="parent">The element parent.</param>
+      /// <param name="name">The element name.</param>
+      /// <param name="value">Number</param>
+      /// <returns>New element</returns>
+      /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      XmlElementPtr XmlWriter::WriteElement(XmlElementPtr& parent, const wstring& name, int value)
+      {
+         auto e = WriteElement(parent, name);
+         WriteText(e, VString(L"%d", value));
+         return e;
+      }
 
       /// <summary>Writes a processing instruction.</summary>
       /// <param name="txt">The instruction</param>
