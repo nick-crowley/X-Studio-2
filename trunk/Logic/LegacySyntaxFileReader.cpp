@@ -54,11 +54,11 @@ namespace Logic
             if (it+2 < syntax.end())
                switch (*(it+2))
                {
-               case L'º': case 'o':  ordinals[index] = 1;  break;
-               case L'¹': case 'x':  ordinals[index] = 2;  break;
-               case L'²': case 'y':  ordinals[index] = 3;  break;
-               case L'³': case 'z':  ordinals[index] = 4;  break;
-               case L'ª': case 'a':  ordinals[index] = 5;  break;
+               case L'º': case 'o':  ordinals[index] = 0;  break;
+               case L'¹': case 'x':  ordinals[index] = 1;  break;
+               case L'²': case 'y':  ordinals[index] = 2;  break;
+               case L'³': case 'z':  ordinals[index] = 3;  break;
+               case L'ª': case 'a':  ordinals[index] = 4;  break;
                }
             else
                ordinals[index] = 0;
@@ -306,7 +306,7 @@ namespace Logic
          }
 
       }
-
+      
       /// <summary>Identifies variable argument commands</summary>
       /// <param name="id">Command ID</param>
       /// <returns></returns>

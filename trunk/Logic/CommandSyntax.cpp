@@ -25,7 +25,15 @@ namespace Logic
       {
          return s.Usage == ParameterUsage::StringID || s.Usage == ParameterUsage::PageID;
       };
+      
+      /// <summary>Determines whether parameter type represents interruptable syntax</summary>
+      /// <param name="s">parameter</param>
+      const ParamSyntaxPredicate  CommandSyntax::IsInterruptParam = [](const ParameterSyntax& s) 
+      {
+         return s.Type == ParameterType::INTERRUPT_RETURN_VALUE_IF || s.Type == ParameterType::RETURN_VALUE_IF_START;
+      };
 
+      
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Create the 'unknown' command syntax sentinel value</summary>
@@ -79,6 +87,54 @@ namespace Logic
       LogicExport GuiString  GetString(CommandGroup g)
       {
          return GuiString(IDS_FIRST_COMMAND_GROUP + (UINT)g);
+      }
+
+      /// <summary>Get command type name</summary>
+      LogicExport GuiString  GetString(CommandType t)
+      {
+         switch (t)
+         {
+         case CommandType::Auxiliary:  return L"Auxiliary";
+         case CommandType::Macro:      return L"Macro";
+         case CommandType::Standard:   return L"Standard";
+         }
+         return L"Unrecognised";
+      }
+
+      /// <summary>Get execution type name</summary>
+      LogicExport GuiString  GetString(ExecutionType t)
+      {
+         switch (t)
+         {
+         case ExecutionType::Concurrent:  return L"Concurrent";
+         case ExecutionType::Either:      return L"Either";
+         case ExecutionType::Serial:      return L"Serial";
+         }
+         return L"Unrecognised";
+      }
+
+      /// <summary>Get varg syntax name</summary>
+      LogicExport GuiString  GetString(VArgSyntax s)
+      {
+         switch (s)
+         {
+         case VArgSyntax::CommaDelimited: return L"CommaDelimited";
+         case VArgSyntax::NamedPairs:     return L"NamedPairs";
+         case VArgSyntax::None:           return L"None";
+         }
+         return L"Unrecognised";
+      }
+
+      /// <summary>Get varg method name</summary>
+      LogicExport GuiString  GetString(VArgMethod m)
+      {
+         switch (m)
+         {
+         case VArgMethod::Drop:     return L"Drop";
+         case VArgMethod::None:     return L"None";
+         case VArgMethod::PadNull:  return L"PadNull";
+         }
+         return L"Unrecognised";
       }
 
       /// <summary>Post-Increment command group</summary>
@@ -226,6 +282,12 @@ namespace Logic
          }
       }
 
+      /// <summary>Query whether command yields execution.</summary>
+      bool  CommandSyntax::IsInterrupt() const
+      {
+         // Match any interruptable RetVar parameter syntax
+         return any_of(Parameters.begin(), Parameters.end(), IsInterruptParam);
+      }
       
       /// <summary>Determines whether command is a script call</summary>
       /// <returns></returns>

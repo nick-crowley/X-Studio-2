@@ -23,6 +23,12 @@ namespace Logic
       /// <summary>Defines how missing varg parameters are encoded</summary>
       enum class VArgMethod { None, Drop, PadNull };
 
+      /// <summary>Get enum string</summary>
+      LogicExport GuiString  GetString(CommandType t);
+      LogicExport GuiString  GetString(ExecutionType t);
+      LogicExport GuiString  GetString(VArgSyntax s);
+      LogicExport GuiString  GetString(VArgMethod m);
+
       /// <summary>Constant reference to a command syntax</summary>
       typedef const CommandSyntax&  CommandSyntaxRef;
 
@@ -75,6 +81,8 @@ namespace Logic
 
          static const ParamSyntaxPredicate  IsScriptNameParam;
          static const ParamSyntaxPredicate  IsStringRefParam;
+         static const ParamSyntaxPredicate  IsInterruptParam;
+         
 
       private:
          wstring  GenerateHash(const wstring& syntax);
@@ -125,6 +133,9 @@ namespace Logic
 
          /// <summary>Query whether command is a keyword like break, continue etc.</summary>
          bool  IsKeyword() const;
+
+         /// <summary>Query whether command yields execution.</summary>
+         bool  IsInterrupt() const;
 
          /// <summary>Query whether command is a script call</summary>
          bool  IsScriptCall() const;

@@ -54,12 +54,12 @@ namespace Testing
       //Test_CommandSyntax();
       //Test_StringLibrary();
       //Test_XmlWriter();
-      //Test_SyntaxWriter();
+      Test_SyntaxWriter();
       //Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
       //Test_Iterator();
-      BatchTest_ScriptCompiler();
+      //BatchTest_ScriptCompiler();
       //Test_Lexer();
 
       //theApp.WriteString(L"example", L"writeString");
@@ -939,17 +939,17 @@ namespace Testing
    
    void LogicTests::Test_SyntaxWriter()
    {
-      const WCHAR* path = L"c:\\temp\\new Syntax.xml"; 
+      const WCHAR* path = L"f:\\new Syntax.xml"; 
 
       try
       {
          // Load legacy syntax file
-         StreamPtr fs( new FileStream(L"D:\\My Projects\\MFC Test 1\\MFC Test 1\\Command Syntax.txt", FileMode::OpenExisting, FileAccess::Read) );
+         StreamPtr fs(new FileStream(AppPath(L"Data\\Command Syntax.txt"), FileMode::OpenExisting, FileAccess::Read));
          auto file = LegacySyntaxFileReader(fs).ReadFile();
 
          // Convert to new format
          SyntaxWriter w( StreamPtr(new FileStream(path, FileMode::CreateAlways, FileAccess::Write)) );
-         w.Write(file);
+         w.Write(file, L"Standard MSCI Command Syntax by mr.bear", L"v1.0");
          w.Close();
       }
       catch (ExceptionBase&  e)

@@ -31,7 +31,9 @@ namespace Logic
 
       /// <summary>Writes a syntax file in the new format</summary>
       /// <param name="f">The file</param>
-      void  SyntaxWriter::Write(const SyntaxFile& f)
+      /// <param name="title">file title</param>
+      /// <param name="version">file version</param>
+      void  SyntaxWriter::Write(const SyntaxFile& f, const wstring& title, const wstring& version)
       {
          map<ParameterType, wstring>  paramNames;
          map<CommandGroup, wstring>   groupNames;
@@ -39,8 +41,11 @@ namespace Logic
          // Header
          WriteInstruction(L"version='1.0' encoding='utf-8'");
          WriteComment(L"Written by X-Studio II");
-         auto root = WriteRoot(L"syntax");
 
+         // Root
+         auto root = WriteRoot(L"syntax");
+         WriteAttribute(root, L"title", title);
+         WriteAttribute(root, L"version", version);
 
          // reverse group names lookup
          for (const auto& pair : f.Groups)
@@ -75,28 +80,27 @@ namespace Logic
             CommandSyntaxRef cmd = pair.second;
             auto e = WriteElement(commandSyntax, L"command");
 
-            // Id
+            // Id + Type 
             WriteAttribute(e, L"id", (int)cmd.ID);
+            WriteAttribute(e, L"type", GetString(cmd.Type));
+            
+            // Version: Build comma delimited string of acronyms
+            wstring vers;
+            for (GameVersion v : {GameVersion::Threat, GameVersion::Reunion, GameVersion::TerranConflict, GameVersion::AlbionPrelude})
+               if (cmd.Versions & (UINT)v)
+                  vers.append( VString(vers.empty()?L"%s":L",%s", VersionString(v, true).c_str()) );
 
-            // Version: Build string of acronyms
-            wstring ver;
-            if (cmd.Versions & (UINT)GameVersion::Threat)
-               ver = L"X2";
-            if (cmd.Versions & (UINT)GameVersion::Reunion)
-               ver.append(ver.empty() ? L"X3R" : L",X3R");
-            if (cmd.Versions & (UINT)GameVersion::TerranConflict)
-               ver.append(ver.empty() ? L"X3TC" : L",X3TC");
-            if (cmd.Versions & (UINT)GameVersion::AlbionPrelude)
-               ver.append(ver.empty() ? L"X3AP" : L",X3AP");
+            // Version+Group
+            WriteAttribute(e, L"version", vers);
+            WriteAttribute(e, L"group", groupNames[cmd.Group]);
 
-            WriteAttribute(e, L"version", ver);
-
-            // Properties
+            // Text/URL
             WriteElement(e, L"text", cmd.Text);
-            WriteElement(e, L"group", groupNames[cmd.Group]);
-            WriteElement(e, L"type", cmd.Type == CommandType::Standard ? L"Standard" 
-                                   : cmd.Type == CommandType::Auxiliary ? L"Auxiliary" : L"Macro");
             WriteElement(e, L"url", cmd.URL);
+
+            // Execution
+            auto ee = WriteElement(e, L"execution", GetString(cmd.Execution));
+            WriteAttribute(ee, L"yield", cmd.IsInterrupt() ? L"true" : L"false");
             
             // Parameters
             int index = 0;
@@ -119,6 +123,11 @@ namespace Logic
                case ParameterUsage::StringID:    WriteAttribute(e, L"usage", L"stringid");  break;
                }
             }
+
+            // Vargs
+            auto ve = WriteElement(e, L"vargs", GetString(cmd.VArgument));
+            WriteAttribute(ve, L"count", cmd.VArgCount);
+            WriteAttribute(ve, L"encoding", GetString(cmd.VArgParams));
          }
       }
 
