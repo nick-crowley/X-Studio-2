@@ -10,13 +10,13 @@ namespace Logic
    {
          
       /// <summary></summary>
-      class LogicExport SyntaxWriter : XmlWriter
+      class LogicExport SyntaxFileWriter : XmlWriter
       {
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         SyntaxWriter(StreamPtr out);
-         virtual ~SyntaxWriter();
+         SyntaxFileWriter(StreamPtr out);
+         virtual ~SyntaxFileWriter();
 
          // ------------------------ STATIC -------------------------
 

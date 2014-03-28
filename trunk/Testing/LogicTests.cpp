@@ -13,7 +13,7 @@
 #include "../Logic/ScriptFileReader.h"
 #include "../Logic/StringLibrary.h"
 #include "../Logic/XmlWriter.h"
-#include "../Logic/SyntaxWriter.h"
+#include "../Logic/SyntaxFileWriter.h"
 #include "../Logic/ExpressionParser.h"
 #include "../Logic/CommandLexer.h"
 #include "../Logic/TWare.h"
@@ -948,7 +948,7 @@ namespace Testing
          auto file = LegacySyntaxFileReader(fs).ReadFile();
 
          // Convert to new format
-         SyntaxWriter w( StreamPtr(new FileStream(path, FileMode::CreateAlways, FileAccess::Write)) );
+         SyntaxFileWriter w( StreamPtr(new FileStream(path, FileMode::CreateAlways, FileAccess::Write)) );
          w.Write(file, L"Standard MSCI Command Syntax by mr.bear", L"v1.0");
          w.Close();
       }
