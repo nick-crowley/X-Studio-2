@@ -192,7 +192,7 @@ namespace Logic
             
             // Read commands
             XmlNodePtr commands(root->selectSingleNode(L"commands"));
-            for (UINT i = 0; i < GetChildCount(types, L"commands"); i++)
+            for (UINT i = 0; i < GetChildCount(commands, L"commands"); i++)
             {
                XmlNodePtr n = GetChild(commands, i, L"commands");
 
@@ -277,7 +277,7 @@ namespace Logic
          }
 
          // Return command
-         return CommandSyntax(d);
+         return d;
       }
 
    }
