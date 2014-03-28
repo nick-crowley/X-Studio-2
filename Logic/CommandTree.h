@@ -124,6 +124,7 @@ namespace Logic
             void  IdentifyConstants(ScriptFile& script, ErrorArray& errors);
             void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
             void  IndexCommands(UINT& next);
+            void  InsertAfter(CommandTree* pos, CommandTree* cmd);
             void  InsertJump(NodeIterator pos, const CommandTree* target);
             void  LinkCommands(ErrorArray& errors);
             void  RevertCommandComment(CommandTree* child);

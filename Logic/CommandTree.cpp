@@ -580,6 +580,14 @@ namespace Logic
             return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
          }
 
+         void CommandTree::InsertAfter(CommandTree* pos, CommandTree* cmd)
+         {
+            auto c = FindChild(pos);
+
+            cmd->Parent = this;
+            Children.insert(++c, cmd);
+         }
+
          /// <summary>Expands macro commands</summary>
          /// <param name="script">script file.</param>
          /// <param name="errors">Errors collection.</param>
@@ -588,19 +596,35 @@ namespace Logic
             try
             {
                // Don't expand commented macros
-               if (!IsRoot() && !CmdComment)
+               if (!IsRoot() && !CmdComment && Is(CommandType::Macro))
                {
                   ParameterArray params;
-                  auto self = Parent->FindChild(this);
-                  
 
                   if (Is(MACRO_DIM_ARRAY))
                   {
-                     VString txt(L"%s array alloc: size=%d", Parameters[0].Text.c_str(), Parameters.size()-1);
+                     auto size = Parameters.size()-1;
+
+                     // Generate '<retVar> = array alloc: size=<size>'
                      params.push_back(Parameters[0]);
-                     //params.push_back(ScriptParameter(
-                     auto alloc = new CommandTree(Conditional::NONE, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params, 
-                                                  CommandLexer(txt), LineNumber, false);
+                     params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, size));
+                     
+                     // Insert after self
+                     auto last = new CommandTree(Condition, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params, LineText, LineNumber, false);
+                     Parent->InsertAfter(this, last);
+
+                     // Generate n '<array>[i] = <val>'     ($0[$1] = $2)
+                     for (UINT i = 0; i < size; ++i)
+                     {
+                        params.clear();
+                        params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::VARIABLE, Parameters[0].Value.String));
+                        params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, i));
+                        params.push_back(Parameters[i+1]);
+
+                        // Insert after last command
+                        auto cmd = new CommandTree(Condition, SyntaxLib.Find(CMD_ARRAY_ASSIGNMENT, script.Game), params, LineText, LineNumber, false);
+                        Parent->InsertAfter(last, cmd);
+                        last = cmd;
+                     }
                   }
                }
             }
@@ -610,7 +634,25 @@ namespace Logic
             
             // Recurse into children  [Allowing for in-place modification of child list]
             for (auto c = Children.begin(); c != Children.end(); )
-               (*(c++))->ExpandMacros(script, errors);
+            {
+               auto n = c++;
+
+               // Expand macros in children
+               (*n)->ExpandMacros(script, errors);
+
+               // Delete child if macro
+               if ((*n)->Is(CommandType::Macro))
+                  Children.erase(n);
+            }
+
+            // Delete any macros
+            /*for (auto c = Children.begin(); c != Children.end(); )
+            {
+               if ((*c)->Is(CommandType::Macro))
+                  Children.erase(c++);
+               else
+                  ++c;
+            }*/
          }
 
          /// <summary>Perform linkage steps that require the entire tree to be linked</summary>

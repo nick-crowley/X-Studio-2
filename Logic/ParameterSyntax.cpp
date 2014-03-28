@@ -26,6 +26,9 @@ namespace Logic
       /// <summary>Used for every varg parameter (script-call or extension). [INPUT/OUTPUT]</summary>
       const ParameterSyntax  ParameterSyntax::VArgParameter(ParameterType::PARAMETER, 3, 3);
 
+      /// <summary>Used for every expanded macro parameter [OUTPUT]</summary>
+      const ParameterSyntax  ParameterSyntax::MacroParameter(ParameterType::VALUE, 0, 0);
+
       /// <summary>Syntax for parameters of an unrecognised command. [UNUSED]</summary>
       const ParameterSyntax  ParameterSyntax::UnrecognisedCommand(ParameterType::UNRECOGNISED, 0, 0);
       
