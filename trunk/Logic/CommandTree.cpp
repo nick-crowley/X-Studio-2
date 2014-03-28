@@ -38,24 +38,35 @@ namespace Logic
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
          /// <exception cref="Logic::ArgumentNullException">Parent or target is null</exception>
-         CommandTree::CommandTree(CommandTree* parent, const CommandTree* target)
+         CommandTree::CommandTree(const CommandTree& parent, const CommandTree* target)
             : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
-              Parent(parent),
-              LineNumber(parent->LineNumber),
+              Parent(const_cast<CommandTree*>(&parent)),
+              LineNumber(parent.LineNumber),
               Extent({0,0}),
               Index(EMPTY_JUMP),
               State(InputState::Raw),
               CmdComment(false)
          {
-            REQUIRED(parent);
             REQUIRED(target);
 
             // Add empty jump parameter
             Parameters += ScriptParameter(ParameterSyntax::LabelNumberParameter, DataType::INTEGER, EMPTY_JUMP);
          }
-
+         
+         /// <summary>Expands a standard command from a macro command. The line number/text from the macro are preserved</summary>
+         /// <param name="m">macro command.</param>
+         /// <param name="cnd">new conditional.</param>
+         /// <param name="syntax">new command syntax.</param>
+         /// <param name="params">new parameters.</param>
+         CommandTree::CommandTree(const CommandTree& m, Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params)
+            : CommandTree(cnd, syntax, params, m.LineText, m.LineNumber, false)
+         {
+            // Use same parent
+            Parent = m.Parent;
+         }
+         
          /// <summary>Create node for a script command</summary>
          /// <param name="cnd">conditional.</param>
          /// <param name="syntax">command syntax.</param>
@@ -580,12 +591,43 @@ namespace Logic
             return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
          }
 
-         void CommandTree::InsertAfter(CommandTree* pos, CommandTree* cmd)
+         /// <summary>Generates the actual commands necessary to form the 'dim' macro</summary>
+         /// <param name="script">script file.</param>
+         /// <returns>List of expanded replacement commands</returns>
+         /// <exception cref="Logic::InvalidOperationException">Not a 'dim' macro</exception>
+         CommandTree::CommandNodeList  CommandTree::ExpandDimArray(ScriptFile& script)
          {
-            auto c = FindChild(pos);
+            CommandNodeList nodes;
+            ParameterArray params;
 
-            cmd->Parent = this;
-            Children.insert(++c, cmd);
+            // Require 'DIM' command
+            if (!Is(MACRO_DIM_ARRAY))
+               throw InvalidOperationException(HERE, L"Command must be 'dim' macro");
+            
+            auto size = Parameters.size()-1;
+
+            // Generate '<retVar> = array alloc: size=<size>'
+            params.push_back( Parameters[0] );
+            params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, VString(L"%d",size)) );
+                     
+            // Create
+            auto cmd = new CommandTree(*this, Condition, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params);
+            nodes.push_back(cmd);
+
+            // Generate n '<array>[i] = <val>'     ($0[$1] = $2)
+            for (UINT i = 0; i < size; ++i)
+            {
+               params.clear();
+               params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::VARIABLE, Parameters[0].Value.String) );
+               params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, VString(L"%d",i)) );
+               params.push_back( Parameters[i+1] );
+
+               // Create
+               cmd = new CommandTree(*this, Condition, SyntaxLib.Find(CMD_ARRAY_ASSIGNMENT, script.Game), params);
+               nodes.push_back(cmd);
+            }
+
+            return nodes;
          }
 
          /// <summary>Expands macro commands</summary>
@@ -598,34 +640,14 @@ namespace Logic
                // Don't expand commented macros
                if (!IsRoot() && !CmdComment && Is(CommandType::Macro))
                {
-                  ParameterArray params;
+                  CommandNodeList nodes;
 
+                  // DIM
                   if (Is(MACRO_DIM_ARRAY))
-                  {
-                     auto size = Parameters.size()-1;
+                     nodes = ExpandDimArray(script);
 
-                     // Generate '<retVar> = array alloc: size=<size>'
-                     params.push_back(Parameters[0]);
-                     params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, size));
-                     
-                     // Insert after self
-                     auto last = new CommandTree(Condition, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params, LineText, LineNumber, false);
-                     Parent->InsertAfter(this, last);
-
-                     // Generate n '<array>[i] = <val>'     ($0[$1] = $2)
-                     for (UINT i = 0; i < size; ++i)
-                     {
-                        params.clear();
-                        params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::VARIABLE, Parameters[0].Value.String));
-                        params.push_back(ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, i));
-                        params.push_back(Parameters[i+1]);
-
-                        // Insert after last command
-                        auto cmd = new CommandTree(Condition, SyntaxLib.Find(CMD_ARRAY_ASSIGNMENT, script.Game), params, LineText, LineNumber, false);
-                        Parent->InsertAfter(last, cmd);
-                        last = cmd;
-                     }
-                  }
+                  // Insert following self
+                  Children.insert(++Parent->FindChild(this), nodes.begin(), nodes.end());
                }
             }
             catch (ExceptionBase& e) {
@@ -637,22 +659,13 @@ namespace Logic
             {
                auto n = c++;
 
-               // Expand macros in children
+               // Expand macros
                (*n)->ExpandMacros(script, errors);
 
-               // Delete child if macro
+               // Delete original
                if ((*n)->Is(CommandType::Macro))
                   Children.erase(n);
             }
-
-            // Delete any macros
-            /*for (auto c = Children.begin(); c != Children.end(); )
-            {
-               if ((*c)->Is(CommandType::Macro))
-                  Children.erase(c++);
-               else
-                  ++c;
-            }*/
          }
 
          /// <summary>Perform linkage steps that require the entire tree to be linked</summary>
@@ -862,7 +875,7 @@ namespace Logic
          /// <returns></returns>
          void  CommandTree::InsertJump(NodeIterator pos, const CommandTree* target)
          {
-            Children.insert(pos, new CommandTree(this, target));
+            Children.insert(pos, new CommandTree(*this, target));
          }
          
          /// <summary>Query whether node is root</summary>
