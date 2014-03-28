@@ -46,13 +46,21 @@ namespace Logic
 
          // --------------------- CONSTRUCTION ----------------------
       public:
+         SyntaxFile();
          SyntaxFile(const wstring& title, const wstring& version);
          virtual ~SyntaxFile();
 
          // --------------------- PROPERTIES ------------------------
 			
 		   // ---------------------- ACCESSORS ------------------------
-			
+      public:
+         /// <summary>Gets ident string</summary>
+         /// <returns></returns>
+         GuiString GetIdent() const
+         {
+            return VString(L"%s %s", Title.c_str(), Version.c_str());
+         }
+
 		   // ------------------------ STATIC -------------------------
 
 		   // ----------------------- MUTATORS ------------------------
