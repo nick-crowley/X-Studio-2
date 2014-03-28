@@ -417,11 +417,11 @@ namespace Logic
          // Populate types (hard-coded)
          for (int i = 0; i < PARAMETER_SYNTAX_COUNT; ++i)
             if (StrCmpI(szParameterSyntax[i], L"--NONE--") != 0)
-               file.Types[szParameterSyntax[i]] = (ParameterType)i;
+               file.Types.Add(szParameterSyntax[i], (ParameterType)i);
 
             // Populate groups (hard-coded)
          for (int i = 0; i < COMMAND_GROUP_COUNT; ++i)
-            file.Groups[szCommandGroups[i]] = (CommandGroup)i;
+            file.Groups.Add(szCommandGroups[i], (CommandGroup)i);
 
          // Read syntax blocks
          CommandSyntax::Declaration  d;
