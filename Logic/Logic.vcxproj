@@ -191,6 +191,7 @@
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Symbol.h" />
     <ClInclude Include="SyntaxFile.h" />
+    <ClInclude Include="SyntaxFileReader.h" />
     <ClInclude Include="SyntaxHighlight.h" />
     <ClInclude Include="SyntaxLibrary.h" />
     <ClInclude Include="SyntaxTree.h" />
@@ -291,6 +292,7 @@
     <ClCompile Include="StringResolver.cpp" />
     <ClCompile Include="StringStream.cpp" />
     <ClCompile Include="SyntaxFile.cpp" />
+    <ClCompile Include="SyntaxFileReader.cpp" />
     <ClCompile Include="SyntaxHighlight.cpp" />
     <ClCompile Include="SyntaxLibrary.cpp" />
     <ClCompile Include="SyntaxTree.cpp" />

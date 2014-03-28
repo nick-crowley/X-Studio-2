@@ -7,7 +7,7 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      SyntaxFile::SyntaxFile()
+      SyntaxFile::SyntaxFile(const wstring& title, const wstring& version) : Title(title), Version(version)
       {
       }
 
