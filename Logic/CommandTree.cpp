@@ -951,6 +951,10 @@ namespace Logic
                   else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
                      errQueue += MakeError(L"Command must be executed asynchronously");
 
+                  // Check for macro within 'skip-if'
+                  if (Syntax.Is(CommandType::Macro) && Parent->Logic == BranchLogic::SkipIf)
+                     errQueue += MakeError(L"Macros cannot be used within skip-if conditional");
+
                   // Verify parameter values/types
                   UINT index = 0;
                   for (const ScriptParameter& p : Parameters)
