@@ -592,8 +592,13 @@ namespace Logic
 
             /// <summary>Adds a command to the appropriate output list</summary>
             /// <param name="cmd">The command.</param>
+            /// <exception cref="Logic::AlgorithmException">Macro command</exception>
             void  AddOutput(ScriptCommand& cmd)
             {
+               // Verify std/aux
+               if (cmd.Is(CommandType::Macro))
+                  throw AlgorithmException(HERE, L"Cannot add macro to the output stream");
+
                // Standard: Append
                if (cmd.Is(CommandType::Standard) && !cmd.Commented)
                   StdOutput.push_back(cmd);
