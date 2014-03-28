@@ -59,7 +59,7 @@ namespace Logic
          UINT  Enumerate(WorkerData* data);
 
       private:
-         void  Merge(SyntaxFile&& f);
+         void  Add(SyntaxFile& f);
 
 		   // -------------------- REPRESENTATION ---------------------
 

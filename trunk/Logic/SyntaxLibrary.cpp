@@ -3,6 +3,7 @@
 #include "CommandLexer.h"
 #include "FileStream.h"
 #include "LegacySyntaxFileReader.h"
+#include "SyntaxFileReader.h"
 
 namespace Logic
 {
@@ -38,30 +39,41 @@ namespace Logic
       /// <param name="data">Background worker data</param>
       /// <returns>Commands enumerated</returns>
       /// <exception cref="Logic::FileFormatException">Missing syntax component</exception>
-      /// <exception cref="Logic::InvalidValueException">Unknown command group / parameter type</exception>
+      /// <exception cref="Logic::InvalidValueException">Invalid value in syntax file</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       UINT  SyntaxLibrary::Enumerate(WorkerData* data)
       {
          try
          {
+            SyntaxFile file;
+
             // Clear previous contents
             Clear();
 
             // Feedback
             data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading command syntax...");
 
-            // TODO: Check for new format syntax file
+            // Check for new format syntax file
+            AppPath path(L"Data\\Command Syntax.xml");
+            if (!path.Exists())
+            {
+               path = AppPath(L"Data\\Command Syntax.txt");
+               if (!path.Exists())
+                  throw FileNotFoundException(HERE, AppPath(L"Data\\Command Syntax.xml"));
+            }
 
-            // Feedback
-            const AppPath path(L"Data\\Command Syntax.txt");
-            Console << L"Reading legacy syntax file: " << path << "...";
-         
-            // Load/Merge legacy syntax file
+            // Load file
+            Console << L"Reading syntax file: " << path << "...";
             StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
-            Merge( LegacySyntaxFileReader(fs).ReadFile() );
+
+            // Parse
+            if (path.HasExtension(L".xml"))
+               Add( file = LegacySyntaxFileReader(fs).ReadFile() );
+            else
+               Add( file = SyntaxFileReader(fs).ReadFile() );
 
             // Feedback
-            data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded legacy syntax file '%s'", path.FileName.c_str()));
+            data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded '%s'", file.GetIdent().c_str()));
             Console << Cons::Green << L"Success" << ENDL;
          }
          catch (ExceptionBase& e) {
@@ -150,7 +162,7 @@ namespace Logic
       
       /// <summary>Merges a syntax file into the library</summary>
       /// <param name="f">The file</param>
-      void  SyntaxLibrary::Merge(SyntaxFile&& f)
+      void  SyntaxLibrary::Add(SyntaxFile& f)
       { 
          // Merge commands with commands collection
          for (auto pair : f.Commands)

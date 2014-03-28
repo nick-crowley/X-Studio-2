@@ -145,13 +145,12 @@ namespace Logic
 		// ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads the entire Syntax file</summary>
-      /// <param name="path">Full path</param>
       /// <returns>New Syntax file</returns>
       /// <exception cref="Logic::ComException">COM Error</exception>
       /// <exception cref="Logic::FileFormatException">Corrupt XML / Missing elements / missing attributes</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid command type, version, exec type, varg type, parameter usage etc.</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      SyntaxFile SyntaxFileReader::ReadFile(Path path)
+      SyntaxFile SyntaxFileReader::ReadFile()
       {
          try
          {

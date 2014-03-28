@@ -32,7 +32,7 @@ namespace Logic
 
 			// ----------------------- MUTATORS ------------------------
       public:
-         SyntaxFile    ReadFile(Path path);
+         SyntaxFile    ReadFile();
 
       private:
          CommandSyntax ReadCommand(SyntaxFile& f, XmlNodePtr& node);
