@@ -183,6 +183,9 @@ namespace Logic
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandTree::Compile(ScriptFile& script, ErrorArray& errors)
          {
+            // Expand macros
+            ExpandMacros(script, errors);
+
             // Perform linking
             LinkCommands(errors);
 
@@ -465,11 +468,11 @@ namespace Logic
                   node = node->FindNextCommand();
                
                // 1st child is not executable (Auxiliary): Use it's next std sibling
-               else if (!isExecutableCommand(node->Children[0])) 
-                  node = node->Children[0]->FindNextCommand();
+               else if (!isExecutableCommand(*node->Children.begin())) 
+                  node = (*node->Children.begin())->FindNextCommand();
                else
                   // Default: Use first child
-                  node = node->Children[0].get();
+                  node = node->Children.begin()->get();
             }
 
             return node;
@@ -488,7 +491,7 @@ namespace Logic
                return &EndOfScript;
 
             // Find next sibling node containing a standard command
-            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), isConditionalEnd);
+            auto node = find_if(++Parent->FindChild(this), Parent->Children.cend(), isConditionalEnd);
 
             // Return if found, else recurse into parent
             return node != Parent->Children.cend() ? node->get() : Parent->FindConditionalEnd();
@@ -531,7 +534,7 @@ namespace Logic
 
             // Find 'this' and return next (if any)
             auto node = Parent->FindChild(this);
-            return node+1 != Parent->Children.end() ? node[1].get() : nullptr;
+            return ++node != Parent->Children.end() ? node->get() : nullptr;
          }
 
          /// <summary>Finds the prev sibling of this node</summary>
@@ -545,7 +548,7 @@ namespace Logic
 
             // Find 'this' and return prev (if any)
             auto node = Parent->FindChild(this);
-            return node != Parent->Children.begin() ? node[-1].get() : nullptr;
+            return node != Parent->Children.begin() ? (--node)->get() : nullptr;
          }
 
          /// <summary>Finds the root node</summary>
@@ -571,10 +574,43 @@ namespace Logic
                throw AlgorithmException(HERE, VString(L"Cannot find %s", help));
 
             // Find next sibling node containing a standard command
-            auto node = find_if(Parent->FindChild(this)+1, Parent->Children.cend(), d);
+            auto node = find_if(++Parent->FindChild(this), Parent->Children.cend(), d);
 
             // Return if found, else recurse into parent
             return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
+         }
+
+         /// <summary>Expands macro commands</summary>
+         /// <param name="script">script file.</param>
+         /// <param name="errors">Errors collection.</param>
+         void  CommandTree::ExpandMacros(ScriptFile& script, ErrorArray& errors)
+         {
+            try
+            {
+               // Don't expand commented macros
+               if (!IsRoot() && !CmdComment)
+               {
+                  ParameterArray params;
+                  auto self = Parent->FindChild(this);
+                  
+
+                  if (Is(MACRO_DIM_ARRAY))
+                  {
+                     VString txt(L"%s array alloc: size=%d", Parameters[0].Text.c_str(), Parameters.size()-1);
+                     params.push_back(Parameters[0]);
+                     //params.push_back(ScriptParameter(
+                     auto alloc = new CommandTree(Conditional::NONE, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params, 
+                                                  CommandLexer(txt), LineNumber, false);
+                  }
+               }
+            }
+            catch (ExceptionBase& e) {
+               errors += MakeError(GuiString(L"Macro expansion failed: ") + e.Message); 
+            }
+            
+            // Recurse into children  [Allowing for in-place modification of child list]
+            for (auto c = Children.begin(); c != Children.end(); )
+               (*(c++))->ExpandMacros(script, errors);
          }
 
          /// <summary>Perform linkage steps that require the entire tree to be linked</summary>
@@ -589,7 +625,7 @@ namespace Logic
 
                // Linked to break/continue: Link to associated JMP (1st child)
                if (JumpTarget && (JumpTarget->Is(CMD_BREAK) || JumpTarget->Is(CMD_CONTINUE)))
-                  JumpTarget = JumpTarget->Children[0].get();
+                  JumpTarget = JumpTarget->Children.begin()->get();
 
                // Verify linkage
                if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
