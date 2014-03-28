@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SyntaxWriter.h"
+#include "SyntaxFileWriter.h"
 
 namespace Logic
 {
@@ -11,11 +11,11 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Stream is not writeable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      SyntaxWriter::SyntaxWriter(StreamPtr out) : XmlWriter(out)
+      SyntaxFileWriter::SyntaxFileWriter(StreamPtr out) : XmlWriter(out)
       {
       }
 
-      SyntaxWriter::~SyntaxWriter()
+      SyntaxFileWriter::~SyntaxFileWriter()
       {
       }
 
@@ -24,7 +24,7 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Closes and flushes the output stream</summary>
-      void  SyntaxWriter::Close()
+      void  SyntaxFileWriter::Close()
       {
          XmlWriter::Close();
       }
@@ -33,7 +33,7 @@ namespace Logic
       /// <param name="f">The file</param>
       /// <param name="title">file title</param>
       /// <param name="version">file version</param>
-      void  SyntaxWriter::Write(const SyntaxFile& f, const wstring& title, const wstring& version)
+      void  SyntaxFileWriter::Write(const SyntaxFile& f, const wstring& title, const wstring& version)
       {
          map<ParameterType, wstring>  paramNames;
          map<CommandGroup, wstring>   groupNames;
