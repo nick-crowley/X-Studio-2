@@ -108,26 +108,29 @@ namespace Logic
             for (auto p : cmd.Parameters)
             {
                // Type
-               e = WriteElement(cmdParams, L"param", paramNames[p.Type]);
+               auto pe = WriteElement(cmdParams, L"param", paramNames[p.Type]);
 
                // Display index/ordinal
-               WriteAttribute(e, L"displayIndex", p.DisplayIndex);
+               WriteAttribute(pe, L"displayIndex", p.DisplayIndex);
                if (p.Ordinal != 0)
-                  WriteAttribute(e, L"ordinal", p.Ordinal);
+                  WriteAttribute(pe, L"ordinal", p.Ordinal);
 
                // Usage
                switch (p.Usage) 
                {
-               case ParameterUsage::ScriptName:  WriteAttribute(e, L"usage", L"scriptname");  break;
-               case ParameterUsage::PageID:      WriteAttribute(e, L"usage", L"pageid");  break;
-               case ParameterUsage::StringID:    WriteAttribute(e, L"usage", L"stringid");  break;
+               case ParameterUsage::ScriptName:  WriteAttribute(pe, L"usage", L"scriptname");  break;
+               case ParameterUsage::PageID:      WriteAttribute(pe, L"usage", L"pageid");  break;
+               case ParameterUsage::StringID:    WriteAttribute(pe, L"usage", L"stringid");  break;
                }
             }
 
             // Vargs
             auto ve = WriteElement(e, L"vargs", GetString(cmd.VArgument));
-            WriteAttribute(ve, L"count", cmd.VArgCount);
-            WriteAttribute(ve, L"encoding", GetString(cmd.VArgParams));
+            if (cmd.VArgument != VArgSyntax::None)
+            {
+               WriteAttribute(ve, L"count", cmd.VArgCount);
+               WriteAttribute(ve, L"encoding", GetString(cmd.VArgParams));
+            }
          }
       }
 
