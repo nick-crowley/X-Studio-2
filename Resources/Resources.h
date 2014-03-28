@@ -73,28 +73,37 @@
 // Test menu
 #define ID_TEST_RUN_ALL                 260
 #define ID_TEST_COMPILE                 261
+#define ID_TEST_VALIDATION              262
+#define ID_TEST_DESCRIPTIONS            263
+#define ID_TEST_FILE_SYSTEM             264
+#define ID_TEST_GZIP_COMPRESS           265
+#define ID_TEST_GZIP_DECOMPRESS         266
+#define ID_TEST_LANGUAGE                267
+#define ID_TEST_STRING_PARSER           268
+#define ID_TEST_TFILE_READER            269
+#define ID_TEST_SYNTAX_WRITER           270
+#define ID_TEST_XML_WRITER              271
 
 // View menu
-#define ID_VIEW_PROJECT                 262
-#define ID_VIEW_SCRIPT_OBJECTS          263
-#define ID_VIEW_GAME_OBJECTS            264
-#define ID_VIEW_CONSOLE                 265
-#define ID_VIEW_COMMANDS                266
-#define ID_VIEW_OUTPUT                  267
-#define ID_VIEW_BACKUP                  268
-#define ID_VIEW_PROPERTIES              269
-#define ID_VIEW_STRING_LIBRARY          270
-#define ID_VIEW_MEDIA_LIBRARY           271
-#define ID_VIEW_CUSTOMIZE               272
+#define ID_VIEW_PROJECT                 272
+#define ID_VIEW_SCRIPT_OBJECTS          273
+#define ID_VIEW_GAME_OBJECTS            274
+#define ID_VIEW_CONSOLE                 275
+#define ID_VIEW_COMMANDS                276
+#define ID_VIEW_OUTPUT                  277
+#define ID_VIEW_BACKUP                  278
+#define ID_VIEW_PROPERTIES              279
+#define ID_VIEW_STRING_LIBRARY          280
+#define ID_VIEW_MEDIA_LIBRARY           281
+#define ID_VIEW_CUSTOMIZE               282
 
 // Window menu
-#define ID_WINDOW_CLOSE_ALL             273
-#define ID_WINDOW_CLOSE_EXCEPT          274
-#define ID_WINDOW_MANAGER               275
+#define ID_WINDOW_CLOSE_ALL             283
+#define ID_WINDOW_CLOSE_EXCEPT          284
+#define ID_WINDOW_MANAGER               285
 
 // Help
-#define ID_HELP_FORUMS                  276
-
+#define ID_HELP_FORUMS                  286
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 

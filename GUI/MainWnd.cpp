@@ -68,13 +68,13 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_COMMAND(ID_EDIT_FIND, &MainWnd::OnCommand_FindText)
       ON_COMMAND(ID_EDIT_PREFERENCES, &MainWnd::OnCommand_Preferences)
       ON_COMMAND(ID_GAMEDATA_RELOAD, &MainWnd::OnCommand_Reload)
-	   ON_COMMAND(ID_TEST_RUN_ALL, &MainWnd::OnCommand_RunTests)
       ON_COMMAND(ID_VIEW_CONSOLE, &MainWnd::OnCommand_Console)
 	   ON_COMMAND(ID_VIEW_CUSTOMIZE, &MainWnd::OnCommand_CustomizeToolbar)
       ON_COMMAND(ID_VIEW_STRING_LIBRARY, &MainWnd::OnCommand_StringLibrary)
       ON_COMMAND(ID_WINDOW_CLOSE_ALL, &MainWnd::OnCommand_CloseAll)
       ON_COMMAND(ID_WINDOW_CLOSE_EXCEPT, &MainWnd::OnCommand_CloseExcept)
       ON_COMMAND(ID_WINDOW_MANAGER, &MainWnd::OnCommand_WindowManager)
+      ON_COMMAND_RANGE(ID_TEST_RUN_ALL, ID_TEST_XML_WRITER, &MainWnd::OnPerformCommand)
       ON_COMMAND_RANGE(ID_VIEW_PROJECT, ID_VIEW_PROPERTIES, &MainWnd::OnPerformCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_EXPORT, &MainWnd::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, &MainWnd::OnQueryCommand)
@@ -626,9 +626,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
             break;
 
          // Run Test
-         case ID_TEST_RUN_ALL: 
-            Testing::LogicTests::RunAll();   
-            break;
+         case ID_TEST_RUN_ALL:         Testing::LogicTests::RunAll();                     break;
+         case ID_TEST_DESCRIPTIONS:    Testing::LogicTests::Test_DescriptionReader();     break;
+         case ID_TEST_VALIDATION:      Testing::LogicTests::BatchTest_ScriptCompiler();   break;
+         case ID_TEST_FILE_SYSTEM:     Testing::LogicTests::Test_FileSystem();            break;
+         case ID_TEST_GZIP_COMPRESS:   Testing::LogicTests::Test_GZip_Compress();         break;
+         case ID_TEST_GZIP_DECOMPRESS: Testing::LogicTests::Test_GZip_Decompress();       break;
+         case ID_TEST_LANGUAGE:        Testing::LogicTests::Test_LanguageFileReader();    break;
+         case ID_TEST_STRING_PARSER:   Testing::LogicTests::Test_StringParser();          break;
+         case ID_TEST_TFILE_READER:    Testing::LogicTests::Test_TFileReader();           break;
+         case ID_TEST_XML_WRITER:      Testing::LogicTests::Test_XmlWriter();             break;
+         case ID_TEST_SYNTAX_WRITER:   Testing::LogicTests::Test_SyntaxWriter();          break;
          }
       }
       catch (ExceptionBase& e) {

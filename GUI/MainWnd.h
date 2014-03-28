@@ -139,7 +139,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnCommand_CustomizeToolbar()   { OnPerformCommand(ID_VIEW_CUSTOMIZE);       }
       afx_msg void    OnCommand_Preferences();
       afx_msg void    OnCommand_Reload();
-      afx_msg void    OnCommand_RunTests()           { OnPerformCommand(ID_TEST_RUN_ALL);         }
       afx_msg void    OnCommand_StringLibrary()      { OnPerformCommand(ID_VIEW_STRING_LIBRARY);  }
       afx_msg void    OnCommand_WindowManager()      { OnPerformCommand(ID_WINDOW_MANAGER);       }
 	   afx_msg int     OnCreate(LPCREATESTRUCT lpCreateStruct);

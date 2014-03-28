@@ -12,11 +12,10 @@ namespace Testing
       virtual ~LogicTests() {};
 
       // ------------------------ STATIC -------------------------
-
    public:
       static void  RunAll();
 
-   private:
+   public:
       static void  BatchTest_ScriptCompiler();
       static void  Test_CommandSyntax();
       static void  Test_LanguageFileReader();
