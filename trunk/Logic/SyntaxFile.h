@@ -8,9 +8,7 @@ namespace Logic
    {
       class SyntaxFile;
 
-      
-
-      /// <summary></summary>
+      /// <summary>Represents an X-Studio 1 or 2 syntax file</summary>
       class LogicExport SyntaxFile
       {
       public:
@@ -18,6 +16,8 @@ namespace Logic
          class CommandCollection : public multimap<UINT, CommandSyntax>
          {
          public:
+            /// <summary>Adds command syntax.</summary>
+            /// <param name="s">syntax.</param>
             void  Add(CommandSyntaxRef s)
             { 
                insert(value_type(s.ID, s)); 
@@ -28,9 +28,28 @@ namespace Logic
          class TypeCollection : public map<wstring,ParameterType>
          {
          public:
-            bool  Add(const wstring& name, ParameterType type) 
+            /// <summary>Adds parameter type.</summary>
+            /// <param name="name">name.</param>
+            /// <param name="type">type.</param>
+            /// <returns></returns>
+            bool  Add(const wstring& name, ParameterType type)
             { 
                return insert(value_type(name, type)).second; 
+            }
+
+            /// <summary>Find parameter type</summary>
+            /// <param name="name">name.</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::GenericException">Missing</exception>
+            ParameterType  operator[](const wstring& name)
+            {
+               // Lookup item
+               auto pos = find(name);
+               if (pos != end())
+                  return pos->second;
+
+               // Not found:
+               throw GenericException(HERE, VString(L"Cannot find a parameter type '%s'", name.c_str()));
             }
          }; 
 
@@ -38,9 +57,28 @@ namespace Logic
          class GroupCollection : public map<wstring,CommandGroup>
          {
          public:
+            /// <summary>Adds command group.</summary>
+            /// <param name="name">name.</param>
+            /// <param name="group">group.</param>
+            /// <returns></returns>
             bool  Add(const wstring& name, CommandGroup group) 
             { 
                return insert(value_type(name, group)).second; 
+            }
+            
+            /// <summary>Find command group</summary>
+            /// <param name="name">name.</param>
+            /// <returns></returns>
+            /// <exception cref="Logic::GenericException">Missing</exception>
+            CommandGroup  operator[](const wstring& name)
+            {
+               // Lookup item
+               auto pos = find(name);
+               if (pos != end())
+                  return pos->second;
+
+               // Not found:
+               throw GenericException(HERE, VString(L"Cannot find a command group '%s'", name.c_str()));
             }
          }; 
 
@@ -67,12 +105,12 @@ namespace Logic
 
 		   // -------------------- REPRESENTATION ---------------------
       public:
-         CommandCollection  Commands;
-         GroupCollection    Groups;
-         TypeCollection     Types;
+         CommandCollection  Commands;        // Command syntax
+         GroupCollection    Groups;          // CommandGroup name->ID map
+         TypeCollection     Types;           // ParameterType name->ID map
 
-         wstring            Title, 
-                            Version;
+         wstring            Title,           // File title
+                            Version;         // File version
       private:
       };
 

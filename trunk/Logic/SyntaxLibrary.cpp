@@ -68,13 +68,13 @@ namespace Logic
 
             // Parse
             if (path.HasExtension(L".xml"))
-               Add( file = LegacySyntaxFileReader(fs).ReadFile() );
-            else
                Add( file = SyntaxFileReader(fs).ReadFile() );
+            else
+               Add( file = LegacySyntaxFileReader(fs).ReadFile() );
 
             // Feedback
             data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded '%s'", file.GetIdent().c_str()));
-            Console << Cons::Green << L"Success" << ENDL;
+            Console << Cons::Success << Cons::White << file.GetIdent() << ENDL;
          }
          catch (ExceptionBase& e) {
             Console << Cons::Failure << e.Message << ENDL;
@@ -178,7 +178,7 @@ namespace Logic
             CommandSyntaxRef syntax = pair.second;
             
             // Skip commands that are manually matched by parser
-            if (syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT || syntax.ID == CMD_EXPRESSION)
+            if (syntax.ID == CMD_NOP || syntax.ID == CMD_COMMENT || syntax.ID == CMD_COMMAND_COMMENT || syntax.ID == CMD_EXPRESSION)
                continue;
 
             // Lex syntax string

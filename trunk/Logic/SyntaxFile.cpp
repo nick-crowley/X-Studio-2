@@ -11,6 +11,9 @@ namespace Logic
       {
       }
 
+      /// <summary>Create syntax file</summary>
+      /// <param name="title">The title.</param>
+      /// <param name="version">The version.</param>
       SyntaxFile::SyntaxFile(const wstring& title, const wstring& version) : Title(title), Version(version)
       {
       }

@@ -65,10 +65,10 @@ namespace Logic
 
             // Feedback
             data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded '%s'", file.Ident.c_str()));
-            Console << Cons::Green << L"Success: " << Cons::White << file.Ident << ENDL;
+            Console << Cons::Success << Cons::White << file.Ident << ENDL;
          }
          catch (ExceptionBase& e) {
-            Console << Cons::Error << L"Failed: " << e.Message << ENDL;
+            Console << Cons::Failure << e.Message << ENDL;
             throw;
          }
 

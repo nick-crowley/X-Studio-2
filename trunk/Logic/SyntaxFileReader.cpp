@@ -194,7 +194,7 @@ namespace Logic
             XmlNodePtr commands(root->selectSingleNode(L"commands"));
             for (UINT i = 0; i < GetChildCount(types, L"commands"); i++)
             {
-               XmlNodePtr n = GetChild(types, i, L"commands");
+               XmlNodePtr n = GetChild(commands, i, L"commands");
 
                // Skip comments
                if (n->nodeType == Xml::NODE_ELEMENT)
@@ -234,7 +234,7 @@ namespace Logic
 
          // Text/URL
          d.Syntax = GetChild(node, 0, L"command text")->text;
-         d.Syntax = GetChild(node, 1, L"command MSCI URL")->text;
+         d.URL = GetChild(node, 1, L"command MSCI URL")->text;
 
          // Execution
          auto exec = GetChild(node, 2, L"command execution");
