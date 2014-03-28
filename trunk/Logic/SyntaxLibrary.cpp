@@ -75,6 +75,9 @@ namespace Logic
             // Feedback
             data->SendFeedback(ProgressType::Info, 2, VString(L"Loaded '%s'", file.GetIdent().c_str()));
             Console << Cons::Success << Cons::White << file.GetIdent() << ENDL;
+
+            // Feedback
+            Console << "Read " << Commands.size() << " commands" << ENDL;
          }
          catch (ExceptionBase& e) {
             Console << Cons::Failure << e.Message << ENDL;
