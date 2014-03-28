@@ -35,17 +35,17 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
          };
 
-         /// <summary>Vector of parse tree node pointers</summary>
-         typedef vector<CommandNodePtr>   CommandNodeArray;
-
             
          /// <summary>Represents a script command and its descendants, if any</summary>
          class LogicExport CommandTree 
          {
             // ------------------------ TYPES --------------------------
          protected:
+            /// <summary>List of parse tree node pointers</summary>
+            typedef list<CommandNodePtr>   CommandNodeList;
+
             /// <summary>CommandTree array iterator</summary>
-            typedef CommandNodeArray::const_iterator   NodeIterator;
+            typedef CommandNodeList::const_iterator   NodeIterator;
 
             /// <summary>CommandTree predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
@@ -118,6 +118,7 @@ namespace Logic
             void           Verify(ScriptFile& script, ErrorArray& errors);
             
          protected:
+            void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
             void  IdentifyConstants(ScriptFile& script, ErrorArray& errors);
@@ -132,7 +133,7 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
          public:
             CommandTree*       Parent;        // Parent node
-            CommandNodeArray   Children;      // Child commands
+            CommandNodeList    Children;      // Child commands
 
             ParameterArray     Parameters,    // script parameters in display order
                                Postfix;       // expression parameters in postfix order
