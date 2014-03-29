@@ -307,6 +307,34 @@ namespace Logic
          // Success
          return true;
       }
+      
+      /// <summary>Matches a triplet of loop initilization, guard condition, iterator advancement.</summary>
+      /// <param name="cmd">command position.</param>
+      /// <returns></returns>
+      /// <remarks>If successful the iterator is advanced beyond the last matched command, otherwise it is unmoved</remarks>
+      bool ScriptFileReader::MatchForLoop(CommandIterator& cmd) const
+      {
+         CommandIterator start(cmd);
+         wstring  iterator;
+         int      step = 0;
+         
+         // Match '(iterator) = (inital_value) ± (step_value)' 
+         const ScriptParameter* initial = nullptr;
+         if (!(cmd++)->MatchForLoopInitialize(iterator, initial, step) || step == 0)
+            return (cmd=start, false);
+
+         // Match 'while (iterator) less/greater (final_value)'
+         const ScriptParameter* limit = nullptr;
+         if (!(cmd++)->MatchForLoopCondition(iterator, step, limit))
+            return (cmd=start, false);
+
+         // Match '(iterator) = (iterator) ± (step_value)'
+         if (!(cmd++)->MatchForLoopAdvance(iterator, step))
+            return (cmd=start, false);
+
+         // Success
+         return true;
+      }
 
       /// <summary>Generates a DIM command from a previously matched 'alloc array' command and element assignments.</summary>
       /// <param name="cmd">alloc array command.</param>
@@ -334,6 +362,38 @@ namespace Logic
          }
 
          // Generate command
+         return ScriptCommand(syntax, params, false);
+      }
+      
+      /// <summary>Generates a DIM command from a previously matched 'alloc array' command and element assignments.</summary>
+      /// <param name="cmd">alloc array command.</param>
+      /// <returns></returns>
+      /// <remarks>the iterator is advanced beyond the last element assignment</remarks>
+      ScriptCommand  ScriptFileReader::ReadForLoop(CommandIterator& cmd) const
+      {
+         ParameterArray params;
+         wstring        iterator;
+         int            step = 0;
+         
+         // ForLoop macro
+         auto& syntax = SyntaxLib.Find(MACRO_FOR_LOOP, GameVersion::Threat);
+
+         // Match '(iterator) = (inital_value) ± (step_value)' 
+         const ScriptParameter* initial = nullptr;
+         (cmd++)->MatchForLoopInitialize(iterator, initial, step);
+         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ParameterValue(iterator));
+         params += *initial;
+
+         // Match 'while (iterator) less/greater (final_value)'
+         const ScriptParameter* limit = nullptr;
+         (cmd++)->MatchForLoopCondition(iterator, step, limit);
+         params += *limit;
+         params += ScriptParameter(syntax.Parameters[3], DataType::INTEGER, VString(L"%d",step));
+
+         // Consume '(iterator) = (iterator) ± (step_value)'
+         ++cmd;
+
+         // Generate 'for $0 = $1 to $2 step $3'
          return ScriptCommand(syntax, params, false);
       }
 

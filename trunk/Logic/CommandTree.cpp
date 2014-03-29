@@ -616,7 +616,7 @@ namespace Logic
          /// <returns>List of expanded replacement commands</returns>
          /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
          /// <exception cref="Logic::InvalidOperationException">Not a 'dim' macro</exception>
-         CommandTree::CommandNodeList  CommandTree::ExpandDimArray(ScriptFile& script)
+         CommandNodeList  CommandTree::ExpandDimArray(ScriptFile& script)
          {
             CommandNodeList nodes;
 
@@ -661,7 +661,7 @@ namespace Logic
          /// (iterator) = (inital_value) ± (step_value)
          /// while (iterator) greater/less (final_value)
          /// (iterator) = (iterator) ± (step_value)</remarks>
-         CommandTree::CommandNodeList  CommandTree::ExpandForLoop(ScriptFile& script)
+         CommandNodeList  CommandTree::ExpandForLoop(ScriptFile& script)
          {
             CommandNodeList  nodes;
             ParameterArray   params,

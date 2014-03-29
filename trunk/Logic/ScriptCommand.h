@@ -98,12 +98,16 @@ namespace Logic
 
       public:
          bool  FindInteger(UINT index, int& val) const;
+         bool  FindOperator(UINT index, Operator& op) const;
          bool  FindRetVar(wstring& varName) const;
          bool  FindString(UINT index, wstring& str) const;
          bool  FindVariable(UINT index, wstring& var) const;
 
          bool  MatchAllocArray(wstring& varName, int& size) const;
          bool  MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const;
+         bool  MatchForLoopAdvance(const wstring& iterator, const int step) const;
+         bool  MatchForLoopCondition(const wstring& iterator, const int step, const ScriptParameter*& limit) const;
+         bool  MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

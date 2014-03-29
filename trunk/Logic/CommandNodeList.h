@@ -1,5 +1,4 @@
 #pragma once
-#include "CommandTree.h"
 
 namespace Logic
 {
@@ -7,6 +6,8 @@ namespace Logic
    {
       namespace Compiler
       {
+         class CommandNodePtr;
+
          /// <summary>List of script commands nodes</summary>
          class LogicExport CommandNodeList : public list<CommandNodePtr>
          {
@@ -21,26 +22,14 @@ namespace Logic
             /// <summary>Determines if 'define label' command is a label definition or subroutine</summary>
             /// <param name="cmd">The command.</param>
             /// <returns></returns>
-            bool IsSubRoutine(iterator cmd) const
-            {
-               if (!(*cmd)->Is(CMD_DEFINE_LABEL))
-                  return false;
-
-               // Linear search following commands
-               for (auto p = ++cmd; p != end(); ++p)
-                  // Label: Not a subroutine
-                  if ((*p)->Is(CMD_DEFINE_LABEL))
-                     return false;
-
-                  // EndSub: Subroutine
-                  else if ((*p)->Is(CMD_END_SUB))
-                     return true;
-
-               // EOF: Not a subroutine
-               return false;
-            }
+            bool IsSubRoutine(iterator cmd) const;
 
             // ----------------------- MUTATORS ------------------------
+         public:
+            /// <summary>Appends a node to the list</summary>
+            /// <param name="p">node.</param>
+            /// <returns></returns>
+            CommandNodeList& operator+=(const CommandNodePtr& p);
 
             // -------------------- REPRESENTATION ---------------------
          };

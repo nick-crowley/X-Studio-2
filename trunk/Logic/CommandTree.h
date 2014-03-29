@@ -1,6 +1,7 @@
 #pragma once
 #include "CommandSyntax.h"
 #include "CommandLexer.h"
+#include "CommandNodeList.h"
 #include "ScriptCommand.h"
 #include "ScriptParameter.h"
 #include "ScriptToken.h"
@@ -15,8 +16,6 @@ namespace Logic
       namespace Compiler
       {
          class CommandTree;
-         class CommandNodeList;
-
          
          /// <summary>Shared pointer to a parse tree node</summary>
          class LogicExport CommandNodePtr : public shared_ptr<CommandTree> 
@@ -41,20 +40,6 @@ namespace Logic
          {
             // ------------------------ TYPES --------------------------
          protected:
-            /// <summary>List of parse tree node pointers</summary>
-            class CommandNodeList : public list<CommandNodePtr> 
-            {
-            public:
-               /// <summary>Appends a node to the list</summary>
-               /// <param name="p">node.</param>
-               /// <returns></returns>
-               CommandNodeList& operator+=(const CommandNodePtr& p)
-               {
-                  push_back(p);
-                  return *this;
-               }
-            };
-
             /// <summary>CommandTree array iterator</summary>
             typedef CommandNodeList::const_iterator   NodeIterator;
 
