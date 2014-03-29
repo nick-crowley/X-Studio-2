@@ -570,12 +570,17 @@ namespace Logic
          step = 0;
 
          // Match expression + iterator + step
-         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && FindRetVar(iterator) && FindInteger(3, step))
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && FindRetVar(iterator) && FindInteger(3, step) && step != 0)
             // Ensure step is an integer and operator is ±
             if (MatchOperator(2, Operator::Add) || MatchOperator(2, Operator::Subtract))
             {
                // Extract initial value 
                initial = &Parameters[1];
+
+               // DoubleMinus: Switch sign
+               if (step < 0 && MatchOperator(2, Operator::Subtract))
+                  step = -1 * step;
+
                return true;
             }
 
