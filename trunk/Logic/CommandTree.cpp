@@ -290,6 +290,11 @@ namespace Logic
             case CMD_COMMENT: 
             case CMD_NOP:     
                return BranchLogic::NOP;
+            
+            case MACRO_FOR_EACH:
+            case MACRO_FOR_EACH_COUNTER:
+            case MACRO_FOR_LOOP:
+               return BranchLogic::While;
          
             // Conditional
             default:
