@@ -695,7 +695,11 @@ namespace Logic
 
             // (iterator) = (iterator) ± (step_value)
             VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
-            nodes += ExpandCommand(advance, script.Game);
+            nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
+
+            // Add children of 'for loop' to 'while'
+            for (auto& c : Children)
+               nodes.back()->Add(c);
 
             return nodes;
          }
