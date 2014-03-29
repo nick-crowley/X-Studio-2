@@ -327,9 +327,25 @@ namespace Logic
          val = 0;
 
          // Require DT_INTEGER
-         if (index < Parameters.size() && p.Type == DataType::INTEGER)
+         if (index < Parameters.size() && Parameters[index].Type == DataType::INTEGER)
          {
             val = Parameters[index].Value.Int;
+            return true;
+         }
+
+         return false;
+      }
+      
+      /// <summary>Finds an operator parameter, if any, at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="op">On return this contains the operator.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::FindOperator(UINT index, Operator& op) const
+      {
+         // Require DT_OPERATOR
+         if (index < Parameters.size() && Parameters[index].Type == DataType::OPERATOR)
+         {
+            op = (Operator)Parameters[index].Value.Int;
             return true;
          }
 
@@ -426,32 +442,85 @@ namespace Logic
       }
       
 
-      /// <summary>Matches an array assignment command.</summary>
-      /// <param name="array">Name of array variable.</param>
-      /// <param name="element">Required array index.</param>
-      /// <param name="param">On return this contains the parameter assigned (if successful)</param>
+      /// <summary>Matches a 'for loop' initialization expression.</summary>
+      /// <param name="iterator">On return this contains the name of iterator variable.</param>
+      /// <param name="initial">On return this contains the initial value parameter</param>
+      /// <param name="step">On return this contains the step value.</param>
+      /// <returns></returns>
+      /// <remarks>Matches '(iterator) = (iterator) ± (step_value)'</remarks>
+      bool  ScriptCommand::MatchForLoopAdvance(const wstring& iterator, const int step) const
+      {
+         Operator op;
+         wstring  _iterator;
+
+         // Ensure 'while' expression with four components
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4)
+            // Match iterator variable
+            if (FindVariable(1, _iterator) && iterator == _iterator && FindVariable(2, _iterator) && iterator == _iterator)
+               // Match plus/minus
+               if (FindOperator(2, op) && (step > 0 && op == Operator::Add || step < 0 && op == Operator::Subtract))
+                  return true;
+
+         return false;
+      }
+      
+      /// <summary>Matches a 'for loop' conditional check.</summary>
+      /// <param name="iterator">Name of iterator variable.</param>
+      /// <param name="step">Step value.</param>
+      /// <param name="limit">On return this contains the limit value parameter</param>
+      /// <returns></returns>
+      /// <remarks>Matches 'while (iterator) less/greater (final_value)'</remarks>
+      bool  ScriptCommand::MatchForLoopCondition(const wstring& iterator, const int step, const ScriptParameter*& limit) const
+      {
+         Operator op;
+         wstring _iterator;
+
+         // Prepare
+         limit = nullptr;
+
+         // Ensure 'while' expression with four components
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && Logic == BranchLogic::While)
+            // Match iterator variable
+            if (FindVariable(1, _iterator) && iterator == _iterator)
+               // Match greater/less
+               if (FindOperator(2, op) && (step > 0 && op == Operator::Less || step < 0 && op == Operator::Greater))
+               {
+                  // Extract limit value 
+                  limit = &Parameters[3];
+                  return true;
+               }
+
+         return false;
+      }
+      
+      /// <summary>Matches a 'for loop' initialization expression.</summary>
+      /// <param name="iterator">On return this contains the name of iterator variable.</param>
+      /// <param name="initial">On return this contains the initial value parameter</param>
+      /// <param name="step">On return this contains the step value.</param>
       /// <returns></returns>
       /// <remarks>Matches '(iterator) = (inital_value) ± (step_value)'</remarks>
       bool  ScriptCommand::MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const
       {
-         wstring _iterator;
-         int     _step;
+         Operator op;
 
-         param = nullptr;
+         // Prepare
+         initial = nullptr;
+         iterator.clear();
+         step = 0;
 
-         // Ensure command has correct array variable and element index
-         if (Is(CMD_EXPRESSION) 
-          && FindVariable(0, _array) && array == _array 
-          && FindInteger(1, _element) && element == _element)
-         {
-            // Extract assignment parameter
-            param = &Parameters[2];
-            return true;
-         }
+         // Ensure expression has four components
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4)
+            // Ensure step is an integer and operator is ±
+            if (FindInteger(3, step) && FindOperator(2, op) && (op == Operator::Add || op == Operator::Subtract))
+            {
+               // Extract initial value 
+               initial = &Parameters[1];
+               return true;
+            }
 
          return false;
       }
-
+      
       /// <summary>Replaces a label number parameter with a label name parameter.</summary>
       /// <param name="name">The name of the label</param>
       /// <exception cref="Logic::InvalidOperationException">Command is not goto/gosub</exception>

@@ -354,6 +354,8 @@ namespace Logic
          case DataType::WARE:
             return GuiString::Format(L"{%s}", Value.String.c_str());
          }
+
+         throw AlgorithmException(HERE, L"Invalid script parameter type");
       }
       
       /// <summary>Identifies variables as mutable or constant</summary>

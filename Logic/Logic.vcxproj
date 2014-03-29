@@ -232,6 +232,8 @@
     <ClCompile Include="CatalogReader.cpp" />
     <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="CommandLexer.cpp" />
+    <ClCompile Include="CommandList.cpp" />
+    <ClCompile Include="CommandNodeList.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
     <ClCompile Include="ConsoleLog.cpp" />
