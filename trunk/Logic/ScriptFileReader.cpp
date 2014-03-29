@@ -351,7 +351,7 @@ namespace Logic
          
          // Match 'alloc array'. Generate RetVar.
          (cmd++)->MatchAllocArray(array, size);  
-         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ParameterValue(array));
+         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, array);
 
          // Match element assignments. Generate Params.
          for (int el = 0; el < size; ++el)
@@ -381,14 +381,14 @@ namespace Logic
          // Match '(iterator) = (inital_value) ± (step_value)' 
          const ScriptParameter* initial = nullptr;
          (cmd++)->MatchForLoopInitialize(iterator, initial, step);
-         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, ParameterValue(iterator));
+         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, iterator);
          params += *initial;
 
          // Match 'while (iterator) less/greater (final_value)'
          const ScriptParameter* limit = nullptr;
          (cmd++)->MatchForLoopCondition(iterator, step, limit);
          params += *limit;
-         params += ScriptParameter(syntax.Parameters[3], DataType::INTEGER, VString(L"%d",step));
+         params += ScriptParameter(syntax.Parameters[3], DataType::INTEGER, step);
 
          // Consume '(iterator) = (iterator) ± (step_value)'
          ++cmd;
@@ -407,10 +407,6 @@ namespace Logic
 
          // Iterate thru all input commands
          for (auto cmd=input.begin(), end=input.end(); cmd != end; )
-            // [CUSTOM MENU ITEM]
-            //case CMD_READ_TEXT:
-               //translateReadCustomMenuItemMacro(pScriptFile, pCommand, iIndex, pErrorQueue);
-
             // [DIM] Convert 'alloc array' + element assignments into 'DIM' macro
             if (MatchDim(CommandIterator(cmd)))
             {
@@ -432,82 +428,6 @@ namespace Logic
          // Replace input
          input.clear();
          input = output;
-
-            /// [FOR EACH IN ARRAY] Convert '$iterator = size of array $array', 'while $iterator', 'dec $iterator' and '$retvar = $array[$iterator]' into the 'for each $retvar in array $array' macro
-            //case CMD_SIZE_OF_ARRAY:
-            //   // Prepare
-            //   szArrayVariable = szReturnVariable = szIteratorVariable = NULL;
-            //   bMatchFound     = TRUE;
-
-            //   // [CHECK] Lookup array variable and return variable 
-            //   if (isCommandArrayCount(pCommand, szIteratorVariable, szArrayVariable))
-            //   {
-            //      // Iterate through the next three commands
-            //      for (UINT  iSubCommand = 1; bMatchFound AND iSubCommand <= 3 AND findCommandInTranslatorOutput(pScriptFile->pTranslator, iIndex + iSubCommand, pSubCommand); iSubCommand++)
-            //      {
-            //         switch (iSubCommand)
-            //         {
-            //         // [CHECK] Ensure next command is 'while $iterator'
-            //         case 1: bMatchFound = isExpressionSimpleLoopConditional(pSubCommand, szIteratorVariable);   break;
-            //         // [CHECK] Ensure next command is 'dec $iterator'
-            //         case 2: bMatchFound = isCommandID(pSubCommand, CMD_DECREMENT) AND isVariableParameterInCommandAtIndex(pSubCommand, 0, szIteratorVariable);  break;
-            //         // [CHECK] Ensure next command is '$item = $Array[$iterator.1]'
-            //         case 3: bMatchFound = isCommandArrayAccess(pSubCommand, szArrayVariable, szIteratorVariable, szReturnVariable);                             break;
-            //         }
-            //      }
-
-            //      // [CHECK] Ensure we found the necessary commands
-            //      if (bMatchFound)
-            //      {
-            //         // [FOR EACH USING COUNTER] Use counter macro if Iterator isn't in format XS.Iteratorxx
-            //         if (!isVariableMacroIterator(szIteratorVariable))
-            //            StringCchPrintf(szCommandText, LINE_LENGTH, TEXT("for each $%s in array $%s using counter $%s"), szReturnVariable, szArrayVariable, szIteratorVariable);
-            //         // [FOR EACH] Hide iterator if not required
-            //         else
-            //            StringCchPrintf(szCommandText, LINE_LENGTH, TEXT("for each $%s in array $%s"), szReturnVariable, szArrayVariable);
-
-            //         /// Replace 'size of array', 'while', 'dec' and 'array assignment' with a 'for each' macro
-            //         destroyCommandsInTranslatorOutputByIndex(pScriptFile->pTranslator, iIndex, 4);
-            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(MACRO_FOR_EACH, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
-            //      }
-            //   }
-            //   break;
-
-            ///// [FOR LOOP] Convert '$iterator = initial - step', 'while $iterator < count' and '$iterator = $iterator + step' into a 'for $iterator = $a to $b step +n' macro
-            /////            Convert '$iterator = initial + step', 'while $iterator > count' and '$iterator = $iterator - step' into a 'for $iterator = $a to $b step -n' macro
-            //case CMD_EXPRESSION:
-            //   // Prepare
-            //   szReturnVariable = szIteratorVariable = NULL;
-            //   bMatchFound      = TRUE;
-
-            //   // [CHECK] Check for '$iterator = initial ± step', then extract 'iterator', 'initial value' and 'step'
-            //   if (isExpressionLoopInitialisation(pCommand, szIteratorVariable, pLoopInitial, iLoopStep)) 
-            //   {
-            //      // [SUCCESS] Iterate through the next two commands
-            //      for (UINT  iSubCommand = 1; bMatchFound AND iSubCommand <= 2 AND findCommandInTranslatorOutput(pScriptFile->pTranslator, iIndex + iSubCommand, pSubCommand); iSubCommand++)
-            //      {
-            //         switch (iSubCommand)
-            //         {
-            //         // [CHECK] Ensure next command is 'while $iterator <|> final'
-            //         case 1: bMatchFound = isExpressionRangedLoopConditional(pSubCommand, szIteratorVariable, (iLoopStep > 0 ? OT_LESS_THAN : OT_GREATER_THAN), pLoopFinal); break;
-            //         // [CHECK] Ensure next command is '$iterator = $iterator ± 1'
-            //         case 2: bMatchFound = isExpressionLoopCounter(pSubCommand, szIteratorVariable, iLoopStep);  break;
-            //         }
-            //      }
-
-            //      // [CHECK] Ensure we found the necessary commands
-            //      if (bMatchFound)
-            //      {
-            //         // Generate command text
-            //         StringCchPrintf(szCommandText, LINE_LENGTH, TEXT("for $%s = %s to %s step %d"), szIteratorVariable, pLoopInitial->szBuffer, pLoopFinal->szBuffer, iLoopStep);
-
-            //         /// Replace '$iterator = initial ± step', 'while $iterator < count' and 'inc/dec $iterator' with a 'for loop' macro
-            //         destroyCommandsInTranslatorOutputByIndex(pScriptFile->pTranslator, iIndex, 3);
-            //         insertVirtualCommandToTranslator(pScriptFile->pTranslator, iIndex, createCustomCommandf(MACRO_FOR_LOOP, CT_STANDARD WITH CT_VIRTUAL, iIndex, szCommandText));
-            //      }
-            //   }
-            //   break;
-            //}
       }
 
 
