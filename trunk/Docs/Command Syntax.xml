@@ -1086,7 +1086,7 @@ encoding : Drop    : Any unspecified variable arguments are dropped
     </command>
 
     <command id="252" type="Macro" version="X2,X3R,X3TC,X3AP" group="MACRO">
-      <text>for each $0 in array $1 using counter $2</text>
+      <text>foreach $0 in $1 using $2</text>
       <url></url>
       <execution yield="false">Serial</execution>
       <params>
