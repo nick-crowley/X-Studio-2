@@ -223,10 +223,15 @@ namespace Logic
          case CMD_BREAK:    return BranchLogic::Break;
          case CMD_CONTINUE: return BranchLogic::Continue;
 
-         case CMD_COMMAND_COMMENT:
+         case CMD_NOP: 
          case CMD_COMMENT: 
-         case CMD_NOP:     
+         case CMD_COMMAND_COMMENT:
             return BranchLogic::NOP;
+
+         case MACRO_FOR_EACH:
+         case MACRO_FOR_EACH_COUNTER:
+         case MACRO_FOR_LOOP:
+            return BranchLogic::While;
          
          default:
             // Find Return parameter, if any
