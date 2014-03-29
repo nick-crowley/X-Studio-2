@@ -55,16 +55,26 @@ namespace Logic
             Parameters += ScriptParameter(ParameterSyntax::LabelNumberParameter, DataType::INTEGER, EMPTY_JUMP);
          }
          
-         /// <summary>Expands a standard command from a macro command. The line number/text from the macro are preserved</summary>
-         /// <param name="m">macro command.</param>
-         /// <param name="cnd">new conditional.</param>
-         /// <param name="syntax">new command syntax.</param>
-         /// <param name="params">new parameters.</param>
-         CommandTree::CommandTree(const CommandTree& m, Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params)
-            : CommandTree(cnd, syntax, params, m.LineText, m.LineNumber, false)
+         /// <summary>Create a replacement for a macro command. The line number/text from the macro are preserved</summary>
+         /// <param name="macro">macro command - line number, parent, line text preserved</param>
+         /// <param name="expanded">expanded command - syntax, parameters, condition preserved</param>
+         /// <exception cref="Logic::AlgorithmException">macro command not a macro</exception>
+         CommandTree::CommandTree(const CommandTree& macro, const CommandTree& expanded)
+            : Syntax(expanded.Syntax),
+              Condition(expanded.Condition),
+              Parameters(expanded.Parameters),
+              Postfix(expanded.Postfix),
+              LineNumber(macro.LineNumber), 
+              Extent(macro.Extent), 
+              LineText(macro.LineText),
+              Parent(macro.Parent), 
+              JumpTarget(nullptr), 
+              Index(EMPTY_JUMP),
+              State(macro.State),
+              CmdComment(false)
          {
-            // Use same parent
-            Parent = m.Parent;
+            if (!macro.Is(CommandType::Macro))
+               throw AlgorithmException(HERE, L"Cannot expand command from a non-macro");
          }
          
          /// <summary>Create node for a script command</summary>
@@ -590,42 +600,102 @@ namespace Logic
             // Return if found, else recurse into parent
             return node != Parent->Children.cend() ? node->get() : Parent->FindSibling(d, help);
          }
-
+         
+         /// <summary>Generates an expanded node: new syntax/condition.parameters, with parent/line-num/line-text of current node</summary>
+         /// <param name="txt">Command text.</param>
+         /// <param name="v">game version</param>
+         /// <returns></returns>
+         CommandNodePtr  CommandTree::ExpandCommand(const wstring& txt, GameVersion v)
+         {
+            // Generate new node
+            return new CommandTree(*this, *ScriptParser::Generate(txt, v));
+         }
+         
          /// <summary>Generates the actual commands necessary to form the 'dim' macro</summary>
          /// <param name="script">script file.</param>
          /// <returns>List of expanded replacement commands</returns>
+         /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
          /// <exception cref="Logic::InvalidOperationException">Not a 'dim' macro</exception>
          CommandTree::CommandNodeList  CommandTree::ExpandDimArray(ScriptFile& script)
          {
             CommandNodeList nodes;
-            ParameterArray params;
 
             // Require 'DIM' command
             if (!Is(MACRO_DIM_ARRAY))
                throw InvalidOperationException(HERE, L"Command must be 'dim' macro");
             
-            auto size = Parameters.size()-1;
+            // Generate components
+            auto size   = Parameters.size()-1;
+            auto retVar = Parameters[0].DisplayText.c_str();
+
+            // Validate
+            if (Parameters[0].Type != DataType::VARIABLE)
+               throw AlgorithmException(HERE, L"'Dim' macro must be assigned to a variable");
+            if (size < 1)
+               throw AlgorithmException(HERE, L"'Dim' macro requires at least one element");
 
             // Generate '<retVar> = array alloc: size=<size>'
-            params.push_back( Parameters[0] );
-            params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, VString(L"%d",size)) );
-                     
-            // Create
-            auto cmd = new CommandTree(*this, Condition, SyntaxLib.Find(CMD_ARRAY_ALLOC, script.Game), params);
-            nodes.push_back(cmd);
+            VString cmd(L"%s = array alloc: size=%d", retVar, size);
+            nodes += ExpandCommand(cmd, script.Game);
 
-            // Generate n '<array>[i] = <val>'     ($0[$1] = $2)
+            // Element assignments
             for (UINT i = 0; i < size; ++i)
             {
-               params.clear();
-               params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::VARIABLE, Parameters[0].Value.String) );
-               params.push_back( ScriptParameter(ParameterSyntax::MacroParameter, DataType::INTEGER, VString(L"%d",i)) );
-               params.push_back( Parameters[i+1] );
-
-               // Create
-               cmd = new CommandTree(*this, Condition, SyntaxLib.Find(CMD_ARRAY_ASSIGNMENT, script.Game), params);
-               nodes.push_back(cmd);
+               auto value = Parameters[i+1].DisplayText.c_str();
+               
+               // Generate '<array>[i] = <val>' 
+               cmd = VString(L"%s[%d] = %s", retVar, i, value);
+               nodes += ExpandCommand(cmd, script.Game);
             }
+
+            return nodes;
+         }
+
+         /// <summary>Generates the actual commands necessary to form the 'for loop' macro</summary>
+         /// <param name="script">script file.</param>
+         /// <returns>List of expanded replacement commands</returns>
+         /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
+         /// <exception cref="Logic::InvalidOperationException">Not a 'for loop' macro</exception>
+         /// <remarks>Expands 'for $0 = $1 to $2 step $3' to
+         ///
+         /// (iterator) = (inital_value) ± (step_value)
+         /// while (iterator) greater/less (final_value)
+         /// (iterator) = (iterator) ± (step_value)</remarks>
+         CommandTree::CommandNodeList  CommandTree::ExpandForLoop(ScriptFile& script)
+         {
+            CommandNodeList  nodes;
+            ParameterArray   params,
+                             postfix;
+            CommandSyntaxRef syntax = SyntaxLib.Find(CMD_EXPRESSION, GameVersion::Threat);
+
+            // Require 'for $0 = $1 to $2 step $3'
+            if (!Is(MACRO_FOR_LOOP))
+               throw InvalidOperationException(HERE, L"Command must be 'for loop' macro");
+            
+            // Lookup components
+            const wchar *iterator = Parameters[0].DisplayText.c_str(),
+                        *init_val = Parameters[1].DisplayText.c_str(),
+                        *last_val = Parameters[2].DisplayText.c_str(),
+                        *step_val = Parameters[3].DisplayText.c_str();
+
+            // Validate parameters
+            if (Parameters[3].Type != DataType::INTEGER)
+               throw AlgorithmException(HERE, L"Loop step must be an integer");
+
+            // Determine direction
+            bool ascending = (Parameters[3].Value.Int > 0);
+
+            // (iterator) = (inital_value) ± (step_value)
+            VString init(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
+            nodes += ExpandCommand(init, script.Game);
+
+            // while (iterator) less/greater (final_value)
+            VString compare(L"while %s %s %s", iterator, (ascending ? L"<" : L">"), last_val);
+            nodes += ExpandCommand(compare, script.Game);
+
+            // (iterator) = (iterator) ± (step_value)
+            VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
+            nodes += ExpandCommand(advance, script.Game);
 
             return nodes;
          }
@@ -642,9 +712,12 @@ namespace Logic
                {
                   CommandNodeList nodes;
 
-                  // DIM
-                  if (Is(MACRO_DIM_ARRAY))
-                     nodes = ExpandDimArray(script);
+                  // Generate replacement nodes
+                  switch (Syntax.ID)
+                  {
+                  case MACRO_DIM_ARRAY:  nodes = ExpandDimArray(script);
+                  case MACRO_FOR_LOOP:   nodes = ExpandForLoop(script);
+                  }
 
                   // Insert following self
                   Children.insert(++Parent->FindChild(this), nodes.begin(), nodes.end());

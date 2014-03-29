@@ -43,6 +43,7 @@ namespace Logic
          public:
             static CommandSyntaxRef  Identify(ScriptFile script, const wstring& line);
             static ScriptCommand     Parse(ScriptFile script, const wstring& line);
+            static CommandNodePtr    Generate(const wstring& line, GameVersion v);
 
             // --------------------- PROPERTIES ------------------------
          public:

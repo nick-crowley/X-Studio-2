@@ -311,6 +311,50 @@ namespace Logic
          }
       }
 
+      /// <summary>Re-Generate display text from value</summary>
+      /// <returns></returns>
+      GuiString  ScriptParameter::GetDisplayText() const
+      {
+         switch (Type)
+         {
+         // Variable: Add $ operator
+         case DataType::VARIABLE:
+            return GuiString::Format(L"$%s", Value.String.c_str());
+
+         // String: Wrap strings in apostrophes. Label/Comments verbatim.
+         case DataType::STRING:
+            if (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME)
+               return Value.String;
+            else
+               return GuiString::Format(L"'%s'", Value.String.c_str());
+            break;
+
+         // Integer/Null/Operator: Already formatted
+         case DataType::INTEGER:
+         case DataType::Null:
+         case DataType::OPERATOR:
+            return Value.String;
+
+         // ScriptObject: Wrap in square brackets
+         case DataType::CONSTANT:
+         case DataType::DATATYPE:
+         case DataType::FLIGHTRETURN:     
+         case DataType::OBJECTCLASS:      
+         case DataType::OBJECTCOMMAND:    
+         case DataType::RACE:             
+         case DataType::SCRIPTDEF:        
+         case DataType::SECTOR:   
+         case DataType::TRANSPORTCLASS:   
+         case DataType::WINGCOMMAND:      
+         case DataType::STATIONSERIAL:    
+         case DataType::RELATION:
+            return GuiString::Format(L"[%s]", Value.String.c_str());
+
+         // Ware: Wrap in curly brackets
+         case DataType::WARE:
+            return GuiString::Format(L"{%s}", Value.String.c_str());
+         }
+      }
       
       /// <summary>Identifies variables as mutable or constant</summary>
       /// <param name="script">Script used for variable name lookup</param>

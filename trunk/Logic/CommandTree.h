@@ -42,7 +42,18 @@ namespace Logic
             // ------------------------ TYPES --------------------------
          protected:
             /// <summary>List of parse tree node pointers</summary>
-            typedef list<CommandNodePtr>   CommandNodeList;
+            class CommandNodeList : public list<CommandNodePtr> 
+            {
+            public:
+               /// <summary>Appends a node to the list</summary>
+               /// <param name="p">node.</param>
+               /// <returns></returns>
+               CommandNodeList& operator+=(const CommandNodePtr& p)
+               {
+                  push_back(p);
+                  return *this;
+               }
+            };
 
             /// <summary>CommandTree array iterator</summary>
             typedef CommandNodeList::const_iterator   NodeIterator;
@@ -62,7 +73,7 @@ namespace Logic
 
          protected:
             CommandTree(const CommandTree& parent, const CommandTree* target);
-            CommandTree(const CommandTree& m, Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params);
+            CommandTree(const CommandTree& macro, const CommandTree& expanded);
 
             // ------------------------ STATIC -------------------------
          protected:
@@ -121,7 +132,9 @@ namespace Logic
             void           Verify(ScriptFile& script, ErrorArray& errors);
             
          protected:
+            CommandNodePtr   ExpandCommand(const wstring& txt, GameVersion v);
             CommandNodeList  ExpandDimArray(ScriptFile& script);
+            CommandNodeList  ExpandForLoop(ScriptFile& script);
             void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);

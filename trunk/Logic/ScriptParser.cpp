@@ -44,22 +44,21 @@ namespace Logic
 
          // ------------------------------- STATIC METHODS -------------------------------
          
-         /// <summary>Generate an error for the entire line</summary>
-         /// <param name="msg">The message</param>
-         /// <param name="lex">The lexer</param>
-         /// <returns></returns>
-         ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
+         /// <summary>Generates a single command tree node from a line of text.</summary>
+         /// <param name="line">line text.</param>
+         /// <param name="v">version.</param>
+         /// <returns>Command node</returns>
+         /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
+         CommandNodePtr  ScriptParser::Generate(const wstring& line, GameVersion v)
          {
-            return ErrorToken(msg, LineNumber, lex.Input.substr(lex.Extent.cpMin, lex.Extent.cpMax-lex.Extent.cpMin), lex.Extent);
-         }
+            ScriptParser parser(ScriptFile(L""), {line}, v);
 
-         /// <summary>Generate an error for a single token</summary>
-         /// <param name="msg">The message</param>
-         /// <param name="tok">The token</param>
-         /// <returns></returns>
-         ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
-         {
-            return ErrorToken(msg, LineNumber, *tok);
+            // Sanity check
+            if (parser.Root->Children.empty())
+               throw AlgorithmException(HERE, L"Parse tree has no children");
+
+            // Retrieve node
+            return parser.Root->Children.front();
          }
 
          /// <summary>Identifies the command from line of text.</summary>
@@ -84,6 +83,7 @@ namespace Logic
                return CommandSyntax::Unrecognised;
             }
          }
+         
          /// <summary>Parses a single command from a line of text.</summary>
          /// <param name="script">script.</param>
          /// <param name="line">line text.</param>
@@ -112,7 +112,7 @@ namespace Logic
                return ScriptCommand::Unrecognised;
             }
          }
-
+         
          // ------------------------------- PUBLIC METHODS -------------------------------
 
          /// <summary>Reads all commands in the script</summary>
@@ -183,7 +183,25 @@ namespace Logic
          {
             return CurrentLine - Input.begin() + 1;
          }
+         
+         /// <summary>Generate an error for the entire line</summary>
+         /// <param name="msg">The message</param>
+         /// <param name="lex">The lexer</param>
+         /// <returns></returns>
+         ErrorToken  ScriptParser::MakeError(const wstring& msg, const CommandLexer& lex) const
+         {
+            return ErrorToken(msg, LineNumber, lex.Input.substr(lex.Extent.cpMin, lex.Extent.cpMax-lex.Extent.cpMin), lex.Extent);
+         }
 
+         /// <summary>Generate an error for a single token</summary>
+         /// <param name="msg">The message</param>
+         /// <param name="tok">The token</param>
+         /// <returns></returns>
+         ErrorToken  ScriptParser::MakeError(const wstring& msg, const TokenIterator& tok) const
+         {
+            return ErrorToken(msg, LineNumber, *tok);
+         }
+         
          /// <summary>Reads all commands in the script</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
