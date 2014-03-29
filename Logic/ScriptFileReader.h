@@ -182,8 +182,10 @@ namespace Logic
       protected:
          bool  MatchDim(CommandIterator& cmd) const;
          bool  MatchForLoop(CommandIterator& cmd) const;
+         bool  MatchForEach(CommandIterator& cmd) const;
          ScriptCommand ReadDim(CommandIterator& cmd) const;
          ScriptCommand ReadForLoop(CommandIterator& cmd) const;
+         ScriptCommand ReadForEach(CommandIterator& cmd) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:

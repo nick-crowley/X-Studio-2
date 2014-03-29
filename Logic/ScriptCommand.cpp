@@ -436,7 +436,7 @@ namespace Logic
       /// <param name="varName">On return this contains the array variable.</param>
       /// <param name="size">On return this contains the allocation size.</param>
       /// <returns></returns>
-      bool  ScriptCommand::MatchAllocArray(wstring& varName, int& size) const
+      bool  ScriptCommand::MatchDimAllocation(wstring& varName, int& size) const
       {
          size = 0;
          varName.clear();
@@ -445,13 +445,12 @@ namespace Logic
          return Is(CMD_ARRAY_ALLOC) && FindRetVar(varName) && FindInteger(1, size);
       }
 
-
-      /// <summary>Matches a 'for loop' initialization command.</summary>
+      /// <summary>Matches an array element assignment command used by 'dim' macro.</summary>
       /// <param name="array">Name of array variable.</param>
       /// <param name="element">Required array index.</param>
       /// <param name="param">On return this contains the parameter assigned (if successful)</param>
       /// <returns></returns>
-      bool  ScriptCommand::MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const
+      bool  ScriptCommand::MatchDimAssignment(const wstring& array, int element, const ScriptParameter*& param) const
       {
          param = nullptr;
 
@@ -466,6 +465,48 @@ namespace Logic
          return false;
       }
       
+      /// <summary>Matches the 'for each' iterator advancement: 'dec $iterator'</summary>
+      /// <param name="iterator">name of iterator variable.</param>
+      /// <returns></returns>
+      /// <remarks>Matches 'dec (iterator)'     syntax: dec $0</remarks>
+      bool  ScriptCommand::MatchForEachAdvance(const wstring& iterator) const
+      {
+         // Match 'dec' and iterator
+         return Is(CMD_DECREMENT) && MatchVariable(0, iterator);
+      }
+      
+      /// <summary>Matches the 'for each' item iterator assignment: '$item = $array[$iterator]'</summary>
+      /// <param name="iterator">name of iterator variable.</param>
+      /// <param name="array">name of array variable.</param>
+      /// <param name="item_iterator">On return this contains the name of item iterator variable.</param>
+      /// <returns></returns>
+      /// <remarks>Matches '(item_iterator) = (array)[(iterator)]'     syntax: $0[$1] = $2</remarks>
+      bool  ScriptCommand::MatchForEachAccess(const wstring& iterator, const wstring& array, wstring& item_iterator) const
+      {
+         // Match iterator/array and return item iterator
+         return Is(CMD_ARRAY_ASSIGNMENT) && MatchVariable(0, iterator) && MatchVariable(1, array) && FindVariable(2, item_iterator);
+      }
+
+      /// <summary>Matches the 'for each' guard condition: 'while $iterator'</summary>
+      /// <param name="iterator">name of iterator variable.</param>
+      /// <returns></returns>
+      /// <remarks>Matches 'while (iterator)'     syntax: $0 $1</remarks>
+      bool  ScriptCommand::MatchForEachCondition(const wstring& iterator) const
+      {
+         // Match 'while' expression and iterator
+         return Is(CMD_EXPRESSION) && Parameters.size() == 2 && Logic == BranchLogic::While && MatchVariable(1, iterator);
+      }
+      
+      /// <summary>Matches the 'for each' initialization expression: '$iterator = size of array $array'.</summary>
+      /// <param name="iterator">On return this contains the name of iterator variable.</param>
+      /// <param name="array">On return this contains the name of array variable.</param>
+      /// <returns></returns>
+      /// <remarks>Matches '(iterator) = size of array (array)'     syntax: $0 = size of array $1</remarks>
+      bool  ScriptCommand::MatchForEachInitialize(wstring& iterator, wstring& array) const
+      {
+         // Ensure command has correct array variable and element index
+         return Is(CMD_SIZE_OF_ARRAY) && MatchVariable(0, iterator) && MatchVariable(1, array);
+      }
 
       /// <summary>Matches a 'for loop' initialization expression.</summary>
       /// <param name="iterator">On return this contains the name of iterator variable.</param>

@@ -107,8 +107,14 @@ namespace Logic
          bool  MatchOperator(UINT index, Operator op) const;
          bool  MatchVariable(UINT index, const wstring& var) const;
 
-         bool  MatchAllocArray(wstring& varName, int& size) const;
-         bool  MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const;
+         bool  MatchDimAllocation(wstring& varName, int& size) const;
+         bool  MatchDimAssignment(const wstring& array, int element, const ScriptParameter*& param) const;
+         
+         bool  MatchForEachAdvance(const wstring& iterator) const;
+         bool  MatchForEachAccess(const wstring& iterator, const wstring& array, wstring& item_iterator) const;
+         bool  MatchForEachCondition(const wstring& iterator) const;
+         bool  MatchForEachInitialize(wstring& iterator, wstring& array) const;
+
          bool  MatchForLoopAdvance(const wstring& iterator, const int step) const;
          bool  MatchForLoopCondition(const wstring& iterator, const int step, const ScriptParameter*& limit) const;
          bool  MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const;

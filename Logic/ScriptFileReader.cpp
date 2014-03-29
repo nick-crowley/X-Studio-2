@@ -291,17 +291,17 @@ namespace Logic
          int      size = 0;
          
          // Match 'alloc array' 
-         if (!(cmd++)->MatchAllocArray(array, size) || size == 0)
+         if (!(cmd++)->MatchDimAllocation(array, size) || size == 0)
             return (cmd=start, false);
 
          // Require at least one assignment
          const ScriptParameter* param = nullptr;
-         if (!(cmd++)->MatchAssignArray(array, 0, param))
+         if (!(cmd++)->MatchDimAssignment(array, 0, param))
             return (cmd=start, false);
 
          // Match further assignments
          for (int el = 1; el < size; el++)
-            if (!(cmd++)->MatchAssignArray(array, el, param))
+            if (!(cmd++)->MatchDimAssignment(array, el, param))
                return (cmd=start, false);
 
          // Success
@@ -335,6 +335,35 @@ namespace Logic
          // Success
          return true;
       }
+      
+      /// <summary>Matches a quartet of loop initilization, guard condition, iterator advancement and item assignment.</summary>
+      /// <param name="cmd">command position.</param>
+      /// <returns></returns>
+      /// <remarks>If successful the iterator is advanced beyond the last matched command, otherwise it is unmoved</remarks>
+      bool ScriptFileReader::MatchForEach(CommandIterator& cmd) const
+      {
+         CommandIterator start(cmd);
+         wstring  iterator, array, item;
+         
+         // Match '(iterator) = size of array (array)'
+         if (!(cmd++)->MatchForEachInitialize(iterator, array))
+            return (cmd=start, false);
+
+         // Match 'while (iterator)'
+         if (!(cmd++)->MatchForEachCondition(iterator))
+            return (cmd=start, false);
+
+         // Match 'dec (iterator)'
+         if (!(cmd++)->MatchForEachAdvance(iterator))
+            return (cmd=start, false);
+
+         // Match '(item_iterator) = (array)[(iterator)]'
+         if (!(cmd++)->MatchForEachAccess(iterator, array, item))
+            return (cmd=start, false);
+
+         // Success
+         return true;
+      }
 
       /// <summary>Generates a DIM command from a previously matched 'alloc array' command and element assignments.</summary>
       /// <param name="cmd">alloc array command.</param>
@@ -350,14 +379,14 @@ namespace Logic
          auto& syntax = SyntaxLib.Find(MACRO_DIM_ARRAY, GameVersion::Threat);
          
          // Match 'alloc array'. Generate RetVar.
-         (cmd++)->MatchAllocArray(array, size);  
+         (cmd++)->MatchDimAllocation(array, size);  
          params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, array);
 
          // Match element assignments. Generate Params.
          for (int el = 0; el < size; ++el)
          {
             const ScriptParameter* p = nullptr;
-            (cmd++)->MatchAssignArray(array, el, p);
+            (cmd++)->MatchDimAssignment(array, el, p);
             params += *p;
          }
 
@@ -396,6 +425,37 @@ namespace Logic
          // Generate 'for $0 = $1 to $2 step $3'
          return ScriptCommand(syntax, params, false);
       }
+      
+      /// <summary>Matches a quartet of loop initilization, guard condition, iterator advancement and item assignment.</summary>
+      /// <param name="cmd">command position.</param>
+      /// <returns></returns>
+      /// <remarks>If successful the iterator is advanced beyond the last matched command, otherwise it is unmoved</remarks>
+      ScriptCommand  ScriptFileReader::ReadForEach(CommandIterator& cmd) const
+      {
+         ParameterArray params;
+         GuiString iterator, array, item;
+
+         // ForEach: 'for each $0 in array $1 using counter $2'
+         auto& syntax = SyntaxLib.Find(MACRO_FOR_EACH_COUNTER, GameVersion::Threat);
+         
+         // Match commands containing the necessary variables
+         (cmd++)->MatchForEachInitialize(iterator, array);
+         ++cmd;
+         ++cmd;
+         (cmd++)->MatchForEachAccess(iterator, array, item);
+
+         // Generate parameters
+         params += ScriptParameter(syntax.Parameters[0], DataType::VARIABLE, item);
+         params += ScriptParameter(syntax.Parameters[1], DataType::VARIABLE, array);
+
+         // ForEach: Use hidden iterator
+         if (iterator.Left(4) == L"XS2.")
+            return ScriptCommand(SyntaxLib.Find(MACRO_FOR_EACH, GameVersion::Threat), params, false);
+
+         // ForEachCounter: Use custom iterator
+         params += ScriptParameter(syntax.Parameters[2], DataType::VARIABLE, iterator);
+         return ScriptCommand(syntax, params, false);
+      }
 
       /// <summary>Translate appropriate commands into macros.</summary>
       /// <param name="script">script</param>
@@ -413,10 +473,16 @@ namespace Logic
                output.push_back(ReadDim(cmd));
                output.back().Translate(script);
             }
-            // [FOR LOOP] Convert for loop init/guard/advace 
+            // [FOR LOOP] Convert for loop init/guard/advance 
             else if (MatchForLoop(CommandIterator(cmd)))
             {
                output.push_back(ReadForLoop(cmd));
+               output.back().Translate(script);
+            }
+            // [FOREACH] Convert for loop init/guard/advance[/item]
+            else if (MatchForEach(CommandIterator(cmd)))
+            {
+               output.push_back(ReadForEach(cmd));
                output.back().Translate(script);
             }
             else
