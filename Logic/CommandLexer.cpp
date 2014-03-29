@@ -474,12 +474,13 @@ namespace Logic
                // Identify keywords
                switch (Position - start)
                {
-               case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");             break;
-               case 3: Keyword = MatchChars(start, L"end");                                        break;
-               case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");   break;
-               case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start"); break;
-               case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");     break;
-               case 8: Keyword = MatchChars(start, L"continue");                                   break;
+               case 2: Keyword = MatchChars(start, L"if") || MatchChars(start, L"do");                                           break;
+               case 3: Keyword = MatchChars(start, L"end") || MatchChars(start, L"for") || MatchChars(start, L"dim");            break;
+               case 4: Keyword = MatchChars(start, L"else") || MatchChars(start, L"skip") || MatchChars(start, L"goto");         break;
+               case 5: Keyword = MatchChars(start, L"while") || MatchChars(start, L"break") || MatchChars(start, L"gosub") || MatchChars(start, L"start");  break;
+               case 6: Keyword = MatchChars(start, L"return") || MatchChars(start, L"endsub");                                   break;
+               case 7: Keyword = MatchChars(start, L"foreach");                                                                  break;
+               case 8: Keyword = MatchChars(start, L"continue");                                                                 break;
                }
                break;
 
