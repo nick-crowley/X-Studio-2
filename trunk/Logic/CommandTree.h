@@ -140,16 +140,17 @@ namespace Logic
             ParameterArray     Parameters,    // script parameters in display order
                                Postfix;       // expression parameters in postfix order
             CommandSyntaxRef   Syntax;        // command syntax
+            bool               CmdComment;    // Whether a command comment  [false for ordinary comments]
+            GuiString          LineText;      // line text
+
+            const UINT         LineNumber;    // 1-based line number
+            const CHARRANGE    Extent;        // Start/end character offsets
+
+         protected:
+            Conditional        Condition;     // Conditional
             const CommandTree* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
-            bool               CmdComment;    // Whether a command comment  [false for ordinary comments]
-
-            Conditional     Condition;        // Conditional
-            const UINT      LineNumber;       // 1-based line number
-            const CHARRANGE Extent;           // Start/end character offsets
-            // Debug
-            GuiString       LineText;         // Debug: line text
-            InputState      State;            // Debug: processing state
+            InputState         State;         // Debug: processing state
          };
       }
    }
