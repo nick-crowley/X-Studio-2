@@ -1110,7 +1110,7 @@ encoding : Drop    : Any unspecified variable arguments are dropped
       <vargs>None</vargs>
     </command>
 
-    <command id="254" type="Macro" version="X3TC,X3AP" group="MACRO">
+    <!--<command id="254" type="Macro" version="X3TC,X3AP" group="MACRO">
       <text>add custom menu item to array $0: page=$1 id=$2 returnvalue=$3</text>
       <url></url>
       <execution yield="false">Serial</execution>
@@ -1145,7 +1145,7 @@ encoding : Drop    : Any unspecified variable arguments are dropped
         <param displayIndex="2" ordinal="2" usage="stringid">Var/Number</param>
       </params>
       <vargs>None</vargs>
-    </command>
+    </command>-->
 
     <command id="400" type="Standard" version="X2,X3R,X3TC,X3AP" group="USER_INTERFACE">
       <text>write to player logbook $0</text>
