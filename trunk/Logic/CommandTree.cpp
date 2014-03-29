@@ -681,14 +681,14 @@ namespace Logic
                         *init_val = Parameters[1].Text.c_str(),
                         *last_val = Parameters[2].Text.c_str(),
                         *step_val = Parameters[3].Text.c_str();
-            int step = GuiString(step_val).ToInt();
-
+            
             // Validate parameters
             if (Parameters[3].Type != DataType::INTEGER)
                throw AlgorithmException(HERE, L"Loop step must be an integer");
 
             // Determine direction
-            bool ascending = GuiString(Parameters[3].Text).ToInt() > 0;
+            int step = GuiString(step_val).ToInt();
+            bool ascending = step > 0;
 
             // Init: (iterator) = (inital_value) ± (step_value)
             auto cmd = VString(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
@@ -701,10 +701,10 @@ namespace Logic
             // Optimize using inc/dec if possible
             if (step == 1 || step == -1)
                // Advance: inc/dec (iterator)
-               cmd = VString(L"%s %s", (step == 1 ? L"inc" : L"dec"), iterator);
+               cmd = VString(L"%s %s", (ascending ? L"inc" : L"dec"), iterator);
             else 
                // Advance: (iterator) = (iterator) ± (step_value)
-               cmd = VString(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
+               cmd = VString(L"%s = %s %s %d", iterator, iterator, (ascending ? L"+" : L"-"), (ascending ? step : -step));
             
             // Add as child of 'while'
             nodes.back()->Add(ExpandCommand(cmd, script.Game));     
