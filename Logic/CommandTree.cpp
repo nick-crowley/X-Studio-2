@@ -691,7 +691,7 @@ namespace Logic
             bool ascending = step > 0;
 
             // Init: (iterator) = (inital_value) ± (step_value)
-            auto cmd = VString(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
+            auto cmd = VString(L"%s = %s %s %d", iterator, init_val, (ascending ? L"-" : L"+"), (ascending ? step : -step));
             nodes += ExpandCommand(cmd, script.Game);
 
             // Guard: while (iterator) less/greater (final_value)
