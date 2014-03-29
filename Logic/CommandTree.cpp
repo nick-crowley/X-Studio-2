@@ -688,7 +688,7 @@ namespace Logic
                throw AlgorithmException(HERE, L"Loop step must be an integer");
 
             // Determine direction
-            bool ascending = (Parameters[3].Value.Int > 0);
+            bool ascending = GuiString(Parameters[3].Text).ToInt() > 0;
 
             // (iterator) = (inital_value) ± (step_value)
             VString init(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
@@ -699,12 +699,12 @@ namespace Logic
             nodes += ExpandCommand(compare, script.Game);
 
             // (iterator) = (iterator) ± (step_value)
-            //VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
-            //nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
+            VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
+            nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
 
-            //// Add children of 'for loop' to 'while'
-            //for (auto& c : Children)
-            //   nodes.back()->Add(c);
+            // Add children of 'for loop' to 'while'
+            for (auto& c : Children)
+               nodes.back()->Add(c);
 
             return nodes;
          }
@@ -729,7 +729,7 @@ namespace Logic
                   }
 
                   // Insert following self
-                  Children.insert(++Parent->FindChild(this), nodes.begin(), nodes.end());
+                  Parent->Children.insert(++Parent->FindChild(this), nodes.begin(), nodes.end());
                }
             }
             catch (ExceptionBase& e) {
