@@ -46,6 +46,24 @@ namespace Logic
             /// <summary>CommandTree predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
+            /// <summary>Generates iterator variable names</summary>
+            class NameGenerator
+            {
+            public:
+               NameGenerator() : LastID(1)
+               {}
+
+               /// <summary>Generates another iterator variable name</summary>
+               /// <returns></returns>
+               wstring  GetNext()
+               {
+                  return VString(L"$XS.Iterator%d", LastID++);
+               }
+
+            protected:
+               int  LastID;
+            };
+
             /// <summary>Distinguishes tree state when printed to the console</summary>
             enum class InputState { Raw, Verified, Compiled };
 
@@ -120,6 +138,7 @@ namespace Logic
             CommandNodePtr   ExpandCommand(const wstring& txt, GameVersion v);
             CommandNodeList  ExpandDimArray(ScriptFile& script);
             CommandNodeList  ExpandForLoop(ScriptFile& script);
+            CommandNodeList  ExpandForEach(ScriptFile& script);
             void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
             void  FinalizeLinkage(ErrorArray& errors);
             void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
@@ -151,6 +170,7 @@ namespace Logic
             const CommandTree* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
             InputState         State;         // Debug: processing state
+            NameGenerator      IteratorNames;
          };
       }
    }

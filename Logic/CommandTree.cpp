@@ -671,7 +671,6 @@ namespace Logic
             CommandNodeList  nodes;
             ParameterArray   params,
                              postfix;
-            CommandSyntaxRef syntax = SyntaxLib.Find(CMD_EXPRESSION, GameVersion::Threat);
 
             // Require 'for $0 = $1 to $2 step $3'
             if (!Is(MACRO_FOR_LOOP))
@@ -708,6 +707,59 @@ namespace Logic
 
             return nodes;
          }
+         
+         /// <summary>Generates the actual commands necessary to form the 'foreach' macro</summary>
+         /// <param name="script">script file.</param>
+         /// <returns>List of expanded replacement commands</returns>
+         /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
+         /// <exception cref="Logic::InvalidOperationException">Not a 'foreach' macro</exception>
+         /// <remarks>Expands 'for each $0 in array $1 [using counter $2]' to
+         ///
+         /// (iterator) = size of array (array)
+         /// while (iterator)
+         /// dec (iterator)
+         /// (item_iterator) = (array)[(iterator)]</remarks>
+         CommandNodeList  CommandTree::ExpandForEach(ScriptFile& script)
+         {
+            CommandNodeList  nodes;
+            ParameterArray   params,
+                             postfix;
+
+            // Require 'for each $0 in array $1' or 'for each $0 in array $1 using counter $2'
+            if (!Is(MACRO_FOR_EACH) && !Is(MACRO_FOR_EACH_COUNTER))
+               throw InvalidOperationException(HERE, L"Command must be a 'foreach' macro");
+            
+            // Lookup components
+            const wchar *item  = Parameters[0].Text.c_str(),
+                        *array = Parameters[1].Text.c_str();
+
+            // Iterator: Generate unique name if not specified by user
+            GuiString iterator = Is(MACRO_FOR_EACH_COUNTER) ? Parameters[2].Text : IteratorNames.GetNext();
+            if (!Is(MACRO_FOR_EACH_COUNTER))
+               script.Variables.Add(iterator.TrimLeft(L"$"));
+
+            // (iterator) = size of array (array)
+            VString init(L"%s = size of array %s", iterator.c_str(), array);
+            nodes += ExpandCommand(init, script.Game);
+
+            // while (iterator)
+            VString guard(L"while %s", iterator.c_str());
+            nodes += ExpandCommand(guard, script.Game);     
+
+            // dec (iterator)
+            VString advance(L"dec %s", iterator.c_str());
+            nodes.back()->Add( ExpandCommand(advance, script.Game) );    // Add as child of 'while'
+
+            // (item_iterator) = (array)[(iterator)]
+            VString access(L"%s = %s[%s]", item, array, iterator.c_str());
+            nodes.back()->Add( ExpandCommand(access, script.Game) );     // Add as child of 'while'
+
+            // Add children of 'foreach' to 'while' expression
+            for (auto& c : Children)
+               nodes.back()->Add(c);
+
+            return nodes;
+         }
 
          /// <summary>Expands macro commands</summary>
          /// <param name="script">script file.</param>
@@ -724,8 +776,11 @@ namespace Logic
                   // Generate replacement nodes
                   switch (Syntax.ID)
                   {
-                  case MACRO_DIM_ARRAY:  nodes = ExpandDimArray(script);
-                  case MACRO_FOR_LOOP:   nodes = ExpandForLoop(script);
+                  case MACRO_DIM_ARRAY:  nodes = ExpandDimArray(script);   break;
+                  case MACRO_FOR_LOOP:   nodes = ExpandForLoop(script);    break;
+                  
+                  case MACRO_FOR_EACH_COUNTER:  
+                  case MACRO_FOR_EACH:   nodes = ExpandForEach(script);    break;
                   }
 
                   // Insert following self
