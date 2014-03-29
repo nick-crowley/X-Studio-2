@@ -395,11 +395,41 @@ namespace Logic
          // Require DT_VARIABLE
          if (index < Parameters.size() && Parameters[index].IsVariable())
          {
-            var = GuiString(Parameters[index].Text).TrimLeft(L"$= ");
+            var = GuiString(Parameters[index].Text).Trim(L"$= ");
             return true;
          }
 
          return false;
+      }
+      
+      /// <summary>Matches an integer parameter at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="val">the integer.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::MatchInteger(UINT index, int val) const
+      {
+         int _val;
+         return FindInteger(index, _val) && val == _val;
+      }
+      
+      /// <summary>Matches an operator parameter at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="op">the operator.</param>
+      /// <returns>True if found, otherwise False</returns>
+      bool ScriptCommand::MatchOperator(UINT index, Operator op) const
+      {
+         Operator _op;
+         return FindOperator(index, _op) && op == _op;
+      }
+      
+      /// <summary>Matches a variable parameter at a given index</summary>
+      /// <param name="index">Zero-based physical index.</param>
+      /// <param name="var">variable name Without $ prefix</param>
+      /// <returns>True if matched, otherwise False</returns>
+      bool ScriptCommand::MatchVariable(UINT index, const wstring& var) const
+      {
+         wstring _var;
+         return FindVariable(index, _var) && var == _var;
       }
 
       /// <summary>Matches an 'alloc array' command and returns the array variable and array size</summary>
@@ -423,15 +453,10 @@ namespace Logic
       /// <returns></returns>
       bool  ScriptCommand::MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const
       {
-         wstring _array;
-         int     _element;
-
          param = nullptr;
 
          // Ensure command has correct array variable and element index
-         if (Is(CMD_ARRAY_ASSIGNMENT) 
-          && FindVariable(0, _array) && array == _array 
-          && FindInteger(1, _element) && element == _element)
+         if (Is(CMD_ARRAY_ASSIGNMENT) && MatchVariable(0, array) && MatchInteger(1, element))
          {
             // Extract assignment parameter
             param = &Parameters[2];
@@ -450,15 +475,12 @@ namespace Logic
       /// <remarks>Matches '(iterator) = (iterator) ± (step_value)'</remarks>
       bool  ScriptCommand::MatchForLoopAdvance(const wstring& iterator, const int step) const
       {
-         Operator op;
-         wstring  _iterator;
-
-         // Ensure 'while' expression with four components
+         // Match expression 
          if (Is(CMD_EXPRESSION) && Parameters.size() == 4)
-            // Match iterator variable
-            if (FindVariable(1, _iterator) && iterator == _iterator && FindVariable(2, _iterator) && iterator == _iterator)
+            // Match iterator & step
+            if (MatchVariable(0, iterator) && MatchVariable(1, iterator) && MatchInteger(3, step))
                // Match plus/minus
-               if (FindOperator(2, op) && (step > 0 && op == Operator::Add || step < 0 && op == Operator::Subtract))
+               if (step > 0 && MatchOperator(2, Operator::Add) || step < 0 && MatchOperator(2, Operator::Subtract))
                   return true;
 
          return false;
@@ -472,23 +494,18 @@ namespace Logic
       /// <remarks>Matches 'while (iterator) less/greater (final_value)'</remarks>
       bool  ScriptCommand::MatchForLoopCondition(const wstring& iterator, const int step, const ScriptParameter*& limit) const
       {
-         Operator op;
-         wstring _iterator;
-
          // Prepare
          limit = nullptr;
 
-         // Ensure 'while' expression with four components
-         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && Logic == BranchLogic::While)
-            // Match iterator variable
-            if (FindVariable(1, _iterator) && iterator == _iterator)
-               // Match greater/less
-               if (FindOperator(2, op) && (step > 0 && op == Operator::Less || step < 0 && op == Operator::Greater))
-               {
-                  // Extract limit value 
-                  limit = &Parameters[3];
-                  return true;
-               }
+         // Match 'while' expression and iterator
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && Logic == BranchLogic::While && MatchVariable(1, iterator))
+            // Match greater/less
+            if (step > 0 && MatchOperator(2, Operator::Less) || step < 0 && MatchOperator(2, Operator::Greater))
+            {
+               // Extract limit value 
+               limit = &Parameters[3];
+               return true;
+            }
 
          return false;
       }
@@ -501,17 +518,15 @@ namespace Logic
       /// <remarks>Matches '(iterator) = (inital_value) ± (step_value)'</remarks>
       bool  ScriptCommand::MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const
       {
-         Operator op;
-
          // Prepare
          initial = nullptr;
          iterator.clear();
          step = 0;
 
-         // Ensure expression has four components
-         if (Is(CMD_EXPRESSION) && Parameters.size() == 4)
+         // Match expression + iterator + step
+         if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && FindRetVar(iterator) && FindInteger(3, step))
             // Ensure step is an integer and operator is ±
-            if (FindInteger(3, step) && FindOperator(2, op) && (op == Operator::Add || op == Operator::Subtract))
+            if (MatchOperator(2, Operator::Add) || MatchOperator(2, Operator::Subtract))
             {
                // Extract initial value 
                initial = &Parameters[1];

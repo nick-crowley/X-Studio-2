@@ -102,6 +102,10 @@ namespace Logic
          bool  FindRetVar(wstring& varName) const;
          bool  FindString(UINT index, wstring& str) const;
          bool  FindVariable(UINT index, wstring& var) const;
+         
+         bool  MatchInteger(UINT index, int val) const;
+         bool  MatchOperator(UINT index, Operator op) const;
+         bool  MatchVariable(UINT index, const wstring& var) const;
 
          bool  MatchAllocArray(wstring& varName, int& size) const;
          bool  MatchAssignArray(const wstring& array, int element, const ScriptParameter*& param) const;
