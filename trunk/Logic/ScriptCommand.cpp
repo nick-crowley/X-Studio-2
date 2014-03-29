@@ -570,7 +570,11 @@ namespace Logic
       /// <param name="initial">On return this contains the initial value parameter</param>
       /// <param name="step">On return this contains the step value.</param>
       /// <returns></returns>
-      /// <remarks>Matches '(iterator) = (inital_value) ± (step_value)'</remarks>
+      /// <remarks>Matches: '(iterator) = (inital_value) ± (step_value)'
+      /// NB: Negative step_value indicates an ascending for loop, positive step_value a descending loop. 
+      ///     This is because the initialization is inverted.
+      ///     On return the step parameter represents the correct delta and direction of the loop.
+      /// </remarks>
       bool  ScriptCommand::MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const
       {
          // Prepare
@@ -584,14 +588,19 @@ namespace Logic
             // Extract initial value 
             initial = &Parameters[1];
 
-            // Add: OK
+            // Add: Convert initialization delta to loop step 
             if (MatchOperator(2, Operator::Add))
+            {
+               // Positive step: Addition, loop is descending
+               // Negative step: Subtraction, loop is ascending
+               step = -step;
                return true;
-            
-            // Subtract: Switch sign of step
+            }
+            // Subtract: Convert initialization delta to loop step 
             if (MatchOperator(2, Operator::Subtract))
             {
-               step = -1 * step;
+               // Positive step: -+ = Subtraction, loop is ascending
+               // Negative step: -- = Addition, loop is descending
                return true;
             }
          }
