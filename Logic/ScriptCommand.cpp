@@ -518,7 +518,11 @@ namespace Logic
       /// <param name="initial">On return this contains the initial value parameter</param>
       /// <param name="step">On return this contains the step value.</param>
       /// <returns></returns>
-      /// <remarks>Matches '(iterator) = (iterator) ± (step_value)'</remarks>
+      /// <remarks>Matches either
+      /// '(iterator) = (iterator) ± (step_value)'
+      /// inc (iterator)
+      /// dec (iterator)
+      /// </remarks>
       bool  ScriptCommand::MatchForLoopAdvance(const wstring& iterator, const int step) const
       {
          // Match expression 
@@ -529,6 +533,11 @@ namespace Logic
                if (step > 0 && MatchOperator(2, Operator::Add) || step < 0 && MatchOperator(2, Operator::Subtract))
                   return true;
 
+         // Increment/Decrement
+         if ((step == 1 && Is(CMD_INCREMENT) || step == -1 && Is(CMD_DECREMENT)) && MatchVariable(0, iterator))
+            return true;
+               
+         // No match
          return false;
       }
       

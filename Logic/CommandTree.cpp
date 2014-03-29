@@ -681,6 +681,7 @@ namespace Logic
                         *init_val = Parameters[1].Text.c_str(),
                         *last_val = Parameters[2].Text.c_str(),
                         *step_val = Parameters[3].Text.c_str();
+            int step = GuiString(step_val).ToInt();
 
             // Validate parameters
             if (Parameters[3].Type != DataType::INTEGER)
@@ -689,17 +690,24 @@ namespace Logic
             // Determine direction
             bool ascending = GuiString(Parameters[3].Text).ToInt() > 0;
 
-            // (iterator) = (inital_value) ± (step_value)
-            VString init(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
-            nodes += ExpandCommand(init, script.Game);
+            // Init: (iterator) = (inital_value) ± (step_value)
+            auto cmd = VString(L"%s = %s %s %s", iterator, init_val, (ascending ? L"-" : L"+"), step_val);
+            nodes += ExpandCommand(cmd, script.Game);
 
-            // while (iterator) less/greater (final_value)
-            VString compare(L"while %s %s %s", iterator, (ascending ? L"<" : L">"), last_val);
-            nodes += ExpandCommand(compare, script.Game);
+            // Guard: while (iterator) less/greater (final_value)
+            cmd = VString(L"while %s %s %s", iterator, (ascending ? L"<" : L">"), last_val);
+            nodes += ExpandCommand(cmd, script.Game);
 
-            // (iterator) = (iterator) ± (step_value)
-            VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
-            nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
+            // Optimize using inc/dec if possible
+            if (step == 1 || step == -1)
+               // Advance: inc/dec (iterator)
+               cmd = VString(L"%s %s", (step == 1 ? L"inc" : L"dec"), iterator);
+            else 
+               // Advance: (iterator) = (iterator) ± (step_value)
+               cmd = VString(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
+            
+            // Add as child of 'while'
+            nodes.back()->Add(ExpandCommand(cmd, script.Game));     
 
             // Add children of 'for loop' to 'while'
             for (auto& c : Children)
