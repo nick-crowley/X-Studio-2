@@ -178,6 +178,9 @@ namespace Logic
 
    /// <summary>Get fully resolved copy of the path</summary>
    /// <returns></returns>
+   /// <exception cref="Logic::ComException">COM operation failed</exception>
+   /// <exception cref="Logic::FileNotFoundException">Path not found</exception>
+   /// <exception cref="Logic::IOException">Unable to query properties</exception>
    Path  Path::GetResolved() const
    {
       Path resolved;
@@ -185,6 +188,10 @@ namespace Logic
       // Resolve path
       if (!GetFullPathName(c_str(), MAX_PATH, (wchar*)resolved, nullptr))
          throw IOException(HERE, L"Unable to resolve path: "+SysErrorString());
+
+      // Ensure exists
+      if (!resolved.Exists())
+         throw FileNotFoundException(HERE, resolved);
 
       // Get info
       SHFILEINFO info;

@@ -355,18 +355,25 @@ DiffDocument* Application::OpenDiffDocument(ScriptDocument& doc, const wstring& 
    return templ->OpenDocumentFile(doc, diff);
 }
 
+/// <summary>Opens a document file and adds to the MRU</summary>
+/// <param name="szFileName">Full path</param>
+/// <returns></returns>
+CDocument* Application::OpenDocumentFile(const wchar* szFileName)
+{
+   return OpenDocumentFile(szFileName, TRUE);
+}
    
 /// <summary>Opens a document file.</summary>
 /// <param name="szFileName">Full path</param>
 /// <param name="bAddToMRU">add to MRU.</param>
 /// <returns></returns>
-CDocument* Application::OpenDocumentFile(const wchar* szFileName, BOOL bAddToMRU /*= TRUE*/)
+CDocument* Application::OpenDocumentFile(const wchar* szFileName, BOOL bAddToMRU)
 {
    try
    {
       REQUIRED(szFileName);
 
-      // Strip inverted commas + resolve path
+      // Strip inverted commas + Resolve links
       auto path = Path(GuiString(szFileName).Trim(L"\"")).Resolve;
       
       // Prepare

@@ -631,7 +631,7 @@ namespace Logic
             
             // Generate components
             auto size   = Parameters.size()-1;
-            auto retVar = Parameters[0].DisplayText.c_str();
+            auto retVar = Parameters[0].Text.c_str();
 
             // Validate
             if (Parameters[0].Type != DataType::VARIABLE)
@@ -646,7 +646,7 @@ namespace Logic
             // Element assignments
             for (UINT i = 0; i < size; ++i)
             {
-               auto value = Parameters[i+1].DisplayText.c_str();
+               auto value = Parameters[i+1].Text.c_str();
                
                // Generate '<array>[i] = <val>' 
                cmd = VString(L"%s[%d] = %s", retVar, i, value);
@@ -678,10 +678,10 @@ namespace Logic
                throw InvalidOperationException(HERE, L"Command must be 'for loop' macro");
             
             // Lookup components
-            const wchar *iterator = Parameters[0].DisplayText.c_str(),
-                        *init_val = Parameters[1].DisplayText.c_str(),
-                        *last_val = Parameters[2].DisplayText.c_str(),
-                        *step_val = Parameters[3].DisplayText.c_str();
+            const wchar *iterator = Parameters[0].Text.c_str(),
+                        *init_val = Parameters[1].Text.c_str(),
+                        *last_val = Parameters[2].Text.c_str(),
+                        *step_val = Parameters[3].Text.c_str();
 
             // Validate parameters
             if (Parameters[3].Type != DataType::INTEGER)
@@ -699,12 +699,12 @@ namespace Logic
             nodes += ExpandCommand(compare, script.Game);
 
             // (iterator) = (iterator) ± (step_value)
-            VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
-            nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
+            //VString advance(L"%s = %s %s %s", iterator, iterator, (ascending ? L"+" : L"-"), step_val);
+            //nodes.back()->Add(ExpandCommand(advance, script.Game));     // Add as child of 'while'
 
-            // Add children of 'for loop' to 'while'
-            for (auto& c : Children)
-               nodes.back()->Add(c);
+            //// Add children of 'for loop' to 'while'
+            //for (auto& c : Children)
+            //   nodes.back()->Add(c);
 
             return nodes;
          }

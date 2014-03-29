@@ -159,7 +159,8 @@ public:
    afx_msg void  OnDropFiles(HDROP hDropInfo);
    void          OnPreferencesChanged();
    DiffDocument* OpenDiffDocument(GUI::Documents::ScriptDocument& doc, const wstring& diff);
-   CDocument*    OpenDocumentFile(const wchar* path, BOOL bAddToMRU = TRUE) override;
+   CDocument*    OpenDocumentFile(const wchar* path) override;
+   CDocument*    OpenDocumentFile(const wchar* path, BOOL bAddToMRU) override;
    DocumentBase* OpenStringLibrary();
 	void          PreLoadState() override;
    void          SetState(AppState s);
