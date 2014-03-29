@@ -449,7 +449,7 @@ namespace Logic
          params += ScriptParameter(syntax.Parameters[1], DataType::VARIABLE, array);
 
          // ForEach: Use hidden iterator
-         if (iterator.Left(4) == L"XS2.")
+         if (iterator.Left(11) == L"XS.Iterator")
             return ScriptCommand(SyntaxLib.Find(MACRO_FOR_EACH, GameVersion::Threat), params, false);
 
          // ForEachCounter: Use custom iterator
