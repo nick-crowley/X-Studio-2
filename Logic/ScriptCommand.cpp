@@ -578,20 +578,23 @@ namespace Logic
          iterator.clear();
          step = 0;
 
-         // Match expression + iterator + step
+         // Match expression + iterator. Ensure step is non-zero integer 
          if (Is(CMD_EXPRESSION) && Parameters.size() == 4 && FindRetVar(iterator) && FindInteger(3, step) && step != 0)
-            // Ensure step is an integer and operator is ±
-            if (MatchOperator(2, Operator::Add) || MatchOperator(2, Operator::Subtract))
+         {
+            // Extract initial value 
+            initial = &Parameters[1];
+
+            // Add: OK
+            if (MatchOperator(2, Operator::Add))
+               return true;
+            
+            // Subtract: Switch sign of step
+            if (MatchOperator(2, Operator::Subtract))
             {
-               // Extract initial value 
-               initial = &Parameters[1];
-
-               // DoubleMinus: Switch sign
-               if (step < 0 && MatchOperator(2, Operator::Subtract))
-                  step = -1 * step;
-
+               step = -1 * step;
                return true;
             }
+         }
 
          return false;
       }
