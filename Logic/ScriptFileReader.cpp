@@ -286,16 +286,16 @@ namespace Logic
       /// <remarks>If successful the iterator is advanced beyond the last element assignment, otherwise it is unmoved</remarks>
       bool ScriptFileReader::MatchDim(CommandIterator& cmd) const
       {
-         const ScriptParameter* param = nullptr;
          CommandIterator start(cmd);
-         wstring array;
-         int size = 0;
+         wstring  array;
+         int      size = 0;
          
          // Match 'alloc array' 
          if (!(cmd++)->MatchAllocArray(array, size) || size == 0)
             return (cmd=start, false);
 
          // Require at least one assignment
+         const ScriptParameter* param = nullptr;
          if (!(cmd++)->MatchAssignArray(array, 0, param))
             return (cmd=start, false);
 
