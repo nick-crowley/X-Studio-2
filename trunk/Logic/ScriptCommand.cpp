@@ -324,13 +324,14 @@ namespace Logic
       /// <returns>True if found, otherwise False</returns>
       bool ScriptCommand::FindInteger(UINT index, int& val) const
       {
-         // Linear search. Require DT_INTEGER
-         for (auto& p : Parameters)
-            if (p.Type == DataType::INTEGER)
-            {
-               val = p.Value.Int;
-               return true;
-            }
+         val = 0;
+
+         // Require DT_INTEGER
+         if (index < Parameters.size() && p.Type == DataType::INTEGER)
+         {
+            val = Parameters[index].Value.Int;
+            return true;
+         }
 
          return false;
       }
@@ -341,13 +342,14 @@ namespace Logic
       /// <returns>True if found, otherwise False</returns>
       bool ScriptCommand::FindString(UINT index, wstring& str) const
       {
-         // Linear search. Require DT_STRING
-         for (auto& p : Parameters)
-            if (p.Type == DataType::STRING)
-            {
-               str = p.Value.String;
-               return true;
-            }
+         str.clear();
+
+         // Require DT_STRING
+         if (index < Parameters.size() && Parameters[index].Type == DataType::STRING)
+         {
+            str = Parameters[index].Value.String;
+            return true;
+         }
 
          return false;
       }
@@ -374,13 +376,12 @@ namespace Logic
       /// <returns>True if found, otherwise False</returns>
       bool ScriptCommand::FindVariable(UINT index, wstring& var) const
       {
-         // Linear search. Require variable
-         for (auto& p : Parameters)
-            if (p.IsVariable())
-            {
-               var = GuiString(p.Text).TrimLeft(L"$= ");
-               return true;
-            }
+         // Require DT_VARIABLE
+         if (index < Parameters.size() && Parameters[index].IsVariable())
+         {
+            var = GuiString(Parameters[index].Text).TrimLeft(L"$= ");
+            return true;
+         }
 
          return false;
       }
@@ -399,7 +400,7 @@ namespace Logic
       }
 
 
-      /// <summary>Matches an array assignment command.</summary>
+      /// <summary>Matches a 'for loop' initialization command.</summary>
       /// <param name="array">Name of array variable.</param>
       /// <param name="element">Required array index.</param>
       /// <param name="param">On return this contains the parameter assigned (if successful)</param>
@@ -413,6 +414,33 @@ namespace Logic
 
          // Ensure command has correct array variable and element index
          if (Is(CMD_ARRAY_ASSIGNMENT) 
+          && FindVariable(0, _array) && array == _array 
+          && FindInteger(1, _element) && element == _element)
+         {
+            // Extract assignment parameter
+            param = &Parameters[2];
+            return true;
+         }
+
+         return false;
+      }
+      
+
+      /// <summary>Matches an array assignment command.</summary>
+      /// <param name="array">Name of array variable.</param>
+      /// <param name="element">Required array index.</param>
+      /// <param name="param">On return this contains the parameter assigned (if successful)</param>
+      /// <returns></returns>
+      /// <remarks>Matches '(iterator) = (inital_value) ± (step_value)'</remarks>
+      bool  ScriptCommand::MatchForLoopInitialize(wstring& iterator, const ScriptParameter*& initial, int& step) const
+      {
+         wstring _iterator;
+         int     _step;
+
+         param = nullptr;
+
+         // Ensure command has correct array variable and element index
+         if (Is(CMD_EXPRESSION) 
           && FindVariable(0, _array) && array == _array 
           && FindInteger(1, _element) && element == _element)
          {
