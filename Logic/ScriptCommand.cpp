@@ -480,11 +480,11 @@ namespace Logic
       /// <param name="array">name of array variable.</param>
       /// <param name="item_iterator">On return this contains the name of item iterator variable.</param>
       /// <returns></returns>
-      /// <remarks>Matches '(item_iterator) = (array)[(iterator)]'     syntax: $0[$1] = $2</remarks>
+      /// <remarks>Matches '(item_iterator) = (array)[(iterator)]'     syntax: $0 = $1[$2]</remarks>
       bool  ScriptCommand::MatchForEachAccess(const wstring& iterator, const wstring& array, wstring& item_iterator) const
       {
          // Match iterator/array and return item iterator
-         return Is(CMD_ARRAY_ASSIGNMENT) && MatchVariable(0, iterator) && MatchVariable(1, array) && FindVariable(2, item_iterator);
+         return Is(CMD_ARRAY_ACCESS) && MatchVariable(1, array) && MatchVariable(2, iterator) && FindVariable(0, item_iterator);
       }
 
       /// <summary>Matches the 'for each' guard condition: 'while $iterator'</summary>
@@ -504,8 +504,8 @@ namespace Logic
       /// <remarks>Matches '(iterator) = size of array (array)'     syntax: $0 = size of array $1</remarks>
       bool  ScriptCommand::MatchForEachInitialize(wstring& iterator, wstring& array) const
       {
-         // Ensure command has correct array variable and element index
-         return Is(CMD_SIZE_OF_ARRAY) && MatchVariable(0, iterator) && MatchVariable(1, array);
+         // Match command, Lookup array/iterator variables
+         return Is(CMD_SIZE_OF_ARRAY) && FindVariable(0, iterator) && FindVariable(1, array);
       }
 
       /// <summary>Matches a 'for loop' initialization expression.</summary>
