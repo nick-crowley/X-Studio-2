@@ -417,6 +417,12 @@ namespace Logic
                output.push_back(ReadDim(cmd));
                output.back().Translate(script);
             }
+            // [FOR LOOP] Convert for loop init/guard/advace 
+            else if (MatchForLoop(CommandIterator(cmd)))
+            {
+               output.push_back(ReadForLoop(cmd));
+               output.back().Translate(script);
+            }
             else
             {
                output.push_back(*cmd);
