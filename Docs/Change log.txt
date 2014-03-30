@@ -1,4 +1,10 @@
 
+Beta III - 31st March 2014
+-------------------------
+
+Fixed: Compiler bug in 'foreach' macro
+
+
 Beta II - 30th March 2014
 -------------------------
 

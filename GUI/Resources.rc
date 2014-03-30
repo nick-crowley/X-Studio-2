@@ -59,12 +59,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "mr.bear"
             VALUE "FileDescription", "X³ Scripting IDE"
-            VALUE "FileVersion", "Beta II"
+            VALUE "FileVersion", "Beta III"
             VALUE "InternalName", "XStudio2.exe"
             VALUE "LegalCopyright", "Freeware"
             VALUE "OriginalFilename", "XStudio2.exe"
             VALUE "ProductName", "X-Studio II"
-            VALUE "ProductVersion", "Beta II"
+            VALUE "ProductVersion", "Beta III"
         END
     END
     BLOCK "VarFileInfo"
