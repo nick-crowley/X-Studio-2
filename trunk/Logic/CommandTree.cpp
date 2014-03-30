@@ -204,8 +204,9 @@ namespace Logic
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandTree::Compile(ScriptFile& script, ErrorArray& errors)
          {
-            // Expand macros
-            ExpandMacros(script, errors);
+            // Macros: Expand macros into std commands 
+            if (PrefsLib.UseMacroCommands)
+               ExpandMacros(script, errors);
 
             // Perform linking
             LinkCommands(errors);

@@ -136,6 +136,38 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       
          // -------------------- REPRESENTATION ---------------------
       };
+      
+      /// <summary>UseMacroCommands property</summary>
+      class UseMacroCommandsProperty : public PropertyBase
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Create 'UseMacroCommands' property</summary>
+         /// <param name="page">Owner page.</param>
+         UseMacroCommandsProperty(PreferencesPage& page) 
+            : PropertyBase(page, L"Macro Commands", L"", L"Choose whether to replace common combinations of commands with macros")
+         {
+            AddOption(L"Enable macro commands", FALSE);
+            AddOption(L"Disable macro commands", FALSE);
+            AllowEdit(FALSE);
+            // Set initial value
+            SetValue(GetOption(PrefsLib.UseMacroCommands ? 0 : 1));
+         }
+
+         // ---------------------- ACCESSORS ------------------------
+      public:
+         /// <summary>Gets value as bool.</summary>
+         /// <returns></returns>
+         bool GetBool() const
+         {
+            return GetString() == GetOption(0);
+         }
+
+         // ----------------------- MUTATORS ------------------------
+      
+         // -------------------- REPRESENTATION ---------------------
+      };
+
 
       /// <summary>UseDoIfSyntax property</summary>
       class UseDoIfSyntaxProperty : public PropertyBase
@@ -228,6 +260,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       CheckArgumentTypesProperty*      CheckArgumentTypes;
       UseDoIfSyntaxProperty*           UseDoIfSyntax;
       UseCppOperatorsProperty*         UseCppOperators;
+      UseMacroCommandsProperty*        UseMacroCommands;
    };
    
 NAMESPACE_END2(GUI,Preferences)

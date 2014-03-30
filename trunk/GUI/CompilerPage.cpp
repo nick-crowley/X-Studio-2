@@ -22,7 +22,8 @@ NAMESPACE_BEGIN2(GUI,Preferences)
         CheckArgumentNames(nullptr), 
         CheckArgumentTypes(nullptr),
         UseDoIfSyntax(nullptr), 
-        UseCppOperators(nullptr)
+        UseCppOperators(nullptr),
+        UseMacroCommands(nullptr)
    {
    }
 
@@ -53,6 +54,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       PrefsLib.BackgroundCompiler = BackgroundCompiler->GetBool();
       PrefsLib.UseCppOperators = UseCppOperators->GetBool();
       PrefsLib.UseDoIfSyntax = UseDoIfSyntax->GetBool();
+      PrefsLib.UseMacroCommands = UseMacroCommands->GetBool();
       PrefsLib.CaseSensitiveVariables = CaseSensitiveVariables->GetBool();
    }
 
@@ -66,6 +68,7 @@ NAMESPACE_BEGIN2(GUI,Preferences)
       group->AddSubItem(BackgroundCompiler = new BackgroundCompilerProperty(*this));
       group->AddSubItem(UseCppOperators = new UseCppOperatorsProperty(*this));
       group->AddSubItem(UseDoIfSyntax = new UseDoIfSyntaxProperty(*this));
+      group->AddSubItem(UseMacroCommands = new UseMacroCommandsProperty(*this));
       group->AddSubItem(CaseSensitiveVariables = new CaseSensitiveVariablesProperty(*this));
       Grid.AddProperty(group);
    }
