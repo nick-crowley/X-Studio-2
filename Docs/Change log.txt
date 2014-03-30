@@ -1,7 +1,9 @@
 
-26th March 2014
----------------
+Beta II - 30th March 2014
+-------------------------
 
+Variable argument commands: create new array, sprintf
+Macro commands: dim, for, foreach
 Status bar indicator of loaded game data version 
 Subroutine indentation 
 Implemented find & replace on scripts in project
