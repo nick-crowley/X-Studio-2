@@ -73,38 +73,39 @@
 
 // Test menu
 #define ID_TEST_RUN_ALL                 261
-#define ID_TEST_COMPILE                 262
-#define ID_TEST_VALIDATION              263
-#define ID_TEST_DESCRIPTIONS            264
-#define ID_TEST_FILE_SYSTEM             265
-#define ID_TEST_GZIP_COMPRESS           266
-#define ID_TEST_GZIP_DECOMPRESS         267
-#define ID_TEST_LANGUAGE                268
-#define ID_TEST_STRING_PARSER           269
-#define ID_TEST_TFILE_READER            270
-#define ID_TEST_SYNTAX_WRITER           271
-#define ID_TEST_XML_WRITER              272
+#define ID_BATCH_VALIDATION             262
+#define ID_TEST_SCRIPT_COMPILE          263
+#define ID_TEST_SCRIPT_VALIDATE         264
+#define ID_TEST_DESCRIPTIONS            265
+#define ID_TEST_FILE_SYSTEM             266
+#define ID_TEST_GZIP_COMPRESS           267
+#define ID_TEST_GZIP_DECOMPRESS         268
+#define ID_TEST_LANGUAGE                269
+#define ID_TEST_STRING_PARSER           270
+#define ID_TEST_TFILE_READER            271
+#define ID_TEST_SYNTAX_WRITER           272
+#define ID_TEST_XML_WRITER              273
 
 // View menu
-#define ID_VIEW_PROJECT                 273
-#define ID_VIEW_SCRIPT_OBJECTS          274
-#define ID_VIEW_GAME_OBJECTS            275
-#define ID_VIEW_CONSOLE                 276
-#define ID_VIEW_COMMANDS                277
-#define ID_VIEW_OUTPUT                  278
-#define ID_VIEW_BACKUP                  279
-#define ID_VIEW_PROPERTIES              280
-#define ID_VIEW_STRING_LIBRARY          281
-#define ID_VIEW_MEDIA_LIBRARY           282
-#define ID_VIEW_CUSTOMIZE               283
+#define ID_VIEW_PROJECT                 274
+#define ID_VIEW_SCRIPT_OBJECTS          275
+#define ID_VIEW_GAME_OBJECTS            276
+#define ID_VIEW_CONSOLE                 277
+#define ID_VIEW_COMMANDS                278
+#define ID_VIEW_OUTPUT                  279
+#define ID_VIEW_BACKUP                  280
+#define ID_VIEW_PROPERTIES              281
+#define ID_VIEW_STRING_LIBRARY          282
+#define ID_VIEW_MEDIA_LIBRARY           283
+#define ID_VIEW_CUSTOMIZE               284
 
 // Window menu
-#define ID_WINDOW_CLOSE_ALL             284
-#define ID_WINDOW_CLOSE_EXCEPT          285
-#define ID_WINDOW_MANAGER               286
+#define ID_WINDOW_CLOSE_ALL             285
+#define ID_WINDOW_CLOSE_EXCEPT          286
+#define ID_WINDOW_MANAGER               287
 
 // Help
-#define ID_HELP_FORUMS                  287
+#define ID_HELP_FORUMS                  288
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 

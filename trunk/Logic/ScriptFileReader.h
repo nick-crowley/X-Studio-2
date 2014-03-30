@@ -189,11 +189,11 @@ namespace Logic
 
 		   // ----------------------- MUTATORS ------------------------
       public:
-         ScriptFile  ReadFile(Path path, bool justProperties, bool dropJMPs = true);
+         ScriptFile  ReadFile(Path path, bool justProperties, bool rawTranslate = false);
 
       protected:
          ReaderPtr GetCommandReader(ScriptFile& script, CommandType type, XmlNodePtr& cmdBranch);
-         void      ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs);
+         void      ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool rawTranslate);
          void      ReadVariables(ScriptFile&  script, XmlNodePtr& varBranch, XmlNodePtr& argBranch);
          void      TranslateMacros(ScriptFile& script);
 

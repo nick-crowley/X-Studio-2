@@ -85,14 +85,26 @@ namespace Testing
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
-   void LogicTests::Test_ScriptCompiler()
+   void LogicTests::Test_ScriptCompiler(Path p)
    {
       // Located problem: egosoft inserts JMPs to end-of-conditional even after RETURNs, except when it's the final RETURN of the script.
 
-      ScriptValidator sv1(L"D:\\X3 Albion Prelude\\scripts\\!job.special.spacefly.hunter.pck");
+      /*ScriptValidator sv1(L"D:\\X3 Albion Prelude\\scripts\\!job.special.spacefly.hunter.pck");
       sv1.Print();
 
       ScriptValidator sv2(L"D:\\X3 Albion Prelude\\scripts\\!lib.war.races.pck");
+      sv2.Validate();*/
+
+      // Print raw:
+      ScriptValidator sv1(p);
+      sv1.Print();
+
+      //ScriptParser p();
+   }
+   
+   void LogicTests::Test_ScriptValidator(Path p)
+   {
+      ScriptValidator sv2(p);
       sv2.Validate();
    }
 

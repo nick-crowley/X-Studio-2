@@ -627,8 +627,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Run Test
          case ID_TEST_RUN_ALL:         Testing::LogicTests::RunAll();                     break;
+         case ID_BATCH_VALIDATION:     Testing::LogicTests::BatchTest_ScriptCompiler();   break;
          case ID_TEST_DESCRIPTIONS:    Testing::LogicTests::Test_DescriptionReader();     break;
-         case ID_TEST_VALIDATION:      Testing::LogicTests::BatchTest_ScriptCompiler();   break;
          case ID_TEST_FILE_SYSTEM:     Testing::LogicTests::Test_FileSystem();            break;
          case ID_TEST_GZIP_COMPRESS:   Testing::LogicTests::Test_GZip_Compress();         break;
          case ID_TEST_GZIP_DECOMPRESS: Testing::LogicTests::Test_GZip_Decompress();       break;
@@ -637,6 +637,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
          case ID_TEST_TFILE_READER:    Testing::LogicTests::Test_TFileReader();           break;
          case ID_TEST_XML_WRITER:      Testing::LogicTests::Test_XmlWriter();             break;
          case ID_TEST_SYNTAX_WRITER:   Testing::LogicTests::Test_SyntaxWriter();          break;
+
+         // Document tests
+         case ID_TEST_SCRIPT_COMPILE:  Testing::LogicTests::Test_ScriptCompiler(ScriptDocument::GetActive()->FullPath);        break;
+         case ID_TEST_SCRIPT_VALIDATE: Testing::LogicTests::Test_ScriptValidator(ScriptDocument::GetActive()->FullPath);       break;
          }
       }
       catch (ExceptionBase& e) {
