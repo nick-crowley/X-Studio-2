@@ -1379,11 +1379,11 @@ If the INTEGER $3 is positive the count increases with each iteration, and if $3
 <!--************************-->
 
 <!--$0 random value from zero to $1-->
-<command id="106" version="X2">Returns a random INTEGER that could be zero, the INTEGER $1, or any INTEGER in between</command>
+<command id="106" version="X2">Returns a random INTEGER between zero and one less than the INTEGER $1.</command>
 
 
 <!--$0 random value between $1x and $2y-->
-<command id="110" version="X2">Returns a random INTEGER that could be the INTEGER $1x, the INTEGER $2y or any INTEGER in between</command>
+<command id="110" version="X2">Returns a random INTEGER between the INTEGER $1x and one less than the INTEGER $2y.</command>
 
 
 <!--inc $0-->

@@ -102,7 +102,7 @@
 
 
 /// <summary>Enable/Disable certain features for public release builds</summary>
-#define OFFICIAL_RELEASE
+//#define OFFICIAL_RELEASE
 
 /// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
 #define VALIDATION
