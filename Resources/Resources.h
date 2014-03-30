@@ -59,51 +59,52 @@
 // File Menu
 #define ID_FILE_BROWSE                  250
 #define ID_FILE_SAVE_ALL                251
-#define ID_FILE_EXPORT                  252
-#define ID_FILE_COMMIT                  253
-#define ID_FILE_QUICK_COMMIT            254
-#define ID_FILE_PROJECT_CLOSE           255
-#define ID_FILE_PROJECT_SAVE            256
-#define ID_FILE_PROJECT_SAVE_AS         257
+#define ID_FILE_IMPORT                  252
+#define ID_FILE_EXPORT                  253
+#define ID_FILE_COMMIT                  254
+#define ID_FILE_QUICK_COMMIT            255
+#define ID_FILE_PROJECT_CLOSE           256
+#define ID_FILE_PROJECT_SAVE            257
+#define ID_FILE_PROJECT_SAVE_AS         258
 
 // Edit Menu
-#define ID_EDIT_INSERT                  258
-#define ID_EDIT_PREFERENCES             259
+#define ID_EDIT_INSERT                  259
+#define ID_EDIT_PREFERENCES             260
 
 // Test menu
-#define ID_TEST_RUN_ALL                 260
-#define ID_TEST_COMPILE                 261
-#define ID_TEST_VALIDATION              262
-#define ID_TEST_DESCRIPTIONS            263
-#define ID_TEST_FILE_SYSTEM             264
-#define ID_TEST_GZIP_COMPRESS           265
-#define ID_TEST_GZIP_DECOMPRESS         266
-#define ID_TEST_LANGUAGE                267
-#define ID_TEST_STRING_PARSER           268
-#define ID_TEST_TFILE_READER            269
-#define ID_TEST_SYNTAX_WRITER           270
-#define ID_TEST_XML_WRITER              271
+#define ID_TEST_RUN_ALL                 261
+#define ID_TEST_COMPILE                 262
+#define ID_TEST_VALIDATION              263
+#define ID_TEST_DESCRIPTIONS            264
+#define ID_TEST_FILE_SYSTEM             265
+#define ID_TEST_GZIP_COMPRESS           266
+#define ID_TEST_GZIP_DECOMPRESS         267
+#define ID_TEST_LANGUAGE                268
+#define ID_TEST_STRING_PARSER           269
+#define ID_TEST_TFILE_READER            270
+#define ID_TEST_SYNTAX_WRITER           271
+#define ID_TEST_XML_WRITER              272
 
 // View menu
-#define ID_VIEW_PROJECT                 272
-#define ID_VIEW_SCRIPT_OBJECTS          273
-#define ID_VIEW_GAME_OBJECTS            274
-#define ID_VIEW_CONSOLE                 275
-#define ID_VIEW_COMMANDS                276
-#define ID_VIEW_OUTPUT                  277
-#define ID_VIEW_BACKUP                  278
-#define ID_VIEW_PROPERTIES              279
-#define ID_VIEW_STRING_LIBRARY          280
-#define ID_VIEW_MEDIA_LIBRARY           281
-#define ID_VIEW_CUSTOMIZE               282
+#define ID_VIEW_PROJECT                 273
+#define ID_VIEW_SCRIPT_OBJECTS          274
+#define ID_VIEW_GAME_OBJECTS            275
+#define ID_VIEW_CONSOLE                 276
+#define ID_VIEW_COMMANDS                277
+#define ID_VIEW_OUTPUT                  278
+#define ID_VIEW_BACKUP                  279
+#define ID_VIEW_PROPERTIES              280
+#define ID_VIEW_STRING_LIBRARY          281
+#define ID_VIEW_MEDIA_LIBRARY           282
+#define ID_VIEW_CUSTOMIZE               283
 
 // Window menu
-#define ID_WINDOW_CLOSE_ALL             283
-#define ID_WINDOW_CLOSE_EXCEPT          284
-#define ID_WINDOW_MANAGER               285
+#define ID_WINDOW_CLOSE_ALL             284
+#define ID_WINDOW_CLOSE_EXCEPT          285
+#define ID_WINDOW_MANAGER               286
 
 // Help
-#define ID_HELP_FORUMS                  286
+#define ID_HELP_FORUMS                  287
 
 ////////////////////////// CONTEXT MENU COMMANDS ////////////////////////
 

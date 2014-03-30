@@ -170,6 +170,7 @@ protected:
 	afx_msg void OnCommand_About();
    afx_msg void OnCommand_New();
    afx_msg void OnCommand_Open();
+   afx_msg void OnCommand_Import();
    afx_msg void OnQueryCommand(CCmdUI* pCmdUI);
 
    // -------------------- REPRESENTATION ---------------------

@@ -52,6 +52,7 @@ namespace Logic
          CommandSyntaxRef  Find(UINT id, GameVersion ver) const;
          CommandSyntaxRef  Identify(TokenIterator& pos, const TokenIterator& end, GameVersion ver, TokenList& params) const;
          CmdSyntaxArray    Query(const wstring& str, GameVersion ver, CommandGroup g = (CommandGroup)CB_ERR) const;
+         void              Upgrade(const Path& legacy, const Path& upgrade, bool merge) const;
 
 		   // ----------------------- MUTATORS ------------------------
       public:
