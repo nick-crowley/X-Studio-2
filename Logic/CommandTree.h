@@ -147,6 +147,7 @@ namespace Logic
             void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandTree* target);
             void  LinkCommands(ErrorArray& errors);
+            void  MoveChildren(CommandTree& from, CommandTree& to);
             void  RevertCommandComment(CommandTree* child);
             void  ReplaceChild(CommandTree* oldChild, CommandTree* newChild);
             void  VerifyCommand(const ScriptFile& script, ErrorArray& errors);

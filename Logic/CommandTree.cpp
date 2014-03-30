@@ -65,8 +65,8 @@ namespace Logic
               Parameters(expanded.Parameters),
               Postfix(expanded.Postfix),
               LineNumber(macro.LineNumber), 
-              Extent(macro.Extent), 
-              LineText(macro.LineText),
+              Extent(expanded.Extent), 
+              LineText(expanded.LineText),
               Parent(macro.Parent), 
               JumpTarget(nullptr), 
               Index(EMPTY_JUMP),
@@ -717,9 +717,8 @@ namespace Logic
             // Add as child of 'while'
             nodes.back()->Add(ExpandCommand(cmd, script.Game));     
 
-            // Add children of 'for loop' to 'while'
-            for (auto& c : Children)
-               nodes.back()->Add(c);
+            // Move all children of 'for loop' to 'while' expression
+            MoveChildren(*this, *nodes.back());
 
             return nodes;
          }
@@ -770,9 +769,8 @@ namespace Logic
             VString access(L"%s = %s[%s]", item, array, iterator.c_str());
             nodes.back()->Add( ExpandCommand(access, script.Game) );     // Add as child of 'while'
 
-            // Add children of 'foreach' to 'while' expression
-            for (auto& c : Children)
-               nodes.back()->Add(c);
+            // Move all children of 'foreach' to 'while' expression
+            MoveChildren(*this, *nodes.back());
 
             return nodes;
          }
@@ -784,6 +782,9 @@ namespace Logic
          {
             try
             {
+               // DEBUG:
+               //Console << "ExpandMacros: " << LineNumber << ": " << LineText << ENDL;
+
                // Don't expand commented macros
                if (!IsRoot() && !CmdComment && Is(CommandType::Macro))
                {
@@ -799,8 +800,9 @@ namespace Logic
                   case MACRO_FOR_EACH:   nodes = ExpandForEach(script);    break;
                   }
 
-                  // Insert following self
+                  // Insert following self. All children have been moved to expanded commands.
                   Parent->Children.insert(++Parent->FindChild(this), nodes.begin(), nodes.end());
+                  return;
                }
             }
             catch (ExceptionBase& e) {
@@ -810,12 +812,11 @@ namespace Logic
             // Recurse into children  [Allowing for in-place modification of child list]
             for (auto c = Children.begin(); c != Children.end(); )
             {
-               auto n = c++;
-
                // Expand macros
-               (*n)->ExpandMacros(script, errors);
+               (*c)->ExpandMacros(script, errors);
 
-               // Delete original
+               // Macro: Delete 
+               auto n = c++;
                if ((*n)->Is(CommandType::Macro))
                   Children.erase(n);
             }
@@ -1132,6 +1133,22 @@ namespace Logic
          ErrorToken  CommandTree::MakeError(const GuiString& msg, const ScriptToken& tok) const
          {
             return ErrorToken(msg, LineNumber, tok);
+         }
+         
+         /// <summary>Transfer the children of one node to another.</summary>
+         /// <param name="from">From.</param>
+         /// <param name="to">To.</param>
+         void CommandTree::MoveChildren(CommandTree& from, CommandTree& to)
+         {
+            if (&from == &to)
+               throw AlgorithmException(HERE, L"Cannot transfer children to itself");
+
+            // Move children 
+            for (auto& c = from.Children.begin(); c != from.Children.end(); )
+            {
+               to.Add(*c);
+               from.Children.erase(c++);
+            }
          }
 
          /// <summary>Reverts a command comment with verification errors into an ordinary comment</summary>
