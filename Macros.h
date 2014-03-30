@@ -102,16 +102,16 @@
 
 
 /// <summary>Enable/Disable certain features for public release builds</summary>
-//#define OFFICIAL_RELEASE
+#define OFFICIAL_RELEASE
 
 /// <summary>Enable/disable tweaks to produce byte-code that exactly matches for validation</summary>
 #define VALIDATION
 
 /// <summary>Disable some extra compiler features that produce byte-code that fails validation</summary>
-#define STRICT_VALIDATION
+//#define STRICT_VALIDATION
 
 /// <summary>Define the version number</summary>
-#define BUILD_VERSION  2
+#define BUILD_VERSION  3
 
 /// <summary>Define the version name</summary>
-#define BUILD_NAME  L"Beta II"
+#define BUILD_NAME  L"Beta III"
