@@ -271,7 +271,7 @@ namespace Logic
          }
 
          // Macros: convert certain command sequences into macros
-         if (!rawTranslate && PrefsLib.UseMacroCommands)
+         if (PrefsLib.UseMacroCommands)
             TranslateMacros(script);
 
          // Generate offline buffer
