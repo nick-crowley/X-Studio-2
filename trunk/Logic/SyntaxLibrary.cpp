@@ -4,6 +4,7 @@
 #include "FileStream.h"
 #include "LegacySyntaxFileReader.h"
 #include "SyntaxFileReader.h"
+#include "SyntaxFileWriter.h"
 
 namespace Logic
 {
@@ -88,6 +89,36 @@ namespace Logic
          return Commands.size();
       }
 
+      /// <summary>Upgrades a legacy custom syntax file into new format.</summary>
+      /// <param name="legacy">legacy file path.</param>
+      /// <param name="upgrade">new file path.</param>
+      /// <param name="merge">Whether to merge library contents with legacy file</param>
+      /// <exception cref="Logic::FileNotFoundException">Legacy file not found</exception>
+      /// <exception cref="Logic::ComException">COM Error</exception>
+      /// <exception cref="Logic::IOException">IO error</exception>
+      void  SyntaxLibrary::Upgrade(const Path& legacy, const Path& upgrade, bool merge) const
+      {
+         // Feedback
+         Console << "Upgrading legacy commands " << legacy << " to " << upgrade << " merge=" << merge << ENDL;
+
+         // Read legacy
+         StreamPtr fs( new FileStream(legacy, FileMode::OpenExisting, FileAccess::Read) );
+         auto in = LegacySyntaxFileReader(fs).ReadFile();
+
+         // MERGE: Add existing commands
+         if (merge)
+            for (auto& cmd : Commands)
+               in.Commands.Add(cmd.second);
+
+         // Feedback
+         Console << "Writing upgraded syntax..." << ENDL;
+
+         // Write upgraded
+         StreamPtr out( new FileStream(upgrade, FileMode::CreateAlways, FileAccess::Write) );
+         SyntaxFileWriter w(out);
+         w.Write(in, L"Upgraded Custom Syntax", L"v1.0");
+         w.Close();
+      }
 
       /// <summary>Finds syntax by ID</summary>
       /// <param name="id">command ID</param>

@@ -358,7 +358,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       // Toggle state
       Console.Visible = !Console.Visible;
    }
-
+   
    /// <summary>Execute debugging tests.</summary>
    void MainWnd::OnCommand_ExportProject()
    {

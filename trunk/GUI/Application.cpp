@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(Application, AppBase)
 	ON_COMMAND(ID_APP_ABOUT, &Application::OnCommand_About)
 	ON_COMMAND(ID_FILE_NEW, &Application::OnCommand_New)
 	ON_COMMAND(ID_FILE_OPEN, &Application::OnCommand_Open)
+   ON_COMMAND(ID_FILE_IMPORT, &Application::OnCommand_Import)
    ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &Application::OnQueryCommand)
    ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &Application::OnQueryCommand)
    ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, &Application::OnQueryCommand)
@@ -491,6 +492,77 @@ void Application::OnCommand_New()
    // Display new document dialog
 	NewDocumentDialog dlg;
 	dlg.DoModal();
+}
+
+/// <summary>Display open file dialog</summary>
+void Application::OnCommand_Import()
+{
+   static const wchar* filter = L"Legacy Custom Commands (*.txt)|*.txt|" 
+                                L"All files (*.*)|*.*||";
+   try
+   {
+      // Feedback
+      Console << Cons::UserAction << "Import legacy custom syntax file" << ENDL;
+
+      auto folder = PrefsLib.OpenDocumentFolder;
+         
+      // Query for file
+	   CFileDialog dlg(TRUE, L".txt", L"Custom.Syntax.txt", OFN_ENABLESIZING|OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST, filter, m_pMainWnd, 0, TRUE);
+      if (dlg.DoModal() == IDOK)
+      {
+         // Store last folder
+         Path path = (LPCWSTR)dlg.GetPathName();
+         PrefsLib.OpenDocumentFolder = path.Folder;
+
+         // Feedback
+         Console << "User selected: " << path << ENDL;
+
+         // Query whether to merge with SyntaxLib
+         auto msg = L"Would you like to merge the currently loaded commands with selected file into a new syntax file?";
+         bool merge = theApp.ShowMessage(Cons::Warning, msg, MB_YESNO|MB_ICONQUESTION) == IDYES;
+
+         // Query for output path
+         CFileDialog save(FALSE, L".xml", L"Upgraded.Syntax.xml", OFN_ENABLESIZING|OFN_EXPLORER|OFN_OVERWRITEPROMPT, L"Xml Files (*.xml)|*.xml||", m_pMainWnd, 0, TRUE);
+         if (dlg.DoModal() == IDOK)
+            // Generate + Save
+            SyntaxLib.Upgrade(path, (LPCWSTR)save.GetPathName(), merge);
+         else
+            // Feedback
+            Console << "Action cancelled" << ENDL;
+      }
+   }
+   catch (ExceptionBase& e) {
+      theApp.ShowError(HERE, e);
+   }
+}
+
+/// <summary>Display open file dialog</summary>
+void Application::OnCommand_Open()
+{
+   static const wchar* filter = L"All Supported Files (*.xml,*.pck,*.xprj)|*.xml;*.pck;*.xprj|" 
+                                L"Uncompressed Files (*.xml)|*.xml|" 
+                                L"Compressed Files (*.pck)|*.pck|" 
+                                L"Project Files (*.xprj)|*.xprj|" 
+                                L"All files (*.*)|*.*||";
+   try
+   {
+      auto folder = PrefsLib.OpenDocumentFolder;
+         
+      // Query for file
+	   CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING|OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST, filter, m_pMainWnd, 0, TRUE);
+      if (dlg.DoModal() == IDOK)
+      {
+         // Store last folder
+         Path path = (LPCWSTR)dlg.GetPathName();
+         PrefsLib.OpenDocumentFolder = path.Folder;
+
+         // Open document
+         OpenDocumentFile(path.c_str(), TRUE);
+      }
+   }
+   catch (ExceptionBase& e) {
+      theApp.ShowError(HERE, e);
+   }
 }
 
 /// <summary>Display open file dialog</summary>
