@@ -169,21 +169,25 @@ BOOL Application::InitInstance()
 
       try
       {
+         Console << "Performing version check..." << ENDL;
+
          // Check for upgrade
          if (PrefsLib.AppVersion < BUILD_VERSION)
          {
             // Upgrade: Inform user
-            VString msg(L"X-Studio II has been upgrade to version %s. Preferences have been preserved, window placements have been reset.", BUILD_NAME);
-            theApp.ShowMessage(msg, MB_OK|MB_ICONINFORMATION);
+            VString msg(L"An upgrade to version %s has been detected. Your previous preferences (if any) have been preserved, but window placements have been reset.", BUILD_NAME);
+            theApp.ShowMessage(Cons::Warning, msg, MB_OK|MB_ICONINFORMATION);
 
             // Delete 'workspace' key + Store new version
             PrefsLib.ResetWorkspace();
-            PrefsLib.AppVersion = BUILD_VERSION;
          }
       }
       catch (ExceptionBase& e) {
          theApp.ShowError(HERE, e);
       }
+
+      // Store build version
+      PrefsLib.AppVersion = BUILD_VERSION;
       
       // Sockets
 	   /*if (!AfxSocketInit())
@@ -547,35 +551,6 @@ void Application::OnCommand_Import()
          else
             // Feedback
             Console << "Action cancelled" << ENDL;
-      }
-   }
-   catch (ExceptionBase& e) {
-      theApp.ShowError(HERE, e);
-   }
-}
-
-/// <summary>Display open file dialog</summary>
-void Application::OnCommand_Open()
-{
-   static const wchar* filter = L"All Supported Files (*.xml,*.pck,*.xprj)|*.xml;*.pck;*.xprj|" 
-                                L"Uncompressed Files (*.xml)|*.xml|" 
-                                L"Compressed Files (*.pck)|*.pck|" 
-                                L"Project Files (*.xprj)|*.xprj|" 
-                                L"All files (*.*)|*.*||";
-   try
-   {
-      auto folder = PrefsLib.OpenDocumentFolder;
-         
-      // Query for file
-	   CFileDialog dlg(TRUE, L".xml", L"", OFN_ENABLESIZING|OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST, filter, m_pMainWnd, 0, TRUE);
-      if (dlg.DoModal() == IDOK)
-      {
-         // Store last folder
-         Path path = (LPCWSTR)dlg.GetPathName();
-         PrefsLib.OpenDocumentFolder = path.Folder;
-
-         // Open document
-         OpenDocumentFile(path.c_str(), TRUE);
       }
    }
    catch (ExceptionBase& e) {
