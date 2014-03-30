@@ -158,7 +158,7 @@ encoding : Drop    : Any unspecified variable arguments are dropped
        
 -->
 
-<syntax title="Standard MSCI Command Syntax by mr.bear" version="v1.0">
+<syntax title="Standard MSCI Command Syntax by mr.bear" version="v1.02">
   <groups>
     <group id="0">ARRAY</group>
     <group id="1">CUSTOM</group>
