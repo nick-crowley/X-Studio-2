@@ -33,7 +33,8 @@ namespace Testing
       static void  Test_Iterator();
       static void  Text_RegEx();
       static void  Test_StringLibrary();
-      static void  Test_ScriptCompiler();
+      static void  Test_ScriptCompiler(Path p);
+      static void  Test_ScriptValidator(Path p);
       static void  Test_StringParser();
       static void  Test_StringParserRegEx();
       static void  Test_SyntaxWriter();

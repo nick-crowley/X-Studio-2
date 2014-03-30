@@ -206,7 +206,14 @@ namespace Logic
          {
             // Macros: Expand macros into std commands 
             if (PrefsLib.UseMacroCommands)
+            {
                ExpandMacros(script, errors);
+               
+               // Re-Identify labels/variables/constants
+               script.Clear();
+               IdentifyVariables(script, errors);
+               IdentifyConstants(script, errors);
+            }
 
             // Perform linking
             LinkCommands(errors);
@@ -822,7 +829,12 @@ namespace Logic
             {
                // JMP: Set address
                if (Is(CMD_HIDDEN_JUMP))
+               {
+                  if (!JumpTarget)
+                     throw AlgorithmException(HERE, L"JMP command with unassigned address");
+
                   Parameters[0].Value = JumpTarget->Index;
+               }
 
                // Linked to break/continue: Link to associated JMP (1st child)
                if (JumpTarget && (JumpTarget->Is(CMD_BREAK) || JumpTarget->Is(CMD_CONTINUE)))

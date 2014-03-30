@@ -96,7 +96,7 @@ namespace Logic
       /// <summary>Reads the entire script file</summary>
       /// <param name="path">Full file path</param>
       /// <param name="justProperties">True for properties only, False for commands</param>
-      /// <param name="dropJMPs">True for remove JMP commands, False to retain</param>
+      /// <param name="rawTranslate">Whether to preserve script exactly - retain JMP commands and skip macro insertion</param>
       /// <returns>New script file</returns>
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
@@ -104,7 +104,7 @@ namespace Logic
       /// <exception cref="Logic::InvalidValueException">Invalid script command</exception>
       /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      ScriptFile ScriptFileReader::ReadFile(Path path, bool justProperties, bool dropJMPs)
+      ScriptFile ScriptFileReader::ReadFile(Path path, bool justProperties, bool rawTranslate /*= false*/)
       {
          try
          {
@@ -125,7 +125,7 @@ namespace Logic
 
             // Commands
             if (!justProperties)
-               ReadCommands(file, GetChild(CodeArray, 6, L"standard commands branch"), GetChild(CodeArray, 8, L"auxiliary commands branch"), dropJMPs);
+               ReadCommands(file, GetChild(CodeArray, 6, L"standard commands branch"), GetChild(CodeArray, 8, L"auxiliary commands branch"), rawTranslate);
 
             // Command ID
             file.CommandID = ReadValue(CodeArray, 9, L"script command ID");
@@ -182,12 +182,13 @@ namespace Logic
       /// <param name="script">The script.</param>
       /// <param name="stdBranch">The standard commands branch.</param>
       /// <param name="auxBranch">The auxiliary commands branch.</param>
+      /// <param name="rawTranslate">Whether to preserve script exactly - retain JMP commands and skip macro insertion</param>
       /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
       /// <exception cref="Logic::FileFormatException">Invalid file format</exception>
       /// <exception cref="Logic::InvalidOperationException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::InvalidValueException">Invalid goto/gosub command</exception>
       /// <exception cref="Logic::ComException">COM Error</exception>
-      void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool dropJMPs)
+      void  ScriptFileReader::ReadCommands(ScriptFile&  script, XmlNodePtr& stdBranch, XmlNodePtr& auxBranch, bool rawTranslate)
       {
          CommandArray  std;
          CommandList   aux; 
@@ -211,7 +212,7 @@ namespace Logic
             }
 
             // Drop/Keep JMP commands
-            if (!dropJMPs || !std[i].Syntax.Is(CMD_HIDDEN_JUMP))
+            if (rawTranslate || !std[i].Syntax.Is(CMD_HIDDEN_JUMP))
                // Insert standard command 
                script.Commands.AddInput(std[i]);
          }
@@ -270,7 +271,7 @@ namespace Logic
          }
 
          // Macros: convert certain command sequences into macros
-         if (PrefsLib.UseMacroCommands)
+         if (!rawTranslate && PrefsLib.UseMacroCommands)
             TranslateMacros(script);
 
          // Generate offline buffer

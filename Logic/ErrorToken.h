@@ -44,6 +44,9 @@ namespace Logic
             const UINT      Line;      // 1-base line number
          };
 
+         /// <summary>Print error token to console</summary>
+         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorToken& e);
+
          /// <summary>Vector of error tokens</summary>
          class LogicExport ErrorArray : public vector<ErrorToken> 
          {
@@ -71,6 +74,9 @@ namespace Logic
             // -------------------- REPRESENTATION ---------------------
 
          };
+
+         /// <summary>Print error array to console</summary>
+         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorArray& errs);
       }
    }
 }

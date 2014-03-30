@@ -166,15 +166,15 @@ namespace Testing
       /// <summary>Reads and translates a script without parsing or compiling it</summary>
       /// <param name="truePath">true path.</param>
       /// <param name="displayPath">path containing folder to use to resolve script-calls</param>
-      /// <param name="dropJMPs">Whether to drop JMP commands</param>
+      /// <param name="rawTranslate">Whether to preserve script exactly - retain JMP commands and skip macro insertion</param>
       /// <returns></returns>
-      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool dropJMPs)
+      ScriptFile  ScriptValidator::ReadScript(Path truePath, Path displayPath, bool rawTranslate)
       {
          Console << "Reading: " << Cons::Yellow << truePath << ENDL;
 
          // Read input file
          ScriptFileReader r(XFileInfo(truePath).OpenRead());
-         return r.ReadFile(displayPath, false, dropJMPs);
+         return r.ReadFile(displayPath, false, rawTranslate);
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -184,12 +184,41 @@ namespace Testing
       {
          try
          {
-            // Read script, including JMPs
-            auto orig = ReadScript(FullPath, FullPath, false);
-            PrintTree(orig.Commands.Input);
+            // Raw Translate:
+            auto script = ReadScript(FullPath, FullPath, true);
+            PrintTree(script.Commands.Input);
+
+            // Reload
+            script = ReadScript(FullPath, FullPath, false);
+
+            // Verified:
+            Console << "Parsing script..." << ENDL;
+            ScriptParser p(script, GetAllLines(script.Commands.Input), script.Game);
+            if (!p.Successful)
+            {
+               Console << p.Errors << ENDL;
+               Console << Cons::Failure << "Unable to parse: Printing partial tree" << ENDL;
+            }
+            // Print
+            p.Print();
+
+            // Cannot continue
+            if (!p.Successful)
+               return;
+            
+            // Compiled:
+            Console << "Compiling script..." << ENDL;
+            p.Compile();
+            if (!p.Successful)
+            {
+               Console << p.Errors << ENDL;
+               Console << Cons::Failure << "Unable to compile: Printing partial tree" << ENDL;
+            }
+
+            // Print
+            p.Print();
          }
-         catch (ExceptionBase& e)
-         {
+         catch (ExceptionBase& e) {
             Console.Log(HERE, e, VString(L"Unable to print translation tree for '%s'", FullPath.c_str()));
          }
       }
@@ -204,7 +233,7 @@ namespace Testing
             Console << Cons::Heading << L"Validating: " << Cons::Yellow << FullPath << ENDL;
 
             // Read script, including JMPs
-            auto orig = ReadScript(FullPath, FullPath, false);
+            auto orig = ReadScript(FullPath, FullPath, true);
 
             // Preserve copy of command list with JMPs
             auto orig_cmds = orig.Commands.Input;
@@ -221,7 +250,7 @@ namespace Testing
             w.Close();
 
             // Read copy back in. Extract text
-            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName, true);  // Supply original folder to enable script-call resolution
+            auto copy = ReadScript(tmp, FullPath.Folder+tmp.FileName, false);  // Supply original folder to enable script-call resolution
             auto copy_txt = GetAllLines(copy.Commands.Input);
 
             // Preserve command list WITHOUT JMPS. Compile

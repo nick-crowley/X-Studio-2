@@ -112,6 +112,21 @@ namespace Logic
                return ScriptCommand::Unrecognised;
             }
          }
+
+         
+         /// <summary>Print error token to console</summary>
+         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorToken& e)
+         {
+            return c << Cons::Error << "ERROR: " << Cons::White << e.Line << ": " << e.Message;
+         }
+
+         /// <summary>Print error array to console</summary>
+         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorArray& errs)
+         {
+            for (auto& e : errs)
+               Console << e << ENDL;
+            return c;
+         }
          
          // ------------------------------- PUBLIC METHODS -------------------------------
 

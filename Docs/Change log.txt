@@ -9,9 +9,9 @@ Subroutine indentation
 Implemented find & replace on scripts in project
 Add Compiler preference to enabling/disabling macro commands
 Fixed: 006: HOME key in the script editor doesn't scroll far enough left to display line numbers 
-Fixed: 011: Script editor variables drop-down isn't updated after modifying arguments 
 Fixed: 007: RichEdit shortcut keys can be used to right/centre align script editor text 
 Fixed: 010: Changing the id/language property of X3R language files renames document using X3TC naming scheme
+Fixed: 011: Script editor variables drop-down isn't updated after modifying arguments 
 
 
 
