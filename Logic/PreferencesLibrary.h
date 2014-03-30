@@ -214,6 +214,9 @@ namespace Logic
       /// <summary>Use C++ operators when translating operators</summary>
       PREFERENCE_PROPERTY(bool,Bool,UseCppOperators,false);
 
+      /// <summary>Enable translation and expansion of macro commands</summary>
+      PREFERENCE_PROPERTY(bool,Bool,UseMacroCommands,true);
+
 
       // Find Dialog
       /// <summary>Show options in the find dialog</summary>
