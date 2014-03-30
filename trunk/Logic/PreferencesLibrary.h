@@ -90,7 +90,7 @@ namespace Logic
    public:
       // App
       /// <summary>App/Build version</summary>
-      PREFERENCE_PROPERTY(int,Int,AppVersion,BUILD_VERSION)
+      PREFERENCE_PROPERTY(int,Int,AppVersion,0)
 
       
       // Application/GUI:
@@ -442,7 +442,7 @@ namespace Logic
       /// <exception cref="Logic::Win32Exception">Registry error</exception>
       void  ResetWorkspace()
       {
-         CSettingsStore s(FALSE, TRUE);
+         CSettingsStore s(FALSE, FALSE);
          GuiString key = GetProfileSectionPath(L"Workspace");
 
          // Check key exists
@@ -452,7 +452,7 @@ namespace Logic
 
             // Delete
             if (!s.DeleteKey(key.c_str()))
-               throw Win32Exception(HERE, VString(L"Unable to delete registry key '%s'", key.c_str()));
+               throw Win32Exception(HERE, L"Unable to delete registry key: " + key);
          }
       }
 
