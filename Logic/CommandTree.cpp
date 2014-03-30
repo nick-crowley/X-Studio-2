@@ -208,11 +208,13 @@ namespace Logic
             if (PrefsLib.UseMacroCommands)
             {
                ExpandMacros(script, errors);
-               
-               // Re-Identify labels/variables/constants
+
+#ifdef VALIDATION
+               // Re-index variables to account for hidden iterator variables
                script.Clear();
                IdentifyVariables(script, errors);
                IdentifyConstants(script, errors);
+#endif
             }
 
             // Perform linking
