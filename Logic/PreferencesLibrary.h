@@ -251,6 +251,24 @@ namespace Logic
       PREFERENCE_PROPERTY_ENUM(GameLanguage,GameDataLanguage,GameLanguage::English);
 
       // ---------------------- ACCESSORS ------------------------			
+   public:
+      /// <summary>Gets the registry path of section</summary>
+      /// <param name="section">section name</param>
+      /// <returns></returns>
+      GuiString  GetProfileSectionPath(const wstring& section) const
+      {
+         return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
+      }
+
+      /// <summary>Gets the registry path of section</summary>
+      /// <param name="section">section name</param>
+      /// <param name="subsection">sub-section name</param>
+      /// <returns></returns>
+      GuiString  GetProfileSectionPath(const wstring& section, const wstring& subsection) const
+      {
+         return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
+      }
+
    private:
       /// <summary>Get boolean preference</summary>
       /// <param name="name">name</param>
@@ -392,7 +410,7 @@ namespace Logic
       /// <summary>Set preference stored as list of strings</summary>
       /// <param name="name">name</param>
       /// <param name="values">values</param>
-      /// <exception cref="Logic::Win32Exception">Registry error<exception>
+      /// <exception cref="Logic::Win32Exception">Registry error</exception>
       void  SetStringList(const wchar* name, const list<wstring>& values) const
       {
          CSettingsStore ss(FALSE, FALSE);
@@ -419,25 +437,27 @@ namespace Logic
       }
 
       // ----------------------- MUTATORS ------------------------
+   public:
+      /// <summary>Deletes workspace settings from registry</summary>
+      /// <exception cref="Logic::Win32Exception">Registry error</exception>
+      void  ResetWorkspace()
+      {
+         CSettingsStore s(FALSE, TRUE);
+         GuiString key = GetProfileSectionPath(L"Workspace");
+
+         // Check key exists
+         if (s.Open(key.c_str()))
+         {
+            s.Close();
+
+            // Delete
+            if (!s.DeleteKey(key.c_str()))
+               throw Win32Exception(HERE, VString(L"Unable to delete registry key '%s'", key.c_str()));
+         }
+      }
 
       // -------------------- REPRESENTATION ---------------------
-   private:
-      /// <summary>Gets the registry path of section</summary>
-      /// <param name="section">section name</param>
-      /// <returns></returns>
-      GuiString  GetProfileSectionPath(const wstring& section) const
-      {
-         return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s", section.c_str());
-      }
-
-      /// <summary>Gets the registry path of section</summary>
-      /// <param name="section">section name</param>
-      /// <param name="subsection">sub-section name</param>
-      /// <returns></returns>
-      GuiString  GetProfileSectionPath(const wstring& section, const wstring& subsection) const
-      {
-         return VString(L"SOFTWARE\\Bearware\\X-Studio II\\%s\\%s", section.c_str(), subsection.c_str());
-      }
+   
    };
 
    /// <summary>Preferences library singleton access</summary>

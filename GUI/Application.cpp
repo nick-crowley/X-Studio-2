@@ -167,6 +167,24 @@ BOOL Application::InitInstance()
 	   __super::InitInstance();
       Console << Cons::UserAction << "Performing main initialization..." << ENDL;
 
+      try
+      {
+         // Check for upgrade
+         if (PrefsLib.AppVersion < BUILD_VERSION)
+         {
+            // Upgrade: Inform user
+            VString msg(L"X-Studio II has been upgrade to version %s. Preferences have been preserved, window placements have been reset.", BUILD_NAME);
+            theApp.ShowMessage(msg, MB_OK|MB_ICONINFORMATION);
+
+            // Delete 'workspace' key + Store new version
+            PrefsLib.ResetWorkspace();
+            PrefsLib.AppVersion = BUILD_VERSION;
+         }
+      }
+      catch (ExceptionBase& e) {
+         theApp.ShowError(HERE, e);
+      }
+      
       // Sockets
 	   /*if (!AfxSocketInit())
          throw Win32Exception(HERE, L"Windows sockets initialization failed.");*/
