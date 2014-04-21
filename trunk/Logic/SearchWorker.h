@@ -43,17 +43,9 @@ namespace Logic
               Initialized(false),
               Command(SearchCommand::Find)
          {
-            switch (Target)
-            {
-            // Document Based: Invalid
-            case SearchTarget::Selection:
-            case SearchTarget::Document:
-            case SearchTarget::OpenDocuments:
-               throw InvalidOperationException(HERE, L"Unsupported target type");
-
-            case SearchTarget::ProjectFiles:
+            // Verify project present 
+            if (Target == SearchTarget::ProjectFiles)
                REQUIRED(proj);
-            }
          }
 
          virtual ~SearchWorkerData()
