@@ -79,8 +79,8 @@ namespace Logic
    public:
       virtual ~PreferencesLibrary();
 
-      DEFAULT_COPY(PreferencesLibrary);	// Default copy semantics
-      DEFAULT_MOVE(PreferencesLibrary);	// Default move semantics
+      NO_COPY(PreferencesLibrary);	// Singleton
+      NO_MOVE(PreferencesLibrary);	// Singleton
 
       // ------------------------ STATIC -------------------------
    public:
