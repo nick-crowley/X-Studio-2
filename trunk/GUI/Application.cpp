@@ -242,6 +242,8 @@ BOOL Application::InitInstance()
 	   m_pMainWnd->ShowWindow(m_nCmdShow);
 	   m_pMainWnd->UpdateWindow();
 
+      // Initial update
+      dynamic_cast<MainWnd*>(m_pMainWnd)->OnInitialUpdate();
 	   return TRUE;
    }
    catch (ExceptionBase& e) {
