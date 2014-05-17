@@ -106,6 +106,39 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       return true;
    }
+
+   /// <summary>Calculates the tooltip position.</summary>
+   /// <param name="wnd">Final Tooltip window rectangle.</param>
+   /// <returns>Corrected position if necessary, otherwise (-1,-1)</returns>
+   CPoint  CustomTooltip::GetTooltipPosition(CRect wnd)
+   {
+      MONITORINFO mi;
+      CRect  screen;
+      
+      
+      // Get screen rectangle
+	   mi.cbSize = sizeof(MONITORINFO);
+	   if (GetMonitorInfo(MonitorFromPoint(wnd.TopLeft(), MONITOR_DEFAULTTONEAREST), &mi))
+	      screen = mi.rcWork;
+	   else
+	      ::SystemParametersInfo(SPI_GETWORKAREA, 0, &screen, 0);
+
+      // Return sentinel value if fits within screen rectangle
+      if (wnd.right <= screen.right && wnd.bottom <= screen.bottom)
+         return CPoint(-1,-1);
+
+      CPoint pos = wnd.TopLeft();
+
+      // Move left if extends beyond screen
+      if (wnd.right > screen.right)
+         pos.x -= (wnd.right - screen.right);
+
+      // Move up if extends below screen
+      if (wnd.bottom > screen.bottom)
+         pos.y -= (wnd.bottom - screen.bottom);
+      
+      return pos;
+   }
    
    /// <summary>Draws the background</summary>
    /// <param name="pDC">The dc.</param>
@@ -307,8 +340,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
             rcLabel.OffsetRect(MARGIN,0);
             rcDesc.OffsetRect(0,MARGIN);
 
-            // Size window
-            SetWindowPos(nullptr, -1, -1, wnd.Width(), wnd.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+            // Calculate position
+            ClientToScreen(&wnd);
+            CPoint pos = GetTooltipPosition(wnd);
+
+            // Size/position window
+            int flags = SWP_NOACTIVATE | SWP_NOZORDER | (pos == CPoint(-1,-1) ? SWP_NOMOVE : 0);
+            SetWindowPos(nullptr, pos.x, pos.y, wnd.Width(), wnd.Height(), flags);
          }
 
          *pResult = MOVED;
