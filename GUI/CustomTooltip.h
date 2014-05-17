@@ -110,7 +110,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       void SetTiming(UINT delay, UINT display);
 
    protected:
-      bool  GetTooltipData();
+      bool   GetTooltipData();
+      CPoint GetTooltipPosition(CRect rc);
 
       void  OnDrawBackground(CDC* dc, CRect wnd);
       CSize OnDrawDescription(CDC* pDC, CRect rect, bool bCalcOnly);
