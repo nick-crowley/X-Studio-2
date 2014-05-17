@@ -185,6 +185,25 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return __super::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
    }
    
+   /// <summary>Called on first display</summary>
+   void MainWnd::OnInitialUpdate()
+   {
+      try
+      {
+         // Enable Drag/Drop from windows explorer
+         DragAcceptFiles(TRUE);
+
+         // Load game data
+         LoadGameData();
+         
+         // Find & Replace dialog:
+         m_dlgFind.Create(FindDialog::IDD, this);
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
+   }
+   
    /// <summary>App-wizard generated</summary>
    /// <param name="cs">The cs.</param>
    /// <returns></returns>
@@ -575,25 +594,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
 
-   /// <summary>Called on first display</summary>
-   void MainWnd::OnInitialUpdate()
-   {
-      try
-      {
-         // Enable Drag/Drop from windows explorer
-         DragAcceptFiles(TRUE);
-
-         // Load game data
-         LoadGameData();
-         
-         // Find & Replace dialog:
-         m_dlgFind.Create(FindDialog::IDD, this);
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-   }
-   
    /// <summary>Display tool window.</summary>
    void MainWnd::OnPerformCommand(UINT nID)
    {
@@ -731,7 +731,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       if (FirstShow)
       {
          FirstShow = false;
-         OnInitialUpdate();
+         //OnInitialUpdate();    // Now performed by Application, wasn't being fired on all PCs for some reason.
       }
          
    }

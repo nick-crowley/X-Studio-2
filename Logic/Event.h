@@ -51,8 +51,8 @@ namespace Logic
    };
 
 
-   /// <summary>Delegate for invoking class LogicExport instance methods</summary>
-   /// <typeparam name="Type">Type of class LogicExport containing the member function to invoke</typeparam>
+   /// <summary>Delegate for invoking class instance methods</summary>
+   /// <typeparam name="Type">Type of class containing the member function to invoke</typeparam>
    /// <typeparam name="Args">Member function argument types</typeparam>
    template<typename Type, typename ...Args>
    class MethodDelegate : public VargDelegate<Args...>
@@ -112,7 +112,7 @@ namespace Logic
    };
 
 
-   /// <summary>An event able to invoke class LogicExport member functions with any signature. 
+   /// <summary>An event able to invoke class member functions with any signature. 
    /// Automatically handles disconnection if either party falls out of scope</summary>
    /// <typeparam name="Args">Event handler argument types</typeparam>
    template<typename ...Args>
@@ -155,8 +155,8 @@ namespace Logic
 
       // ----------------------- MUTATORS ------------------------
    public:
-      /// <summary>Registers a class LogicExport method to handle this event</summary>
-      /// <typeparam name="Type">Type of class LogicExport that will handle the event</typeparam>
+      /// <summary>Registers a class method to handle this event</summary>
+      /// <typeparam name="Type">Type of class that will handle the event</typeparam>
       /// <typeparam name="Member">Type of member function that will handle the event</typeparam>
       /// <param name="instance">The instance that will handle the event</param>
       /// <param name="method">Pointer to the member function that will handle event</param>
