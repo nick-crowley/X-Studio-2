@@ -46,7 +46,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       auto grp = (CommandGroup)(Groups.GetCurSel()-1);
 
       // Lookup matches
-      return SyntaxLib.Query(GetSearchTerm(), GameVersion::TerranConflict, grp);
+      return SyntaxLib.Query(GetSearchTerm(), PrefsLib.GameDataVersion, grp);
    }
 
    /// <summary>Gets the command text to be inserted for this item.</summary>
