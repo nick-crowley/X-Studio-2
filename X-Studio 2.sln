@@ -12,15 +12,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUI", "GUI\GUI.vcxproj", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C18D-400A-AEE7-55C4FD08B326}"
 	ProjectSection(SolutionItems) = preProject
-		Docs\BackupFile (Example).xml = Docs\BackupFile (Example).xml
 		Docs\Change log.txt = Docs\Change log.txt
-		Docs\Command Syntax.txt = Docs\Command Syntax.txt
-		Docs\Command Syntax.xml = Docs\Command Syntax.xml
 		Docs\Compiler Changes.txt = Docs\Compiler Changes.txt
-		Docs\Descriptions.xml = Docs\Descriptions.xml
 		Docs\RichText Tags.txt = Docs\RichText Tags.txt
 		Docs\Task List.txt = Docs\Task List.txt
-		Docs\Templates.xml = Docs\Templates.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Problems", "Problems", "{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587}"
@@ -78,8 +73,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{7B93AC5C
 		Docs\Files\!lib.war.races.pck = Docs\Files\!lib.war.races.pck
 		Docs\Files\!move.follow.template.pck = Docs\Files\!move.follow.template.pck
 		Docs\Files\!move.scanpatrol.pck = Docs\Files\!move.scanpatrol.pck
-		Docs\Files\BackupFile (Example).xml = Docs\Files\BackupFile (Example).xml
 		Docs\Files\lib.cycrow.isValidEmp.xml = Docs\Files\lib.cycrow.isValidEmp.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{0F294A80-3D3A-4AF8-878C-964B3329C770}"
+	ProjectSection(SolutionItems) = preProject
+		Data\BackupFile (Example).xml = Data\BackupFile (Example).xml
+		Data\Command Syntax.txt = Data\Command Syntax.txt
+		Data\Command Syntax.xml = Data\Command Syntax.xml
+		Data\Descriptions (Backup).xml = Data\Descriptions (Backup).xml
+		Data\Descriptions.xml = Data\Descriptions.xml
+		Data\Templates.xml = Data\Templates.xml
 	EndProjectSection
 EndProject
 Global
@@ -110,8 +114,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
-		{CE9A171E-C52B-42C8-A177-6B6788D02FF8} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
 		{7B93AC5C-262B-4544-8523-F5E6291F4A1F} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
+		{CE9A171E-C52B-42C8-A177-6B6788D02FF8} = {0F294A80-3D3A-4AF8-878C-964B3329C770}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
