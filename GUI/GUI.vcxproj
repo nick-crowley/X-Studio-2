@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A45897BA-6214-4004-A6E5-005ED1B3BE8B}</ProjectGuid>
+    <RootNamespace>XStudio2</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <ProjectName>GUI</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>XStudio2</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>XStudio2</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <CallingConvention>Cdecl</CallingConvention>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;$(OutputPath)\XStudio2.Utils.lib;$(OutputPath)\XStudio2.Logic.lib</AdditionalDependencies>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>"D:\My Projects\clearTempFolder.bat"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Clearing temp folder</Message>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>"D:\My Projects\clearTempFolder.bat"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Clearing temp folder</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>shlwapi.lib;$(OutputPath)\XStudio2.Utils.lib;$(OutputPath)\XStudio2.Logic.lib</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <PreBuildEvent>
+      <Command>"D:\My Projects\clearTempFolder.bat"</Command>
+      <Message>Clearing temp folder</Message>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>"D:\My Projects\clearTempFolder.bat"</Command>
+      <Message>Clearing temp folder</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Testing\GuiTests.h" />
+    <ClInclude Include="..\TOM\stdafx.h" />
+    <ClInclude Include="..\TOM\tom.h" />
+    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="ArgumentDialog.h" />
+    <ClInclude Include="BackupList.h" />
+    <ClInclude Include="BackupWnd.h" />
+    <ClInclude Include="BitmapStatic.h" />
+    <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="CommitDialog.h" />
+    <ClInclude Include="CompilerPage.h" />
+    <ClInclude Include="DialogBase.h" />
+    <ClInclude Include="DiffDocument.h" />
+    <ClInclude Include="DiffEdit.h" />
+    <ClInclude Include="DiffFrame.h" />
+    <ClInclude Include="DiffView.h" />
+    <ClInclude Include="DocTemplateBase.h" />
+    <ClInclude Include="EditorPage.h" />
+    <ClInclude Include="ExportProjectDialog.h" />
+    <ClInclude Include="FrameWndBase.h" />
+    <ClInclude Include="GeneralPage.h" />
+    <ClInclude Include="GuiCommand.h" />
+    <ClInclude Include="HeadingStatic.h" />
+    <ClInclude Include="ImportProjectDialog.h" />
+    <ClInclude Include="LanguageEdit.h" />
+    <ClInclude Include="NewDocumentDialog.h" />
+    <ClInclude Include="PreferencesDialog.h" />
+    <ClInclude Include="PreferencesPage.h" />
+    <ClInclude Include="RefactorDialog.h" />
+    <ClInclude Include="RefactorEdit.h" />
+    <ClInclude Include="RichEditEx.h" />
+    <ClInclude Include="CustomTooltip.h" />
+    <ClInclude Include="CommandWnd.h" />
+    <ClInclude Include="CustomDrawImpl.hpp" />
+    <ClInclude Include="DocumentBase.h" />
+    <ClInclude Include="FindComboBox.h" />
+    <ClInclude Include="FindDialog.h" />
+    <ClInclude Include="ProgressDialog.h" />
+    <ClInclude Include="GameDataWnd.h" />
+    <ClInclude Include="GameObjectWnd.h" />
+    <ClInclude Include="ImageListEx.h" />
+    <ClInclude Include="LanguageFrame.h" />
+    <ClInclude Include="LanguagePageView.h" />
+    <ClInclude Include="LanguageStringView.h" />
+    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="ListViewCustomDraw.h" />
+    <ClInclude Include="OutputList.h" />
+    <ClInclude Include="ProjectDocument.h" />
+    <ClInclude Include="ProjectWnd.h" />
+    <ClInclude Include="LanguageDocument.h" />
+    <ClInclude Include="LanguageEditView.h" />
+    <ClInclude Include="MainWnd.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="PropertyGrid.h" />
+    <ClInclude Include="PropertySource.h" />
+    <ClInclude Include="resources.h" />
+    <ClInclude Include="OleBitmap.h" />
+    <ClInclude Include="RichStringWriter.h" />
+    <ClInclude Include="RichTextRenderer.h" />
+    <ClInclude Include="ScriptDocument.h" />
+    <ClInclude Include="ScriptEdit.h" />
+    <ClInclude Include="ScriptObjectWnd.h" />
+    <ClInclude Include="ScriptView.h" />
+    <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="SearchOperation.h" />
+    <ClInclude Include="SplashWnd.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SuggestionList.h" />
+    <ClInclude Include="SymbolDialog.h" />
+    <ClInclude Include="SyntaxPage.h" />
+    <ClInclude Include="ProjectTreeCtrl.h" />
+    <ClInclude Include="TitleStatic.h" />
+    <ClInclude Include="ToolBarEx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Testing\GuiTests.cpp" />
+    <ClCompile Include="..\TOM\msftedit.cpp" />
+    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="ArgumentDialog.cpp" />
+    <ClCompile Include="BackupList.cpp" />
+    <ClCompile Include="BackupWnd.cpp" />
+    <ClCompile Include="BitmapStatic.cpp" />
+    <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="CommitDialog.cpp" />
+    <ClCompile Include="CompilerPage.cpp" />
+    <ClCompile Include="DialogBase.cpp" />
+    <ClCompile Include="DiffDocument.cpp" />
+    <ClCompile Include="DiffEdit.cpp" />
+    <ClCompile Include="DiffFrame.cpp" />
+    <ClCompile Include="DiffView.cpp" />
+    <ClCompile Include="DocTemplateBase.cpp" />
+    <ClCompile Include="EditorPage.cpp" />
+    <ClCompile Include="ExportProjectDialog.cpp" />
+    <ClCompile Include="FrameWndBase.cpp" />
+    <ClCompile Include="GeneralPage.cpp" />
+    <ClCompile Include="HeadingStatic.cpp" />
+    <ClCompile Include="ImportProjectDialog.cpp" />
+    <ClCompile Include="LanguageEdit.cpp" />
+    <ClCompile Include="LanguageEditCallback.cpp" />
+    <ClCompile Include="NewDocumentDialog.cpp" />
+    <ClCompile Include="PreferencesDialog.cpp" />
+    <ClCompile Include="PreferencesPage.cpp" />
+    <ClCompile Include="ProjectDocTemplate.cpp" />
+    <ClCompile Include="RefactorDialog.cpp" />
+    <ClCompile Include="RefactorEdit.cpp" />
+    <ClCompile Include="RichEditEx.cpp" />
+    <ClCompile Include="CustomTooltip.cpp" />
+    <ClCompile Include="CommandWnd.cpp" />
+    <ClCompile Include="DocumentBase.cpp" />
+    <ClCompile Include="FindComboBox.cpp" />
+    <ClCompile Include="FindDialog.cpp" />
+    <ClCompile Include="ProgressDialog.cpp" />
+    <ClCompile Include="GameDataWnd.cpp" />
+    <ClCompile Include="GameObjectWnd.cpp" />
+    <ClCompile Include="ImageListEx.cpp" />
+    <ClCompile Include="LanguageFrame.cpp" />
+    <ClCompile Include="LanguagePageView.cpp" />
+    <ClCompile Include="LanguageStringView.cpp" />
+    <ClCompile Include="ListViewCustomDraw.cpp" />
+    <ClCompile Include="OutputList.cpp" />
+    <ClCompile Include="ProjectDocument.cpp" />
+    <ClCompile Include="ProjectWnd.cpp" />
+    <ClCompile Include="LanguageDocument.cpp" />
+    <ClCompile Include="LanguageEditView.cpp" />
+    <ClCompile Include="MainWnd.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="PropertyGrid.cpp" />
+    <ClCompile Include="OleBitmap.cpp" />
+    <ClCompile Include="RichStringWriter.cpp" />
+    <ClCompile Include="RichTextRenderer.cpp" />
+    <ClCompile Include="ScriptDocument.cpp" />
+    <ClCompile Include="ScriptEdit.cpp" />
+    <ClCompile Include="ScriptObjectWnd.cpp" />
+    <ClCompile Include="ScriptView.cpp" />
+    <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="SearchOperation.cpp" />
+    <ClCompile Include="SplashWnd.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ProjectTreeCtrl.cpp" />
+    <ClCompile Include="SuggestionList.cpp" />
+    <ClCompile Include="SymbolDialog.cpp" />
+    <ClCompile Include="SyntaxPage.cpp" />
+    <ClCompile Include="TitleStatic.cpp" />
+    <ClCompile Include="ToolBarEx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TOM\msftedit.tlh" />
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
