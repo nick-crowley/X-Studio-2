@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Add your content here.
+X-Studio II is a development environment for the X series of games by Egosoft.
 
 
 = Organisation =
