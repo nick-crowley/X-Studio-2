@@ -127,6 +127,44 @@
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Bitmap - Edit Argument.bmp" />
+    <Image Include="res\Bitmap - Export Project.bmp" />
+    <Image Include="res\Bitmap - Import Project.bmp" />
+    <Image Include="res\Bitmap - New Document.bmp" />
+    <Image Include="res\Bitmap - RichButton - Hot.bmp" />
+    <Image Include="res\Bitmap - RichButton - Normal.bmp" />
+    <Image Include="res\Bitmap - Splash.bmp" />
+    <Image Include="res\Icon - Document - Language.ico" />
+    <Image Include="res\Icon - Document - Script.ico" />
+    <Image Include="res\Icon - Window - Backup.ico" />
+    <Image Include="res\Icon - Window - Commands.ico" />
+    <Image Include="res\Icon - Window - Game Objects.ico" />
+    <Image Include="res\Icon - Window - Main.ico" />
+    <Image Include="res\Icon - Window - Output.ico" />
+    <Image Include="res\Icon - Window - Project.ico" />
+    <Image Include="res\Icon - Window - Properties.ico" />
+    <Image Include="res\Icon - Window - Script Objects.ico" />
+    <Image Include="res\ImageList - BackupWnd.bmp" />
+    <Image Include="res\ImageList - GameDataWnd.bmp" />
+    <Image Include="res\ImageList - LanguageFrame.bmp" />
+    <Image Include="res\ImageList - NewDocument - Copy.bmp" />
+    <Image Include="res\ImageList - NewDocument.bmp" />
+    <Image Include="res\ImageList - OutputWnd.bmp" />
+    <Image Include="res\ImageList - ProjectWnd.bmp" />
+    <Image Include="res\Menu - Misc.bmp" />
+    <Image Include="res\Toolbar - BackupWnd.bmp" />
+    <Image Include="res\Toolbar - Editor (Disabled).bmp" />
+    <Image Include="res\Toolbar - Editor (Normal).bmp" />
+    <Image Include="res\Toolbar - Images.bmp" />
+    <Image Include="res\Toolbar - MainWnd - Edit.bmp" />
+    <Image Include="res\Toolbar - MainWnd - File.bmp" />
+    <Image Include="res\Toolbar - MainWnd - GameData.bmp" />
+    <Image Include="res\Toolbar - MainWnd - View.bmp" />
+    <Image Include="res\Toolbar - ProjectWnd.bmp" />
+    <Image Include="res\Toolbar - PropertiesWnd.bmp" />
+    <Image Include="res\Toolbar - User.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
