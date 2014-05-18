@@ -65,6 +65,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 		Docs\Templates\Project.Blank.xprj = Docs\Templates\Project.Blank.xprj
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{7B93AC5C-262B-4544-8523-F5E6291F4A1F}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Files\!config.create.nearplanet.pck = Docs\Files\!config.create.nearplanet.pck
+		Docs\Files\!config.earth.torus.pck = Docs\Files\!config.earth.torus.pck
+		Docs\Files\!fight.attack.enemiesrange.land.pck = Docs\Files\!fight.attack.enemiesrange.land.pck
+		Docs\Files\!fight.defend.sector.pck = Docs\Files\!fight.defend.sector.pck
+		Docs\Files\!fight.torus.turret.pck = Docs\Files\!fight.torus.turret.pck
+		Docs\Files\!job.fight.attackallenemies.pck = Docs\Files\!job.fight.attackallenemies.pck
+		Docs\Files\!job.pirate.plunderships.pck = Docs\Files\!job.pirate.plunderships.pck
+		Docs\Files\!job.trade.docktrader.pck = Docs\Files\!job.trade.docktrader.pck
+		Docs\Files\!lib.war.races.pck = Docs\Files\!lib.war.races.pck
+		Docs\Files\!move.follow.template.pck = Docs\Files\!move.follow.template.pck
+		Docs\Files\!move.scanpatrol.pck = Docs\Files\!move.scanpatrol.pck
+		Docs\Files\BackupFile (Example).xml = Docs\Files\BackupFile (Example).xml
+		Docs\Files\lib.cycrow.isValidEmp.xml = Docs\Files\lib.cycrow.isValidEmp.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -94,6 +111,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{66B7B11B-BD5E-472A-AE74-1DA5E7AF3587} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
 		{CE9A171E-C52B-42C8-A177-6B6788D02FF8} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
+		{7B93AC5C-262B-4544-8523-F5E6291F4A1F} = {6BF144FD-C18D-400A-AEE7-55C4FD08B326}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .

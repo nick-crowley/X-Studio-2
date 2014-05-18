@@ -1,0 +1,218 @@
+<?xml version="1.0" standalone="yes" ?>
+<?xml-stylesheet href="x2script.xsl" type="text/xsl" ?>
+<script>
+<name>lib.cycrow.isValidEmp</name>
+<version>2</version>
+<engineversion>44</engineversion>
+<description>Cycrow Library: Checks if EMP is installed</description>
+<arguments>
+</arguments>
+<sourcetext>
+<line linenr="001" indent=""><comment><text>*&#160;</text><var>first&#160;check&#160;if&#160;emp&#160;is&#160;valid</var></comment></line>
+<line linenr="002" indent=""><var>skip&#160;if&#160;</var><text>get&#160;global&#160;variable:&#160;name=</text><var>'emp.on'</var></line>
+<line linenr="003" indent="&#160;"><text>return&#160;</text><var>[FALSE]</var></line>
+<line linenr="004" indent=""></line>
+<line linenr="005" indent=""><comment><text>*&#160;</text><var>check&#160;the&#160;text&#160;file&#160;is&#160;loaded</var></comment></line>
+<line linenr="006" indent=""><var>skip&#160;if&#160;</var><text>&#160;read&#160;text:&#160;page&#160;id=</text><var>17</var><text>,&#160;id=</text><var>10253</var><text>&#160;exists</text></line>
+<line linenr="007" indent="&#160;"><text>return&#160;</text><var>[FALSE]</var></line>
+<line linenr="008" indent=""><var>$text&#160;=&#160;</var><text>&#160;read&#160;text:&#160;page=</text><var>17</var><text>&#160;id=</text><var>10253</var></line>
+<line linenr="009" indent=""><var>$text&#160;=&#160;</var><text>&#160;get&#160;substring&#160;of&#160;</text><var>$text</var><text>&#160;offset=</text><var>0</var><text>&#160;length=</text><var>7</var></line>
+<line linenr="010" indent=""><var>skip&#160;if&#160;</var><var>$text</var><text>&#160;</text><var>==</var><text>&#160;</text><var>'ZA_EMP_'</var></line>
+<line linenr="011" indent="&#160;"><text>return&#160;</text><var>[FALSE]</var></line>
+<line linenr="012" indent=""></line>
+<line linenr="013" indent=""><comment><text>*&#160;</text><var>check&#160;for&#160;a&#160;valid&#160;ware</var></comment></line>
+<line linenr="014" indent=""><var>$maxSub&#160;=&#160;</var><text>&#160;get&#160;number&#160;of&#160;subtypes&#160;of&#160;maintype&#160;</text><var>[SSTYPE_W_TECH]</var></line>
+<line linenr="015" indent=""><var>skip&#160;if&#160;</var><var>$maxSub</var><text>&#160;</text><var>&gt;</var><text>&#160;</text><var>470</var></line>
+<line linenr="016" indent="&#160;"><text>return&#160;</text><var>[FALSE]</var></line>
+<line linenr="017" indent=""></line>
+<line linenr="018" indent=""><comment><text>*&#160;</text><var>check&#160;price&#160;is&#160;correct</var></comment></line>
+<line linenr="019" indent=""><var>$ware&#160;=&#160;</var><var>ZA_EMP_BLANK_WARE_CUSTOM20_8</var></line>
+<line linenr="020" indent=""><var>$price&#160;=&#160;</var><text>get&#160;average&#160;price&#160;of&#160;ware&#160;</text><var>$ware</var></line>
+<line linenr="021" indent=""><var>skip&#160;if&#160;</var><var>$price</var><text>&#160;</text><var>==</var><text>&#160;</text><var>215408760</var></line>
+<line linenr="022" indent="&#160;"><text>return&#160;</text><var>[FALSE]</var></line>
+<line linenr="023" indent=""><text>return&#160;</text><var>[TRUE]</var></line>
+</sourcetext>
+<codearray>
+
+<sval type="array" size="10">
+  <sval type="string" val="lib.cycrow.isValidEmp"/>
+  <sval type="int" val="44"/>
+  <sval type="string" val="Cycrow Library: Checks if EMP is installed"/>
+  <sval type="int" val="2"/>
+  <sval type="int" val="0"/>
+  <sval type="array" size="4">
+    <sval type="string" val="text"/>
+    <sval type="string" val="maxSub"/>
+    <sval type="string" val="ware"/>
+    <sval type="string" val="price"/>
+  </sval>
+  <sval type="array" size="16">
+    <sval type="array" size="4">
+      <sval type="int" val="158"/>
+      <sval type="int" val="5"/>
+      <sval type="string" val="emp.on"/>
+      <sval type="int" val="-536870393"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="1338"/>
+      <sval type="int" val="-536869881"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="17"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="10253"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="6">
+      <sval type="int" val="126"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="17"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="10253"/>
+    </sval>
+    <sval type="array" size="8">
+      <sval type="int" val="1077"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="7"/>
+    </sval>
+    <sval type="array" size="13">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-536868857"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="5"/>
+      <sval type="string" val="ZA_EMP_"/>
+      <sval type="int" val="15"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="-1"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="-2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="658"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="216"/>
+    </sval>
+    <sval type="array" size="13">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-536868089"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="470"/>
+      <sval type="int" val="15"/>
+      <sval type="int" val="2"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="-1"/>
+      <sval type="int" val="2"/>
+      <sval type="int" val="-2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="7">
+      <sval type="int" val="104"/>
+      <sval type="int" val="2"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="9"/>
+      <sval type="int" val="1048847"/>
+      <sval type="int" val="1"/>
+      <sval type="int" val="-1"/>
+    </sval>
+    <sval type="array" size="4">
+      <sval type="int" val="629"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="13">
+      <sval type="int" val="104"/>
+      <sval type="int" val="-536867065"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="131074"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="4"/>
+      <sval type="int" val="215408760"/>
+      <sval type="int" val="15"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="3"/>
+      <sval type="int" val="-1"/>
+      <sval type="int" val="0"/>
+      <sval type="int" val="-2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="9"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="103"/>
+      <sval type="int" val="131075"/>
+      <sval type="int" val="10"/>
+    </sval>
+  </sval>
+  <sval type="int" val="0"/>
+  <sval type="array" size="7">
+    <sval type="array" size="3">
+      <sval type="int" val="0"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="first check if emp is valid"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="2"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="2"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="check the text file is loaded"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="8"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="8"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="check for a valid ware"/>
+    </sval>
+    <sval type="array" size="2">
+      <sval type="int" val="11"/>
+      <sval type="int" val="2"/>
+    </sval>
+    <sval type="array" size="3">
+      <sval type="int" val="11"/>
+      <sval type="int" val="1"/>
+      <sval type="string" val="check price is correct"/>
+    </sval>
+  </sval>
+  <sval type="int" val="0"/>
+</sval>
+
+</codearray>
+</script>
