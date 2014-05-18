@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<!--Written by X-Studio II-->
-<project version="2">
-<folder name="Language Files" type="fixed"></folder>
-<folder name="MD Scripts" type="fixed"></folder>
-<folder name="MSCI Scripts" type="fixed"></folder>
-<folder name="Other Files" type="fixed"></folder>
-<folder name="Variables" type="fixed"></folder>
-</project>
