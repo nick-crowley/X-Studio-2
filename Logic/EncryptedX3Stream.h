@@ -7,22 +7,24 @@ namespace Logic
    namespace IO
    {
 
-      /// <summary>Provides stream access to loose files using the X2 encryption scheme</summary>
-      class LogicExport EncryptedX2Stream : public StreamFacade
+      /// <summary>Provides stream access to loose files using the X3TC encryption scheme</summary>
+      class LogicExport EncryptedX3Stream : public StreamFacade
       {
       private:
-         const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);
+         static const byte  DECRYPT_SEED = 0xC8;
+         
+         byte DECRYPT_KEY;
 
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         EncryptedX2Stream(StreamPtr  src);
-         EncryptedX2Stream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
-         ~EncryptedX2Stream();
+         EncryptedX3Stream(StreamPtr  src);
+         EncryptedX3Stream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
+         ~EncryptedX3Stream();
 
          // Prevent copying/moving
-         NO_MOVE(EncryptedX2Stream);
-         NO_COPY(EncryptedX2Stream);
+         NO_MOVE(EncryptedX3Stream);
+         NO_COPY(EncryptedX3Stream);
 
          // ------------------------ STATIC -------------------------
       public:
