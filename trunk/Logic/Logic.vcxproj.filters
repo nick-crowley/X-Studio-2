@@ -429,6 +429,9 @@
     <ClInclude Include="EncryptedX2Stream.h">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
+    <ClInclude Include="EncryptedX3Stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
@@ -688,6 +691,9 @@
     </ClCompile>
     <ClCompile Include="EncryptedX2Stream.cpp">
       <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="EncryptedX3Stream.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

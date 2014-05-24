@@ -3,6 +3,7 @@
 #include "GZipStream.h"
 #include "DataStream.h"
 #include "EncryptedX2Stream.h"
+#include "EncryptedX3Stream.h"
 
 namespace Logic
 {
@@ -98,9 +99,13 @@ namespace Logic
             // basic file stream
             s = StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read));
 
-            // Wrap in encrypted stream if necessary
+            // X2: Wrap in encrypted stream if necessary
             if (EncryptedX2Stream::IsEncrypted(s))
                s = StreamPtr(new EncryptedX2Stream(s));
+
+            // X3TC: Wrap in encrypted stream if necessary
+            else if (EncryptedX3Stream::IsEncrypted(s))
+               s = StreamPtr(new EncryptedX3Stream(s));
          }
          else
             // CATALOG: Read from .dat file
