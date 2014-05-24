@@ -8,7 +8,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of catalogs</summary>
-      class LogicExport EncryptedStream : public StreamFacade
+      class LogicExport EncryptedX2Stream : public StreamFacade
       {
       private:
          const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);
@@ -16,13 +16,13 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
 
       public:
-         EncryptedStream(StreamPtr  src);
-         EncryptedStream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
-         ~EncryptedStream();
+         EncryptedX2Stream(StreamPtr  src);
+         EncryptedX2Stream(Path path, FileMode mode, FileAccess access, FileShare share = FileShare::AllowRead);
+         ~EncryptedX2Stream();
 
          // Prevent copying/moving
-         NO_MOVE(EncryptedStream);
-         NO_COPY(EncryptedStream);
+         NO_MOVE(EncryptedX2Stream);
+         NO_COPY(EncryptedX2Stream);
 
          // --------------------- PROPERTIES ------------------------
 			
