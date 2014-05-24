@@ -19,9 +19,12 @@ namespace Logic
          // Open file
          Handle = CreateFile(path.c_str(), (DWORD)access, (DWORD)share, NULL, (DWORD)mode, FILE_ATTRIBUTE_NORMAL, NULL);
 
-         if (Handle == INVALID_HANDLE_VALUE) {
+         if (Handle == INVALID_HANDLE_VALUE) 
+         {
             if (GetLastError() == ERROR_FILE_NOT_FOUND)
                throw FileNotFoundException(HERE, path);
+            else if (GetLastError() == ERROR_PATH_NOT_FOUND)
+               throw DirectoryNotFoundException(HERE, path.Folder);
             else
                throw IOException(HERE, SysErrorString());
          }
