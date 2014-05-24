@@ -12,6 +12,7 @@ namespace Logic
       /// <param name="mode">The creation mode.</param>
       /// <param name="access">The file access.</param>
       /// <param name="share">The sharing permitted.</param>
+      /// <exception cref="Logic::DirectoryNotFoundException">Folder not found</exception>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">Unable to create/open file</exception>
       FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileShare share) : FullPath(path), Mode(mode), Access(access), Share(share) 
