@@ -626,81 +626,89 @@ namespace Logic
       /// <param name="f">Script used for variable names lookup</param>
       void ScriptCommand::Translate(ScriptFile& f)
       {
-         CommandLexer lex(Syntax.Text, false);
-         bool         Param = false;
-
-         // Translate parameters
-         for (ScriptParameter& p : Parameters)
-            p.Translate(f);
-
-         // Insert/Replace syntax '$n' markers with parameter text
-         for (const ScriptToken& tok : lex.Tokens)
+         try
          {
-            // Marker: Insert parameter text
-            if (tok.Type == TokenType::Variable || tok.Type == TokenType::Comment)  // Lexer identifies comment syntax as 'comment'
+            CommandLexer lex(Syntax.Text, false);
+            bool         Param = false;
+
+            // Translate parameters
+            for (ScriptParameter& p : Parameters)
+               p.Translate(f);
+
+            // Insert/Replace syntax '$n' markers with parameter text
+            for (const ScriptToken& tok : lex.Tokens)
             {
-               int i = (tok.Text[1]-48);
-               Text.append( Parameters[i].Text );
+               // Marker: Insert parameter text
+               if (tok.Type == TokenType::Variable || tok.Type == TokenType::Comment)  // Lexer identifies comment syntax as 'comment'
+               {
+                  int i = (tok.Text[1]-48);
+                  Text.append( Parameters[i].Text );
+               }
+               else // Text: Insert verbatim
+                  Text.append(tok.Text);
             }
-            else // Text: Insert verbatim
-               Text.append(tok.Text);
-         }
-         // Trim leading spaces
-         Text = Text.TrimLeft(L" ");
+            // Trim leading spaces
+            Text = Text.TrimLeft(L" ");
 
-         // Expressions: Print components
-         if (Is(CMD_EXPRESSION))
-            for (UINT i = 2; i < Parameters.size(); ++i)
-               Text.append(Parameters[i].Text);
+            // Expressions: Print components
+            if (Is(CMD_EXPRESSION))
+               for (UINT i = 2; i < Parameters.size(); ++i)
+                  Text.append(Parameters[i].Text);
 
-         // Varg: Print pairs/delimited arguments
-         else if (Syntax.IsVArgument())
-         {
-            vector<ArgumentPair> vargs;
-            wstring script;
-
-            switch (Syntax.VArgument)
+            // Varg: Print pairs/delimited arguments
+            else if (Syntax.IsVArgument())
             {
-            // CommaDelimited: Print delimited list
-            case VArgSyntax::CommaDelimited:
-               // Iterate thru varg parameters
-               for (UINT p = Syntax.ParameterCount; p < Parameters.size(); ++p)
-                  // Drop 'null' arguments iff remainder are 'null' 
-                  if (!all_of(Parameters.begin()+p, Parameters.end(), IsParameterNull))
-                     Text.append( VString(p==Syntax.ParameterCount ? L" %s" : L", %s", Parameters[p].Text.c_str()) );
-               break;
+               vector<ArgumentPair> vargs;
+               wstring script;
 
-            // ScriptCalls: Print argument name/value pairs
-            case VArgSyntax::NamedPairs:
-               // Get script name
-               script = GetScriptCallName();
+               switch (Syntax.VArgument)
+               {
+               // CommaDelimited: Print delimited list
+               case VArgSyntax::CommaDelimited:
+                  // Iterate thru varg parameters
+                  for (UINT p = Syntax.ParameterCount; p < Parameters.size(); ++p)
+                     // Drop 'null' arguments iff remainder are 'null' 
+                     if (!all_of(Parameters.begin()+p, Parameters.end(), IsParameterNull))
+                        Text.append( VString(p==Syntax.ParameterCount ? L" %s" : L", %s", Parameters[p].Text.c_str()) );
+                  break;
+
+               // ScriptCalls: Print argument name/value pairs
+               case VArgSyntax::NamedPairs:
+                  // Get script name
+                  script = GetScriptCallName();
             
-               // Populate argument name/value pairs   [start at first varg parameter]
-               for (UINT p = Syntax.ParameterCount, arg = 0; p < Parameters.size(); ++p, ++arg)
-                  vargs.push_back( ArgumentPair(f.ScriptCalls.FindArgumentName(script, arg), Parameters[p]) );
+                  // Populate argument name/value pairs   [start at first varg parameter]
+                  for (UINT p = Syntax.ParameterCount, arg = 0; p < Parameters.size(); ++p, ++arg)
+                     vargs.push_back( ArgumentPair(f.ScriptCalls.FindArgumentName(script, arg), Parameters[p]) );
 
-               // Append text
-               for (auto it = vargs.begin(); it != vargs.end(); ++it)
-#ifndef STRICT_VALIDATION
-                  // Drop 'null' arguments iff remainder are 'null' 
-                  if (!all_of(it, vargs.end(), IsArgumentNull))
-                     Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
-#else
-                  // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
-                  if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), IsArgumentNull) )
-                     Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
-#endif
-               break;
+                  // Append text
+                  for (auto it = vargs.begin(); it != vargs.end(); ++it)
+   #ifndef STRICT_VALIDATION
+                     // Drop 'null' arguments iff remainder are 'null' 
+                     if (!all_of(it, vargs.end(), IsArgumentNull))
+                        Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+   #else
+                     // Drop 'null' arguments iff remainder are 'null' (except for genuine 102 varg ScriptCalls)
+                     if (Is(CMD_CALL_SCRIPT) || !all_of(it, vargs.end(), IsArgumentNull) )
+                        Text.append( VString(L" %s=%s", it->first.c_str(), it->second.Text.c_str()) );
+   #endif
+                  break;
+               }
             }
-         }
          
-         // Concurrent: Insert 'start' keyword
-         if (Syntax.Execution == ExecutionType::Concurrent)
-            Text.insert(0, L"start ");
+            // Concurrent: Insert 'start' keyword
+            if (Syntax.Execution == ExecutionType::Concurrent)
+               Text.insert(0, L"start ");
 
-         // Commented: Insert comment operator
-         if (Commented)
-            Text.insert(0, L"* ");
+            // Commented: Insert comment operator
+            if (Commented)
+               Text.insert(0, L"* ");
+         }
+         catch (ExceptionBase& e)
+         {
+            e.Message = VString(L"Unable to translate command '%s', ", Syntax.Text.c_str()) + e.Message;
+            throw e;
+         }
       }
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
