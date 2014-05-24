@@ -99,19 +99,8 @@ namespace Logic
             s = StreamPtr(new FileStream(FullPath, FileMode::OpenExisting, FileAccess::Read));
 
             // Wrap in encrypted stream if necessary
-            if (s->GetLength() > 3)
-            {
-               WORD header;
-
-               // Read 2-byte header and reset position
-               s->Seek(1, SeekOrigin::Begin);
-               s->Read(reinterpret_cast<BYTE*>(&header), 2);
-               s->Seek(0, SeekOrigin::Begin);
-
-               // Check for encrypted GZip header 
-               if ((header ^ 0x7e7e) == 0x8b1f)
-                  s = StreamPtr(new EncryptedX2Stream(s));
-            }
+            if (EncryptedX2Stream::IsEncrypted(s))
+               s = StreamPtr(new EncryptedX2Stream(s));
          }
          else
             // CATALOG: Read from .dat file

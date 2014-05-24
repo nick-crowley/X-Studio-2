@@ -32,6 +32,30 @@ namespace Logic
          StreamFacade::SafeClose();
       }
 
+      // ------------------------------- STATIC METHODS -------------------------------
+      
+      /// <summary>Determines whether a stream uses X2 file encryption.</summary>
+      /// <param name="s">stream.</param>
+      /// <returns></returns>
+      bool  EncryptedX2Stream::IsEncrypted(StreamPtr s)
+      {
+         // Verify length
+         if (s->GetLength() < 3)
+            return false;
+         
+         // Prepare
+         WORD  header;
+         DWORD origin = s->GetPosition();
+
+         // Read 2-byte header and reset position
+         s->Seek(1, SeekOrigin::Begin);
+         s->Read(reinterpret_cast<BYTE*>(&header), 2);
+         s->Seek(origin, SeekOrigin::Begin);
+
+         // Check for encrypted GZip header 
+         return (header ^ 0x7e7e) == 0x8b1f;
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
 
       /// <summary>Reads/decodes from the stream into the specified buffer.</summary>

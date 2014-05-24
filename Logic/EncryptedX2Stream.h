@@ -24,6 +24,10 @@ namespace Logic
          NO_MOVE(EncryptedX2Stream);
          NO_COPY(EncryptedX2Stream);
 
+         // ------------------------ STATIC -------------------------
+      public:
+         static bool  IsEncrypted(StreamPtr s);
+
          // --------------------- PROPERTIES ------------------------
 			
 			// ---------------------- ACCESSORS ------------------------
