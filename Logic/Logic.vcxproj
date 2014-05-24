@@ -133,7 +133,7 @@
     <ClInclude Include="DescriptionLibrary.h" />
     <ClInclude Include="DescriptionParser.h" />
     <ClInclude Include="Descriptions.h" />
-    <ClInclude Include="EncryptedStream.h" />
+    <ClInclude Include="EncryptedX2Stream.h" />
     <ClInclude Include="ErrorToken.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="ExpressionParser.h" />
@@ -242,7 +242,7 @@
     <ClCompile Include="DescriptionFileReader.cpp" />
     <ClCompile Include="DescriptionLibrary.cpp" />
     <ClCompile Include="DescriptionParser.cpp" />
-    <ClCompile Include="EncryptedStream.cpp" />
+    <ClCompile Include="EncryptedX2Stream.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="ExpressionParser.cpp" />
     <ClCompile Include="FileIdentifier.cpp" />

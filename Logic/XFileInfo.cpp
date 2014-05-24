@@ -2,7 +2,7 @@
 #include "XFileSystem.h"
 #include "GZipStream.h"
 #include "DataStream.h"
-#include "EncryptedStream.h"
+#include "EncryptedX2Stream.h"
 
 namespace Logic
 {
@@ -110,7 +110,7 @@ namespace Logic
 
                // Check for encrypted GZip header 
                if ((header ^ 0x7e7e) == 0x8b1f)
-                  s = StreamPtr(new EncryptedStream(s));
+                  s = StreamPtr(new EncryptedX2Stream(s));
             }
          }
          else

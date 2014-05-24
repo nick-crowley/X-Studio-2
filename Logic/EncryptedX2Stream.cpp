@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "EncryptedStream.h"
+#include "EncryptedX2Stream.h"
 
 namespace Logic
 {
@@ -10,7 +10,7 @@ namespace Logic
       /// <summary>Creates an encrypted file stream using another stream as input</summary>
       /// <param name="src">The input stream.</param>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-      EncryptedStream::EncryptedStream(StreamPtr  src) : StreamFacade(src)
+      EncryptedX2Stream::EncryptedX2Stream(StreamPtr  src) : StreamFacade(src)
       {
       }
 
@@ -21,13 +21,13 @@ namespace Logic
       /// <param name="share">The sharing permitted.</param>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      EncryptedStream::EncryptedStream(Path path, FileMode mode, FileAccess access, FileShare share)
+      EncryptedX2Stream::EncryptedX2Stream(Path path, FileMode mode, FileAccess access, FileShare share)
          : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
 
       /// <summary>Closes the stream without throwing</summary>
-      EncryptedStream::~EncryptedStream()
+      EncryptedX2Stream::~EncryptedX2Stream()
       {
          StreamFacade::SafeClose();
       }
@@ -41,7 +41,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
       /// <exception cref="Logic::NotSupportedException">Stream is not readable</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      DWORD  EncryptedStream::Read(BYTE* buffer, DWORD length)
+      DWORD  EncryptedX2Stream::Read(BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
 
@@ -64,7 +64,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentNullException">Buffer is null</exception>
       /// <exception cref="Logic::NotSupportedException">Stream is not writeable</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
-      DWORD  EncryptedStream::Write(const BYTE* buffer, DWORD length)
+      DWORD  EncryptedX2Stream::Write(const BYTE* buffer, DWORD length)
       {
          REQUIRED(buffer);
 
@@ -84,7 +84,7 @@ namespace Logic
       /// <summary>Encodes a byte array</summary>
       /// <param name="buffer">Buffer to encode</param>
       /// <param name="length">Length of buffer</param>
-      void  EncryptedStream::Encode(byte* buffer, DWORD length)
+      void  EncryptedX2Stream::Encode(byte* buffer, DWORD length)
       {
          // Encode buffer
          for (DWORD i = 0; i < length; i++)
