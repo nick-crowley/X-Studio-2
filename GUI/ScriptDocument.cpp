@@ -385,7 +385,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       catch (ExceptionBase&  e)
       {
          // Feedback/Display error
-         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script: " + e.Message);
+         data.SendFeedback(Cons::Error, ProgressType::Error, 1, e.Message);
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script");
          theApp.ShowError(HERE, e, VString(L"Failed to load script '%s'", szPathName));
          return FALSE;
       }
