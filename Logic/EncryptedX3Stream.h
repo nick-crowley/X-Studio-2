@@ -8,7 +8,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to loose files using the X3TC encryption scheme</summary>
-      class LogicExport EncryptedX3Stream : public StreamFacade
+      class LogicExport EncryptedX3Stream : public StreamDecorator
       {
       private:
          static const byte  DECRYPT_SEED = 0xC8;

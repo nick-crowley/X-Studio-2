@@ -10,7 +10,7 @@ namespace Logic
       /// <summary>Creates a catalog stream using another stream as input</summary>
       /// <param name="src">The input stream.</param>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-      CatalogStream::CatalogStream(StreamPtr  src) : StreamFacade(src)
+      CatalogStream::CatalogStream(StreamPtr  src) : StreamDecorator(src)
       {
       }
 
@@ -22,14 +22,14 @@ namespace Logic
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       CatalogStream::CatalogStream(Path path, FileMode mode, FileAccess access, FileShare share)
-         : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
+         : StreamDecorator( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
 
       /// <summary>Closes the stream without throwing</summary>
       CatalogStream::~CatalogStream()
       {
-         StreamFacade::SafeClose();
+         StreamDecorator::SafeClose();
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -47,7 +47,7 @@ namespace Logic
 
          // Preserve origin, fill buffer
          DWORD startPos = GetPosition(),
-               bytesRead = StreamFacade::Read(buffer, length);
+               bytesRead = StreamDecorator::Read(buffer, length);
 
          // Encode buffer + return
          Encode(buffer, bytesRead, startPos);
@@ -71,7 +71,7 @@ namespace Logic
 
          // Encode + Write
          Encode(copy.get(), length, GetPosition());
-         return StreamFacade::Write(copy.get(), length);
+         return StreamDecorator::Write(copy.get(), length);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

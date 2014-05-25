@@ -17,18 +17,18 @@ namespace Logic
       /// <exception cref="Logic::FileNotFoundException">Data file not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DataStream::DataStream(const XFileInfo&  f)
-         : StreamFacade( StreamPtr(new FileStream(f.DataFile, FileMode::OpenExisting, FileAccess::Read)) ),
+         : StreamDecorator( StreamPtr(new FileStream(f.DataFile, FileMode::OpenExisting, FileAccess::Read)) ),
            File(f)
       {
          // Seek to logical beginning of file
-         StreamFacade::Seek(File.Offset, SeekOrigin::Begin);
-         assert(StreamFacade::GetPosition() == File.Offset);
+         StreamDecorator::Seek(File.Offset, SeekOrigin::Begin);
+         assert(StreamDecorator::GetPosition() == File.Offset);
       }
 
       /// <summary>Closes the stream without throwing</summary>
       DataStream::~DataStream()
       {
-         StreamFacade::SafeClose();
+         StreamDecorator::SafeClose();
       }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
@@ -45,7 +45,7 @@ namespace Logic
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       DWORD DataStream::GetPosition() const
       {
-         return StreamFacade::GetPosition() - File.Offset;
+         return StreamDecorator::GetPosition() - File.Offset;
       }
 
       /// <summary>Reads/decodes from the stream into the specified buffer.</summary>
@@ -64,7 +64,7 @@ namespace Logic
             length = GetLength() - GetPosition();
 
          // Read + Decode buffer
-         DWORD bytesRead = StreamFacade::Read(buffer, length);
+         DWORD bytesRead = StreamDecorator::Read(buffer, length);
          Encode(buffer, bytesRead);
          return bytesRead;
       }
@@ -79,15 +79,15 @@ namespace Logic
          switch (mode)
          {
          case SeekOrigin::Begin:    
-            StreamFacade::Seek((LONG)File.Offset + offset, SeekOrigin::Begin);      
+            StreamDecorator::Seek((LONG)File.Offset + offset, SeekOrigin::Begin);      
             break;
 
          case SeekOrigin::Current:  
-            StreamFacade::Seek(offset, mode);                                       
+            StreamDecorator::Seek(offset, mode);                                       
             break;
 
          case SeekOrigin::End:      
-            StreamFacade::Seek((LONG)File.Offset + (LONG)File.Length + offset, SeekOrigin::Begin);      
+            StreamDecorator::Seek((LONG)File.Offset + (LONG)File.Length + offset, SeekOrigin::Begin);      
             break;
          }
       }
@@ -107,7 +107,7 @@ namespace Logic
 
          //// Encode + Write
          //Encode(copy.get(), length);
-         //return StreamFacade::Write(copy.get(), length);
+         //return StreamDecorator::Write(copy.get(), length);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

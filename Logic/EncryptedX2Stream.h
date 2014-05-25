@@ -8,7 +8,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to loose files using the X2 encryption scheme</summary>
-      class LogicExport EncryptedX2Stream : public StreamFacade
+      class LogicExport EncryptedX2Stream : public StreamDecorator
       {
       private:
          const byte  DECRYPT_KEY = 0x7E; // (byte)(0xB6 ^ 0x8C);
