@@ -110,27 +110,27 @@ namespace Logic
       typedef shared_ptr<Stream>  StreamPtr;
 
       /// <summary>Allows for subclassing a stream using the Facade pattern</summary>
-      class LogicExport StreamFacade : public Stream
+      class LogicExport StreamDecorator : public Stream
       {
          // --------------------- CONSTRUCTION ----------------------
       protected:
          /// <summary>Creates the stream using another stream as input</summary>
          /// <param name="src">The input stream.</param>
          /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-         StreamFacade(StreamPtr src) : Source(src)
+         StreamDecorator(StreamPtr src) : Source(src)
          { 
             REQUIRED(src); 
          }
       public:
          /// <summary>Closes the stream without throwing</summary>
-         virtual ~StreamFacade() 
+         virtual ~StreamDecorator() 
          { 
             SafeClose();
          }
 
          // Prevent copying/moving
-         NO_MOVE(StreamFacade);
-         NO_COPY(StreamFacade);
+         NO_MOVE(StreamDecorator);
+         NO_COPY(StreamDecorator);
 
 			// --------------------- PROPERTIES ------------------------
 			

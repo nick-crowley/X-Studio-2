@@ -10,7 +10,7 @@ namespace Logic
       /// <summary>Creates an encrypted file stream using another stream as input</summary>
       /// <param name="src">The input stream.</param>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-      EncryptedX3Stream::EncryptedX3Stream(StreamPtr  src) : StreamFacade(src), DECRYPT_KEY(0)
+      EncryptedX3Stream::EncryptedX3Stream(StreamPtr  src) : StreamDecorator(src), DECRYPT_KEY(0)
       {
       }
 
@@ -22,14 +22,14 @@ namespace Logic
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       EncryptedX3Stream::EncryptedX3Stream(Path path, FileMode mode, FileAccess access, FileShare share)
-         : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) ), DECRYPT_KEY(0)
+         : StreamDecorator( StreamPtr(new FileStream(path, mode, access, share)) ), DECRYPT_KEY(0)
       {
       }
 
       /// <summary>Closes the stream without throwing</summary>
       EncryptedX3Stream::~EncryptedX3Stream()
       {
-         StreamFacade::SafeClose();
+         StreamDecorator::SafeClose();
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
@@ -80,21 +80,21 @@ namespace Logic
          if (DECRYPT_KEY == 0)
          {
             // Read first byte
-            DWORD origin = StreamFacade::GetPosition();
-            StreamFacade::Seek(0, SeekOrigin::Begin);
-            StreamFacade::Read(&DECRYPT_KEY, 1);
-            StreamFacade::Seek(origin, SeekOrigin::Begin);
+            DWORD origin = StreamDecorator::GetPosition();
+            StreamDecorator::Seek(0, SeekOrigin::Begin);
+            StreamDecorator::Read(&DECRYPT_KEY, 1);
+            StreamDecorator::Seek(origin, SeekOrigin::Begin);
 
             // Generate key
             DECRYPT_KEY ^= DECRYPT_SEED;
          }
 
          // Skip reading first byte
-         if (StreamFacade::GetPosition() == 0)
-            StreamFacade::Seek(1, SeekOrigin::Begin);
+         if (StreamDecorator::GetPosition() == 0)
+            StreamDecorator::Seek(1, SeekOrigin::Begin);
 
          // Read+decode buffer
-         DWORD bytesRead = StreamFacade::Read(buffer, length);
+         DWORD bytesRead = StreamDecorator::Read(buffer, length);
          Encode(buffer, bytesRead);
 
          // Return length
@@ -117,12 +117,12 @@ namespace Logic
          if (DECRYPT_KEY == 0 && length > 0)
          {
             // Verify position
-            if (StreamFacade::GetPosition() != 0)
+            if (StreamDecorator::GetPosition() != 0)
                throw IOException(HERE, L"First write operation must be positioned at start of stream");
 
             // Generate/write key
             DECRYPT_KEY = buffer[0] ^ DECRYPT_SEED;
-            StreamFacade::Write(&DECRYPT_KEY, 1);
+            StreamDecorator::Write(&DECRYPT_KEY, 1);
             keylen = 1;
          }
 
@@ -132,7 +132,7 @@ namespace Logic
 
          // Encode + Write
          Encode(copy.get(), length);
-         return StreamFacade::Write(copy.get(), length) + keylen;
+         return StreamDecorator::Write(copy.get(), length) + keylen;
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

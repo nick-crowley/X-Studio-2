@@ -10,7 +10,7 @@ namespace Logic
       /// <summary>Creates an encrypted file stream using another stream as input</summary>
       /// <param name="src">The input stream.</param>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
-      EncryptedX2Stream::EncryptedX2Stream(StreamPtr  src) : StreamFacade(src)
+      EncryptedX2Stream::EncryptedX2Stream(StreamPtr  src) : StreamDecorator(src)
       {
       }
 
@@ -22,14 +22,14 @@ namespace Logic
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">An I/O error occurred</exception>
       EncryptedX2Stream::EncryptedX2Stream(Path path, FileMode mode, FileAccess access, FileShare share)
-         : StreamFacade( StreamPtr(new FileStream(path, mode, access, share)) )
+         : StreamDecorator( StreamPtr(new FileStream(path, mode, access, share)) )
       {
       }
 
       /// <summary>Closes the stream without throwing</summary>
       EncryptedX2Stream::~EncryptedX2Stream()
       {
-         StreamFacade::SafeClose();
+         StreamDecorator::SafeClose();
       }
 
       // ------------------------------- STATIC METHODS -------------------------------
@@ -70,11 +70,11 @@ namespace Logic
          REQUIRED(buffer);
 
          // Skip first byte
-         if (StreamFacade::GetPosition() == 0)
-            StreamFacade::Seek(1, SeekOrigin::Begin);
+         if (StreamDecorator::GetPosition() == 0)
+            StreamDecorator::Seek(1, SeekOrigin::Begin);
 
          // Read+decode buffer
-         DWORD bytesRead = StreamFacade::Read(buffer, length);
+         DWORD bytesRead = StreamDecorator::Read(buffer, length);
          Encode(buffer, bytesRead);
 
          // Return length
@@ -98,7 +98,7 @@ namespace Logic
 
          // Encode + Write
          Encode(copy.get(), length);
-         return StreamFacade::Write(copy.get(), length);
+         return StreamDecorator::Write(copy.get(), length);
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------

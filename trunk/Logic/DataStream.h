@@ -9,7 +9,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of catalog data files</summary>
-      class LogicExport DataStream : public StreamFacade
+      class LogicExport DataStream : public StreamDecorator
       {
       const byte  DATAFILE_ENCRYPT_KEY = 0x33;
          

@@ -11,7 +11,7 @@ namespace Logic
    {
 
       /// <summary>Provides stream access to the contents of GZip files</summary>
-      class LogicExport GZipStream : public StreamFacade
+      class LogicExport GZipStream : public StreamDecorator
       {
       private:
          const int  WINDOW_SIZE = 15,

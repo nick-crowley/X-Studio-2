@@ -13,7 +13,7 @@ namespace Logic
       /// <exception cref="Logic::ArgumentException">Stream is not readable</exception>
       /// <exception cref="Logic::ArgumentNullException">Stream is null</exception>
       /// <exception cref="Logic::GZipException">Unable to inititalise stream</exception>
-      GZipStream::GZipStream(StreamPtr  src, Operation  op) : StreamFacade(src), Mode(op)
+      GZipStream::GZipStream(StreamPtr  src, Operation  op) : StreamDecorator(src), Mode(op)
       {
          // Clear structs
          ZeroMemory(&ZStream, sizeof(ZStream));
@@ -91,7 +91,7 @@ namespace Logic
                   {
                      // Success: Write GZIP to underlying stream 
                      for (DWORD out = 0; out < ZStream.total_out; )
-                        out += StreamFacade::Write(&Buffer.get()[out], ZStream.total_out - out);
+                        out += StreamDecorator::Write(&Buffer.get()[out], ZStream.total_out - out);
 
                      // Cleanup zstream
                      if (deflateEnd(&ZStream) != Z_OK)
@@ -101,12 +101,12 @@ namespace Logic
             }
             catch (ExceptionBase&) {
                // Close before rethrowing
-               StreamFacade::Close();
+               StreamDecorator::Close();
                throw;
             }
             
             // Close stream
-            StreamFacade::Close();
+            StreamDecorator::Close();
          }
       }
 
@@ -116,7 +116,7 @@ namespace Logic
       /// <exception cref="Logic::NotSupportedException">Mode is compression</exception>
       DWORD  GZipStream::GetLength()
       {
-         DWORD pos = StreamFacade::GetPosition(),
+         DWORD pos = StreamDecorator::GetPosition(),
                size = 0;
 
          // Compress: Not supported
@@ -124,9 +124,9 @@ namespace Logic
             throw NotSupportedException(HERE, L"Cannot get uncompressed length when compressing");
 
          // Decompress: Extract uncompressed length from last four bytes
-         StreamFacade::Seek(-4, SeekOrigin::End);
-         StreamFacade::Read((byte*)&size, 4);
-         StreamFacade::Seek(pos, SeekOrigin::Begin);
+         StreamDecorator::Seek(-4, SeekOrigin::End);
+         StreamDecorator::Read((byte*)&size, 4);
+         StreamDecorator::Seek(pos, SeekOrigin::Begin);
 
          // BugFix: Ensure file is not corrupted
          if (!size)
@@ -154,7 +154,7 @@ namespace Logic
                deflateEnd(&ZStream);
 
             // Close underlying stream
-            StreamFacade::SafeClose();
+            StreamDecorator::SafeClose();
          }
       }
 
@@ -207,7 +207,7 @@ namespace Logic
          REQUIRED(output);
 
          // Ensure we can read
-         if (!StreamFacade::CanRead())
+         if (!StreamDecorator::CanRead())
             throw NotSupportedException(HERE, GuiString(ERR_NO_READ_ACCESS));
 
          // Supply output buffer
@@ -216,7 +216,7 @@ namespace Logic
 
          // Re-Fill input buffer if necessary
          if (ZStream.avail_in == 0)
-            ZStream.avail_in = StreamFacade::Read(Buffer.get(), StreamFacade::GetLength());
+            ZStream.avail_in = StreamDecorator::Read(Buffer.get(), StreamDecorator::GetLength());
          
          // Empty: Return zero
          if (length == 0)
@@ -251,7 +251,7 @@ namespace Logic
          REQUIRED(input);
 
          // Ensure we can write
-         if (!StreamFacade::CanWrite())
+         if (!StreamDecorator::CanWrite())
             throw NotSupportedException(HERE, GuiString(ERR_NO_WRITE_ACCESS));
 
          // Supply input buffer
@@ -264,7 +264,7 @@ namespace Logic
 
          // Re-Fill output buffer if necessary
          /*if (ZStream.avail_out == 0)
-            ZStream.avail_out = StreamFacade::Read(ZStream.next_in, StreamFacade::GetLength());*/
+            ZStream.avail_out = StreamDecorator::Read(ZStream.next_in, StreamDecorator::GetLength());*/
 
          DWORD start = ZStream.avail_out;
          
@@ -275,7 +275,7 @@ namespace Logic
          /*case Z_STREAM_END:
             DWORD compressed = COMPRESS_BUFFER - ZStream.avail_out;
             for (DWORD out = 0; out < compressed; )
-               out += StreamFacade::Write(&Buffer.get()[out], compressed - out);
+               out += StreamDecorator::Write(&Buffer.get()[out], compressed - out);
             return compressed;*/
 
          // Incomplete: Return # of bytes compressed
