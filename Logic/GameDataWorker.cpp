@@ -96,6 +96,9 @@ namespace Logic
             Console << ENDL;
             data->SendFeedback(Cons::Error, ProgressType::Failure, 0, GuiString(L"Failed to load game data : ") + e.Message);
 
+            // BEEP!
+            MessageBeep(MB_ICONERROR);
+
             // Cleanup
             CoUninitialize();
             return 0;
