@@ -129,7 +129,7 @@ namespace Logic
       { 
          // Search all syntax with matching ID for a compatible version
          for (auto it = Commands.find(id); it != Commands.end() && it->first == id; ++it)
-            if (it->second.Versions & (UINT)ver)
+            if (it->second.IsCompatible(ver))
                return it->second;
 
          // Not found
