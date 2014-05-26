@@ -277,6 +277,7 @@
 // Status bar
 #define IDS_STATUS_CARET                1015
 #define IDS_STATUS_GAMEDATA             1016
+#define IDS_STATUS_LANGUAGE             1017
 
 // Toolbar
 #define IDS_TOOLBAR_CUSTOMIZE           1018

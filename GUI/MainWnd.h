@@ -20,6 +20,8 @@
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)
 
+   #define INDICATORS  8
+
    // ------------------------ CLASSES ------------------------
 
    /// <summary>Main window</summary>
@@ -60,7 +62,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
                return FALSE;
 
             // Init indicators
-            SetIndicators(Indicators, 7);
+            SetIndicators(Indicators, INDICATORS);
             SetGameData(AppState::NoGameData);
             SetCaret(POINT {0,0});
 
@@ -72,20 +74,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
          /// <param name="pt">Caret position.</param>
          void  SetCaret(POINT pt)
          {
-            SetPaneText(2, VString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
+            SetPaneText(3, VString(L"Line %d  Ch %d", pt.y, pt.x).c_str());
          }
 
-         /// <summary>Sets the game data indicator.</summary>
+         /// <summary>Sets the game data indicators.</summary>
          /// <param name="e">app state.</param>
          void  SetGameData(AppState e)
          {
-            wstring msg(e == AppState::GameDataPresent ? VersionString(PrefsLib.GameDataVersion) : wstring(L"No Game Data"));
-            SetPaneText(1, msg.c_str());
+            wstring ver(e == AppState::GameDataPresent ? VersionString(PrefsLib.GameDataVersion) : wstring(L"No Game Data")),
+                    lang(e == AppState::GameDataPresent ? GetString(PrefsLib.GameDataLanguage) : wstring(L"No Language"));
+
+            SetPaneText(1, ver.c_str());
+            SetPaneText(2, lang.c_str());
          }
 
          // -------------------- REPRESENTATION ---------------------
       private:
-         const static UINT Indicators[7];
+         const static UINT Indicators[INDICATORS];
       };
 
       // --------------------- CONSTRUCTION ----------------------

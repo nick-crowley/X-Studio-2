@@ -28,10 +28,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    const CRect MainWnd::DefaultSize = CRect(0, 0, 300, 500); 
 
    /// <summary>Status bar indicator IDs</summary>
-   const UINT MainWnd::StatusBar::Indicators[7] =
+   const UINT MainWnd::StatusBar::Indicators[INDICATORS] =
    {
 	   ID_SEPARATOR,           // Gap
       IDS_STATUS_GAMEDATA,
+      IDS_STATUS_LANGUAGE,
       IDS_STATUS_CARET,
       ID_INDICATOR_OVR,
 	   ID_INDICATOR_CAPS,
