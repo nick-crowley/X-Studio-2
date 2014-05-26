@@ -356,6 +356,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
          Console << Cons::Failure << e.Message << ENDL;
          data.SendFeedback(ProgressType::Failure, 0, L"Failed to load language file");
          theApp.ShowError(HERE, e, VString(L"Failed to load language file '%s'", szPathName));
+
+         // BEEP!
+         MessageBeep(MB_ICONERROR);
          return FALSE;
       }
    }
