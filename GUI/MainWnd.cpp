@@ -335,9 +335,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       {
          // Show splash screen
          m_dlgSplash.Create(this, 800);
-         m_dlgSplash.ShowWindow(SW_SHOW);
-         m_dlgSplash.SetForegroundWindow();
-         EnableWindow(FALSE);
+         m_dlgSplash.ShowWindow(SW_SHOWNORMAL);
 
          // Load game data
          GameDataThread.Start();
@@ -570,8 +568,11 @@ NAMESPACE_BEGIN2(GUI,Windows)
    /// <param name="wp">The wp.</param>
    void MainWnd::OnGameDataFeedback(const WorkerProgress& wp)
    {
+      // Ignore info/error/warning feedback
+      if (wp.Type != ProgressType::Succcess && wp.Type != ProgressType::Failure)
+         return;
+
       // Hide splash screen
-      EnableWindow(TRUE);
       m_dlgSplash.DestroyWindow();
 
       // Close worker

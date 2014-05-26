@@ -27,7 +27,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
       // ----------------------- MUTATORS ------------------------
    public:
-      void Create(CWnd* parent, UINT nID);
+      BOOL Create(CWnd* parent, UINT nID);
 
    protected:
       void AdjustLayout();

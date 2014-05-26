@@ -30,25 +30,46 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   void  SplashWnd::Create(CWnd* parent, UINT nID)
+   /// <summary>Creates the splash window.</summary>
+   /// <param name="parent">parent window</param>
+   /// <param name="nID">Ignored</param>
+   /// <returns>TRUE if successful, otherwise FALSE</returns>
+   BOOL  SplashWnd::Create(CWnd* parent, UINT nID)
    {
       CRect rc(0,0,410,380);
       DWORD dwStyle = WS_OVERLAPPED|WS_VISIBLE;
 
-      // Create window
-      if (!__super::Create(/*WS_EX_LAYERED,*/ AfxRegisterWndClass(CS_OWNDC), L"Splash", dwStyle, rc, parent, nID))
-         throw Win32Exception(HERE, L"Unable to create splash window");
+      try
+      {
+         // Feedback
+         Console << Cons::UserAction << "Creating splash window...";
 
-      //SetLayeredWindowAttributes(0, 255, LWA_ALPHA );
-      SetWindowPos(nullptr, -1, -1, 410, 380, SWP_NOMOVE|SWP_NOZORDER);
-      SetForegroundWindow();
-      ShowWindow(SW_SHOW);
+         // Create window
+         if (!__super::CreateEx(/*WS_EX_LAYERED|*/WS_EX_TOPMOST, AfxRegisterWndClass(CS_OWNDC), L"Splash", dwStyle, rc, parent, 0))
+            throw Win32Exception(HERE, L"Unable to create splash window");
 
-      //SetTimer(10, 100, nullptr);
+         //SetLayeredWindowAttributes(0, 255, LWA_ALPHA );
+         SetWindowPos(nullptr, -1, -1, 410, 380, SWP_NOMOVE | SWP_NOZORDER);
+         SetForegroundWindow();
+
+         //SetTimer(10, 100, nullptr);
+
+         // Feedback
+         Console << Cons::Success << ENDL;
+         return TRUE;
+      }
+      catch (ExceptionBase& e) 
+      {
+         // Feedback
+         Console << Cons::Failure << ENDL;
+         Console.Log(HERE, e);
+         return FALSE;
+      }
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
    
+   /// <summary>Not implemented</summary>
    void  SplashWnd::AdjustLayout()
    {
       // Destroyed/Minimised
@@ -62,16 +83,23 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
 
+   /// <summary>Centre window on creation</summary>
+   /// <param name="lpCreateStruct">The lp create structure.</param>
+   /// <returns></returns>
    int SplashWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
       if (CWnd::OnCreate(lpCreateStruct) == -1)
          return -1;
 
+      // Centre window
       CenterWindow();
-
       return 0;
    }
 
+
+   /// <summary>Block background erasure</summary>
+   /// <param name="pDC">The dc.</param>
+   /// <returns></returns>
    BOOL SplashWnd::OnEraseBkgnd(CDC* pDC)
    {
       /*ClientRect rc(this);
@@ -82,6 +110,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
+   /// <summary>Paint splash screen</summary>
    void SplashWnd::OnPaint()
    {
       CPaintDC dc(this); 
@@ -92,8 +121,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
       img.SetHasAlphaChannel(TRUE);
 
       dc.FillSolidRect(wnd, GetSysColor(COLOR_APPWORKSPACE));
-      img.AlphaBlend(dc, 0, 0, 0xff, AC_SRC_OVER); 
-      //img.BitBlt(dc, CPoint(0,0), SRCCOPY);
+      //img.AlphaBlend(dc, 0, 0, 0xff, AC_SRC_OVER); 
+      img.BitBlt(dc, CPoint(0,0), SRCCOPY);
 
       //CDC      memDC;
       //CDrawingManager dm(dc);
@@ -143,7 +172,10 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
 
 
-   
+   /// <summary>Not implemented</summary>
+   /// <param name="nType">Type of the n.</param>
+   /// <param name="cx">The cx.</param>
+   /// <param name="cy">The cy.</param>
    void SplashWnd::OnSize(UINT nType, int cx, int cy)
    {
       __super::OnSize(nType, cx, cy);
@@ -151,7 +183,8 @@ NAMESPACE_BEGIN2(GUI,Windows)
    }
    
 
-
+   /// <summary>Old code for drawing a layered window (Doesn't work)</summary>
+   /// <param name="nIDEvent">The n identifier event.</param>
    void SplashWnd::OnTimer(UINT_PTR nIDEvent)
    {
    
