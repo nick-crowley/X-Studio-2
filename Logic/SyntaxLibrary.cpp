@@ -54,20 +54,20 @@ namespace Logic
             // Feedback
             data->SendFeedback(Cons::Heading, ProgressType::Operation, 1, L"Loading command syntax...");
 
-            // Check for new format syntax file
-            AppPath path(L"Data\\Command Syntax.xml");
-            if (!path.Exists())
-            {
-               path = AppPath(L"Data\\Command Syntax.txt");
-               if (!path.Exists())
-                  throw FileNotFoundException(HERE, AppPath(L"Data\\Command Syntax.xml"));
-            }
+            // Ensure syntax/legacy file exists
+            if (!AppPath(L"Data\\Commands.xml").Exists() && AppPath(L"Data\\Command Syntax.txt").Exists())
+               throw FileNotFoundException(HERE, AppPath(L"Data\\Commands.xml"));
 
+            // Use new format file if present
+            AppPath path(L"Data\\Commands.xml");
+            if (!path.Exists())
+               path = AppPath(L"Data\\Command Syntax.txt");
+            
             // Load file
             Console << L"Reading syntax file: " << path << "...";
             StreamPtr fs( new FileStream(path, FileMode::OpenExisting, FileAccess::Read) );
 
-            // Parse
+            // Use appropriate parser
             if (path.HasExtension(L".xml"))
                Add( file = SyntaxFileReader(fs).ReadFile() );
             else
