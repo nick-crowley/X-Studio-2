@@ -332,7 +332,11 @@ void Application::OnDropFiles(HDROP hDropInfo)
    const static UINT DROP_COUNT = 0xFFFFFFFF;
 
    Path path;
-      
+   
+   // Verify game data is loaded
+   if (theApp.State != AppState::GameDataPresent)
+      return;
+
    // Feedback
    Console << Cons::UserAction << "Opening files dropped onto main window" << ENDL;
 
