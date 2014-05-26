@@ -68,7 +68,22 @@ namespace Logic
             // Extract '102xxyy'
             int x = _ttoi(id.substr(3,2).c_str());
             int y = _ttoi(id.substr(5,2).c_str());
-            return pair<int,int>(x,y);
+            return pair<int,int>(x-1,y-1);
+         }
+
+         /// <summary>Convert coordinates to string ID.</summary>
+         /// <param name="coords">Zero-based Co-ordinates.</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::InvalidValueException">Invalid sector co-ordinates</exception>
+         static UINT  ToStringID(pair<int, int> coords)
+         {
+            // Ensure valid
+            if (coords.first < 0 || coords.second < 0)
+               throw InvalidValueException(HERE, VString(L"{%d, %d} are not valid sector co-ordinates", coords.first, coords.second));
+
+            // Assemble string '102xxyy'
+            VString id(L"102" L"%02d" L"%02d", coords.first+1, coords.second+1);
+            return static_cast<UINT>(id.ToInt());
          }
       };
 

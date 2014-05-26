@@ -177,6 +177,7 @@ namespace Logic
       {
          const ScriptObject* obj = nullptr;
          GameObjectLibrary::ObjectID  ware;
+         pair<int,int>  sector;
 
          // Commented: Use zero for all jump destinations
          if (commented)
@@ -284,10 +285,16 @@ namespace Logic
          case DataType::OBJECTCOMMAND:    
          case DataType::RACE:             
          case DataType::SCRIPTDEF:        
-         case DataType::SECTOR:   
          case DataType::TRANSPORTCLASS:   
          case DataType::WINGCOMMAND:      
             Value = (int)ScriptObjectLib.Find(Value.String).ID;   
+            break;
+
+         // Sector: Lookup/encode
+         case DataType::SECTOR:   
+            Type = DataType::LIVE_SECTOR;
+            sector = SectorIDConverter::ToCoordinates( ScriptObjectLib.Find(Value.String).ID ); 
+            Value = MAKELONG(sector.first, sector.second);
             break;
 
          // StationSerial: Lookup/encode
@@ -459,15 +466,19 @@ namespace Logic
             break;
 
          // Various: Lookup ID
-         case DataType::FLIGHTRETURN:     
-         case DataType::OBJECTCLASS:      
-         case DataType::OBJECTCOMMAND:    
-         case DataType::RACE:             
-         case DataType::SCRIPTDEF:        
-         case DataType::SECTOR:   
-         case DataType::TRANSPORTCLASS:   
-         case DataType::WINGCOMMAND:      
+         case DataType::FLIGHTRETURN:
+         case DataType::OBJECTCLASS:
+         case DataType::OBJECTCOMMAND:
+         case DataType::RACE:
+         case DataType::SCRIPTDEF:
+         case DataType::TRANSPORTCLASS:
+         case DataType::WINGCOMMAND:
             Text = ScriptObjectLib.Find(Type, Value.Int).DisplayText;   
+            break;
+
+         // Sector: Map ID then convert
+         case DataType::SECTOR:   
+            Text = ScriptObjectLib.Find(Type, SectorIDConverter::ToStringID(pair<int,int>(Value.LowWord, Value.HighWord)) ).DisplayText;   
             break;
 
          // StationSerial: Map ID then convert
