@@ -57,7 +57,7 @@ namespace Logic
                // Iterate thru compatible versions
                for (GameVersion v : {GameVersion::Threat, GameVersion::Reunion, GameVersion::TerranConflict, GameVersion::AlbionPrelude})
                   // Lookup description
-                  if ((cmd.Versions & (UINT)v) && find(CommandID(cmd.ID, v)) != end())
+                  if (cmd.IsCompatible(v) && find(CommandID(cmd.ID, v)) != end())
                      return true;
 
                return false;
@@ -75,7 +75,7 @@ namespace Logic
                // Iterate thru compatible versions
                for (GameVersion v : {GameVersion::Threat, GameVersion::Reunion, GameVersion::TerranConflict, GameVersion::AlbionPrelude})
                   // Lookup description
-                  if ((cmd.Versions & (UINT)v) && find(CommandID(cmd.ID, v)) != end())
+                  if (cmd.IsCompatible(v) && find(CommandID(cmd.ID, v)) != end())
                   {
                      // Parse and Populate description source
                      wstring src = find(CommandID(cmd.ID, v))->second.Text;
