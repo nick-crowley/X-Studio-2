@@ -1,23 +1,32 @@
-
-Beta III - 31st March 2014
--------------------------
-
-Fixed: Compiler bug in 'foreach' macro
+==========
+CHANGE LOG
+==========
 
 
-Beta II - 30th March 2014
--------------------------
+X-Studio II : Beta IV : 2nd June 2014
+-------------------------------------
+• Fixed: 016: Program is unable to load/save scripts using hard-coded sectors
+• Fixed: 015: Program attempts to load scripts dragged onto main window when no game data is loaded
+• Fixed: 014: No support for loose files that use the X3:TC encryption scheme 
 
-Variable argument commands: create new array, sprintf
-Macro commands: dim, for, foreach
-Status bar indicator of loaded game data version 
-Subroutine indentation 
-Implemented find & replace on scripts in project
-Add Compiler preference to enabling/disabling macro commands
-Fixed: 006: HOME key in the script editor doesn't scroll far enough left to display line numbers 
-Fixed: 007: RichEdit shortcut keys can be used to right/centre align script editor text 
-Fixed: 010: Changing the id/language property of X3R language files renames document using X3TC naming scheme
-Fixed: 011: Script editor variables drop-down isn't updated after modifying arguments 
+
+X-Studio II : Beta III - 31st March 2014
+----------------------------------------
+• Fixed: Compiler bug in 'foreach' macro
+
+
+X-Studio II : Beta II - 30th March 2014
+---------------------------------------
+• Variable argument commands: create new array, sprintf
+• Macro commands: dim, for, foreach
+• Status bar indicator of loaded game data version 
+• Subroutine indentation 
+• Implemented find & replace on scripts in project
+• Add Compiler preference to enabling/disabling macro commands
+• Fixed: 006: HOME key in the script editor doesn't scroll far enough left to display line numbers 
+• Fixed: 007: RichEdit shortcut keys can be used to right/centre align script editor text 
+• Fixed: 010: Changing the id/language property of X3R language files renames document using X3TC naming scheme
+• Fixed: 011: Script editor variables drop-down isn't updated after modifying arguments 
 
 
 
