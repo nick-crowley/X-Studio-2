@@ -285,6 +285,9 @@
     <ClInclude Include="FrameWndBase.h">
       <Filter>Header Files\Views</Filter>
     </ClInclude>
+    <ClInclude Include="DualComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -496,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="FrameWndBase.cpp">
       <Filter>Source Files\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="DualComboBox.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

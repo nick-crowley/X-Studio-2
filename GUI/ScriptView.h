@@ -4,6 +4,7 @@
 
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
+#include "DualComboBox.h"
 
 
 /// <summary>User interface</summary>
@@ -94,9 +95,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // -------------------- REPRESENTATION ---------------------
    public:
-      ScriptEdit RichEdit;
-      CComboBox  ScopeCombo;
-      CComboBox  VariablesCombo;
+      ScriptEdit   RichEdit;
+      DualComboBox ScopeCombo,
+                   VariablesCombo;
 
    protected:
       EventHandler fnArgumentChanged,

@@ -144,6 +144,7 @@
     <ClInclude Include="DiffFrame.h" />
     <ClInclude Include="DiffView.h" />
     <ClInclude Include="DocTemplateBase.h" />
+    <ClInclude Include="DualComboBox.h" />
     <ClInclude Include="EditorPage.h" />
     <ClInclude Include="ExportProjectDialog.h" />
     <ClInclude Include="FrameWndBase.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="DiffFrame.cpp" />
     <ClCompile Include="DiffView.cpp" />
     <ClCompile Include="DocTemplateBase.cpp" />
+    <ClCompile Include="DualComboBox.cpp" />
     <ClCompile Include="EditorPage.cpp" />
     <ClCompile Include="ExportProjectDialog.cpp" />
     <ClCompile Include="FrameWndBase.cpp" />
