@@ -231,7 +231,7 @@ BOOL Application::InitInstance()
               << Cons::UserAction << "Creating main window" << ENDL;
 
 	   // Frame window
-	   m_pMainWnd = new MainWnd;
+      m_pMainWnd = new MainWnd();
 	   if (!dynamic_cast<MainWnd*>(m_pMainWnd)->LoadFrame(IDR_MAINFRAME))
 	   {
 		   delete m_pMainWnd;
@@ -241,9 +241,6 @@ BOOL Application::InitInstance()
 	   // Show window
 	   m_pMainWnd->ShowWindow(m_nCmdShow);
 	   m_pMainWnd->UpdateWindow();
-
-      // Initial update
-      dynamic_cast<MainWnd*>(m_pMainWnd)->OnInitialUpdate();
 	   return TRUE;
    }
    catch (ExceptionBase& e) {
