@@ -62,6 +62,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ON_WM_SETTINGCHANGE()
       ON_WM_SHOWWINDOW()
       ON_MESSAGE(WM_FEEDBACK, &MainWnd::OnWorkerFeedback)
+      ON_MESSAGE(WM_INITIALUPDATE, &MainWnd::OnInitialUpdate)
       ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &MainWnd::OnDocumentSwitched)
       ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &MainWnd::OnCreateNewToolbar)
       ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &MainWnd::OnRequestTabTooltip)
@@ -91,7 +92,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
    MainWnd::MainWnd() : fnGameDataFeedback(GameDataFeedback.Register(this, &MainWnd::OnGameDataFeedback)),
                         fnCaretMoved(ScriptView::CaretMoved.Register(this, &MainWnd::OnScriptCaretMoved)),
                         fnAppStateChanged(theApp.StateChanged.Register(this, &MainWnd::OnAppStateChanged)),
-                        ActiveDocument(nullptr), FirstShow(true)
+                        ActiveDocument(nullptr)
    {
    }
 
@@ -186,25 +187,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       return __super::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
    }
    
-   /// <summary>Called on first display</summary>
-   void MainWnd::OnInitialUpdate()
-   {
-      try
-      {
-         // Enable Drag/Drop from windows explorer
-         DragAcceptFiles(TRUE);
-
-         // Load game data
-         LoadGameData();
-         
-         // Find & Replace dialog:
-         m_dlgFind.Create(FindDialog::IDD, this);
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e);
-      }
-   }
-   
    /// <summary>App-wizard generated</summary>
    /// <param name="cs">The cs.</param>
    /// <returns></returns>
@@ -274,13 +256,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       }
    }
    
-   /// <summary>Updates game data status bar indicator.</summary>
-   /// <param name="e">new state.</param>
-   void MainWnd::OnAppStateChanged(AppState e)
-   {
-      m_wndStatusBar.SetGameData(e);
-   }
-   
 
    /// <summary>Creates the tool windows.</summary>
    void MainWnd::CreateToolWindows()
@@ -339,9 +314,19 @@ NAMESPACE_BEGIN2(GUI,Windows)
 
          // Load game data
          GameDataThread.Start();
+
+         // Display game-data output window
+         ActivateOutputPane(Operation::LoadGameData, true);
       }
    }
-
+   
+   /// <summary>Updates game data status bar indicator.</summary>
+   /// <param name="e">new state.</param>
+   void MainWnd::OnAppStateChanged(AppState e)
+   {
+      m_wndStatusBar.SetGameData(e);
+   }
+   
    /// <summary>Close all windows.</summary>
    void MainWnd::OnCommand_CloseAll()
    {
@@ -493,6 +478,9 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	      // improves the usability of the taskbar because the document name is visible with the thumbnail.
 	      ModifyStyle(0, FWS_PREFIXTITLE);
 
+         // Defer-Invoke 'OnInitialUpdate' once created
+         PostMessage(WM_INITIALUPDATE);
+
          // Feedback
          Console << Cons::Success << "Initialized main window" << ENDL;
 	      return 0;
@@ -595,7 +583,30 @@ NAMESPACE_BEGIN2(GUI,Windows)
 	         theApp.ProcessShellCommand(cmdInfo);
       }
    }
+   
+   /// <summary>Called on first display</summary>
+   /// <param name="lParam">not used.</param>
+   /// <param name="wParam">not used.</param>
+   LRESULT MainWnd::OnInitialUpdate(WPARAM wParam, LPARAM lParam)
+   {
+      try
+      {
+         // Enable Drag/Drop from windows explorer
+         DragAcceptFiles(TRUE);
 
+         // Load game data
+         LoadGameData();
+         
+         // Find & Replace dialog:
+         m_dlgFind.Create(FindDialog::IDD, this);
+         return 0;
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+         return 0;
+      }
+   }
+   
    /// <summary>Display tool window.</summary>
    void MainWnd::OnPerformCommand(UINT nID)
    {
@@ -722,20 +733,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
       m_wndStatusBar.SetCaret(pt);
    }
    
-   /// <summary>Called when shown.</summary>
+   /// <summary>Not used.</summary>
    /// <param name="bShow">show.</param>
    /// <param name="nStatus">status.</param>
    void MainWnd::OnShowWindow(BOOL bShow, UINT nStatus)
    {
       CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
-
-      // Initial update
-      if (FirstShow)
-      {
-         FirstShow = false;
-         //OnInitialUpdate();    // Now performed by Application, wasn't being fired on all PCs for some reason.
-      }
-         
    }
 
    /// <summary>Called when settings change.</summary>

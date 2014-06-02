@@ -125,7 +125,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
       ScriptView*  GetActiveScriptView();
       BOOL         LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
       BOOL         OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) override;
-      void         OnInitialUpdate();
 	   BOOL         PreCreateWindow(CREATESTRUCT& cs) override;
 
    protected:
@@ -151,6 +150,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
       afx_msg void    OnDropFiles(HDROP hDropInfo);
       afx_msg LRESULT OnDocumentSwitched(WPARAM wParam, LPARAM lParam);
       handler void    OnGameDataFeedback(const WorkerProgress& wp);
+      handler LRESULT OnInitialUpdate(WPARAM wParam, LPARAM lParam);
       afx_msg void    OnPerformCommand(UINT nID);
       afx_msg void    OnQueryCommand(CCmdUI *pCmdUI);
 	   afx_msg void    OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
@@ -189,7 +189,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
    
    private:
       DocumentBase*     ActiveDocument;
-      bool              FirstShow;
 };
 
 
