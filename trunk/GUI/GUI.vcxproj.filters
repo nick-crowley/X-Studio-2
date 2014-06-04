@@ -286,7 +286,10 @@
       <Filter>Header Files\Views</Filter>
     </ClInclude>
     <ClInclude Include="DualComboBox.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="OwnerDrawImpl.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -501,7 +504,10 @@
       <Filter>Source Files\Views</Filter>
     </ClCompile>
     <ClCompile Include="DualComboBox.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="OwnerDrawImpl.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
