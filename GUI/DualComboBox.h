@@ -1,5 +1,6 @@
 
 #pragma once
+#include "OwnerDrawImpl.h"
 
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
@@ -10,6 +11,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       // ------------------------ TYPES --------------------------
    private:
+      class ControlRenderer : public OwnerDrawImpl
+      {
+      public:
+         ControlRenderer();
+
+      public:
+         void DrawItem() override;
+      };
 	  
       // --------------------- CONSTRUCTION ----------------------
    public:

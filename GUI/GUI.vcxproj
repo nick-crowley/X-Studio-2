@@ -138,6 +138,7 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="CommitDialog.h" />
     <ClInclude Include="CompilerPage.h" />
+    <ClInclude Include="OwnerDrawImpl.h" />
     <ClInclude Include="DialogBase.h" />
     <ClInclude Include="DiffDocument.h" />
     <ClInclude Include="DiffEdit.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="CommitDialog.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
+    <ClCompile Include="OwnerDrawImpl.cpp" />
     <ClCompile Include="DialogBase.cpp" />
     <ClCompile Include="DiffDocument.cpp" />
     <ClCompile Include="DiffEdit.cpp" />
