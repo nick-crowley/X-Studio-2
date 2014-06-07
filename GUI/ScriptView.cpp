@@ -553,11 +553,11 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Clear
       ScopeCombo.ResetContent();
-      ScopeCombo.AddString(L"(Global scope)");
+      ScopeCombo.AddItem(L"(Global scope)", L"", 0);
 
       // Populate labels
       for (auto& label : GetScript().Labels)
-         ScopeCombo.AddString(label.Name.c_str());
+         ScopeCombo.AddItem(label.Name, VString(L"Line %d", label.LineNumber), 0);
 
       // Select current scope
       UpdateScope();

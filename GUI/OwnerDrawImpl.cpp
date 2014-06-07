@@ -29,6 +29,7 @@ namespace GUI
          SetFont(c->GetFont());
       }
 
+      /// <summary>Cleanup DC</summary>
       OwnerDrawImpl::~OwnerDrawImpl()
       {
          // Restore original font
