@@ -15,7 +15,7 @@ namespace GUI
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         OwnerDrawImpl(DRAWITEMSTRUCT& d, CFont* f);
+         OwnerDrawImpl(DRAWITEMSTRUCT& d, CWnd* c);
          virtual ~OwnerDrawImpl();
 		 
 		   NO_COPY(OwnerDrawImpl);	// Uncopyable
@@ -40,10 +40,16 @@ namespace GUI
 
          // -------------------- REPRESENTATION ---------------------
       protected:
-         bool     Disabled,
-                  Focused, 
-                  Selected;
-         SharedDC DC;
+         bool     Disabled,      // Whether item is disabled
+                  Focused,       // Whether item has focus
+                  Selected;      // Whether item is selected
+         CRect    Bounds;        // Item bounds
+         SharedDC DC;            // Output DC
+         UINT     CtrlID,        // Control ID
+                  CtrlType,      // Control Type
+                  Index;         // Item Index
+         //HWND     CtrlWnd;       // Control handle
+         CWnd*    Ctrl;          // Control
 
       private:
          CFont*   PrevFont;

@@ -8,14 +8,25 @@ namespace GUI
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      OwnerDrawImpl::OwnerDrawImpl(DRAWITEMSTRUCT& d, CFont* f)
+      /// <summary>Creates an owner draw implementation</summary>
+      /// <param name="d">Owner Draw data</param>
+      /// <param name="c">Control window</param>
+      /// <exception cref="Logic::ArgumentNullException">Window is null</exception>
+      OwnerDrawImpl::OwnerDrawImpl(DRAWITEMSTRUCT& d, CWnd* c)
          : DC(d.hDC), 
            Disabled((d.itemState & ODS_DISABLED) != 0), 
            Focused((d.itemState & ODS_FOCUS) != 0), 
            Selected((d.itemState & ODS_SELECTED) != 0), 
-           PrevFont(nullptr)
+           Bounds(d.rcItem),
+           Index(d.itemID),
+           CtrlID(d.CtlID),
+           CtrlType(d.CtlType),
+           Ctrl(c)
       {
-         SetFont(f);
+         REQUIRED(c);
+         
+         // Set window font
+         SetFont(c->GetFont());
       }
 
       OwnerDrawImpl::~OwnerDrawImpl()
@@ -58,17 +69,20 @@ namespace GUI
       void  OwnerDrawImpl::DrawText(const wstring& sz, CRect& rc, UINT flags /*= DT_LEFT*/, UINT col /*= COLOR_WINDOWTEXT*/)
       {
          // Set appropriate system colour
-         auto col = DC.SetTextColor(GetSysColor(!Selected ? col : COLOR_HIGHLIGHTTEXT));
-         auto bk = DC.SetBkMode(TRANSPARENT);
+         auto c = DC.SetTextColor(GetSysColor(!Selected ? col : COLOR_HIGHLIGHTTEXT));
+         auto m = DC.SetBkMode(TRANSPARENT);
          
          // Draw Text 
          DC.DrawText(sz.c_str(), sz.length(), rc, flags);
 
          // Cleanup
-         DC.SetTextColor(col);
-         DC.SetBkMode(bk);
+         DC.SetTextColor(c);
+         DC.SetBkMode(m);
       }
 
+      /// <summary>Changes the currently selected font.</summary>
+      /// <param name="f">font</param>
+      /// <exception cref="Logic::ArgumentNullException">Font is null</exception>
       void  OwnerDrawImpl::SetFont(CFont* f)
       {
          REQUIRED(f);

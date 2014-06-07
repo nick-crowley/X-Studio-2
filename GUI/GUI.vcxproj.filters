@@ -291,6 +291,9 @@
     <ClInclude Include="OwnerDrawImpl.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ComboBoxOwnerDraw.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -507,6 +510,9 @@
       <Filter>Source Files\Controls</Filter>
     </ClCompile>
     <ClCompile Include="OwnerDrawImpl.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboBoxOwnerDraw.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
