@@ -136,6 +136,7 @@
     <ClInclude Include="BackupWnd.h" />
     <ClInclude Include="BitmapStatic.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="ComboBoxOwnerDraw.h" />
     <ClInclude Include="CommitDialog.h" />
     <ClInclude Include="CompilerPage.h" />
     <ClInclude Include="OwnerDrawImpl.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="BackupWnd.cpp" />
     <ClCompile Include="BitmapStatic.cpp" />
     <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="ComboBoxOwnerDraw.cpp" />
     <ClCompile Include="CommitDialog.cpp" />
     <ClCompile Include="CompilerPage.cpp" />
     <ClCompile Include="OwnerDrawImpl.cpp" />

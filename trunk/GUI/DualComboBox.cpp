@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DualComboBox.h"
-#include "OwnerDrawImpl.h"
+#include "ComboBoxOwnerDraw.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,34 +77,37 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    void DualComboBox::DrawItem(LPDRAWITEMSTRUCT pd)
    {
-      bool editMode = (pd->itemState & ODS_COMBOBOXEDIT) != 0;
+      ComboBoxOwnerDraw g(*pd, this);
+      g.DrawItem();
 
-      // EDIT MODE
-      if (editMode)
-         return;
+      //bool editMode = (pd->itemState & ODS_COMBOBOXEDIT) != 0;
 
-      //CString  str;
-      //GetLBText(pData->itemID, str);
-      //dc.DrawTextW(str, &pData->rcItem, DT_LEFT);
+      //// EDIT MODE
+      //if (editMode)
+      //   return;
 
-      
-      
-      // Prepare
-      OwnerDrawImpl g(*pd, GetFont());
-      CRect rc(&pd->rcItem);
+      ////CString  str;
+      ////GetLBText(pData->itemID, str);
+      ////dc.DrawTextW(str, &pData->rcItem, DT_LEFT);
 
-      ComboItemData* item = reinterpret_cast<ComboItemData*>(pd->itemData);
-      Console << "Drawing item ID: " << pd->itemID << " rcItem=" << rc << " data=" << item << ENDL;
-      
-      // BACKGROUND
-      g.DrawBackground(rc, COLOR_WINDOW);
+      //
+      //
+      //// Prepare
+      //ComboBoxOwnerDraw g(*pd, GetFont());
+      //CRect rc(&pd->rcItem);
 
-      // Shrink drawing area to create border
-      rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE));
-      
-      // TEXT
-      g.DrawText(item->Left, rc, DT_LEFT, COLOR_WINDOWTEXT);
-      g.DrawText(item->Right, rc, DT_RIGHT, COLOR_GRAYTEXT);
+      //ComboItemData* item = reinterpret_cast<ComboItemData*>(pd->itemData);
+      //Console << "Drawing item ID: " << pd->itemID << " rcItem=" << rc << " data=" << item << ENDL;
+      //
+      //// BACKGROUND
+      //g.DrawBackground(rc, COLOR_WINDOW);
+
+      //// Shrink drawing area to create border
+      //rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE));
+      //
+      //// TEXT
+      //g.DrawText(item->Left, rc, DT_LEFT, COLOR_WINDOWTEXT);
+      //g.DrawText(item->Right, rc, DT_RIGHT, COLOR_GRAYTEXT);
 
       // TODO:  Add your code to draw the specified item
       //Console << "Drawing item #" << (UINT)pData->hwndItem << " rcItem=" << CRect(pData->rcItem) << ENDL;
