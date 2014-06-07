@@ -536,12 +536,10 @@ NAMESPACE_BEGIN2(GUI,Views)
    {
       // Clear
       VariablesCombo.ResetContent();
-      //VariablesCombo.AddString(L"(Variables)");
       VariablesCombo.AddItem(L"(Variables)", L"", 0);
 
       // Populate variables
       for (auto& var : GetScript().Variables)
-         //VariablesCombo.AddString(var.Name.c_str());
          VariablesCombo.AddItem(var.Name, VString(L"%d Uses", var.Usage), 0);
 
       // Select heading
