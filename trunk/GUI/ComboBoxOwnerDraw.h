@@ -6,7 +6,7 @@ namespace GUI
    namespace Utils
    {
    
-      /// <summary></summary>
+      /// <summary>Implementation of Owner draw for combo-boxes</summary>
       class ComboBoxOwnerDraw : public OwnerDrawImpl
       {
          // ------------------------ TYPES --------------------------
@@ -25,15 +25,17 @@ namespace GUI
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
-      public:
+      protected:
+         bool  HasStrings() const;
+
          // ----------------------- MUTATORS ------------------------
       public:
          virtual void DrawItem() override;
 
          // -------------------- REPRESENTATION ---------------------
       protected:
-         bool        EditMode;
-         CComboBox*  ComboBox;
+         bool        EditMode;         // Whether in edit or listbox mode
+         CComboBox*  ComboBox;         // ComboBox handle
       };
    
    }

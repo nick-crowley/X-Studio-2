@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DualComboBox.h"
-#include "ComboBoxOwnerDraw.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -11,20 +10,6 @@ static char THIS_FILE[] = __FILE__;
 /// <summary>User interface Controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
-   // ----------------------------------- GLOBALS ----------------------------------
-
-   class ComboItemData
-   {
-   public:
-      ComboItemData(wstring left, wstring right, UINT icon) : Left(left), Right(right), Icon(icon)
-      {}
-
-   public:
-      wstring Left, 
-              Right;
-      UINT    Icon;
-   };
-
    // --------------------------------- APP WIZARD ---------------------------------
    
    BEGIN_MESSAGE_MAP(DualComboBox, CComboBox)
@@ -32,10 +17,20 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // -------------------------------- CONSTRUCTION --------------------------------
 
+   /// <summary>Create empty DualComboBox</summary>
    DualComboBox::DualComboBox() : Images(nullptr)
    {
    }
 
+   /// <summary>Create renderer for control</summary>
+   /// <param name="d">Owner draw data</param>
+   /// <param name="c">Control</param>
+   DualComboBox::ControlRenderer::ControlRenderer(DRAWITEMSTRUCT& d, CComboBox* c)
+      : ComboBoxOwnerDraw(d, c),
+        Item(reinterpret_cast<ItemData*>(d.itemData))
+   {
+   }
+   
    DualComboBox::~DualComboBox()
    {
    }
@@ -44,98 +39,112 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 
-   /// <summary>Check whether listBox contains a specified string</summary>
-   /// <param name="str">The string.</param>
-   /// <param name="matchCase">match case.</param>
-   /// <returns></returns>
-   //bool  DualComboBox::Contains(const wstring& str, bool matchCase) const
-   //{
-   //   auto list = GetAllStrings();
-
-   //   // Query strings in listBox
-   //   return any_of(list.begin(), list.end(), [&str,matchCase](const wstring& s) {
-   //      return matchCase ? s == str : StrCmpI(s.c_str(), str.c_str()) == 0;
-   //   });
-   //}
-
+   /// <summary>Appends a new item to the combo-box</summary>
+   /// <param name="txt">Item text.</param>
+   /// <param name="alt">Alternate item text.</param>
+   /// <param name="icon">ImageList icon index.</param>
    void DualComboBox::AddItem(wstring txt, wstring alt, UINT icon)
    {
-      __super::AddString((LPCWSTR)new ComboItemData(txt, alt, icon));
+      __super::AddString((LPCWSTR)new ItemData(txt, alt, icon));
    }
    
+   /// <summary>Deletes an item when removed.</summary>
+   /// <param name="pd">Message data.</param>
    void DualComboBox::DeleteItem(LPDELETEITEMSTRUCT pd)
    {
-      // Cleanup item data
-      ComboItemData* data = reinterpret_cast<ComboItemData*>(pd->itemData);
-      
-      Console << "Deleting item #" << pd->itemID << " data=" << data << ENDL;
-      delete data;
+      try
+      {
+         ItemData* data = reinterpret_cast<ItemData*>(pd->itemData);
+         
+         // Validate item
+         if (pd->itemID == CB_ERR)
+            throw AlgorithmException(HERE, L"Cannot delete item -1");
+         else if (data == nullptr)
+            throw AlgorithmException(HERE, VString(L"Missing item data for item #%d", pd->itemID));
+            
+         // Cleanup item data
+         delete data;
 
-      __super::DeleteItem(pd);
+         // Base
+         __super::DeleteItem(pd);
+      }
+      catch (ExceptionBase& e)  {
+         Console.Log(HERE, e);
+      }
+   }
+
+   /// <summary>Find item data by index.</summary>
+   /// <param name="index">Zero-based index.</param>
+   /// <returns></returns>
+   /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+   DualComboBox::ItemData* DualComboBox::FindItem(UINT index) const
+   {
+      // Validate index
+      if (index >= (UINT)GetCount())
+         throw IndexOutOfRangeException(HERE, index, GetCount());
+
+      // Lookup item
+      return reinterpret_cast<ItemData*>(GetItemData(index));
+   }
+
+   /// <summary>Draws an item</summary>
+   /// <exception cref="Logic::IndexOutOfRangeException">Invalid index</exception>
+   /// <exception cref="Logic::InvalidOperationException">Invalid window styles</exception>
+   void DualComboBox::ControlRenderer::DrawItem()
+   {
+      // Ensure ComboBox doesn't hold strings
+      if (HasStrings())
+         throw InvalidOperationException(HERE, L"Cannot owner-draw DualComboBox with CBS_HASSTRINGS");
+
+      // BACKGROUND
+      DrawBackground(Bounds, COLOR_WINDOW);
+
+      // Edit Mode
+      if (EditMode || Index == CB_ERR)
+      {
+         // Create left/right/top/bottom border
+         Bounds.DeflateRect(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE));
+
+         // TEXT
+         if (ComboBox->GetCount())
+         {
+            ItemData* it = dynamic_cast<DualComboBox*>(ComboBox)->FindItem(ComboBox->GetCurSel());
+            DrawText(it->Left, Bounds, DT_LEFT, COLOR_WINDOWTEXT);
+         }
+      }
+      else
+      {
+         // Create left/right border
+         Bounds.DeflateRect(GetSystemMetrics(SM_CXEDGE), 0);
+      
+         // TEXT
+         DrawText(Item->Left, Bounds, DT_LEFT, COLOR_WINDOWTEXT);
+         DrawText(Item->Right, Bounds, DT_RIGHT, COLOR_GRAYTEXT);
+      }
    }
 
 
+   /// <summary>Draws an item.</summary>
+   /// <param name="pd">Owner draw data.</param>
    void DualComboBox::DrawItem(LPDRAWITEMSTRUCT pd)
    {
-      ComboBoxOwnerDraw g(*pd, this);
-      g.DrawItem();
-
-      //bool editMode = (pd->itemState & ODS_COMBOBOXEDIT) != 0;
-
-      //// EDIT MODE
-      //if (editMode)
-      //   return;
-
-      ////CString  str;
-      ////GetLBText(pData->itemID, str);
-      ////dc.DrawTextW(str, &pData->rcItem, DT_LEFT);
-
-      //
-      //
-      //// Prepare
-      //ComboBoxOwnerDraw g(*pd, GetFont());
-      //CRect rc(&pd->rcItem);
-
-      //ComboItemData* item = reinterpret_cast<ComboItemData*>(pd->itemData);
-      //Console << "Drawing item ID: " << pd->itemID << " rcItem=" << rc << " data=" << item << ENDL;
-      //
-      //// BACKGROUND
-      //g.DrawBackground(rc, COLOR_WINDOW);
-
-      //// Shrink drawing area to create border
-      //rc.DeflateRect(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE));
-      //
-      //// TEXT
-      //g.DrawText(item->Left, rc, DT_LEFT, COLOR_WINDOWTEXT);
-      //g.DrawText(item->Right, rc, DT_RIGHT, COLOR_GRAYTEXT);
-
-      // TODO:  Add your code to draw the specified item
-      //Console << "Drawing item #" << (UINT)pData->hwndItem << " rcItem=" << CRect(pData->rcItem) << ENDL;
+      try
+      {
+         ControlRenderer g(*pd, this);
+         g.DrawItem();
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e, VString(L"Unable to draw item #%d", pd->itemID));
+      }
    }
 
-
-   /// <summary>Gets all strings in the listbox</summary>
-   /// <returns></returns>
-   //list<wstring>  DualComboBox::GetAllStrings() const
-   //{
-   //   list<wstring> list;
-   //   CString       str;
-
-   //   // Add all items to list
-   //   for (int i = 0; i < GetCount(); ++i)
-   //   {
-   //      GetLBText(i, str);
-   //      list.push_back((const wchar*)str);
-   //   }
-
-   //   return list;
-   //}
-
+   /// <summary>Sets the image list.</summary>
+   /// <param name="list">The list.</param>
+   /// <exception cref="Logic::ArgumentNullException">List is nullptr</exception>
    void DualComboBox::SetImageList(CImageList* list)
    {
-      // Cleanup previous
-      if (Images)
-         delete Images;
+      REQUIRED(list);
 
       // Replace image list
       Images = list;

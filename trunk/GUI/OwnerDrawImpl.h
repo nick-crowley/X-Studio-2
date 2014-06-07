@@ -7,7 +7,7 @@ namespace GUI
    namespace Utils
    {
    
-      /// <summary></summary>
+      /// <summary>Base-class for an implementation of owner draw</summary>
       class OwnerDrawImpl
       {
          // ------------------------ TYPES --------------------------
@@ -48,11 +48,10 @@ namespace GUI
          UINT     CtrlID,        // Control ID
                   CtrlType,      // Control Type
                   Index;         // Item Index
-         //HWND     CtrlWnd;       // Control handle
          CWnd*    Ctrl;          // Control
 
       private:
-         CFont*   PrevFont;
+         CFont*   PrevFont;      // Initially selected DC font
       };
    
    }

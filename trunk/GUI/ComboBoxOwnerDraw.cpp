@@ -8,7 +8,7 @@ namespace GUI
    
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Creates an owner draw implementation</summary>
+      /// <summary>Creates an owner draw implementation for combo-boxes</summary>
       /// <param name="d">Owner Draw data</param>
       /// <param name="c">ComboBox window</param>
       /// <exception cref="Logic::ArgumentNullException">ComboBox window is null</exception>
@@ -28,40 +28,22 @@ namespace GUI
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      void ComboBoxOwnerDraw::DrawItem() 
+      /// <summary>Draws an item</summary>
+      /// <exception cref="Logic::InvalidOperationException">Missing window styles</exception>
+      void ComboBoxOwnerDraw::DrawItem()
       {
+         CString txt;
+
          // Ensure ComboBox holds strings
-         if ((ComboBox->GetStyle() & CBS_HASSTRINGS) == 0)
-            return;
+         if (!HasStrings())
+            throw InvalidOperationException(HERE, L"Cannot owner-draw ComboBox without CBS_HASSTRINGS");
 
-         // EDIT MODE
-         /*if (EditMode)
-            return;*/
-
-         //CString  str;
-         //GetLBText(pData->itemID, str);
-         //dc.DrawTextW(str, &pData->rcItem, DT_LEFT);
-
-         // Prepare
-         /*ComboItemData* item = reinterpret_cast<ComboItemData*>(pd->itemData);
-         Console << "Drawing item ID: " << pd->itemID << " rcItem=" << Bounds << " data=" << item << ENDL;*/
-      
          // BACKGROUND
          DrawBackground(Bounds, COLOR_WINDOW);
 
          // Shrink drawing area to create border
          Bounds.DeflateRect(GetSystemMetrics(SM_CXEDGE), GetSystemMetrics(SM_CYEDGE));
       
-         // TEXT
-         /*DrawText(item->Left, Bounds, DT_LEFT, COLOR_WINDOWTEXT);
-         DrawText(item->Right, Bounds, DT_RIGHT, COLOR_GRAYTEXT);*/
-         //CComboBox ctrl;
-         //CString   txt;
-
-         // Prepare
-         //CComboBox* combo = dynamic_cast<CComboBox*>(Ctrl);
-         CString txt;
-
          // Get item/edit text
          if (EditMode)
             ComboBox->GetWindowTextW(txt);
@@ -70,12 +52,16 @@ namespace GUI
          
          // Draw text
          DrawText((LPCWSTR)txt, Bounds, DT_LEFT, COLOR_WINDOWTEXT);
-
-         // TODO:  Add your code to draw the specified item
-         //Console << "Drawing item #" << (UINT)pData->hwndItem << " rcItem=" << CRect(pData->rcItem) << ENDL;
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
+      
+      /// <summary>Determines whether comboBox holds strings.</summary>
+      /// <returns></returns>
+      bool  ComboBoxOwnerDraw::HasStrings() const
+      {
+         return (ComboBox->GetStyle() & CBS_HASSTRINGS) != 0;
+      }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
    
