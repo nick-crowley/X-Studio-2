@@ -108,7 +108,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // TEXT
          if (ComboBox->GetCount())
          {
-            ItemData* it = dynamic_cast<DualComboBox*>(ComboBox)->FindItem(ComboBox->GetCurSel());
+            // Get selected item, if any
+            auto sel = ComboBox->GetCurSel();
+            ItemData* it = dynamic_cast<DualComboBox*>(ComboBox)->FindItem(sel != CB_ERR ? sel : 0);
+
             DrawText(it->Left, Bounds, DT_LEFT, COLOR_WINDOWTEXT);
          }
       }
