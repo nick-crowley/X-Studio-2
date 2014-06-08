@@ -430,7 +430,7 @@
       <Filter>Header Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="EncryptedX3Stream.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -693,7 +693,7 @@
       <Filter>Source Files\IO</Filter>
     </ClCompile>
     <ClCompile Include="EncryptedX3Stream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
