@@ -552,15 +552,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // -------------------- REPRESENTATION ---------------------
    public:
-      SimpleEvent     CompileComplete;
+      SimpleEvent     CompileComplete;       // Raised after background compile completed
 
    protected:
-      InputState      State;
-      Suggestion      SuggestionType;
-      SuggestionList  SuggestionsList;
-      ScriptDocument* Document;
+      InputState      State;                 // Whether suggestions are visible or not
+      Suggestion      SuggestionType;        // Type of current suggestions, if any
+      SuggestionList  SuggestionsList;       // Suggestions list
+      ScriptDocument* Document;              // Document pointer
 
-      EventHandler fnArgumentChanged;
+      EventHandler    fnArgumentChanged;     // Raised when a Script argument is modified/removed
+
+   private:
+      CRect           SuggestionRect;        // Preserves the suggestion rectangle during 'freeze window'
 };
    
 

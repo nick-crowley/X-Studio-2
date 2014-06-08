@@ -38,7 +38,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit() : Document(nullptr), SuggestionType(Suggestion::None)
+   ScriptEdit::ScriptEdit() : Document(nullptr), 
+                              SuggestionType(Suggestion::None),
+                              SuggestionRect(0,0,0,0)
    {
    }
 
@@ -456,8 +458,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="invalidate">True to invalidate after unfreezing</param>
    void ScriptEdit::FreezeWindow(bool freeze, bool invalidate)
    {
-      static CtrlRect PrevRect(this,this);
-
       if (freeze)
       {
          // Freeze window
@@ -465,8 +465,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          
          // Preserve suggestion list
          if (State == InputState::Suggestions)
-            PrevRect = CtrlRect(this, &SuggestionsList);
-         
+            SuggestionRect = CtrlRect(this, &SuggestionsList);
       }
       else
       {
@@ -475,7 +474,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          
          // Restore suggestion list
          if (State == InputState::Suggestions)
-            SuggestionsList.SetWindowPos(nullptr, PrevRect.left, PrevRect.top, -1, -1, SWP_NOZORDER|SWP_NOSIZE);
+            SuggestionsList.SetWindowPos(nullptr, SuggestionRect.left, SuggestionRect.top, -1, -1, SWP_NOZORDER|SWP_NOSIZE);
       }
    }
    
