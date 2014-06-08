@@ -60,6 +60,24 @@ namespace Logic
    {
       return c << "{CSize width=" << sz.cx << " height=" << sz.cy << "}";
    }
+   
+   /// <summary>Write basic window details to the console</summary>
+   LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const CWnd& wnd)
+   {
+      CString txt;
+      CRect   rc;
+      
+      // Prepare
+      wnd.GetWindowText(txt);
+      wnd.GetWindowRect(rc);
+      
+      //
+      return c << "{CWnd title=" << txt 
+               << " visible=" << (wnd.IsWindowVisible() != FALSE)
+               << " enabled=" << (wnd.IsWindowEnabled() != FALSE) 
+               << " position=" << rc
+               << "}";
+   }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
 

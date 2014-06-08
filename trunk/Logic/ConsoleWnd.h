@@ -38,6 +38,8 @@ namespace Logic
    /// <summary>Write size to the console</summary>
    LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const CSize& sz);
 
+   /// <summary>Write basic window details to the console</summary>
+   LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const CWnd& wnd);
 
    /// <summary>Provides a debugging console</summary>
    class LogicExport ConsoleWnd
