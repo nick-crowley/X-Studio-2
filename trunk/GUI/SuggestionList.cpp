@@ -82,14 +82,14 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // Create
       DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
-      return CListCtrl::Create(style, rc, parent, IDC_SUGGESTION_LIST);
+      return __super::Create(style, rc, parent, IDC_SUGGESTION_LIST);
    }
 
    /// <summary>Gets the script edit parent</summary>
    /// <returns></returns>
    ScriptEdit* SuggestionList::GetParent() const
    {
-      return dynamic_cast<ScriptEdit*>(CListCtrl::GetParent());
+      return dynamic_cast<ScriptEdit*>(__super::GetParent());
    }
 
    /// <summary>Gets the text of the selected suggestion.</summary>
@@ -151,25 +151,37 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <returns></returns>
    int SuggestionList::OnCreate(LPCREATESTRUCT lpCreateStruct)
    {
-      if (CListCtrl::OnCreate(lpCreateStruct) == -1)
-         return -1;
+      try
+      {
+         if (__super::OnCreate(lpCreateStruct) == -1)
+            throw Win32Exception(HERE, L"Unable to create base ListView");
       
-      // Display items using a single column. Custom Draw handles the column illusion
-      InsertColumn(0, L"text");
-      SetColumnWidth(0, lpCreateStruct->cx);
-      SetExtendedStyle(LVS_EX_FULLROWSELECT);
+         // Display items using a single column. Custom Draw handles the column illusion
+         InsertColumn(0, L"text");
+         SetColumnWidth(0, lpCreateStruct->cx);
+         SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-      // Populate
-      PopulateContent();
+         // Populate
+         PopulateContent();
 
-      // Display contents
-      SetItemCountEx(Content.size());
-      SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+         // Ensure we have content
+         if (Content.size() == 0)
+            throw AlgorithmException(HERE, L"Unable to create list of zero suggestions");
 
-      // Shrink to fit
-      ShrinkToFit();
-      OnVisibleItemsChanged();
-      return 0;
+         // Display contents
+         SetItemCountEx(Content.size());
+         SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+
+         // Shrink to fit
+         ShrinkToFit();
+         OnVisibleItemsChanged();
+         return 0;
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e);
+         return -1;
+      }
    }
    
    /// <summary>Custom draw the items</summary>
@@ -248,7 +260,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="pNewWnd">The new WND.</param>
    void SuggestionList::OnKillFocus(CWnd* pNewWnd)
    {
-      CListCtrl::OnKillFocus(pNewWnd);
+      __super::OnKillFocus(pNewWnd);
 
       // Close if focus lost to anything but parent
       if (pNewWnd != GetParent())
@@ -374,7 +386,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // Check if less than 1 page of items
-         if (GetCountPerPage() > (int)Content.size())
+         if (GetCountPerPage() > (int)Content.size() && !Content.empty())
          {
             ClientRect wnd(this);
             CRect rc(0,0,0,0);

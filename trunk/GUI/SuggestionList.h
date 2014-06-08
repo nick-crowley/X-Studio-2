@@ -4,9 +4,6 @@
 #include "../Logic/ScriptToken.h"
 #include "ListViewCustomDraw.h"
 
-/// <summary>Forward declaration</summary>
-//FORWARD_DECLARATION2(Logic,Scripts,class ScriptFile)
-
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
    
