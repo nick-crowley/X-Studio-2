@@ -688,16 +688,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       try
       {
-         // Update suggestions
+         // Initiate suggestions if appliciable
+         if (State != InputState::Suggestions)
+         {
+            // Identify/Set suggestions to display (if any)
+            SuggestionType = IdentifySuggestion(nChar);
+            //Console << L"Identified " << GetString(SuggestionType) << L" from " << (wchar)nChar << ENDL;
+
+            // Display new suggestions 
+            if (SuggestionType != Suggestion::None)
+               ShowSuggestions(); 
+         }
+
+         // Update existing suggestions
          if (State == InputState::Suggestions)
             UpdateSuggestions();
-
-         // display suggestions if appropriate
-         else if ((SuggestionType = IdentifySuggestion(nChar)) != Suggestion::None)
-         {
-            //Console << L"Identified " << GetString(SuggestionType) << L" from " << (wchar)nChar << ENDL;
-            ShowSuggestions();
-         }
       }
       catch (ExceptionBase& e) {
          Console.Log(HERE, e, VString(L"Unable to process '%c' character", (wchar)nChar)); 
@@ -920,7 +925,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       try
       {
          // Close suggestions, unless they're gaining focus
-         if (State == InputState::Suggestions && (!pNewWnd || SuggestionsList != *pNewWnd))
+         if (State == InputState::Suggestions && (!pNewWnd || *pNewWnd != SuggestionsList))
             CloseSuggestions();
       }
       catch (ExceptionBase& e) {
@@ -1037,7 +1042,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnTimer(UINT_PTR nIDEvent)
    {
       // Background compiler
-      if (nIDEvent == COMPILE_TIMER)
+      if (nIDEvent == COMPILE_TIMER && State != InputState::Suggestions)
          OnBackgroundCompile();
 
       // Used by RichEdit
