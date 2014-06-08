@@ -520,6 +520,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
+      void   FreezeWindow(bool freeze, bool invalidate = true) override;
       CRect  GetSuggestionRect(Suggestion type);
       void   InsertSuggestion();
       void   RefreshGutter();

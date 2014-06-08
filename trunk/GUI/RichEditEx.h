@@ -67,30 +67,30 @@ NAMESPACE_BEGIN2(GUI,Controls)
       int       LineLength(int nChar = -1) const;
 
    protected:
-      CPoint     GetCursorLocation() const;
-      int        GetLineEnd(int line = -1) const;
-      int        GetLineHeight() const;
-      int        GetLineStart(int line = -1) const;
-      CPoint     GetScrollCoordinates() const;
-      void       GroupUndo(bool start);
+      CPoint    GetCursorLocation() const;
+      int       GetLineEnd(int line = -1) const;
+      int       GetLineHeight() const;
+      int       GetLineStart(int line = -1) const;
+      CPoint    GetScrollCoordinates() const;
+      void      GroupUndo(bool start);
       
       // ----------------------- MUTATORS ------------------------
    public:
-      bool   Replace(MatchData& m);
-      bool   EnsureVisible(int line);
-      void   Initialize(COLORREF bk);
-      virtual void   PasteFormat(UINT nClipFormat);
-      virtual BOOL   PreTranslateMessage(MSG* pMsg) override;
-      virtual void   SetRtf(const string& rtf);
-      void   SelectLine(int line = -1);
-      void   SetCaretLocation(CPoint pt);
-      void   SuspendUndo(bool suspend);
+      bool         EnsureVisible(int line);
+      void         Initialize(COLORREF bk);
+      virtual void PasteFormat(UINT nClipFormat);
+      virtual BOOL PreTranslateMessage(MSG* pMsg) override;
+      bool         Replace(MatchData& m);
+      virtual void SetRtf(const string& rtf);
+      void         SelectLine(int line = -1);
+      void         SetCaretLocation(CPoint pt);
+      void         SuspendUndo(bool suspend);
 
    protected:
-      void   AdjustTooltip(bool enable, UINT delay, UINT display);
-      void   FreezeWindow(bool freeze, bool invalidate = true);
-      void   ResetTooltip();
-      void   SetScrollCoordinates(const CPoint& pt);
+      void         AdjustTooltip(bool enable, UINT delay, UINT display);
+      virtual void FreezeWindow(bool freeze, bool invalidate = true);
+      void         ResetTooltip();
+      void         SetScrollCoordinates(const CPoint& pt);
       
       virtual void HScroll(UINT nSBCode, UINT nPos);
       virtual void VScroll(UINT nSBCode, UINT nPos);

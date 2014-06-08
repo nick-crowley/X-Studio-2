@@ -451,6 +451,34 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SetSelectionCharFormat(cf);
    }
    
+   /// <summary>Freezes or unfreezes the window.</summary>
+   /// <param name="freeze">True to freeze, false to restore</param>
+   /// <param name="invalidate">True to invalidate after unfreezing</param>
+   void ScriptEdit::FreezeWindow(bool freeze, bool invalidate)
+   {
+      static CtrlRect PrevRect(this,this);
+
+      if (freeze)
+      {
+         // Freeze window
+         __super::FreezeWindow(freeze, invalidate);
+         
+         // Preserve suggestion list
+         if (State == InputState::Suggestions)
+            PrevRect = CtrlRect(this, &SuggestionsList);
+         
+      }
+      else
+      {
+         // Restore state
+         __super::FreezeWindow(freeze, invalidate);
+         
+         // Restore suggestion list
+         if (State == InputState::Suggestions)
+            SuggestionsList.SetWindowPos(nullptr, PrevRect.left, PrevRect.top, -1, -1, SWP_NOZORDER|SWP_NOSIZE);
+      }
+   }
+   
    /// <summary>Gets the suggestion rect.</summary>
    /// <param name="type">The type.</param>
    /// <returns></returns>
@@ -487,20 +515,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       switch (ch)
       {
+      // VARIABLE/GAME-OBJ/SCRIPT-OBJ
       case '$': return Suggestion::Variable;
       case '{': return Suggestion::GameObject;
       case '[': return Suggestion::ScriptObject;
-      case ' ': 
-       {  
-         CommandLexer lex(GetLineText(-1));
-         TokenIterator pos = lex.begin();
-         
-         // Match: GoSub|Goto ' ' <caret>  { caret following single space after goto/gosub }
-         if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
-             && GetCaretIndex() == (pos-1)->End+1)
-            return Suggestion::Label;
-         break;
-       }
+      
+      // LABEL/COMMAND:
       default:  
        { 
          // Ensure character is alpha-numeric
@@ -511,17 +531,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
          CommandLexer lex(GetLineText(-1));
          TokenIterator pos = lex.begin();
 
-         // Rule: char <caret>  { first token is text. caret on 2nd letter }
+         // (Label) Rule: GoSub|Goto <whitespace> label|anything <caret>  (Desc: caret following token after goto/gosub)
+         if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
+          && (lex.Match(pos, TokenType::Label) || !lex.Valid(pos)) )  //&& GetCaretIndex() == (pos-1)->End+1)
+            return Suggestion::Label;
+
+         // (Command) Rule: char <caret>  (NB: first token is text. caret on 2nd letter)
          if (lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
             return Suggestion::Command;
 
-         // Rule: variable '=' char <caret>  { 3 tokens: variable, equals, text. caret on 2nd letter }
+         // (Command) Rule: variable '=' char <caret>  (NB: 3 tokens: variable, equals, text. caret on 2nd letter)
          if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::BinaryOp, L"=") && lex.Match(pos, TokenType::Text)
              && GetCaretIndex() == (pos-1)->Start+1)
              return Suggestion::Command;
 
-         
-         // Rule: (variable '=')? constant/variable/null '->' char <caret>
+         // (Command) Rule: (variable '=')? constant/variable/null '->' char <caret>
          // match (variable '=')? while accounting for  variable '->'
          if (lex.Match(pos=lex.begin(), TokenType::Variable))
          {
@@ -535,7 +559,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
                return Suggestion::None;
          }
          
-         // constant/variable/null 
+         // (Command) constant/variable/null 
          if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
             // '->' char <caret>  { caret on 2nd letter }
             if (lex.Match(pos, TokenType::BinaryOp, L"->") && lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
@@ -1042,7 +1066,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    void ScriptEdit::OnTimer(UINT_PTR nIDEvent)
    {
       // Background compiler
-      if (nIDEvent == COMPILE_TIMER && State != InputState::Suggestions)
+      if (nIDEvent == COMPILE_TIMER) 
          OnBackgroundCompile();
 
       // Used by RichEdit
