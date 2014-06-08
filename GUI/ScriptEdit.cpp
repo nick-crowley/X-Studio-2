@@ -1107,7 +1107,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       {
       case Suggestion::Variable:     return t == TokenType::Variable;
       case Suggestion::GameObject:   return t == TokenType::GameObject;
-      case Suggestion::ScriptObject: return t == TokenType::ScriptObject;
+      case Suggestion::ScriptObject: return t == TokenType::ScriptObject || t == TokenType::UnaryOp;
       case Suggestion::Label:        return t == TokenType::Label;
       case Suggestion::Command:      return t == TokenType::Text;
       }
