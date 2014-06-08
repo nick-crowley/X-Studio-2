@@ -76,6 +76,12 @@
     <Filter Include="Header Files\DTL">
       <UniqueIdentifier>{7e0327f7-7be0-441a-b017-a7e0a88d2059}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{d5d3914a-e299-4b75-8faa-81b41ef5eb57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{10a34174-e12a-45cd-a3f8-2ee692689e1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIdentifier.h">
@@ -324,18 +330,6 @@
     <ClInclude Include="TWare.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleWnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MapIterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MatchData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PreferencesLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -431,6 +425,18 @@
     </ClInclude>
     <ClInclude Include="EncryptedX3Stream.h">
       <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleWnd.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MapIterator.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchData.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -617,12 +623,6 @@
     <ClCompile Include="TObject.cpp">
       <Filter>Source Files\Types</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleWnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PreferencesLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -694,6 +694,12 @@
     </ClCompile>
     <ClCompile Include="EncryptedX3Stream.cpp">
       <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleWnd.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
