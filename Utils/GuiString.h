@@ -45,19 +45,76 @@ namespace Logic
       /// <param name="matchCase">Whether to perform case sensitive search</param>
       /// <returns></returns>
       bool Contains(const wstring& str, bool matchCase) const;
+
+      /// <summary>Perform case insensitive comparison</summary>
+      /// <param name="r">Other string</param>
+      /// <returns></returns>
       bool Equals(const wstring& r) const;
+
+      /// <summary>Find index of a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <param name="matchCase">Whether to perform case sensitive search</param>
+      /// <returns>Offset or npos</returns>
       int Find(const wstring& str, bool matchCase) const;
+
+      /// <summary>Find index of a substring</summary>
+      /// <param name="str">The substring.</param>
+      /// <param name="offset">Start offset.</param>
+      /// <param name="matchCase">Whether to perform case sensitive search</param>
+      /// <returns>Offset or npos</returns>
+      /// <exception cref="Logic::IndexOutOfRangeException">Invalid offset</exception>
       int Find(const wstring& str, UINT offset, bool matchCase) const;
+
+      /// <summary>Get whether string is numeric.</summary>
+      /// <returns>False if empty or non-numeric, otherwise true</returns>
       bool IsNumeric() const;
-      GuiString Left(UINT chars) const;
-      GuiString Right(UINT chars) const;
+
+      /// <summary>Extracts n characters from start of the string</summary>
+      /// <param name="chars">Number of characters</param>
+      /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>
+      GuiString  Left(UINT chars) const;
+      
+      /// <summary>Extracts n characters from end of the string</summary>
+      /// <param name="chars">Number of characters</param>
+      /// <returns>New string containing desired characters, or the entire string if chars is greater than length</returns>
+      GuiString  Right(UINT chars) const;
+
+      /// <summary>Removes all instances of given characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
       GuiString  Remove(const WCHAR* chars) const;
+
+      /// <summary>Replaces all instances of a substring with another.</summary>
+      /// <param name="txt">Substring.</param>
+      /// <param name="with">replacement.</param>
+      /// <returns>Copy of string with replacements made</returns>
       GuiString  ReplaceAll(const wstring& txt, const wstring& replace) const;
-      int ToInt() const;
+
+      /// <summary>Convert to int.</summary>
+      /// <returns></returns>
+      int  ToInt() const;
+
+      /// <summary>Convert string to lower case</summary>
+      /// <returns>New string in lower case</returns>
       GuiString  ToLower() const;
+
+      /// <summary>Convert string to upper case</summary>
+      /// <returns>New string in upper case</returns>
       GuiString  ToUpper() const;
+
+      /// <summary>Trims leading and trailing characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
       GuiString  Trim(const WCHAR* chars) const;
+
+      /// <summary>Trims leading characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
       GuiString  TrimLeft(const WCHAR* chars) const;
+
+      /// <summary>Trims trailing characters</summary>
+      /// <param name="chars">The chars.</param>
+      /// <returns>Copy of string with characters removed</returns>
       GuiString  TrimRight(const WCHAR* chars) const;
 
       // ---------------------- MUTATORS ------------------------
