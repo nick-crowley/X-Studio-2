@@ -3,8 +3,9 @@ CHANGE LOG
 ==========
 
 
-X-Studio II : Beta IV : 2nd June 2014
+X-Studio II : Beta IV : TBA
 -------------------------------------
+• Feature: Line numbers of labels in the script editor 'current scope' drop-down
 • Fixed: 016: Program is unable to load/save scripts using hard-coded sectors
 • Fixed: 015: Program attempts to load scripts dragged onto main window when no game data is loaded
 • Fixed: 014: No support for loose files that use the X3:TC encryption scheme 
