@@ -111,7 +111,7 @@
 //#define STRICT_VALIDATION
 
 /// <summary>Define the version number</summary>
-#define BUILD_VERSION  3
+#define BUILD_VERSION  4
 
 /// <summary>Define the version name</summary>
-#define BUILD_NAME  L"Beta III"
+#define BUILD_NAME  L"Beta IV"
