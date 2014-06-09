@@ -18,22 +18,22 @@ namespace Logic
          // Define unique colours
          list<COLORREF> colours
          {
-            RGB(0,0,0),
-            RGB(255,0,0),
-            RGB(0,255,0),
-            RGB(0,0,255),
-            RGB(255,0,255),
-            RGB(255,255,0),
-            RGB(0,255,255),
-            RGB(255,255,255),
+            White,
+            Red,
+            Green,
+            Blue,
+            Magenta,
+            Yellow,
+            Cyan,
+            Black,
          };
 
          // Init writer
          RtfWriter::Open(L"FixedSys", 10, colours);
 
          // Set colours
-         RtfWriter::SetForeColour(RGB(255,255,255));
-         RtfWriter::SetBackColour(RGB(0,0,0));
+         RtfWriter::SetBackColour(White);
+         RtfWriter::SetForeColour(Black);
 
          // Set properties
          RtfWriter::SetAlignment(Alignment::Left);
@@ -64,13 +64,13 @@ namespace Logic
          // Set colour
          switch (attr & (FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE))
          {
-         case FOREGROUND_RED:                                   SetForeColour(RGB(255,0,0));      break;
-         case FOREGROUND_GREEN:                                 SetForeColour(RGB(0,255,0));      break;
-         case FOREGROUND_BLUE:                                  SetForeColour(RGB(0,0,255));      break;
-         case FOREGROUND_RED|FOREGROUND_GREEN:                  SetForeColour(RGB(255,255,0));    break;
-         case FOREGROUND_GREEN|FOREGROUND_BLUE:                 SetForeColour(RGB(0,255,255));    break;
-         case FOREGROUND_RED|FOREGROUND_BLUE:                   SetForeColour(RGB(255,0,255));    break;
-         case FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE:  SetForeColour(RGB(255,255,255));  break;
+         case FOREGROUND_RED:                                   SetForeColour(Red);     break;
+         case FOREGROUND_GREEN:                                 SetForeColour(Green);   break;
+         case FOREGROUND_BLUE:                                  SetForeColour(Blue);    break;
+         case FOREGROUND_RED|FOREGROUND_GREEN:                  SetForeColour(Yellow);  break;
+         case FOREGROUND_GREEN|FOREGROUND_BLUE:                 SetForeColour(Cyan);    break;
+         case FOREGROUND_RED|FOREGROUND_BLUE:                   SetForeColour(Magenta); break;
+         case FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE:  SetForeColour(Black);   break;
          }
 
          // Bold/Normal
