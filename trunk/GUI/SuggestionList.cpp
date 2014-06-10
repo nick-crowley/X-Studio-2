@@ -33,6 +33,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
+   /// <summary>Initializes a new instance of the <see cref="SuggestionList"/> class.</summary>
    SuggestionList::SuggestionList() : CustomDraw(*this)
    {
       // Highlight selected item whether focused or not
@@ -262,9 +263,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
    {
       __super::OnKillFocus(pNewWnd);
 
-      // Close if focus lost to anything but parent
-      if (pNewWnd != GetParent())
-         GetParent()->CloseSuggestions();
+      // Inform suggestions mediator 
+      GetParent()->Suggestions.OnKillFocus(pNewWnd);
    }
 
    /// <summary>Supplies virtual list item</summary>

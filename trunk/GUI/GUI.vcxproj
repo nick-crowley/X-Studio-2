@@ -278,6 +278,7 @@
     </ClCompile>
     <ClCompile Include="ProjectTreeCtrl.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
+    <ClCompile Include="SuggestionDirector.cpp" />
     <ClCompile Include="SymbolDialog.cpp" />
     <ClCompile Include="SyntaxPage.cpp" />
     <ClCompile Include="TitleStatic.cpp" />
