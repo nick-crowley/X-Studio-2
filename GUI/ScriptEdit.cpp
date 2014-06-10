@@ -23,10 +23,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_TIMER()
       ON_WM_HSCROLL()
       ON_WM_KILLFOCUS()
-      ON_WM_CHAR()
-      ON_WM_KEYDOWN()
       ON_WM_PAINT()
-      ON_WM_KEYUP()
       ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
       ON_WM_VSCROLL()
@@ -38,9 +35,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    // -------------------------------- CONSTRUCTION --------------------------------
 
-   ScriptEdit::ScriptEdit() : Document(nullptr), 
-                              SuggestionType(Suggestion::None),
-                              SuggestionRect(0,0,0,0)
+   ScriptEdit::ScriptEdit() : Document(nullptr), Suggestions(this)
    {
    }
 
@@ -428,21 +423,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       return LineTextIterator(*this, HasSelection() ? LineFromChar(GetSelection().cpMax) : LineFromChar(-1)); 
    }
 
-   /// <summary>Closes the suggestion list</summary>
-   void ScriptEdit::CloseSuggestions()
-   {
-      // Ensure exists
-      if (SuggestionsList.GetSafeHwnd() == nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list does not exist");
-
-      // Revert state
-      State = InputState::Normal;
-
-      // Destroy
-      if (!SuggestionsList.DestroyWindow())
-         throw Win32Exception(HERE, L"Unable to destroy suggestion list");
-   }
-   
    /// <summary>Selects and formats a token.</summary>
    /// <param name="offset">The character index of the line</param>
    /// <param name="t">The token</param>
@@ -458,143 +438,18 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="invalidate">True to invalidate after unfreezing</param>
    void ScriptEdit::FreezeWindow(bool freeze, bool invalidate)
    {
-      if (freeze)
-      {
-         // Freeze window
-         __super::FreezeWindow(freeze, invalidate);
+      // Freeze/Restore window
+      __super::FreezeWindow(freeze, invalidate);
          
-         // Preserve suggestion list
-         if (State == InputState::Suggestions)
-            SuggestionRect = CtrlRect(this, &SuggestionsList);
-      }
-      else
-      {
-         // Restore state
-         __super::FreezeWindow(freeze, invalidate);
-         
-         // Restore suggestion list
-         if (State == InputState::Suggestions)
-            SuggestionsList.SetWindowPos(nullptr, SuggestionRect.left, SuggestionRect.top, -1, -1, SWP_NOZORDER|SWP_NOSIZE);
-      }
+      // Freeze/Restore suggestions list
+      Suggestions.FreezeWindow(freeze, invalidate);
    }
    
-   /// <summary>Gets the suggestion rect.</summary>
-   /// <param name="type">The type.</param>
-   /// <returns></returns>
-   CRect  ScriptEdit::GetSuggestionRect(Suggestion type)
-   {
-      ClientRect wnd(this);
-
-      // Position beneath current line
-      CRect rc(GetCharPos(GetSelection().cpMin), SuggestionList::GetDefaultSize(type));
-      rc.OffsetRect(0, GetLineHeight());
-
-      // Intersects Bottom: Position above line
-      if (rc.bottom >= wnd.bottom)
-         rc.OffsetRect(0, -GetLineHeight() - SuggestionList::GetDefaultSize(type).cy);
-
-      // Intersects Right: Move left until visible
-      if (rc.right >= wnd.right)
-         rc.OffsetRect(-(rc.right-wnd.right), 0);
-      
-      return rc;
-   }
-
    /// <summary>Determines whether document is connected</summary>
    /// <returns></returns>
    bool  ScriptEdit::HasDocument() const
    {
       return Document != nullptr;
-   }
-   
-   /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
-   /// <param name="ch">The character just typed</param>
-   /// <returns></returns>
-   Suggestion  ScriptEdit::IdentifySuggestion(wchar ch) const
-   {
-      switch (ch)
-      {
-      // VARIABLE/GAME-OBJ/SCRIPT-OBJ
-      case '$': return Suggestion::Variable;
-      case '{': return Suggestion::GameObject;
-      case '[': return Suggestion::ScriptObject;
-      
-      // LABEL/COMMAND:
-      default:  
-       { 
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
-         CommandLexer lex(GetLineText(-1));
-         TokenIterator pos = lex.begin();
-
-         // (Label) Rule: GoSub|Goto <whitespace> label|anything <caret>  (Desc: caret following token after goto/gosub)
-         if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
-          && (lex.Match(pos, TokenType::Label) || !lex.Valid(pos)) )  //&& GetCaretIndex() == (pos-1)->End+1)
-            return Suggestion::Label;
-
-         // (Command) Rule: char <caret>  (NB: first token is text. caret on 2nd letter)
-         if (lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
-            return Suggestion::Command;
-
-         // (Command) Rule: variable '=' char <caret>  (NB: 3 tokens: variable, equals, text. caret on 2nd letter)
-         if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::BinaryOp, L"=") && lex.Match(pos, TokenType::Text)
-             && GetCaretIndex() == (pos-1)->Start+1)
-             return Suggestion::Command;
-
-         // (Command) Rule: (variable '=')? constant/variable/null '->' char <caret>
-         // match (variable '=')? while accounting for  variable '->'
-         if (lex.Match(pos=lex.begin(), TokenType::Variable))
-         {
-            // (variable '=')?   
-            if (lex.Match(pos, TokenType::BinaryOp, L"="))
-            {}
-            // Reset position if (variable '->')
-            else if (lex.Match(pos, TokenType::BinaryOp, L"->"))
-               pos=lex.begin();
-            else
-               return Suggestion::None;
-         }
-         
-         // (Command) constant/variable/null 
-         if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-            // '->' char <caret>  { caret on 2nd letter }
-            if (lex.Match(pos, TokenType::BinaryOp, L"->") && lex.Match(pos, TokenType::Text) && GetCaretIndex() == (pos-1)->Start+1)
-               return Suggestion::Command;
-       }
-      }
-
-      return Suggestion::None;
-   }
-
-   /// <summary>Inserts the current suggestion and closes the list</summary>
-   void ScriptEdit::InsertSuggestion()
-   {
-      // Ensure exists
-      if (SuggestionsList.GetSafeHwnd() == nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list does not exist");
-
-      // DEBUG:
-      Console << L"Inserting suggestion: " << Cons::Yellow << SuggestionsList.GetSelected() << ENDL;
-
-      // Find token at caret
-      CommandLexer lex(GetLineText(-1));
-      TokenIterator pos = lex.Find(GetCaretIndex());
-
-      // Replace token with suggestion
-      if (pos != lex.end())
-      {
-         SetSel(LineIndex(-1)+pos->Start, LineIndex(-1)+pos->End);
-         ReplaceSel(SuggestionsList.GetSelected().c_str(), TRUE);
-      }
-      else 
-         // Error: Failed to identify token
-         Console << Cons::Error << "Cannot find suggestion token: " << Cons::White << " caret at " << GetCaretIndex() << " : " << Cons::Yellow << GetLineText(-1) << ENDL;
-
-      // Close
-      CloseSuggestions();
    }
    
    /// <summary>Determines whether key is pressed</summary>
@@ -699,40 +554,19 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuspendUndo(false);
    }
 
-
-   /// <summary>Shows/updates the suggestion list in response to character input</summary>
+   /// <summary>Notifies the suggestion mediator of character input</summary>
    /// <param name="nChar">The character.</param>
    /// <param name="nRepCnt">The repeat count.</param>
    /// <param name="nFlags">The flags.</param>
-   void ScriptEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+   void ScriptEdit::OnCharInternal(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      // Process character
-      __super::OnChar(nChar, nRepCnt, nFlags);
+      // DEBUG: Console << "ScriptEdit::OnCharInternal" << " nChar=" << (wchar)nChar << ENDL;
 
-      try
-      {
-         // Initiate suggestions if appliciable
-         if (State != InputState::Suggestions)
-         {
-            // Identify/Set suggestions to display (if any)
-            SuggestionType = IdentifySuggestion(nChar);
-            //Console << L"Identified " << GetString(SuggestionType) << L" from " << (wchar)nChar << ENDL;
-
-            // Display new suggestions 
-            if (SuggestionType != Suggestion::None)
-               ShowSuggestions(); 
-         }
-
-         // Update existing suggestions
-         if (State == InputState::Suggestions)
-            UpdateSuggestions();
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e, VString(L"Unable to process '%c' character", (wchar)nChar)); 
-      }
+      // Notify suggestion mediator
+      Suggestions.OnChar(nChar, nRepCnt, nFlags);
    }
    
-   /// <summary>Called when ENTER is pressed.</summary>
+   /// <summary>Called when ENTER is pressed. Inserts a newline with appropriate indentation</summary>
    void ScriptEdit::OnCharNewLine()
    {
       //GroupUndo(true);  Not implemented
@@ -749,7 +583,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       //GroupUndo(false);  Not implemented
    }
 
-   /// <summary>Replaces hard tabs with spaces.</summary>
+   /// <summary>Called when Tab or ShiftTab is pressed. Replaces hard tabs with spaces.</summary>
    /// <param name="shift">whether SHIFT key is pressed</param>
    void ScriptEdit::OnCharTab(bool shift)
    {
@@ -788,140 +622,60 @@ NAMESPACE_BEGIN2(GUI,Controls)
       __super::OnHScroll(nSBCode, nPos, bar);
    }
    
-   /// <summary>Blocks or forwards certain keys used in suggestion display</summary>
+   /// <summary>Offers mouse/keyboard messages to suggestions mediator or self before passing to RichEdit</summary>
    /// <param name="pNMHDR">The notify header</param>
    /// <param name="pResult">message result</param>
    void ScriptEdit::OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult)
    {
       static const UINT ALLOW_INPUT = 0, BLOCK_INPUT = 1;
 
-      // Get character
-      MSGFILTER *pFilter = reinterpret_cast<MSGFILTER *>(pNMHDR);
-      wchar chr = pFilter->wParam;
+      // Prepare
+      MSGFILTER* mf = reinterpret_cast<MSGFILTER*>(pNMHDR);
 
       // Reset tooltip
-      __super::OnInputMessage(pNMHDR, pResult);
-   
-      // Allow input by default
-      *pResult = ALLOW_INPUT;
+      __super::OnInputMessage(pNMHDR, pResult);    // NB: Allows all input
 
-      try
+      // Give suggestions mediator first chance
+      if (Suggestions.WantMessage(mf->msg, mf->wParam, mf->lParam))
+         *pResult = BLOCK_INPUT;
+
+      // Give self second chance
+      else if (WantMessage(mf->msg, mf->wParam, mf->lParam))
+         *pResult = BLOCK_INPUT;
+
+      else
       {
-         if (State == InputState::Suggestions)
-            switch (pFilter->msg)
-            {
-            case WM_CHAR:
-               switch (chr)
-               {
-               // TAB: Insert suggestion.  Prevent focus switch
-               case VK_TAB:
-                  InsertSuggestion();
-                  *pResult = BLOCK_INPUT;
-                  break;
-            
-               // ESCAPE: Close suggestions
-               case VK_ESCAPE:
-                  CloseSuggestions();
-                  *pResult = BLOCK_INPUT;
-                  break;
-               }
-               break;
-
-            // NAVIGATION: Update suggestions / Forward message
-            case WM_KEYDOWN:
-               switch (chr)
-               {
-               // TAB: Insert suggestion
-               case VK_TAB:
-                  InsertSuggestion();
-                  *pResult = BLOCK_INPUT;
-                  break;
-
-               // ESCAPE: Close suggestions
-               case VK_ESCAPE:
-                  CloseSuggestions();
-                  *pResult = BLOCK_INPUT;
-                  break;
-
-               // UP/DOWN/PAGEUP/PAGEDOWN: Navigate suggestions list
-               case VK_UP:    
-               case VK_DOWN:
-               case VK_PRIOR: 
-               case VK_NEXT:  
-                  SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
-                  *pResult = BLOCK_INPUT;
-                  return;
-               }
-               break;
-
-            // CLICK: Close Suggestions
-            case WM_LBUTTONDOWN:
-            case WM_RBUTTONDOWN:
-            case WM_MBUTTONDOWN:
-               CloseSuggestions();
-               break;
-
-            // WHEEL: Forward to list
-            case WM_MOUSEWHEEL:
-               SuggestionsList.SendMessage(pFilter->msg, pFilter->wParam, pFilter->lParam);
-               *pResult = BLOCK_INPUT;
-               break;
-            }
-      }
-      catch (ExceptionBase& e) { 
-         Console.Log(HERE, e, VString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'",pFilter->msg, pFilter->wParam, pFilter->lParam, chr) ); 
+         *pResult = ALLOW_INPUT;
+         
+         // Re-Dispatch to self
+         switch (mf->msg)
+         {
+         case WM_CHAR:    OnCharInternal(mf->wParam, LOWORD(mf->lParam), HIWORD(mf->lParam));     break;
+         case WM_KEYDOWN: OnKeyDownInternal(mf->wParam, LOWORD(mf->lParam), HIWORD(mf->lParam));  break;
+         }
       }
    }
-
-   /// <summary>Updates the suggestion list in response to caret movement</summary>
+   
+   /// <summary>Notifies the suggestion mediator of keystrokes</summary>
    /// <param name="nChar">The character.</param>
    /// <param name="nRepCnt">The repeat count.</param>
    /// <param name="nFlags">The flags.</param>
-   void ScriptEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+   void ScriptEdit::OnKeyDownInternal(UINT nChar, UINT nRepCnt, UINT nFlags)
    {
-      try 
-      {  
-         // Dispatch key
+      try
+      {
+         // DEBUG: Console << "ScriptEdit::OnKeyDownInternal" << " nChar=" << (wchar)nChar << ENDL;
+
          switch (nChar)
          {
-         // Tab/Shift+Tab: Invoke indentation handler   (exclude Ctrl+Tab 'switch document')
-         case VK_TAB:
-            if (State != InputState::Suggestions && !IsKeyPressed(VK_CONTROL)) 
-               OnCharTab(IsKeyPressed(VK_SHIFT));
-            else
-               __super::OnKeyDown(nChar, nRepCnt, nFlags);
-            break;
-
-         // Enter: Invoke newline indentation handler
-         case VK_RETURN: 
-            OnCharNewLine();
-            break;
-
-         // Default: Pass to RichEdit
-         default:  
-            __super::OnKeyDown(nChar, nRepCnt, nFlags);
+         // HOME: Scroll to edge of window, not edge of gutter paragraph
+         case VK_HOME:
+            SendMessage(WM_HSCROLL, SB_LEFT, 0);
             break;
          }
 
-         // HOME: Scroll to edge of window, not edge of gutter paragraph
-         if (nChar == VK_HOME)
-            SendMessage(WM_HSCROLL, SB_LEFT, 0);
-
-         // Suggestions: Update in response to caret movement
-         if (State == InputState::Suggestions)
-            switch (nChar)
-            {
-            // TAB/LEFT/RIGHT/HOME/END/DELETE/BACKSPACE: Update current match
-            case VK_TAB:
-            case VK_LEFT:
-            case VK_RIGHT:
-            case VK_HOME:
-            case VK_END:
-            case VK_DELETE:
-            case VK_BACK:
-               UpdateSuggestions();
-               break;
-            }
+         // Notify suggestions
+         Suggestions.OnKeyDown(nChar, nRepCnt, nFlags);
       } 
       catch (ExceptionBase& e) {
          Console.Log(HERE, e, VString(L"Unable to process '%d' key (char '%c')", nChar, (wchar)nChar)); 
@@ -932,28 +686,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <param name="nChar">The character.</param>
    /// <param name="nRepCnt">The repeat count.</param>
    /// <param name="nFlags">The flags.</param>
-   void ScriptEdit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-   {
-      __super::OnKeyUp(nChar, nRepCnt, nFlags);
+   //void ScriptEdit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+   //{
+   //   __super::OnKeyUp(nChar, nRepCnt, nFlags);
 
-      // Enter: Invoke newline indentation handler
-      /*if (nChar == VK_RETURN)
-         OnCharNewLine();*/
-   }
+   //   // Enter: Invoke newline indentation handler
+   //   /*if (nChar == VK_RETURN)
+   //      OnCharNewLine();*/
+   //}
 
    /// <summary>Closes the suggestion when focus lost</summary>
    /// <param name="pNewWnd">New window.</param>
    void ScriptEdit::OnKillFocus(CWnd* pNewWnd)
    {
-      try
-      {
-         // Close suggestions, unless they're gaining focus
-         if (State == InputState::Suggestions && (!pNewWnd || *pNewWnd != SuggestionsList))
-            CloseSuggestions();
-      }
-      catch (ExceptionBase& e) {
-         Console.Log(HERE, e); 
-      }
+      // Delegate to suggestions mediator
+      Suggestions.OnKillFocus(pNewWnd);
 
       // Deactivate tooltip
       __super::OnKillFocus(pNewWnd);
@@ -1098,23 +845,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       __super::OnVScroll(nSBCode, nPos, bar);
    }
 
-   /// <summary>Matches a token type against the current suggestion type</summary>
-   /// <param name="t">The t.</param>
-   /// <returns></returns>
-   bool ScriptEdit::MatchSuggestionType(Compiler::TokenType t) const
-   {
-      switch (SuggestionType)
-      {
-      case Suggestion::Variable:     return t == TokenType::Variable;
-      case Suggestion::GameObject:   return t == TokenType::GameObject;
-      case Suggestion::ScriptObject: return t == TokenType::ScriptObject || t == TokenType::UnaryOp;
-      case Suggestion::Label:        return t == TokenType::Label;
-      case Suggestion::Command:      return t == TokenType::Text;
-      }
-
-      return false;
-   }
-   
    /// <summary>Pastes text from clipboard.</summary>
    /// <param name="nClipFormat">The clipboard format.</param>
    void  ScriptEdit::PasteFormat(UINT nClipFormat)
@@ -1258,22 +988,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuspendUndo(false);
    }
 
-   /// <summary>Shows the suggestion list</summary>
-   void ScriptEdit::ShowSuggestions()
-   {
-      // Ensure does not exist
-      if (SuggestionsList.GetSafeHwnd() != nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list already exists");
-
-      // Show list
-      if (!SuggestionsList.Create(this, GetSuggestionRect(SuggestionType), SuggestionType, &Document->Script)) 
-         throw Win32Exception(HERE, L"Unable to create suggestion list");
-
-      // Update state
-      State = InputState::Suggestions;
-   }
-
-   
    /// <summary>Updates the highlighting.</summary>
    /// <param name="first">first zero-based line number</param>
    /// <param name="last">last zero-based line number.</param>
@@ -1316,33 +1030,59 @@ NAMESPACE_BEGIN2(GUI,Controls)
       FreezeWindow(false);
       SuspendUndo(false);
    }
-
-   /// <summary>Scrolls/closes the suggestion list in response to caret movement or character input</summary>
-   void ScriptEdit::UpdateSuggestions()
+   
+   /// <summary>Query whether keyboard message should be intercepted</summary>
+   /// <param name="msg">Keyboard message</param>
+   /// <param name="wParam">parameter</param>
+   /// <param name="lParam">parameter</param>
+   /// <returns>True to block input message, False to allow</returns>
+   bool ScriptEdit::WantMessage(UINT msg, WPARAM wParam, LPARAM lParam)
    {
-      // Ensure exists
-      if (SuggestionsList.GetSafeHwnd() == nullptr)
-         throw InvalidOperationException(HERE, L"suggestion list does not exist");
+      wchar chr = static_cast<wchar>(wParam);
 
-      // Find token at caret
-      CommandLexer lex(GetLineText(-1));
-      TokenIterator pos = lex.Find(GetCaretIndex());
-
-      //Console << L"Updating from token '" << (lex.Valid(pos)?pos->Text:L"<end>") << L"' at index " << GetCaretIndex() << ENDL;
-      
-      // Close suggestions if caret has left the token
-      if (!lex.Valid(pos) || !MatchSuggestionType(pos->Type))
+      try
       {
-         //Console << Cons::Error << L"Match failed" << ENDL;
-         CloseSuggestions();
-         return;
+         switch (msg)
+         {
+         // CHARACTERS:
+         case WM_CHAR:     // DEBUG: Console << "ScriptEdit::WantMessage" << " msg=WM_CHAR chr=" << chr << ENDL;
+            switch (chr)
+            {
+            // TAB(+SHIFT): Invoke indentation handler   
+            case VK_TAB:
+               if (IsKeyPressed(VK_CONTROL)) // exclude Ctrl+Tab 'switch document'
+                  return false;
+
+               OnCharTab(IsKeyPressed(VK_SHIFT));
+               return true;
+
+            // ENTER: Invoke newline indentation handler
+            case VK_RETURN: 
+               OnCharNewLine();
+               return true;
+            }
+            break;
+
+         // KEYSTROKES: 
+         case WM_KEYDOWN:     // DEBUG: Console << "ScriptEdit::WantMessage" << " msg=WM_KEYDOWN chr=" << chr << ENDL;
+            switch (chr)
+            {
+            // TAB/ESCAPE: Block keystroke
+            case VK_TAB:
+            case VK_RETURN:
+               return true;
+            }
+            break;
+         }
+
+         return false;
       }
-
-      // Highlight best match
-      //Console << Cons::Green << L"Matching suggestion" << ENDL;
-      SuggestionsList.MatchSuggestion(*pos);
+      catch (ExceptionBase& e) { 
+         Console.Log(HERE, e, VString(L"Unable to process input filter: message=%d wparam=%d lparam=%d char='%c'", msg, wParam, lParam, chr) ); 
+         return false;
+      }
    }
-
+      
    // ------------------------------- PRIVATE METHODS ------------------------------
    
 

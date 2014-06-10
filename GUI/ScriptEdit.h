@@ -23,9 +23,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
 
       // ------------------------ TYPES --------------------------
    protected:
-      /// <summary>Defines whether suggestions visible</summary>
-      enum class InputState : UINT { Normal, Suggestions };
-
       /// <summary>Device context containing same size font as ScriptEdit</summary>
       class FontDC : public CClientDC
       {
@@ -468,6 +465,57 @@ NAMESPACE_BEGIN2(GUI,Controls)
          }
       };
 
+      /// <summary>Mediator for directing suggestion list in response to keyboard input</summary>
+      class SuggestionDirector
+      {
+         // ------------------------ TYPES --------------------------
+      protected:
+         /// <summary>Defines whether suggestions visible</summary>
+         enum class InputState : UINT { Normal, Suggestions };
+
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         SuggestionDirector(ScriptEdit* e);
+         virtual ~SuggestionDirector();
+		 
+         DEFAULT_COPY(SuggestionDirector);	// Default copy semantics
+         DEFAULT_MOVE(SuggestionDirector);	// Default move semantics
+
+         // ------------------------ STATIC -------------------------
+
+         // --------------------- PROPERTIES ------------------------
+			
+         // ---------------------- ACCESSORS ------------------------			
+      protected:
+         CRect      GetSuggestionRect(Suggestion type) const;
+         Suggestion IdentifySuggestion(wchar ch) const;
+         bool       MatchSuggestionType(Compiler::TokenType t) const;
+
+         // ----------------------- MUTATORS ------------------------
+      public:
+         void  FreezeWindow(bool freeze, bool invalidate);
+         void  OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+         void  OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+         void  OnKillFocus(CWnd* pNewWnd);
+         bool  WantMessage(UINT msg, WPARAM wParam, LPARAM lParam);
+
+      protected:
+         void   CloseSuggestions();
+         void   InsertSuggestion();
+         void   ShowSuggestions();
+         void   UpdateSuggestions();
+
+         // -------------------- REPRESENTATION ---------------------
+      protected:
+         ScriptEdit*     Edit;
+         InputState      State;                 // Whether suggestions are visible or not
+         Suggestion      SuggestionType;        // Type of current suggestions, if any
+         SuggestionList  SuggestionsList;       // Suggestions list
+      
+      private:
+         CRect           SuggestionRect;        // Preserves the suggestion rectangle during 'freeze window'
+      };
+
       // --------------------- CONSTRUCTION ----------------------
    public:
       ScriptEdit();
@@ -487,17 +535,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
-      bool       CanGotoLabel() const;
-      bool       CanLookupOnline() const;
-      bool       CanOpenScript() const;
-      bool       CanRefactor() const;
-      bool       CanViewString() const;
+      bool   CanGotoLabel() const;
+      bool   CanLookupOnline() const;
+      bool   CanOpenScript() const;
+      bool   CanRefactor() const;
+      bool   CanViewString() const;
 
    protected:
-      bool       HasDocument() const;
-      Suggestion IdentifySuggestion(wchar ch) const;
-      bool       IsKeyPressed(UINT vKey) const;
-      bool       MatchSuggestionType(Compiler::TokenType t) const;
+      bool   HasDocument() const;
+      bool   IsKeyPressed(UINT vKey) const;
       
       // ----------------------- MUTATORS ------------------------
    public:
@@ -518,30 +564,25 @@ NAMESPACE_BEGIN2(GUI,Controls)
       LineTextIterator end();
       LineTextIterator send();
 
-      void   CloseSuggestions();
       void   FormatToken(UINT offset, const TokenBase& t, CharFormat& cf);
       void   FreezeWindow(bool freeze, bool invalidate = true) override;
-      CRect  GetSuggestionRect(Suggestion type);
-      void   InsertSuggestion();
       void   RefreshGutter();
       void   SetCompilerTimer(bool set);
       void   SetGutterWidth(UINT twips);
-      void   ShowSuggestions();
-      virtual void   UpdateHighlighting(int first, int last);
-      void   UpdateSuggestions();
+      virtual void UpdateHighlighting(int first, int last);
+      bool   WantMessage(UINT msg, WPARAM wParam, LPARAM lParam);
       
       afx_msg void HScroll(UINT nSBCode, UINT nPos) override;
       afx_msg void VScroll(UINT nSBCode, UINT nPos) override;
       handler bool OnAccelerator(wchar ch);
       handler void OnArgumentChanged();
       handler void OnBackgroundCompile();
-      afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+      handler void OnCharInternal(UINT nChar, UINT nRepCnt, UINT nFlags);
       handler void OnCharNewLine();
       handler void OnCharTab(bool shift);
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult) override;
-      afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-      afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+      handler void OnKeyDownInternal(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       handler void OnRequestTooltip(CustomTooltip::TooltipData* data) override;
@@ -549,21 +590,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       afx_msg void OnTextChange() override;
       afx_msg void OnTimer(UINT_PTR nIDEvent);
       afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
-	  
+      
       // -------------------- REPRESENTATION ---------------------
    public:
       SimpleEvent     CompileComplete;       // Raised after background compile completed
 
    protected:
-      InputState      State;                 // Whether suggestions are visible or not
-      Suggestion      SuggestionType;        // Type of current suggestions, if any
-      SuggestionList  SuggestionsList;       // Suggestions list
-      ScriptDocument* Document;              // Document pointer
-
-      EventHandler    fnArgumentChanged;     // Raised when a Script argument is modified/removed
-
-   private:
-      CRect           SuggestionRect;        // Preserves the suggestion rectangle during 'freeze window'
+      ScriptDocument*    Document;              // Document pointer
+      EventHandler       fnArgumentChanged;     // Raised when a Script argument is modified/removed
+      SuggestionDirector Suggestions;           // Suggestions mediator
 };
    
 

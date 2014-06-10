@@ -12,7 +12,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Defines suggestion categories</summary>
    enum class Suggestion : UINT { None, Variable, Command, GameObject, ScriptObject, Label };
 
-   /// <summary></summary>
+   /// <summary>Customized listview for displaying Auto-complete suggestions in the script edit</summary>
    class SuggestionList : public CListCtrl
    {
       // ------------------------ TYPES --------------------------
