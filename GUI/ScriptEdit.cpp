@@ -15,6 +15,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Background compiler timer ID</summary>
    const UINT  ScriptEdit::COMPILE_TIMER = 42;
 
+   
+   #define UN_CHAR_NOTIFY      (WM_USER+1)
+   #define UN_KEYDOWN_NOTIFY   (WM_USER+1)
+
+
    // --------------------------------- APP WIZARD ---------------------------------
   
    IMPLEMENT_DYNAMIC(ScriptEdit, CRichEditCtrl)
@@ -31,6 +36,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_WM_VSCROLL_REFLECT()
       ON_CONTROL_REFLECT(EN_CHANGE, &ScriptEdit::OnTextChange)
       ON_NOTIFY_REFLECT(EN_MSGFILTER, &ScriptEdit::OnInputMessage)
+      ON_MESSAGE(UN_CHAR_NOTIFY, &ScriptEdit::OnCharNotify)
+      ON_MESSAGE(UN_KEYDOWN_NOTIFY, &ScriptEdit::OnKeyDownNotify)
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -566,6 +573,16 @@ NAMESPACE_BEGIN2(GUI,Controls)
       Suggestions.OnChar(nChar, nRepCnt, nFlags);
    }
    
+   /// <summary>Called after a character message</summary>
+   /// <param name="wParam">The w parameter.</param>
+   /// <param name="lParam">The l parameter.</param>
+   /// <returns></returns>
+   LRESULT ScriptEdit::OnCharNotify(WPARAM wParam, LPARAM lParam)
+   {
+      OnCharInternal(wParam, LOWORD(lParam), HIWORD(lParam));
+      return 0;
+   }
+
    /// <summary>Called when ENTER is pressed. Inserts a newline with appropriate indentation</summary>
    void ScriptEdit::OnCharNewLine()
    {
@@ -650,12 +667,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Re-Dispatch to self
          switch (mf->msg)
          {
-         case WM_CHAR:    OnCharInternal(mf->wParam, LOWORD(mf->lParam), HIWORD(mf->lParam));     break;
-         case WM_KEYDOWN: OnKeyDownInternal(mf->wParam, LOWORD(mf->lParam), HIWORD(mf->lParam));  break;
+         case WM_CHAR:    PostMessage(UN_CHAR_NOTIFY, mf->wParam, mf->lParam);     break;
+         case WM_KEYDOWN: PostMessage(UN_KEYDOWN_NOTIFY, mf->wParam, mf->lParam);  break;
          }
       }
    }
-   
+
    /// <summary>Notifies the suggestion mediator of keystrokes</summary>
    /// <param name="nChar">The character.</param>
    /// <param name="nRepCnt">The repeat count.</param>
@@ -682,18 +699,15 @@ NAMESPACE_BEGIN2(GUI,Controls)
       }
    }
    
-   /// <summary>Not used</summary>
-   /// <param name="nChar">The character.</param>
-   /// <param name="nRepCnt">The repeat count.</param>
-   /// <param name="nFlags">The flags.</param>
-   //void ScriptEdit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-   //{
-   //   __super::OnKeyUp(nChar, nRepCnt, nFlags);
-
-   //   // Enter: Invoke newline indentation handler
-   //   /*if (nChar == VK_RETURN)
-   //      OnCharNewLine();*/
-   //}
+   /// <summary>Called after a key down message</summary>
+   /// <param name="wParam">The w parameter.</param>
+   /// <param name="lParam">The l parameter.</param>
+   /// <returns></returns>
+   LRESULT ScriptEdit::OnKeyDownNotify(WPARAM wParam, LPARAM lParam)
+   {
+      OnKeyDownInternal(wParam, LOWORD(lParam), HIWORD(lParam));
+      return 0;
+   }
 
    /// <summary>Closes the suggestion when focus lost</summary>
    /// <param name="pNewWnd">New window.</param>

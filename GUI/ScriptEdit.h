@@ -578,11 +578,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
       handler void OnArgumentChanged();
       handler void OnBackgroundCompile();
       handler void OnCharInternal(UINT nChar, UINT nRepCnt, UINT nFlags);
+      LRESULT      OnCharNotify(WPARAM wParam, LPARAM lParam);
       handler void OnCharNewLine();
       handler void OnCharTab(bool shift);
       afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* bar) override;
       afx_msg void OnInputMessage(NMHDR *pNMHDR, LRESULT *pResult) override;
       handler void OnKeyDownInternal(UINT nChar, UINT nRepCnt, UINT nFlags);
+      LRESULT      OnKeyDownNotify(WPARAM wParam, LPARAM lParam);
       afx_msg void OnKillFocus(CWnd* pNewWnd);
       afx_msg void OnPaint();
       handler void OnRequestTooltip(CustomTooltip::TooltipData* data) override;
