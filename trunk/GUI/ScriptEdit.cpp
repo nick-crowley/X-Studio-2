@@ -15,10 +15,9 @@ NAMESPACE_BEGIN2(GUI,Controls)
    /// <summary>Background compiler timer ID</summary>
    const UINT  ScriptEdit::COMPILE_TIMER = 42;
 
-   
+   /// <summary>Used to defer keyboard messages</summary>
    #define UN_CHAR_NOTIFY      (WM_USER+1)
-   #define UN_KEYDOWN_NOTIFY   (WM_USER+1)
-
+   #define UN_KEYDOWN_NOTIFY   (WM_USER+2)
 
    // --------------------------------- APP WIZARD ---------------------------------
   
