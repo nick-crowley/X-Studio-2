@@ -251,53 +251,63 @@ namespace GUI
          case '$': return Suggestion::Variable;
          case '{': return Suggestion::GameObject;
          case '[': return Suggestion::ScriptObject;
-      
-         // LABEL/COMMAND:
-         default:  
-          { 
-            // Ensure character is alpha-numeric
-            if (!iswalpha(ch))
-               return Suggestion::None;
+         }
 
-            // Lex current line
-            CommandLexer lex(Edit->GetLineText(-1));
-            TokenIterator pos = lex.begin();
+         // Ensure character is alpha-numeric
+         if (!iswalpha(ch))
+            return Suggestion::None;
 
-            // (Label) Rule: GoSub|Goto <whitespace> label|anything <caret>  (Desc: caret following token after goto/gosub)
-            if ((lex.Match(pos, TokenType::Keyword, L"gosub") || lex.Match(pos, TokenType::Keyword, L"goto"))
-             && (lex.Match(pos, TokenType::Label) || !lex.Valid(pos)) )  //&& GetCaretIndex() == (pos-1)->End+1)
+         // Lex current line
+         CommandLexer  lex(Edit->GetLineText(-1));
+         TokenIterator pos = lex.begin();
+
+         // RULE: GoSub|Goto <whitespace> <token> <caret>  
+         if (lex.Match(pos, TokenType::Keyword, L"gosub") 
+          || lex.Match(pos, TokenType::Keyword, L"goto"))
+            // <continued...>
+            if (!lex.Valid(pos))
                return Suggestion::Label;
 
-            // (Command) Rule: char <caret>  (NB: first token is text. caret on 2nd letter)
-            if (lex.Match(pos, TokenType::Text) && Edit->GetCaretIndex() == (pos-1)->Start+1)
-               return Suggestion::Command;
+         // RULE: char <caret> 
+         if (lex.Match(pos=lex.begin(), TokenType::Text) 
+          && Edit->GetCaretIndex() == (pos-1)->Start+1)
+            return Suggestion::Command;
 
-            // (Command) Rule: variable '=' char <caret>  (NB: 3 tokens: variable, equals, text. caret on 2nd letter)
-            if (lex.Match(pos=lex.begin(), TokenType::Variable) && lex.Match(pos, TokenType::BinaryOp, L"=") && lex.Match(pos, TokenType::Text)
+         // RULE: variable '=' char <caret>  
+         if (lex.Match(pos=lex.begin(), TokenType::Variable) 
+          && lex.Match(pos, TokenType::BinaryOp, L"=") 
+          && lex.Match(pos, TokenType::Text)
+          && Edit->GetCaretIndex() == (pos-1)->Start+1)
+            return Suggestion::Command;
+
+         // RULE: conditional char <caret>
+         if (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if")
+          && lex.Match(pos, TokenType::Text)
+          && Edit->GetCaretIndex() == (pos-1)->Start+1)
+            return Suggestion::Command;
+
+         // RULE: (variable '=')? constant/variable/null '->' char <caret>
+         if (lex.Match(pos=lex.begin(), TokenType::Variable)
+          && lex.Match(pos, TokenType::BinaryOp, L"="))
+            // <continued...>
+            if (lex.Match(pos, TokenType::ScriptObject) 
+             || lex.Match(pos, TokenType::Variable) 
+             || lex.Match(pos, TokenType::Null))
+               // <continued...>
+               if (lex.Match(pos, TokenType::BinaryOp, L"->") 
+                && lex.Match(pos, TokenType::Text) 
                 && Edit->GetCaretIndex() == (pos-1)->Start+1)
-                return Suggestion::Command;
-
-            // (Command) Rule: (variable '=')? constant/variable/null '->' char <caret>
-            // match (variable '=')? while accounting for  variable '->'
-            if (lex.Match(pos=lex.begin(), TokenType::Variable))
-            {
-               // (variable '=')?   
-               if (lex.Match(pos, TokenType::BinaryOp, L"="))
-               {}
-               // Reset position if (variable '->')
-               else if (lex.Match(pos, TokenType::BinaryOp, L"->"))
-                  pos=lex.begin();
-               else
-                  return Suggestion::None;
-            }
-         
-            // (Command) constant/variable/null 
-            if (lex.Match(pos, TokenType::ScriptObject) || lex.Match(pos, TokenType::Variable) || lex.Match(pos, TokenType::Null))
-               // '->' char <caret>  { caret on 2nd letter }
-               if (lex.Match(pos, TokenType::BinaryOp, L"->") && lex.Match(pos, TokenType::Text) && Edit->GetCaretIndex() == (pos-1)->Start+1)
                   return Suggestion::Command;
-          }
-         }
+         
+         // RULE: constant/variable/null '->' char <caret>
+         if (lex.Match(pos=lex.begin(), TokenType::ScriptObject) 
+          || lex.Match(pos, TokenType::Variable) 
+          || lex.Match(pos, TokenType::Null))
+            // <continued...>
+            if (lex.Match(pos, TokenType::BinaryOp, L"->") 
+             && lex.Match(pos, TokenType::Text) 
+             && Edit->GetCaretIndex() == (pos-1)->Start+1)
+               return Suggestion::Command;
 
          return Suggestion::None;
       }
