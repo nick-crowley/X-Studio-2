@@ -29,6 +29,37 @@ namespace GUI
 
       // ------------------------------- PUBLIC METHODS -------------------------------
       
+      /// <summary>Query whether list can be manually invoked</summary>
+      bool ScriptEdit::SuggestionDirector::CanDisplay() const
+      {
+         return IdentifySuggestion() != Suggestion::None;
+      }
+
+      /// <summary>Manually invokes the suggestion list, if available</summary>
+      void ScriptEdit::SuggestionDirector::Display()
+      {
+         try
+         {
+            // Initiate suggestions if appliciable
+            if (State != InputState::Suggestions)
+            {
+               // Identify/Set suggestions to display (if any)
+               SuggestionType = IdentifySuggestion();
+
+               // Display new suggestions 
+               if (SuggestionType != Suggestion::None)
+                  ShowSuggestions(); 
+            }
+
+            // Update existing suggestions
+            if (State == InputState::Suggestions)
+               UpdateSuggestions();
+         }
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
+         }
+      }
+
       /// <summary>Freezes or unfreezes the window.</summary>
       /// <param name="freeze">True to freeze, false to restore</param>
       /// <param name="invalidate">True to invalidate after unfreezing</param>
@@ -55,21 +86,8 @@ namespace GUI
          {
             // DEBUG: Console << "SuggestionDirector::OnChar" << " nChar=" << (wchar)nChar << ENDL;
 
-            // Initiate suggestions if appliciable
-            if (State != InputState::Suggestions)
-            {
-               // Identify/Set suggestions to display (if any)
-               SuggestionType = IdentifySuggestion(nChar);
-               //Console << L"Identified " << GetString(SuggestionType) << L" from " << (wchar)nChar << ENDL;
-
-               // Display new suggestions 
-               if (SuggestionType != Suggestion::None)
-                  ShowSuggestions(); 
-            }
-
-            // Update existing suggestions
-            if (State == InputState::Suggestions)
-               UpdateSuggestions();
+            // Initiate/Update existing suggestions
+            Display();
          }
          catch (ExceptionBase& e) {
             Console.Log(HERE, e, VString(L"Unable to process '%c' character", (wchar)nChar)); 
@@ -241,9 +259,8 @@ namespace GUI
       }
       
       /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
-      /// <param name="ch">The character just typed</param>
       /// <returns></returns>
-      Suggestion  ScriptEdit::SuggestionDirector::IdentifySuggestion(wchar ch) const
+      Suggestion  ScriptEdit::SuggestionDirector::IdentifySuggestion() const
       {
          // Define visitors
          list<SuggestionVisitorPtr> visitors 
@@ -264,7 +281,7 @@ namespace GUI
          // Identify context
          for (auto& v : visitors)
          {
-            Suggestion s = v->Identify(lex, caret, ch);
+            Suggestion s = v->Identify(lex, caret);
             if (s != Suggestion::None)
                return s;
          }
