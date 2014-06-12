@@ -59,8 +59,21 @@ NAMESPACE_BEGIN2(GUI,Controls)
    }
 
    // ------------------------------- PUBLIC METHODS -------------------------------
-
-   /// <summary>Determines current line references a label.</summary>
+   
+   /// <summary>Displays suggestions for the token at the caret.</summary>
+   void ScriptEdit::AutoComplete() 
+   {
+      Suggestions.Display();
+   }
+      
+   /// <summary>Determines whether token at caret has suggestions.</summary>
+   /// <returns></returns>
+   bool  ScriptEdit::CanAutoComplete() const
+   {
+      return Suggestions.CanDisplay();
+   }
+   
+   /// <summary>Determines whether current line references a label.</summary>
    /// <returns></returns>
    bool  ScriptEdit::CanGotoLabel() const
    {

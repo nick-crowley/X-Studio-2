@@ -18,13 +18,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::AssignmentVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::AssignmentVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: variable '=' char <caret>  
@@ -42,13 +37,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::DiscardVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::DiscardVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: char <caret> 
@@ -64,13 +54,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::ConditionalVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::ConditionalVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: conditional char <caret>
@@ -95,13 +80,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::LabelVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::LabelVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: GoSub|Goto <whitespace> <token> <caret>  
@@ -119,18 +99,40 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::LiteralVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::LiteralVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         switch (ch)
+         // Lookup token at caret
+         auto t = lex.Find(caret);
+         if (!lex.Valid(t))
+            return Suggestion::None;
+
+         // Identify suggestion type
+         switch (t->Type)
          {
-         // VARIABLE/GAME-OBJ/SCRIPT-OBJ
-         case '$': return Suggestion::Variable;
-         case '{': return Suggestion::GameObject;
-         case '[': return Suggestion::ScriptObject;
+         case TokenType::GameObject:   return Suggestion::GameObject;
+         case TokenType::ScriptObject: return Suggestion::ScriptObject;
+         case TokenType::Variable:     return Suggestion::Variable;
+
+         // (Opening bracket for a Script object)
+         case TokenType::UnaryOp:      
+            if (t->Text.front() == '[') 
+               return Suggestion::ScriptObject;
+            break;
          }
 
-         // Unrecognised
+         // No match
          return Suggestion::None;
+         
+         //switch (ch)
+         //{
+         //// VARIABLE/GAME-OBJ/SCRIPT-OBJ
+         //case '$': return Suggestion::Variable;
+         //case '{': return Suggestion::GameObject;
+         //case '[': return Suggestion::ScriptObject;
+         //}
+
+         //// Unrecognised
+         //return Suggestion::None;
       }
       
       /// <summary>Identifies when user types a command upon a reference object</summary>
@@ -138,13 +140,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::RefObjectAssignmentVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::RefObjectAssignmentVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: (variable '=')? constant/variable/null '->' char <caret>
@@ -168,13 +165,8 @@ namespace GUI
       /// <param name="caret">Zero-based char index of caret.</param>
       /// <param name="ch">last character typed.</param>
       /// <returns>GameObject/ScriptObject/Variable if successful, otherwise None</returns>
-      Suggestion ScriptEdit::SuggestionDirector::RefObjectDiscardVisitor::Identify(CommandLexer& lex, UINT caret, wchar ch) const
+      Suggestion ScriptEdit::SuggestionDirector::RefObjectDiscardVisitor::Identify(CommandLexer& lex, UINT caret) const
       {
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
-         // Lex current line
          TokenIterator pos = lex.begin();
 
          // RULE: constant/variable/null '->' char <caret>

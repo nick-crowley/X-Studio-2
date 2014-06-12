@@ -475,7 +475,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ---------------------- ACCESSORS ------------------------			
          public:
-            virtual Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const = 0;
+            virtual Suggestion Identify(CommandLexer& lex, UINT caret) const = 0;
 
             // ----------------------- MUTATORS ------------------------
          };
@@ -488,7 +488,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
 
          /// <summary>Identifies when to display command suggestions</summary>
@@ -496,7 +496,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
          
          /// <summary>Identifies when to display command suggestions</summary>
@@ -504,7 +504,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
 
          /// <summary>Identifies when to display Label suggestions</summary>
@@ -512,7 +512,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
 
          /// <summary>Identifies when to display GameObject/ScriptObject/Variable suggestions</summary>
@@ -520,7 +520,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
          
          /// <summary>Identifies when to display command suggestions</summary>
@@ -528,7 +528,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
 
          /// <summary>Identifies when to display command suggestions</summary>
@@ -536,7 +536,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- ACCESSORS ------------------------
          public:
-            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret) const override;
          };
 
          // --------------------- CONSTRUCTION ----------------------
@@ -552,13 +552,17 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
+      public:
+         bool       CanDisplay() const;
+
       protected:
          CRect      GetSuggestionRect(Suggestion type) const;
-         Suggestion IdentifySuggestion(wchar ch) const;
+         Suggestion IdentifySuggestion() const;
          bool       MatchSuggestionType(Compiler::TokenType t) const;
 
          // ----------------------- MUTATORS ------------------------
       public:
+         void  Display();
          void  FreezeWindow(bool freeze, bool invalidate);
          void  OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
          void  OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -601,6 +605,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
 	  
       // ---------------------- ACCESSORS ------------------------			
    public:
+      bool   CanAutoComplete() const;
       bool   CanGotoLabel() const;
       bool   CanLookupOnline() const;
       bool   CanOpenScript() const;
@@ -613,6 +618,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       
       // ----------------------- MUTATORS ------------------------
    public:
+      void   AutoComplete();
       void   CommentSelection();
       void   FormatDocument();
       void   FormatSelection();
