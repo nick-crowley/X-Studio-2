@@ -199,6 +199,7 @@
     <ClInclude Include="SplashWnd.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuggestionList.h" />
+    <ClInclude Include="SuggestionVisitor.h" />
     <ClInclude Include="SymbolDialog.h" />
     <ClInclude Include="SyntaxPage.h" />
     <ClInclude Include="ProjectTreeCtrl.h" />
@@ -277,6 +278,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ProjectTreeCtrl.cpp" />
+    <ClCompile Include="SuggestionVisitor.cpp" />
     <ClCompile Include="SuggestionList.cpp" />
     <ClCompile Include="SuggestionDirector.cpp" />
     <ClCompile Include="SymbolDialog.cpp" />

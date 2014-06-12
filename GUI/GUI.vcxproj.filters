@@ -294,6 +294,9 @@
     <ClInclude Include="ComboBoxOwnerDraw.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="SuggestionVisitor.h">
+      <Filter>Header Files\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -516,6 +519,9 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="SuggestionDirector.cpp">
+      <Filter>Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="SuggestionVisitor.cpp">
       <Filter>Source Files\Controls</Filter>
     </ClCompile>
   </ItemGroup>
