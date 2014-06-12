@@ -245,76 +245,28 @@ namespace GUI
       /// <returns></returns>
       Suggestion  ScriptEdit::SuggestionDirector::IdentifySuggestion(wchar ch) const
       {
-         switch (ch)
+         list<SuggestionVisitorPtr> visitors 
          {
-         // VARIABLE/GAME-OBJ/SCRIPT-OBJ
-         case '$': return Suggestion::Variable;
-         case '{': return Suggestion::GameObject;
-         case '[': return Suggestion::ScriptObject;
-         }
-
-         // Ensure character is alpha-numeric
-         if (!iswalpha(ch))
-            return Suggestion::None;
-
+            SuggestionVisitorPtr(new LiteralVisitor()),
+            SuggestionVisitorPtr(new LabelVisitor()),
+            SuggestionVisitorPtr(new DiscardVisitor()),
+            SuggestionVisitorPtr(new AssignmentVisitor()),
+            SuggestionVisitorPtr(new ConditionalVisitor()),
+            SuggestionVisitorPtr(new RefObjectDiscardVisitor()),
+            SuggestionVisitorPtr(new RefObjectAssignmentVisitor())
+         };
+         
          // Lex current line
          CommandLexer  lex(Edit->GetLineText(-1));
-         TokenIterator pos = lex.begin();
+         UINT caret = Edit->GetCaretIndex();
 
-         // RULE: GoSub|Goto <whitespace> <token> <caret>  
-         if (lex.Match(pos, TokenType::Keyword, L"gosub") 
-          || lex.Match(pos, TokenType::Keyword, L"goto"))
-            // <continued...>
-            if (!lex.Valid(pos))
-               return Suggestion::Label;
-
-         // RULE: char <caret> 
-         if (lex.Match(pos=lex.begin(), TokenType::Text)
-          && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
-            return Suggestion::Command;
-
-         // RULE: variable '=' char <caret>  
-         if (lex.Match(pos=lex.begin(), TokenType::Variable) 
-          && lex.Match(pos, TokenType::BinaryOp, L"=") 
-          && lex.Match(pos, TokenType::Text)
-          && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
-            return Suggestion::Command;
-
-         // RULE: conditional char <caret>
-         if ((lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
-          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if"))
-          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
-          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") 
-          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"while") && lex.Match(pos, TokenType::Keyword, L"not"))
-          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"while")
-          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) )
-            // <continued...>
-            if (lex.Match(pos, TokenType::Text)
-             && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
-               return Suggestion::Command;
-
-         // RULE: (variable '=')? constant/variable/null '->' char <caret>
-         if (lex.Match(pos=lex.begin(), TokenType::Variable)
-          && lex.Match(pos, TokenType::BinaryOp, L"="))
-            // <continued...>
-            if (lex.Match(pos, TokenType::ScriptObject) 
-             || lex.Match(pos, TokenType::Variable) 
-             || lex.Match(pos, TokenType::Null))
-               // <continued...>
-               if (lex.Match(pos, TokenType::BinaryOp, L"->") 
-                && lex.Match(pos, TokenType::Text) 
-                && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
-                  return Suggestion::Command;
-         
-         // RULE: constant/variable/null '->' char <caret>
-         if (lex.Match(pos=lex.begin(), TokenType::ScriptObject) 
-          || lex.Match(pos, TokenType::Variable) 
-          || lex.Match(pos, TokenType::Null))
-            // <continued...>
-            if (lex.Match(pos, TokenType::BinaryOp, L"->") 
-             && lex.Match(pos, TokenType::Text) 
-             && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
-               return Suggestion::Command;
+         // Analyze
+         for (auto& v : visitors)
+         {
+            Suggestion s = v->Identify(lex, caret, ch);
+            if (s != Suggestion::None)
+               return s;
+         }
 
          return Suggestion::None;
       }
