@@ -245,6 +245,7 @@ namespace GUI
       /// <returns></returns>
       Suggestion  ScriptEdit::SuggestionDirector::IdentifySuggestion(wchar ch) const
       {
+         // Define visitors
          list<SuggestionVisitorPtr> visitors 
          {
             SuggestionVisitorPtr(new LiteralVisitor()),
@@ -257,10 +258,10 @@ namespace GUI
          };
          
          // Lex current line
-         CommandLexer  lex(Edit->GetLineText(-1));
+         CommandLexer lex(Edit->GetLineText(-1));
          UINT caret = Edit->GetCaretIndex();
 
-         // Analyze
+         // Identify context
          for (auto& v : visitors)
          {
             Suggestion s = v->Identify(lex, caret, ch);
@@ -268,6 +269,7 @@ namespace GUI
                return s;
          }
 
+         // No match
          return Suggestion::None;
       }
 

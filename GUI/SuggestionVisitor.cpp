@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "SuggestionVisitor.h"
 #include "ScriptEdit.h"
 #include "SuggestionList.h"
 
@@ -29,7 +28,7 @@ namespace GUI
          TokenIterator pos = lex.begin();
 
          // RULE: variable '=' char <caret>  
-         if (lex.Match(pos=lex.begin(), TokenType::Variable) 
+         if (lex.Match(pos, TokenType::Variable) 
           && lex.Match(pos, TokenType::BinaryOp, L"=") 
           && lex.Match(pos, TokenType::Text)
           && (pos-1)->ContainsEx(caret) )
@@ -53,7 +52,7 @@ namespace GUI
          TokenIterator pos = lex.begin();
 
          // RULE: char <caret> 
-         if (lex.Match(pos=lex.begin(), TokenType::Text)
+         if (lex.Match(pos, TokenType::Text)
           && (pos-1)->ContainsEx(caret) )
             return Suggestion::Command;
 
@@ -78,10 +77,11 @@ namespace GUI
          if ((lex.Match(pos, TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if"))
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
-          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") 
+          ||  lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") 
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"while") && lex.Match(pos, TokenType::Keyword, L"not"))
-          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"while")
-          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) )
+          ||  lex.Match(pos=lex.begin(), TokenType::Keyword, L"while")
+          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
+          ||  lex.Match(pos=lex.begin(), TokenType::Keyword, L"start"))
             // <continued...>
             if (lex.Match(pos, TokenType::Text)
              && (pos-1)->ContainsEx(caret) )
@@ -148,7 +148,7 @@ namespace GUI
          TokenIterator pos = lex.begin();
 
          // RULE: (variable '=')? constant/variable/null '->' char <caret>
-         if (lex.Match(pos=lex.begin(), TokenType::Variable)
+         if (lex.Match(pos, TokenType::Variable)
           && lex.Match(pos, TokenType::BinaryOp, L"="))
             // <continued...>
             if (lex.Match(pos, TokenType::ScriptObject) 

@@ -7,9 +7,6 @@
 #include "../Logic/DescriptionLibrary.h"
 #include "../Logic/SyntaxLibrary.h"
 
-/// <summary>Forward declaration</summary>
-//FORWARD_DECLARATION2(GUI,Documents,class ScriptDocument)
-
 /// <summary>User interface controls</summary>
 NAMESPACE_BEGIN2(GUI,Controls)
 
@@ -473,7 +470,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Defines whether suggestions visible</summary>
          enum class InputState : UINT { Normal, Suggestions };
 
-         /// <summary>Base-class for Visitors performing identification of suggestions</summary>
+         /// <summary>Interface for Visitors performing identification of suggestions</summary>
          interface ISuggestionVisitor
          {
             // ---------------------- ACCESSORS ------------------------			
@@ -489,7 +486,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display command suggestions</summary>
          class AssignmentVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -497,7 +494,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display command suggestions</summary>
          class DiscardVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -505,7 +502,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display command suggestions</summary>
          class ConditionalVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -513,7 +510,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display Label suggestions</summary>
          class LabelVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -521,7 +518,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display GameObject/ScriptObject/Variable suggestions</summary>
          class LiteralVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -529,7 +526,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display command suggestions</summary>
          class RefObjectAssignmentVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
@@ -537,10 +534,11 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Identifies when to display command suggestions</summary>
          class RefObjectDiscardVisitor : public ISuggestionVisitor
          {
-            // ----------------------- MUTATORS ------------------------
+            // ----------------------- ACCESSORS ------------------------
          public:
             Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          SuggestionDirector(ScriptEdit* e);
