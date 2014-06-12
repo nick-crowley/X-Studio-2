@@ -36,8 +36,19 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------			
          public:
-            bool  Contains(UINT pos) const  { return pos >= Start && pos < End; }
-            UINT  GetLength() const         { return End - Start; }
+            /// <summary>Determines whether token contains a character position</summary>
+            /// <param name="pos">Zero based char index.</param>
+            /// <returns></returns>
+            bool  Contains(UINT pos) const { return pos >= Start && pos < End; }
+
+            /// <summary>Determines whether token contains/follows a character position</summary>
+            /// <param name="pos">Zero based char index.</param>
+            /// <returns></returns>
+            bool  ContainsEx(UINT pos) const { return pos >= Start && pos <= (End+1); }
+
+            /// <summary>Gets the length in characters</summary>
+            /// <returns></returns>
+            UINT  GetLength() const { return End - Start; }
 
             // -------------------- REPRESENTATION ---------------------
          public:

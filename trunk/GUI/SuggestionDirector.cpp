@@ -269,22 +269,29 @@ namespace GUI
                return Suggestion::Label;
 
          // RULE: char <caret> 
-         if (lex.Match(pos=lex.begin(), TokenType::Text) 
-          && Edit->GetCaretIndex() == (pos-1)->Start+1)
+         if (lex.Match(pos=lex.begin(), TokenType::Text)
+          && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
             return Suggestion::Command;
 
          // RULE: variable '=' char <caret>  
          if (lex.Match(pos=lex.begin(), TokenType::Variable) 
           && lex.Match(pos, TokenType::BinaryOp, L"=") 
           && lex.Match(pos, TokenType::Text)
-          && Edit->GetCaretIndex() == (pos-1)->Start+1)
+          && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
             return Suggestion::Command;
 
          // RULE: conditional char <caret>
-         if (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if")
-          && lex.Match(pos, TokenType::Text)
-          && Edit->GetCaretIndex() == (pos-1)->Start+1)
-            return Suggestion::Command;
+         if ((lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
+          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if"))
+          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
+          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") 
+          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"while") && lex.Match(pos, TokenType::Keyword, L"not"))
+          || lex.Match(pos=lex.begin(), TokenType::Keyword, L"while")
+          || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) )
+            // <continued...>
+            if (lex.Match(pos, TokenType::Text)
+             && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
+               return Suggestion::Command;
 
          // RULE: (variable '=')? constant/variable/null '->' char <caret>
          if (lex.Match(pos=lex.begin(), TokenType::Variable)
@@ -296,7 +303,7 @@ namespace GUI
                // <continued...>
                if (lex.Match(pos, TokenType::BinaryOp, L"->") 
                 && lex.Match(pos, TokenType::Text) 
-                && Edit->GetCaretIndex() == (pos-1)->Start+1)
+                && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
                   return Suggestion::Command;
          
          // RULE: constant/variable/null '->' char <caret>
@@ -306,7 +313,7 @@ namespace GUI
             // <continued...>
             if (lex.Match(pos, TokenType::BinaryOp, L"->") 
              && lex.Match(pos, TokenType::Text) 
-             && Edit->GetCaretIndex() == (pos-1)->Start+1)
+             && (pos-1)->ContainsEx(Edit->GetCaretIndex()) )
                return Suggestion::Command;
 
          return Suggestion::None;
