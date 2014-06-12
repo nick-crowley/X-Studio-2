@@ -38,6 +38,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
          SuggestionItem(const wstring& txt, const wstring& type) : Text(txt), Type(type), Key(txt)
          {}
 
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         int Match(const wstring& txt) const;
+
          // -------------------- REPRESENTATION ---------------------
       public:
          wstring Text,  // Item text
@@ -45,8 +49,13 @@ NAMESPACE_BEGIN2(GUI,Controls)
                  Key;   // Sorting key
       };
 
-      /// <summary>Vector of items</summary>
-      typedef vector<SuggestionItem> ContentArray;
+      /// <summary>Vector of suggestion items</summary>
+      class ContentArray : public vector<SuggestionItem>
+      {
+         // ---------------------- ACCESSORS ------------------------			
+      public:
+         int FindMatch(const wstring& txt) const;
+      };
 
       // --------------------- CONSTRUCTION ----------------------
    public:

@@ -85,6 +85,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
       DWORD style = WS_CHILD|WS_VISIBLE|WS_BORDER|LVS_REPORT|LVS_OWNERDATA|LVS_SHOWSELALWAYS|LVS_SINGLESEL|LVS_NOCOLUMNHEADER;
       return __super::Create(style, rc, parent, IDC_SUGGESTION_LIST);
    }
+   
+   /// <summary>Finds the index of the item with the longest match</summary>
+   /// <param name="txt">text to match.</param>
+   /// <returns>Zero-based index if successful, otherwise -1</returns>
+   int SuggestionList::ContentArray::FindMatch(const wstring& txt) const
+   {
+      int index = 0,
+          value_max = 0,
+          index_max = -1;
+
+      // Linear search for longest match
+      for (auto& item : *this)
+      {
+         auto m = item.Match(txt);
+
+         // Update longest match
+         if (m > value_max)
+         {
+            value_max = m;
+            index_max = index;
+         }
+         
+         ++index;
+      }
+
+      // Return index of longest match
+      return index_max;
+
+      
+      /*list<int> matches;
+      transform(begin(), end(), matches, [&txt](const SuggestionItem& it){return it.Match(txt);} );
+
+      return max_element(matches.begin(), matches.end()) - matches.begin();*/
+   }
 
    /// <summary>Gets the script edit parent</summary>
    /// <returns></returns>
@@ -114,6 +148,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       default:  return L"Error";
       }
    }
+   
+   /// <summary>Calculates the length of a match between item and a string</summary>
+   /// <param name="txt">The text.</param>
+   /// <returns>Length of match in characters</returns>
+   int SuggestionList::SuggestionItem::Match(const wstring& txt) const
+   {
+      int len = 0;
+
+      // Compare 'n' characters of input + key
+      for (auto t = txt.begin(), k = Key.begin(); t != txt.end() && k != Key.end(); ++t, ++k)
+         if (*t == *k)
+            ++len;
+
+      // Return count
+      return len;
+   }
 
    /// <summary>Highlights the closest matching suggestion.</summary>
    /// <param name="tok">Token to match</param>
@@ -123,16 +173,10 @@ NAMESPACE_BEGIN2(GUI,Controls)
       GuiString str(tok.ValueText); 
 
       // Linear search for partial substring
-      int index = 0;
-      for (auto& item : Content)
-      {
-         if (StrCmpNI(str.c_str(), item.Key.c_str(), str.length()) == 0)
-            break;
-         ++index;
-      }
+      int index = Content.FindMatch(str);
 
       // Search/display closest match
-      if (index != Content.size())
+      if (index != -1)
       {
          //Console << L"Search for " << str << L" matched " << Content[index].Text << ENDL;
          SetItemState(index, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
