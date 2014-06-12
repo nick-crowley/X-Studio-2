@@ -478,17 +478,36 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ---------------------- ACCESSORS ------------------------			
          public:
-            virtual Suggestion Identify(SuggestionDirector* d, wchar ch) const = 0;
+            virtual Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const = 0;
 
             // ----------------------- MUTATORS ------------------------
          };
+
+         /// <summary>Unique pointer to a Suggestion Visitor</summary>
+         typedef shared_ptr<ISuggestionVisitor>  SuggestionVisitorPtr;
          
          /// <summary>Identifies when to display command suggestions</summary>
          class AssignmentVisitor : public ISuggestionVisitor
          {
             // ----------------------- MUTATORS ------------------------
          public:
-            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+         };
+
+         /// <summary>Identifies when to display command suggestions</summary>
+         class DiscardVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+         };
+         
+         /// <summary>Identifies when to display command suggestions</summary>
+         class ConditionalVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
 
          /// <summary>Identifies when to display Label suggestions</summary>
@@ -496,7 +515,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- MUTATORS ------------------------
          public:
-            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
 
          /// <summary>Identifies when to display GameObject/ScriptObject/Variable suggestions</summary>
@@ -504,9 +523,24 @@ NAMESPACE_BEGIN2(GUI,Controls)
          {
             // ----------------------- MUTATORS ------------------------
          public:
-            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+         };
+         
+         /// <summary>Identifies when to display command suggestions</summary>
+         class RefObjectAssignmentVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
          };
 
+         /// <summary>Identifies when to display command suggestions</summary>
+         class RefObjectDiscardVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(CommandLexer& lex, UINT caret, wchar ch) const override;
+         };
          // --------------------- CONSTRUCTION ----------------------
       public:
          SuggestionDirector(ScriptEdit* e);
