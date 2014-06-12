@@ -239,7 +239,7 @@ namespace GUI
       
          return rc;
       }
-   
+      
       /// <summary>Identifies the type of suggestion to display in response to a character press</summary>
       /// <param name="ch">The character just typed</param>
       /// <returns></returns>

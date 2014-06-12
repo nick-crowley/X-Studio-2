@@ -473,6 +473,40 @@ NAMESPACE_BEGIN2(GUI,Controls)
          /// <summary>Defines whether suggestions visible</summary>
          enum class InputState : UINT { Normal, Suggestions };
 
+         /// <summary>Base-class for Visitors performing identification of suggestions</summary>
+         interface ISuggestionVisitor
+         {
+            // ---------------------- ACCESSORS ------------------------			
+         public:
+            virtual Suggestion Identify(SuggestionDirector* d, wchar ch) const = 0;
+
+            // ----------------------- MUTATORS ------------------------
+         };
+         
+         /// <summary>Identifies when to display command suggestions</summary>
+         class AssignmentVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+         };
+
+         /// <summary>Identifies when to display Label suggestions</summary>
+         class LabelVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+         };
+
+         /// <summary>Identifies when to display GameObject/ScriptObject/Variable suggestions</summary>
+         class LiteralVisitor : public ISuggestionVisitor
+         {
+            // ----------------------- MUTATORS ------------------------
+         public:
+            Suggestion Identify(SuggestionDirector* d, wchar ch) const override;
+         };
+
          // --------------------- CONSTRUCTION ----------------------
       public:
          SuggestionDirector(ScriptEdit* e);
