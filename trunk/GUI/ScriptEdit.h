@@ -565,6 +565,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
          void  Display();
          void  FreezeWindow(bool freeze, bool invalidate);
          void  OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+         void  OnItemDoubleClick(int item);
          void  OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
          void  OnKillFocus(CWnd* pNewWnd);
          bool  WantMessage(UINT msg, WPARAM wParam, LPARAM lParam);

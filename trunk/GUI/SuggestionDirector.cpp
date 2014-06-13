@@ -95,6 +95,13 @@ namespace GUI
       }
 
       /// <summary>Updates the suggestion list in response to caret movement</summary>
+      /// <param name="item">Zero-based item index.</param>
+      void ScriptEdit::SuggestionDirector::OnItemDoubleClick(int item)
+      {
+         InsertSuggestion();
+      }
+
+      /// <summary>Updates the suggestion list in response to caret movement</summary>
       /// <param name="nChar">The character.</param>
       /// <param name="nRepCnt">The repeat count.</param>
       /// <param name="nFlags">The flags.</param>

@@ -103,6 +103,8 @@ NAMESPACE_BEGIN2(GUI,Controls)
       SuggestionCustomDraw  CustomDraw;
       ContentArray          Content;
       const ScriptFile*     Script;
+   public:
+      afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
    };
    
 
