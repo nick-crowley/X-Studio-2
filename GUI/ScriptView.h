@@ -71,6 +71,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnEditFormatDoc()     { OnPerformCommand(ID_EDIT_FORMAT_DOC);  }
       afx_msg void OnEditFormatSel()     { OnPerformCommand(ID_EDIT_FORMAT_SEL);  }
       afx_msg void OnEditRefactor()      { OnPerformCommand(ID_EDIT_REFACTOR);    }
+      afx_msg void OnEditSuggestions()   { OnPerformCommand(ID_EDIT_SUGGESTIONS); }
       afx_msg void OnEditGotoLabel(); 
       afx_msg void OnEditLookupOnline();
       afx_msg void OnEditOpenScript(); 
