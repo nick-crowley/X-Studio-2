@@ -42,6 +42,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_FORMAT_SEL, &ScriptView::OnEditFormatSel)
       ON_COMMAND(ID_EDIT_FORMAT_DOC, &ScriptView::OnEditFormatDoc)
       ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
+      ON_COMMAND(ID_EDIT_SUGGESTIONS, &ScriptView::OnEditSuggestions)
       ON_COMMAND(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnEditOpenScript)
       ON_COMMAND(ID_GAMEDATA_LOOKUP, &ScriptView::OnEditLookupOnline)
       ON_COMMAND(ID_EDIT_GOTO_LABEL, &ScriptView::OnEditGotoLabel)
@@ -60,6 +61,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FORMAT_SEL, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_FORMAT_DOC, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REFACTOR, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_EDIT_SUGGESTIONS, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_GOTO_LABEL, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_GAMEDATA_LOOKUP, &ScriptView::OnQueryCommand)
@@ -386,14 +388,15 @@ NAMESPACE_BEGIN2(GUI,Views)
          break;
 
       // Format:
-      case ID_EDIT_FORMAT_SEL: RichEdit.FormatSelection();  break;
-      case ID_EDIT_FORMAT_DOC: RichEdit.FormatDocument();   break;
+      case ID_EDIT_FORMAT_SEL:  RichEdit.FormatSelection();   break;
+      case ID_EDIT_FORMAT_DOC:  RichEdit.FormatDocument();    break;
 
       // Comment:
-      case ID_EDIT_COMMENT:   RichEdit.CommentSelection();  break;
+      case ID_EDIT_COMMENT:     RichEdit.CommentSelection();  break;
 
-      // Refactor:
-      case ID_EDIT_REFACTOR:  RichEdit.Refactor();          break;
+      // Refactor/Suggestions:
+      case ID_EDIT_REFACTOR:    RichEdit.Refactor();          break;
+      case ID_EDIT_SUGGESTIONS: RichEdit.AutoComplete();      break;
 
       // Goto Label
       /*case ID_EDIT_GOTO_LABEL:
@@ -421,6 +424,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       case ID_EDIT_COMMENT:     state = TRUE;                            break;
 
       // Code
+      case ID_EDIT_SUGGESTIONS: state = RichEdit.CanAutoComplete();      break;
       case ID_EDIT_REFACTOR:    state = RichEdit.CanRefactor();          break;
       case ID_EDIT_OPEN_SCRIPT: state = RichEdit.CanOpenScript();        break;
       case ID_EDIT_GOTO_LABEL:  state = RichEdit.CanGotoLabel();         break;

@@ -150,6 +150,7 @@
 #define ID_COLOUR_SELECT                412
 
 // ScriptView ContextMenu
+#define ID_EDIT_SUGGESTIONS             449
 #define ID_EDIT_COMMENT                 450
 #define ID_EDIT_LOCALIZE                451
 #define ID_EDIT_REFACTOR                452
