@@ -1,0 +1,126 @@
+<?xml version="1.0" standalone="yes"?>
+<?xml-stylesheet href="x2script.xsl" type="text/xsl"?>
+<!-- Generated using X-Studio -->
+<script>
+<name>Untitled</name>
+<version>1</version>
+<engineversion>32</engineversion>
+<description></description>
+<arguments />
+<codearray>
+<sval type="array" size="10">
+<sval type="string" val="Untitled" />
+<sval type="int" val="32" />
+<sval type="string" val="" />
+<sval type="int" val="1" />
+<sval type="int" val="0" />
+<sval type="int" val="0" />
+<sval type="array" size="1">
+<sval type="array" size="3">
+<sval type="int" val="103" />
+<sval type="int" val="0" />
+<sval type="int" val="0" />
+</sval>
+</sval>
+<sval type="int" val="0" />
+<sval type="array" size="20">
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="************************************************" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="SCRIPT NAME: $NAME$" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="DESCRIPTION: " />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="AUTHOR: $AUTHOR$        DATE: $DATE$" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="************************************************" />
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0" />
+<sval type="int" val="2" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="TODO: Define Page ID" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="$PAGE.ID = 0" />
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0" />
+<sval type="int" val="2" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="TODO: load strings" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="load text: id=$PAGE.ID" />
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0" />
+<sval type="int" val="2" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="TODO: set global variables" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="set global variable: name='var' value=0" />
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0" />
+<sval type="int" val="2" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="TODO: connect script commands" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="set script command upgrade: command=[COMMAND]  upgrade=[TRUE]  script='script'" />
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0" />
+<sval type="int" val="1" />
+<sval type="string" val="global script map: set: key=[COMMAND], class=[Ship], race=[Player], script='script', prio=2" />
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0" />
+<sval type="int" val="2" />
+</sval>
+</sval>
+<sval type="int" val="0" />
+</sval>
+</codearray>
+</script>

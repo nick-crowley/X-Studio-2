@@ -1,0 +1,121 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<!--Written by X-Studio II-->
+<script>
+<name>Untitled</name>
+<version>1</version>
+<engineversion>39</engineversion>
+<description></description>
+<arguments>
+<argument index="1" name="attacker" type="Var/Ship/Station" desc="object which attacked [THIS]"></argument>
+<argument index="2" name="action" type="Var/Number" desc="action [THIS] is currently performing"></argument>
+</arguments>
+<codearray>
+<sval type="array" size="10">
+<sval type="string" val="Untitled"></sval>
+<sval type="int" val="39"></sval>
+<sval type="string" val=""></sval>
+<sval type="int" val="1"></sval>
+<sval type="int" val="0"></sval>
+<sval type="array" size="2">
+<sval type="string" val="attacker"></sval>
+<sval type="string" val="action"></sval>
+</sval>
+<sval type="array" size="1">
+<sval type="array" size="3">
+<sval type="int" val="103"></sval>
+<sval type="int" val="0"></sval>
+<sval type="int" val="0"></sval>
+</sval>
+</sval>
+<sval type="array" size="2">
+<sval type="array" size="2">
+<sval type="int" val="22"></sval>
+<sval type="string" val="object which attacked [THIS]"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="10"></sval>
+<sval type="string" val="action [THIS] is currently performing"></sval>
+</sval>
+</sval>
+<sval type="array" size="16">
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="************************************************"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="SCRIPT NAME: $NAME$"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="DESCRIPTION: This signal is emitted by an object when it's being attacked. It will only be emitted by foes,"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="so player owned ships will never emit this signal when attacked by another player owned ship (i.e. the playership)."></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="The signal is not emitted constantly, when a ship is attacked, but it has a cool down phase of a few seconds"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="(maybe 1-2 seconds). This means that you cannot use the signal to react to single shots, which wouldn't be"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="desirable anyways, because of the performance impact of runnig one or more scripts every time a ship is hit."></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val=""></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="See: http://forum.egosoft.com/viewtopic.php?t=287398"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val=""></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="AUTHOR: $AUTHOR$        DATE: $DATE$"></sval>
+</sval>
+<sval type="array" size="3">
+<sval type="int" val="0"></sval>
+<sval type="int" val="1"></sval>
+<sval type="string" val="************************************************"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="0"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+<sval type="array" size="2">
+<sval type="int" val="1"></sval>
+<sval type="int" val="2"></sval>
+</sval>
+</sval>
+<sval type="int" val="0"></sval>
+</sval>
+</codearray>
+</script>

@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6BF144FD-C
 		Docs\Change log.txt = Docs\Change log.txt
 		Docs\Compiler Changes.txt = Docs\Compiler Changes.txt
 		Docs\RichText Tags.txt = Docs\RichText Tags.txt
+		Docs\Syntax File Comment.txt = Docs\Syntax File Comment.txt
 		Docs\Task List.txt = Docs\Task List.txt
 	EndProjectSection
 EndProject

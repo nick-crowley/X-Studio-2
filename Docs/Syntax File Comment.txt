@@ -1,0 +1,120 @@
+<!--
+* ***************************************************** 
+* X-Studio II Command Syntax Definitions v1.0  Jan 2014 
+* ***************************************************** 
+
+<SYNTAX>: Document root
+========
+
+
+<SYNTAX>::<GROUPS> : Defines the MSCI command groups listed in the GUI
+===================
+
+Child Elements:
+
+group : Maps the numeric group ID to a name you can use in this file
+        They must collectively form a zero-based contiguous group.
+
+
+
+
+<SYNTAX>::<GROUPS>::<GROUP> : Defines an identifier for a command group you can use with <COMMAND> nodes
+===========================
+
+Element text specifies the identifier
+
+
+Element Properties:
+
+id : Group ID
+
+
+
+
+<SYNTAX>::<TYPES> : Defines the parameter types available to MSCI script commands
+===================
+
+Child Elements:
+
+type : Maps the numeric parameter type to a name you use in this file
+
+
+
+
+<SYNTAX>::<TYPES>::<TYPE> : Defines an identifier for a parameter type you can use with <PARAM> nodes
+===========================
+
+Element text specifies the identifier
+
+
+Element Properties:
+
+value : Numeric parameter type, which acts as a lookup index for parameter types stored in language file page 2000
+
+
+
+
+
+<SYNTAX>::<COMMAND> : Defines the syntax for an MSCI script command
+===================
+
+The ID and Version must form a unique combination, 
+eg. (id=100 ver=X2,X3R + id=100 ver=X3TC) == OK
+    (id=100 ver=X2,X3R + id=100 ver=X3R,X3TC) == CONFLICT over X3R
+
+
+Element Properties:
+
+id      : command ID
+version : supported game versions {X2,X3R,X3TC,X3AP} 
+
+
+Child Elements:
+
+text  : Syntax of the command, each parameter is identified by $n where n is 0-9. 
+        NB: There is no need to add the RefObj indirection operator or the RetVar assignment 
+            operator at the start. See other commands for examples.
+
+group : Group under which the command should be listed in the GUI.
+        NB: Must match one of the group identifiers specified under the <SYNTAX>::<GROUPS> node above
+
+type  : Standard  - command is stored under the standard (executable) commands <codearray> branch 
+        Auxiliary - command is stored under the auxiliary (non-executable) commands <codearray> branch
+        Macro     - command is virtual
+
+url   : Full http URL of the associated MSCI Reference topic on forums.egosoft.com
+        Should be present but empty if there is no URL
+
+
+
+
+<SYNTAX>::<COMMAND>::<PARAMS> : List of parameters
+=============================
+
+Child Elements:
+
+param : Defines each parameter in the order they are saved in the <codearray>
+
+
+
+
+<SYNTAX>::<COMMAND>::<PARAMS>::<PARAM> : Defines parameter syntax for a MSCI script command 
+======================================
+
+Element text defines the parameter type. Must be one of the types listed under the <SYNTAX>::<TYPES> node above
+
+Element Properties:
+
+displayIndex : Zero-based index at which the parameter appears in the command text. 
+               Commonly this is the same as the physical index, but is occasionally different. eg. command 501 
+
+ordinal : (optional) Superscript identifier used in tooltips to distinguish between multiple parameters of the same type
+                     eg. Commands with three Var/Number parameters should have ordinals 1,2,3 so they display 
+                         as 'Var/Number1', 'Var/Number2' .. etc.
+
+usage : (optional) Defines the meaning of the parameter
+                   pageid : Contains page ID of a language file string, enables GUI context menu item 'View language string'
+                   stringid : Contains ID of a language file string, enables GUI context menu item 'View language string'
+                   scriptname : Contains name of a script, enables GUI context menu item 'open script'
+        
+-->
