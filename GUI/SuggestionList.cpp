@@ -29,6 +29,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
       ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &SuggestionList::OnRetrieveItem)
       ON_NOTIFY_REFLECT(LVN_BEGINSCROLL, &SuggestionList::OnScrollBegin)
       ON_NOTIFY_REFLECT(LVN_KEYDOWN, &SuggestionList::OnKeyDown)
+      ON_WM_LBUTTONDBLCLK()
    END_MESSAGE_MAP()
    
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -311,6 +312,22 @@ NAMESPACE_BEGIN2(GUI,Controls)
       GetParent()->Suggestions.OnKillFocus(pNewWnd);
    }
 
+   /// <summary>Inform suggestions mediator when user double-clicks an item</summary>
+   /// <param name="nFlags">flags.</param>
+   /// <param name="point">point.</param>
+   void SuggestionList::OnLButtonDblClk(UINT nFlags, CPoint point)
+   {
+      UINT flags = LVHT_ONITEM;
+      int item = HitTest(point, &flags);
+
+      // Inform suggestions mediator
+      if (item != -1)
+         GetParent()->Suggestions.OnItemDoubleClick(item);
+
+      __super::OnLButtonDblClk(nFlags, point);
+   }
+
+
    /// <summary>Supplies virtual list item</summary>
    /// <param name="pNMHDR">notify NMHDR.</param>
    /// <param name="pResult">notify result.</param>
@@ -453,6 +470,7 @@ NAMESPACE_BEGIN2(GUI,Controls)
    
    
 NAMESPACE_END2(GUI,Controls)
+
 
 
 
