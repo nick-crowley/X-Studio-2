@@ -85,10 +85,10 @@ namespace Logic
       GuiString  Remove(const WCHAR* chars) const;
 
       /// <summary>Replaces all instances of a substring with another.</summary>
-      /// <param name="txt">Substring.</param>
-      /// <param name="with">replacement.</param>
+      /// <param name="substring">Substring.</param>
+      /// <param name="replacement">replacement.</param>
       /// <returns>Copy of string with replacements made</returns>
-      GuiString  ReplaceAll(const wstring& txt, const wstring& replace) const;
+      GuiString  ReplaceAll(const wstring& substring, const wstring& replacement) const;
 
       /// <summary>Convert to int.</summary>
       /// <returns></returns>
