@@ -298,7 +298,7 @@ namespace Logic
       size_t pos = 0;
       while ((pos=s.find(search, pos)) != npos)
       {
-         s.replace(pos, pos+search_len, replacement);
+         s.replace(pos, search_len, replacement);
          pos += replace_len;
       }
 
