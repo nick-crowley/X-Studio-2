@@ -5,7 +5,7 @@
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
 #include "DualComboBox.h"
-
+#include "../Logic/FileWatcherWorker.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -86,6 +86,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       handler void OnCompileComplete();
       handler void OnDocumentReload();
+      afx_msg LRESULT OnFileChanged(WPARAM wParam, LPARAM lParam);
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnPerformCommand(UINT nID);
       afx_msg void OnQueryCommand(CCmdUI *pCmdUI);
@@ -104,11 +105,10 @@ NAMESPACE_BEGIN2(GUI,Views)
                    VariablesCombo;
 
    protected:
+      FileWatcherWorker FileWatcher;
       EventHandler fnArgumentChanged,
                    fnCompileComplete,
                    fnTextChanged;
-
-      
    };
 
 

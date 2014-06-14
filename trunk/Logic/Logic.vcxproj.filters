@@ -438,6 +438,9 @@
     <ClInclude Include="MatchData.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="FileWatcherWorker.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
@@ -703,6 +706,9 @@
     </ClCompile>
     <ClCompile Include="StringConverter.cpp">
       <Filter>Source Files\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatcherWorker.cpp">
+      <Filter>Source Files\Threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

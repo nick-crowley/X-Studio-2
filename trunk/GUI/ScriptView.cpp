@@ -52,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
       ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
       ON_COMMAND(ID_GAMEDATA_LOOKUP, &ScriptView::OnEditLookupOnline)
+      ON_MESSAGE(WM_FILE_CHANGE, &ScriptView::OnFileChanged)
       ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryCommand)
@@ -75,6 +76,7 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    ScriptView::ScriptView() 
              : CFormView(ScriptView::IDD), 
+               FileWatcher(this),
                fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete)),
                fnTextChanged(RichEdit.TextChanged.Register(this, &ScriptView::OnTextChanged))
    {
@@ -240,11 +242,22 @@ NAMESPACE_BEGIN2(GUI,Views)
    /// <summary>Clear properties</summary>
    void ScriptView::OnDestroy()
    {
-      // Hide properties info
-      CPropertiesWnd::Connect(GetDocument(), false);
+      try
+      {
+         // Hide properties info
+         CPropertiesWnd::Connect(GetDocument(), false);
 
-      // Destroy
-      __super::OnDestroy();
+         // Stop file watcher
+         if (FileWatcher.IsRunning())
+            FileWatcher.Stop();
+
+         // Destroy
+         __super::OnDestroy();
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e);
+      }
    }
    
    
@@ -339,6 +352,21 @@ NAMESPACE_BEGIN2(GUI,Views)
    void ScriptView::OnEditViewString()
    {
    }
+   
+   /// <summary>Called when file is modified</summary>
+   /// <param name="wParam">Ignored.</param>
+   /// <param name="lParam">Ignored.</param>
+   /// <returns></returns>
+   LRESULT  ScriptView::OnFileChanged(WPARAM /*wParam*/, LPARAM /*lParam*/)
+   {
+      const wstring msg = L"External changes to the file have been detected, would you like to reload from disc?";
+      
+      // Query whether to reload
+      if (theApp.ShowMessage(Cons::Warning, msg, MB_YESNO|MB_ICONQUESTION) == IDYES)
+         PostMessage(WM_COMMAND, ID_FILE_RELOAD);
+
+      return 0;
+   }
 
    /// <summary>Displays script and populates variables/scope combos</summary>
    void ScriptView::OnInitialUpdate()
@@ -364,6 +392,10 @@ NAMESPACE_BEGIN2(GUI,Views)
 
          // Ensure init hasn't modified document
          GetDocument()->SetModifiedFlag(FALSE);
+
+         // Init file watcher
+         if (!GetDocument()->FullPath.Empty())
+            FileWatcher.Start(GetDocument()->FullPath);
 
          // DEBUG: Verify edit mask
          //PrintEditMask(RichEdit.GetEventMask());

@@ -145,6 +145,7 @@
     <ClInclude Include="FileIdentifier.h" />
     <ClInclude Include="FileSearch.h" />
     <ClInclude Include="FileStream.h" />
+    <ClInclude Include="FileWatcherWorker.h" />
     <ClInclude Include="GameDataWorker.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectLibrary.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="FileIdentifier.cpp" />
     <ClCompile Include="FileSearch.cpp" />
     <ClCompile Include="FileStream.cpp" />
+    <ClCompile Include="FileWatcherWorker.cpp" />
     <ClCompile Include="GameDataWorker.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectLibrary.cpp" />
