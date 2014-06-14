@@ -330,9 +330,24 @@ namespace Logic
          /// <returns></returns>
          ScriptToken  CommandLexer::ReadString(CharIterator start)
          {
-            // Consume all, excluding trailing apostrophe
-            while (ReadChar() && !MatchChar(L'\''))
-            {}
+            bool escaped = false;
+            
+            // Read entire string (But enable escaped apostrophes)
+            while (ReadChar())
+            {
+               // Backslash: Escape next character
+               if (MatchChar(L'\\'))
+               {
+                  escaped = !escaped;
+                  continue;
+               }
+               // Unescaped apostrophe: Terminate
+               else if (MatchChar(L'\'') && !escaped)
+                  break;
+               
+               // Reset
+               escaped = false;
+            }
 
             // Consume apostrophe
             if (MatchChar(L'\''))
