@@ -48,6 +48,7 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // ----------------------- MUTATORS ------------------------
    public:
+      void  OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
       bool  Replace(MatchData& m);
       void  Replace(const wstring& txt);
       void  SetSelection(CHARRANGE rng);
@@ -55,16 +56,20 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
+      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       void ScrollTo(const ScriptLabel& l);
+      void SetScriptText();
       void PopulateVariables();
       void PopulateScope();
-      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
       virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
       void UpdateScope();
       
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
       handler void OnArgumentChanged();
       afx_msg void OnDestroy();
+      afx_msg void OnClipboardCopy()     { OnPerformCommand(ID_EDIT_COPY);        }
+      afx_msg void OnClipboardCut()      { OnPerformCommand(ID_EDIT_CUT);         }
+      afx_msg void OnClipboardPaste()    { OnPerformCommand(ID_EDIT_PASTE);       }
       afx_msg void OnEditComment()       { OnPerformCommand(ID_EDIT_COMMENT);     }
       afx_msg void OnEditIndent()        { OnPerformCommand(ID_EDIT_INDENT);      }
       afx_msg void OnEditOutdent()       { OnPerformCommand(ID_EDIT_OUTDENT);     }
@@ -78,11 +83,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       afx_msg void OnEditViewString(); 
       afx_msg void OnEditUndo()          { OnPerformCommand(ID_EDIT_UNDO);        }
       afx_msg void OnEditRedo()          { OnPerformCommand(ID_EDIT_REDO);        }
-      afx_msg void OnClipboardCopy()     { OnPerformCommand(ID_EDIT_COPY);        }
-      afx_msg void OnClipboardCut()      { OnPerformCommand(ID_EDIT_CUT);         }
-      afx_msg void OnClipboardPaste()    { OnPerformCommand(ID_EDIT_PASTE);       }
       afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
       handler void OnCompileComplete();
+      handler void OnDocumentReload();
 	   virtual void OnInitialUpdate(); 
       afx_msg void OnPerformCommand(UINT nID);
       afx_msg void OnQueryCommand(CCmdUI *pCmdUI);
@@ -105,6 +108,7 @@ NAMESPACE_BEGIN2(GUI,Views)
                    fnCompileComplete,
                    fnTextChanged;
 
+      
    };
 
 

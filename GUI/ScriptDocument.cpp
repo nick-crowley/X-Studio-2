@@ -384,8 +384,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       }
       catch (ExceptionBase&  e)
       {
-         // Feedback/Display error
+         // Feedback error
          data.SendFeedback(Cons::Error, ProgressType::Error, 1, e.Message);
+         // Feedback failure
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to load script");
          theApp.ShowError(HERE, e, VString(L"Failed to load script '%s'", szPathName));
 
@@ -452,6 +453,40 @@ NAMESPACE_BEGIN2(GUI,Documents)
          // Feedback/Display error
          data.SendFeedback(Cons::Error, ProgressType::Failure, 0, VString(L"Failed to create %s '%s'", t.Name.c_str(), docPath.c_str()));
          theApp.ShowError(HERE, e, VString(L"Failed to create %s '%s'", t.Name.c_str(), docPath.c_str()));
+         return FALSE;
+      }
+   }
+   
+   /// <summary>Opens a document.</summary>
+   /// <param name="szPathName">path.</param>
+   /// <returns></returns>
+   BOOL ScriptDocument::OnReloadDocument(LPCTSTR szPathName)
+   {
+      WorkerData data(Operation::LoadSaveDocument);
+      
+      try
+      {
+         // Feedback
+         Console << Cons::UserAction << "Reloading script: " << Path(szPathName) << ENDL;
+         data.SendFeedback(ProgressType::Operation, 0, VString(L"Reloading script '%s'", szPathName));
+
+         // Read/Parse script
+         Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
+
+         // Feedback
+         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script reloaded successfully");
+         return TRUE;
+      }
+      catch (ExceptionBase&  e)
+      {
+         // Feedback error
+         data.SendFeedback(Cons::Error, ProgressType::Error, 1, e.Message);
+         // Feedback failure
+         data.SendFeedback(Cons::Error, ProgressType::Failure, 0, L"Failed to reload script");
+         theApp.ShowError(HERE, e, VString(L"Failed to reload script '%s'", szPathName));
+
+         // BEEP!
+         MessageBeep(MB_ICONERROR);
          return FALSE;
       }
    }

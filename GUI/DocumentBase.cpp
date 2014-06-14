@@ -11,9 +11,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    BEGIN_MESSAGE_MAP(DocumentBase, CDocument)
       ON_COMMAND(ID_FILE_CLOSE, &DocumentBase::OnCommand_Close)
+      ON_COMMAND(ID_FILE_RELOAD, &DocumentBase::OnCommand_Reload)
       ON_COMMAND(ID_FILE_SAVE, &DocumentBase::OnCommand_Save)
       ON_COMMAND(ID_FILE_SAVE_AS, &DocumentBase::OnCommand_SaveAs)
       ON_UPDATE_COMMAND_UI(ID_FILE_CLOSE, &DocumentBase::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_RELOAD, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, &DocumentBase::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, &DocumentBase::OnQueryCommand)
@@ -230,6 +232,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Default implementation uses open document
       return OnOpenDocument(AppPath(t.SubPath).c_str());
    }
+
+   /// <summary>Called when reloading a document from disc.</summary>
+   /// <param name="szPathName">Full document path</param>
+   /// <returns></returns>
+   BOOL  DocumentBase::OnReloadDocument(LPCTSTR szPathName)
+   {
+      return OnOpenDocument(szPathName);
+   }
    
    /// <summary>Renames the document if modified, otherwise renames the file in disc. Updates path/title/project appropriately</summary>
    /// <param name="newPath">New path.</param>
@@ -390,6 +400,22 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Save/Closed Modified
       CloseModified();
    }
+   
+   /// <summary>Reload document.</summary>
+   void  DocumentBase::OnCommand_Reload()
+   {
+      Console << Cons::UserAction << "Reloading document: " << GetTitle() << ENDL;
+
+      // Modified: Query to save
+      if (!SaveModified())
+         return;
+
+      // Reload document
+      OnReloadDocument(FullPath.c_str());
+
+      // Update all views
+      UpdateAllViews(nullptr, DOCUMENT_RELOADED);
+   }
 
    /// <summary>Save under existing path</summary>
    void  DocumentBase::OnCommand_Save()
@@ -419,6 +445,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // Save/SaveAs: Require file document
       case ID_FILE_SAVE:
       case ID_FILE_SAVE_AS:  state = !Virtual;   break;
+
+      // Reload: Require file document
+      case ID_FILE_RELOAD:   state = !Virtual;   break;
 
       // SaveAll: Always enabled
       case ID_FILE_SAVE_ALL: state = true;       break;

@@ -349,6 +349,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   handler BOOL OnNewDocument() override;
       handler BOOL OnOpenTemplate(Path docPath, const TemplateFile& t) override;
       handler BOOL OnOpenDocument(LPCTSTR szPathName) override;
+      handler BOOL OnReloadDocument(LPCTSTR szPathName) override;
       handler void OnQueryCustomCommand(CCmdUI* pCmd) override;
       BOOL         OnRevertDocument(const ScriptRevision& r);
       handler BOOL OnSaveDocument(LPCTSTR szPathName) override;
@@ -357,7 +358,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // -------------------- REPRESENTATION ---------------------
    public:
       ScriptFile  Script;
-
       SimpleEvent ArgumentChanged;     // Raise when argument edited/inserted/removed
 
    protected:
