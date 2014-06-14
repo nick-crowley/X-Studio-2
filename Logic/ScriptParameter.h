@@ -18,6 +18,25 @@ namespace Logic
       /// <summary>Represents a script command parameter</summary>
       class LogicExport ScriptParameter
       {
+         // ------------------------- TYPES -------------------------
+      protected:
+         /// <summary>Adds/Removes apostrophes from strings</summary>
+         class StringConverter
+         {
+            // --------------------- CONSTRUCTION ----------------------
+         protected:
+            StringConverter();
+            virtual ~StringConverter();
+
+            DEFAULT_COPY(StringConverter);	// Default copy semantics
+            DEFAULT_MOVE(StringConverter);	// Default move semantics
+
+            // ------------------------ STATIC -------------------------
+         public:
+            static wstring Generate(const wstring& str);
+            static wstring Translate(const wstring& str);
+         };
+
          // --------------------- CONSTRUCTION ----------------------
 #ifdef LOGIC_COMPILER_FIX
       public:
@@ -33,8 +52,6 @@ namespace Logic
          virtual ~ScriptParameter();
 
          // ------------------------ STATIC -------------------------
-      public:
-
       protected:
          static DataType  IdentifyDataType(ScriptToken tok);
 
@@ -52,7 +69,9 @@ namespace Logic
          /// <returns></returns>
          bool IsVariable() const
          {
-            return Type == DataType::VARIABLE && Value.Type == ValueType::Int && ReturnValue(Value.Int).ReturnType == ReturnType::ASSIGNMENT;
+            return Type == DataType::VARIABLE 
+                && Value.Type == ValueType::Int 
+                && ReturnValue(Value.Int).ReturnType == ReturnType::ASSIGNMENT;
          }
 
          /// <summary>Compare type and value only</summary>
