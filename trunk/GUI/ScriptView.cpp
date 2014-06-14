@@ -36,6 +36,9 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_WM_SETFOCUS()
       ON_WM_SETTINGCHANGE()
       ON_CBN_SELCHANGE(IDC_SCOPE_COMBO,&ScriptView::OnScopeSelectionChange)
+      ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
+      ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
+      ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
       ON_COMMAND(ID_EDIT_COMMENT, &ScriptView::OnEditComment)
       ON_COMMAND(ID_EDIT_INDENT, &ScriptView::OnEditIndent)
       ON_COMMAND(ID_EDIT_OUTDENT, &ScriptView::OnEditOutdent)
@@ -44,14 +47,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_COMMAND(ID_EDIT_REFACTOR, &ScriptView::OnEditRefactor)
       ON_COMMAND(ID_EDIT_SUGGESTIONS, &ScriptView::OnEditSuggestions)
       ON_COMMAND(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnEditOpenScript)
-      ON_COMMAND(ID_GAMEDATA_LOOKUP, &ScriptView::OnEditLookupOnline)
       ON_COMMAND(ID_EDIT_GOTO_LABEL, &ScriptView::OnEditGotoLabel)
       ON_COMMAND(ID_EDIT_VIEW_STRING, &ScriptView::OnEditViewString)
       ON_COMMAND(ID_EDIT_UNDO, &ScriptView::OnEditUndo)
       ON_COMMAND(ID_EDIT_REDO, &ScriptView::OnEditRedo)
-      ON_COMMAND(ID_EDIT_COPY, &ScriptView::OnClipboardCopy)
-      ON_COMMAND(ID_EDIT_CUT, &ScriptView::OnClipboardCut)
-      ON_COMMAND(ID_EDIT_PASTE, &ScriptView::OnClipboardPaste)
+      ON_COMMAND(ID_GAMEDATA_LOOKUP, &ScriptView::OnEditLookupOnline)
       ON_NOTIFY(EN_SELCHANGE,IDC_SCRIPT_EDIT,&ScriptView::OnTextSelectionChange)
       ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &ScriptView::OnQueryCommand)
@@ -64,10 +64,11 @@ NAMESPACE_BEGIN2(GUI,Views)
       ON_UPDATE_COMMAND_UI(ID_EDIT_SUGGESTIONS, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_OPEN_SCRIPT, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_GOTO_LABEL, &ScriptView::OnQueryCommand)
-      ON_UPDATE_COMMAND_UI(ID_GAMEDATA_LOOKUP, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_VIEW_STRING, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &ScriptView::OnQueryCommand)
       ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_FILE_RELOAD, &ScriptView::OnQueryCommand)
+      ON_UPDATE_COMMAND_UI(ID_GAMEDATA_LOOKUP, &ScriptView::OnQueryCommand)
    END_MESSAGE_MAP()
 
    // -------------------------------- CONSTRUCTION --------------------------------
@@ -115,6 +116,18 @@ NAMESPACE_BEGIN2(GUI,Views)
    CHARRANGE  ScriptView::GetSelection() const
    {
       return RichEdit.GetSelection();
+   }
+   
+   /// <summary>Called when document is updated.</summary>
+   /// <param name="pSender">The sender.</param>
+   /// <param name="lHint">The hint.</param>
+   /// <param name="pHint"></param>
+   void ScriptView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+   {
+      switch (lHint)
+      {
+      case ScriptDocument::DOCUMENT_RELOADED: OnDocumentReload();  break;
+      }
    }
 
    /// <summary>Replaces the current match</summary>
@@ -234,6 +247,23 @@ NAMESPACE_BEGIN2(GUI,Views)
       __super::OnDestroy();
    }
    
+   
+   /// <summary>Updates the text after document is reloaded</summary>
+   void ScriptView::OnDocumentReload()
+   {
+      try
+      {
+         // Set script text
+         SetScriptText();
+
+         // Ensure init hasn't modified document
+         GetDocument()->SetModifiedFlag(FALSE);
+      }
+      catch (ExceptionBase& e)
+      {
+         theApp.ShowError(HERE, e, L"Unable to display reloaded script text");
+      }
+   }
 
    /// <summary>Goto label at the caret</summary>
    void ScriptView::OnEditGotoLabel()
@@ -326,29 +356,11 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       try
       {
-         string txt;
-
-         // Get font size
-         int size = PrefsLib.ScriptViewFont.lfHeight;
-         if (size < 0)
-         {  // Height (Pixels -> points)
-            auto dc = GetDC();
-            size = MulDiv(-size, 72, dc->GetDeviceCaps(LOGPIXELSY));
-            ReleaseDC(dc);
-         }
-
-         // Convert script to RTF (ansi)
-         RtfScriptWriter w(StreamPtr(new StringStream(txt)), PrefsLib.ScriptViewFont.lfFaceName, size);
-         w.Write(GetScript());
-         w.Close();
-
-         // Display script text
+         // Initialize
          RichEdit.Initialize(GetDocument());
-         RichEdit.SetRtf(txt);
 
-         // Populate variables/scope
-         PopulateVariables();
-         PopulateScope();
+         // Set script text
+         SetScriptText();
 
          // Ensure init hasn't modified document
          GetDocument()->SetModifiedFlag(FALSE);
@@ -422,6 +434,9 @@ NAMESPACE_BEGIN2(GUI,Views)
 
       // Commment
       case ID_EDIT_COMMENT:     state = TRUE;                            break;
+      
+      // Reload
+      case ID_FILE_RELOAD:      state = TRUE;                            break;
 
       // Code
       case ID_EDIT_SUGGESTIONS: state = RichEdit.CanAutoComplete();      break;
@@ -534,6 +549,33 @@ NAMESPACE_BEGIN2(GUI,Views)
       // Scroll to a couple of lines preceeding the label 
       RichEdit.EnsureVisible( l.LineNumber - 4 );
    }
+   
+   /// <summary>Displays the contents of a freshly loaded script</summary>
+   void ScriptView::SetScriptText()
+   {
+      string txt;
+
+      // Get font size
+      int size = PrefsLib.ScriptViewFont.lfHeight;
+      if (size < 0)
+      {  // Height (Pixels -> points)
+         auto dc = GetDC();
+         size = MulDiv(-size, 72, dc->GetDeviceCaps(LOGPIXELSY));
+         ReleaseDC(dc);
+      }
+
+      // Convert script to RTF (ansi)
+      RtfScriptWriter w(StreamPtr(new StringStream(txt)), PrefsLib.ScriptViewFont.lfFaceName, size);
+      w.Write(GetScript());
+      w.Close();
+
+      // Display script text
+      RichEdit.SetRtf(txt);
+
+      // RePopulate variables/scope
+      PopulateVariables();
+      PopulateScope();
+   }
 
    /// <summary>Populates the variables dropdown</summary>
    void ScriptView::PopulateVariables()
@@ -592,4 +634,5 @@ NAMESPACE_BEGIN2(GUI,Views)
 
 
 NAMESPACE_END2(GUI,Views)
+
 

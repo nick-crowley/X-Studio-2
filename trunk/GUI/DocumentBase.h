@@ -32,7 +32,6 @@ NAMESPACE_BEGIN2(GUI,Documents)
       // --------------------- PROPERTIES ------------------------
    public:
       PROPERTY_GET_SET(Path,FullPath,GetFullPath,SetFullPath);
-      //PROPERTY_GET(Path,FullPath,GetFullPath);
       PROPERTY_GET_SET(bool,Virtual,GetVirtual,SetVirtual);
       PROPERTY_GET(wstring,FileName,GetFileName);
 
@@ -53,6 +52,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
       void          OnCloseDocument() override;
       void          OnDocumentEvent(DocumentEvent deEvent) override;
       virtual BOOL  OnOpenTemplate(Path docPath, const TemplateFile& t);
+      virtual BOOL  OnReloadDocument(LPCTSTR szPathName);
       virtual void  Rename(Path newPath);
       virtual bool  Replace(MatchData& m);
       BOOL          SaveModified() override;
@@ -65,16 +65,20 @@ NAMESPACE_BEGIN2(GUI,Documents)
 
    protected:
       afx_msg void  OnCommand_Close();
+      afx_msg void  OnCommand_Reload();
       afx_msg void  OnCommand_Save();
       afx_msg void  OnCommand_SaveAs();
       afx_msg void  OnQueryCommand(CCmdUI* pCmdUI);
 	   
       // -------------------- REPRESENTATION ---------------------
+   public:
+      const static UINT DOCUMENT_RELOADED = 1;     // Update flag indicating document reloaded
+
    protected:
-      DocumentType  Type;
+      DocumentType  Type;           // Document type
 
    private:
-      bool          IsVirtual;
+      bool          IsVirtual;      // Whether document is virtual
    };
 
    /// <summary>List of documents</summary>
