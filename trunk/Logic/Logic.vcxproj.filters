@@ -701,6 +701,9 @@
     <ClCompile Include="Event.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="StringConverter.cpp">
+      <Filter>Source Files\Scripts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\XML\msxml6.tlh">

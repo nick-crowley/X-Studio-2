@@ -226,6 +226,20 @@ namespace Logic
 
          // String: Label/Comment/String/Commented-LabelNumber
          case DataType::STRING:
+            // DEBUG: Console << "ScriptParameter::Generate()" << " Converting " << Cons::Yellow << Value.String 
+            //                << Cons::White << " to " << Cons::Yellow << StringConverter::Generate(Value.String) << ENDL;
+
+            // De-escape apostrophes
+            switch (Syntax.Type)
+            {
+            default: Value = StringConverter::Generate(Value.String);  
+               break;
+
+            case ParameterType::COMMENT:
+            case ParameterType::LABEL_NAME:
+            case ParameterType::LABEL_NUMBER:
+               break;
+            }
             break;
 
          // Integer: Number/Uncommented-LabelNumber
@@ -426,7 +440,10 @@ namespace Logic
             if (Syntax.Type == ParameterType::COMMENT || Syntax.Type == ParameterType::LABEL_NAME)
                Text = Value.String;
             else
-               Text = GuiString::Format(L"'%s'", Value.String.c_str());
+            {  // Escape any internal apostrophes
+               wstring sz = StringConverter::Translate(Value.String);
+               Text = GuiString::Format(L"'%s'", sz.c_str());
+            }
             break;
 
          // Integer
