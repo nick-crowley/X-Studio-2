@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources.def" />
+    <None Include="res\Resources.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Icons">
+      <UniqueIdentifier>{f729740b-9e67-4208-adfa-e05caea67c98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bitmaps">
+      <UniqueIdentifier>{ab8a7c42-0abb-4cbb-bd80-543a94373b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6bd39af9-1ff3-44e5-bac9-31604d706db8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f9e36874-26d5-4229-b82e-f4a8f4b46d01}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Icon - Document - Language.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Document - Script.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Backup.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Commands.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Game Objects.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Main.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Output.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Project.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Properties.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Icon - Window - Script Objects.ico">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="res\Bitmap - Edit Argument.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - Export Project.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - Import Project.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - New Document.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - RichButton - Hot.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - RichButton - Normal.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmap - Splash.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - BackupWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - GameDataWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - LanguageFrame.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - NewDocument - Copy.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - NewDocument.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - OutputWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\ImageList - ProjectWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Menu - Misc.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - BackupWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor (Disabled).bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Editor (Normal).bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - Images.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd - Edit.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd - File.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd - GameData.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - MainWnd - View.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - ProjectWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - PropertiesWnd.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Toolbar - User.bmp">
+      <Filter>Bitmaps</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
