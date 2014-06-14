@@ -56,12 +56,12 @@ NAMESPACE_BEGIN2(GUI,Views)
 
    protected:
       void AdjustLayout();
-      virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+      void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
       void ScrollTo(const ScriptLabel& l);
       void SetScriptText();
       void PopulateVariables();
       void PopulateScope();
-      virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+      BOOL PreCreateWindow(CREATESTRUCT& cs) override;
       void UpdateScope();
       
       virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
