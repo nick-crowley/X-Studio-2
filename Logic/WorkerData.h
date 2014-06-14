@@ -20,10 +20,27 @@ namespace Logic
       // ------------------------- ENUMS -------------------------
 
       /// <summary>Defines the icon used by output window feedback</summary>
-      enum class ProgressType : UINT { Operation, Info, Warning, Error, Succcess, Failure };
+      enum class ProgressType : UINT 
+      { 
+         Operation, 
+         Info, 
+         Warning, 
+         Error, 
+         Succcess, 
+         Failure 
+      };
 
       /// <summary>Defines the output window used by various operations</summary>
-      enum class Operation : UINT { LoadGameData, LoadSaveDocument, FindAndReplace1, FindAndReplace2, ImportProject, NoFeedback };
+      enum class Operation : UINT 
+      { 
+         LoadGameData, 
+         LoadSaveDocument, 
+         FileWatcher,
+         FindAndReplace1, 
+         FindAndReplace2, 
+         ImportProject, 
+         NoFeedback 
+      };
 
       // ----------------- EVENTS AND DELEGATES ------------------
 
@@ -32,7 +49,7 @@ namespace Logic
 
       // ------------------------ CLASSES ------------------------
 
-      /// <summary>Base class LogicExport for output window feedback items</summary>
+      /// <summary>Base class for output window feedback items</summary>
       class LogicExport WorkerProgress
       {
          // --------------------- CONSTRUCTION ----------------------
@@ -50,7 +67,7 @@ namespace Logic
 
 
 
-      /// <summary>Base class LogicExport for background worker thread data</summary>
+      /// <summary>Base class for background worker thread data</summary>
       class LogicExport WorkerData
       {
          // --------------------- CONSTRUCTION ----------------------
