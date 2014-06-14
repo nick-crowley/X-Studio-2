@@ -282,22 +282,23 @@ namespace Logic
    }
 
    /// <summary>Replaces all instances of a substring with another.</summary>
-   /// <param name="txt">Substring.</param>
-   /// <param name="with">replacement.</param>
+   /// <param name="substring">Substring.</param>
+   /// <param name="replacement">replacement.</param>
    /// <returns>Copy of string with replacements made</returns>
-   GuiString  GuiString::ReplaceAll(const wstring& txt, const wstring& with) const
+   GuiString  GuiString::ReplaceAll(const wstring& substring, const wstring& replacement) const
    {
       GuiString s(*this);
 
       // Store invariants
-      auto search = txt.c_str();
-      auto replace_len = with.length();
+      LPCWSTR search = substring.c_str();
+      size_t  search_len = substring.length(),
+              replace_len = replacement.length();
 
       // Replace all
       size_t pos = 0;
       while ((pos=s.find(search, pos)) != npos)
       {
-         s.replace(pos, pos+replace_len, with);
+         s.replace(pos, pos+search_len, replacement);
          pos += replace_len;
       }
 
