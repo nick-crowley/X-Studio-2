@@ -7,27 +7,29 @@ namespace Logic
       class ConsoleWnd;
 
       /// <summary>Console manipulators</summary>
-      enum class Cons { UserAction,
-                        Heading, 
-                        Normal, 
-                        Error,
-                        Exception,
-                        Success,
-                        Failure,
-                        Warning,
-                        Bold, 
-                        Endl,
-                        Reset,
-                        Push,
-                        Pop,
+      enum class Cons 
+      { 
+         UserAction, // CRLF + Bold + Cyan
+         Heading,    // CRLF + Cyan
+         Normal,     // Remove bold
+         Error,      // Bold + Red
+         Exception,  // Bold + Purple
+         Success,    // Bold + Green + "Success!"
+         Failure,    // Bold + Red + "Failed: "
+         Warning,    // CRLF + Bold + Yellow + "WARNING: "
+         Bold,       // Add bold
+         Endl,       // Reset + CRLF 
+         Reset,      // White + Normal
+         Push,       // Save current attributes
+         Pop,        // Restore previously saved attributes 
                      
-                        White,
-                        Blue,
-                        Cyan,
-                        Green,
-                        Red,
-                        Yellow,
-                        Purple
+         White,
+         Blue,
+         Cyan,
+         Green,
+         Red,
+         Yellow,
+         Purple
       };
 
       /// <summary>Shorthand for console end-of-line manipulator</summary>
