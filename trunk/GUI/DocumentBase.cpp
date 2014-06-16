@@ -100,6 +100,31 @@ NAMESPACE_BEGIN2(GUI,Documents)
 	   OnCloseDocument();
       return TRUE;
    }
+   
+   /// <summary>Enable/disable detection of changes to the document file</summary>
+   /// <param name="enable">Whether to enable or disable notifications.</param>
+   /// <param name="view">view to receive notifications.</param>
+   /// <returns>True if successful, otherwise false</returns>
+   bool DocumentBase::DetectChanges(bool enable, CView* view)
+   {
+      try
+      {
+         // Enable: Require document have a path
+         if (enable && !FullPath.Empty())
+            FileWatcher.Start(view, FullPath);
+
+         // Disable:
+         else if (!enable)
+            FileWatcher.Stop();
+
+         return true;
+      }
+      catch (ExceptionBase& e)
+      {
+         Console.Log(HERE, e);
+         return false;
+      }
+   }
 
    /// <summary>Invoked by MFC to save the document.</summary>
    /// <param name="szPathName">Path to save under, or nullptr for 'Save As'</param>
@@ -199,8 +224,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>closes document.</summary>
    void  DocumentBase::OnCloseDocument() 
    {
-      // Feedback
-      Console << "Closing and destroying document: title=" << Cons::Yellow << GetTitle() << Cons::White << " path=" << FullPath << ENDL;
+      try
+      {
+         // Feedback
+         Console << "Closing and destroying document: title=" << Cons::Yellow << GetTitle() << Cons::White << " path=" << FullPath << ENDL;
+
+         // Stop file watcher
+         if (FileWatcher.IsRunning())
+            FileWatcher.Stop();
+      }
+      catch (ExceptionBase& e) {
+         Console.Log(HERE, e);
+      }
       
       // Close/Destroy
       __super::OnCloseDocument();

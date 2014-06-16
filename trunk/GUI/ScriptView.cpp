@@ -76,7 +76,6 @@ NAMESPACE_BEGIN2(GUI,Views)
    
    ScriptView::ScriptView() 
              : CFormView(ScriptView::IDD), 
-               FileWatcher(this),
                fnCompileComplete(RichEdit.CompileComplete.Register(this, &ScriptView::OnCompileComplete)),
                fnTextChanged(RichEdit.TextChanged.Register(this, &ScriptView::OnTextChanged))
    {
@@ -247,10 +246,6 @@ NAMESPACE_BEGIN2(GUI,Views)
          // Hide properties info
          CPropertiesWnd::Connect(GetDocument(), false);
 
-         // Stop file watcher
-         if (FileWatcher.IsRunning())
-            FileWatcher.Stop();
-
          // Destroy
          __super::OnDestroy();
       }
@@ -394,8 +389,7 @@ NAMESPACE_BEGIN2(GUI,Views)
          GetDocument()->SetModifiedFlag(FALSE);
 
          // Init file watcher
-         if (!GetDocument()->FullPath.Empty())
-            FileWatcher.Start(GetDocument()->FullPath);
+         GetDocument()->DetectChanges(true, this);
 
          // DEBUG: Verify edit mask
          //PrintEditMask(RichEdit.GetEventMask());
