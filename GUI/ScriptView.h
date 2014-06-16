@@ -5,7 +5,6 @@
 #include "ScriptDocument.h"
 #include "ScriptEdit.h"
 #include "DualComboBox.h"
-#include "../Logic/FileWatcherWorker.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Views)
@@ -105,7 +104,6 @@ NAMESPACE_BEGIN2(GUI,Views)
                    VariablesCombo;
 
    protected:
-      FileWatcherWorker FileWatcher;
       EventHandler fnArgumentChanged,
                    fnCompileComplete,
                    fnTextChanged;

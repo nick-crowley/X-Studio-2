@@ -1,6 +1,7 @@
 #pragma once
 #include "../Logic/MatchData.h"
 #include "../Logic/TemplateFile.h"
+#include "../Logic/FileWatcherWorker.h"
 
 /// <summary>User interface documents</summary>
 NAMESPACE_BEGIN2(GUI,Documents)
@@ -48,6 +49,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
    public:
       void          Activate();
       virtual BOOL  CloseModified();
+      bool          DetectChanges(bool enable, CView* view);
       BOOL          DoSave(LPCTSTR szPathName, BOOL bReplace = TRUE) override;
       void          OnCloseDocument() override;
       void          OnDocumentEvent(DocumentEvent deEvent) override;
@@ -75,7 +77,8 @@ NAMESPACE_BEGIN2(GUI,Documents)
       const static UINT DOCUMENT_RELOADED = 1;     // Update flag indicating document reloaded
 
    protected:
-      DocumentType  Type;           // Document type
+      FileWatcherWorker FileWatcher;    // Watches for external changes to the document
+      DocumentType      Type;           // Document type
 
    private:
       bool          IsVirtual;      // Whether document is virtual

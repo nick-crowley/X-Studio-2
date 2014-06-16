@@ -610,7 +610,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
          theApp.GetMainWindow()->ClearOutputPane(Operation::LoadSaveDocument, true);
 
          // Feedback
-         Console << Cons::UserAction << "Saving script: " << szPath << ENDL;
+         Console << Cons::UserAction << "Saving script: " << Path(szPath) << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, VString(L"Saving script '%s'", szPath));
 
          // Parse script 
@@ -627,12 +627,18 @@ NAMESPACE_BEGIN2(GUI,Documents)
             if (PrefsLib.IncrementOnSave)
                Script.Version++;
 
+            // Disable change detection
+            DetectChanges(false, GetView());
+
             // Write script
             ScriptFileWriter w(XFileInfo(szPath).OpenWrite());
             w.Write(Script);
             w.Close();
 
-            // Remove 'Modified'
+            // Re-Enable change detection
+            DetectChanges(true, GetView());
+
+            // Remove 'Modified' flag
             SetModifiedFlag(FALSE);
 
             // Feedback
