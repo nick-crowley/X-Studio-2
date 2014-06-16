@@ -36,8 +36,7 @@ namespace Logic
             Close();
          }
 
-         DEFAULT_COPY(SyncEvent);	// Default copy semantics
-		   DEFAULT_MOVE(SyncEvent);	// Default move semantics
+		   NO_MOVE(SyncEvent);	// No move semantics
 
          // ------------------------ STATIC -------------------------
       protected:

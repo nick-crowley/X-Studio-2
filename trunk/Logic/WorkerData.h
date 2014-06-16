@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-
+#include "SyncEvent.h"
 
 namespace Logic
 {
@@ -54,15 +54,20 @@ namespace Logic
       {
          // --------------------- CONSTRUCTION ----------------------
       public:
+         /// <summary>Create worker feedback.</summary>
+         /// <param name="op">Operation type</param>
+         /// <param name="t">Type of progress to report</param>
+         /// <param name="indent">Amount of identation.</param>
+         /// <param name="sz">Message</param>
          WorkerProgress(Operation op, ProgressType t, UINT indent, const wstring& sz) : Operation(op), Type(t), Text(sz), Indent(indent)
          {}
 
          // -------------------- REPRESENTATION ---------------------
 
-         const Operation     Operation;
-         const ProgressType  Type;
-         const wstring       Text;
-         const UINT          Indent;
+         const Operation     Operation;      // Operation type
+         const ProgressType  Type;           // Progress report type
+         const wstring       Text;           // Report text
+         const UINT          Indent;         // Amount of Indentation 
       };
 
 
@@ -71,6 +76,11 @@ namespace Logic
       class LogicExport WorkerData
       {
          // --------------------- CONSTRUCTION ----------------------
+      private:
+         /// <summary>Creates 'No Feedback' sentinel data</summary>
+         WorkerData() : ParentWnd(nullptr), Operation(Operation::NoFeedback), Aborted(false)
+         {}
+
       public:
          /// <summary>Creates worker data for an operation</summary>
          /// <param name="op">operation.</param>
@@ -78,12 +88,6 @@ namespace Logic
          {
          }
 
-      private:
-         /// <summary>Creates 'No Feedback' sentinel data</summary>
-         WorkerData() : ParentWnd(nullptr), Operation(Operation::NoFeedback), Aborted(false)
-         {}
-
-      public:
          virtual ~WorkerData()
          {}
 
@@ -92,18 +96,29 @@ namespace Logic
          const static WorkerData   NoFeedback;
 
          // --------------------- PROPERTIES ------------------------
-			
+		public:
+         PROPERTY_GET(ManualEvent,AbortEvent,GetAbortEvent);
+
          // ---------------------- ACCESSORS ------------------------			
       public:
+         /// <summary>Gets the event used to signal an abort.</summary>
+         /// <returns></returns>
+         ManualEvent GetAbortEvent() const
+         {
+            return Aborted;
+         }
+
+         /// <summary>Gets the parent window that received notifications.</summary>
+         /// <returns></returns>
          CWnd* GetParent() const
          {
             return ParentWnd;
          }
 
-         /// <summary>Poll whether thread has been commanded to stop</summary>
+         /// <summary>Query whether thread has been commanded to stop</summary>
          bool  IsAborted() const
          {
-            return Aborted;
+            return Aborted.Signalled;
          }
 
          // ----------------------- MUTATORS ------------------------
@@ -111,14 +126,26 @@ namespace Logic
          /// <summary>Command thread to stop</summary>
          virtual void  Abort()
          {
-            Aborted = true;
+            try 
+            {  // Signal abort event
+               Aborted.Signal();
+            } 
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+            }
          }
 
          /// <summary>Resets to initial state.</summary>
          virtual void  Reset()
          {
-            ParentWnd = AfxGetApp()->m_pMainWnd;
-            Aborted = false;
+            try 
+            {  // Reset parent window + abort event
+               ParentWnd = AfxGetApp()->m_pMainWnd;
+               Aborted.Reset();
+            } 
+            catch (ExceptionBase& e) {
+               Console.Log(HERE, e);
+            }
          }
 
          /// <summary>Inform main window of progress</summary>
@@ -148,13 +175,14 @@ namespace Logic
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         const Operation  Operation;
+         const Operation  Operation;    // Operation type
 
       protected:
-         CWnd*            ParentWnd;
-
+         ManualEvent      Aborted;      // Used to signal operation should be aborted
+         CWnd*            ParentWnd;    // Window that received feedback notifications
+         
       private:
-         volatile bool    Aborted;
+         //volatile bool    Aborted;
       };
 
       

@@ -129,6 +129,7 @@
     <ClInclude Include="CommandNodeList.h" />
     <ClInclude Include="CommandTree.h" />
     <ClInclude Include="CommandSyntax.h" />
+    <ClInclude Include="ComThreadHelper.h" />
     <ClInclude Include="ConsoleLog.h" />
     <ClInclude Include="ConsoleWnd.h" />
     <ClInclude Include="DataStream.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="StringResolver.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Symbol.h" />
+    <ClInclude Include="SyncEvent.h" />
     <ClInclude Include="SyntaxFile.h" />
     <ClInclude Include="SyntaxFileReader.h" />
     <ClInclude Include="SyntaxHighlight.h" />
