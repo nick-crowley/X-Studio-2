@@ -78,7 +78,7 @@ namespace Logic
          void Signal()
          {
             if (!SetEvent(Handle))
-               throw Win32Exception(HERE, L"Unable to signal event: " + SysErrorString());
+               throw Win32Exception(HERE, L"Unable to signal event");
          }
 
          /// <summary>Resets event to unsignalled.</summary>
@@ -86,7 +86,7 @@ namespace Logic
          void Reset()
          {
             if (!ResetEvent(Handle))
-               throw Win32Exception(HERE, L"Unable to reset event: " + SysErrorString());
+               throw Win32Exception(HERE, L"Unable to reset event");
          }
 
          /// <summary>Retrieve underlying HANDLE.</summary>
