@@ -105,6 +105,7 @@ namespace Logic
       public:
          /// <summary>Gets the event used to signal an abort.</summary>
          /// <returns></returns>
+         /// <exception cref="Logic::Win32Exception">Unable to get event</exception>
          ManualEvent GetAbortEvent() const
          {
             return Aborted;
@@ -131,10 +132,12 @@ namespace Logic
 
          // ----------------------- MUTATORS ------------------------
       public:
-         /// <summary>Command thread to stop</summary>
+         /// <summary>Command worker to stop</summary>
+         /// <exception cref="Logic::Win32Exception">Unable to abort worker</exception>
          virtual void  Abort();
 
          /// <summary>Resets to initial state.</summary>
+         /// <exception cref="Logic::Win32Exception">Unable to abort worker</exception>
          virtual void  Reset();
 
          // -------------------- REPRESENTATION ---------------------

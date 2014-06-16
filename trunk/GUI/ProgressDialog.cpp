@@ -89,14 +89,21 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <summary>Aborts the worker thread</summary>
       void ProgressDialog::OnCancel_Click()
       {
+         // Verify state
          if (!AllowCancel)
             return;
 
-         // Feedback
-         Console << Cons::UserAction << "Aborting operation..." << ENDL;
+         try
+         {
+            // Feedback
+            Console << Cons::UserAction << "Aborting operation..." << ENDL;
 
-         // Abort worker
-         Worker->Stop();
+            // Abort worker
+            Worker->Stop();
+         }
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
+         }
       }
 
       
@@ -104,11 +111,17 @@ NAMESPACE_BEGIN2(GUI,Windows)
       /// <param name="id">The identifier.</param>
       void ProgressDialog::OnTimer(UINT_PTR  id)
       {
-         // Close dialog when thread ends
-         if (!Worker->IsRunning())
+         try
          {
-            KillTimer(TIMER_ID);
-            EndDialog(IDOK);
+            // Close dialog when thread ends
+            if (!Worker->IsRunning())
+            {
+               KillTimer(TIMER_ID);
+               EndDialog(IDOK);
+            }
+         }
+         catch (ExceptionBase& e) {
+            Console.Log(HERE, e);
          }
       }
       

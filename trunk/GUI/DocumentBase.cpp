@@ -109,11 +109,11 @@ NAMESPACE_BEGIN2(GUI,Documents)
    {
       try
       {
-         // Enable: Require document have a path
-         if (enable && !FullPath.Empty())
+         // Enable: Start background worker
+         if (enable && !FullPath.Empty())  // Require document have a path
             FileWatcher.Start(view, FullPath);
 
-         // Disable:
+         // Disable: Stop background worker
          else if (!enable)
             FileWatcher.Stop();
 

@@ -98,6 +98,7 @@ namespace Logic
          }
 
          /// <summary>Sets the 'abort' flag and closes the thread handle</summary>
+         /// <exception cref="Logic::Win32Exception">Failed to stop Thread</exception>
          void  Stop()
          {
             // Ensure running

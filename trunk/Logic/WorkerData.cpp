@@ -50,29 +50,20 @@ namespace Logic
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
-      /// <summary>Command thread to stop</summary>
+      /// <summary>Command worker to stop</summary>
+      /// <exception cref="Logic::Win32Exception">Unable to abort worker</exception>
       void WorkerData::Abort()
       {
-         try 
-         {  // Signal abort event
-            Aborted.Signal();
-         } 
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e);
-         }
+         Aborted.Signal(); // Signal abort event
       }
 
       /// <summary>Resets to initial state.</summary>
+      /// <exception cref="Logic::Win32Exception">Unable to abort worker</exception>
       void WorkerData::Reset()
       {
-         try 
-         {  // Reset parent window + abort event
-            ParentWnd = AfxGetApp()->m_pMainWnd;
-            Aborted.Reset();
-         } 
-         catch (ExceptionBase& e) {
-            Console.Log(HERE, e);
-         }
+         // Reset parent window + abort event
+         ParentWnd = AfxGetApp()->m_pMainWnd;
+         Aborted.Reset();
       }
 
       /// <summary>Inform main window of progress</summary>
