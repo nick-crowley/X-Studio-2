@@ -1,7 +1,5 @@
 #pragma once
 #include "afxwin.h"
-//#include "../Logic/MatchData.h"
-//#include "../Logic/SearchWorker.h"
 #include "../Logic/BackgroundWorker.h"
 
 /// <summary>User interface windows</summary>
@@ -15,7 +13,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          enum { IDD = IDD_PROGRESS };
 
       protected:
-         const UINT  TIMER_ID = 42;
+         const UINT  TIMER_ID = 42;    // ID Used for polling timer
          
          // --------------------- CONSTRUCTION ----------------------
       public:
@@ -30,7 +28,6 @@ NAMESPACE_BEGIN2(GUI,Windows)
          // --------------------- PROPERTIES ------------------------
 			
          // ---------------------- ACCESSORS ------------------------			
-      protected:
 
          // ----------------------- MUTATORS ------------------------
       public:
@@ -45,14 +42,12 @@ NAMESPACE_BEGIN2(GUI,Windows)
          
          // -------------------- REPRESENTATION ---------------------
       protected:
-         CProgressCtrl  ProgressBar;
-         CButton        Cancel;
-
-         BackgroundWorker*  Worker;
-
-         wstring        Caption,
-                        Description;
-         bool           AllowCancel;
+         bool               AllowCancel;     // Whether cancel button is enabled
+         CButton            Cancel;          // Cancel button
+         wstring            Caption,         // Dialog caption text
+                            Description;     // Dialog description text
+         CProgressCtrl      ProgressBar;     // Progress bar
+         BackgroundWorker*  Worker;          // Data for Background Worker
       };
 
 /// <summary>User interface windows</summary>
