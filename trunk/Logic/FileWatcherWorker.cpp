@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "FileWatcherWorker.h"
-#include "../Logic/FileStream.h"
-#include "../Logic/LegacyProjectFileReader.h"
-#include "../Logic/ProjectFileWriter.h"
+#include "ComThreadHelper.h"
 #include <strsafe.h>
 
 namespace Logic
@@ -32,7 +30,7 @@ namespace Logic
             {
                // Attempt to open folder
                Handle = CreateFile(p.c_str(), GENERIC_READ, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, 
-                                    nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+                                    nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED|FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
                // Verify folder exists
                if (Handle == INVALID_HANDLE_VALUE && GetLastError() == ERROR_PATH_NOT_FOUND)
@@ -123,6 +121,14 @@ namespace Logic
          NO_MOVE(FileWatcher);	// Unmoveable
 
          // ------------------------ STATIC -------------------------
+      public:
+         /// <summary>Empty File IO completion routine.</summary>
+         /// <param name="dwErrorCode">status code.</param>
+         /// <param name="dwBytes">bytes transferred.</param>
+         /// <param name="pOverlapped">overlapped i/o.</param>
+         static void CALLBACK FileIOCompletionRoutine(DWORD dwErrorCode, DWORD dwBytes, LPOVERLAPPED pOverlapped)
+         {
+         }
 
          // --------------------- PROPERTIES ------------------------
       
@@ -131,23 +137,37 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Suspends calling thread and waits for notification of changes to target file</summary>
+         /// <param name="abort">Handle to the event used to abort operation</param>
          /// <returns>List of changes</returns>
          /// <exception cref="Logic::Win32Exception">Unable to listen for changes</exception>
-         list<FileChange> Watch()
+         list<FileChange> Watch(ManualEvent& abort)
          {
             FolderHandle handle(FullPath.Folder);     // Folder handle
             ByteArrayPtr Buffer(new byte[4096]);      // FILE_NOTIFY_INFORMATION record buffer
-            DWORD length = 0;
+            OVERLAPPED   async;
 
             // Prepare
             ZeroMemory(Buffer.get(), 4096);
+            ZeroMemory(&async, sizeof(OVERLAPPED));
+            
+            // Init async notification of changes
+            if (!ReadDirectoryChangesW(handle, Buffer.get(), 4096, FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE, nullptr, &async, FileIOCompletionRoutine))
+               throw Win32Exception(HERE, L"Unable to create file-change listener: " + SysErrorString());
 
-            // Register+Wait for changes
-            if (!ReadDirectoryChangesW(handle, Buffer.get(), 4096, FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE, &length, nullptr, nullptr))
-               throw Win32Exception(HERE, L"Unable to listen for file changes: " + SysErrorString());
-
-            // Extract results
-            return GetChanges(Buffer.get(), length);
+            // Wait until aborted/alerted 
+            switch (WaitForSingleObjectEx(abort, INFINITE, TRUE))
+            {
+            // Aborted: Return nothing
+            case WAIT_OBJECT_0:  
+               return list<FileChange>();    //DEBUG: Console << "File watch operation aborted" << ENDL;
+               
+            // Notification: Decode/return notifications
+            case WAIT_IO_COMPLETION:
+               return GetChanges(Buffer.get(), async.InternalHigh);   //DEBUG: Console << "IO Completion routine queued" << ENDL;
+            }
+            
+            // Error
+            throw Win32Exception(HERE, L"Unable to wait on file-change listener: " + SysErrorString());
          }
 
       protected:
@@ -180,11 +200,7 @@ namespace Logic
       // -------------------------------- CONSTRUCTION --------------------------------
 
       /// <summary>Creates a new file watcher worker.</summary>
-      /// <param name="owner">Window that will receive file change notifications</param>
-      /// <exception cref="Logic::ArgumentNullException">Owner window is nullptr</exception>
-      FileWatcherWorker::FileWatcherWorker(CWnd* owner)
-         : BackgroundWorker((ThreadProc)ThreadMain),
-           Data(owner)
+      FileWatcherWorker::FileWatcherWorker() : BackgroundWorker((ThreadProc)ThreadMain)
       {
       }
 
@@ -202,42 +218,38 @@ namespace Logic
       {
          try
          {
-            HRESULT  hr;
+            REQUIRED(data);
 
-            // Init COM
-            if (FAILED(hr=CoInitialize(NULL)))
-               throw ComException(HERE, hr);
-
+            ComThreadHelper COM; // Init COM
+            
             // Feedback
-            Console << Cons::UserAction << "Watching for file changes: " << data->TargetPath << ENDL;
+            Console << Cons::UserAction << "Watching for file changes: " << data->GetFullPath() << ENDL;
 
             // Await notification
-            while (TRUE)
+            Path path = data->GetFullPath();
+            do 
             {
-               FileWatcher fw(data->TargetPath);
-
-               // Watch for changes + iterate thru results
-               for (auto& c : fw.Watch())
+               FileWatcher fw(path);
+               
+               // Watch for changes
+               for (auto& c : fw.Watch(data->AbortEvent))
                {
-                  // Modified: Notify owner window
-                  if (c.Action == FileWatcher::ChangeType::Modified && c.FullPath == data->TargetPath)
+                  // Notify owner window if file was modified
+                  if (c.Action == FileWatcher::ChangeType::Modified && c.FullPath == path)
                   {
-                     Console << Cons::UserAction << "External changes detected in: " << data->TargetPath << ENDL;
+                     Console << Cons::UserAction << "External changes detected in: " << path << ENDL;
                      data->NotifyOwner();
                   }
                }
-            }
-         
-            // Cleanup
-            CoUninitialize();
+               // Repeat until aborted
+            } while (!data->AbortEvent.Signalled);
+
+            // Success
             return TRUE;
          }
          catch (ExceptionBase& e) 
          {
             Console.Log(HERE, e);
-
-            // Cleanup
-            CoUninitialize();
             return FALSE;
          }
       }
@@ -245,20 +257,22 @@ namespace Logic
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Starts watching for changes to a file</summary>
-      /// <param name="p">Full file path</param>
+      /// <param name="owner">Window that will receive file change notifications</param>
+      /// <param name="file">Full path of file to watch</param>
+      /// <exception cref="Logic::ArgumentNullException">Owner window is nullptr</exception>
       /// <exception cref="Logic::FileNotFoundException">File does not exist</exception>
       /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
       /// <exception cref="Logic::Win32Exception">Failed to start Thread</exception>
-      void  FileWatcherWorker::Start(const Path& p)
+      void  FileWatcherWorker::Start(CWnd* owner, const Path& file)
       {
          // Ensure file exists + thread not running
-         if (!p.Exists())
-            throw FileNotFoundException(HERE, p);
+         if (!file.Exists())
+            throw FileNotFoundException(HERE, file);
          if (IsRunning())
             throw InvalidOperationException(HERE, L"Thread already running");
 
-         // Start thread
-         Data.Reset(p);
+         // Setup/Start thread
+         Data.Reset(owner, file);
          __super::Start(&Data);
       }
 

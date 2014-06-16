@@ -1,5 +1,6 @@
 #pragma once
 #include "BackgroundWorker.h"
+
 #include <strsafe.h>
 
 namespace Logic
@@ -8,6 +9,7 @@ namespace Logic
    {
       /// <summary>Notifies a window of a file change</summary>
       #define WM_FILE_CHANGE   (WM_USER+2)
+
 
       /// <summary>Registers and processes file-change notifications</summary>
       class LogicExport FileWatcherWorker : public BackgroundWorker
@@ -20,14 +22,19 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
          public:
             /// <summary>Create data for a file watcher worker</summary>
-            /// <param name="owner">Window that will receive file change notifications</param>
-            /// <exception cref="Logic::ArgumentNullException">Owner window is nullptr</exception>
-            FileWatcherData(CWnd* owner) : WorkerData(Operation::FileWatcher), Owner(owner)
-            {
-               REQUIRED(owner);
-            }
+            FileWatcherData() : WorkerData(Operation::FileWatcher)
+            {}
 
+            // --------------------- PROPERTIES ------------------------
+         
             // ---------------------- ACCESSORS ------------------------			
+         public:
+            /// <summary>Gets the full path of the target file.</summary>
+            /// <returns></returns>
+            Path GetFullPath() const
+            {
+               return FullPath;
+            }
 
             // ----------------------- MUTATORS ------------------------
          public:
@@ -38,25 +45,30 @@ namespace Logic
             }
             
             /// <summary>Resets to initial state.</summary>
-            /// <param name="f">legacy project path to upgrade</param>
-            void Reset(const Path& p)
+            /// <param name="owner">Window that will receive file change notifications</param>
+            /// <param name="file">Full path of file to watch</param>
+            /// <exception cref="Logic::ArgumentNullException">Owner window is nullptr</exception>
+            void Reset(CWnd* owner, const Path& file)
             {
-               // Reset path + aborted (+ parentWnd)
-               TargetPath = p;
+               REQUIRED(owner);
+
+               // Reset
+               Owner = owner;
+               FullPath = file;
+
+               // Reset base
                __super::Reset();
             }
-
+            
             // -------------------- REPRESENTATION ---------------------
-         public:
-            Path  TargetPath;    // Full path of file to watch
-
          protected:
-            CWnd*  Owner;        // Window to notify upon changes
+            CWnd* Owner;      // Window to notify upon changes
+            Path  FullPath;   // Full path of file to watch
          };
 
          // --------------------- CONSTRUCTION ----------------------
       public:
-         FileWatcherWorker(CWnd* owner);
+         FileWatcherWorker();
          virtual ~FileWatcherWorker();
 
          NO_COPY(FileWatcherWorker);	// No copy semantics
@@ -73,11 +85,13 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Starts watching for changes to a file</summary>
-         /// <param name="p">Full file path</param>
+         /// <param name="owner">Window that will receive file change notifications</param>
+         /// <param name="file">Full path of file to watch</param>
+         /// <exception cref="Logic::ArgumentNullException">Owner window is nullptr</exception>
          /// <exception cref="Logic::FileNotFoundException">File does not exist</exception>
          /// <exception cref="Logic::InvalidOperationException">Thread already running</exception>
          /// <exception cref="Logic::Win32Exception">Failed to start Thread</exception>
-         void  Start(const Path& p);
+         void  Start(CWnd* owner, const Path& file);
 
          // -------------------- REPRESENTATION ---------------------
       protected:
