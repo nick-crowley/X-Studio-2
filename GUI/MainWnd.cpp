@@ -528,7 +528,7 @@ NAMESPACE_BEGIN2(GUI,Windows)
          ActiveDocument = doc;       
 
          // Feedback
-         Console << Cons::UserAction << "Switching document: ";
+         Console << Cons::Heading << "Switching document: ";
          if (doc)
             Console << Cons::White << "title=" << Cons::Yellow << doc->GetTitle() << Cons::White << " path=" << doc->FullPath;
          Console << ENDL;
