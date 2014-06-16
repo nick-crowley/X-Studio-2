@@ -42,6 +42,12 @@ namespace Logic
          NoFeedback 
       };
 
+      /// <summary>Get operation name.</summary>
+      /// <param name="op">operation.</param>
+      /// <returns></returns>
+      /// <exception cref="Logic::ArgumentException">Unrecognised operation</exception>
+      wstring GetString(Operation op);
+
       // ----------------- EVENTS AND DELEGATES ------------------
 
       typedef Event<const WorkerProgress&>  FeedbackEvent;
@@ -78,18 +84,14 @@ namespace Logic
          // --------------------- CONSTRUCTION ----------------------
       private:
          /// <summary>Creates 'No Feedback' sentinel data</summary>
-         WorkerData() : ParentWnd(nullptr), Operation(Operation::NoFeedback), Aborted(false)
-         {}
+         WorkerData();
 
       public:
          /// <summary>Creates worker data for an operation</summary>
          /// <param name="op">operation.</param>
-         WorkerData(Operation op) : ParentWnd(AfxGetApp()->m_pMainWnd), Operation(op), Aborted(false)
-         {
-         }
+         WorkerData(Operation op);
 
-         virtual ~WorkerData()
-         {}
+         virtual ~WorkerData();
 
          // ------------------------ STATIC -------------------------
       public:
@@ -121,57 +123,19 @@ namespace Logic
             return Aborted.Signalled;
          }
 
+         /// <summary>Inform main window of progress</summary>
+         void  SendFeedback(ProgressType t, UINT indent, const wstring& sz) const;
+
+         /// <summary>Inform main window of progress and print message to console</summary>
+         void  SendFeedback(Cons c, ProgressType t, UINT indent, const wstring& sz) const;
+
          // ----------------------- MUTATORS ------------------------
       public:
          /// <summary>Command thread to stop</summary>
-         virtual void  Abort()
-         {
-            try 
-            {  // Signal abort event
-               Aborted.Signal();
-            } 
-            catch (ExceptionBase& e) {
-               Console.Log(HERE, e);
-            }
-         }
+         virtual void  Abort();
 
          /// <summary>Resets to initial state.</summary>
-         virtual void  Reset()
-         {
-            try 
-            {  // Reset parent window + abort event
-               ParentWnd = AfxGetApp()->m_pMainWnd;
-               Aborted.Reset();
-            } 
-            catch (ExceptionBase& e) {
-               Console.Log(HERE, e);
-            }
-         }
-
-         /// <summary>Inform main window of progress</summary>
-         void  SendFeedback(ProgressType t, UINT indent, const wstring& sz) const
-         {
-            // Dummy: NOP
-            if (Operation == Operation::NoFeedback || !ParentWnd)
-               return;
-
-            // Output to GUI
-            ParentWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
-         }
-
-         /// <summary>Inform main window of progress and print message to console</summary>
-         void  SendFeedback(Cons c, ProgressType t, UINT indent, const wstring& sz) const
-         {
-            // Dummy: NOP
-            if (Operation == Operation::NoFeedback || !ParentWnd)
-               return;
-
-            // Output to console 
-            Console << c << sz << ENDL;
-
-            // Output to GUI
-            ParentWnd->PostMessageW(WM_FEEDBACK, NULL, (LPARAM)new WorkerProgress(Operation, t, indent, sz));
-         }
+         virtual void  Reset();
 
          // -------------------- REPRESENTATION ---------------------
       public:
@@ -180,9 +144,6 @@ namespace Logic
       protected:
          ManualEvent      Aborted;      // Used to signal operation should be aborted
          CWnd*            ParentWnd;    // Window that received feedback notifications
-         
-      private:
-         //volatile bool    Aborted;
       };
 
       

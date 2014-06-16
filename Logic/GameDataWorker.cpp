@@ -16,11 +16,7 @@ namespace Logic
 {
    namespace Threads
    {
-      // -------------------------------- STATIC DATA  --------------------------------
-
-      /// <summary>No operation feedback sentinel</summary>
-      const WorkerData   WorkerData::NoFeedback;
-
+      
       // -------------------------------- CONSTRUCTION --------------------------------
    
       GameDataWorker::GameDataWorker() : BackgroundWorker((ThreadProc)ThreadMain)
