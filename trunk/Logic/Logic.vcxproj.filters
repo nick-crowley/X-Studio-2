@@ -716,6 +716,9 @@
     <ClCompile Include="FileWatcherWorker.cpp">
       <Filter>Source Files\Threads</Filter>
     </ClCompile>
+    <ClCompile Include="WorkerData.cpp">
+      <Filter>Source Files\Threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\XML\msxml6.tlh">

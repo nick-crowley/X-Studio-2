@@ -149,25 +149,38 @@ namespace Logic
             // Prepare
             ZeroMemory(Buffer.get(), 4096);
             ZeroMemory(&async, sizeof(OVERLAPPED));
-            
-            // Init async notification of changes
-            if (!ReadDirectoryChangesW(handle, Buffer.get(), 4096, FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE, nullptr, &async, FileIOCompletionRoutine))
-               throw Win32Exception(HERE, L"Unable to create file-change listener: " + SysErrorString());
 
-            // Wait until aborted/alerted 
-            switch (WaitForSingleObjectEx(abort, INFINITE, TRUE))
-            {
-            // Aborted: Return nothing
-            case WAIT_OBJECT_0:  
-               return list<FileChange>();    //DEBUG: Console << "File watch operation aborted" << ENDL;
-               
-            // Notification: Decode/return notifications
-            case WAIT_IO_COMPLETION:
-               return GetChanges(Buffer.get(), async.InternalHigh);   //DEBUG: Console << "IO Completion routine queued" << ENDL;
-            }
+            // Feedback
+            Console << Cons::UserAction << "Watching for file changes: " << FullPath << "...";
             
-            // Error
-            throw Win32Exception(HERE, L"Unable to wait on file-change listener: " + SysErrorString());
+            try
+            {
+               // Init async notification of changes
+               if (!ReadDirectoryChangesW(handle, Buffer.get(), 4096, FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE, nullptr, &async, FileIOCompletionRoutine))
+                  throw Win32Exception(HERE, L"Unable to create file-change listener");
+               Console << Cons::Success << ENDL;
+
+               // Wait until aborted/alerted 
+               switch (WaitForSingleObjectEx(abort, INFINITE, TRUE))
+               {
+               // Aborted: Return nothing
+               case WAIT_OBJECT_0:  
+                  return list<FileChange>();    //DEBUG: Console << "File watch operation aborted" << ENDL;
+               
+               // Notification: Decode/return notifications
+               case WAIT_IO_COMPLETION:
+                  return GetChanges(Buffer.get(), async.InternalHigh);   //DEBUG: Console << "IO Completion routine queued" << ENDL;
+
+               // Error:
+               default:
+                  throw Win32Exception(HERE, L"Unable to wait on file-change listener");
+               }
+            }
+            catch (...)
+            {
+               Console << Cons::Failure << ENDL;
+               throw;
+            }
          }
 
       protected:
@@ -222,9 +235,6 @@ namespace Logic
 
             ComThreadHelper COM; // Init COM
             
-            // Feedback
-            Console << Cons::UserAction << "Watching for file changes: " << data->GetFullPath() << ENDL;
-
             // Await notification
             Path path = data->GetFullPath();
             do 

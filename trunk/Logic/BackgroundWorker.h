@@ -26,9 +26,16 @@ namespace Logic
          /// <summary>Stops the background worker without throwing</summary>
          virtual ~BackgroundWorker()
          {
-            // Stop if running
-            Data->Abort();
-            Close();
+            // Terminate if still running
+            if (Thread)
+            {
+               // Feedback
+               Console << Cons::Error << "WARNING: " << Cons::White << "Terminating " << GetString(Data->Operation) << " Worker thread" << ENDL;
+
+               // Prematurely terminate
+               TerminateThread(Thread, -1);
+               Close();
+            }
          }
       
          // ------------------------ STATIC -------------------------

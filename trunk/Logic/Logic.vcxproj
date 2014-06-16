@@ -313,6 +313,7 @@
     <ClCompile Include="TemplateFileReader.cpp" />
     <ClCompile Include="TObject.cpp" />
     <ClCompile Include="TShipReader.cpp" />
+    <ClCompile Include="WorkerData.cpp" />
     <ClCompile Include="XCatalog.cpp" />
     <ClCompile Include="XFileInfo.cpp" />
     <ClCompile Include="XFileSystem.cpp" />
