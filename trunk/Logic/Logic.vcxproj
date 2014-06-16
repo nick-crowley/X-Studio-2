@@ -165,6 +165,7 @@
     <ClInclude Include="MapIterator.hpp" />
     <ClInclude Include="MatchData.h" />
     <ClInclude Include="MemoryStream.h" />
+    <ClInclude Include="Mutex.h" />
     <ClInclude Include="ParameterArray.h" />
     <ClInclude Include="ParameterSyntax.h" />
     <ClInclude Include="ParameterTypes.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="Symbol.h" />
     <ClInclude Include="SyncEvent.h" />
+    <ClInclude Include="SynchronizationObject.h" />
     <ClInclude Include="SyntaxFile.h" />
     <ClInclude Include="SyntaxFileReader.h" />
     <ClInclude Include="SyntaxHighlight.h" />

@@ -447,6 +447,12 @@
     <ClInclude Include="ComThreadHelper.h">
       <Filter>Header Files\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="SynchronizationObject.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="Mutex.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
