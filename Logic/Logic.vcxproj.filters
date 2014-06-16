@@ -441,6 +441,12 @@
     <ClInclude Include="FileWatcherWorker.h">
       <Filter>Header Files\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="SyncEvent.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="ComThreadHelper.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
