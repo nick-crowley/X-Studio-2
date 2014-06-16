@@ -204,15 +204,15 @@ namespace Logic
          case Cons::Error:  
             return *this << Cons::Bold << Cons::Red;
 
-         // Success: Bold + Green
+         // Success: Bold + Green + "Success!"
          case Cons::Success:  
             return *this << Cons::Bold << Cons::Green << "Success! ";
 
-         // Failure: Bold + Red
+         // Failure: Bold + Red + "Failed: "
          case Cons::Failure:  
             return *this << Cons::Bold << Cons::Red << "Failed: ";
 
-         // Warning: CRLF + Bold + Yellow
+         // Warning: CRLF + Bold + Yellow + "WARNING: "
          case Cons::Warning:
             return *this << ENDL << Cons::Bold << Cons::Yellow << "WARNING: " << Cons::White;
 
@@ -221,7 +221,7 @@ namespace Logic
             AttributeStack.push_back(Attributes);
             return *this;
 
-         // Push attributes: Restore previously saved attributes 
+         // Pop attributes: Restore previously saved attributes 
          case Cons::Pop:
             if (!AttributeStack.empty())
             {
