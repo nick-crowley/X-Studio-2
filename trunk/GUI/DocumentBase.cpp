@@ -439,17 +439,24 @@ NAMESPACE_BEGIN2(GUI,Documents)
    /// <summary>Reload document.</summary>
    void  DocumentBase::OnCommand_Reload()
    {
-      Console << Cons::UserAction << "Reloading document: " << GetTitle() << ENDL;
+      // Feedback
+      Console << Cons::UserAction << "Reloading document: " << Cons::Yellow << GetTitle() << ENDL;
 
       // Modified: Query to save
       if (!SaveModified())
+      {
+         Console << "Reloading aborted..." << ENDL;
          return;
+      }
 
       // Reload document
       OnReloadDocument(FullPath.c_str());
 
       // Update all views
       UpdateAllViews(nullptr, DOCUMENT_RELOADED);
+
+      // Feedback
+      Console << Cons::UserAction << "Reloading document successfully" << ENDL;
    }
 
    /// <summary>Save under existing path</summary>

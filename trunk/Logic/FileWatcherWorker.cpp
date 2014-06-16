@@ -151,7 +151,7 @@ namespace Logic
             ZeroMemory(&async, sizeof(OVERLAPPED));
 
             // Feedback
-            Console << Cons::UserAction << "Watching for file changes: " << FullPath << "...";
+            Console << Cons::Heading << "Watching for file changes: " << FullPath << "...";
             
             try
             {
@@ -232,11 +232,10 @@ namespace Logic
          try
          {
             REQUIRED(data);
+            ComThreadHelper COM; 
+            Path            path = data->GetFullPath();
 
-            ComThreadHelper COM; // Init COM
-            
             // Await notification
-            Path path = data->GetFullPath();
             do 
             {
                FileWatcher fw(path);

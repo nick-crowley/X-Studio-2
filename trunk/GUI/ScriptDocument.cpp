@@ -372,14 +372,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       try
       {
          // Feedback
-         Console << Cons::UserAction << "Loading script: " << Path(szPathName) << ENDL;
+         Console << Cons::Heading << "Loading script: " << Path(szPathName) << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, VString(L"Loading script '%s'", szPathName));
 
          // Read/Parse script
          Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
 
-         // Feedback
-         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script loaded successfully");
+         // Feedback 
+         data.SendFeedback(ProgressType::Succcess, 0, L"Script loaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
@@ -467,14 +467,14 @@ NAMESPACE_BEGIN2(GUI,Documents)
       try
       {
          // Feedback
-         Console << Cons::UserAction << "Reloading script: " << Path(szPathName) << ENDL;
+         Console << Cons::Heading << "Reloading script: " << Path(szPathName) << ENDL;
          data.SendFeedback(ProgressType::Operation, 0, VString(L"Reloading script '%s'", szPathName));
 
          // Read/Parse script
          Script = ScriptFileReader(XFileInfo(szPathName).OpenRead()).ReadFile(szPathName, false);
 
          // Feedback
-         data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script reloaded successfully");
+         data.SendFeedback(ProgressType::Succcess, 0, L"Script reloaded successfully");
          return TRUE;
       }
       catch (ExceptionBase&  e)
@@ -642,7 +642,7 @@ NAMESPACE_BEGIN2(GUI,Documents)
             SetModifiedFlag(FALSE);
 
             // Feedback
-            data.SendFeedback(Cons::Success, ProgressType::Succcess, 0, L"Script saved successfully");
+            data.SendFeedback(ProgressType::Succcess, 0, L"Script saved successfully");
 
             // Auto-Commit: Commit if document part of project
             if (auto proj = ProjectDocument::GetActive())
