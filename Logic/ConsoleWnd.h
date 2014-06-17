@@ -1,4 +1,6 @@
 #pragma once
+#include "Mutex.h"
+#include "CriticalSection.h"
 
 namespace Logic
 {
@@ -22,6 +24,8 @@ namespace Logic
          Reset,      // White + Normal
          Push,       // Save current attributes
          Pop,        // Restore previously saved attributes 
+         //Lock,       // Locks the console for the calling thread
+         //Unlock,     // Release the lock upon the console
                      
          White,
          Blue,
@@ -49,8 +53,7 @@ namespace Logic
       class LogicExport ConsoleWnd
       {
 		   // ------------------------ TYPES --------------------------
-      private:
-	  
+
          // --------------------- CONSTRUCTION ----------------------
       private:
          ConsoleWnd();
@@ -71,17 +74,17 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-         /// <summary>Determines whether console is visible.</summary>
+         /// <summary>Determines whether console is visible</summary>
          /// <returns></returns>
          bool IsVisible() const;
 
       protected:
-         /// <summary>Gets the attributes.</summary>
+         /// <summary>Gets the attributes</summary>
          /// <returns></returns>
          WORD GetAttributes();
 
-         /// <summary>Sets the attributes.</summary>
-         /// <param name="attr">The attribute.</param>
+         /// <summary>Sets the attributes</summary>
+         /// <param name="attr">The attribute</param>
          void SetAttributes(WORD attr);
 
          // ----------------------- MUTATORS ------------------------
@@ -101,6 +104,12 @@ namespace Logic
          /// <param name="src">Handler location</param>
          /// <param name="e">error</param>
          void  Log(const GuiString& src, const exception&e);
+
+         /// <summary>Locks the console for the calling thread</summary>
+         void  Lock();
+
+         /// <summary>Release the lock upon the console</summary>
+         void  Release();
 
          /// <summary>Shows/Hides the console.</summary>
          /// <param name="show">The show.</param>
@@ -154,51 +163,46 @@ namespace Logic
          /// <param name="str">game version string</param>
          ConsoleWnd& operator<<(const VersionString& str);
 
-         /// <summary>Writes text to the console</summary>
-         /// <param name="txt">Text</param>
-         void  Write(const wstring& txt);
-
-         /// <summary>Writes the formatted text to the console</summary>
-         /// <param name="format">Formatting string</param>
-         /// <param name="...">Arguments</param>
-         void  Writef(const WCHAR* format, ...);
-
-         /// <summary>Writes the formatted text to the console</summary>
-         /// <param name="format">Formatting string</param>
-         /// <param name="...">Arguments</param>
-         void  Writef(const wstring& format, ...);
-
-         /// <summary>Writes text to the console</summary>
-         /// <param name="txt">Text</param>
-         void  WriteLn(const wstring& txt = L"");
-
-         /// <summary>Writes the formatted text to the console</summary>
-         /// <param name="format">Formatting string</param>
-         /// <param name="...">Arguments</param>
-         void  WriteLnf(const WCHAR* format = L"", ...);
-
-         /// <summary>Writes the formatted text to the console</summary>
-         /// <param name="format">Formatting string</param>
-         /// <param name="...">Arguments</param>
-         void  WriteLnf(const wstring& format, ...);
-
       private:
+         /// <summary>Writes the formatted text to the console</summary>
+         /// <param name="format">Formatting string</param>
+         /// <param name="...">Arguments</param>
+         void Writef(const WCHAR* format, ...);
+
          /// <summary>Writes text to the output.</summary>
          /// <param name="txt">The text.</param>
          void WriteText(const wstring& txt);
 
          // -------------------- REPRESENTATION ---------------------
       public:
-         static ConsoleWnd  Instance;
+         static ConsoleWnd  Instance;        // Singleton instance
 
       private:
-         deque<WORD> AttributeStack;
-         HANDLE      Handle;
+         deque<WORD>      AttributeStack;    // Attributes stack
+         HANDLE           Handle;            // Console Handle
+         CriticalSection  Owner;             // Provides thread safety
       };
 
-      // Provide singleton access
-      #define Console      ConsoleWnd::Instance
+      /// <summary>Provides access to the console singleton</summary>
+      #define Console  ConsoleWnd::Instance
 
+
+
+      /// <summary>Automatically acquires/releases the console lock</summary>
+      class ConsoleLock
+      {
+         // --------------------- CONSTRUCTION ----------------------
+      public:
+         /// <summary>Blocks until the console lock is accquired</summary>
+         ConsoleLock()  { Console.Lock(); }
+
+         /// <summary>Releases the lock upon the console</summary>
+         ~ConsoleLock() { Console.Release(); }
+      };
+	  
+      /// <summary>Provides thread safe access to the console singleton by locking entire statement</summary>
+      /// <param name="exp">Console I/O statement (without reference to 'Console' singleton)</param>
+      #define SyncConsole(exp)  { ConsoleLock lock; Console << exp; }
    }
 }
 

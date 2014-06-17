@@ -246,7 +246,7 @@ namespace Logic
                   // Notify owner window if file was modified
                   if (c.Action == FileWatcher::ChangeType::Modified && c.FullPath == path)
                   {
-                     Console << Cons::UserAction << "External changes detected in: " << path << ENDL;
+                     SyncConsole(Cons::UserAction << "External changes detected in: " << path << ENDL);
                      data->NotifyOwner();
                   }
                }

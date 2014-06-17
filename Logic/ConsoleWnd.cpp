@@ -96,6 +96,8 @@ namespace Logic
       /// <param name="msg">Handler error message</param>
       void  ConsoleWnd::Log(const GuiString& src, const ExceptionBase&e, const GuiString& msg)
       {
+         ConsoleLock lock;
+
          *this << ENDL 
                << Cons::Exception << L"ERROR: " 
                << Cons::Error     << msg.Remove(L"\r\n")
@@ -112,6 +114,8 @@ namespace Logic
       /// <param name="e">error</param>
       void  ConsoleWnd::Log(const GuiString& src, const ExceptionBase&e)
       {
+         ConsoleLock lock;
+
          *this << ENDL 
                << Cons::Exception << L"EXCEPTION: " 
                << Cons::Error     << e.Message.Remove(L"\r\n") 
@@ -126,13 +130,27 @@ namespace Logic
       /// <param name="e">error</param>
       void  ConsoleWnd::Log(const GuiString& src, const exception&e)
       {
+         ConsoleLock lock;
+
          *this << ENDL 
                << Cons::Exception << L"STL EXCEPTION: " 
                << Cons::Error     << e.what()
                << Cons::White     << L"...  Source: " 
                << Cons::Yellow    << src << ENDL;
       }
+      
+      /// <summary>Locks the console for the calling thread</summary>
+      void ConsoleWnd::Lock()
+      {
+         Owner.Enter();
+      }
 
+      /// <summary>Release the lock upon the console</summary>
+      void ConsoleWnd::Release()
+      {
+         Owner.Leave();
+      }
+      
       /// <summary>Shows/Hides the console.</summary>
       /// <param name="show">The show.</param>
       void  ConsoleWnd::Show(bool show)
@@ -144,6 +162,8 @@ namespace Logic
       /// <param name="c">Colour</param>
       ConsoleWnd& ConsoleWnd::operator<<(Colour c)
       {
+         ConsoleLock lock;
+
          switch (c)
          {
          // Supported
@@ -168,6 +188,8 @@ namespace Logic
       /// <param name="cl">manipulator</param>
       ConsoleWnd& ConsoleWnd::operator<<(Cons c)
       {
+         ConsoleLock lock;
+
          switch (c)
          {
          // Bold: Add bold
@@ -230,6 +252,16 @@ namespace Logic
             }
             return *this;
 
+         // Lock: Locks the console for the calling thread
+         //case Cons::Lock:
+         //   Lock();
+         //   return *this;
+
+         //// Unlock: Release the lock upon the console
+         //case Cons::Unlock:
+         //   Release();
+         //   return *this;
+
          // Colour
          default:
             WORD bold = (Attributes & FOREGROUND_INTENSITY);
@@ -253,6 +285,8 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& ConsoleWnd::operator<<(const WCHAR* txt)
       {
+         ConsoleLock lock;
+
          WriteText(txt);
          return *this;
       }
@@ -261,6 +295,8 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& ConsoleWnd::operator<<(const char* txt)
       {
+         ConsoleLock lock;
+
          return *this << GuiString::Convert(txt, CP_ACP);
       }
 
@@ -268,6 +304,8 @@ namespace Logic
       /// <param name="ch">Character</param>
       ConsoleWnd& ConsoleWnd::operator<<(wchar ch)
       {
+         ConsoleLock lock;
+
          wchar buf[2] = {ch, NULL};
          return *this << buf;
       }
@@ -276,6 +314,8 @@ namespace Logic
       /// <param name="i">Number</param>
       ConsoleWnd& ConsoleWnd::operator<<(int i)
       {
+         ConsoleLock lock;
+
          Writef(L"%d", i);
          return *this;
       }
@@ -284,6 +324,8 @@ namespace Logic
       /// <param name="i">number</param>
       ConsoleWnd& ConsoleWnd::operator<<(UINT i)
       {
+         ConsoleLock lock;
+
          Writef(L"%u", i);
          return *this;
       }
@@ -292,6 +334,8 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& ConsoleWnd::operator<<(const wstring& txt)
       {
+         ConsoleLock lock;
+
          WriteText(txt);
          return *this;
       }
@@ -300,6 +344,8 @@ namespace Logic
       /// <param name="txt">Text</param>
       ConsoleWnd& ConsoleWnd::operator<<(const string& txt)
       {
+         ConsoleLock lock;
+
          return *this << GuiString::Convert(txt, CP_ACP);
       }
 
@@ -307,6 +353,8 @@ namespace Logic
       /// <param name="p">Pointer</param>
       ConsoleWnd& ConsoleWnd::operator<<(const void* p)
       {
+         ConsoleLock lock;
+
          Writef(L"0x%x", p);
          return *this;
       }
@@ -315,6 +363,8 @@ namespace Logic
       /// <param name="path">path</param>
       ConsoleWnd& ConsoleWnd::operator<<(const Path& path)
       {
+         ConsoleLock lock;
+
          return *this << Cons::Push << Cons::Yellow << path.c_str() << Cons::Pop;
       }
 
@@ -322,60 +372,9 @@ namespace Logic
       /// <param name="str">game version string</param>
       ConsoleWnd& ConsoleWnd::operator<<(const VersionString& str)
       {
+         ConsoleLock lock;
+
          return *this << Cons::Push << Cons::Yellow << str.c_str() << Cons::Pop;
-      }
-
-      /// <summary>Writes text to the console</summary>
-      /// <param name="txt">Text</param>
-      void  ConsoleWnd::Write(const wstring& txt)
-      {
-         WriteText(txt);
-      }
-
-      /// <summary>Writes the formatted text to the console</summary>
-      /// <param name="format">Formatting string</param>
-      /// <param name="...">Arguments</param>
-      void  ConsoleWnd::Writef(const WCHAR* format, ...)
-      {
-         va_list args;
-         WriteText( GuiString::FormatV(format, va_start(args, format)) );
-      }
-
-      /// <summary>Writes the formatted text to the console</summary>
-      /// <param name="format">Formatting string</param>
-      /// <param name="...">Arguments</param>
-      void  ConsoleWnd::Writef(const wstring& format, ...)
-      {
-         va_list args;
-         WriteText( GuiString::FormatV(format.c_str(), va_start(args, format)) );
-      }
-
-      /// <summary>Writes text to the console</summary>
-      /// <param name="txt">Text</param>
-      void  ConsoleWnd::WriteLn(const wstring& txt /*= L""*/)
-      {
-         WriteText(txt);
-         WriteText(L"\n");
-      }
-
-      /// <summary>Writes the formatted text to the console</summary>
-      /// <param name="format">Formatting string</param>
-      /// <param name="...">Arguments</param>
-      void ConsoleWnd::WriteLnf(const WCHAR* format /*= L""*/, ...)
-      {
-         va_list args;
-         WriteText( GuiString::FormatV(format, va_start(args, format)) );
-         WriteText(L"\n");
-      }
-
-      /// <summary>Writes the formatted text to the console</summary>
-      /// <param name="format">Formatting string</param>
-      /// <param name="...">Arguments</param>
-      void  ConsoleWnd::WriteLnf(const wstring& format, ...)
-      {
-         va_list args;
-         WriteText( GuiString::FormatV(format.c_str(), va_start(args, format)) );
-         WriteText(L"\n");
       }
 
       // ------------------------------ PROTECTED METHODS -----------------------------
@@ -404,6 +403,15 @@ namespace Logic
       }
 
       // ------------------------------- PRIVATE METHODS ------------------------------
+
+      /// <summary>Writes the formatted text to the console</summary>
+      /// <param name="format">Formatting string</param>
+      /// <param name="...">Arguments</param>
+      void  ConsoleWnd::Writef(const WCHAR* format, ...)
+      {
+         va_list args;
+         WriteText( GuiString::FormatV(format, va_start(args, format)) );
+      }
 
       /// <summary>Writes text to the output.</summary>
       /// <param name="txt">The text.</param>
