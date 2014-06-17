@@ -403,7 +403,7 @@ namespace Testing
          // Print file
          wstring line;
          while (reader.ReadLine(line))
-            Console.WriteLnf(line);
+            Console << line << ENDL;
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
@@ -770,7 +770,7 @@ namespace Testing
 
          // Print results
          for (LanguageString& s : res)
-            Console.WriteLnf(s.Text);
+            Console << s.Text << ENDL;
       } 
       catch (ExceptionBase&  e) {
          err.Format(L"Unable to enumerate VFS : %s\n\n" L"Source: %s()", e.Message.c_str(), e.Source.c_str());
@@ -1010,7 +1010,7 @@ namespace Testing
          // Test fails because debug window doesn't conv to ANSI Correctly, but the strings are read+stored correctly
          for (const auto& pair : langFile.Pages)
             for (const auto& pair2 : pair.second.Strings)
-               Console.WriteLnf(L"Read language string %d : '%s'", pair2.second.ID, pair2.second.Text.c_str());
+               Console << L"Read language string " << pair2.second.ID << " : " << pair2.second.Text << ENDL;
       }
       catch (ExceptionBase&  e)
       {
