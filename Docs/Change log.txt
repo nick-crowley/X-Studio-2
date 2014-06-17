@@ -5,6 +5,7 @@ CHANGE LOG
 
 X-Studio II : Beta IV : TBA
 -------------------------------------
+• Feature: Strings can contain apostrophes if they are preceeded by a backslash
 • Feature: Query to reload a document after external changes to the file are detected
 • Feature: Line numbers of labels in the script editor 'current scope' drop-down
 • Fixed: 016: Program is unable to load/save scripts using hard-coded sectors
