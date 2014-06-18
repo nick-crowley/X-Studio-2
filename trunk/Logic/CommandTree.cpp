@@ -188,6 +188,20 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
          
+         /// <summary>Get start iterator for this node</summary>
+         /// <returns></returns>
+         CommandTree::Iterator CommandTree::begin() const
+         {
+            return Iterator(FindRoot(), const_cast<CommandTree*>(this));
+         }
+
+         /// <summary>Get end iterator for this node</summary>
+         /// <returns></returns>
+         CommandTree::Iterator CommandTree::end() const
+         {
+            return Iterator(FindRoot());
+         }
+
          /// <summary>Add child node</summary>
          /// <param name="cmd">The command node</param>
          /// <returns>Command node</returns>

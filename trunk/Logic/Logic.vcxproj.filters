@@ -728,6 +728,9 @@
     <ClCompile Include="WorkerData.cpp">
       <Filter>Source Files\Threads</Filter>
     </ClCompile>
+    <ClCompile Include="CommandTreeIterator.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\XML\msxml6.tlh">
