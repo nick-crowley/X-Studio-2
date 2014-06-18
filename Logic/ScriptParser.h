@@ -12,18 +12,23 @@ namespace Logic
       {
          
          /// <summary>Generates a parse tree from MSCI scripts</summary>
-         /// <remarks>TODO: Handle the START keyword</remarks>
          class LogicExport ScriptParser
          {
             // ------------------------ TYPES --------------------------
          private:
+            /// <summary>Special lexer for lexing command comments as ordinary commands</summary>
             class CommentLexer : public CommandLexer
             {
             public:
+               /// <summary>Lexes a command comment as a command</summary>
+               /// <param name="input">Line of command text</param>
                CommentLexer(const wstring& input) : CommandLexer(StripComment(input), true)
                {}
 
             private:
+               /// <summary>Strips the comment operator from a command</summary>
+               /// <param name="in">command text</param>
+               /// <returns></returns>
                wstring StripComment(const wstring& in)
                {
                   return in.substr(in.find('*')+1);
@@ -31,7 +36,6 @@ namespace Logic
             };
 
             // --------------------- CONSTRUCTION ----------------------
-
          public:
             ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v);
             virtual ~ScriptParser();
