@@ -248,6 +248,7 @@
     <ClCompile Include="CommandNodeList.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
+    <ClCompile Include="CommandTreeIterator.cpp" />
     <ClCompile Include="ConsoleLog.cpp" />
     <ClCompile Include="ConsoleWnd.cpp" />
     <ClCompile Include="DataStream.cpp" />

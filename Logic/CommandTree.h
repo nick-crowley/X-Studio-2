@@ -67,6 +67,76 @@ namespace Logic
             /// <summary>Distinguishes tree state when printed to the console</summary>
             enum class InputState { Raw, Verified, Compiled };
 
+         public:
+            /// <summary>Forward-only iterator for nodes in a CommandTree</summary>
+            class Iterator : public std::iterator<std::forward_iterator_tag, CommandTree>
+            {
+               friend class CommandTree;
+               
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            protected:
+               Iterator(CommandTree* r);
+               Iterator(CommandTree* r, CommandTree* n);
+
+            public:
+               Iterator(const Iterator& r);
+               Iterator(Iterator&& r);
+               virtual ~Iterator();
+               
+               // ------------------------ STATIC -------------------------
+
+               // --------------------- PROPERTIES ------------------------
+			   
+               // ---------------------- ACCESSORS ------------------------			
+            public:
+               /// <summary>Get reference to current node</summary>
+               CommandTree& operator*() const;
+
+               /// <summary>Get pointer to current node</summary>
+               CommandTree* operator->() const;
+
+               /// <summary>Compares two positions</summary>
+               bool operator==(const Iterator& r) const;
+
+               /// <summary>Compares two positions</summary>
+               bool operator!=(const Iterator& r) const;
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               /// <summary>Advances the iterator</summary>
+               Iterator& operator++();
+
+               /// <summary>Advances the iterator</summary>
+               Iterator operator++(int);
+
+               /// <summary>Copy-Assignent operator</summary>
+               Iterator& operator=(const Iterator& r);
+
+               /// <summary>Move-Assignent operator</summary>
+               Iterator& operator=(Iterator&& r);
+
+            protected:
+               /// <summary>Advances position to the next node.</summary>
+               void Advance();
+
+               /// <summary>Pushes a node to the stack</summary>
+               void Push(CommandTree* t);
+
+               /// <summary>Pops the next node from the stack</summary>
+               CommandTree* Pop();
+
+               /// <summary>Adds a nodes successors to the stack</summary>
+               void Visit(CommandTree* n);
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               deque<CommandTree*> Nodes;       // Successor nodes to be examined
+               CommandTree*        Root;        // Root node of tree
+               CommandTree*        Position;    // Current position
+            };
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandTree();
@@ -99,6 +169,9 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------		
          public:
+            Iterator begin() const;
+            Iterator end() const;
+
             void          FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             BranchLogic   GetBranchLogic() const;
             GuiString     GetLineCode() const;
