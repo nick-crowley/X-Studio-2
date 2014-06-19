@@ -186,25 +186,6 @@ namespace Logic
             return true;
          };
          
-         /// <summary>Test_s the iterator.</summary>
-         /// <param name="n">The n.</param>
-         /// <param name="pos">The position.</param>
-         void CommandTree::Test_Iterator(CommandNodePtr n, DepthIterator& pos)
-         {
-            // Query whether nodes match
-            if (pos.operator->() == n.get())
-               Console << Cons::Green << "Match: " << n->LineCode << ENDL;
-            else
-            {
-               Console << Cons::Red    << "Original: " << n->LineCode << ENDL;
-               Console << Cons::Yellow << "Iterator: " << pos->LineCode << ENDL;
-            }
-
-            // Check children
-            for (auto& c : n->Children)
-               c->Test_Iterator(c, ++pos);
-         }
-
          // ------------------------------- PUBLIC METHODS -------------------------------
          
          /// <summary>Get start iterator for this node</summary>

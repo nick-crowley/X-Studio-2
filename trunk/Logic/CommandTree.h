@@ -299,9 +299,6 @@ namespace Logic
             /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
             static CommandTree  EndOfScript;
 #endif
-         private:
-            static void Test_Iterator(CommandNodePtr n, DepthIterator& pos);
-
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
@@ -309,7 +306,7 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------		
          public:
-            /// <summary>Get begin iterator for this node</summary>
+            /// <summary>Get start iterator for this node</summary>
             /// <typeparam name="T">Traversal type</typeparam>
             /// <returns></returns>
             template <typename T>
