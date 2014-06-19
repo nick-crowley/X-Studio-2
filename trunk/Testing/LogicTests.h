@@ -22,6 +22,7 @@ namespace Testing
       static void  Test_LanguageEditRegEx();
       static void  Test_TFileReader();
       static void  Test_CatalogReader();
+      static void  Test_CommandTreeIterator();
       static void  Test_ExpressionParser();
       static void  Test_DescriptionReader();
       static void  Test_DescriptionRegEx();
@@ -52,4 +53,4 @@ namespace Testing
    };
 }
 
-using namespace Logic;
+using namespace Testing;

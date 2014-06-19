@@ -217,6 +217,7 @@
     <ClInclude Include="TLaser.h" />
     <ClInclude Include="TMissile.h" />
     <ClInclude Include="TObject.h" />
+    <ClInclude Include="TreeTraversal.h" />
     <ClInclude Include="TShield.h" />
     <ClInclude Include="TShip.h" />
     <ClInclude Include="TWare.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="BackupFile.cpp" />
     <ClCompile Include="BackupFileReader.cpp" />
     <ClCompile Include="BackupFileWriter.cpp" />
+    <ClCompile Include="BreadthTraversal.cpp" />
     <ClCompile Include="CatalogReader.cpp" />
     <ClCompile Include="CatalogStream.cpp" />
     <ClCompile Include="CommandLexer.cpp" />
@@ -248,7 +250,7 @@
     <ClCompile Include="CommandNodeList.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
-    <ClCompile Include="CommandTreeIterator.cpp" />
+    <ClCompile Include="DepthTraversal.cpp" />
     <ClCompile Include="ConsoleLog.cpp" />
     <ClCompile Include="ConsoleWnd.cpp" />
     <ClCompile Include="DataStream.cpp" />

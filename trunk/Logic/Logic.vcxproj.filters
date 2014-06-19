@@ -456,6 +456,9 @@
     <ClInclude Include="CriticalSection.h">
       <Filter>Header Files\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="TreeTraversal.h">
+      <Filter>Header Files\Scripts\Compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
@@ -728,7 +731,10 @@
     <ClCompile Include="WorkerData.cpp">
       <Filter>Source Files\Threads</Filter>
     </ClCompile>
-    <ClCompile Include="CommandTreeIterator.cpp">
+    <ClCompile Include="DepthTraversal.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="BreadthTraversal.cpp">
       <Filter>Source Files\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>

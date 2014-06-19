@@ -54,7 +54,7 @@ namespace Testing
       //Test_CommandSyntax();
       //Test_StringLibrary();
       //Test_XmlWriter();
-      Test_SyntaxWriter();
+      //Test_SyntaxWriter();
       //Test_ExpressionParser();
       //Test_TFileReader();
       //Text_RegEx();
@@ -77,6 +77,8 @@ namespace Testing
       //Test_DescriptionReader();
       //Text_DescriptionRegEx();
 
+      Test_CommandTreeIterator();
+
       //Console << theApp.GetRegSectionPath(L"Settings") << ENDL;
 
    }
@@ -85,6 +87,25 @@ namespace Testing
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
+   void LogicTests::Test_CommandTreeIterator()
+   {
+      const Path f = L"D:\\X3 Albion Prelude\\scripts\\plugin.piracy.detectbase.xml";
+      LineArray lines;
+
+      // Parse script
+      auto sf = ScriptFileReader(XFileInfo(f).OpenRead()).ReadFile(f, false);
+
+      // Get script text
+      for (auto& cmd : sf.Commands.Input)
+         lines.push_back(cmd.Text);
+      
+      // Parse script
+      ScriptParser sp(sf, lines, sf.Game);
+
+      // Test iterator
+      CommandTree::Test_Iterator(sp.Root, sp.Root->begin());
+   }
+
    void LogicTests::Test_ScriptCompiler(Path p)
    {
       // Located problem: egosoft inserts JMPs to end-of-conditional even after RETURNs, except when it's the final RETURN of the script.

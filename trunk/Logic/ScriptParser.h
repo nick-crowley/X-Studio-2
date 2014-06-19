@@ -4,6 +4,11 @@
 #include "CommandNodeList.h"
 #include <algorithm>
 
+namespace Testing
+{
+   class LogicTests;
+}
+
 namespace Logic
 {
    namespace Scripts
@@ -14,6 +19,8 @@ namespace Logic
          /// <summary>Generates a parse tree from MSCI scripts</summary>
          class LogicExport ScriptParser
          {
+            friend class ::Testing::LogicTests;
+
             // ------------------------ TYPES --------------------------
          private:
             /// <summary>Special lexer for lexing command comments as ordinary commands</summary>
@@ -92,10 +99,10 @@ namespace Logic
             Conditional    ReadConditional(const CommandLexer& lex, TokenIterator& pos);
             TokenIterator  ReadReferenceObject(const CommandLexer& lex, TokenIterator& pos);
 
-            CommandNodePtr   ReadComment(const CommandLexer& lex);
-            CommandNodePtr   ReadCommand(const CommandLexer& lex, bool comment);
-            CommandNodePtr   ReadExpression(const CommandLexer& lex, bool comment);
-            CommandNodePtr   ReadLine();
+            CommandNodePtr ReadComment(const CommandLexer& lex);
+            CommandNodePtr ReadCommand(const CommandLexer& lex, bool comment);
+            CommandNodePtr ReadExpression(const CommandLexer& lex, bool comment);
+            CommandNodePtr ReadLine();
 
             // -------------------- REPRESENTATION ---------------------
          public:
@@ -103,8 +110,8 @@ namespace Logic
             ScriptFile&    Script;     // Script
 
          private:
-            const LineArray&  Input;
-            const GameVersion Version;
+            const LineArray&  Input;         // Input text
+            const GameVersion Version;       // Script version
 
             CommandNodePtr  Root;            // Parse tree
             LineIterator    CurrentLine;     // Line being parsed
