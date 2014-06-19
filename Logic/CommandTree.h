@@ -7,7 +7,13 @@
 #include "ScriptToken.h"
 #include "ErrorToken.h"
 #include "Symbol.h"
+#include "TreeTraversal.h"
 #include <algorithm>
+
+namespace Testing
+{
+   class LogicTests;
+}
 
 namespace Logic
 {
@@ -38,6 +44,8 @@ namespace Logic
          /// <summary>Represents a script command and its descendants, if any</summary>
          class LogicExport CommandTree 
          {
+            friend class ::Testing::LogicTests;
+
             // ------------------------ TYPES --------------------------
          protected:
             /// <summary>CommandTree array iterator</summary>
@@ -69,21 +77,62 @@ namespace Logic
 
          public:
             /// <summary>Forward-only iterator for nodes in a CommandTree</summary>
+            template <typename TRAVERSAL>
             class Iterator : public std::iterator<std::forward_iterator_tag, CommandTree>
             {
                friend class CommandTree;
                
                // ------------------------ TYPES --------------------------
             protected:
+               
                // --------------------- CONSTRUCTION ----------------------
             protected:
-               Iterator(CommandTree* r);
-               Iterator(CommandTree* r, CommandTree* n);
+               /// <summary>Creates an end iterator</summary>
+               /// <param name="r">Root node</param>
+               /// <exception cref="Logic::ArgumentNullException">Root is nullptr</exception>
+               Iterator(CommandTree* r) 
+                  : Root(r), Position(nullptr)
+               {
+                  REQUIRED(r);
+               }
+
+               /// <summary>Creates a start iterator</summary>
+               /// <param name="r">Root node</param>
+               /// <param name="n">Start node</param>
+               /// <exception cref="Logic::ArgumentNullException">Traversal, root node, or start node are nullptr</exception>
+               Iterator(CommandTree* r, CommandTree* n) 
+                  : Root(r), Position(n)
+               {
+                  REQUIRED(r);
+                  REQUIRED(n);
+
+                  // Add children of start node
+                  Traversal.AddSuccessors(Position);
+               }
 
             public:
-               Iterator(const Iterator& r);
-               Iterator(Iterator&& r);
-               virtual ~Iterator();
+               /// <summary>Copy create from an existing iterator</summary>
+               /// <param name="r">Another iterator</param>
+               Iterator(const Iterator& r)
+                  : Root(r.Root), 
+                    Position(r.Position), 
+                    Traversal(r.Traversal)
+               {
+               }
+         
+               /// <summary>Move-create from an existing iterator</summary>
+               /// <param name="r">Another iterator</param>
+               Iterator(Iterator&& r)
+                  : Root(r.Root), 
+                    Position(r.Position), 
+                    Traversal(std::ref(r.Traversal))
+               {
+                  r.Position = nullptr;
+               }
+
+               virtual ~Iterator()
+               {
+               }
                
                // ------------------------ STATIC -------------------------
 
@@ -92,50 +141,138 @@ namespace Logic
                // ---------------------- ACCESSORS ------------------------			
             public:
                /// <summary>Get reference to current node</summary>
-               CommandTree& operator*() const;
+               /// <returns></returns>
+               /// <exception cref="Logic::InvalidOperationException">Iterator cannot be dereferenced</exception>
+               CommandTree& operator*() const
+               { 
+                  if (!Position)
+                     throw InvalidOperationException(HERE, L"Cannot dereference iterator");
+
+                  return *Position; 
+               }
 
                /// <summary>Get pointer to current node</summary>
-               CommandTree* operator->() const;
+               /// <returns></returns>
+               /// <exception cref="Logic::InvalidOperationException">Iterator cannot be dereferenced</exception>
+               CommandTree* operator->() const
+               { 
+                  if (!Position)
+                     throw InvalidOperationException(HERE, L"Cannot dereference iterator");
+
+                  return Position;
+               }
 
                /// <summary>Compares two positions</summary>
-               bool operator==(const Iterator& r) const;
+               /// <param name="r">Another iterator</param>
+               /// <returns></returns>
+               bool operator==(const Iterator& r) const
+               { 
+                  return Root == r.Root && Position == r.Position; 
+               }
 
                /// <summary>Compares two positions</summary>
-               bool operator!=(const Iterator& r) const;
+               /// <param name="r">Another iterator</param>
+               /// <returns></returns>
+               bool operator!=(const Iterator& r) const
+               { 
+                  return Root != r.Root || Position != r.Position; 
+               }
 
                // ----------------------- MUTATORS ------------------------
             public:
                /// <summary>Advances the iterator</summary>
-               Iterator& operator++();
+               /// <returns>New position</returns>
+               /// <exception cref="Logic::AlgorithmException">Traversal corruption</exception>
+               /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+               /// <exception cref="Logic::InvalidOperationException">Iterator cannot be advanced</exception>
+               Iterator& operator++()
+               { 
+                  Advance();
+                  return *this;
+               }
 
                /// <summary>Advances the iterator</summary>
-               Iterator operator++(int);
+               /// <param name="">Ignored</param>
+               /// <returns>Previous position</returns>
+               /// <exception cref="Logic::AlgorithmException">Traversal corruption</exception>
+               /// <exception cref="Logic::ArgumentNullException">Missing node</exception>
+               /// <exception cref="Logic::InvalidOperationException">Iterator cannot be advanced</exception>
+               Iterator operator++(int)
+               {
+                  Iterator tmp(*this); 
+                  operator++(); 
+                  return tmp;
+               }
 
-               /// <summary>Copy-Assignent operator</summary>
-               Iterator& operator=(const Iterator& r);
+               /// <summary>Assignent operator</summary>
+               /// <param name="r">Another iterator</param>
+               /// <returns></returns>
+               Iterator& operator=(const Iterator& r)
+               {
+                  // Self=assignment
+                  if (this == &r)
+                     return *this;
 
+                  // Copy details
+                  Root = r.Root;
+                  Position = r.Position;
+                  Traversal = r.Traversal;
+
+                  return *this;
+               }
+         
                /// <summary>Move-Assignent operator</summary>
-               Iterator& operator=(Iterator&& r);
+               /// <param name="r">Another iterator</param>
+               /// <returns></returns>
+               Iterator& operator=(Iterator&& r)
+               {
+                  // Self=assignment
+                  if (this == &r)
+                     return *this;
+
+                  // Move details
+                  Root = r.Root;
+                  Position = r.Position;
+                  Traversal = std::ref(r.Traversal);
+
+                  r.Position = nullptr;
+                  return *this;
+               }
 
             protected:
                /// <summary>Advances position to the next node.</summary>
-               void Advance();
+               /// <exception cref="Logic::AlgorithmException">Invalid traversal state</exception>
+               /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
+               /// <exception cref="Logic::InvalidOperationException">Iterator cannot be advanced</exception>
+               void Advance()
+               {
+                  // End: Error
+                  if (!Position)
+                     throw InvalidOperationException(HERE, L"Iterator cannot be advanced");
 
-               /// <summary>Pushes a node to the stack</summary>
-               void Push(CommandTree* t);
-
-               /// <summary>Pops the next node from the stack</summary>
-               CommandTree* Pop();
-
-               /// <summary>Adds a nodes successors to the stack</summary>
-               void Visit(CommandTree* n);
+                  // Non-final node: Advance position + visit next node
+                  if (!Traversal.Empty())
+                  {
+                     Position = Traversal.GetSuccessor();
+                     Traversal.AddSuccessors(Position);
+                  }
+                  // Final node: Move to 'End' state
+                  else
+                     Position = nullptr;
+               }
 
                // -------------------- REPRESENTATION ---------------------
             protected:
-               deque<CommandTree*> Nodes;       // Successor nodes to be examined
-               CommandTree*        Root;        // Root node of tree
-               CommandTree*        Position;    // Current position
+               CommandTree*   Root;        // Root node of tree
+               CommandTree*   Position;    // Current position
+               TRAVERSAL      Traversal;   // Traversal type
             };
+
+            /// <summary>Breadth-first command tree iterator</summary>
+            typedef Iterator<BreadthTraversal>  BreadthIterator;
+
+            /// <summary>Depth-first command tree iterator</summary>
+            typedef Iterator<DepthTraversal>  DepthIterator;
 
             // --------------------- CONSTRUCTION ----------------------
          public:
@@ -162,6 +299,9 @@ namespace Logic
             /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
             static CommandTree  EndOfScript;
 #endif
+         private:
+            static void Test_Iterator(CommandNodePtr n, DepthIterator& pos);
+
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
@@ -169,8 +309,26 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------		
          public:
-            Iterator begin() const;
-            Iterator end() const;
+            /// <summary>Get begin iterator for this node</summary>
+            /// <typeparam name="T">Traversal type</typeparam>
+            /// <returns></returns>
+            template <typename T>
+            Iterator<T> begin() const
+            {
+               return Iterator<T>(FindRoot(), const_cast<CommandTree*>(this));
+            }
+
+            /// <summary>Get end iterator for this node</summary>
+            /// <typeparam name="T">Traversal type</typeparam>
+            /// <returns></returns>
+            template <typename T>
+            Iterator<T> end() const
+            {
+               return Iterator<T>(FindRoot());
+            }
+
+            DepthIterator begin() const;
+            DepthIterator end() const;
 
             void          FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             BranchLogic   GetBranchLogic() const;
