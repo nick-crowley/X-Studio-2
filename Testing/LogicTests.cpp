@@ -87,6 +87,25 @@ namespace Testing
 
 	// ------------------------------- PRIVATE METHODS ------------------------------
    
+   /// <summary>Tests the commandTree DepthIterator.</summary>
+   /// <param name="n">root node.</param>
+   /// <param name="pos">root position.</param>
+   void Test_DepthIterator(CommandNodePtr n, CommandTree::DepthIterator& pos)
+   {
+      // Query whether nodes match
+      if (pos.operator->() == n.get())
+         Console << Cons::Green << "Match: " << n->LineCode << ENDL;
+      else
+      {
+         Console << Cons::Red    << "Original: " << n->LineCode << ENDL;
+         Console << Cons::Yellow << "Iterator: " << pos->LineCode << ENDL;
+      }
+
+      // Check children
+      for (auto& c : n->Children)
+         Test_DepthIterator(c, ++pos);
+   }
+
    void LogicTests::Test_CommandTreeIterator()
    {
       const Path f = L"D:\\X3 Albion Prelude\\scripts\\plugin.piracy.detectbase.xml";
@@ -103,7 +122,7 @@ namespace Testing
       ScriptParser sp(sf, lines, sf.Game);
 
       // Test iterator
-      CommandTree::Test_Iterator(sp.Root, sp.Root->begin());
+      Test_DepthIterator(sp.Root, sp.Root->begin());
    }
 
    void LogicTests::Test_ScriptCompiler(Path p)
