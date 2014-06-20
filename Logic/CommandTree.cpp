@@ -228,24 +228,32 @@ namespace Logic
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandTree::Compile(ScriptFile& script, ErrorArray& errors)
          {
+            UINT i = 0;
+            CommandGenerator   generator(script, errors);
+            ConstantIdentifier constants(script, errors);
+            LinkageFinalizer   finalizer(errors);
+            NodeIndexer        indexer(i);
+            NodeLinker         linker(errors);
+            VariableIdentifier variables(script, errors);
+
             // Macros: Expand macros into std commands 
             if (PrefsLib.UseMacroCommands)
             {
                ExpandMacros(script, errors);
 
 #ifdef VALIDATION
-               // Re-index variables to account for hidden iterator variables
+               // Clear previous IDs
                script.Clear();
-               IdentifyVariables(script, errors);
-               IdentifyConstants(script, errors);
+
+               // Re-index variables to account for hidden iterator variables
+               for (auto& c : Children)
+                  c->Accept(variables);
+
+               // Re-identify constants
+               for (auto& c : Children)
+                  c->Accept(constants);
 #endif
             }
-
-            UINT i = 0;
-            IndexingVisitor indexer(i);
-            LinkingVisitor  linker(errors);
-            FinalizingVisitor finalizer(errors);
-            GeneratingVisitor generator(script, errors);
 
             // Linking/Indexing
             for (auto& c : Children)
@@ -373,8 +381,9 @@ namespace Logic
          /// <param name="depth">The depth.</param>
          void  CommandTree::Print(int depth) const
          {
-            PrintingVisitor v;
+            NodePrinter v;
             
+            // Print entire tree
             for (auto& n : *this)
                n.Accept(v);
          }
@@ -396,17 +405,27 @@ namespace Logic
          /// <param name="errors">errors collection</param>
          void  CommandTree::Verify(ScriptFile& script, ErrorArray& errors) 
          {
+            CommandGenerator    commands(script, errors);
+            ConstantIdentifier  constants(script, errors);
+            LogicVerifier       logic(errors);
+            TerminationVerifier termination(errors);
+            VariableIdentifier  variables(script, errors);
+
             // Identify labels/variables
-            IdentifyVariables(script, errors);
+            for (auto& c : Children)
+               c->Accept(variables);
 
             // Identify constants
-            IdentifyConstants(script, errors);
+            for (auto& c : Children)
+               c->Accept(constants);
 
-            // parameters
-            VerifyCommand(script, errors);
+            // Verify commands+parameters
+            for (auto& c : Children)
+               c->Accept(commands);
 
             // branching logic
-            VerifyLogic(errors);
+            for (auto& c : Children)
+               c->Accept(logic);
 
             // Ensure script has std commands  [don't count break/continue]
             if (!any_of(Children.begin(), Children.end(), isStandardCommand))
@@ -414,7 +433,8 @@ namespace Logic
 
             // [VALID] Verify all control paths lead to RETURN
             else if (errors.empty()) 
-               VerifyTermination(errors);
+               for (auto& c : Children)
+                  c->Accept(termination);
             
             // Update state
             State = InputState::Verified;
@@ -780,79 +800,6 @@ namespace Logic
             }
          }
 
-         /// <summary>Perform linkage steps that require the entire tree to be linked</summary>
-         /// <param name="errors">Errors collection.</param>
-         void  CommandTree::FinalizeLinkage(ErrorArray& errors)
-         {
-            if (!IsRoot())
-            {
-               // JMP: Set address
-               if (Is(CMD_HIDDEN_JUMP))
-               {
-                  if (!JumpTarget)
-                     throw AlgorithmException(HERE, L"JMP command with unassigned address");
-
-                  Parameters[0].Value = JumpTarget->Index;
-               }
-
-               // Linked to break/continue: Link to associated JMP (1st child)
-               if (JumpTarget && (JumpTarget->Is(CMD_BREAK) || JumpTarget->Is(CMD_CONTINUE)))
-                  JumpTarget = JumpTarget->Children.begin()->get();
-
-               // Verify linkage
-               if (JumpTarget && JumpTarget->Index == EMPTY_JUMP)
-                  errors += MakeError( VString(L"Linking failed: Illegal linkage to line %d : '%s'", JumpTarget->LineNumber, JumpTarget->LineCode.c_str()) ); 
-            }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->FinalizeLinkage(errors);
-         }
-         
-         /// <summary>Compiles the parameters/commands into the script</summary>
-         /// <param name="script">script.</param>
-         /// <param name="errors">Errors collection.</param>
-         void  CommandTree::GenerateCommands(ScriptFile& script, ErrorArray& errors)
-         {
-            try
-            {
-               if (!IsRoot())
-               {
-                  ParameterArray params;
-
-                  // Compile parameters
-                  for (auto& p : Parameters)
-                  {
-                     // Goto/Gosub: Change label number dataType from DT_STRING (ie. label name) into DT_INTEGER. 
-                     if (p.Syntax.Type == ParameterType::LABEL_NUMBER && !CmdComment)
-                        p.Type = DataType::INTEGER;   // parameter ctor resolves 'label' token type to DT_STRING
-
-                     // Compile
-                     p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP, CmdComment);
-                  }
-
-                  // Command: Provide compiled parameters in display order
-                  if (!Syntax.Is(CMD_EXPRESSION))
-                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, CmdComment));
-                  else
-                  {
-                     // Compile postfix parameters
-                     for (auto& p : Postfix)
-                        p.Generate(script, JumpTarget ? JumpTarget->Index : EMPTY_JUMP, CmdComment);
-
-                     // Expression: Provide compiled parameters in infix & postfix order
-                     script.Commands.AddOutput(ScriptCommand(LineText, Syntax, Parameters, Postfix, CmdComment));
-                  }
-               }
-            }
-            catch (ExceptionBase& e) {
-               errors += MakeError(GuiString(L"Compile failed: ") + e.Message); 
-            }
-            
-            // Recurse into children
-            for (auto& c : Children)
-               c->GenerateCommands(script, errors);
-         }
          
          /// <summary>Gets the last executable child.</summary>
          /// <returns></returns>
@@ -887,106 +834,6 @@ namespace Logic
             return any_of(Children.begin(), Children.end(), isExecutableCommand);
          }
 
-         /// <summary>Distinguishes variables and constants from their usage</summary>
-         /// <param name="script">script.</param>
-         /// <param name="errors">Errors collection</param>
-         void  CommandTree::IdentifyConstants(ScriptFile& script, ErrorArray& errors) 
-         {
-            // Skip command comments
-            if (!CmdComment)
-            {
-               // Enumerate assignments (RetVars)
-               for (auto& p : Parameters)
-               {
-                  if (p.Type == DataType::VARIABLE && p.Syntax.IsRetVar() && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String).Assignment++;
-               }
-            }
-
-            // Examine children
-            for (const auto& cmd : Children)
-               cmd->IdentifyConstants(script, errors);
-         }
-
-         /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
-         /// <param name="script">script.</param>
-         /// <param name="errors">Errors collection</param>
-         void  CommandTree::IdentifyVariables(ScriptFile& script, ErrorArray& errors) 
-         {
-            typedef reference_wrapper<ScriptParameter>  ParameterRef;
-
-            // Do not enumerate the labels/variables of command comments  [But do include script-calls]
-            if (!CmdComment)
-            {
-               // Add label definitions to script
-               if (Is(CMD_DEFINE_LABEL) && !Parameters.empty()) 
-               {
-                  auto name = Parameters[0].Value.String;
-                  // Ensure unique
-                  if (!script.Labels.Add(name, LineNumber))
-                     errors += MakeError(VString(L"Label '%s' already defined on line %d", name.c_str(), script.Labels[name].LineNumber), Parameters[0].Token);
-               }
-
-               list<ParameterRef> params;
-
-   #ifdef VALIDATION
-               // For the sake of producing code that exactly duplicates egosoft code, build the variable names map
-               // by enumerating variables in physical syntax order. (Requires all parameters be present)
-               if (Parameters.size() == Syntax.ParameterCount)
-                  for (const auto& ps : Syntax.Parameters)
-                     params.push_back( ref(Parameters[ps.DisplayIndex]) );
-               else 
-   #endif
-                  // Missing/Discarded/vArgs: Enumerate in display order
-                  for (auto& p : Parameters)
-                     params.push_back(ref(p));
-
-               // Enumerate variables
-               for (auto& ref : params)
-               {
-                  auto& p = ref.get();
-                  
-                  // Variable: Lookup/Store variable and increment usage
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String)
-                     script.Variables.Add(p.Value.String).Usage++;
-               }
-            }
-
-            // Load script-calls for argument type-checking
-            if (Syntax.IsScriptCall())
-            {
-               // Find name of target script (empty if a variable)
-               wstring call = GetScriptCallName();
-
-               try {  
-                  // Skip reading if previously read
-                  if (!call.empty() && !script.ScriptCalls.Contains(call))
-                     script.ScriptCalls.Add(call, ScriptFileReader::ReadExternalScript(script.FullPath.Folder, call));
-               }
-               catch (ExceptionBase&) {
-                  //if (e.ErrorID != ERROR_FILE_NOT_FOUND)
-                     //Console.Log(HERE, e, VString(L"Unable to resolve call to external script '%s'", call.c_str()));
-               }
-            }
-
-            // Examine children
-            for (const auto& cmd : Children)
-               cmd->IdentifyVariables(script, errors);
-         }
-         
-         /// <summary>Calculates the standard command index</summary>
-         /// <param name="next">Next index to use</param>
-         void CommandTree::IndexCommands(UINT& next)
-         {
-            // Standard command  
-            if (!IsRoot() && !CmdComment && Is(CommandType::Standard))
-               Index = next++;
-
-            // Recurse into children
-            for (auto c : Children)
-               c->IndexCommands(next);
-         }
-
          /// <summary>Inserts an unconditional jump command as the last child</summary>
          /// <param name="target">Command to target</param>
          /// <returns></returns>
@@ -999,81 +846,6 @@ namespace Logic
          bool  CommandTree::IsRoot() const
          {
             return Parent == nullptr;
-         }
-         
-         /// <summary>Perform command linking</summary>
-         /// <param name="errors">errors collection</param>
-         /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::LinkCommands(ErrorArray& errors) 
-         {
-            try
-            {
-               CommandTree* n;
-
-               switch (Logic)
-               {
-               // JIF: ELSE-IF/ELSE/END
-               case BranchLogic::If: 
-               case BranchLogic::ElseIf: 
-                  // JIF: else-if/else/next-std-sibling
-                  JumpTarget = FindConditionalAlternate();
-               
-                  // preceeds ELSE-IF/ELSE: Append child JMP-> next-std-sibling
-                  if ((n=FindNextSibling()) && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf))
-#ifndef VALIDATION
-                     // Don't add JMP if last child is return
-                     if (!HasExecutableChild() || !GetLastExecutableChild()->Is(CMD_RETURN))   
-#endif
-                        // JMP -> end of conditional branch
-                        InsertJump(Children.end(), FindConditionalEnd());
-                  break;
-
-               // <nothing>
-               case BranchLogic::Else:
-                  break;    
-
-               // JIF: next-std-sibling
-               case BranchLogic::SkipIf:
-                  JumpTarget = FindNextCommand();
-                  break;
-
-               // JIF: next-std-sibling
-               case BranchLogic::While:
-                  JumpTarget = FindNextCommand();
-                  InsertJump(Children.end(), this); // JMP: WHILE (to create loop)
-                  break;
-
-               // JMP: WHILE->next-std-sibling
-               case BranchLogic::Break:
-                  JumpTarget = FindAncestor(BranchLogic::While)->FindNextCommand();
-                  InsertJump(Children.begin(), JumpTarget);
-                  break;
-
-               // JMP: WHILE
-               case BranchLogic::Continue:
-                  JumpTarget = FindAncestor(BranchLogic::While);
-                  InsertJump(Children.begin(), JumpTarget);
-                  break;
-
-               // JMP: LABEL
-               case BranchLogic::None:
-                  if (Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
-                  {
-                     JumpTarget = FindRoot()->FindLabel(Parameters[0].Value.String);  
-
-                     if (!JumpTarget)     // Previously identified, should always be found
-                        throw AlgorithmException(HERE, VString(L"Cannot find label %s", Parameters[0].Value.String.c_str()));
-                  }
-                  break;
-               }
-            }
-            catch (ExceptionBase& e) {
-               errors += MakeError(GuiString(L"Linking failed: ") + e.Message); 
-            }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->LinkCommands(errors);
          }
          
          /// <summary>Create error for this entire line</summary>
@@ -1153,288 +925,6 @@ namespace Logic
             throw InvalidOperationException(HERE, L"Cannot find existing child");
          }
 
-         /// <summary>Verifies the execution type and parameters</summary>
-         /// <param name="script">script</param>
-         /// <param name="errors">errors collection</param>
-         void  CommandTree::VerifyCommand(const ScriptFile& script, ErrorArray& errors) 
-         {
-            try
-            {
-               // Skip for unrecognised commands
-               if (Syntax != CommandSyntax::Unrecognised)
-               {
-                  // CmdComment: Redirect verification errors into dummy queue
-                  ErrorArray  commentErrors;
-                  ErrorArray& errQueue = (CmdComment ? commentErrors : errors);
-
-                  // Check for invalid 'start' 
-                  if (Condition == Conditional::START && Syntax.Execution == ExecutionType::Serial)
-                     errQueue += MakeError(L"Command cannot be executed asynchronously");
-
-                  // Check for missing 'start'
-                  else if (Condition != Conditional::START && Syntax.Execution == ExecutionType::Concurrent)
-                     errQueue += MakeError(L"Command must be executed asynchronously");
-
-                  // Check for macro within 'skip-if'
-                  if (Syntax.Is(CommandType::Macro) && Parent->Logic == BranchLogic::SkipIf)
-                     errQueue += MakeError(L"Macros cannot be used within skip-if conditional");
-
-                  // Verify parameter values/types
-                  UINT index = 0;
-                  for (const ScriptParameter& p : Parameters)
-                     VerifyParameter(p, index++, script, errQueue);
-
-                  // VARG: Verify argument count     [Genuine CallScript commands can have unlimited arguments]
-                  if (Syntax.IsVArgument() && !Syntax.Is(CMD_CALL_SCRIPT) && !CmdComment)
-                     if (Parameters.size() > Syntax.MaxParameters)
-                        errQueue += MakeError(VString(L"Command may only have up to %d variable arguments", Syntax.VArgCount));
-
-                  // Error in CmdComment: Silently revert to ordinary comment
-                  if (CmdComment && !errQueue.empty())
-                  {
-                     // Replace self with commented node + delete self.
-                     Parent->RevertCommandComment(this);    // NB: CmdComments can never have children, their branch logic is always
-                     return;                                //     NOP even if they have a conditional, so no need to check children.
-                  }
-               }
-            }
-            catch (ExceptionBase& e) {
-               errors += MakeError(GuiString(L"Verification failed: ") + e.Message); 
-            }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->VerifyCommand(script, errors);
-         }
-
-         /// <summary>Verifies the branching logic</summary>
-         void  CommandTree::VerifyLogic(ErrorArray& errors) const
-         {
-            CommandTree* n;
-            switch (Logic)
-            {
-            // IF: Must preceed ELSE-IF/ELSE/END
-            case BranchLogic::If:
-               // EOF?
-               if ((n=FindNextSibling()) == nullptr)
-                  errors += MakeError(L"missing 'end' command");
-               // preceeds End/Else/Else-if?
-               else if (n->Logic != BranchLogic::End && n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf)
-                  errors += n->MakeError(L"expected 'else', 'else if' or 'end'");
-               break;
-
-            // WHILE: Must preceed END
-            case BranchLogic::While:
-               // EOF?
-               if ((n=FindNextSibling()) == nullptr)
-                  errors += MakeError(L"missing 'end' command");
-               // preceed END?
-               else if (n->Logic != BranchLogic::End)
-                  errors += n->MakeError(L"expected 'end'");
-               break;
-
-            // ELSE: Must follow IF/ELSE-IF.  Must preceed END
-            case BranchLogic::Else:
-               // follow IF/ELSE-IF?
-               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
-                  errors += MakeError(L"unexpected 'else'");
-
-               // EOF?
-               else if ((n=FindNextSibling()) == nullptr)
-                  errors += MakeError(L"missing 'end' command");
-               // preceed END?
-               else if (n->Logic != BranchLogic::End)
-                  errors += n->MakeError(L"expected 'end'");
-               break;
-
-            // ELSE-IF: Must follow IF/ELSE-IF. Must preceed ELSE-IF/ELSE/END
-            case BranchLogic::ElseIf:
-               // follow IF/ELSE-IF?
-               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::ElseIf))
-                  errors += MakeError(L"unexpected 'else-if'");
-               
-               // EOF?
-               else if ((n=FindNextSibling()) == nullptr)
-                  errors += MakeError(L"missing 'end' command");
-               // preceed ELSE-IF/ELSE/END?
-               else if (n->Logic != BranchLogic::Else && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::End)
-                  errors += n->MakeError(L"expected 'else', 'else if' or 'end'");
-               break;
-
-            // END: Must follow IF/WHILE/ELSE-IF/ELSE
-            case BranchLogic::End:
-               // follow IF/WHILE/ELSE-IF/ELSE?
-               if ((n=FindPrevSibling()) == nullptr || (n->Logic != BranchLogic::If && n->Logic != BranchLogic::While && n->Logic != BranchLogic::ElseIf && n->Logic != BranchLogic::Else))
-                  errors += MakeError(L"unexpected 'end' command");
-               break;
-
-            // SKIP-IF: Must not be child of SKIP-IF. Must contain 1 standard command
-            case BranchLogic::SkipIf:
-               // not parent SKIP-IF?
-               if (Parent->Logic == BranchLogic::SkipIf)
-                  errors += MakeError(L"'skip-if' cannot be nested");
-
-               // Ensure command present
-               //if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
-               if (count_if(Children.begin(), Children.end(), isSkipIfCompatible) != 1)
-                  errors += MakeError(L"must contain single command without conditional");
-               break;
-
-            // BREAK/CONTINUE: Must be decendant of WHILE
-            case BranchLogic::Break:
-            case BranchLogic::Continue:
-               // Check for a parent 'while' command
-               if (!FindAncestor(BranchLogic::While))
-                  errors += MakeError(L"break/continue cannot appear outside 'while'");
-               break;
-            }
-
-            // Recurse into children
-            for (auto& c : Children)
-               c->VerifyLogic(errors);
-         }
-         
-         /// <summary>Verifies object/label names, and performs static type checking on standard and variable arguments</summary>
-         /// <param name="p">parameter</param>
-         /// <param name="index">display index</param>
-         /// <param name="script">script</param>
-         /// <param name="errors">errors collection</param>
-         void  CommandTree::VerifyParameter(const ScriptParameter& p, UINT index, const ScriptFile& script, ErrorArray& errors) const
-         {
-            GameObjectLibrary::ObjectID obj;
-
-            // Recognise game/script objects
-            switch (p.Token.Type)
-            {
-            // GameObject: Ensure exists  (allow {SSTYPE_LASER@12} placeholders)
-            case TokenType::GameObject:
-               if (!GameObjectLib.Contains(p.Value.String) && !GameObjectLib.ParsePlaceholder(p.Value.String, obj))
-                  errors += MakeError(L"Unrecognised game object", p.Token);
-               break;
-
-            // ScriptObject: Ensure exists 
-            case TokenType::ScriptObject:
-               if (!ScriptObjectLib.Contains(p.Value.String))
-                  errors += MakeError(L"Unrecognised script object", p.Token);
-               break;
-
-            // Label: Ensure exists  [Don't check if commented]
-            case TokenType::Label:
-               if (!CmdComment)
-                  if (!script.Labels.Contains(p.Value.String))
-                     errors += MakeError(L"Unrecognised label", p.Token);
-               break;
-            }
-
-            // Varg: Check param vs. target script arguments
-            if (p.Syntax == ParameterSyntax::VArgParameter)
-            {
-               // ScriptCall: 
-               if (Syntax.IsScriptCall())
-               {  
-                  // Find scriptName parameter
-                  auto callName = GetScriptCallName();
-                     
-                  // Skip check if script-name present + script loaded
-                  if (!callName.empty() && script.ScriptCalls.Contains(callName))
-                  {
-                     auto call = script.ScriptCalls.Find(callName);
-                     auto argIndex = index-Syntax.ParameterCount;
-
-                     // Verify argument exists
-                     if (argIndex >= call.Variables.Arguments.Count)
-                     {
-                        // Create token representing argument name/value pair
-                        ScriptToken tok(TokenType::Text, p.ArgName.Start, p.Token.End, p.ArgName.Text + L"=" + p.Token.Text);
-                        errors += MakeError(VString(L"'%s' only has %d arguments", callName.c_str(), call.Variables.Arguments.Count), tok);
-                     }
-                     // Verify argument name
-                     else if (PrefsLib.CheckArgumentNames && !call.Variables.Contains(p.ArgName.Text))
-                        errors += MakeError(VString(L"'%s' does not have a '%s' argument", callName.c_str(), p.ArgName.Text.c_str()), p.ArgName);
-
-#ifndef STRICT_VALIDATION   // Skip these checks when validating, some Egosoft scripts have missing script-call arguments
-                     // Verify argument type
-                     else if (PrefsLib.CheckArgumentTypes)
-                     {
-                        auto arg = call.Variables[p.ArgName.Text];
-                     
-                        // Verify argument order
-                        if (arg.ID != argIndex)
-                           errors += MakeError(VString(L"argument out of order: '%s' must be at index %d", arg.Name.c_str(), arg.ID+1), p.ArgName);
-
-                        // Verify argument type 
-                        if (!ParameterSyntax::Verify(arg.ParamType, p.Type))
-                           errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(arg.ParamType).c_str()), p.Token);
-                     }
-#endif
-                  }
-               }
-            }
-            // Std parameter: Check value vs. type
-            else if (!p.Syntax.Verify(p.Type))
-               errors += MakeError(VString(L"type mismatch - '%s' is not a valid %s", p.Text.c_str(), ::GetString(p.Syntax.Type).c_str()), p.Token);
-         }
-
-         /// <summary>Verifies that all control paths lead to termination.</summary>
-         /// <param name="errors">error collection</param>
-         /// <remarks>This method is only executed when no syntax errors are present</remarks>
-         void  CommandTree::VerifyTermination(ErrorArray& errors) const
-         {
-            // Check for presence of possible conditional or return cmd
-            if (!HasExecutableChild())
-               errors += MakeError(L"Not all control paths return a value");
-            else
-            {
-               bool allPaths = false;
-
-               // Find last child (exclude NOP/END)
-               auto last = *find_if(Children.rbegin(), Children.rend(), isConditionalAlternate);
-               switch (last->Logic)
-               {
-               // If: Verify branch and any alternates all lead to RETURN
-               case BranchLogic::If:
-                  last->VerifyTermination(errors);
-
-                  // Verify following Else/ElseIf
-                  for (auto n = last->FindNextSibling(); n != nullptr && (n->Logic == BranchLogic::Else || n->Logic == BranchLogic::ElseIf); n = n->FindPrevSibling())
-                  {
-                     // Cannot guarantee termination without 'Else'
-                     if (n->Logic == BranchLogic::Else)
-                        allPaths = true;
-
-                     // Verify branch
-                     n->VerifyTermination(errors);
-                  }
-
-                  // Ensure 'Else' was present
-                  if (!allPaths)
-                     errors += last->MakeError(L"Not all control paths return a value");
-                  break;
-
-               // ElseIf: Find + Verify preceeding 'IF'
-               case BranchLogic::Else:
-               case BranchLogic::ElseIf:
-                  // Simpler if we just verify the preceeding 'If'
-                  for (auto n = last->FindPrevSibling(); ;n = n->FindPrevSibling())
-                     if (n->Logic == BranchLogic::If)
-                        return n->VerifyTermination(errors);
-                  break;
-                  
-               // Command: Verify RETURN
-               case BranchLogic::While:      // While is unacceptable because we can't evaluate conditions under which loop will end
-               case BranchLogic::SkipIf:     // SkipIf is unacceptable by default because JIF leads to no alternate branch
-               case BranchLogic::Break:      
-               case BranchLogic::Continue:   // Break/Continue are unacceptable because they're not RETURN
-               case BranchLogic::None:
-                  if (!last->Is(CMD_RETURN))
-                     errors += last->MakeError(L"Last command in script must be 'return'");
-                  break;
-
-               default:
-                  throw AlgorithmException(HERE, VString(L"Unexpected branching logic '%s' for an executable child", ::GetString(last->Logic)));
-               }
-            }
-         }
 
       }
    }

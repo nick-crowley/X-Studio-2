@@ -15,7 +15,7 @@ namespace Logic
 
          /// <summary>Print tree to the console</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::PrintingVisitor::VisitNode(CommandTree* n) 
+         void  CommandTree::NodePrinter::VisitNode(CommandTree* n) 
          {
             // Line#/Logic/Text
             VString   line(!n->Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", n->LineNumber), 
@@ -85,7 +85,7 @@ namespace Logic
          /// <summary>Perform command linking</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::PrintingVisitor::VisitRoot(CommandTree* n) 
+         void  CommandTree::NodePrinter::VisitRoot(CommandTree* n) 
          {
             Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << GetString(n->State);
             Console << ENDL << "-------------------------------------------------------" << ENDL; 

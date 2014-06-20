@@ -290,42 +290,17 @@ namespace Logic
             };
 
             /// <summary>Distinguishes variables and constants from their usage</summary>
-            class ConstantVisitor : public Visitor
+            class ConstantIdentifier : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               ConstantVisitor(ScriptFile& s, ErrorArray& e);
-               virtual ~ConstantVisitor();
+               ConstantIdentifier(ScriptFile& s, ErrorArray& e);
+               virtual ~ConstantIdentifier();
 		 
-               NO_COPY(ConstantVisitor);	// Uncopyable
-               NO_MOVE(ConstantVisitor);	// Unmovable
-
-               // ---------------------- ACCESSORS ------------------------			
-
-               // ----------------------- MUTATORS ------------------------
-            public:
-               void VisitNode(CommandTree* n) override;
-
-               // -------------------- REPRESENTATION ---------------------
-            protected:
-               ErrorArray& Errors;     // Errors collection
-               ScriptFile& Script;     // Script file
-            };
-
-            /// <summary>Generates a ScriptCommand from a node</summary>
-            class GeneratingVisitor : public Visitor
-            {
-               // ------------------------ TYPES --------------------------
-            protected:
-               // --------------------- CONSTRUCTION ----------------------
-            public:
-               GeneratingVisitor(ScriptFile& s, ErrorArray& e);
-               virtual ~GeneratingVisitor();
-		 
-               NO_COPY(GeneratingVisitor);	// Uncopyable
-               NO_MOVE(GeneratingVisitor);	// Unmovable
+               NO_COPY(ConstantIdentifier);	// Uncopyable
+               NO_MOVE(ConstantIdentifier);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -339,18 +314,71 @@ namespace Logic
                ScriptFile& Script;     // Script file
             };
             
-            /// <summary>Finalizes linkage between nodes</summary>
-            class FinalizingVisitor : public Visitor
+            /// <summary>Generates a ScriptCommand from a node</summary>
+            class CommandGenerator : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               FinalizingVisitor(ErrorArray& e);
-               virtual ~FinalizingVisitor();
+               CommandGenerator(ScriptFile& s, ErrorArray& e);
+               virtual ~CommandGenerator();
 		 
-               NO_COPY(FinalizingVisitor);	// Uncopyable
-               NO_MOVE(FinalizingVisitor);	// Unmovable
+               NO_COPY(CommandGenerator);	// Uncopyable
+               NO_MOVE(CommandGenerator);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+               ScriptFile& Script;     // Script file
+            };
+            
+            /// <summary>Verifies command execution type and parameters</summary>
+            class CommandVerifier : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               CommandVerifier(ScriptFile& s, ErrorArray& e);
+               virtual ~CommandVerifier();
+		 
+               NO_COPY(CommandVerifier);	// Uncopyable
+               NO_MOVE(CommandVerifier);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+            protected:
+               void VerifyParameter(CommandTree* n, const ScriptParameter& p, UINT index, ErrorArray& err);
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+               ScriptFile& Script;     // Script file
+            };
+
+            /// <summary>Finalizes linkage between nodes</summary>
+            class LinkageFinalizer : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               LinkageFinalizer(ErrorArray& e);
+               virtual ~LinkageFinalizer();
+		 
+               NO_COPY(LinkageFinalizer);	// Uncopyable
+               NO_MOVE(LinkageFinalizer);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -363,18 +391,66 @@ namespace Logic
                ErrorArray& Errors;     // Errors collection
             };
 
-            /// <summary>Performs linking between nodes</summary>
-            class LinkingVisitor : public Visitor
+            /// <summary>Verifies the branching logic of nodes</summary>
+            class LogicVerifier : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               LinkingVisitor(ErrorArray& e);
-               virtual ~LinkingVisitor();
+               LogicVerifier(ErrorArray& e);
+               virtual ~LogicVerifier();
 		 
-               NO_COPY(LinkingVisitor);	// Uncopyable
-               NO_MOVE(LinkingVisitor);	// Unmovable
+               NO_COPY(LogicVerifier);	// Uncopyable
+               NO_MOVE(LogicVerifier);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+            };
+
+            /// <summary>Assigns standard command indicies to nodes</summary>
+            class NodeIndexer : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               NodeIndexer(UINT& init);
+               virtual ~NodeIndexer();
+		 
+               NO_COPY(NodeIndexer);	// Uncopyable
+               NO_MOVE(NodeIndexer);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               UINT&  NextIndex; // Next available index
+            };
+
+            /// <summary>Performs linking between nodes</summary>
+            class NodeLinker : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               NodeLinker(ErrorArray& e);
+               virtual ~NodeLinker();
+		 
+               NO_COPY(NodeLinker);	// Uncopyable
+               NO_MOVE(NodeLinker);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -388,17 +464,17 @@ namespace Logic
             };
 
             /// <summary>Prints nodes to the console</summary>
-            class PrintingVisitor : public Visitor
+            class NodePrinter : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               PrintingVisitor();
-               virtual ~PrintingVisitor();
+               NodePrinter();
+               virtual ~NodePrinter();
 		 
-               NO_COPY(PrintingVisitor);	// Uncopyable
-               NO_MOVE(PrintingVisitor);	// Unmovable
+               NO_COPY(NodePrinter);	// Uncopyable
+               NO_MOVE(NodePrinter);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -409,19 +485,19 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
             };
-
-            /// <summary>Assigns standard command indicies to nodes</summary>
-            class IndexingVisitor : public Visitor
+            
+            /// <summary>Verifies that all control paths lead to termination</summary>
+            class TerminationVerifier : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               IndexingVisitor(UINT& init);
-               virtual ~IndexingVisitor();
+               TerminationVerifier(ErrorArray& e);
+               virtual ~TerminationVerifier();
 		 
-               NO_COPY(IndexingVisitor);	// Uncopyable
-               NO_MOVE(IndexingVisitor);	// Unmovable
+               NO_COPY(TerminationVerifier);	// Uncopyable
+               NO_MOVE(TerminationVerifier);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -431,21 +507,21 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
             protected:
-               UINT&  NextIndex; // Next available index
+               ErrorArray& Errors;     // Errors collection
             };
 
             /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
-            class VariableVisitor : public Visitor
+            class VariableIdentifier : public Visitor
             {
                // ------------------------ TYPES --------------------------
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               VariableVisitor(ScriptFile& s, ErrorArray& e);
-               virtual ~VariableVisitor();
+               VariableIdentifier(ScriptFile& s, ErrorArray& e);
+               virtual ~VariableIdentifier();
 		 
-               NO_COPY(VariableVisitor);	// Uncopyable
-               NO_MOVE(VariableVisitor);	// Unmovable
+               NO_COPY(VariableIdentifier);	// Uncopyable
+               NO_MOVE(VariableIdentifier);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
 
@@ -537,10 +613,7 @@ namespace Logic
             bool          IsRoot() const;
             ErrorToken    MakeError(const GuiString& msg) const;
             ErrorToken    MakeError(const GuiString& msg, const ScriptToken& tok) const;
-            void          VerifyLogic(ErrorArray& errors) const;
-            void          VerifyParameter(const ScriptParameter& p, UINT index, const ScriptFile& script, ErrorArray& errors) const;
-            void          VerifyTermination(ErrorArray& errors) const;
-               
+            
             // ----------------------- MUTATORS ------------------------
          public:
             void           Accept(Visitor& v);
@@ -554,17 +627,10 @@ namespace Logic
             CommandNodeList  ExpandForLoop(ScriptFile& script);
             CommandNodeList  ExpandForEach(ScriptFile& script);
             void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
-            void  FinalizeLinkage(ErrorArray& errors);
-            void  GenerateCommands(ScriptFile& script, ErrorArray& errors);
-            void  IdentifyConstants(ScriptFile& script, ErrorArray& errors);
-            void  IdentifyVariables(ScriptFile& script, ErrorArray& errors);
-            void  IndexCommands(UINT& next);
             void  InsertJump(NodeIterator pos, const CommandTree* target);
-            void  LinkCommands(ErrorArray& errors);
             void  MoveChildren(CommandTree& from, CommandTree& to);
             void  RevertCommandComment(CommandTree* child);
             void  ReplaceChild(CommandTree* oldChild, CommandTree* newChild);
-            void  VerifyCommand(const ScriptFile& script, ErrorArray& errors);
             
             // -------------------- REPRESENTATION ---------------------
          public:

@@ -9,36 +9,14 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         /// <summary>Create visitor for finalizing node linkage</summary>
-         /// <param name="e">errors collection</param>
-         CommandTree::FinalizingVisitor::FinalizingVisitor(ErrorArray& e) : Errors(e)
-         {
-         }
-
-         /// <summary>Create standard command indexer visitor</summary>
-         /// <param name="init">Initial index</param>
-         CommandTree::IndexingVisitor::IndexingVisitor(UINT& init) : NextIndex(init)
-         {
-         }
-         
          /// <summary>Create linking visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::LinkingVisitor::LinkingVisitor(ErrorArray& e) : Errors(e)
+         CommandTree::NodeLinker::NodeLinker(ErrorArray& e) : Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::FinalizingVisitor::~FinalizingVisitor()
-         {
-         }
-         
-         /// <summary>Nothing</summary>
-         CommandTree::IndexingVisitor::~IndexingVisitor()
-         {
-         }
-
-         /// <summary>Nothing</summary>
-         CommandTree::LinkingVisitor::~LinkingVisitor()
+         CommandTree::NodeLinker::~NodeLinker()
          {
          }
 
@@ -46,41 +24,10 @@ namespace Logic
 
          // ------------------------------- PUBLIC METHODS -------------------------------
          
-         /// <summary>Finalizes linkage between nodes</summary>
-         /// <param name="n">Node</param>
-         void  CommandTree::FinalizingVisitor::VisitNode(CommandTree* n) 
-         {
-            // JMP: Set address
-            if (n->Is(CMD_HIDDEN_JUMP))
-            {
-               if (!n->JumpTarget)
-                  throw AlgorithmException(HERE, L"JMP command with unassigned address");
-
-               n->Parameters[0].Value = n->JumpTarget->Index;
-            }
-
-            // Linked to break/continue: Link to associated JMP (1st child)
-            if (n->JumpTarget && (n->JumpTarget->Is(CMD_BREAK) || n->JumpTarget->Is(CMD_CONTINUE)))
-               n->JumpTarget = n->JumpTarget->Children.begin()->get();
-
-            // Verify linkage
-            if (n->JumpTarget && n->JumpTarget->Index == EMPTY_JUMP)
-               Errors += n->MakeError( VString(L"Linking failed: Illegal linkage to line %d : '%s'", n->JumpTarget->LineNumber, n->JumpTarget->LineCode.c_str()) ); 
-         }
-         
-         /// <summary>Assigns standard command indicies to nodes</summary>
-         /// <param name="n">Node</param>
-         void  CommandTree::IndexingVisitor::VisitNode(CommandTree* n) 
-         {
-            // Standard command  
-            if (!n->CmdComment && n->Is(CommandType::Standard))
-               n->Index = NextIndex++;
-         }
-
          /// <summary>Perform command linking</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::LinkingVisitor::VisitNode(CommandTree* n) 
+         void  CommandTree::NodeLinker::VisitNode(CommandTree* n) 
          {
             try
             {
