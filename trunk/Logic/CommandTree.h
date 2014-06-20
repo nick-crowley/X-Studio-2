@@ -274,6 +274,191 @@ namespace Logic
             /// <summary>Depth-first command tree iterator</summary>
             typedef Iterator<DepthTraversal>  DepthIterator;
 
+            /// <summary>Base-class for all visitors</summary>
+            class Visitor
+            {
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               virtual ~Visitor() {}
+               
+               // ---------------------- ACCESSORS ------------------------			
+               
+               // ----------------------- MUTATORS ------------------------
+            public:
+               virtual void VisitNode(CommandTree* n) = 0;
+               virtual void VisitRoot(CommandTree* n) {}
+            };
+
+            /// <summary>Distinguishes variables and constants from their usage</summary>
+            class ConstantVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               ConstantVisitor(ScriptFile& s, ErrorArray& e);
+               virtual ~ConstantVisitor();
+		 
+               NO_COPY(ConstantVisitor);	// Uncopyable
+               NO_MOVE(ConstantVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+               ScriptFile& Script;     // Script file
+            };
+
+            /// <summary>Generates a ScriptCommand from a node</summary>
+            class GeneratingVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               GeneratingVisitor(ScriptFile& s, ErrorArray& e);
+               virtual ~GeneratingVisitor();
+		 
+               NO_COPY(GeneratingVisitor);	// Uncopyable
+               NO_MOVE(GeneratingVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+               ScriptFile& Script;     // Script file
+            };
+            
+            /// <summary>Finalizes linkage between nodes</summary>
+            class FinalizingVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               FinalizingVisitor(ErrorArray& e);
+               virtual ~FinalizingVisitor();
+		 
+               NO_COPY(FinalizingVisitor);	// Uncopyable
+               NO_MOVE(FinalizingVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+            };
+
+            /// <summary>Performs linking between nodes</summary>
+            class LinkingVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               LinkingVisitor(ErrorArray& e);
+               virtual ~LinkingVisitor();
+		 
+               NO_COPY(LinkingVisitor);	// Uncopyable
+               NO_MOVE(LinkingVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+            };
+
+            /// <summary>Prints nodes to the console</summary>
+            class PrintingVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               PrintingVisitor();
+               virtual ~PrintingVisitor();
+		 
+               NO_COPY(PrintingVisitor);	// Uncopyable
+               NO_MOVE(PrintingVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+               void VisitRoot(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            };
+
+            /// <summary>Assigns standard command indicies to nodes</summary>
+            class IndexingVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               IndexingVisitor(UINT& init);
+               virtual ~IndexingVisitor();
+		 
+               NO_COPY(IndexingVisitor);	// Uncopyable
+               NO_MOVE(IndexingVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               UINT&  NextIndex; // Next available index
+            };
+
+            /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
+            class VariableVisitor : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               VariableVisitor(ScriptFile& s, ErrorArray& e);
+               virtual ~VariableVisitor();
+		 
+               NO_COPY(VariableVisitor);	// Uncopyable
+               NO_MOVE(VariableVisitor);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandTree* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray& Errors;     // Errors collection
+               ScriptFile& Script;     // Script file
+            };
+
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandTree();
@@ -358,6 +543,7 @@ namespace Logic
                
             // ----------------------- MUTATORS ------------------------
          public:
+            void           Accept(Visitor& v);
             CommandNodePtr Add(CommandNodePtr node);
             void           Compile(ScriptFile& script, ErrorArray& errors);
             void           Verify(ScriptFile& script, ErrorArray& errors);
