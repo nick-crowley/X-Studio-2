@@ -82,6 +82,18 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{10a34174-e12a-45cd-a3f8-2ee692689e1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scripts\Compiler\Visitors">
+      <UniqueIdentifier>{1f35300c-b922-4492-84d1-60a1bebca674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripts\Compiler\Visitors">
+      <UniqueIdentifier>{0de25e1c-6dd6-4166-8a3d-ebfafbe8801f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripts\Compiler\Traversals">
+      <UniqueIdentifier>{125f0b16-16aa-4fe4-b672-5d4dc47b4a26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scripts\Compiler\Traversals">
+      <UniqueIdentifier>{71bd100d-9bda-4f19-a44a-56ea95e03ce0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIdentifier.h">
@@ -457,7 +469,7 @@
       <Filter>Header Files\Threads</Filter>
     </ClInclude>
     <ClInclude Include="TreeTraversal.h">
-      <Filter>Header Files\Scripts\Compiler</Filter>
+      <Filter>Header Files\Scripts\Compiler\Traversals</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -731,23 +743,41 @@
     <ClCompile Include="WorkerData.cpp">
       <Filter>Source Files\Threads</Filter>
     </ClCompile>
-    <ClCompile Include="DepthTraversal.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="BreadthTraversal.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
+      <Filter>Source Files\Scripts\Compiler\Traversals</Filter>
     </ClCompile>
-    <ClCompile Include="LinkingVisitor.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
+    <ClCompile Include="DepthTraversal.cpp">
+      <Filter>Source Files\Scripts\Compiler\Traversals</Filter>
     </ClCompile>
-    <ClCompile Include="PrintingVisitor.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
+    <ClCompile Include="CommandVerifier.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratingVisitor.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
+    <ClCompile Include="CommandGenerator.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
     </ClCompile>
-    <ClCompile Include="IdentifyingVisitor.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
+    <ClCompile Include="NodePrinter.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="VariableIdentifier.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantIdentifier.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeLinker.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkageFinalizer.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeIndexer.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="LogicVerifier.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="TerminationVerifier.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -248,9 +248,12 @@
     <ClCompile Include="CommandLexer.cpp" />
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandNodeList.cpp" />
-    <ClCompile Include="GeneratingVisitor.cpp" />
-    <ClCompile Include="IdentifyingVisitor.cpp" />
-    <ClCompile Include="LinkingVisitor.cpp" />
+    <ClCompile Include="CommandGenerator.cpp" />
+    <ClCompile Include="ConstantIdentifier.cpp" />
+    <ClCompile Include="LinkageFinalizer.cpp" />
+    <ClCompile Include="LogicVerifier.cpp" />
+    <ClCompile Include="NodeIndexer.cpp" />
+    <ClCompile Include="NodeLinker.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
     <ClCompile Include="DepthTraversal.cpp" />
@@ -284,7 +287,7 @@
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="ParameterSyntax.cpp" />
     <ClCompile Include="PreferencesLibrary.cpp" />
-    <ClCompile Include="PrintingVisitor.cpp" />
+    <ClCompile Include="NodePrinter.cpp" />
     <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="ProjectFileReader.cpp" />
     <ClCompile Include="ProjectFileWriter.cpp" />
@@ -322,8 +325,11 @@
     <ClCompile Include="SyntaxTree.cpp" />
     <ClCompile Include="SyntaxFileWriter.cpp" />
     <ClCompile Include="TemplateFileReader.cpp" />
+    <ClCompile Include="TerminationVerifier.cpp" />
     <ClCompile Include="TObject.cpp" />
     <ClCompile Include="TShipReader.cpp" />
+    <ClCompile Include="CommandVerifier.cpp" />
+    <ClCompile Include="VariableIdentifier.cpp" />
     <ClCompile Include="WorkerData.cpp" />
     <ClCompile Include="XCatalog.cpp" />
     <ClCompile Include="XFileInfo.cpp" />
