@@ -202,6 +202,16 @@ namespace Logic
             return end<DepthTraversal>();
          }
 
+         /// <summary>Execute a visitor upon this node</summary>
+         /// <param name="v">The visitor</param>
+         void  CommandTree::Accept(Visitor& v)
+         {
+            if (!IsRoot())
+               v.VisitNode(this);
+            else
+               v.VisitRoot(this);
+         }
+
          /// <summary>Add child node</summary>
          /// <param name="cmd">The command node</param>
          /// <returns>Command node</returns>
@@ -231,22 +241,29 @@ namespace Logic
 #endif
             }
 
-            // Perform linking
-            LinkCommands(errors);
+            UINT i = 0;
+            IndexingVisitor indexer(i);
+            LinkingVisitor  linker(errors);
+            FinalizingVisitor finalizer(errors);
+            GeneratingVisitor generator(script, errors);
 
-            // Index commands
-            UINT index = 0;
-            IndexCommands(index);
-
+            // Linking/Indexing
+            for (auto& c : Children)
+            {
+               c->Accept(linker);
+               c->Accept(indexer);
+            }
+               
 #ifdef VALIDATION
             // Set address of EOF
-            EndOfScript.Index = index;
+            EndOfScript.Index = i;     
 #endif
-            // Finalise linkage
-            FinalizeLinkage(errors);
-            
-            // Compile commands
-            GenerateCommands(script, errors);
+            // Finalize linkage + generate commands
+            for (auto& c : Children)
+            {
+               c->Accept(finalizer);
+               c->Accept(generator);
+            }
 
             // Update state
             State = InputState::Compiled;
@@ -356,85 +373,10 @@ namespace Logic
          /// <param name="depth">The depth.</param>
          void  CommandTree::Print(int depth) const
          {
-            if (IsRoot())
-            {
-               Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << GetString(State);
-               Console << ENDL << "-------------------------------------------------------" << ENDL; 
-            }
-            else
-            {
-               // Line#/Logic/Text
-               VString   line(!Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", LineNumber), 
-                         logic(::GetString(Logic));
-               GuiString txt(LineText);
-               Cons      colour(Cons::White);
+            PrintingVisitor v;
             
-               // Index
-               line += VString(Is(CommandType::Standard) && Index != EMPTY_JUMP ? L"%03d: " : L"---: ", Index);
-            
-               // Logic
-               switch (Logic)
-               {
-               // Conditional:
-               default: 
-                  colour = Cons::Cyan;
-                  if (JumpTarget)
-                     txt = (JumpTarget->Index ? VString(L"Jump-if-false: %d", JumpTarget->Index) 
-                                              : VString(L"<Invalid JumpTarget> : ") + JumpTarget->LineCode);
-                  break;
-
-               // NOP:
-               case BranchLogic::NOP:
-                  logic = (!CmdComment ? L"NOP" : L"Cmd");
-                  colour = Cons::Yellow;
-                  break;
-
-               // Command:
-               case BranchLogic::None:
-                  if (Is(CMD_HIDDEN_JUMP) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB))
-                  {
-                     colour = Cons::Green; 
-                     logic = Is(CMD_HIDDEN_JUMP) ? L"Jmp" : L"Goto";
-                     txt = L"Unconditional: ";
-
-                     // Post-Compile: Display label number 
-                     if (JumpTarget)
-                        txt += VString(L"%d", JumpTarget->Index);
-                     // Pre-Compile: Label name
-                     else 
-                        txt += (!Parameters.empty() ? Parameters[0].Token.Text : L"<missing>");
-                  }
-                  else if (Is(CMD_DEFINE_LABEL))
-                  {
-                     colour = Cons::Purple;
-                     logic = L"Proc";
-                  }
-                  else if (Is(CMD_RETURN))
-                  {
-                     colour = Cons::Cyan;
-                     logic = L"Ret";
-                  }
-                  else if (Syntax == CommandSyntax::Unrecognised)
-                  {  // Print entire line in red
-                     Console << (colour = Cons::Red);
-                     logic = L"???";
-                  }
-                  else
-                     logic = L"Cmd";
-                  break;
-               }
-
-               // Print
-               Console << line+Indent(depth) << colour << logic << Cons::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
-            }
-
-            // Print Children
-            for (auto c : Children)
-               c->Print(depth+1);
-
-            // Spacing
-            if (IsRoot())
-               Console << ENDL;
+            for (auto& n : *this)
+               n.Accept(v);
          }
 
          /// <summary>Flattens the tree into a list.</summary>
@@ -945,7 +887,7 @@ namespace Logic
             return any_of(Children.begin(), Children.end(), isExecutableCommand);
          }
 
-         /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
+         /// <summary>Distinguishes variables and constants from their usage</summary>
          /// <param name="script">script.</param>
          /// <param name="errors">Errors collection</param>
          void  CommandTree::IdentifyConstants(ScriptFile& script, ErrorArray& errors) 

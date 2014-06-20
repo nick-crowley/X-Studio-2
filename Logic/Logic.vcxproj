@@ -248,6 +248,9 @@
     <ClCompile Include="CommandLexer.cpp" />
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandNodeList.cpp" />
+    <ClCompile Include="GeneratingVisitor.cpp" />
+    <ClCompile Include="IdentifyingVisitor.cpp" />
+    <ClCompile Include="LinkingVisitor.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandSyntax.cpp" />
     <ClCompile Include="DepthTraversal.cpp" />
@@ -281,6 +284,7 @@
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="ParameterSyntax.cpp" />
     <ClCompile Include="PreferencesLibrary.cpp" />
+    <ClCompile Include="PrintingVisitor.cpp" />
     <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="ProjectFileReader.cpp" />
     <ClCompile Include="ProjectFileWriter.cpp" />

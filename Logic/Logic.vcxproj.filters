@@ -737,6 +737,18 @@
     <ClCompile Include="BreadthTraversal.cpp">
       <Filter>Source Files\Scripts\Compiler</Filter>
     </ClCompile>
+    <ClCompile Include="LinkingVisitor.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintingVisitor.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratingVisitor.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="IdentifyingVisitor.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\XML\msxml6.tlh">
