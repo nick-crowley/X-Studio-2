@@ -6,39 +6,12 @@ namespace Logic
 {
    namespace IO
    {
-      /// <summary>Defines how a file is opened or created</summary>
-      enum class FileMode 
-      { 
-         CreateNew = CREATE_NEW,                // Create new, fail if exists
-         CreateAlways = CREATE_ALWAYS,          // Create new, overwrite if exists
-         OpenAlways = OPEN_ALWAYS,              // Open file, create if does not exist
-         OpenExisting = OPEN_EXISTING,          // Open file, fail if does not exist
-         TruncateExisting = TRUNCATE_EXISTING   // Truncate existing, fail if does not exist
-      };
-
-      /// <summary>Defines read/write access on a stream</summary>
-      enum class FileAccess : UINT 
-      { 
-         Read = GENERIC_READ,                      // Read access
-         Write = GENERIC_WRITE,                    // Write access
-         ReadWrite = GENERIC_READ|GENERIC_WRITE    // Read/Write access
-      };
-
-      /// <summary>Defines how a stream is shared</summary>
-      enum class FileShare : UINT 
-      { 
-         AllowRead = FILE_SHARE_READ,        // Permit others to read
-         AllowWrite = FILE_SHARE_WRITE,      // Permit others to write
-         AllowDelete = FILE_SHARE_DELETE,    // Permit others to delete
-         AllowNone = 0                       // Permit nothing
-      };
-
       /// <summary>Defines the origin of a stream seeking operation</summary>
-      enum class SeekOrigin 
+      enum class SeekOrigin : DWORD
       { 
-         Begin = FILE_BEGIN,           // Beginning of file
+         Begin = FILE_BEGIN,           // Beginning of stream
          Current = FILE_CURRENT,       // Current position
-         End = FILE_END                // End of file
+         End = FILE_END                // End of stream
       };
 
       /// <summary>Represents any stream</summary>

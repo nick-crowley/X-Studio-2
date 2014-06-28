@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Stream.h"
+#include "FileStream.h"
 
 using namespace Logic::IO;
 

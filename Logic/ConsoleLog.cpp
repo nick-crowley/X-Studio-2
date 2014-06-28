@@ -32,12 +32,14 @@ namespace Logic
    /// <exception cref="Logic::IOException">I/O error occurred</exception>
    void  ConsoleLog::Close()
    {
-      if (Writer)
-      {
-         Writer->Close();
-         delete Writer;
-         Writer = nullptr;
-      }
+      // Validate state
+      if (!Writer)
+         throw InvalidOperationException(HERE, L"Writer is already closed");
+
+      // Close + destroy
+      Writer->Close();
+      delete Writer;
+      Writer = nullptr;
    }
 
    /// <summary>Flushes the writer and the stream.</summary>
@@ -45,17 +47,31 @@ namespace Logic
    /// <exception cref="Logic::IOException">I/O error occurred</exception>
    void  ConsoleLog::Flush()
    {
-      if (Writer)
-         Writer->Flush();
+      // Validate state
+      if (!Writer)
+         throw InvalidOperationException(HERE, L"Writer is closed");
+
+      // Flush
+      Writer->Flush();
    }
 
    /// <summary>Opens the writer and the stream.</summary>
-   /// <exception cref="Logic::InvalidOperationException">Writer has already been closed</exception>
+   /// <exception cref="Logic::InvalidOperationException">Writer has already been opened</exception>
    /// <exception cref="Logic::IOException">I/O error occurred</exception>
    void  ConsoleLog::Open()
    {
-      // Create logfile
-      auto file = new FileStream(AppPath(L"Console.rtf"), FileMode::CreateAlways, FileAccess::Write, FileShare::AllowRead);
+      // Validate state
+      if (Writer)
+         throw InvalidOperationException(HERE, L"Writer is already open");
+
+      // Create logfile using flags to reduce caching
+      auto file = new FileStream(AppPath(L"Console.rtf"), 
+                                 FileMode::CreateAlways, 
+                                 FileAccess::ReadWrite, 
+                                 FileAttribute::Normal, /* FileAttribute::WriteThrough */
+                                 FileShare::AllowRead);
+
+      // Create writer
       Writer = new LogFileWriter(StreamPtr(file));
    }
 
@@ -65,8 +81,12 @@ namespace Logic
    /// <exception cref="Logic::IOException">I/O error occurred</exception>
    void  ConsoleLog::Write(const wstring& txt, WORD attr)
    {
-      if (Writer)
-         Writer->Write(txt, attr);
+      // Validate state
+      if (!Writer)
+         throw InvalidOperationException(HERE, L"Writer is closed");
+
+      // Write
+      Writer->Write(txt, attr);
    }
 
    // ------------------------------ PROTECTED METHODS -----------------------------
