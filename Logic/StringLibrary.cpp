@@ -66,12 +66,12 @@ namespace Logic
                if (file.Language == lang)
                {
                   Files.insert(move(file));
-                  Console << Cons::Green << L"Success" << ENDL;
+                  Console << Cons::Success << ENDL;
                }
                else
                {  // Skip files that turn out to be foreign
                   data->SendFeedback(ProgressType::Warning, 3, VString(L"Skipping %s language file...", GetString(file.Language).c_str()) );
-                  Console << Cons::Yellow << L"Skipped" << ENDL;
+                  Console << Cons::Bold << Cons::Yellow << L"Skipped" << ENDL;
                }
             }
             catch (ExceptionBase& e) {

@@ -80,13 +80,13 @@ namespace Logic
 
             // Feedback
             if (!silent)
-               Console << Cons::Green << "Success" << ENDL;
+               Console << Cons::Success << ENDL;
             return sf;
          }
          catch (ExceptionBase& e) {
             // Feedback
             if (!silent)
-               Console << Cons::Error << "Failed: " << e.Message.Remove(L"\r\n") << ENDL;
+               Console << Cons::Failure << e.Message.Remove(L"\r\n") << ENDL;
             throw;
          }
       }
