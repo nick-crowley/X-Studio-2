@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 
 namespace Logic
 {
@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create linking visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::NodeLinker::NodeLinker(ErrorArray& e) : Errors(e)
+         CommandNode::NodeLinker::NodeLinker(ErrorArray& e) : Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::NodeLinker::~NodeLinker()
+         CommandNode::NodeLinker::~NodeLinker()
          {
          }
 
@@ -27,11 +27,11 @@ namespace Logic
          /// <summary>Perform command linking</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::NodeLinker::VisitNode(CommandTree* n) 
+         void  CommandNode::NodeLinker::VisitNode(CommandNode* n) 
          {
             try
             {
-               CommandTree* p;
+               CommandNode* p;
 
                switch (n->Logic)
                {

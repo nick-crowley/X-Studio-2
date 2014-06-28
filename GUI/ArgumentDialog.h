@@ -1,7 +1,7 @@
 #pragma once
 #include "ScriptDocument.h"
 #include "DialogBase.h"
-#include "../Logic/CommandTree.h"
+#include "../Logic/CommandNode.h"
 
 /// <summary>User interface</summary>
 NAMESPACE_BEGIN2(GUI,Windows)

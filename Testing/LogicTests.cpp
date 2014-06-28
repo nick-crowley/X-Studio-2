@@ -90,7 +90,7 @@ namespace Testing
    /// <summary>Tests the commandTree DepthIterator.</summary>
    /// <param name="n">root node.</param>
    /// <param name="pos">root position.</param>
-   void Test_DepthIterator(CommandNodePtr n, CommandTree::DepthIterator& pos)
+   void Test_DepthIterator(CommandNodePtr n, CommandNode::DepthIterator& pos)
    {
       // Query whether nodes match
       if (pos.operator->() == n.get())

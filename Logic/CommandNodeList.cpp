@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CommandNodeList.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 
 namespace Logic
 {

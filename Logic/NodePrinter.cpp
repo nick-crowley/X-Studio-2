@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 
 namespace Logic
 {
@@ -15,7 +15,7 @@ namespace Logic
 
          /// <summary>Print tree to the console</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::NodePrinter::VisitNode(CommandTree* n) 
+         void  CommandNode::NodePrinter::VisitNode(CommandNode* n) 
          {
             // Line#/Logic/Text
             VString   line(!n->Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", n->LineNumber), 
@@ -85,7 +85,7 @@ namespace Logic
          /// <summary>Perform command linking</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::NodePrinter::VisitRoot(CommandTree* n) 
+         void  CommandNode::NodePrinter::VisitRoot(CommandNode* n) 
          {
             Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << GetString(n->State);
             Console << ENDL << "-------------------------------------------------------" << ENDL; 

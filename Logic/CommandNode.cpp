@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
 #include "ScriptFileReader.h"
@@ -17,12 +17,12 @@ namespace Logic
       {
 #ifdef VALIDATION
          /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
-         CommandTree  CommandTree::EndOfScript;
+         CommandNode  CommandNode::EndOfScript;
 #endif
          // -------------------------------- CONSTRUCTION --------------------------------
 
          /// <summary>Create root node</summary>
-         CommandTree::CommandTree()
+         CommandNode::CommandNode()
             : Syntax(CommandSyntax::Unrecognised), 
               Condition(Conditional::NONE),
               Parent(nullptr), 
@@ -38,11 +38,11 @@ namespace Logic
          /// <param name="parent">parent node</param>
          /// <param name="target">target node</param>
          /// <exception cref="Logic::ArgumentNullException">Parent or target is null</exception>
-         CommandTree::CommandTree(const CommandTree& parent, const CommandTree* target)
+         CommandNode::CommandNode(const CommandNode& parent, const CommandNode* target)
             : Syntax(SyntaxLib.Find(CMD_HIDDEN_JUMP, GameVersion::Threat)),
               Condition(Conditional::NONE),
               JumpTarget(target),
-              Parent(const_cast<CommandTree*>(&parent)),
+              Parent(const_cast<CommandNode*>(&parent)),
               LineNumber(parent.LineNumber),
               Extent({0,0}),
               Index(EMPTY_JUMP),
@@ -59,7 +59,7 @@ namespace Logic
          /// <param name="macro">macro command - line number, parent, line text preserved</param>
          /// <param name="expanded">expanded command - syntax, parameters, condition preserved</param>
          /// <exception cref="Logic::AlgorithmException">macro command not a macro</exception>
-         CommandTree::CommandTree(const CommandTree& macro, const CommandTree& expanded)
+         CommandNode::CommandNode(const CommandNode& macro, const CommandNode& expanded)
             : Syntax(expanded.Syntax),
               Condition(expanded.Condition),
               Parameters(expanded.Parameters),
@@ -84,7 +84,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          /// <param name="commented">Whether command comment</param>
-         CommandTree::CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, 
+         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, 
                                   const CommandLexer& lex, UINT line, bool commented)
             : Syntax(syntax),
               Condition(cnd),
@@ -107,7 +107,7 @@ namespace Logic
          /// <param name="lex">lexer.</param>
          /// <param name="line">1-based line number</param>
          /// <param name="commented">Whether command comment</param>
-         CommandTree::CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, 
+         CommandNode::CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, 
                                   const CommandLexer& lex, UINT line, bool commented)
             : Syntax(syntax),
               Condition(cnd),
@@ -123,32 +123,32 @@ namespace Logic
               CmdComment(commented)
          {}
 
-         CommandTree::~CommandTree()
+         CommandNode::~CommandNode()
          {}
 
          // ------------------------------- STATIC METHODS -------------------------------
          
          /// <summary>Get input state string</summary>
-         const wchar*  CommandTree::GetString(InputState s)
+         const wchar*  CommandNode::GetString(InputState s)
          {
             static const wchar* str[] = {L"UNVERIFIED", L"VERIFIED", L"COMPILED"};
             return str[(UINT)s];
          }
          
          /// <summary>Checks whether a command is executable from a logic perspective</summary>
-         CommandTree::NodeDelegate  CommandTree::isExecutableCommand = [](const CommandNodePtr& n) 
+         CommandNode::NodeDelegate  CommandNode::isExecutableCommand = [](const CommandNodePtr& n) 
          { 
             return !n->CmdComment && (n->Is(CommandType::Standard) || n->Is(CMD_BREAK) || n->Is(CMD_CONTINUE)); 
          };
 
          /// <summary>Checks whether commands are standard</summary>
-         CommandTree::NodeDelegate  CommandTree::isStandardCommand = [](const CommandNodePtr& n) 
+         CommandNode::NodeDelegate  CommandNode::isStandardCommand = [](const CommandNodePtr& n) 
          { 
             return n->Is(CommandType::Standard) && !n->CmdComment; 
          };
          
          /// <summary>Checks whether commands are compatible with 'skip-if' conditional</summary>
-         CommandTree::NodeDelegate  CommandTree::isSkipIfCompatible = [](const CommandNodePtr& n) 
+         CommandNode::NodeDelegate  CommandNode::isSkipIfCompatible = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
             {
@@ -161,7 +161,7 @@ namespace Logic
          };
          
          /// <summary>Finds any command or 'starting' conditional, but rejects 'middle' conditionals like else,else-if,end</summary>
-         CommandTree::NodeDelegate  CommandTree::isConditionalEnd = [](const CommandNodePtr& n) 
+         CommandNode::NodeDelegate  CommandNode::isConditionalEnd = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
             {
@@ -175,7 +175,7 @@ namespace Logic
          };
 
          /// <summary>Finds any executable command, ie. anything except END or NOP</summary>
-         CommandTree::NodeDelegate  CommandTree::isConditionalAlternate = [](const CommandNodePtr& n) 
+         CommandNode::NodeDelegate  CommandNode::isConditionalAlternate = [](const CommandNodePtr& n) 
          { 
             switch (n->Logic)
             {
@@ -190,21 +190,21 @@ namespace Logic
          
          /// <summary>Get start iterator for this node</summary>
          /// <returns></returns>
-         CommandTree::DepthIterator CommandTree::begin() const
+         CommandNode::DepthIterator CommandNode::begin() const
          {
             return begin<DepthTraversal>();
          }
 
          /// <summary>Get end iterator for this node</summary>
          /// <returns></returns>
-         CommandTree::DepthIterator CommandTree::end() const
+         CommandNode::DepthIterator CommandNode::end() const
          {
             return end<DepthTraversal>();
          }
 
          /// <summary>Execute a visitor upon this node</summary>
          /// <param name="v">The visitor</param>
-         void  CommandTree::Accept(Visitor& v)
+         void  CommandNode::Accept(Visitor& v)
          {
             if (!IsRoot())
                v.VisitNode(this);
@@ -215,7 +215,7 @@ namespace Logic
          /// <summary>Add child node</summary>
          /// <param name="cmd">The command node</param>
          /// <returns>Command node</returns>
-         CommandNodePtr  CommandTree::Add(CommandNodePtr node)
+         CommandNodePtr  CommandNode::Add(CommandNodePtr node)
          {
             // Set parent and append
             node->Parent = this;
@@ -226,7 +226,7 @@ namespace Logic
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::Compile(ScriptFile& script, ErrorArray& errors)
+         void  CommandNode::Compile(ScriptFile& script, ErrorArray& errors)
          {
             UINT i = 0;
             CommandGenerator   generator(script, errors);
@@ -281,7 +281,7 @@ namespace Logic
          /// <param name="name">symbol.</param>
          /// <param name="type">type.</param>
          /// <param name="results">The results.</param>
-         void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
+         void  CommandNode::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
             bool comment = CmdComment || Is(CMD_COMMENT);
 
@@ -310,19 +310,19 @@ namespace Logic
          /// <summary>Query command syntax ID</summary>
          /// <param name="id">Command ID</param>
          /// <returns>True if command is uncommented and has a matching ID, otherwise false</returns>
-         bool  CommandTree::Is(UINT ID) const
+         bool  CommandNode::Is(UINT ID) const
          {
             return !CmdComment && Syntax.Is(ID);
          }
 
          /// <summary>Query command syntax type</summary>
-         bool  CommandTree::Is(CommandType t) const
+         bool  CommandNode::Is(CommandType t) const
          {
             return Syntax.Is(t);
          }
 
          /// <summary>Identifies branch logic</summary>
-         BranchLogic  CommandTree::GetBranchLogic() const
+         BranchLogic  CommandNode::GetBranchLogic() const
          {
             // CmdComment
             if (CmdComment)
@@ -372,14 +372,14 @@ namespace Logic
          }
          
          /// <summary>Get line text without indentation</summary>
-         GuiString   CommandTree::GetLineCode() const
+         GuiString   CommandNode::GetLineCode() const
          {
             return LineText.TrimLeft(L" ");
          }
 
          /// <summary>Debug print</summary>
          /// <param name="depth">The depth.</param>
-         void  CommandTree::Print(int depth) const
+         void  CommandNode::Print(int depth) const
          {
             NodePrinter v;
             
@@ -390,7 +390,7 @@ namespace Logic
 
          /// <summary>Flattens the tree into a list.</summary>
          /// <param name="l">output.</param>
-         void  CommandTree::ToList(CommandNodeList& l) const
+         void  CommandNode::ToList(CommandNodeList& l) const
          {
             // Flatten children (if any) into list
             for (auto& c : Children)
@@ -403,7 +403,7 @@ namespace Logic
          /// <summary>Verifies the entire tree</summary>
          /// <param name="script">script</param>
          /// <param name="errors">errors collection</param>
-         void  CommandTree::Verify(ScriptFile& script, ErrorArray& errors) 
+         void  CommandNode::Verify(ScriptFile& script, ErrorArray& errors) 
          {
             CommandGenerator    commands(script, errors);
             ConstantIdentifier  constants(script, errors);
@@ -446,10 +446,10 @@ namespace Logic
 
          /// <summary>Finds an ancestor with a given branch logic</summary>
          /// <returns>Parent if found, otherwise nullptr</returns>
-         CommandTree*  CommandTree::FindAncestor(BranchLogic l) const
+         CommandNode*  CommandNode::FindAncestor(BranchLogic l) const
          {
             // Check for a parent 'while' command
-            for (CommandTree* n = Parent; n != nullptr; n = n->Parent)
+            for (CommandNode* n = Parent; n != nullptr; n = n->Parent)
                if (n->Logic == l)
                   return n;
 
@@ -460,14 +460,14 @@ namespace Logic
          /// <summary>Find a child node by value</summary>
          /// <param name="child">desired child</param>
          /// <returns></returns>
-         CommandTree::NodeIterator CommandTree::FindChild(const CommandTree* child) const
+         CommandNode::NodeIterator CommandNode::FindChild(const CommandNode* child) const
          {
             return find_if(Children.begin(), Children.end(), [child](const CommandNodePtr& n) {return child == n.get();} );
          }
          
          /// <summary>Finds the conditional or standard command following an if/else-if statement</summary>
          /// <returns></returns>
-         CommandTree* CommandTree::FindConditionalAlternate() const
+         CommandNode* CommandNode::FindConditionalAlternate() const
          {
             // Find next ELSE-IF,ELSE or Std Cmd
             auto node = FindSibling(isConditionalAlternate, L"alternate conditional");
@@ -492,7 +492,7 @@ namespace Logic
          
          /// <summary>Finds the command to execute following a failed if/else-if statement</summary>
          /// <returns></returns>
-         CommandTree* CommandTree::FindConditionalEnd() const
+         CommandNode* CommandNode::FindConditionalEnd() const
          {
 #ifndef VALIDATION
             // Find next Std command that isn't ELSE-IF
@@ -513,15 +513,15 @@ namespace Logic
          /// <summary>Find label definition</summary>
          /// <param name="name">Label name</param>
          /// <returns>Label definition command if found, otherwise nullptr</returns>
-         CommandTree*  CommandTree::FindLabel(const wstring& name) const
+         CommandNode*  CommandNode::FindLabel(const wstring& name) const
          {
             // Check node
             if (Is(CMD_DEFINE_LABEL) && Parameters[0].Value.String == name)
-               return const_cast<CommandTree*>(this);
+               return const_cast<CommandNode*>(this);
             
             // Check children
             for (const auto& c : Children)
-               if (CommandTree* label = c->FindLabel(name))
+               if (CommandNode* label = c->FindLabel(name))
                   return label;
 
             // Not in current branch
@@ -530,7 +530,7 @@ namespace Logic
          
          /// <summary>Finds the next executable sibling</summary>
          /// <returns></returns>
-         CommandTree* CommandTree::FindNextCommand() const
+         CommandNode* CommandNode::FindNextCommand() const
          {
             return FindSibling(isExecutableCommand, L"next executable command");
          }
@@ -538,7 +538,7 @@ namespace Logic
          /// <summary>Finds the next sibling of this node</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Executed on root node</exception>
-         CommandTree* CommandTree::FindNextSibling() const
+         CommandNode* CommandNode::FindNextSibling() const
          {
             // Ensure not root
             if (IsRoot())
@@ -552,7 +552,7 @@ namespace Logic
          /// <summary>Finds the prev sibling of this node</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Executed on root node</exception>
-         CommandTree* CommandTree::FindPrevSibling() const
+         CommandNode* CommandNode::FindPrevSibling() const
          {
             // Ensure not root
             if (IsRoot())
@@ -565,10 +565,10 @@ namespace Logic
 
          /// <summary>Finds the root node</summary>
          /// <returns>Root</returns>
-         CommandTree*  CommandTree::FindRoot() const
+         CommandNode*  CommandNode::FindRoot() const
          {
-            CommandTree* n;
-            for (n = const_cast<CommandTree*>(this); n->Parent != nullptr; n = n->Parent)
+            CommandNode* n;
+            for (n = const_cast<CommandNode*>(this); n->Parent != nullptr; n = n->Parent)
             {}
             return n;
          }
@@ -579,7 +579,7 @@ namespace Logic
          /// <returns>First matching node</returns>
          /// <remarks>Does not examine the children of any nodes, searches 'up' and 'right' along the tree</remarks>
          /// <exception cref="Logic::AlgorithmException">Unable to find node</exception>
-         CommandTree*  CommandTree::FindSibling(NodeDelegate d, const wchar* help) const
+         CommandNode*  CommandNode::FindSibling(NodeDelegate d, const wchar* help) const
          {
             // Not found: Error
             if (IsRoot())
@@ -596,10 +596,10 @@ namespace Logic
          /// <param name="txt">Command text.</param>
          /// <param name="v">game version</param>
          /// <returns></returns>
-         CommandNodePtr  CommandTree::ExpandCommand(const wstring& txt, GameVersion v)
+         CommandNodePtr  CommandNode::ExpandCommand(const wstring& txt, GameVersion v)
          {
             // Generate new node
-            return new CommandTree(*this, *ScriptParser::Generate(txt, v));
+            return new CommandNode(*this, *ScriptParser::Generate(txt, v));
          }
          
          /// <summary>Generates the actual commands necessary to form the 'dim' macro</summary>
@@ -607,7 +607,7 @@ namespace Logic
          /// <returns>List of expanded replacement commands</returns>
          /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
          /// <exception cref="Logic::InvalidOperationException">Not a 'dim' macro</exception>
-         CommandNodeList  CommandTree::ExpandDimArray(ScriptFile& script)
+         CommandNodeList  CommandNode::ExpandDimArray(ScriptFile& script)
          {
             CommandNodeList nodes;
 
@@ -652,7 +652,7 @@ namespace Logic
          /// (iterator) = (inital_value) ± (step_value)
          /// while (iterator) greater/less (final_value)
          /// (iterator) = (iterator) ± (step_value)</remarks>
-         CommandNodeList  CommandTree::ExpandForLoop(ScriptFile& script)
+         CommandNodeList  CommandNode::ExpandForLoop(ScriptFile& script)
          {
             CommandNodeList  nodes;
             ParameterArray   params,
@@ -712,7 +712,7 @@ namespace Logic
          /// while (iterator)
          /// dec (iterator)
          /// (item_iterator) = (array)[(iterator)]</remarks>
-         CommandNodeList  CommandTree::ExpandForEach(ScriptFile& script)
+         CommandNodeList  CommandNode::ExpandForEach(ScriptFile& script)
          {
             CommandNodeList  nodes;
             ParameterArray   params,
@@ -756,7 +756,7 @@ namespace Logic
          /// <summary>Expands macro commands</summary>
          /// <param name="script">script file.</param>
          /// <param name="errors">Errors collection.</param>
-         void  CommandTree::ExpandMacros(ScriptFile& script, ErrorArray& errors)
+         void  CommandNode::ExpandMacros(ScriptFile& script, ErrorArray& errors)
          {
             try
             {
@@ -804,7 +804,7 @@ namespace Logic
          /// <summary>Gets the last executable child.</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">No executable children</exception>
-         CommandTree* CommandTree::GetLastExecutableChild() const
+         CommandNode* CommandNode::GetLastExecutableChild() const
          {
             // Reverse linear search
             auto cmd = find_if(Children.rbegin(), Children.rend(), isExecutableCommand);
@@ -818,7 +818,7 @@ namespace Logic
          
          /// <summary>Gets the name of the script (if any) called by this command</summary>
          /// <returns>Script name, or empty string if defined by variable</returns>
-         wstring CommandTree::GetScriptCallName() const
+         wstring CommandNode::GetScriptCallName() const
          {
             // Find scriptName parameter
             auto callName = find_if(Parameters.begin(), Parameters.end(), [](const ScriptParameter& s) {return s.Syntax.Usage == ParameterUsage::ScriptName;} );
@@ -829,7 +829,7 @@ namespace Logic
 
          /// <summary>Determines whether has executable child</summary>
          /// <returns></returns>
-         bool  CommandTree::HasExecutableChild() const
+         bool  CommandNode::HasExecutableChild() const
          {
             return any_of(Children.begin(), Children.end(), isExecutableCommand);
          }
@@ -837,13 +837,13 @@ namespace Logic
          /// <summary>Inserts an unconditional jump command as the last child</summary>
          /// <param name="target">Command to target</param>
          /// <returns></returns>
-         void  CommandTree::InsertJump(NodeIterator pos, const CommandTree* target)
+         void  CommandNode::InsertJump(NodeIterator pos, const CommandNode* target)
          {
-            Children.insert(pos, new CommandTree(*this, target));
+            Children.insert(pos, new CommandNode(*this, target));
          }
          
          /// <summary>Query whether node is root</summary>
-         bool  CommandTree::IsRoot() const
+         bool  CommandNode::IsRoot() const
          {
             return Parent == nullptr;
          }
@@ -851,7 +851,7 @@ namespace Logic
          /// <summary>Create error for this entire line</summary>
          /// <param name="msg">error message</param>
          /// <returns></returns>
-         ErrorToken  CommandTree::MakeError(const GuiString& msg) const
+         ErrorToken  CommandNode::MakeError(const GuiString& msg) const
          {
             return ErrorToken(msg, LineNumber, LineText.substr(Extent.cpMin, Extent.cpMax-Extent.cpMin), Extent);
          }
@@ -860,7 +860,7 @@ namespace Logic
          /// <param name="msg">error message</param>
          /// <param name="tok">token</param>
          /// <returns></returns>
-         ErrorToken  CommandTree::MakeError(const GuiString& msg, const ScriptToken& tok) const
+         ErrorToken  CommandNode::MakeError(const GuiString& msg, const ScriptToken& tok) const
          {
             return ErrorToken(msg, LineNumber, tok);
          }
@@ -869,7 +869,7 @@ namespace Logic
          /// <param name="from">From.</param>
          /// <param name="to">To.</param>
          /// <exception cref="Logic::AlgorithmException">From and To specify the same node</exception>
-         void CommandTree::MoveChildren(CommandTree& from, CommandTree& to)
+         void CommandNode::MoveChildren(CommandNode& from, CommandNode& to)
          {
             if (&from == &to)
                throw AlgorithmException(HERE, L"Cannot transfer children to itself");
@@ -886,7 +886,7 @@ namespace Logic
          /// <param name="child">Child command to revert</param>
          /// <exception cref="Logic::ArgumentNullException">child is null</exception>
          /// <exception cref="Logic::InvalidOperationException">Child node not found</exception>
-         void CommandTree::RevertCommandComment(CommandTree* child)
+         void CommandNode::RevertCommandComment(CommandNode* child)
          {
             REQUIRED(child);
 
@@ -902,7 +902,7 @@ namespace Logic
             ParameterArray params(ScriptParameter(newSyntax.Parameters[0], lex.Tokens[1]));
 
             // Generate new command + perform in-place replacement
-            ReplaceChild(child, new CommandTree(Conditional::NONE, newSyntax, params, lex, child->LineNumber, false));
+            ReplaceChild(child, new CommandNode(Conditional::NONE, newSyntax, params, lex, child->LineNumber, false));
          }
 
          /// <summary>Replaces one child node with another.</summary>
@@ -910,7 +910,7 @@ namespace Logic
          /// <param name="newChild">new replacement child.</param>
          /// <exception cref="Logic::ArgumentNullException">child is null</exception>
          /// <exception cref="Logic::InvalidOperationException">Child node not found</exception>
-         void CommandTree::ReplaceChild(CommandTree* oldChild, CommandTree* newChild)
+         void CommandNode::ReplaceChild(CommandNode* oldChild, CommandNode* newChild)
          {
             REQUIRED(oldChild);
             REQUIRED(newChild);
