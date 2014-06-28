@@ -37,7 +37,13 @@ namespace Logic
       };
 
       /// <summary>Shorthand for console end-of-line manipulator</summary>
-      const Cons ENDL = Cons::Endl;
+      const static Cons ENDL = Cons::Endl;
+
+      /// <summary>Defines convenient combinations of console colours</summary>
+      const static UINT FOREGROUND_CYAN = FOREGROUND_BLUE|FOREGROUND_GREEN,
+                        FOREGROUND_PURPLE = FOREGROUND_RED|FOREGROUND_BLUE,
+                        FOREGROUND_WHITE = FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE,
+                        FOREGROUND_YELLOW = FOREGROUND_GREEN|FOREGROUND_RED;
 
    
       /// <summary>Write rectangle to the console</summary>

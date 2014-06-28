@@ -70,15 +70,15 @@ namespace Logic
       void  LogFileWriter::Write(const wstring& txt, WORD attr)
       {
          // Set colour
-         switch (attr & (FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE))
+         switch (attr & FOREGROUND_WHITE)
          {
-         case FOREGROUND_RED:                                   SetForeColour(Red);     break;
-         case FOREGROUND_GREEN:                                 SetForeColour(Green);   break;
-         case FOREGROUND_BLUE:                                  SetForeColour(Blue);    break;
-         case FOREGROUND_RED|FOREGROUND_GREEN:                  SetForeColour(Yellow);  break;
-         case FOREGROUND_GREEN|FOREGROUND_BLUE:                 SetForeColour(Cyan);    break;
-         case FOREGROUND_RED|FOREGROUND_BLUE:                   SetForeColour(Magenta); break;
-         case FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE:  SetForeColour(Black);   break;
+         case FOREGROUND_RED:    SetForeColour(Red);     break;
+         case FOREGROUND_GREEN:  SetForeColour(Green);   break;
+         case FOREGROUND_BLUE:   SetForeColour(Blue);    break;
+         case FOREGROUND_YELLOW: SetForeColour(Yellow);  break;
+         case FOREGROUND_CYAN:   SetForeColour(Cyan);    break;
+         case FOREGROUND_PURPLE: SetForeColour(Magenta); break;
+         case FOREGROUND_WHITE:  SetForeColour(Black);   break;
          }
 
          // Bold/Normal

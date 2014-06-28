@@ -268,13 +268,13 @@ namespace Logic
 
             switch (c)
             {
-            case Cons::Blue:   Attributes = bold|FOREGROUND_BLUE;                   break;
-            case Cons::Green:  Attributes = bold|FOREGROUND_GREEN;                  break;
-            case Cons::Red:    Attributes = bold|FOREGROUND_RED;                    break;
-            case Cons::Cyan:   Attributes = bold|FOREGROUND_BLUE|FOREGROUND_GREEN;  break;
-            case Cons::Purple: Attributes = bold|FOREGROUND_BLUE|FOREGROUND_RED;    break;
-            case Cons::Yellow: Attributes = bold|FOREGROUND_GREEN|FOREGROUND_RED;   break;
-            case Cons::White:  Attributes = bold|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE; break;
+            case Cons::Blue:   Attributes = bold|FOREGROUND_BLUE;    break;
+            case Cons::Green:  Attributes = bold|FOREGROUND_GREEN;   break;
+            case Cons::Red:    Attributes = bold|FOREGROUND_RED;     break;
+            case Cons::Cyan:   Attributes = bold|FOREGROUND_CYAN;    break;
+            case Cons::Purple: Attributes = bold|FOREGROUND_PURPLE;  break;
+            case Cons::Yellow: Attributes = bold|FOREGROUND_YELLOW;  break;
+            case Cons::White:  Attributes = bold|FOREGROUND_WHITE;   break;
             }
          }
 
