@@ -11,7 +11,7 @@ namespace Logic
 
          /// <summary>Create visitor for printing tree to the console</summary>
          /// <param name="t">tree to print</param>
-         CommandTree::NodePrinter::NodePrinter(CommandTree& t) : Tree(t)
+         CommandTree::NodePrinter::NodePrinter(const CommandTree& t) : Tree(t)
          {
          }
 
@@ -90,7 +90,7 @@ namespace Logic
             }
 
             // Print
-            Console << line+Indent(depth) << colour << logic << Cons::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
+            Console << line+Indent(GetDepth(n)) << colour << logic << Cons::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
          }
 
          /// <summary>Perform command linking</summary>
@@ -106,6 +106,22 @@ namespace Logic
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
+
+         /// <summary>Calculates the depth of a node</summary>
+         /// <param name="n">Node</param>
+         /// <returns></returns>
+         /// <exception cref="Logic::ArgumentNullException">Error in linking algorithm</exception>
+         UINT CommandTree::NodePrinter::GetDepth(const CommandNode* n) const
+         {
+            REQUIRED(n);
+            UINT d = 0;
+
+            // Iterate towards a node attached to the root
+            for (const CommandNode* c = n; c && !c->IsRoot(); c = c->Parent)
+               ++d;
+
+            return d;
+         }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
       }
