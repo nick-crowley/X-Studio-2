@@ -1,4 +1,5 @@
 #pragma once
+#include "CommandNode.h"
 
 namespace Logic
 {
@@ -6,8 +7,6 @@ namespace Logic
    {
       namespace Compiler
       {
-         class CommandNode;
-
          namespace Traversals
          {
 

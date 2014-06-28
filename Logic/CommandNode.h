@@ -7,7 +7,6 @@
 #include "ScriptToken.h"
 #include "ErrorToken.h"
 #include "Symbol.h"
-#include "TreeTraversal.h"
 #include <algorithm>
 
 namespace Testing
@@ -151,7 +150,7 @@ namespace Logic
             const UINT         LineNumber;    // 1-based line number
             const CHARRANGE    Extent;        // Start/end character offsets
 
-         protected:
+         //protected:
             Conditional        Condition;     // Conditional
             const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
