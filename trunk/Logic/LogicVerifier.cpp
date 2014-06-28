@@ -98,7 +98,7 @@ namespace Logic
 
                // Ensure command present
                //if (!cmd->Is(CommandType::Standard) && !cmd->Is(CMD_CONTINUE) && !cmd->Is(CMD_BREAK))
-               if (count_if(n->Children.begin(), n->Children.end(), isSkipIfCompatible) != 1)
+               if (count_if(n->Children.begin(), n->Children.end(), CommandNode::isSkipIfCompatible) != 1)
                   Errors += n->MakeError(L"must contain single command without conditional");
                break;
 

@@ -45,7 +45,7 @@ namespace Logic
                {
                // If: Verify branch and any alternates all lead to RETURN
                case BranchLogic::If:
-                  last->VerifyTermination(Errors);
+                  VisitNode(last.get());
 
                   // Verify following Else/ElseIf
                   for (auto m = last->FindNextSibling(); m != nullptr && (m->Logic == BranchLogic::Else || m->Logic == BranchLogic::ElseIf); m = m->FindPrevSibling())
@@ -55,7 +55,7 @@ namespace Logic
                         allPaths = true;
 
                      // Verify branch
-                     m->VerifyTermination(Errors);
+                     VisitNode(m);
                   }
 
                   // Ensure 'Else' was present
@@ -69,7 +69,7 @@ namespace Logic
                   // Simpler if we just verify the preceeding 'If'
                   for (auto m = last->FindPrevSibling(); ; m = m->FindPrevSibling())
                      if (m->Logic == BranchLogic::If)
-                        return m->VerifyTermination(Errors);
+                        return VisitNode(m);
                   break;
                   
                // Command: Verify RETURN

@@ -1,5 +1,5 @@
 #pragma once
-#include "CommandNode.h"
+#include "TreeTraversal.h"
 
 namespace Logic
 {
@@ -16,7 +16,7 @@ namespace Logic
             template <typename TRAVERSAL>
             class Iterator : public std::iterator<std::forward_iterator_tag, CommandNodePtr>
             {
-               friend class CommandNode;
+               friend class CommandTree;
                
                // ------------------------ TYPES --------------------------
             protected:
@@ -25,7 +25,7 @@ namespace Logic
             protected:
                /// <summary>Creates an end iterator</summary>
                /// <param name="t">Tree</param>
-               Iterator(CommandTree& t) 
+               Iterator(const CommandTree& t) 
                   : Tree(&t), Position(nullptr)
                {
                }
@@ -34,7 +34,7 @@ namespace Logic
                /// <param name="t">Tree</param>
                /// <param name="n">Start node</param>
                /// <exception cref="Logic::ArgumentNullException">start node is nullptr</exception>
-               Iterator(CommandTree& t, CommandNodePtr& n) 
+               Iterator(const CommandTree& t, CommandNodePtr& n) 
                   : Tree(&t), Position(n)
                {
                   REQUIRED(n);
@@ -100,7 +100,7 @@ namespace Logic
                /// <returns></returns>
                bool operator==(const Iterator& r) const
                { 
-                  return Root == r.Root && Position == r.Position; 
+                  return Tree == r.Tree && Position == r.Position; 
                }
 
                /// <summary>Compares two positions</summary>
@@ -108,7 +108,7 @@ namespace Logic
                /// <returns></returns>
                bool operator!=(const Iterator& r) const
                { 
-                  return Root != r.Root || Position != r.Position; 
+                  return Tree != r.Tree || Position != r.Position; 
                }
 
                // ----------------------- MUTATORS ------------------------
@@ -147,7 +147,7 @@ namespace Logic
                      return *this;
 
                   // Copy details
-                  Root = r.Root;
+                  Tree = r.Tree;
                   Position = r.Position;
                   Traversal = r.Traversal;
 
@@ -164,7 +164,7 @@ namespace Logic
                      return *this;
 
                   // Move details
-                  Root = r.Root;
+                  Tree = r.Tree;
                   Position = r.Position;
                   Traversal = std::ref(r.Traversal);
 
@@ -196,9 +196,9 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
             protected:
-               CommandTree*   Root;        // Parent tree
-               CommandNodePtr Position;    // Current position
-               TRAVERSAL      Traversal;   // Traversal type
+               const CommandTree* Tree;        // Parent tree
+               CommandNodePtr     Position;    // Current position
+               TRAVERSAL          Traversal;   // Traversal type
             };
 
             /// <summary>Breadth-first command tree iterator</summary>
@@ -560,7 +560,7 @@ namespace Logic
             template <typename T>
             Iterator<T> begin() const
             {
-               return Iterator<T>(*this, Root.get());
+               return Iterator<T>(*this, const_cast<CommandNodePtr&>(Root));
             }
 
             /// <summary>Get finish iterator for tree</summary>

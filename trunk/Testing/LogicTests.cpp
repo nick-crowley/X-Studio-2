@@ -18,6 +18,7 @@
 #include "../Logic/CommandLexer.h"
 #include "../Logic/TWare.h"
 #include "../Logic/TLaser.h"
+#include "../Logic/TreeTraversal.h"
 #include "../Logic/StringResolver.h"
 #include "../Logic/RichStringParser.h"
 #include "../Logic/DescriptionFileReader.h"
@@ -90,7 +91,7 @@ namespace Testing
    /// <summary>Tests the commandTree DepthIterator.</summary>
    /// <param name="n">root node.</param>
    /// <param name="pos">root position.</param>
-   void Test_DepthIterator(CommandNodePtr n, CommandNode::DepthIterator& pos)
+   void Test_DepthIterator(CommandNodePtr n, CommandTree::DepthIterator& pos)
    {
       // Query whether nodes match
       if (pos.operator->() == n.get())
@@ -122,7 +123,7 @@ namespace Testing
       ScriptParser sp(sf, lines, sf.Game);
 
       // Test iterator
-      Test_DepthIterator(sp.Root, sp.Root->begin());
+      Test_DepthIterator(*sp.Tree.begin(), sp.Tree.begin());
    }
 
    void LogicTests::Test_ScriptCompiler(Path p)

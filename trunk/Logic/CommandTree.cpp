@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CommandTree.h"
 #include "PreferencesLibrary.h"
+#include "ScriptFile.h"
 
 namespace Logic
 {
