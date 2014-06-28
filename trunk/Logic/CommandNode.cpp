@@ -223,90 +223,6 @@ namespace Logic
             return node;
          }
 
-         /// <summary>Compiles the script.</summary>
-         /// <param name="script">The script.</param>
-         /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandNode::Compile(ScriptFile& script, ErrorArray& errors)
-         {
-            UINT i = 0;
-            CommandGenerator   generator(script, errors);
-            ConstantIdentifier constants(script, errors);
-            LinkageFinalizer   finalizer(errors);
-            NodeIndexer        indexer(i);
-            NodeLinker         linker(errors);
-            VariableIdentifier variables(script, errors);
-
-            // Macros: Expand macros into std commands 
-            if (PrefsLib.UseMacroCommands)
-            {
-               ExpandMacros(script, errors);
-
-#ifdef VALIDATION
-               // Clear previous IDs
-               script.Clear();
-
-               // Re-index variables to account for hidden iterator variables
-               for (auto& c : Children)
-                  c->Accept(variables);
-
-               // Re-identify constants
-               for (auto& c : Children)
-                  c->Accept(constants);
-#endif
-            }
-
-            // Linking/Indexing
-            for (auto& c : Children)
-            {
-               c->Accept(linker);
-               c->Accept(indexer);
-            }
-               
-#ifdef VALIDATION
-            // Set address of EOF
-            EndOfScript.Index = i;     
-#endif
-            // Finalize linkage + generate commands
-            for (auto& c : Children)
-            {
-               c->Accept(finalizer);
-               c->Accept(generator);
-            }
-
-            // Update state
-            State = InputState::Compiled;
-         }
-         
-         /// <summary>Finds all instances of a symbol.</summary>
-         /// <param name="name">symbol.</param>
-         /// <param name="type">type.</param>
-         /// <param name="results">The results.</param>
-         void  CommandNode::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
-         {
-            bool comment = CmdComment || Is(CMD_COMMENT);
-
-            // Perform Search
-            switch (type)
-            {
-            // Label: Search for 'define label', 'goto label', 'gosub label'
-            case SymbolType::Label:
-               if ((Is(CMD_DEFINE_LABEL) || Is(CMD_GOTO_LABEL) || Is(CMD_GOTO_SUB)) && !Parameters.empty()) 
-                  results.push_back(Symbol(Parameters[0].Token, SymbolType::Label, LineNumber, LineText, comment));
-               break;
-
-            // Variable: Search all commands
-            case SymbolType::Variable:
-               for (const auto& p : Parameters)
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String && p.Token.ValueText == name)
-                     results.push_back(Symbol(p.Token, SymbolType::Variable, LineNumber, LineText, comment));
-               break;
-            }
-
-            // Examine children
-            for (const auto& cmd : Children)
-               cmd->FindAll(name, type, results);
-         }
-
          /// <summary>Query command syntax ID</summary>
          /// <param name="id">Command ID</param>
          /// <returns>True if command is uncommented and has a matching ID, otherwise false</returns>
@@ -319,6 +235,13 @@ namespace Logic
          bool  CommandNode::Is(CommandType t) const
          {
             return Syntax.Is(t);
+         }
+
+         /// <summary>Query whether node has no children.</summary>
+         /// <returns></returns>
+         bool CommandNode::IsEmpty() const
+         {
+            return Children.empty();
          }
 
          /// <summary>Identifies branch logic</summary>
@@ -375,69 +298,6 @@ namespace Logic
          GuiString   CommandNode::GetLineCode() const
          {
             return LineText.TrimLeft(L" ");
-         }
-
-         /// <summary>Debug print</summary>
-         /// <param name="depth">The depth.</param>
-         void  CommandNode::Print(int depth) const
-         {
-            NodePrinter v;
-            
-            // Print entire tree
-            for (auto& n : *this)
-               n.Accept(v);
-         }
-
-         /// <summary>Flattens the tree into a list.</summary>
-         /// <param name="l">output.</param>
-         void  CommandNode::ToList(CommandNodeList& l) const
-         {
-            // Flatten children (if any) into list
-            for (auto& c : Children)
-            {
-               l.push_back(c);
-               c->ToList(l);
-            }
-         }
-
-         /// <summary>Verifies the entire tree</summary>
-         /// <param name="script">script</param>
-         /// <param name="errors">errors collection</param>
-         void  CommandNode::Verify(ScriptFile& script, ErrorArray& errors) 
-         {
-            CommandGenerator    commands(script, errors);
-            ConstantIdentifier  constants(script, errors);
-            LogicVerifier       logic(errors);
-            TerminationVerifier termination(errors);
-            VariableIdentifier  variables(script, errors);
-
-            // Identify labels/variables
-            for (auto& c : Children)
-               c->Accept(variables);
-
-            // Identify constants
-            for (auto& c : Children)
-               c->Accept(constants);
-
-            // Verify commands+parameters
-            for (auto& c : Children)
-               c->Accept(commands);
-
-            // branching logic
-            for (auto& c : Children)
-               c->Accept(logic);
-
-            // Ensure script has std commands  [don't count break/continue]
-            if (!any_of(Children.begin(), Children.end(), isStandardCommand))
-               errors += MakeError(L"No executable commands found");
-
-            // [VALID] Verify all control paths lead to RETURN
-            else if (errors.empty()) 
-               for (auto& c : Children)
-                  c->Accept(termination);
-            
-            // Update state
-            State = InputState::Verified;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------

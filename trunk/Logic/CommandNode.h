@@ -486,6 +486,32 @@ namespace Logic
                // -------------------- REPRESENTATION ---------------------
             };
             
+            /// <summary>Searches for all instances of a symbol</summary>
+            class SymbolSearcher : public Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               SymbolSearcher(const wstring& name, SymbolType type, SymbolList& results);
+               virtual ~SymbolSearcher();
+		 
+               NO_COPY(SymbolSearcher);	// Uncopyable
+               NO_MOVE(SymbolSearcher);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandNode* n) override;
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               SymbolList& Results;     // Errors collection
+               wstring     Name;
+               SymbolType  Type;
+            };
+
             /// <summary>Verifies that all control paths lead to termination</summary>
             class TerminationVerifier : public Visitor
             {
@@ -562,6 +588,7 @@ namespace Logic
 #endif
             // --------------------- PROPERTIES ------------------------
          public:
+            PROPERTY_GET(bool,Empty,IsEmpty);
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
             PROPERTY_GET(GuiString,LineCode,GetLineCode);
 
@@ -588,13 +615,11 @@ namespace Logic
             DepthIterator begin() const;
             DepthIterator end() const;
 
-            void          FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             BranchLogic   GetBranchLogic() const;
             GuiString     GetLineCode() const;
             bool          Is(UINT ID) const;
             bool          Is(CommandType t) const;
-            void          Print(int depth = 0) const;
-            void          ToList(CommandNodeList& l) const;
+            bool          IsEmpty() const;
                
          protected:
             CommandNode*  FindAncestor(BranchLogic l) const;
@@ -618,8 +643,6 @@ namespace Logic
          public:
             void           Accept(Visitor& v);
             CommandNodePtr Add(CommandNodePtr node);
-            void           Compile(ScriptFile& script, ErrorArray& errors);
-            void           Verify(ScriptFile& script, ErrorArray& errors);
             
          protected:
             CommandNodePtr   ExpandCommand(const wstring& txt, GameVersion v);

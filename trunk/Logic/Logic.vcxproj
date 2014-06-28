@@ -130,6 +130,7 @@
     <ClInclude Include="CommandNodeList.h" />
     <ClInclude Include="CommandNode.h" />
     <ClInclude Include="CommandSyntax.h" />
+    <ClInclude Include="CommandTree.h" />
     <ClInclude Include="ComThreadHelper.h" />
     <ClInclude Include="ConsoleLog.h" />
     <ClInclude Include="ConsoleWnd.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandNodeList.cpp" />
     <ClCompile Include="CommandGenerator.cpp" />
+    <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="ConstantIdentifier.cpp" />
     <ClCompile Include="LinkageFinalizer.cpp" />
     <ClCompile Include="LogicVerifier.cpp" />
@@ -318,6 +320,7 @@
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="StringResolver.cpp" />
     <ClCompile Include="StringStream.cpp" />
+    <ClCompile Include="SymbolSearcher.cpp" />
     <ClCompile Include="SyntaxFile.cpp" />
     <ClCompile Include="SyntaxFileReader.cpp" />
     <ClCompile Include="SyntaxHighlight.cpp" />

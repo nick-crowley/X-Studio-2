@@ -471,6 +471,9 @@
     <ClInclude Include="CommandNode.h">
       <Filter>Header Files\Scripts\Compiler</Filter>
     </ClInclude>
+    <ClInclude Include="CommandTree.h">
+      <Filter>Header Files\Scripts\Compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">
@@ -778,6 +781,12 @@
     </ClCompile>
     <ClCompile Include="CommandNode.cpp">
       <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTree.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolSearcher.cpp">
+      <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
