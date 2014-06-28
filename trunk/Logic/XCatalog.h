@@ -35,9 +35,9 @@ namespace Logic
          CatalogReader  GetReader() const;
          Path           GetFullPath()  { return FullPath; }
 
-#ifdef LOGIC_COMPILER_FIX
-         XCatalog& operator==(const XCatalog& r) const 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#ifdef LOGIC_LIB_BUILD_FIX
+         XCatalog& operator==(const XCatalog& r) const { THROW_LOGIC_LIB_BUILD_FIX; }
+            
 #endif
 			// ----------------------- MUTATORS ------------------------
 

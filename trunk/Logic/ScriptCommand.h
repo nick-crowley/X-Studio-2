@@ -47,10 +47,9 @@ namespace Logic
       class LogicExport ScriptCommand
       {
          // --------------------- CONSTRUCTION ----------------------
-#ifdef LOGIC_COMPILER_FIX
+#ifdef LOGIC_LIB_BUILD_FIX
       public:
-         ScriptCommand() : Syntax(CommandSyntax::Unrecognised) 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+         ScriptCommand() : Syntax(CommandSyntax::Unrecognised)  { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
          
       private:
@@ -89,11 +88,9 @@ namespace Logic
          bool  Is(UINT ID) const;
          bool  Is(CommandType t) const;
          
-#ifdef LOGIC_COMPILER_FIX
-         operator bool() const 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
-         const ScriptCommand& operator==(const ScriptCommand& r) const 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#ifdef LOGIC_LIB_BUILD_FIX
+         operator bool() const  { THROW_LOGIC_LIB_BUILD_FIX; }
+         const ScriptCommand& operator==(const ScriptCommand& r) const  { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
 
       public:

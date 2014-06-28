@@ -45,11 +45,9 @@ namespace Logic
 
          // ---------------------- ACCESSORS ------------------------			
       public:
-#ifdef LOGIC_COMPILER_FIX
-         operator bool() const 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
-         const ScriptRevision& operator==(const ScriptRevision& r) const 
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#ifdef LOGIC_LIB_BUILD_FIX
+         operator bool() const { THROW_LOGIC_LIB_BUILD_FIX; }
+         const ScriptRevision& operator==(const ScriptRevision& r) const  { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
          // ----------------------- MUTATORS ------------------------
 
