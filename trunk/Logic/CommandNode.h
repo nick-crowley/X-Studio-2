@@ -97,6 +97,7 @@ namespace Logic
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(bool,Empty,IsEmpty);
+            PROPERTY_GET(UINT,JumpAddress,GetJumpAddress);
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
             PROPERTY_GET(GuiString,LineCode,GetLineCode);
 
@@ -113,6 +114,7 @@ namespace Logic
             CommandNode*  FindRoot() const;
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
             BranchLogic   GetBranchLogic() const;
+            UINT          GetJumpAddress() const;
             CommandNode*  GetLastExecutableChild() const;
             GuiString     GetLineCode() const;
             wstring       GetScriptCallName() const;
