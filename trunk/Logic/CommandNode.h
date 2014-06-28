@@ -54,26 +54,6 @@ namespace Logic
             /// <summary>CommandNode predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
-            /// <summary>Generates iterator variable names</summary>
-            class NameGenerator
-            {
-            public:
-               NameGenerator() : LastID(1)
-               {}
-
-               /// <summary>Generates another iterator variable name</summary>
-               /// <returns></returns>
-               wstring  GetNext()
-               {
-                  return VString(L"$XS.Iterator%d", LastID++);
-               }
-
-            protected:
-               int  LastID;
-            };
-
-            /// <summary>Distinguishes tree state when printed to the console</summary>
-            enum class InputState { Raw, Verified, Compiled };
 
          public:
             /// <summary>Base-class for all visitors</summary>
@@ -96,7 +76,7 @@ namespace Logic
             CommandNode();
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
-            ~CommandNode();
+            virtual ~CommandNode();
 
          protected:
             CommandNode(const CommandNode& parent, const CommandNode* target);
@@ -110,8 +90,6 @@ namespace Logic
             static NodeDelegate  isStandardCommand;
             static NodeDelegate  isSkipIfCompatible;
             
-            static const wchar*  GetString(InputState s);
-
 #ifdef VALIDATION
             /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
             static CommandNode  EndOfScript;
@@ -124,13 +102,6 @@ namespace Logic
 
             // ---------------------- ACCESSORS ------------------------		
          public:
-            BranchLogic   GetBranchLogic() const;
-            GuiString     GetLineCode() const;
-            bool          Is(UINT ID) const;
-            bool          Is(CommandType t) const;
-            bool          IsEmpty() const;
-               
-         protected:
             CommandNode*  FindAncestor(BranchLogic l) const;
             NodeIterator  FindChild(const CommandNode* child) const;
             CommandNode*  FindConditionalAlternate() const;
@@ -141,8 +112,13 @@ namespace Logic
             CommandNode*  FindPrevSibling() const;
             CommandNode*  FindRoot() const;
             CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
+            BranchLogic   GetBranchLogic() const;
             CommandNode*  GetLastExecutableChild() const;
+            GuiString     GetLineCode() const;
             wstring       GetScriptCallName() const;
+            bool          Is(UINT ID) const;
+            bool          Is(CommandType t) const;
+            bool          IsEmpty() const;
             bool          HasExecutableChild() const;
             bool          IsRoot() const;
             ErrorToken    MakeError(const GuiString& msg) const;
@@ -152,17 +128,12 @@ namespace Logic
          public:
             void           Accept(Visitor& v);
             CommandNodePtr Add(CommandNodePtr node);
-            
+            void           InsertJump(NodeIterator pos, const CommandNode* target);
+            void           MoveChildren(CommandNode& n);
+            void           RevertCommandComment(CommandNode* child);
+         
          protected:
-            CommandNodePtr   ExpandCommand(const wstring& txt, GameVersion v);
-            CommandNodeList  ExpandDimArray(ScriptFile& script);
-            CommandNodeList  ExpandForLoop(ScriptFile& script);
-            CommandNodeList  ExpandForEach(ScriptFile& script);
-            void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
-            void  InsertJump(NodeIterator pos, const CommandNode* target);
-            void  MoveChildren(CommandNode& from, CommandNode& to);
-            void  RevertCommandComment(CommandNode* child);
-            void  ReplaceChild(CommandNode* oldChild, CommandNode* newChild);
+            void           ReplaceChild(CommandNode* oldChild, CommandNode* newChild);
             
             // -------------------- REPRESENTATION ---------------------
          public:
@@ -182,8 +153,6 @@ namespace Logic
             Conditional        Condition;     // Conditional
             const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
-            InputState         State;         // Debug: processing state
-            NameGenerator      IteratorNames;
          };
       }
    }
