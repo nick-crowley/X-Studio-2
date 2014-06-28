@@ -415,6 +415,13 @@ namespace Logic
             }
          }
 
+         /// <summary>Gets the jump destination, if any, for this node</summary>
+         /// <returns>Jump address if any, otherwise </returns>
+         UINT CommandNode::GetJumpAddress() const
+         {
+            return JumpTarget ? JumpTarget->Index : EMPTY_JUMP;
+         }
+
          /// <summary>Gets the last executable child.</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">No executable children</exception>

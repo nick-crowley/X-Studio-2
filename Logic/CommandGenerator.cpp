@@ -42,7 +42,7 @@ namespace Logic
                      p.Type = DataType::INTEGER;   // parameter ctor resolves 'label' token type to DT_STRING
 
                   // Compile
-                  p.Generate(Script, n->JumpTarget ? n->JumpTarget->Index : EMPTY_JUMP, n->CmdComment);
+                  p.Generate(Script, n->JumpAddress, n->CmdComment);
                }
 
                // Command: Provide compiled parameters in display order
@@ -52,7 +52,7 @@ namespace Logic
                {
                   // Compile postfix parameters
                   for (auto& p : n->Postfix)
-                     p.Generate(Script, n->JumpTarget ? n->JumpTarget->Index : EMPTY_JUMP, n->CmdComment);
+                     p.Generate(Script, n->JumpAddress, n->CmdComment);
 
                   // Expression: Provide compiled parameters in infix & postfix order
                   Script.Commands.AddOutput(ScriptCommand(n->LineText, n->Syntax, n->Parameters, n->Postfix, n->CmdComment));
