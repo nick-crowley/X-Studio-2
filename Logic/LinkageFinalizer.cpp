@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create visitor for finalizing node linkage</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::LinkageFinalizer::LinkageFinalizer(ErrorArray& e) : Errors(e)
+         LinkageFinalizer::LinkageFinalizer(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::LinkageFinalizer::~LinkageFinalizer()
+         LinkageFinalizer::~LinkageFinalizer()
          {
          }
          
@@ -26,7 +26,7 @@ namespace Logic
          
          /// <summary>Finalizes linkage between nodes</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::LinkageFinalizer::VisitNode(CommandNode* n) 
+         void  LinkageFinalizer::VisitNode(CommandNode* n) 
          {
             // JMP: Set address
             if (n->Is(CMD_HIDDEN_JUMP))

@@ -14,12 +14,12 @@ namespace Logic
          /// <summary>Create visitor for replacing macro commands with their non-macro equivilents</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::MacroExpander::MacroExpander(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
+         MacroExpander::MacroExpander(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::MacroExpander::~MacroExpander()
+         MacroExpander::~MacroExpander()
          {
          }
          
@@ -29,7 +29,7 @@ namespace Logic
          
          /// <summary>Replaces macro commands with their non-macro equivilents</summary>
          /// <param name="n">Node to visit</param>
-         void  CommandTree::MacroExpander::VisitNode(CommandNode* n) 
+         void  MacroExpander::VisitNode(CommandNode* n) 
          {
             try
             {
@@ -67,7 +67,7 @@ namespace Logic
          /// <param name="txt">Command text.</param>
          /// <param name="v">game version</param>
          /// <returns></returns>
-         CommandNodePtr  CommandTree::MacroExpander::ExpandCommand(CommandNode* n, const wstring& txt, GameVersion v)
+         CommandNodePtr  MacroExpander::ExpandCommand(CommandNode* n, const wstring& txt, GameVersion v)
          {
             // Generate new node
             return new CommandNode(*n, *ScriptParser::Generate(txt, v));
@@ -79,7 +79,7 @@ namespace Logic
          /// <returns>List of expanded replacement commands</returns>
          /// <exception cref="Logic::AlgorithmException">macro parameters improperly verified</exception>
          /// <exception cref="Logic::InvalidOperationException">Not a 'dim' macro</exception>
-         CommandNodeList  CommandTree::MacroExpander::ExpandDimArray(CommandNode* n)
+         CommandNodeList  MacroExpander::ExpandDimArray(CommandNode* n)
          {
             CommandNodeList nodes;
 
@@ -124,7 +124,7 @@ namespace Logic
          /// (iterator) = (inital_value) ± (step_value)
          /// while (iterator) greater/less (final_value)
          /// (iterator) = (iterator) ± (step_value)</remarks>
-         CommandNodeList  CommandTree::MacroExpander::ExpandForLoop(CommandNode* n)
+         CommandNodeList  MacroExpander::ExpandForLoop(CommandNode* n)
          {
             CommandNodeList  nodes;
             ParameterArray   params,
@@ -184,7 +184,7 @@ namespace Logic
          /// while (iterator)
          /// dec (iterator)
          /// (item_iterator) = (array)[(iterator)]</remarks>
-         CommandNodeList  CommandTree::MacroExpander::ExpandForEach(CommandNode* n)
+         CommandNodeList  MacroExpander::ExpandForEach(CommandNode* n)
          {
             CommandNodeList  nodes;
             ParameterArray   params,

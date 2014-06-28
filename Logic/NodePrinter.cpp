@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create visitor for printing tree to the console</summary>
          /// <param name="t">tree to print</param>
-         CommandTree::NodePrinter::NodePrinter(const CommandTree& t) : Tree(t)
+         NodePrinter::NodePrinter(const CommandTree& t) : Tree(t)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::NodePrinter::~NodePrinter()
+         NodePrinter::~NodePrinter()
          {
          }
 
@@ -26,7 +26,7 @@ namespace Logic
 
          /// <summary>Print tree to the console</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::NodePrinter::VisitNode(CommandNode* n) 
+         void  NodePrinter::VisitNode(CommandNode* n) 
          {
             // Line#/Logic/Text
             VString   line(!n->Is(CMD_HIDDEN_JUMP) ? L"%03d: " : L"---: ", n->LineNumber), 
@@ -93,12 +93,15 @@ namespace Logic
             Console << line+Indent(GetDepth(n)) << colour << logic << Cons::White << L" : " << colour << txt.TrimLeft(L" ") << ENDL;
          }
 
-         /// <summary>Perform command linking</summary>
+         /// <summary>Print heading to the console</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandTree::NodePrinter::VisitRoot(CommandNode* n) 
+         void  NodePrinter::VisitRoot(CommandNode* n) 
          {
-            Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << CommandTree::GetString(Tree.State);
+            auto state = CommandTree::GetString(Tree.GetState());
+
+            // Headings
+            Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << state;
             Console << ENDL << "-------------------------------------------------------" << ENDL; 
 
             // Spacing
@@ -111,7 +114,7 @@ namespace Logic
          /// <param name="n">Node</param>
          /// <returns></returns>
          /// <exception cref="Logic::ArgumentNullException">Error in linking algorithm</exception>
-         UINT CommandTree::NodePrinter::GetDepth(const CommandNode* n) const
+         UINT NodePrinter::GetDepth(const CommandNode* n) const
          {
             REQUIRED(n);
             UINT d = 0;

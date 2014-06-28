@@ -14,12 +14,12 @@ namespace Logic
          /// <summary>Create visitor for identifying variables</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::VariableIdentifier::VariableIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
+         VariableIdentifier::VariableIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::VariableIdentifier::~VariableIdentifier()
+         VariableIdentifier::~VariableIdentifier()
          {
          }
          
@@ -29,7 +29,7 @@ namespace Logic
          
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::VariableIdentifier::VisitNode(CommandNode* n) 
+         void  VariableIdentifier::VisitNode(CommandNode* n) 
          {
             typedef reference_wrapper<ScriptParameter>  ParameterRef;
 
