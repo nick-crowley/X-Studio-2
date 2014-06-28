@@ -55,7 +55,10 @@ const wstring::size_type wstring::npos = (wstring::size_type) -1;
 
 /// <summary>BugFix for code that compiled previously as part of main module, but cause compiler errors in the STL
 /// when compiled as part of a library. Code added is never executed, just a compiler tweak.</summary>
-#define LOGIC_COMPILER_FIX
+#define LOGIC_LIB_BUILD_FIX
+
+/// <summary>Throws a consistent error when executing build-fix code</summary>
+#define THROW_LOGIC_LIB_BUILD_FIX   throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed")
 
 
 // COM

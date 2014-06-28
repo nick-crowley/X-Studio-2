@@ -35,10 +35,10 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-#ifdef LOGIC_COMPILER_FIX
+#ifdef LOGIC_LIB_BUILD_FIX
       public:
          ParameterSyntax() : Type((ParameterType)0), DisplayIndex(0), PhysicalIndex(0), Ordinal(0), Usage((ParameterUsage)0)
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+         { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
       private:
          ParameterSyntax(ParameterType t, UINT physical, UINT display);

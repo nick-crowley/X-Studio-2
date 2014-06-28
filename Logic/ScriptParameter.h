@@ -38,9 +38,9 @@ namespace Logic
          };
 
          // --------------------- CONSTRUCTION ----------------------
-#ifdef LOGIC_COMPILER_FIX
+#ifdef LOGIC_LIB_BUILD_FIX
       public:
-         ScriptParameter() { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+         ScriptParameter()  { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
       public:
          ScriptParameter(const ScriptToken& name, const ScriptToken& val);
@@ -86,9 +86,8 @@ namespace Logic
          void  Identify(ScriptFile& script);
          void  Translate(ScriptFile& script);
 
-#ifdef LOGIC_COMPILER_FIX
-         ScriptParameter& operator=(const ScriptParameter& r) const
-            { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#ifdef LOGIC_LIB_BUILD_FIX
+         ScriptParameter& operator=(const ScriptParameter& r) const  { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
 		   // -------------------- REPRESENTATION ---------------------
       public:

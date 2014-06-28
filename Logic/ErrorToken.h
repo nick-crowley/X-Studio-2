@@ -12,9 +12,8 @@ namespace Logic
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-#ifdef LOGIC_COMPILER_FIX
-            ErrorToken() : Line(0) 
-               { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+#ifdef LOGIC_LIB_BUILD_FIX
+            ErrorToken() : Line(0) { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
             /// <summary>Create error for token</summary>
             ErrorToken(const GuiString& msg, UINT line, const ScriptToken& tok) 
@@ -32,10 +31,9 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------	
 
             // ----------------------- MUTATORS ------------------------
-#ifdef LOGIC_COMPILER_FIX
+#ifdef LOGIC_LIB_BUILD_FIX
          public:
-            ErrorToken& operator=(const ErrorToken& r) const
-               { throw AlgorithmException(HERE, L"LogicLibrary compiler-fix code executed"); }
+            ErrorToken& operator=(const ErrorToken& r) const { THROW_LOGIC_LIB_BUILD_FIX; }
 #endif
             // -------------------- REPRESENTATION ---------------------
          public:
