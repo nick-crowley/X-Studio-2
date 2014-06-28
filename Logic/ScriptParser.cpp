@@ -750,7 +750,7 @@ namespace Logic
                         }
                         // Match value
                         else if (MatchVArgument(lex, TokenIterator(arg))) 
-                           params.push_back(ScriptParameter(ParameterSyntax::VArgParameter, *arg));
+                           params += ScriptParameter(ParameterSyntax::VArgParameter, *arg);
                         else
                         {  // Error: Abort
                            errQueue += MakeError(L"Expected varg parameter", arg);
@@ -764,7 +764,7 @@ namespace Logic
                      // Match {name, '=', value} triplets
                      for (TokenIterator arg = pos; arg < lex.end(); arg += 3)
                         if (MatchScriptArgument(lex, TokenIterator(arg)))
-                           params.push_back(ScriptParameter(arg[0], arg[2]));
+                           params += (ScriptParameter(arg[0], arg[2]);
                         else 
                         {  // Error: Abort
                            errQueue += MakeError(L"Expected script-call argument", arg);
