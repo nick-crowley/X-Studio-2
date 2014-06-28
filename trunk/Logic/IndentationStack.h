@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScriptCommand.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 #include "PreferencesLibrary.h"
 
 namespace Logic

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 #include "TreeTraversal.h"
 
 namespace Logic
@@ -18,7 +18,7 @@ namespace Logic
          /// <summary>Adds successors nodes to the queue</summary>
          /// <param name="n">Node to visit</param>
          /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-         void BreadthTraversal::AddSuccessors(CommandTree* n)
+         void BreadthTraversal::AddSuccessors(CommandNode* n)
          {
             REQUIRED(n);
 
@@ -37,7 +37,7 @@ namespace Logic
          /// <summary>Pops the next node from the queue</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Queue is empty</exception>
-         CommandTree* BreadthTraversal::GetSuccessor()
+         CommandNode* BreadthTraversal::GetSuccessor()
          {
             // Verify state
             if (Empty())

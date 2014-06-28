@@ -21,16 +21,16 @@ namespace Logic
    {
       namespace Compiler
       {
-         class CommandTree;
+         class CommandNode;
          
          /// <summary>Shared pointer to a parse tree node</summary>
-         class LogicExport CommandNodePtr : public shared_ptr<CommandTree> 
+         class LogicExport CommandNodePtr : public shared_ptr<CommandNode> 
          {
             // --------------------- CONSTRUCTION ----------------------
          public:
-            CommandNodePtr() : shared_ptr<CommandTree>(nullptr)
+            CommandNodePtr() : shared_ptr<CommandNode>(nullptr)
             {}
-            CommandNodePtr(CommandTree* node) : shared_ptr<CommandTree>(node)
+            CommandNodePtr(CommandNode* node) : shared_ptr<CommandNode>(node)
             {}
 
             // ---------------------- ACCESSORS ------------------------	
@@ -42,16 +42,16 @@ namespace Logic
 
             
          /// <summary>Represents a script command and its descendants, if any</summary>
-         class LogicExport CommandTree 
+         class LogicExport CommandNode 
          {
             friend class ::Testing::LogicTests;
 
             // ------------------------ TYPES --------------------------
          protected:
-            /// <summary>CommandTree array iterator</summary>
+            /// <summary>CommandNode array iterator</summary>
             typedef CommandNodeList::const_iterator   NodeIterator;
 
-            /// <summary>CommandTree predicate</summary>
+            /// <summary>CommandNode predicate</summary>
             typedef function<bool (const CommandNodePtr&)>  NodeDelegate;
 
             /// <summary>Generates iterator variable names</summary>
@@ -76,11 +76,11 @@ namespace Logic
             enum class InputState { Raw, Verified, Compiled };
 
          public:
-            /// <summary>Forward-only iterator for nodes in a CommandTree</summary>
+            /// <summary>Forward-only iterator for nodes in a CommandNode</summary>
             template <typename TRAVERSAL>
-            class Iterator : public std::iterator<std::forward_iterator_tag, CommandTree>
+            class Iterator : public std::iterator<std::forward_iterator_tag, CommandNode>
             {
-               friend class CommandTree;
+               friend class CommandNode;
                
                // ------------------------ TYPES --------------------------
             protected:
@@ -90,7 +90,7 @@ namespace Logic
                /// <summary>Creates an end iterator</summary>
                /// <param name="r">Root node</param>
                /// <exception cref="Logic::ArgumentNullException">Root is nullptr</exception>
-               Iterator(CommandTree* r) 
+               Iterator(CommandNode* r) 
                   : Root(r), Position(nullptr)
                {
                   REQUIRED(r);
@@ -100,7 +100,7 @@ namespace Logic
                /// <param name="r">Root node</param>
                /// <param name="n">Start node</param>
                /// <exception cref="Logic::ArgumentNullException">Traversal, root node, or start node are nullptr</exception>
-               Iterator(CommandTree* r, CommandTree* n) 
+               Iterator(CommandNode* r, CommandNode* n) 
                   : Root(r), Position(n)
                {
                   REQUIRED(r);
@@ -143,7 +143,7 @@ namespace Logic
                /// <summary>Get reference to current node</summary>
                /// <returns></returns>
                /// <exception cref="Logic::InvalidOperationException">Iterator cannot be dereferenced</exception>
-               CommandTree& operator*() const
+               CommandNode& operator*() const
                { 
                   if (!Position)
                      throw InvalidOperationException(HERE, L"Cannot dereference iterator");
@@ -154,7 +154,7 @@ namespace Logic
                /// <summary>Get pointer to current node</summary>
                /// <returns></returns>
                /// <exception cref="Logic::InvalidOperationException">Iterator cannot be dereferenced</exception>
-               CommandTree* operator->() const
+               CommandNode* operator->() const
                { 
                   if (!Position)
                      throw InvalidOperationException(HERE, L"Cannot dereference iterator");
@@ -263,8 +263,8 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
             protected:
-               CommandTree*   Root;        // Root node of tree
-               CommandTree*   Position;    // Current position
+               CommandNode*   Root;        // Root node of tree
+               CommandNode*   Position;    // Current position
                TRAVERSAL      Traversal;   // Traversal type
             };
 
@@ -285,8 +285,8 @@ namespace Logic
                
                // ----------------------- MUTATORS ------------------------
             public:
-               virtual void VisitNode(CommandTree* n) = 0;
-               virtual void VisitRoot(CommandTree* n) {}
+               virtual void VisitNode(CommandNode* n) = 0;
+               virtual void VisitRoot(CommandNode* n) {}
             };
 
             /// <summary>Distinguishes variables and constants from their usage</summary>
@@ -306,7 +306,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -331,7 +331,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -356,10 +356,10 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
             protected:
-               void VerifyParameter(CommandTree* n, const ScriptParameter& p, UINT index, ErrorArray& err);
+               void VerifyParameter(CommandNode* n, const ScriptParameter& p, UINT index, ErrorArray& err);
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -384,7 +384,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -408,7 +408,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -432,7 +432,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -456,7 +456,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -480,8 +480,8 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
-               void VisitRoot(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
+               void VisitRoot(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             };
@@ -503,7 +503,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -527,7 +527,7 @@ namespace Logic
 
                // ----------------------- MUTATORS ------------------------
             public:
-               void VisitNode(CommandTree* n) override;
+               void VisitNode(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
             protected:
@@ -537,14 +537,14 @@ namespace Logic
 
             // --------------------- CONSTRUCTION ----------------------
          public:
-            CommandTree();
-            CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
-            CommandTree(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
-            ~CommandTree();
+            CommandNode();
+            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
+            CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
+            ~CommandNode();
 
          protected:
-            CommandTree(const CommandTree& parent, const CommandTree* target);
-            CommandTree(const CommandTree& macro, const CommandTree& expanded);
+            CommandNode(const CommandNode& parent, const CommandNode* target);
+            CommandNode(const CommandNode& macro, const CommandNode& expanded);
 
             // ------------------------ STATIC -------------------------
          protected:
@@ -558,7 +558,7 @@ namespace Logic
 
 #ifdef VALIDATION
             /// <summary>An invisible node that functions as a jump target with address 'script_length+1'</summary>
-            static CommandTree  EndOfScript;
+            static CommandNode  EndOfScript;
 #endif
             // --------------------- PROPERTIES ------------------------
          public:
@@ -573,7 +573,7 @@ namespace Logic
             template <typename T>
             Iterator<T> begin() const
             {
-               return Iterator<T>(FindRoot(), const_cast<CommandTree*>(this));
+               return Iterator<T>(FindRoot(), const_cast<CommandNode*>(this));
             }
 
             /// <summary>Get end iterator for this node</summary>
@@ -597,17 +597,17 @@ namespace Logic
             void          ToList(CommandNodeList& l) const;
                
          protected:
-            CommandTree*  FindAncestor(BranchLogic l) const;
-            NodeIterator  FindChild(const CommandTree* child) const;
-            CommandTree*  FindConditionalAlternate() const;
-            CommandTree*  FindConditionalEnd() const;
-            CommandTree*  FindLabel(const wstring& name) const;
-            CommandTree*  FindNextCommand() const;
-            CommandTree*  FindNextSibling() const;
-            CommandTree*  FindPrevSibling() const;
-            CommandTree*  FindRoot() const;
-            CommandTree*  FindSibling(NodeDelegate d, const wchar* help) const;
-            CommandTree*  GetLastExecutableChild() const;
+            CommandNode*  FindAncestor(BranchLogic l) const;
+            NodeIterator  FindChild(const CommandNode* child) const;
+            CommandNode*  FindConditionalAlternate() const;
+            CommandNode*  FindConditionalEnd() const;
+            CommandNode*  FindLabel(const wstring& name) const;
+            CommandNode*  FindNextCommand() const;
+            CommandNode*  FindNextSibling() const;
+            CommandNode*  FindPrevSibling() const;
+            CommandNode*  FindRoot() const;
+            CommandNode*  FindSibling(NodeDelegate d, const wchar* help) const;
+            CommandNode*  GetLastExecutableChild() const;
             wstring       GetScriptCallName() const;
             bool          HasExecutableChild() const;
             bool          IsRoot() const;
@@ -627,14 +627,14 @@ namespace Logic
             CommandNodeList  ExpandForLoop(ScriptFile& script);
             CommandNodeList  ExpandForEach(ScriptFile& script);
             void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
-            void  InsertJump(NodeIterator pos, const CommandTree* target);
-            void  MoveChildren(CommandTree& from, CommandTree& to);
-            void  RevertCommandComment(CommandTree* child);
-            void  ReplaceChild(CommandTree* oldChild, CommandTree* newChild);
+            void  InsertJump(NodeIterator pos, const CommandNode* target);
+            void  MoveChildren(CommandNode& from, CommandNode& to);
+            void  RevertCommandComment(CommandNode* child);
+            void  ReplaceChild(CommandNode* oldChild, CommandNode* newChild);
             
             // -------------------- REPRESENTATION ---------------------
          public:
-            CommandTree*       Parent;        // Parent node
+            CommandNode*       Parent;        // Parent node
             CommandNodeList    Children;      // Child commands
 
             ParameterArray     Parameters,    // script parameters in display order
@@ -648,7 +648,7 @@ namespace Logic
 
          protected:
             Conditional        Condition;     // Conditional
-            const CommandTree* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
+            const CommandNode* JumpTarget;    // Destination of unconditional-jmp or jump-if-false
             UINT               Index;         // 0-based standard codearray index
             InputState         State;         // Debug: processing state
             NameGenerator      IteratorNames;

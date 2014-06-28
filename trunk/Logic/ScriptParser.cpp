@@ -25,7 +25,7 @@ namespace Logic
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
          /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          ScriptParser::ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v) 
-            : Input(lines), Version(v), Root(new CommandTree()), Script(file)
+            : Input(lines), Version(v), Root(new CommandNode()), Script(file)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
@@ -612,7 +612,7 @@ namespace Logic
 
             // NOP: No processing required
             if (lex.count() == 0)
-               return new CommandTree(Conditional::NONE, SyntaxLib.Find(CMD_NOP, Version), params, lex, LineNumber, false);
+               return new CommandNode(Conditional::NONE, SyntaxLib.Find(CMD_NOP, Version), params, lex, LineNumber, false);
 
             // Re-lex line without the '*' operator
             CommentLexer lex2(lex.Input);
@@ -632,7 +632,7 @@ namespace Logic
             params += ScriptParameter(syntax.Parameters[0], lex.count()==2 ? lex.Tokens[1] : ScriptToken(TokenType::Comment, 1,1, L""));
 
             // Return comment
-            return new CommandTree(Conditional::NONE, syntax, params, lex, LineNumber, false);
+            return new CommandNode(Conditional::NONE, syntax, params, lex, LineNumber, false);
          }
 
          /// <summary>Reads an entire non-expression command</summary>
@@ -754,7 +754,7 @@ namespace Logic
             }
 
             // Return new command / commented-command
-            return new CommandTree(condition, syntax, params, lex, LineNumber, comment);
+            return new CommandNode(condition, syntax, params, lex, LineNumber, comment);
          }
 
          /// <summary>Reads an entire expression command</summary>
@@ -819,7 +819,7 @@ namespace Logic
             }
 
             // Return new expression / commented-expression
-            return new CommandTree(condition, syntax, params, postfix, lex, LineNumber, comment);
+            return new CommandNode(condition, syntax, params, postfix, lex, LineNumber, comment);
          }
          
          
@@ -867,7 +867,7 @@ namespace Logic
             {
                // UNRECOGNISED: Generate empty node
                Errors += MakeError(L"Unable to parse command", lex);
-               node = new CommandTree(Conditional::NONE, CommandSyntax::Unrecognised, ParameterArray(), lex, LineNumber, false);
+               node = new CommandNode(Conditional::NONE, CommandSyntax::Unrecognised, ParameterArray(), lex, LineNumber, false);
             }
 
             // Consume line + return node

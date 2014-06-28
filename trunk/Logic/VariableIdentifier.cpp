@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 #include "ScriptFile.h"
 #include "ScriptFileReader.h"
 
@@ -14,12 +14,12 @@ namespace Logic
          /// <summary>Create visitor for identifying variables</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::VariableIdentifier::VariableIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
+         CommandNode::VariableIdentifier::VariableIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::VariableIdentifier::~VariableIdentifier()
+         CommandNode::VariableIdentifier::~VariableIdentifier()
          {
          }
          
@@ -29,7 +29,7 @@ namespace Logic
          
          /// <summary>Maps each variable name to a unique ID, and locates all label definitions</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::VariableIdentifier::VisitNode(CommandTree* n) 
+         void  CommandNode::VariableIdentifier::VisitNode(CommandNode* n) 
          {
             typedef reference_wrapper<ScriptParameter>  ParameterRef;
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandTree.h"
+#include "CommandNode.h"
 #include "ScriptFile.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
@@ -15,12 +15,12 @@ namespace Logic
          
          /// <summary>Create logic verifying visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::LogicVerifier::LogicVerifier(ErrorArray& e) : Errors(e)
+         CommandNode::LogicVerifier::LogicVerifier(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::LogicVerifier::~LogicVerifier()
+         CommandNode::LogicVerifier::~LogicVerifier()
          {
          }
 
@@ -30,9 +30,9 @@ namespace Logic
 
          /// <summary>Verifies the branching logic</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::CommandVerifier::VisitNode(CommandTree* n) 
+         void  CommandNode::CommandVerifier::VisitNode(CommandNode* n) 
          {
-            CommandTree* p;
+            CommandNode* p;
             switch (n->Logic)
             {
             // IF: Must preceed ELSE-IF/ELSE/END
