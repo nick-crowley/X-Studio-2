@@ -39,19 +39,6 @@ namespace Logic
          
          // ------------------------------- PUBLIC METHODS -------------------------------
          
-         /// <summary>Adds a node as a child of the root</summary>
-         /// <param name="cmd">node to add</param>
-         /// <returns>Input node</returns>
-         CommandNodePtr  CommandTree::Add(CommandNodePtr node)
-         {
-            // Set parent to Root
-            node->Parent = Root.get();
-
-            // Append
-            Root->Children.push_back(node);
-            return node;
-         }
-
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
@@ -191,6 +178,19 @@ namespace Logic
             for (auto& c : *this)
                c->Accept(v);
          }
+         
+         /// <summary>Append node as a child of the root</summary>
+         /// <param name="r">node</param>
+         /// <returns>Self</returns>
+         CommandTree& CommandTree::operator+=(const CommandNodePtr& r)
+         {
+            // Set parent to Root
+            r->Parent = Root.get();
+
+            // Append child
+            Root->Children.push_back(r);
+            return *this;
+         }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
 
@@ -210,7 +210,7 @@ namespace Logic
                // Macro: Delete 
                auto n = it++;
                if ((*n)->Is(CommandType::Macro))
-                  n->Parent->RemoveChild(n);
+                  *n->Parent -= *n;
             }
             
             // Recurse into children  [Allowing for in-place modification of child list]

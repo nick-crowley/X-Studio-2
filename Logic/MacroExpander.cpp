@@ -165,7 +165,7 @@ namespace Logic
                cmd = VString(L"%s = %s %s %d", iterator, iterator, (ascending ? L"+" : L"-"), (ascending ? step : -step));
             
             // Add as child of 'while'
-            nodes.back()->Add(ExpandCommand(n, cmd, Script.Game));     
+            *nodes.back() += ExpandCommand(n, cmd, Script.Game);
 
             // Move all children of 'for loop' to 'while' expression
             n->MoveChildren(*nodes.back());
@@ -213,11 +213,11 @@ namespace Logic
 
             // dec (iterator)
             VString advance(L"dec %s", iterator.c_str());
-            nodes.back()->Add( ExpandCommand(n, advance, Script.Game) );    // Add as child of 'while'
+            *nodes.back() += ExpandCommand(n, advance, Script.Game);    // Add as child of 'while'
 
             // (item_iterator) = (array)[(iterator)]
             VString access(L"%s = %s[%s]", item, array, iterator.c_str());
-            nodes.back()->Add( ExpandCommand(n, access, Script.Game) );     // Add as child of 'while'
+            *nodes.back() += ExpandCommand(n, access, Script.Game);     // Add as child of 'while'
 
             // Move all children of 'foreach' to 'while' expression
             n->MoveChildren(*nodes.back());

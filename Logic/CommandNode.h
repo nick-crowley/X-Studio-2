@@ -129,10 +129,12 @@ namespace Logic
             // ----------------------- MUTATORS ------------------------
          public:
             void           Accept(Visitor& v);
-            CommandNodePtr Add(CommandNodePtr node);
             void           InsertJump(NodeIterator pos, const CommandNode* target);
             void           MoveChildren(CommandNode& n);
             void           RevertCommandComment(CommandNode* child);
+
+            CommandNode&   operator+=(const CommandNodePtr& n);
+            CommandNode&   operator-=(const CommandNodePtr& n);
          
          protected:
             void           ReplaceChild(CommandNode* oldChild, CommandNode* newChild);

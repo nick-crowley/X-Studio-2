@@ -270,10 +270,11 @@ namespace Logic
 
             // ----------------------- MUTATORS ------------------------
          public:
-            CommandNodePtr Add(CommandNodePtr node);
-            void           Compile(ScriptFile& script, ErrorArray& errors);
-            void           Transform(CommandNode::Visitor& v);
-            void           Verify(ScriptFile& script, ErrorArray& errors);
+            void         Compile(ScriptFile& script, ErrorArray& errors);
+            void         Transform(CommandNode::Visitor& v);
+            void         Verify(ScriptFile& script, ErrorArray& errors);
+
+            CommandTree& operator+=(const CommandNodePtr& r);
 
          protected:
             void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
