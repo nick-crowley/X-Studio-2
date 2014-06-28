@@ -12,7 +12,14 @@ namespace Logic
       /// <param name="out">Output</param>
       /// <exception cref="Logic::ArgumentNullException">Output is nullptr</exception>
       RtfWriter::RtfWriter(StreamPtr out) 
-         : Output(out), Closed(true), ForeColour(COLOUR_NONE), BackColour(COLOUR_NONE), Bold(false), Italic(false), Underline(false)
+         : Output(out), 
+           Closed(true), 
+           ForeColour(COLOUR_NONE), 
+           BackColour(COLOUR_NONE), 
+           Bold(false), 
+           Italic(false), 
+           Underline(false),
+           Buffered(0)
       {
          REQUIRED(out);
       }
@@ -350,6 +357,18 @@ namespace Logic
 
 		// ------------------------------ PROTECTED METHODS -----------------------------
 
+      /// <summary>Flushes the output stream after a fixed number of characters has been written</summary>
+      /// <param name="b">Number of characters written.</param>
+      void RtfWriter::Flush(int b)
+      {
+         // Query whether buffer should be flushed
+         if ((Buffered += b) > BUFFER_SIZE)
+         {
+            Buffered = 0;
+            Flush();
+         }
+      }
+
 		// ------------------------------- PRIVATE METHODS ------------------------------
 
       /// <summary>Sets the code page.</summary>
@@ -387,7 +406,9 @@ namespace Logic
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteChar(CHAR chr) 
       { 
+         // Write character + flush
          Output->Write((BYTE*)&chr, 1);
+         Flush(1);
       }
 
       /// <summary>Writes ANSI text to the stream verbatim</summary>
@@ -395,7 +416,11 @@ namespace Logic
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::WriteString(const CHAR* str) 
       { 
-         Output->Write((BYTE*)str, lstrlenA(str));
+         int len = lstrlenA(str);
+
+         // Write text + flush
+         Output->Write((BYTE*)str, len);
+         Flush(len);
       }
       
       /// <summary>Writes an RTF colour table colour definition</summary>
