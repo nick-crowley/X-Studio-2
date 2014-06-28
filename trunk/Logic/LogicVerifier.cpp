@@ -30,7 +30,7 @@ namespace Logic
 
          /// <summary>Verifies the branching logic</summary>
          /// <param name="n">Node</param>
-         void  CommandVerifier::VisitNode(CommandNode* n) 
+         void  LogicVerifier::VisitNode(CommandNode* n) 
          {
             CommandNode* p;
             switch (n->Logic)

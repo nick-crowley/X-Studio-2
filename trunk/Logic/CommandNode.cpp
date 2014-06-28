@@ -186,16 +186,6 @@ namespace Logic
                v.VisitRoot(this);
          }
 
-         /// <summary>Add child node</summary>
-         /// <param name="cmd">The command node</param>
-         /// <returns>Command node</returns>
-         CommandNodePtr  CommandNode::Add(CommandNodePtr node)
-         {
-            // Set parent and append
-            node->Parent = this;
-            Children.push_back(node);
-            return node;
-         }
          /// <summary>Finds an ancestor with a given branch logic</summary>
          /// <returns>Parent if found, otherwise nullptr</returns>
          CommandNode*  CommandNode::FindAncestor(BranchLogic l) const
@@ -505,7 +495,7 @@ namespace Logic
             // Move children 
             for (auto& c = Children.begin(); c != Children.end(); )
             {
-               n.Add(*c);
+               n += *c;
                Children.erase(c++);
             }
          }
@@ -531,6 +521,38 @@ namespace Logic
 
             // Generate new command + perform in-place replacement
             ReplaceChild(child, new CommandNode(Conditional::NONE, newSyntax, params, lex, child->LineNumber, false));
+         }
+         
+         /// <summary>Append node as a child</summary>
+         /// <param name="n">node</param>
+         /// <returns>Self</returns>
+         CommandNode& CommandNode::operator+=(const CommandNodePtr& n)
+         {
+            // Set parent 
+            n->Parent = this;
+
+            // Append child
+            Children.push_back(n);
+            return *this;
+         }
+         
+         /// <summary>Remove a child node</summary>
+         /// <param name="n">node to remove</param>
+         /// <returns>Self</returns>
+         /// <exception cref="Logic::ArgumentNullException">Node is null</exception>
+         /// <exception cref="Logic::InvalidOperationException">Node is not found</exception>
+         CommandNode& CommandNode::operator-=(const CommandNodePtr& n)
+         {
+            REQUIRED(n);
+            NodeIterator pos = FindChild(n.get());
+
+            // Ensure exists
+            if (pos == Children.end())
+               throw InvalidOperationException(HERE, L"Child node not found");
+
+            // Remove
+            Children.erase(pos);
+            return *this;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
