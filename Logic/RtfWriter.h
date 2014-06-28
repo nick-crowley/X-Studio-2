@@ -1,21 +1,19 @@
 #pragma once
 
-
 #include "Stream.h"
 
 namespace Logic
 {
    namespace IO
    {
-      
-      /// <summary></summary>
+      /// <summary>Generates RTF and writes it into an output stream</summary>
       class LogicExport RtfWriter
       {
       private:
+         /// <summary>Unspecified colour sentinel value</summary>
          const COLORREF  COLOUR_NONE = 0xff000000;
 
          // --------------------- CONSTRUCTION ----------------------
-
       public:
          RtfWriter(StreamPtr out);
          virtual ~RtfWriter();
@@ -45,6 +43,9 @@ namespace Logic
          void  SetUnderline(bool u);
          void  StartParagraph();
 
+      protected:
+         void  Flush(int b);
+
       private:
          void  SetCodePage(UINT cp);
          void  SetDefaultFont(UINT font);
@@ -56,18 +57,19 @@ namespace Logic
          void  WriteHeader(const wstring& font);
          
 		   // -------------------- REPRESENTATION ---------------------
-
       private:
-         bool              Closed;
-         vector<COLORREF>  Colours;
-         COLORREF          ForeColour,
-                           BackColour;
-         bool              Bold,
-                           Italic,
-                           Underline,
-                           Superscript;
+         const static UINT BUFFER_SIZE = 256;
 
-         StreamPtr         Output;
+         bool              Closed;        // Whether writer is closed
+         vector<COLORREF>  Colours;       // Colours in the RTF colour table
+         COLORREF          ForeColour,    // Current forecolour
+                           BackColour;    // Current backcolour
+         bool              Bold,          // Whether in bold state
+                           Italic,        // Whether in italic state
+                           Underline,     // Whether in underline state
+                           Superscript;   // Whether in superscript state
+         UINT              Buffered;      // Number of characters written but not yet flushed
+         StreamPtr         Output;        // Output stream
       };
 
    }
