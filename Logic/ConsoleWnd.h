@@ -12,7 +12,7 @@ namespace Logic
       enum class Cons 
       { 
          UserAction, // CRLF + Bold + Cyan
-         Heading,    // CRLF + Cyan
+         Heading,    // CRLF + Bold
          Normal,     // Remove bold
          Error,      // Bold + Red
          Exception,  // Bold + Purple
@@ -40,9 +40,9 @@ namespace Logic
       const static Cons ENDL = Cons::Endl;
 
       /// <summary>Defines convenient combinations of console colours</summary>
-      const static UINT FOREGROUND_CYAN = FOREGROUND_BLUE|FOREGROUND_GREEN,
+      const static UINT FOREGROUND_CYAN   = FOREGROUND_BLUE|FOREGROUND_GREEN,
                         FOREGROUND_PURPLE = FOREGROUND_RED|FOREGROUND_BLUE,
-                        FOREGROUND_WHITE = FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE,
+                        FOREGROUND_WHITE  = FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE,
                         FOREGROUND_YELLOW = FOREGROUND_GREEN|FOREGROUND_RED;
 
    

@@ -210,9 +210,9 @@ namespace Logic
          case Cons::Endl:   
             return *this << Cons::Reset << L"\n";
 
-         // Heading: CRLF + Cyan
+         // Heading: CRLF + Bold
          case Cons::Heading:  
-            return *this << ENDL << Cons::Cyan;
+            return *this << ENDL << Cons::Bold;
 
          // User Action: CRLF + Bold + Cyan
          case Cons::UserAction:  
