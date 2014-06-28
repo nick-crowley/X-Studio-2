@@ -55,6 +55,14 @@ namespace Logic
          __super::Close();
       }
 
+      /// <summary>Flushes the output stream</summary>
+      /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
+      void LogFileWriter::Flush()
+      {
+         __super::Flush();
+      }
+
       /// <summary>Writes the specified text.</summary>
       /// <param name="txt">The text.</param>
       /// <param name="attr">Console attributes.</param>

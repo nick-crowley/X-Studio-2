@@ -40,13 +40,22 @@ namespace Logic
       }
    }
 
+   /// <summary>Flushes the writer and the stream.</summary>
+   /// <exception cref="Logic::InvalidOperationException">Writer has already been closed</exception>
+   /// <exception cref="Logic::IOException">I/O error occurred</exception>
+   void  ConsoleLog::Flush()
+   {
+      if (Writer)
+         Writer->Flush();
+   }
+
    /// <summary>Opens the writer and the stream.</summary>
    /// <exception cref="Logic::InvalidOperationException">Writer has already been closed</exception>
    /// <exception cref="Logic::IOException">I/O error occurred</exception>
    void  ConsoleLog::Open()
    {
       // Create logfile
-      auto file = new FileStream(AppPath(L"Console.rtf"), FileMode::CreateAlways, FileAccess::Write);
+      auto file = new FileStream(AppPath(L"Console.rtf"), FileMode::CreateAlways, FileAccess::Write, FileShare::AllowRead);
       Writer = new LogFileWriter(StreamPtr(file));
    }
 

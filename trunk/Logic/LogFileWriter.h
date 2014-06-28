@@ -40,6 +40,7 @@ namespace Logic
          // ----------------------- MUTATORS ------------------------
       public:
          void  Close();
+         void  Flush();
          void  Write(const wstring& txt, WORD attr);
 
          // -------------------- REPRESENTATION ---------------------

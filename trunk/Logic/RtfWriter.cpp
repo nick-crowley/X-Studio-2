@@ -41,16 +41,29 @@ namespace Logic
          WriteFooter();
 
          // Flush+Close output
-         Output->Flush();
+         Flush();
          Output->Close();
          Closed = true;
+      }
+
+      /// <summary>Flushes the output stream</summary>
+      /// <exception cref="Logic::InvalidOperationException">Writer has been closed</exception>
+      /// <exception cref="Logic::IOException">I/O error occurred</exception>
+      void RtfWriter::Flush()
+      {
+         // Check stream is open
+         if (Closed)
+            throw InvalidOperationException(HERE, L"Writer is closed");
+
+         // Flush output stream
+         Output->Flush();
       }
 
       /// <summary>Initialises the writer</summary>
       /// <param name="font">Font name</param>
       /// <param name="size">Font size in points</param>
       /// <param name="cols">List of colours</param>
-      /// <exception cref="Logic::InvalidOperationException">Write is already open</exception>
+      /// <exception cref="Logic::InvalidOperationException">Writer is already open</exception>
       /// <exception cref="Logic::IOException">I/O error occurred</exception>
       void  RtfWriter::Open(const wstring& font, UINT size, list<COLORREF> cols) 
       {
