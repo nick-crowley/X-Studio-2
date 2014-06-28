@@ -136,7 +136,7 @@ namespace Logic
                Files[(UINT)fn.Type] = reader->ReadFile(fn.Type, vfs.GetVersion());
 
                // Feedback
-               Console << Cons::Green << L"Success" << ENDL;
+               Console << Cons::Success << ENDL;
             }
             catch (ExceptionBase& e) {
                data->SendFeedback(Cons::Error, ProgressType::Warning, 3, GuiString(L"Failed: ") + e.Message);

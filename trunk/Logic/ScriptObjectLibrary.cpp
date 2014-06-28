@@ -206,7 +206,8 @@ namespace Logic
             return false;
 
          // Feedback 
-         Console << Cons::Green << L"Resolved: " << Cons::Yellow << a.Text << Cons::White << L" and " << Cons::Yellow << b.Text << ENDL;
+         Console << Cons::Bold << Cons::Green << L"Resolved: " << Cons::Reset
+                 << Cons::Yellow << a.Text << Cons::White << L" and " << Cons::Yellow << b.Text << ENDL;
 
          // Insert unique
          Lookup.Add(a);

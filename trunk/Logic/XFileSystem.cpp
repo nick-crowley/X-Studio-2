@@ -218,10 +218,10 @@ namespace Logic
                   Files.Add( XFileInfo(*this, cat, path, size, offset) );
 
                // Feedback
-               Console << Cons::Green << "Success" << ENDL;
+               Console << Cons::Success << ENDL;
             }
             catch (ExceptionBase& e) {
-               Console << Cons::Error << "Failed: " << e.Message << ENDL;
+               Console << Cons::Failure << e.Message << ENDL;
                throw;
             }
          }
