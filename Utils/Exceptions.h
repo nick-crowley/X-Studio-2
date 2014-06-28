@@ -99,7 +99,7 @@ namespace Logic
       ComException(wstring  src, wstring msg, HRESULT hr);
    };
 
-   /// <summary>Occurs when a file is not found</summary>
+   /// <summary>Occurs when a directory is not found</summary>
    class UtilExport DirectoryNotFoundException : public ExceptionBase
    {
    public:
@@ -110,7 +110,7 @@ namespace Logic
    };
 
 
-   /// <summary>Occurs when a game data file is not in the expected format</summary>
+   /// <summary>Occurs when a file containing game data is not in the expected format</summary>
    class UtilExport FileFormatException : public ExceptionBase
    {
    public:
@@ -136,7 +136,7 @@ namespace Logic
       FileNotFoundException(wstring  src, Path  file);
    };
    
-   /// <summary>Occurs when zlib encounters an error</summary>
+   /// <summary>Occurs when the zlib library encounters an error</summary>
    class UtilExport GZipException : public ExceptionBase
    {
    public:
@@ -187,7 +187,7 @@ namespace Logic
       InvalidValueException(wstring  src, wstring  msg);
    };
 
-   /// <summary>Occurs when an I/O operator fails</summary>
+   /// <summary>Occurs when an I/O operation fails</summary>
    class UtilExport IOException : public ExceptionBase
    {
    public:
@@ -197,7 +197,7 @@ namespace Logic
       IOException(wstring  src, wstring  msg);
    };
 
-   /// <summary>Occurs when an operation that has not been implemented is attempted</summary>
+   /// <summary>Occurs when executing an operation that has not been implemented</summary>
    class UtilExport NotImplementedException : public ExceptionBase
    {
    public:
@@ -243,7 +243,7 @@ namespace Logic
    };
 
 
-   /// <summary>Occurs when a language string is missing</summary>
+   /// <summary>Occurs when a page in a language file is missing</summary>
    class UtilExport PageNotFoundException : public ExceptionBase
    {
    public:
@@ -253,7 +253,7 @@ namespace Logic
       PageNotFoundException(wstring  src, UINT page);
    };
 
-   /// <summary>Occurs when a language string is missing</summary>
+   /// <summary>Occurs when a string in a language file is missing</summary>
    class UtilExport StringNotFoundException : public ExceptionBase
    {
    public:
@@ -264,7 +264,7 @@ namespace Logic
       StringNotFoundException(wstring  src, UINT page, UINT id);
    };
 
-   /// <summary>Occurs when a command syntax is missing</summary>
+   /// <summary>Occurs when syntax for a command is missing</summary>
    class UtilExport SyntaxNotFoundException : public ExceptionBase
    {
    public:
