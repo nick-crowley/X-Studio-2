@@ -48,11 +48,7 @@ namespace Logic
          /// <param name="results">On return, this contains the results</param>
          void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
-            CommandNode::SymbolSearcher search(name, type, results);
-
-            // Search
-            for (auto& c : Root->Children)
-               c->Accept(search);
+            Transform(CommandNode::SymbolSearcher(name, type, results));
          }
          
          /// <summary>Compiles the script.</summary>
@@ -78,33 +74,25 @@ namespace Logic
                script.Clear();
 
                // Re-index variables to account for hidden iterator variables
-               for (auto& c : Root->Children)
-                  c->Accept(variables);
+               Transform(variables);
 
                // Re-identify constants
-               for (auto& c : Root->Children)
-                  c->Accept(constants);
+               Transform(constants);
 #endif
             }
 
             // Linking/Indexing
-            for (auto& c : Root->Children)
-            {
-               c->Accept(linker);
-               c->Accept(indexer);
-            }
+            Transform(linker);
+            Transform(indexer);
                
 #ifdef VALIDATION
             // Set address of EOF
             CommandNode::EndOfScript.Index = i;     
 #endif
             // Finalize linkage + generate commands
-            for (auto& c : Root->Children)
-            {
-               c->Accept(finalizer);
-               c->Accept(generator);
-            }
-
+            Transform(finalizer);
+            Transform(generator);
+            
             // Update state
             State = CommandNode::InputState::Compiled;
          }
@@ -126,7 +114,7 @@ namespace Logic
             l.clear();
 
             // Flatten children (if any) into list
-            for (auto& c : Root->Children)
+            for (auto& c : *this)
                l.push_back(c);
          }
 
@@ -135,7 +123,7 @@ namespace Logic
          void  CommandTree::Transform(CommandNode::Visitor& v)
          {
             // Execute visitor
-            for (auto& c : Root->Children)
+            for (auto& c : *this)
                c->Accept(v);
          }
 
@@ -150,30 +138,23 @@ namespace Logic
             TerminationVerifier termination(errors);
             VariableIdentifier  variables(script, errors);
 
-            // Identify labels/variables
-            for (auto& c : Root->Children)
-               c->Accept(variables);
-
-            // Identify constants
-            for (auto& c : Root->Children)
-               c->Accept(constants);
+            // Identify labels/variables/constants
+            Transform(variables);
+            Transform(constants);
 
             // Verify commands+parameters
-            for (auto& c : Root->Children)
-               c->Accept(commands);
+            Transform(commands);
 
             // branching logic
-            for (auto& c : Root->Children)
-               c->Accept(logic);
+            Transform(logic);
 
             // Ensure script has std commands  [don't count break/continue]
-            if (!any_of(Root->Children.begin(), Root->Children.end(), isStandardCommand))
+            if (!any_of(begin(), end(), isStandardCommand))
                errors += Root->MakeError(L"No executable commands found");
 
             // [VALID] Verify all control paths lead to RETURN
             else if (errors.empty()) 
-               for (auto& c : Root->Children)
-                  c->Accept(termination);
+               Transform(termination);
             
             // Update state
             Root->State = CommandNode::InputState::Verified;

@@ -18,13 +18,13 @@ namespace Logic
          /// <summary>Adds successors nodes to the queue</summary>
          /// <param name="n">Node to visit</param>
          /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-         void DepthTraversal::AddSuccessors(CommandNode* n)
+         void DepthTraversal::AddSuccessors(CommandNodePtr& n)
          {
             REQUIRED(n);
 
             // Push children to stack in reverse order
             for (auto it = n->Children.rbegin(); it != n->Children.rend(); ++it)
-               push_front(it->get());
+               push_front(*it);
          }
 
          /// <summary>Query whether traversal is empty</summary>
@@ -37,7 +37,7 @@ namespace Logic
          /// <summary>Pops the next node from the stack</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Stack is empty</exception>
-         CommandNode* DepthTraversal::GetSuccessor()
+         CommandNodePtr DepthTraversal::GetSuccessor()
          {
             // Verify state
             if (Empty())

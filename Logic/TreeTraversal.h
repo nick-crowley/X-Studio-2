@@ -25,16 +25,16 @@ namespace Logic
                /// <summary>Adds successors nodes to the traversal</summary>
                /// <param name="n">Node to visit</param>
                /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-               void AddSuccessors(CommandNode* n);
+               void AddSuccessors(CommandNodePtr& n);
 
                /// <summary>Gets the next node in the traversal</summary>
                /// <returns></returns>
                /// <exception cref="Logic::AlgorithmException">Traversal is empty</exception>
-               CommandNode* GetSuccessor();
+               CommandNodePtr GetSuccessor();
             };
 
             /// <summary>Provides the iterator with a breadth first traversal</summary>
-            class BreadthTraversal : public ITraversal, public std::deque<CommandNode*>
+            class BreadthTraversal : public ITraversal, public std::deque<CommandNodePtr>
             {
                // --------------------- CONSTRUCTION ----------------------
 
@@ -49,16 +49,16 @@ namespace Logic
                /// <summary>Adds successors nodes to the traversal</summary>
                /// <param name="n">Node to visit</param>
                /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-               void AddSuccessors(CommandNode* n);
+               void AddSuccessors(CommandNodePtr& n);
 
                /// <summary>Gets the next node in the traversal</summary>
                /// <returns></returns>
                /// <exception cref="Logic::AlgorithmException">Traversal is empty</exception>
-               CommandNode* GetSuccessor();
+               CommandNodePtr GetSuccessor();
             };
                
             /// <summary>Provides the iterator with a depth first traversal</summary>
-            class DepthTraversal : public ITraversal, public std::deque<CommandNode*>
+            class DepthTraversal : public ITraversal, public std::deque<CommandNodePtr>
             {
                // --------------------- CONSTRUCTION ----------------------
 
@@ -73,12 +73,12 @@ namespace Logic
                /// <summary>Adds successors nodes to the traversal</summary>
                /// <param name="n">Node to visit</param>
                /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-               void AddSuccessors(CommandNode* n);
+               void AddSuccessors(CommandNodePtr& n);
 
                /// <summary>Gets the next node in the traversal</summary>
                /// <returns></returns>
                /// <exception cref="Logic::AlgorithmException">Traversal is empty</exception>
-               CommandNode* GetSuccessor();
+               CommandNodePtr GetSuccessor();
             };
 
          }
