@@ -47,7 +47,7 @@ namespace Logic
             // Variable: Search all commands
             case SymbolType::Variable:
                for (const auto& p : n->Parameters)
-                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String && p.Token.ValueText == name)
+                  if (p.Type == DataType::VARIABLE && p.Value.Type == ValueType::String && p.Token.ValueText == Name)
                      Results.push_back(Symbol(p.Token, SymbolType::Variable, n->LineNumber, n->LineText, comment));
                break;
             }

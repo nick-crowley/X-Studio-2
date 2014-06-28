@@ -76,7 +76,7 @@ namespace Logic
                /// <summary>Get reference to current node</summary>
                /// <returns></returns>
                /// <exception cref="Logic::InvalidOperationException">Iterator cannot be dereferenced</exception>
-               CommandNodePtr& operator*() const
+               CommandNodePtr operator*() const
                { 
                   if (!Position)
                      throw InvalidOperationException(HERE, L"Cannot dereference iterator");
@@ -443,13 +443,15 @@ namespace Logic
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               NodePrinter(CommandTree& t);
+               NodePrinter(const CommandTree& t);
                virtual ~NodePrinter();
 		 
                NO_COPY(NodePrinter);	// Uncopyable
                NO_MOVE(NodePrinter);	// Unmovable
 
                // ---------------------- ACCESSORS ------------------------			
+            protected:
+               UINT GetDepth(const CommandNode* n) const;
 
                // ----------------------- MUTATORS ------------------------
             public:
@@ -458,7 +460,7 @@ namespace Logic
 
                // -------------------- REPRESENTATION ---------------------
             protected:
-               CommandTree& Tree;
+               const CommandTree& Tree;
             };
             
             /// <summary>Searches for all instances of a symbol</summary>
@@ -590,6 +592,7 @@ namespace Logic
             bool  IsEmpty() const;
             void  Print() const;
             void  ToList(CommandNodeList& l) const;
+            void  Visit(CommandNode::Visitor& v) const;
 
             // ----------------------- MUTATORS ------------------------
          public:

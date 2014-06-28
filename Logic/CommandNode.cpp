@@ -319,10 +319,11 @@ namespace Logic
          /// <returns>Root</returns>
          CommandNode*  CommandNode::FindRoot() const
          {
-            CommandNode* n;
-            for (n = const_cast<CommandNode*>(this); n->Parent != nullptr; n = n->Parent)
-            {}
-            return n;
+            const CommandNode* n;
+            // Search ancestors
+            for (n = this; !n->IsRoot(); n = n->Parent)
+               ;
+            return const_cast<CommandNode*>(n);
          }
          
          /// <summary>Searches for a sibling or ancestral sibling with matching properties</summary>

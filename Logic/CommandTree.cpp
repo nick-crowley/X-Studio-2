@@ -105,7 +105,7 @@ namespace Logic
          /// <param name="results">On return, this contains the results</param>
          void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
-            Transform(SymbolSearcher(name, type, results));
+            Visit(SymbolSearcher(name, type, results));
          }
          
          /// <summary>Query whether this tree is empty.</summary>
@@ -119,7 +119,7 @@ namespace Logic
          void  CommandTree::Print() const
          {
             // Print entire tree
-            Transform(NodePrinter(*this));
+            Visit(NodePrinter(*this));
          }
          
          /// <summary>Flattens the nodes of the tree (excluding the root) into a list.</summary>
@@ -174,6 +174,15 @@ namespace Logic
             
             // Update state
             State = TreeState::Verified;
+         }
+         
+         /// <summary>Transforms the tree by executing a visitor upon the entire tree</summary>
+         /// <param name="v">The visitor.</param>
+         void  CommandTree::Visit(CommandNode::Visitor& v) const
+         {
+            // Execute visitor
+            for (auto& c : *this)
+               c->Accept(v);
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------

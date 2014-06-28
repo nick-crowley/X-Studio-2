@@ -73,16 +73,16 @@ namespace Logic
             // --------------------- CONSTRUCTION ----------------------
          public:
             CommandNode();
+            CommandNode(const CommandNode& macro, const CommandNode& expanded);
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& params, const CommandLexer& lex, UINT line, bool commented);
             CommandNode(Conditional cnd, CommandSyntaxRef syntax, ParameterArray& infix, ParameterArray& postfix, const CommandLexer& lex, UINT line, bool commented);
             virtual ~CommandNode();
 
          protected:
             CommandNode(const CommandNode& parent, const CommandNode* target);
-            CommandNode(const CommandNode& macro, const CommandNode& expanded);
 
             // ------------------------ STATIC -------------------------
-         protected:
+         public:
             static NodeDelegate  isConditionalAlternate;
             static NodeDelegate  isConditionalEnd;
             static NodeDelegate  isExecutableCommand;
@@ -96,6 +96,7 @@ namespace Logic
             // --------------------- PROPERTIES ------------------------
          public:
             PROPERTY_GET(bool,Empty,IsEmpty);
+            PROPERTY_GET(UINT,Depth,GetDepth);
             PROPERTY_GET(UINT,JumpAddress,GetJumpAddress);
             PROPERTY_GET(BranchLogic,Logic,GetBranchLogic);
             PROPERTY_GET(GuiString,LineCode,GetLineCode);
