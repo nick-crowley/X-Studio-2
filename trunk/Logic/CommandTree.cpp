@@ -868,6 +868,7 @@ namespace Logic
          /// <summary>Transfer the children of one node to another.</summary>
          /// <param name="from">From.</param>
          /// <param name="to">To.</param>
+         /// <exception cref="Logic::AlgorithmException">From and To specify the same node</exception>
          void CommandTree::MoveChildren(CommandTree& from, CommandTree& to)
          {
             if (&from == &to)
@@ -884,7 +885,7 @@ namespace Logic
          /// <summary>Reverts a command comment with verification errors into an ordinary comment</summary>
          /// <param name="child">Child command to revert</param>
          /// <exception cref="Logic::ArgumentNullException">child is null</exception>
-         /// <exception cref="Logic::InvalidOperationException">Not a child of current node</exception>
+         /// <exception cref="Logic::InvalidOperationException">Child node not found</exception>
          void CommandTree::RevertCommandComment(CommandTree* child)
          {
             REQUIRED(child);
@@ -907,7 +908,8 @@ namespace Logic
          /// <summary>Replaces one child node with another.</summary>
          /// <param name="oldChild">existing child.</param>
          /// <param name="newChild">new replacement child.</param>
-         /// <exception cref="Logic::InvalidOperationException">Not a child of current node</exception>
+         /// <exception cref="Logic::ArgumentNullException">child is null</exception>
+         /// <exception cref="Logic::InvalidOperationException">Child node not found</exception>
          void CommandTree::ReplaceChild(CommandTree* oldChild, CommandTree* newChild)
          {
             REQUIRED(oldChild);
