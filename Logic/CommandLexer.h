@@ -18,7 +18,6 @@ namespace Logic
             typedef wstring::const_iterator CharIterator;
 
             // --------------------- CONSTRUCTION ----------------------
-
          public:
             CommandLexer(const wstring& line, bool skipWhitespace = true);
             virtual ~CommandLexer();
@@ -37,7 +36,6 @@ namespace Logic
             PROPERTY_GET(bool,ValidPosition,IsValidPosition);
 
             // ---------------------- ACCESSORS ------------------------			
-
          public:
             /// <summary>Get start token iterator</summary>
             /// <returns></returns>
@@ -61,7 +59,7 @@ namespace Logic
             }
 
             /// <summary>Finds a token by character index.</summary>
-            /// <param name="index">character index</param>
+            /// <param name="index">Zero-based character index</param>
             /// <returns></returns>
             TokenIterator Find(UINT index) const
             {
@@ -105,6 +103,16 @@ namespace Logic
                return pos < Tokens.end() && pos->Type == t && StrCmpI(pos->Text.c_str(), txt)==0 ? (++pos, true) : false;
             }
             
+            /// <summary>Matches a token type at the caret</summary>
+            /// <param name="caret">Zero-based character index</param>
+            /// <param name="t">The token type</param>
+            /// <returns></returns>
+            bool  MatchAtCaret(UINT caret, TokenType t) const
+            {
+               auto p = Find(caret);
+               return Valid(p) && p->Type == t;
+            }
+
             /// <summary>Validates the specified position.</summary>
             /// <param name="pos">The position.</param>
             /// <returns></returns>
