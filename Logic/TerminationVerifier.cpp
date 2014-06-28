@@ -40,7 +40,7 @@ namespace Logic
                bool allPaths = false;
 
                // Find last child (exclude NOP/END)
-               auto last = *find_if(n->Children.rbegin(), n->Children.rend(), isConditionalAlternate);
+               auto last = *find_if(n->Children.rbegin(), n->Children.rend(), CommandNode::isConditionalAlternate);
                switch (last->Logic)
                {
                // If: Verify branch and any alternates all lead to RETURN

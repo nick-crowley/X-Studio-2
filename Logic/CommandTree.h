@@ -208,6 +208,9 @@ namespace Logic
             typedef Iterator<DepthTraversal>  DepthIterator;
 
          protected:
+            /// <summary>Distinguishes tree state when printed to the console</summary>
+            enum class TreeState { Raw, Verified, Compiled };
+
             /// <summary>Distinguishes variables and constants from their usage</summary>
             class ConstantIdentifier : public CommandNode::Visitor
             {
@@ -333,6 +336,57 @@ namespace Logic
             protected:
                ErrorArray& Errors;     // Errors collection
             };
+            
+            /// <summary>Replaces macro commands with their non-macro equivilents</summary>
+            class MacroExpander : public CommandNode::Visitor
+            {
+               // ------------------------ TYPES --------------------------
+            protected:
+               /// <summary>Generates iterator variable names</summary>
+               class NameGenerator
+               {
+               public:
+                  /// <summary>Initializes a NameGenerator</summary>
+                  NameGenerator() : LastID(1)
+                  {}
+
+                  /// <summary>Generates another iterator variable name</summary>
+                  /// <returns></returns>
+                  wstring  GetNext()
+                  {
+                     return VString(L"$XS.Iterator%d", LastID++);
+                  }
+
+               protected:
+                  int  LastID;    // Last ID used
+               };
+
+               // --------------------- CONSTRUCTION ----------------------
+            public:
+               MacroExpander(ScriptFile& s, ErrorArray& e);
+               virtual ~MacroExpander();
+		 
+               NO_COPY(MacroExpander);	// Uncopyable
+               NO_MOVE(MacroExpander);	// Unmovable
+
+               // ---------------------- ACCESSORS ------------------------			
+
+               // ----------------------- MUTATORS ------------------------
+            public:
+               void VisitNode(CommandNode* n) override;
+
+            protected:
+               CommandNodePtr   ExpandCommand(CommandNode* n, const wstring& txt, GameVersion v);
+               CommandNodeList  ExpandDimArray(CommandNode* n);
+               CommandNodeList  ExpandForLoop(CommandNode* n);
+               CommandNodeList  ExpandForEach(CommandNode* n);
+
+               // -------------------- REPRESENTATION ---------------------
+            protected:
+               ErrorArray&   Errors;         // Errors collection
+               ScriptFile&   Script;         // Script file
+               NameGenerator IteratorNames;  // Iterate name generator
+            };
 
             /// <summary>Assigns standard command indicies to nodes</summary>
             class NodeIndexer : public CommandNode::Visitor
@@ -389,7 +443,7 @@ namespace Logic
             protected:
                // --------------------- CONSTRUCTION ----------------------
             public:
-               NodePrinter();
+               NodePrinter(CommandTree& t);
                virtual ~NodePrinter();
 		 
                NO_COPY(NodePrinter);	// Uncopyable
@@ -403,6 +457,8 @@ namespace Logic
                void VisitRoot(CommandNode* n) override;
 
                // -------------------- REPRESENTATION ---------------------
+            protected:
+               CommandTree& Tree;
             };
             
             /// <summary>Searches for all instances of a symbol</summary>
@@ -489,6 +545,8 @@ namespace Logic
             DEFAULT_MOVE(CommandTree);	// Default move semantics
 
             // ------------------------ STATIC -------------------------
+         public:
+            static const wchar*  GetString(TreeState s);
 
             // --------------------- PROPERTIES ------------------------
          public:
@@ -539,10 +597,14 @@ namespace Logic
             void           Compile(ScriptFile& script, ErrorArray& errors);
             void           Transform(CommandNode::Visitor& v);
             void           Verify(ScriptFile& script, ErrorArray& errors);
+
+         protected:
+            void  ExpandMacros(ScriptFile& script, ErrorArray& errors);
             
             // -------------------- REPRESENTATION ---------------------
          protected:
             CommandNodePtr  Root;    // Root node of parse tree
+            TreeState      State;   // processing state
          };
       }
    }

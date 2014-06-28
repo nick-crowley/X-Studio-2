@@ -254,6 +254,7 @@
     <ClCompile Include="ConstantIdentifier.cpp" />
     <ClCompile Include="LinkageFinalizer.cpp" />
     <ClCompile Include="LogicVerifier.cpp" />
+    <ClCompile Include="MacroExpander.cpp" />
     <ClCompile Include="NodeIndexer.cpp" />
     <ClCompile Include="NodeLinker.cpp" />
     <ClCompile Include="CommandNode.cpp" />

@@ -9,6 +9,17 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
+         /// <summary>Create visitor for printing tree to the console</summary>
+         /// <param name="t">tree to print</param>
+         CommandTree::NodePrinter::NodePrinter(CommandTree& t) : Tree(t)
+         {
+         }
+
+         /// <summary>Nothing</summary>
+         CommandTree::NodePrinter::~NodePrinter()
+         {
+         }
+
          // ------------------------------- STATIC METHODS -------------------------------
 
          // ------------------------------- PUBLIC METHODS -------------------------------
@@ -87,7 +98,7 @@ namespace Logic
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
          void  CommandTree::NodePrinter::VisitRoot(CommandNode* n) 
          {
-            Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << GetString(n->State);
+            Console << ENDL << "Ln  Index  Logic            Text        " << Cons::Purple << Cons::Bold << CommandTree::GetString(Tree.State);
             Console << ENDL << "-------------------------------------------------------" << ENDL; 
 
             // Spacing

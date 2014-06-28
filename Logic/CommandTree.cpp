@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CommandTree.h"
+#include "PreferencesLibrary.h"
 
 namespace Logic
 {
@@ -9,7 +10,9 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         CommandTree::CommandTree() : Root(new CommandNode())
+         CommandTree::CommandTree() 
+            : Root(new CommandNode()),
+              State(TreeState::Raw)
          {
          }
 
@@ -19,7 +22,20 @@ namespace Logic
          }
 
          // ------------------------------- STATIC METHODS -------------------------------
+         
+         /// <summary>Get input state string</summary>
+         const wchar*  CommandTree::GetString(TreeState s)
+         {
+            switch (s)
+            {
+            case TreeState::Compiled:    return L"COMPILED";
+            case TreeState::Verified:    return L"VERIFIED";
+            case TreeState::Raw:         return L"UNVERIFIED";
+            }
 
+            return L"INVALID";
+         }
+         
          // ------------------------------- PUBLIC METHODS -------------------------------
          
          /// <summary>Adds a node as a child of the root</summary>
@@ -35,22 +51,6 @@ namespace Logic
             return node;
          }
 
-         /// <summary>Query whether this tree is empty.</summary>
-         /// <returns></returns>
-         bool CommandTree::IsEmpty() const
-         {
-            return Root->IsEmpty();
-         }
-
-         /// <summary>Finds all instances of a symbol.</summary>
-         /// <param name="name">symbol name</param>
-         /// <param name="type">symbol type</param>
-         /// <param name="results">On return, this contains the results</param>
-         void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
-         {
-            Transform(SymbolSearcher(name, type, results));
-         }
-         
          /// <summary>Compiles the script.</summary>
          /// <param name="script">The script.</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
@@ -64,10 +64,11 @@ namespace Logic
             NodeLinker         linker(errors);
             VariableIdentifier variables(script, errors);
 
-            // Macros: Expand macros into std commands 
+            // Macros: Query whether macros are enabled
             if (PrefsLib.UseMacroCommands)
             {
-               Root->ExpandMacros(script, errors);
+               // Expand macros into std commands
+               ExpandMacros(script, errors);
 
 #ifdef VALIDATION
                // Clear previous IDs
@@ -94,14 +95,30 @@ namespace Logic
             Transform(generator);
             
             // Update state
-            State = CommandNode::InputState::Compiled;
+            State = TreeState::Compiled;
          }
          
+         /// <summary>Finds all instances of a symbol.</summary>
+         /// <param name="name">symbol name</param>
+         /// <param name="type">symbol type</param>
+         /// <param name="results">On return, this contains the results</param>
+         void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
+         {
+            Transform(SymbolSearcher(name, type, results));
+         }
+         
+         /// <summary>Query whether this tree is empty.</summary>
+         /// <returns></returns>
+         bool CommandTree::IsEmpty() const
+         {
+            return Root->IsEmpty();
+         }
+
          /// <summary>Prints the entire tree to the console</summary>
          void  CommandTree::Print() const
          {
             // Print entire tree
-            Transform(NodePrinter());
+            Transform(NodePrinter(*this));
          }
          
          /// <summary>Flattens the nodes of the tree (excluding the root) into a list.</summary>
@@ -155,10 +172,42 @@ namespace Logic
                Transform(termination);
             
             // Update state
-            Root->State = CommandNode::InputState::Verified;
+            State = TreeState::Verified;
          }
 
          // ------------------------------ PROTECTED METHODS -----------------------------
+
+         /// <summary>Expands macro commands</summary>
+         /// <param name="script">script file.</param>
+         /// <param name="errors">Errors collection.</param>
+         void  CommandTree::ExpandMacros(ScriptFile& script, ErrorArray& errors)
+         {
+            MacroExpander macros(script, errors);
+
+            // Recurse into children  [Allowing for in-place modification of child list]
+            for (DepthIterator it = ++begin(); it != end(); ++it)
+            {
+               // Expand macros
+               it->Accept(macros);
+
+               // Macro: Delete 
+               auto n = it++;
+               if ((*n)->Is(CommandType::Macro))
+                  n->Parent->RemoveChild(n);
+            }
+            
+            // Recurse into children  [Allowing for in-place modification of child list]
+            //for (auto c = Children.begin(); c != Children.end(); )
+            //{
+            //   // Expand macros
+            //   (*c)->ExpandMacros(script, errors);
+
+            //   // Macro: Delete 
+            //   auto n = c++;
+            //   if ((*n)->Is(CommandType::Macro))
+            //      Children.erase(n);
+            //}
+         }
 
          // ------------------------------- PRIVATE METHODS ------------------------------
       }
