@@ -257,7 +257,7 @@ namespace Logic
 
             void  FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
             bool  IsEmpty() const;
-            void  Print(int depth = 0);
+            void  Print() const;
             void  ToList(CommandNodeList& l) const;
 
             // ----------------------- MUTATORS ------------------------
