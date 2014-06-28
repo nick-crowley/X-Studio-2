@@ -219,6 +219,7 @@
     <ClInclude Include="TMissile.h" />
     <ClInclude Include="TObject.h" />
     <ClInclude Include="TreeTraversal.h" />
+    <ClInclude Include="TreeVisitors.h" />
     <ClInclude Include="TShield.h" />
     <ClInclude Include="TShip.h" />
     <ClInclude Include="TWare.h" />

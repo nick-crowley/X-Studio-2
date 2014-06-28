@@ -13,12 +13,12 @@ namespace Logic
          /// <summary>Create command generating visitor</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::CommandGenerator::CommandGenerator(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
+         CommandGenerator::CommandGenerator(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::CommandGenerator::~CommandGenerator()
+         CommandGenerator::~CommandGenerator()
          {
          }
 
@@ -28,7 +28,7 @@ namespace Logic
 
          /// <summary>Generates a ScriptCommand from the node</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::CommandGenerator::VisitNode(CommandNode* n) 
+         void  CommandGenerator::VisitNode(CommandNode* n) 
          {
             try
             {

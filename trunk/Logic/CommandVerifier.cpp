@@ -16,12 +16,12 @@ namespace Logic
          /// <summary>Create command verifying visitor</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::CommandVerifier::CommandVerifier(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
+         CommandVerifier::CommandVerifier(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::CommandVerifier::~CommandVerifier()
+         CommandVerifier::~CommandVerifier()
          {
          }
 
@@ -31,7 +31,7 @@ namespace Logic
 
          /// <summary>Generates a ScriptCommand from the node</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::CommandVerifier::VisitNode(CommandNode* n) 
+         void  CommandVerifier::VisitNode(CommandNode* n) 
          {
             try
             {
@@ -85,7 +85,7 @@ namespace Logic
          /// <param name="p">parameter to verify</param>
          /// <param name="index">parameter display index</param>
          /// <param name="err">active or dummy errors collection</param>
-         void  CommandTree::CommandVerifier::VerifyParameter(CommandNode* n, const ScriptParameter& p, UINT index, ErrorArray& err) 
+         void  CommandVerifier::VerifyParameter(CommandNode* n, const ScriptParameter& p, UINT index, ErrorArray& err) 
          {
             GameObjectLibrary::ObjectID obj;
 

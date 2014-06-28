@@ -474,6 +474,9 @@
     <ClInclude Include="CommandTree.h">
       <Filter>Header Files\Scripts\Compiler</Filter>
     </ClInclude>
+    <ClInclude Include="TreeVisitors.h">
+      <Filter>Header Files\Scripts\Compiler\Visitors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIdentifier.cpp">

@@ -14,14 +14,14 @@ namespace Logic
          /// <param name="name">symbol name</param>
          /// <param name="type">symbol type</param>
          /// <param name="results">On return, this contains the results</param>
-         CommandTree::SymbolSearcher::SymbolSearcher(const wstring& name, SymbolType type, SymbolList& results) 
+         SymbolSearcher::SymbolSearcher(const wstring& name, SymbolType type, SymbolList& results) 
             : Name(name), Type(type), Results(results)
          {
             Results.clear();
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::SymbolSearcher::~SymbolSearcher()
+         SymbolSearcher::~SymbolSearcher()
          {
          }
          
@@ -31,7 +31,7 @@ namespace Logic
          
          /// <summary>Searches for all instances of a symbol</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::SymbolSearcher::VisitNode(CommandNode* n) 
+         void  SymbolSearcher::VisitNode(CommandNode* n) 
          {
             bool comment = n->CmdComment || n->Is(CMD_COMMENT);
 

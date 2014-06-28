@@ -15,12 +15,12 @@ namespace Logic
          
          /// <summary>Create termination verifying visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::TerminationVerifier::TerminationVerifier(ErrorArray& e) : Errors(e)
+         TerminationVerifier::TerminationVerifier(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::TerminationVerifier::~TerminationVerifier()
+         TerminationVerifier::~TerminationVerifier()
          {
          }
 
@@ -30,7 +30,7 @@ namespace Logic
 
          /// <summary>Verifies that all control paths lead to termination</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::TerminationVerifier::VisitNode(CommandNode* n) 
+         void  TerminationVerifier::VisitNode(CommandNode* n) 
          {
             // Check for presence of possible conditional or return cmd
             if (!n->HasExecutableChild())

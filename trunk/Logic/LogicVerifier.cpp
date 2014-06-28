@@ -15,12 +15,12 @@ namespace Logic
          
          /// <summary>Create logic verifying visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandTree::LogicVerifier::LogicVerifier(ErrorArray& e) : Errors(e)
+         LogicVerifier::LogicVerifier(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::LogicVerifier::~LogicVerifier()
+         LogicVerifier::~LogicVerifier()
          {
          }
 
@@ -30,7 +30,7 @@ namespace Logic
 
          /// <summary>Verifies the branching logic</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::CommandVerifier::VisitNode(CommandNode* n) 
+         void  CommandVerifier::VisitNode(CommandNode* n) 
          {
             CommandNode* p;
             switch (n->Logic)

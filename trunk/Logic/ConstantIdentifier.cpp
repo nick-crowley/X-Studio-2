@@ -13,12 +13,12 @@ namespace Logic
          /// <summary>Create visitor for distinguishing constants from variables</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandTree::ConstantIdentifier::ConstantIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
+         ConstantIdentifier::ConstantIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandTree::ConstantIdentifier::~ConstantIdentifier()
+         ConstantIdentifier::~ConstantIdentifier()
          {
          }
          
@@ -28,7 +28,7 @@ namespace Logic
          
          /// <summary>Distinguishes variables and constants from their usage</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::ConstantIdentifier::VisitNode(CommandNode* n) 
+         void  ConstantIdentifier::VisitNode(CommandNode* n) 
          {
             // Skip command comments
             if (!n->CmdComment)

@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create standard command indexer visitor</summary>
          /// <param name="init">Initial index</param>
-         CommandTree::NodeIndexer::NodeIndexer(UINT& init) : NextIndex(init)
+         NodeIndexer::NodeIndexer(UINT& init) : NextIndex(init)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandTree::NodeIndexer::~NodeIndexer()
+         NodeIndexer::~NodeIndexer()
          {
          }
 
@@ -26,7 +26,7 @@ namespace Logic
          
          /// <summary>Assigns standard command indicies to nodes</summary>
          /// <param name="n">Node</param>
-         void  CommandTree::NodeIndexer::VisitNode(CommandNode* n) 
+         void  NodeIndexer::VisitNode(CommandNode* n) 
          {
             // Standard command  
             if (!n->CmdComment && n->Is(CommandType::Standard))

@@ -107,6 +107,13 @@ namespace Logic
          {
             Visit(SymbolSearcher(name, type, results));
          }
+
+         /// <summary>Gets the state of the tree</summary>
+         /// <returns></returns>
+         CommandTree::TreeState CommandTree::GetState() const
+         {
+            return State;
+         }
          
          /// <summary>Query whether this tree is empty.</summary>
          /// <returns></returns>
