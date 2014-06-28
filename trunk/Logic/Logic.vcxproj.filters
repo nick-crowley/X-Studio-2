@@ -405,9 +405,6 @@
     <ClInclude Include="SyntaxTree.h">
       <Filter>Header Files\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="CommandTree.h">
-      <Filter>Header Files\Scripts\Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="ParameterValue.h">
       <Filter>Header Files\Scripts</Filter>
     </ClInclude>
@@ -470,6 +467,9 @@
     </ClInclude>
     <ClInclude Include="TreeTraversal.h">
       <Filter>Header Files\Scripts\Compiler\Traversals</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandNode.h">
+      <Filter>Header Files\Scripts\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,9 +707,6 @@
     <ClCompile Include="SyntaxTree.cpp">
       <Filter>Source Files\Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="CommandTree.cpp">
-      <Filter>Source Files\Scripts\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="SyntaxFileWriter.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
@@ -778,6 +775,9 @@
     </ClCompile>
     <ClCompile Include="TerminationVerifier.cpp">
       <Filter>Source Files\Scripts\Compiler\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandNode.cpp">
+      <Filter>Source Files\Scripts\Compiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
