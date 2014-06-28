@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create linking visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandNode::NodeLinker::NodeLinker(ErrorArray& e) : Errors(e)
+         CommandTree::NodeLinker::NodeLinker(ErrorArray& e) : Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandNode::NodeLinker::~NodeLinker()
+         CommandTree::NodeLinker::~NodeLinker()
          {
          }
 
@@ -27,7 +27,7 @@ namespace Logic
          /// <summary>Perform command linking</summary>
          /// <param name="n">Node</param>
          /// <exception cref="Logic::AlgorithmException">Error in linking algorithm</exception>
-         void  CommandNode::NodeLinker::VisitNode(CommandNode* n) 
+         void  CommandTree::NodeLinker::VisitNode(CommandNode* n) 
          {
             try
             {

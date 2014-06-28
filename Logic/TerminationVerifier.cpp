@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 #include "ScriptFile.h"
 #include "GameObjectLibrary.h"
 #include "ScriptObjectLibrary.h"
@@ -15,12 +15,12 @@ namespace Logic
          
          /// <summary>Create termination verifying visitor</summary>
          /// <param name="e">errors collection</param>
-         CommandNode::TerminationVerifier::TerminationVerifier(ErrorArray& e) : Errors(e)
+         CommandTree::TerminationVerifier::TerminationVerifier(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandNode::TerminationVerifier::~TerminationVerifier()
+         CommandTree::TerminationVerifier::~TerminationVerifier()
          {
          }
 
@@ -30,7 +30,7 @@ namespace Logic
 
          /// <summary>Verifies that all control paths lead to termination</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::TerminationVerifier::VisitNode(CommandNode* n) 
+         void  CommandTree::TerminationVerifier::VisitNode(CommandNode* n) 
          {
             // Check for presence of possible conditional or return cmd
             if (!n->HasExecutableChild())

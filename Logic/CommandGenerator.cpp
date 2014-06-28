@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 #include "ScriptFile.h"
 
 namespace Logic
@@ -13,12 +13,12 @@ namespace Logic
          /// <summary>Create command generating visitor</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandNode::CommandGenerator::CommandGenerator(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
+         CommandTree::CommandGenerator::CommandGenerator(ScriptFile& s, ErrorArray& e) : Errors(e), Script(s)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandNode::CommandGenerator::~CommandGenerator()
+         CommandTree::CommandGenerator::~CommandGenerator()
          {
          }
 
@@ -28,7 +28,7 @@ namespace Logic
 
          /// <summary>Generates a ScriptCommand from the node</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::CommandGenerator::VisitNode(CommandNode* n) 
+         void  CommandTree::CommandGenerator::VisitNode(CommandNode* n) 
          {
             try
             {

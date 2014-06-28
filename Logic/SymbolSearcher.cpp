@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 #include "ScriptFile.h"
 
 namespace Logic
@@ -14,14 +14,14 @@ namespace Logic
          /// <param name="name">symbol name</param>
          /// <param name="type">symbol type</param>
          /// <param name="results">On return, this contains the results</param>
-         CommandNode::SymbolSearcher::SymbolSearcher(const wstring& name, SymbolType type, SymbolList& results) 
+         CommandTree::SymbolSearcher::SymbolSearcher(const wstring& name, SymbolType type, SymbolList& results) 
             : Name(name), Type(type), Results(results)
          {
             Results.clear();
          }
          
          /// <summary>Nothing</summary>
-         CommandNode::SymbolSearcher::~SymbolSearcher()
+         CommandTree::SymbolSearcher::~SymbolSearcher()
          {
          }
          
@@ -31,7 +31,7 @@ namespace Logic
          
          /// <summary>Searches for all instances of a symbol</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::SymbolSearcher::VisitNode(CommandNode* n) 
+         void  CommandTree::SymbolSearcher::VisitNode(CommandNode* n) 
          {
             bool comment = n->CmdComment || n->Is(CMD_COMMENT);
 

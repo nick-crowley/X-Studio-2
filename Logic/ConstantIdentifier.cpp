@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 #include "ScriptFile.h"
 
 namespace Logic
@@ -13,12 +13,12 @@ namespace Logic
          /// <summary>Create visitor for distinguishing constants from variables</summary>
          /// <param name="s">script</param>
          /// <param name="e">errors collection</param>
-         CommandNode::ConstantIdentifier::ConstantIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
+         CommandTree::ConstantIdentifier::ConstantIdentifier(ScriptFile& s, ErrorArray& e) : Script(s), Errors(e)
          {
          }
          
          /// <summary>Nothing</summary>
-         CommandNode::ConstantIdentifier::~ConstantIdentifier()
+         CommandTree::ConstantIdentifier::~ConstantIdentifier()
          {
          }
          
@@ -28,7 +28,7 @@ namespace Logic
          
          /// <summary>Distinguishes variables and constants from their usage</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::ConstantIdentifier::VisitNode(CommandNode* n) 
+         void  CommandTree::ConstantIdentifier::VisitNode(CommandNode* n) 
          {
             // Skip command comments
             if (!n->CmdComment)
