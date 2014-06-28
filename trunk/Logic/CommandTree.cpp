@@ -9,7 +9,7 @@ namespace Logic
       {
          // -------------------------------- CONSTRUCTION --------------------------------
 
-         CommandTree::CommandTree()
+         CommandTree::CommandTree() : Root(new CommandNode())
          {
          }
 
@@ -97,16 +97,15 @@ namespace Logic
             State = CommandNode::InputState::Compiled;
          }
          
-         /// <summary>Debug print</summary>
-         /// <param name="depth">The depth.</param>
-         void  CommandTree::Print(int depth /*= 0*/) 
+         /// <summary>Prints the entire tree to the console</summary>
+         void  CommandTree::Print() const
          {
             CommandNode::NodePrinter v;
             // Print entire tree
             Transform(v);
          }
          
-         /// <summary>Flattens the nodes of the tree into a list.</summary>
+         /// <summary>Flattens the nodes of the tree (excluding the root) into a list.</summary>
          /// <param name="l">On return this contains all nodes of the tree</param>
          void  CommandTree::ToList(CommandNodeList& l) const
          {

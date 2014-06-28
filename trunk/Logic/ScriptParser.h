@@ -21,7 +21,7 @@ namespace Logic
             friend class ::Testing::LogicTests;
 
             // ------------------------ TYPES --------------------------
-         private:
+         protected:
             /// <summary>Special lexer for lexing command comments as ordinary commands</summary>
             class CommentLexer : public CommandLexer
             {
@@ -60,20 +60,22 @@ namespace Logic
             PROPERTY_GET(bool,Empty,IsEmpty);
             PROPERTY_GET(bool,Successful,IsSuccessful);
 
-         private:
+         protected:
             PROPERTY_GET(UINT,LineNumber,GetLineNumber);
+            PROPERTY_GET(CommandNodePtr,FirstCommand,GetFirstCommand);
 
             // ---------------------- ACCESSORS ------------------------			
          public:
-            void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
-            bool        IsEmpty() const;
-            bool        IsSuccessful() const;
+            void            FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
+            bool            IsEmpty() const;
+            bool            IsSuccessful() const;
             CommandNodeList ToList() const;
 
-         private:
-            UINT        GetLineNumber() const;
-            ErrorToken  MakeError(const wstring& msg, const CommandLexer& lex) const;
-            ErrorToken  MakeError(const wstring& msg, const TokenIterator& tok) const;
+         protected:
+            CommandNodePtr GetFirstCommand() const;
+            UINT           GetLineNumber() const;
+            ErrorToken     MakeError(const wstring& msg, const CommandLexer& lex) const;
+            ErrorToken     MakeError(const wstring& msg, const TokenIterator& tok) const;
 
             bool  MatchArrayIndex(const CommandLexer& lex, TokenIterator& pos) const;
             bool  MatchAssignment(const CommandLexer& lex, TokenIterator& pos) const;
@@ -90,7 +92,7 @@ namespace Logic
             void  Compile();
             void  Print();
 
-         private:
+         protected:
             CommandNodePtr Advance();
             void           ParseRoot();
             void           ParseIfElse(CommandNodePtr& If);
@@ -110,7 +112,7 @@ namespace Logic
             ErrorArray     Errors;     // Compilation errors
             ScriptFile&    Script;     // Script
 
-         private:
+         protected:
             const LineArray&  Input;         // Input text
             const GameVersion Version;       // Script version
 

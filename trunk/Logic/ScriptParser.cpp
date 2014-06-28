@@ -25,7 +25,7 @@ namespace Logic
          /// <exception cref="Logic::ArgumentException">Line array is empty</exception>
          /// <exception cref="Logic::AlgorithmException">Error in parsing algorithm</exception>
          ScriptParser::ScriptParser(ScriptFile& file, const LineArray& lines, GameVersion  v) 
-            : Input(lines), Version(v), Root(new CommandNode()), Script(file)
+            : Input(lines), Version(v), Script(file)
          {
             if (lines.size() == 0)
                throw ArgumentException(HERE, L"lines", L"Line count cannot be zero");
@@ -58,7 +58,7 @@ namespace Logic
                throw AlgorithmException(HERE, L"Parse tree has no children");
 
             // Retrieve node
-            return parser.Root->Children.front();
+            return parser.FirstCommand;
          }
 
          /// <summary>Identifies the command from line of text.</summary>
@@ -76,14 +76,14 @@ namespace Logic
                   throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve syntax of single node
-               return parser.Root->Children.front()->Syntax;
+               return parser.FirstCommand->Syntax;
             }
             catch (ExceptionBase& e) {
                Console.Log(HERE, e);
                return CommandSyntax::Unrecognised;
             }
          }
-         
+
          /// <summary>Parses a single command from a line of text.</summary>
          /// <param name="script">script.</param>
          /// <param name="line">line text.</param>
@@ -99,7 +99,7 @@ namespace Logic
                   throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve node
-               auto node = parser.Root->Children.front();
+               auto node = parser.FirstCommand;
 
                // Generate command
                if (!node->Is(CMD_EXPRESSION))
@@ -171,7 +171,7 @@ namespace Logic
          /// <summary>Prints current state of the parse tree to the console</summary>
          void  ScriptParser::Print()
          {
-            Root->Print(0);
+            Tree.Print();
          }
          
          /// <summary>Flattens the parse tree into a list of command nodes.</summary>
@@ -181,7 +181,7 @@ namespace Logic
             CommandNodeList l;
 
             // Flatten all commands, excluding the root
-            Root->ToList(l);
+            Tree.ToList(l);
             return l;
          }
 
@@ -198,6 +198,19 @@ namespace Logic
             return tmp;
          }
          
+         /// <summary>Gets the first command in the tree</summary>
+         /// <returns>Command</returns>
+         /// <exception cref="Logic::InvalidOperationException">Tree is empty</exception>
+         CommandNodePtr ScriptParser::GetFirstCommand() const
+         {
+            // Sanity check
+            if (Empty)
+               throw InvalidOperationException(HERE, L"Parse tree has no commands");
+
+            // Return first node after root
+            return *(++Tree.begin());
+         }
+
          /// <summary>Get the one-based line number of the current line</summary>
          /// <returns>One based line number</returns>
          UINT  ScriptParser::GetLineNumber() const
@@ -241,23 +254,23 @@ namespace Logic
                case BranchLogic::While:  
                case BranchLogic::ElseIf:  
                case BranchLogic::Else:    
-                  ParseIfElse(Root->Add(Advance()));
+                  ParseIfElse(Tree.Add(Advance()));
                   break;
                
                // SkipIf: Add
                case BranchLogic::SkipIf:  
-                  ParseSkipIf(Root->Add(Advance()));
+                  ParseSkipIf(Tree.Add(Advance()));
                   break;
 
                // Command/NOP/Break/Continue/End: Add 
                default:
-                  Root->Add(Advance());
+                  Tree.Add(Advance());
                   break;
                }
             }
             
             // Verify tree
-            Root->Verify(Script, Errors);
+            Tree.Verify(Script, Errors);
 
 #ifdef DEBUG_PRINT
             Print();
