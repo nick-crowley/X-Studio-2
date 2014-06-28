@@ -188,20 +188,6 @@ namespace Logic
          
          // ------------------------------- PUBLIC METHODS -------------------------------
          
-         /// <summary>Get start iterator for this node</summary>
-         /// <returns></returns>
-         CommandNode::DepthIterator CommandNode::begin() const
-         {
-            return begin<DepthTraversal>();
-         }
-
-         /// <summary>Get end iterator for this node</summary>
-         /// <returns></returns>
-         CommandNode::DepthIterator CommandNode::end() const
-         {
-            return end<DepthTraversal>();
-         }
-
          /// <summary>Execute a visitor upon this node</summary>
          /// <param name="v">The visitor</param>
          void  CommandNode::Accept(Visitor& v)

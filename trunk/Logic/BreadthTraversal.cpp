@@ -18,13 +18,13 @@ namespace Logic
          /// <summary>Adds successors nodes to the queue</summary>
          /// <param name="n">Node to visit</param>
          /// <exception cref="Logic::ArgumentNullException">Node is nullptr</exception>
-         void BreadthTraversal::AddSuccessors(CommandNode* n)
+         void BreadthTraversal::AddSuccessors(CommandNodePtr& n)
          {
             REQUIRED(n);
 
             // Enqueue children to back of queue
             for (auto& c : n->Children)
-               push_back(c.get());
+               push_back(c);
          }
 
          /// <summary>Query whether traversal is empty</summary>
@@ -37,7 +37,7 @@ namespace Logic
          /// <summary>Pops the next node from the queue</summary>
          /// <returns></returns>
          /// <exception cref="Logic::AlgorithmException">Queue is empty</exception>
-         CommandNode* BreadthTraversal::GetSuccessor()
+         CommandNodePtr BreadthTraversal::GetSuccessor()
          {
             // Verify state
             if (Empty())
