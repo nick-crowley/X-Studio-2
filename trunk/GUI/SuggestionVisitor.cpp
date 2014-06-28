@@ -11,6 +11,10 @@ namespace GUI
 
       // ------------------------------- STATIC METHODS -------------------------------
 
+      bool  IsCaretOnText()
+      {
+      }
+
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Identifies when user types an assignment</summary>
@@ -22,13 +26,14 @@ namespace GUI
       {
          TokenIterator pos = lex.begin();
 
-         // RULE: variable '=' char <caret>  
+         // RULE: variable '=' text <caret>  
          if (lex.Match(pos, TokenType::Variable) 
           && lex.Match(pos, TokenType::BinaryOp, L"=") 
           && lex.Match(pos, TokenType::Text)
-          && (pos-1)->ContainsEx(caret) )
+          && lex.MatchAtCaret(caret, TokenType::Text))
             return Suggestion::Command;
 
+         // No match
          return Suggestion::None;
       }
 
@@ -41,11 +46,11 @@ namespace GUI
       {
          TokenIterator pos = lex.begin();
 
-         // RULE: char <caret> 
-         if (lex.Match(pos, TokenType::Text)
-          && (pos-1)->ContainsEx(caret) )
+         // RULE: text <caret> 
+         if (lex.Match(pos, TokenType::Text) && lex.MatchAtCaret(caret, TokenType::Text))
             return Suggestion::Command;
 
+         // No match
          return Suggestion::None;
       }
       
@@ -58,7 +63,7 @@ namespace GUI
       {
          TokenIterator pos = lex.begin();
 
-         // RULE: conditional char <caret>
+         // RULE: conditional text <caret>
          if ((lex.Match(pos, TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"skip") && lex.Match(pos, TokenType::Keyword, L"if"))
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"if") && lex.Match(pos, TokenType::Keyword, L"not"))
@@ -68,10 +73,10 @@ namespace GUI
           || (lex.Match(pos=lex.begin(), TokenType::Keyword, L"do") && lex.Match(pos, TokenType::Keyword, L"if")) 
           ||  lex.Match(pos=lex.begin(), TokenType::Keyword, L"start"))
             // <continued...>
-            if (lex.Match(pos, TokenType::Text)
-             && (pos-1)->ContainsEx(caret) )
+            if (lex.Match(pos, TokenType::Text) && lex.MatchAtCaret(caret, TokenType::Text))
                return Suggestion::Command;
 
+         // No match
          return Suggestion::None;
       }
 
@@ -91,6 +96,7 @@ namespace GUI
             if (!lex.Valid(pos))
                return Suggestion::Label;
 
+         // No match
          return Suggestion::None;
       }
       
@@ -144,7 +150,7 @@ namespace GUI
       {
          TokenIterator pos = lex.begin();
 
-         // RULE: (variable '=')? constant/variable/null '->' char <caret>
+         // RULE: (variable '=')? constant/variable/null '->' text <caret>
          if (lex.Match(pos, TokenType::Variable)
           && lex.Match(pos, TokenType::BinaryOp, L"="))
             // <continued...>
@@ -154,9 +160,10 @@ namespace GUI
                // <continued...>
                if (lex.Match(pos, TokenType::BinaryOp, L"->") 
                 && lex.Match(pos, TokenType::Text) 
-                && (pos-1)->ContainsEx(caret) )
+                && lex.MatchAtCaret(caret, TokenType::Text))
                   return Suggestion::Command;
 
+         // No match
          return Suggestion::None;
       }
       
@@ -169,16 +176,17 @@ namespace GUI
       {
          TokenIterator pos = lex.begin();
 
-         // RULE: constant/variable/null '->' char <caret>
+         // RULE: constant/variable/null '->' text <caret>
          if (lex.Match(pos, TokenType::ScriptObject) 
           || lex.Match(pos, TokenType::Variable) 
           || lex.Match(pos, TokenType::Null))
             // <continued...>
             if (lex.Match(pos, TokenType::BinaryOp, L"->") 
              && lex.Match(pos, TokenType::Text) 
-             && (pos-1)->ContainsEx(caret) )
+             && lex.MatchAtCaret(caret, TokenType::Text))
                return Suggestion::Command;
 
+         // No match
          return Suggestion::None;
       }
       
