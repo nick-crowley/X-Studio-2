@@ -48,7 +48,7 @@ namespace Logic
          /// <param name="results">On return, this contains the results</param>
          void  CommandTree::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
-            Transform(CommandNode::SymbolSearcher(name, type, results));
+            Transform(SymbolSearcher(name, type, results));
          }
          
          /// <summary>Compiles the script.</summary>
@@ -100,9 +100,8 @@ namespace Logic
          /// <summary>Prints the entire tree to the console</summary>
          void  CommandTree::Print() const
          {
-            CommandNode::NodePrinter v;
             // Print entire tree
-            Transform(v);
+            Transform(NodePrinter());
          }
          
          /// <summary>Flattens the nodes of the tree (excluding the root) into a list.</summary>
@@ -148,7 +147,7 @@ namespace Logic
             Transform(logic);
 
             // Ensure script has std commands  [don't count break/continue]
-            if (!any_of(begin(), end(), isStandardCommand))
+            if (!any_of(begin(), end(), CommandNode::isStandardCommand))
                errors += Root->MakeError(L"No executable commands found");
 
             // [VALID] Verify all control paths lead to RETURN

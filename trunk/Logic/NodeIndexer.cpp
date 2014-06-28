@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 
 namespace Logic
 {
@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create standard command indexer visitor</summary>
          /// <param name="init">Initial index</param>
-         CommandNode::NodeIndexer::NodeIndexer(UINT& init) : NextIndex(init)
+         CommandTree::NodeIndexer::NodeIndexer(UINT& init) : NextIndex(init)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandNode::NodeIndexer::~NodeIndexer()
+         CommandTree::NodeIndexer::~NodeIndexer()
          {
          }
 
@@ -26,7 +26,7 @@ namespace Logic
          
          /// <summary>Assigns standard command indicies to nodes</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::NodeIndexer::VisitNode(CommandNode* n) 
+         void  CommandTree::NodeIndexer::VisitNode(CommandNode* n) 
          {
             // Standard command  
             if (!n->CmdComment && n->Is(CommandType::Standard))

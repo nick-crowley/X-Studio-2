@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandNode.h"
+#include "CommandTree.h"
 
 namespace Logic
 {
@@ -11,12 +11,12 @@ namespace Logic
 
          /// <summary>Create visitor for finalizing node linkage</summary>
          /// <param name="e">errors collection</param>
-         CommandNode::LinkageFinalizer::LinkageFinalizer(ErrorArray& e) : Errors(e)
+         CommandTree::LinkageFinalizer::LinkageFinalizer(ErrorArray& e) : Errors(e)
          {
          }
 
          /// <summary>Nothing</summary>
-         CommandNode::LinkageFinalizer::~LinkageFinalizer()
+         CommandTree::LinkageFinalizer::~LinkageFinalizer()
          {
          }
          
@@ -26,7 +26,7 @@ namespace Logic
          
          /// <summary>Finalizes linkage between nodes</summary>
          /// <param name="n">Node</param>
-         void  CommandNode::LinkageFinalizer::VisitNode(CommandNode* n) 
+         void  CommandTree::LinkageFinalizer::VisitNode(CommandNode* n) 
          {
             // JMP: Set address
             if (n->Is(CMD_HIDDEN_JUMP))
