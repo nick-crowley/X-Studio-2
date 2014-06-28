@@ -5,7 +5,7 @@
 
 namespace Logic
 {
-   /// <summary></summary>
+   /// <summary>Writes debugging output to an RTF logfile</summary>
    class LogicExport ConsoleLog
    {
       // ------------------------ TYPES --------------------------
@@ -22,6 +22,7 @@ namespace Logic
       // ------------------------ STATIC -------------------------
    public:
       void  Close();
+      void  Flush();
       void  Open();
       void  Write(const wstring& txt, WORD attr);
 

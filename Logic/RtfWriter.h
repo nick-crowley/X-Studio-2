@@ -29,6 +29,7 @@ namespace Logic
 		   // ----------------------- MUTATORS ------------------------
       public:
          void  Close();
+         void  Flush();
          void  Open(const wstring& font, UINT size, list<COLORREF> cols);
          void  Write(WCHAR ch);
          void  Write(const wstring& str);
