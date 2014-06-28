@@ -1,7 +1,6 @@
 #pragma once
 
-#include "CommandNode.h"
-#include "CommandNodeList.h"
+#include "CommandTree.h"
 #include <algorithm>
 
 namespace Testing
@@ -58,6 +57,7 @@ namespace Logic
 
             // --------------------- PROPERTIES ------------------------
          public:
+            PROPERTY_GET(bool,Empty,IsEmpty);
             PROPERTY_GET(bool,Successful,IsSuccessful);
 
          private:
@@ -66,6 +66,7 @@ namespace Logic
             // ---------------------- ACCESSORS ------------------------			
          public:
             void        FindAll(const wstring& name, SymbolType type, SymbolList& results) const;
+            bool        IsEmpty() const;
             bool        IsSuccessful() const;
             CommandNodeList ToList() const;
 
@@ -113,7 +114,7 @@ namespace Logic
             const LineArray&  Input;         // Input text
             const GameVersion Version;       // Script version
 
-            CommandNodePtr  Root;            // Parse tree
+            CommandTree     Tree;            // Parse tree
             LineIterator    CurrentLine;     // Line being parsed
             CommandNodePtr  CurrentNode;     // Most recently parsed node
             ErrorArray      CommentErrors;   // Separate error queue used for trying to parse command comments

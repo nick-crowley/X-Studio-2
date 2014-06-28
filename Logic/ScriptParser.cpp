@@ -54,7 +54,7 @@ namespace Logic
             ScriptParser parser(ScriptFile(L""), {line}, v);
 
             // Sanity check
-            if (parser.Root->Children.empty())
+            if (parser.Empty)
                throw AlgorithmException(HERE, L"Parse tree has no children");
 
             // Retrieve node
@@ -72,7 +72,7 @@ namespace Logic
                ScriptParser parser(script, {line}, script.Game);
 
                // Sanity check
-               if (parser.Root->Children.empty())
+               if (parser.Empty)
                   throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve syntax of single node
@@ -95,7 +95,7 @@ namespace Logic
                ScriptParser parser(script, {line}, script.Game);
 
                // Sanity check
-               if (parser.Root->Children.empty())
+               if (parser.Empty)
                   throw AlgorithmException(HERE, L"Parse tree has no children");
 
                // Retrieve node
@@ -139,21 +139,27 @@ namespace Logic
                throw InvalidOperationException(HERE, L"Cannot compile a script with errors");
 
             // Compile tree
-            Root->Compile(Script, Errors);
+            Tree.Compile(Script, Errors);
 
 #ifdef DEBUG_PRINT
             Print();
 #endif
          }
 
-         /// <summary>Finds all instances of a symbol</summary>
-         /// <param name="name">symbol.</param>
-         /// <param name="type">type.</param>
-         /// <param name="results">The results.</param>
+         /// <summary>Find all instances of a symbol</summary>
+         /// <param name="name">symbol name</param>
+         /// <param name="type">symbol type</param>
+         /// <param name="results">On return, this contains the results</param>
          void  ScriptParser::FindAll(const wstring& name, SymbolType type, SymbolList& results) const
          {
-            results.clear();
-            Root->FindAll(name, type, results);
+            Tree.FindAll(name, type, results);
+         }
+         
+         /// <summary>Query whether parse tree is empty</summary>
+         /// <returns></returns>
+         bool ScriptParser::IsEmpty() const
+         {
+            return Tree.Empty;
          }
 
          /// <summary>Get whether there are no errors</summary>
