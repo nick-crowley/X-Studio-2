@@ -7,7 +7,7 @@ namespace Logic
    {
       // -------------------------------- CONSTRUCTION --------------------------------
 
-      /// <summary>Opens a file stream</summary>
+      /// <summary>Opens a file stream with default attributes</summary>
       /// <param name="path">The full path.</param>
       /// <param name="mode">The creation mode.</param>
       /// <param name="access">The file access.</param>
@@ -15,20 +15,40 @@ namespace Logic
       /// <exception cref="Logic::DirectoryNotFoundException">Folder not found</exception>
       /// <exception cref="Logic::FileNotFoundException">File not found</exception>
       /// <exception cref="Logic::IOException">Unable to create/open file</exception>
-      FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileShare share) : FullPath(path), Mode(mode), Access(access), Share(share) 
+      FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileShare share /*= FileShare::AllowRead*/) 
+         : FileStream(path, mode, access, FileAttribute::Normal, share)
       {
-         // Open file
-         Handle = CreateFile(path.c_str(), (DWORD)access, (DWORD)share, NULL, (DWORD)mode, FILE_ATTRIBUTE_NORMAL, NULL);
+      }
 
+      /// <summary>Opens a file stream with custom attributes</summary>
+      /// <param name="path">The full path.</param>
+      /// <param name="mode">The creation mode.</param>
+      /// <param name="access">The file access.</param>
+      /// <param name="attr">The file and stream attributes</param>
+      /// <param name="share">The sharing permitted.</param>
+      /// <exception cref="Logic::DirectoryNotFoundException">Folder not found</exception>
+      /// <exception cref="Logic::FileNotFoundException">File not found</exception>
+      /// <exception cref="Logic::IOException">Unable to create/open file</exception>
+      FileStream::FileStream(Path path, FileMode mode, FileAccess access, FileAttribute attr, FileShare share) 
+         : FullPath(path), Mode(mode), Access(access), Share(share) 
+      {
+         // Open file stream
+         Handle = CreateFileW(path.c_str(), 
+                              static_cast<DWORD>(access), 
+                              static_cast<DWORD>(share), 
+                              NULL,                         // Security
+                              static_cast<DWORD>(mode), 
+                              static_cast<DWORD>(attr), 
+                              NULL);                        // Template
+
+         // Specialise certain errors
          if (Handle == INVALID_HANDLE_VALUE) 
-         {
-            if (GetLastError() == ERROR_FILE_NOT_FOUND)
-               throw FileNotFoundException(HERE, path);
-            else if (GetLastError() == ERROR_PATH_NOT_FOUND)
-               throw DirectoryNotFoundException(HERE, path.Folder);
-            else
-               throw IOException(HERE, SysErrorString());
-         }
+            switch (GetLastError())
+            {
+            case ERROR_FILE_NOT_FOUND: throw FileNotFoundException(HERE, path);
+            case ERROR_PATH_NOT_FOUND: throw DirectoryNotFoundException(HERE, path.Folder);
+            default: throw IOException(HERE, SysErrorString());
+            }
       }
 
       //FileStream::FileStream(const FileStream& s) : FullPath(s.FullPath), Mode(s.Mode), Access(s.Access), Share(s.Share) 
@@ -99,6 +119,15 @@ namespace Logic
          return output;
       }
 
+      
+      /// <summary>Enables bitwise combinations of file attribute flags.</summary>
+      /// <param name="a">flag.</param>
+      /// <param name="b">another flag</param>
+      /// <returns>Bitwise combination of both flags</returns>
+      FileAttribute operator|(const FileAttribute& a, const FileAttribute& b)
+      {
+         return static_cast<FileAttribute>(static_cast<DWORD>(a) | static_cast<DWORD>(b));
+      }
 
       // ------------------------------- PUBLIC METHODS -------------------------------
 
@@ -146,7 +175,7 @@ namespace Logic
          DWORD  position = 0;
          
          // Get position from null move
-         if ((position=SetFilePointer(Handle, 0, NULL, (DWORD)SeekOrigin::Current)) == INVALID_SET_FILE_POINTER)
+         if ((position=SetFilePointer(Handle, 0, NULL, static_cast<DWORD>(SeekOrigin::Current))) == INVALID_SET_FILE_POINTER)
             throw IOException(HERE, SysErrorString());
 
          return position;
