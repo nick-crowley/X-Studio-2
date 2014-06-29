@@ -29,7 +29,7 @@ namespace Logic
             {}
 
             // ---------------------- ACCESSORS ------------------------	
-
+         
             // ----------------------- MUTATORS ------------------------
 #ifdef LOGIC_LIB_BUILD_FIX
          public:
@@ -43,7 +43,9 @@ namespace Logic
          };
 
          /// <summary>Print error token to console</summary>
-         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorToken& e);
+         LogicExport ConsoleWnd& operator<<(ConsoleWnd& c, const ErrorToken& e);
+
+
 
          /// <summary>Vector of error tokens</summary>
          class LogicExport ErrorArray : public vector<ErrorToken> 

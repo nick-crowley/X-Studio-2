@@ -115,9 +115,12 @@ namespace Logic
 
          
          /// <summary>Print error token to console</summary>
-         ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorToken& e)
+         LogicExport ConsoleWnd&  operator<<(ConsoleWnd& c, const ErrorToken& e)
          {
-            return c << Cons::Error << "ERROR: " << Cons::White << e.Line << ": " << e.Message;
+            return c << Cons::Red << " Error: " 
+                     << Cons::Reset << "Ln " << e.Line << L": " 
+                     << Cons::Yellow << e.Message 
+                     << Cons::White << L" : " << e.Text;
          }
 
          /// <summary>Print error array to console</summary>

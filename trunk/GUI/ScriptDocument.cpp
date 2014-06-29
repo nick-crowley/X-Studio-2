@@ -661,6 +661,9 @@ NAMESPACE_BEGIN2(GUI,Documents)
             // Feedback messages in output window
             for (const auto& err : parser.Errors)
             {
+               Console << err << ENDL;
+
+               // Feedback to output
                VString msg(L"%d: %s '%s'", err.Line, err.Message.c_str(), err.Text.c_str());
                data.SendFeedback(ProgressType::Error, 1, msg);
             }

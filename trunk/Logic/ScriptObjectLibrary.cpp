@@ -267,7 +267,7 @@ namespace Logic
                Lookup.Remove(obj.Text);
 
                // Feedback
-               Console << Cons::Error << "Conflict: " << Cons::Reset << obj.Text << " : " 
+               Console << Cons::Red << "Conflict: " << Cons::Reset << obj.Text << " : " 
                        << Cons::Yellow << obj.Ident << Cons::White << L" vs " << Cons::Yellow << conflict.Ident << Cons::White << "...";
 
                // Mangle them
