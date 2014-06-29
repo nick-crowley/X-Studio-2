@@ -533,11 +533,6 @@ NAMESPACE_BEGIN2(GUI,Controls)
          // Parse script 
          ScriptParser parser(Document->Script, GetAllLines(), Document->Script.Game);
          
-         // DEBUG:
-         /*if (!parser.Errors.empty())
-            parser.Print();*/
-         Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
-
          // Underlining Errors?
          if (PrefsLib.BackgroundCompiler)
          {
@@ -556,9 +551,12 @@ NAMESPACE_BEGIN2(GUI,Controls)
             for (const auto& err : parser.Errors)
             {
                FormatToken(LineIndex(err.Line-1), err, cf);
-               Console << err.Line << L": " << Cons::Yellow << err.Message << Cons::White << L" : " << err.Text << ENDL;
+               Console << err << ENDL;
             }
          }
+
+         // Feedback
+         Console << L"Background compiler found: " << parser.Errors.size() << L" errors" << ENDL;
 
          // Raise 'Compile Complete'
          CompileComplete.Raise();
