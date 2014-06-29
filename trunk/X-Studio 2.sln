@@ -37,6 +37,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{09A780D7-FC7A-43EE-AF96-27B556E4B8BB}"
 	ProjectSection(SolutionItems) = preProject
 		Macros.h = Macros.h
+		PostBuild.bat = PostBuild.bat
 		targetver.h = targetver.h
 	EndProjectSection
 EndProject
