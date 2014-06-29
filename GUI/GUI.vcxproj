@@ -48,7 +48,7 @@
     <IncludePath>C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -56,7 +56,7 @@
     <IncludePath>C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -84,12 +84,10 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"$(SolutionDir)PostBuild.bat" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Copying data files and templates</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -136,10 +134,8 @@
       </Message>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-      </Command>
-      <Message>
-      </Message>
+      <Command>"$(SolutionDir)PostBuild.bat" "$(OutDir)"</Command>
+      <Message>Copying data files and templates</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
