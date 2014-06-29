@@ -11,10 +11,6 @@ namespace GUI
 
       // ------------------------------- STATIC METHODS -------------------------------
 
-      bool  IsCaretOnText()
-      {
-      }
-
       // ------------------------------- PUBLIC METHODS -------------------------------
       
       /// <summary>Identifies when user types an assignment</summary>
