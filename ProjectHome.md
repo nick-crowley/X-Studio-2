@@ -1,0 +1,1 @@
+Script editor for X series of games by Egosoft.
